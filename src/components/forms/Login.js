@@ -3,6 +3,7 @@ import {Button, View} from 'react-native';
 import {Formik} from 'formik';
 import {TextInput} from 'react-native-paper';
 
+// https://formik.org/docs/guides/react-native
 export const LoginForm = ({onSubmit = () => {}, initialValues = {}}) => {
   return (
     <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)}>
@@ -14,6 +15,7 @@ export const LoginForm = ({onSubmit = () => {}, initialValues = {}}) => {
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
+            name={'username'}
           />
           <TextInput
             label={'Password'}

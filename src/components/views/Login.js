@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Section} from '../Section';
-import {isDarkMode, backgroundStyle} from '../../styles';
+import {backgroundStyle} from '../../styles';
 import {LoginForm} from '../forms/Login';
 import {getLoginData} from '../../libraries/Storage';
 import {apiQuery, getAuthHeaders} from "../../libraries/APIClient";
@@ -26,24 +26,24 @@ export const AlertText = ({message}) => {
 export const LoginView = ({navigation}) => {
   console.log("Start Render")
   const [errorMessage, setErrorMessage] = useState("LOLZ ERROR")
-  const [apiResponse, setApiResponse] = useState()
+  // const [apiResponse, setApiResponse] = useState()
   // const [formData, setFormData] = useState({})
   // const [formData, setFormData] = useState({})
 
 
   // THe new stuff
 
-  useEffect(() => {
-    console.log("Effecting apiResponse")
-    // console.log(apiResponse)
-    // setErrorMessage("NONE!")
-  }, [apiResponse])
-
-  useEffect(() => {
-    console.log("Effecting errorMessage")
-    // console.log(apiResponse)
-    // setErrorMessage("NONE!")
-  }, [errorMessage])
+  // useEffect(() => {
+  //   console.log("Effecting apiResponse")
+  //   // console.log(apiResponse)
+  //   // setErrorMessage("NONE!")
+  // }, [apiResponse])
+  //
+  // useEffect(() => {
+  //   console.log("Effecting errorMessage")
+  //   // console.log(apiResponse)
+  //   // setErrorMessage("NONE!")
+  // }, [errorMessage])
 
 
   // End the new stuff
@@ -56,21 +56,34 @@ export const LoginView = ({navigation}) => {
   //   }
   //   // return null;
   // }, [apiResponse])
-  const fetchData = useCallback(async (credentials) => {
-    //   console.log("Attempting to log in.")
-    let authHeaders = getAuthHeaders(credentials.username, credentials.password)
-    try {
-      let loginResponse = await apiQuery('/auth/login', 'POST', authHeaders)
-      let data = await loginResponse.json()
-      setApiResponse(data)
-      setErrorMessage("NONE!")
-    } catch (error) {
-      console.log("ERRORZ", error.toString())
-      setApiResponse()
-      setErrorMessage(error.toString())
-    }
-    console.log("Finished fetchData")
-  }, [])
+
+
+
+
+
+
+  // const fetchData = async (credentials) => {
+  //   //   console.log("Attempting to log in.")
+  //   let authHeaders = getAuthHeaders(credentials.username, credentials.password)
+  //   try {
+  //     let loginResponse = await apiQuery('/auth/login', 'POST', authHeaders)
+  //     let data = await loginResponse.json()
+  //     // setApiResponse(data)
+  //     // setErrorMessage("NONE!")
+  //   } catch (error) {
+  //     console.log("ERRORZ", error.toString())
+  //     // setApiResponse()
+  //     // setErrorMessage(error.toString())
+  //     setErrorMessage("Something bad happened")
+  //   }
+  //   console.log("Finished fetchData")
+  // }
+
+
+
+
+
+
   //   // @TODO move this to something not here
   //   // if (loginResponse.status >= 400) {
   //   //   let responseBody = await loginResponse.json()
@@ -142,21 +155,32 @@ export const LoginView = ({navigation}) => {
   // }, [apiResponse])
 
   // function onSubmit(values) {
-  const onSubmit = useCallback(async (values) => {
+  const onSubmit = async (values) => {
     console.log("Calling onSubmit")
     console.log(values)
-    await fetchData(values).catch((e) => {
-      console.error("onSubmit blew up")
-      console.error(e)
-    })
+    let authHeaders = getAuthHeaders(values.username, values.password)
+    console.log(authHeaders)
+    try {
+      let loginResponse = await apiQuery('/auth/login', 'POST', authHeaders)
+      let data = await loginResponse.json()
+      console.log("SUCCESS")
+    } catch(e) {
+      console.log("ERROR", e.toString())
+      setErrorMessage("Something bad happened")
+    }
+    // await fetchData(values).catch((e) => {
+    //   console.error("onSubmit blew up")
+    //   console.error(e)
+    // })
     console.log("Finished onSubmit")
     // return null;
-  }, [fetchData])
+  }
 
   console.log("End Render")
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'}/>
+      {/*<StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'}/>*/}
+      <StatusBar barStyle={'light-content'}/>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
@@ -167,7 +191,7 @@ export const LoginView = ({navigation}) => {
           }}>
           <Section title="Login">
             <LoginForm onSubmit={onSubmit}/>
-            <AlertText message={errorMessage}/>
+            <AlertText message={"fuck"}/>
           </Section>
           <Section>
             <Button

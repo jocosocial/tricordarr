@@ -28,14 +28,15 @@ const styles = StyleSheet.create({
 });
 
 export const Section = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+  // const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
       <Text
         style={[
           styles.sectionTitle,
           {
-            color: isDarkMode ? Colors.white : Colors.black,
+            // color: isDarkMode ? Colors.white : Colors.black,
+            color: 'green'
           },
         ]}>
         {title}
@@ -44,7 +45,8 @@ export const Section = ({children, title}) => {
         style={[
           styles.sectionDescription,
           {
-            color: isDarkMode ? Colors.light : Colors.dark,
+            // color: isDarkMode ? Colors.light : Colors.dark,
+            color: 'yellow'
           },
         ]}>
         {children}

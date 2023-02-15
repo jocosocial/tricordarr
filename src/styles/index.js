@@ -20,8 +20,9 @@ export const styles = StyleSheet.create({
   },
 });
 
-export const isDarkMode = useColorScheme() === 'dark';
+// export const isDarkMode = useColorScheme() === 'dark';
 
 export const backgroundStyle = {
-  backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  backgroundColor: 'pink'
 };
