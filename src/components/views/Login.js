@@ -11,7 +11,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Section} from '../Section';
 import {backgroundStyle} from '../../styles';
 import {LoginForm} from '../forms/Login';
-import {getLoginData} from '../../libraries/Storage';
+import {getLoginData, saveLoginData} from '../../libraries/Storage';
 import {apiQuery, getAuthHeaders} from '../../libraries/APIClient';
 import {TokenStringData} from '../../libraries/structs/ControllerStructs';
 
@@ -41,11 +41,13 @@ export const LoginView = ({navigation}) => {
     try {
       let loginResponse = await apiQuery('/auth/login', 'POST', authHeaders);
       let data = await loginResponse.json();
-      let classData = new TokenStringData(...data);
+      // let classData = new TokenStringData(...data);
       setErrorMessage(undefined);
       // @TODO save token and do navigation
       console.log('Got response:', data);
-      console.log(classData);
+      // console.log(classData);
+      await saveLoginData(credentials.username, data.userID, data.token);
+      navigation.navigate('Home');
     } catch (error) {
       setErrorMessage(error.toString());
     }

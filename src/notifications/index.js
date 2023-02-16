@@ -1,11 +1,10 @@
-import notifee, {EventType, AndroidColor} from "@notifee/react-native";
+import notifee, {EventType, AndroidColor} from '@notifee/react-native';
+import {getLoginData} from '../libraries/Storage';
+import {getAuthHeaders} from '../libraries/APIClient';
 // import BackgroundFetch from "react-native-background-fetch";
 // import useWebSocket from 'react-use-websocket';
-import React from 'react';
 
-
-
-console.log("Setting up background events...")
+console.log('Setting up background events...');
 notifee.onBackgroundEvent(async ({type, detail}) => {
   const {notification, pressAction} = detail;
 
@@ -56,17 +55,23 @@ notifee.onBackgroundEvent(async ({type, detail}) => {
 
 // Bootstrap sequence function
 export async function bootstrap() {
-  console.log("BOOTSTRAPPING")
+  console.log('BOOTSTRAPPING');
   const initialNotification = await notifee.getInitialNotification();
 
   if (initialNotification) {
-    console.log('Notification caused application to open', initialNotification.notification);
-    console.log('Press action used to open the app', initialNotification.pressAction);
+    console.log(
+      'Notification caused application to open',
+      initialNotification.notification,
+    );
+    console.log(
+      'Press action used to open the app',
+      initialNotification.pressAction,
+    );
     // console.log("POOP")
     // console.log(initialNotification)
     // console.log("POOP")
-    console.log("CANCELING AT bootstrap::initialNotification")
-    await cancel(initialNotification.notification.id)
+    console.log('CANCELING AT bootstrap::initialNotification');
+    await cancel(initialNotification.notification.id);
   }
 }
 
@@ -74,46 +79,45 @@ export async function cancel(notificationId) {
   await notifee.cancelNotification(notificationId);
 }
 export async function doForegroundThingy() {
-  notifee.registerForegroundService((notification) => {
-    return new Promise(() => {
+  notifee.registerForegroundService(notification => {
+    return new Promise(async () => {
       // Long running task...
-      console.log("Foreground Service")
-//         onTaskUpdate(task => {
-//           console.log("GOT A FOREGROUND TASK!")
-//           console.log(task)
-// //          if (task.complete) {
-// //              await notifee.stopForegroundService()
-// //          }
-//         });
+      console.log('Foreground Service');
+      //         onTaskUpdate(task => {
+      //           console.log("GOT A FOREGROUND TASK!")
+      //           console.log(task)
+      // //          if (task.complete) {
+      // //              await notifee.stopForegroundService()
+      // //          }
+      //         });
       // @TODO none of this is working yet.
-      console.log("Starting websocket shit")
+      console.log('Starting websocket shit');
       // https://javascript.info/websocket
       // const WS_URL = "ws://10.0.2.2:8080"
       // const WS_URL = "ws://columbia.boston.grantcohoe.com:8081/api/v3/notification/socket"
       // @TODO deal with ws vs wss
-      const WS_URL = "wss://beta.twitarr.com/api/v3/notification/socket"
+      const WS_URL = 'wss://beta.twitarr.com/api/v3/notification/socket';
       // useWebSocket(WS_URL, {
       //   onOpen: () => {
       //     console.log('WebSocket connection established.');
       //   }
       // });
+      const loginData = await getLoginData();
+      const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
       let socket = new WebSocket(WS_URL, null, {
-        headers: {
-          // @TODO NAUGHTY NAUGHTY
-          ['authorization']: "Bearer XXX"
-        }
+        headers: authHeaders,
       });
 
-      socket.onopen = function(e) {
-        console.log("[open] Connection established");
-        console.log("Sending to server");
-        socket.send("PING");
+      socket.onopen = function (e) {
+        console.log('[open] Connection established');
+        console.log('Sending to server');
+        socket.send('PING');
       };
 
-      socket.onmessage = function(event) {
+      socket.onmessage = function (event) {
         console.log(`[message] Data received from server: ${event.data}`);
-        const notificationData = JSON.parse(event.data)
-        console.log(notificationData)
+        const notificationData = JSON.parse(event.data);
+        console.log(notificationData);
         notifee.displayNotification({
           id: notificationData.contentID,
           title: 'New Seamail Message',
@@ -124,15 +128,17 @@ export async function doForegroundThingy() {
             autoCancel: true,
             // https://notifee.app/react-native/docs/android/interaction
             pressAction: {
-              id: 'default'
-            }
+              id: 'default',
+            },
           },
         });
       };
 
-      socket.onclose = function(event) {
+      socket.onclose = function (event) {
         if (event.wasClean) {
-          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+          console.log(
+            `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`,
+          );
         } else {
           // e.g. server process killed or network down
           // event.code is usually 1006 in this case
@@ -140,10 +146,9 @@ export async function doForegroundThingy() {
         }
       };
 
-      socket.onerror = function(error) {
+      socket.onerror = function (error) {
         console.log('[error] ', error);
       };
-
     });
   });
   const channelId = await notifee.createChannel({
@@ -160,8 +165,8 @@ export async function doForegroundThingy() {
       color: AndroidColor.RED,
       colorized: true,
       pressAction: {
-        id: 'default'
-      }
+        id: 'default',
+      },
     },
   });
 }

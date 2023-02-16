@@ -1,14 +1,19 @@
 // REST API client for interacting with the Swiftarr API.
-import {encode as base64_encode} from "base-64";
+import {encode as base64_encode} from 'base-64';
 
-export async function apiQuery(endpoint: String, method: String = 'GET', headers: Object = {}, body: Object = null) {
-  let serverUrl = "https://beta.twitarr.com"
-  let urlPrefix = "/api/v3"
+export async function apiQuery(
+  endpoint,
+  method = 'GET',
+  headers = {},
+  body = undefined,
+) {
+  let serverUrl = 'https://beta.twitarr.com';
+  let urlPrefix = '/api/v3';
   let apiUrlString = serverUrl + urlPrefix + endpoint;
 
   const defaultHeaders = {
     Accept: 'application/json',
-  }
+  };
 
   let apiResponse;
   try {
@@ -18,16 +23,16 @@ export async function apiQuery(endpoint: String, method: String = 'GET', headers
       // body: JSON.stringify(body),
     });
     // return await response.json();
-  } catch(apiError) {
+  } catch (apiError) {
     // console.log("apiQuery failed:")
     // console.log(apiError)
-    throw new Error('apiQuery failed:', apiError)
+    throw new Error('apiQuery failed:', apiError);
   }
   if (apiResponse.status >= 400) {
-    let responseBody = await apiResponse.json()
-    throw new Error(responseBody.reason)
+    let responseBody = await apiResponse.json();
+    throw new Error(responseBody.reason);
   }
-  return apiResponse
+  return apiResponse;
 }
 
 /**
@@ -39,8 +44,12 @@ export async function apiQuery(endpoint: String, method: String = 'GET', headers
  * @param token     Optional String containing an OAuth2 token.
  * @returns {{authorization: string}}
  */
-export function getAuthHeaders(username: String = undefined, password: String = undefined, token: String = undefined) {
-  let encodedCredentials: String = '';
+export function getAuthHeaders(
+  username = undefined,
+  password = undefined,
+  token = undefined,
+) {
+  let encodedCredentials = '';
   let authScheme = '';
   if (username && password) {
     encodedCredentials = base64_encode(`${username}:${password}`);
@@ -49,12 +58,12 @@ export function getAuthHeaders(username: String = undefined, password: String = 
     encodedCredentials = token;
     authScheme = 'Bearer';
   } else {
-    throw new Error('Must specify either username/password or token.')
+    throw new Error('Must specify either username/password or token.');
   }
 
   const authHeaders = {
-    authorization: `${authScheme} ${encodedCredentials}`
-  }
-  console.log('Authentication Headers:', authHeaders)
-  return authHeaders
+    authorization: `${authScheme} ${encodedCredentials}`,
+  };
+  console.log('Authentication Headers:', authHeaders);
+  return authHeaders;
 }

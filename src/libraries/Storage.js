@@ -5,37 +5,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // https://reactnative.dev/docs/security
 // https://github.com/emeraldsanto/react-native-encrypted-storage
-export async function saveLoginData(data) {
-  console.log('doing the password thing');
-  console.log(data);
+export async function saveLoginData(username, userID, token) {
   try {
-    await EncryptedStorage.setItem('password', data.password);
-    // Congrats! You've just stored your first value!
-    console.log('tada!');
+    await AsyncStorage.setItem('username', username);
+    await AsyncStorage.setItem('userID', userID);
+    await EncryptedStorage.setItem('token', token);
   } catch (error) {
-    // There was an error on the native side
-    console.log('shit');
-  }
-  try {
-    await AsyncStorage.setItem('username', data.username);
-    console.log('bazinga!');
-  } catch (error) {
-    console.log('bad day');
+    console.error(error);
   }
 }
 
 export async function getLoginData() {
   try {
     const username = await AsyncStorage.getItem('username');
-    const password = await EncryptedStorage.getItem('password');
+    const userID = await AsyncStorage.getItem('userID');
+    const token = await EncryptedStorage.getItem('token');
     console.log(`Username: ${username}`);
-    console.log(`Password: ${password}`);
+    console.log(`UserID: ${userID}`);
+    console.log(`Password: ${token}`);
+
     return {
       username: username,
-      password: password,
+      userID: userID,
+      token: token,
     };
   } catch (error) {
-    console.log('Error get:');
-    console.log(error);
+    console.error('Error get:');
+    console.error(error);
   }
 }
