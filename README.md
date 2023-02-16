@@ -12,3 +12,13 @@ npm install [react-native]
 npx react-native start
 npx react-native run-android
 ```
+
+Setup Notes
+-----------
+* https://github.com/oblador/react-native-vector-icons#installation
+
+Things to look at
+-----------------
+* react-query
+* react-context or redux? https://github.com/pmndrs/zustand
+* 
