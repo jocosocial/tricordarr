@@ -1,8 +1,13 @@
-import notifee, {EventType, AndroidColor} from '@notifee/react-native';
+import notifee, {
+  EventType,
+  AndroidColor,
+  AuthorizationStatus,
+} from '@notifee/react-native';
 import {getLoginData} from '../libraries/Storage';
 import {getAuthHeaders} from '../libraries/APIClient';
 // import BackgroundFetch from "react-native-background-fetch";
 // import useWebSocket from 'react-use-websocket';
+import {defaultChannel} from './Channels';
 
 console.log('Setting up background events...');
 notifee.onBackgroundEvent(async ({type, detail}) => {
@@ -151,16 +156,16 @@ export async function doForegroundThingy() {
       };
     });
   });
-  const channelId = await notifee.createChannel({
-    id: 'default',
-    name: 'Default Channel',
-  });
+  // const channelId = await notifee.createChannel({
+  //   id: 'default',
+  //   name: 'Default Channel',
+  // });
 
   await notifee.displayNotification({
     title: 'Foreground service',
     body: 'This notification will exist for the lifetime of the service runner',
     android: {
-      channelId,
+      channelId: defaultChannel.id,
       asForegroundService: true,
       color: AndroidColor.RED,
       colorized: true,
@@ -169,4 +174,19 @@ export async function doForegroundThingy() {
       },
     },
   });
+}
+
+export async function checkNotificationPermission() {
+  const settings = await notifee.getNotificationSettings();
+
+  if (settings.authorizationStatus === AuthorizationStatus.AUTHORIZED) {
+    console.log('Notification permissions has been authorized');
+  } else if (settings.authorizationStatus === AuthorizationStatus.DENIED) {
+    console.log('Notification permissions has been denied');
+  }
+}
+
+export async function enableNotifications() {
+  console.log('Enabling notifications');
+  await notifee.openNotificationSettings();
 }

@@ -11,11 +11,18 @@ import {
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import notifee from '@notifee/react-native';
-import {cancel, doForegroundThingy} from '../../notifications';
+import {
+  cancel,
+  checkNotificationPermission,
+  doForegroundThingy,
+  enableNotifications,
+} from '../../notifications';
 import {Section} from '../Section';
+import {serviceChannel} from '../../notifications/Channels';
 
 export const ExampleAppView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
+  checkNotificationPermission();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -23,10 +30,10 @@ export const ExampleAppView = ({navigation}) => {
 
   async function onDisplayNotification() {
     // Create a channel
-    const channelId = await notifee.createChannel({
-      id: 'seamail',
-      name: 'Seamail',
-    });
+    // const channelId = await notifee.createChannel({
+    //   id: 'seamail',
+    //   name: 'Seamail',
+    // });
 
     // Display a notification
     await notifee.displayNotification({
@@ -34,7 +41,7 @@ export const ExampleAppView = ({navigation}) => {
       title: 'Jonathan Coulton',
       body: "This was a triumph. I'm making a note here: HUGE SUCCESS. It's hard to overstate my satisfaction.",
       android: {
-        channelId,
+        channelId: serviceChannel.id,
         // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
         autoCancel: false,
         // https://notifee.app/react-native/docs/android/interaction
@@ -57,10 +64,12 @@ export const ExampleAppView = ({navigation}) => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Step One">
-            OH HERRO
-            {'\n'}
             <Button
-              title="Display Notification???"
+              title={'Enable Notifications'}
+              onPress={() => enableNotifications()}
+            />
+            <Button
+              title="Display Notification"
               onPress={() => onDisplayNotification()}
             />
             {'\n'}
@@ -77,7 +86,7 @@ export const ExampleAppView = ({navigation}) => {
               title={'Start'}
               onPress={() => {
                 console.log('START THE FORETHINGY');
-                doForegroundThingy();
+                doForegroundThingy().catch(console.error);
               }}
             />
             <Button
