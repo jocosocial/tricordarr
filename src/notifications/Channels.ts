@@ -17,6 +17,13 @@ export const connectionChannel: AndroidChannel = {
  * This is its own because as of Android 13 users can now dismiss Foreground
  * Service notifications. Since they no longer need to persist the user could
  * opt to never see them ever again.
+ *
+ * Notifee currently does not support setting FOREGROUND_SERVICE_IMMEDIATE into
+ * setForegroundServiceBehavior() which is needed to display Foreground Service
+ * notifications immediately, rather than without a 10-second delay.
+ * We must deal with it.
+ * https://developer.android.com/guide/components/foreground-services
+ * https://github.com/invertase/notifee/issues/272
  */
 export const serviceChannel: AndroidChannel = {
   id: 'service',
