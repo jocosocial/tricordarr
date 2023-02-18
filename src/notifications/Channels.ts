@@ -9,6 +9,7 @@ export const connectionChannel: AndroidChannel = {
   id: 'connection',
   name: 'Connection',
   groupId: systemChannelGroup.id,
+  description: 'Server connection events.',
 };
 
 /**
@@ -21,6 +22,8 @@ export const serviceChannel: AndroidChannel = {
   id: 'service',
   name: 'Service',
   groupId: systemChannelGroup.id,
+  description: 'Background processes associated with Tricorder.',
+  badge: false,
 };
 
 /**
@@ -30,6 +33,7 @@ export const seamailChannel: AndroidChannel = {
   id: 'seamail',
   name: 'Seamail',
   groupId: contentChannelGroup.id,
+  description: 'Seamail content from the Twitarr server.',
 };
 
 /**

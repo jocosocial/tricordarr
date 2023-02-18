@@ -1,13 +1,9 @@
-import notifee, {
-  EventType,
-  AndroidColor,
-  AuthorizationStatus,
-} from '@notifee/react-native';
+import notifee, {EventType, AndroidColor, AuthorizationStatus} from '@notifee/react-native';
 import {getLoginData} from '../libraries/Storage';
 import {getAuthHeaders} from '../libraries/APIClient';
 // import BackgroundFetch from "react-native-background-fetch";
 // import useWebSocket from 'react-use-websocket';
-import {defaultChannel} from './Channels';
+import {serviceChannel, seamailChannel} from './Channels';
 
 console.log('Setting up background events...');
 notifee.onBackgroundEvent(async ({type, detail}) => {
@@ -64,14 +60,8 @@ export async function bootstrap() {
   const initialNotification = await notifee.getInitialNotification();
 
   if (initialNotification) {
-    console.log(
-      'Notification caused application to open',
-      initialNotification.notification,
-    );
-    console.log(
-      'Press action used to open the app',
-      initialNotification.pressAction,
-    );
+    console.log('Notification caused application to open', initialNotification.notification);
+    console.log('Press action used to open the app', initialNotification.pressAction);
     // console.log("POOP")
     // console.log(initialNotification)
     // console.log("POOP")
@@ -128,7 +118,7 @@ export async function doForegroundThingy() {
           title: 'New Seamail Message',
           body: notificationData.info,
           android: {
-            channelId,
+            channelId: seamailChannel.id,
             // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
             autoCancel: true,
             // https://notifee.app/react-native/docs/android/interaction
@@ -141,9 +131,7 @@ export async function doForegroundThingy() {
 
       socket.onclose = function (event) {
         if (event.wasClean) {
-          console.log(
-            `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`,
-          );
+          console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         } else {
           // e.g. server process killed or network down
           // event.code is usually 1006 in this case
@@ -165,7 +153,7 @@ export async function doForegroundThingy() {
     title: 'Foreground service',
     body: 'This notification will exist for the lifetime of the service runner',
     android: {
-      channelId: defaultChannel.id,
+      channelId: serviceChannel.id,
       asForegroundService: true,
       color: AndroidColor.RED,
       colorized: true,
