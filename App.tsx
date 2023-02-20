@@ -11,7 +11,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginView} from './src/components/views/Login';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {ExampleAppView} from './src/components/views/Example';
+import {MainView} from './src/components/views/Main';
 import {setupChannels} from './src/notifications/Channels';
 import {doNetworkInfo} from './src/libraries/Network';
 
@@ -29,7 +29,7 @@ function App(): JSX.Element {
     <NavigationContainer>
       <PaperProvider>
         <Stack.Navigator>
-          <Stack.Screen name={'Home'} component={ExampleAppView} />
+          <Stack.Screen name={'Home'} component={MainView} />
           <Stack.Screen name={'Login'} component={LoginView} />
         </Stack.Navigator>
       </PaperProvider>

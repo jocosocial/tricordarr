@@ -9,18 +9,14 @@ export function doNetworkInfo() {
   });
 }
 
-export function getCurrentSSID() {
-  NetInfo.fetch().then(state => {
-    if (state.type === NetInfoStateType.wifi && state.isConnected) {
-      console.log('yooooo');
-      try {
-        console.log('derp?', state.details.ssid);
-        return state.details.ssid;
-      } catch (e) {
-        console.error('Error getting SSID:', e);
-      }
+export async function getCurrentSSID() {
+  let state = await NetInfo.fetch();
+  if (state.type === NetInfoStateType.wifi && state.isConnected) {
+    console.log('We are on WiFi.');
+    try {
+      return state.details.ssid;
+    } catch (e) {
+      console.error('Error getting SSID:', e);
     }
-    console.log('grr argggggg');
-    // console.log('Is connected?', state.isConnected);
-  });
+  }
 }
