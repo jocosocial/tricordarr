@@ -34,3 +34,12 @@ export async function getLoginData() {
     console.error(error);
   }
 }
+
+export async function dumpStorageKeys() {
+  let keys = [];
+  keys = await AsyncStorage.getAllKeys();
+  console.log('All Storage Keys');
+  for (const key of keys) {
+    console.log(key, await AsyncStorage.getItem(key));
+  }
+}

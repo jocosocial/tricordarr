@@ -11,6 +11,8 @@ import {Section} from '../Section';
 import {requestPermission} from '../../libraries/Permissions';
 import {displayTestNotification, cancelTestNotification} from '../../notifications/TestNotification';
 import {getCurrentSSID} from '../../libraries/Network';
+import {Settings} from '../../libraries/Settings';
+import {dumpStorageKeys} from '../../libraries/Storage';
 
 export const MainView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -52,6 +54,8 @@ export const MainView = ({navigation}) => {
           </Section>
           <Section title={'Information'}>
             <Button title={'SSID'} onPress={() => showSSID()} />
+            <Button title={'Server'} onPress={() => console.log(Settings.SERVER_URL)} />
+            <Button title={'Storage Keys'} onPress={() => dumpStorageKeys()} />
           </Section>
         </View>
       </ScrollView>

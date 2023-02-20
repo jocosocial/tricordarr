@@ -14,6 +14,7 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {MainView} from './src/components/views/Main';
 import {setupChannels} from './src/notifications/Channels';
 import {doNetworkInfo} from './src/libraries/Network';
+import {initialSettings} from './src/libraries/Settings';
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -24,6 +25,9 @@ function App(): JSX.Element {
   });
 
   doNetworkInfo();
+  initialSettings().catch(error => {
+    console.error('Error with settings:', error);
+  });
 
   return (
     <NavigationContainer>
