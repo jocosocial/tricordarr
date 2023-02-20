@@ -73,7 +73,7 @@ export async function bootstrap() {
 export async function cancel(notificationId) {
   await notifee.cancelNotification(notificationId);
 }
-export async function doForegroundThingy() {
+export async function startForegroundService() {
   notifee.registerForegroundService(notification => {
     return new Promise(async () => {
       // Long running task...
@@ -162,6 +162,10 @@ export async function doForegroundThingy() {
       },
     },
   });
+}
+
+export async function stopForegroundService() {
+  await notifee.stopForegroundService();
 }
 
 export async function checkNotificationPermission() {

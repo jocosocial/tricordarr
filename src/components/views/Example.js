@@ -1,109 +1,49 @@
+import {Button, SafeAreaView, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React, {useEffect} from 'react';
 import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-import React from 'react';
-import notifee from '@notifee/react-native';
-import {
-  cancel,
   checkNotificationPermission,
-  doForegroundThingy,
   enableNotifications,
+  startForegroundService,
+  stopForegroundService,
 } from '../../notifications';
 import {Section} from '../Section';
-import {serviceChannel} from '../../notifications/Channels';
+import {requestPermission} from '../../libraries/Permissions';
+import {displayTestNotification, cancelTestNotification} from '../../notifications/TestNotification';
 
 export const ExampleAppView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  checkNotificationPermission();
+
+  // useEffect(() => {
+  checkNotificationPermission().then();
+  // }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  async function onDisplayNotification() {
-    // Create a channel
-    // const channelId = await notifee.createChannel({
-    //   id: 'seamail',
-    //   name: 'Seamail',
-    // });
-
-    // Display a notification
-    await notifee.displayNotification({
-      id: 'abc123',
-      title: 'Jonathan Coulton',
-      body: "This was a triumph. I'm making a note here: HUGE SUCCESS. It's hard to overstate my satisfaction.",
-      android: {
-        channelId: serviceChannel.id,
-        // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
-        autoCancel: false,
-        // https://notifee.app/react-native/docs/android/interaction
-        pressAction: {
-          id: 'default',
-        },
-      },
-    });
-  }
-
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+        {/*<Header />*/}
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Step One">
-            <Button
-              title={'Enable Notifications'}
-              onPress={() => enableNotifications()}
-            />
-            <Button
-              title="Display Notification"
-              onPress={() => onDisplayNotification()}
-            />
+            <Button title={'Enable Notifications'} onPress={() => enableNotifications()} />
+            <Button color={'teal'} title={'Enable Perms'} onPress={() => requestPermission()} />
+            <Button title="Display Notification" onPress={() => displayTestNotification()} />
             {'\n'}
-            <Button
-              title="Cancel"
-              onPress={() => {
-                console.log('CANCELING AT return::onPress');
-                cancel('abc123');
-              }}
-            />
+            <Button title="Cancel" onPress={() => cancelTestNotification()} />
           </Section>
           <Section title="Foreground Service">
-            <Button
-              title={'Start'}
-              onPress={() => {
-                console.log('START THE FORETHINGY');
-                doForegroundThingy().catch(console.error);
-              }}
-            />
-            <Button
-              color={'red'}
-              title={'Stop'}
-              onPress={() => {
-                console.log('STOPPING THE FORETHINGY');
-                notifee.stopForegroundService();
-              }}
-            />
+            <Button title={'Start'} onPress={() => startForegroundService().catch(console.error)} />
+            <Button color={'red'} title={'Stop'} onPress={() => stopForegroundService().catch(console.error)} />
           </Section>
           <Section title="Navigation">
-            <Button
-              color={'green'}
-              title={'Login'}
-              onPress={() => navigation.navigate('Login')}
-            />
+            <Button color={'green'} title={'Login'} onPress={() => navigation.navigate('Login')} />
           </Section>
         </View>
       </ScrollView>

@@ -13,6 +13,7 @@ import {LoginView} from './src/components/views/Login';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ExampleAppView} from './src/components/views/Example';
 import {setupChannels} from './src/notifications/Channels';
+import {doNetworkInfo} from './src/libraries/Network';
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -21,6 +22,8 @@ function App(): JSX.Element {
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
   });
+
+  doNetworkInfo();
 
   return (
     <NavigationContainer>
