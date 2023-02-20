@@ -23,7 +23,9 @@ export class Settings {
     console.log('Type?', type);
   }
 
-  // getSetting()
+  static async getSetting(key: string) {
+    return await AsyncStorage.getItem(key)
+  }
 }
 
 const SettingKeys = Object.freeze({
@@ -36,6 +38,8 @@ export async function initialSettings() {
     let setting = await AsyncStorage.getItem(SettingKeys.SERVER_URL);
     if (setting === null && Config.SERVER_URL !== undefined) {
       await AsyncStorage.setItem(SettingKeys.SERVER_URL, Config.SERVER_URL);
+    } else {
+      console.log('Server URL is already set');
     }
   } catch (e) {
     console.error(e);

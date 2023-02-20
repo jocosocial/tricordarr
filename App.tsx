@@ -15,6 +15,9 @@ import {MainView} from './src/components/views/Main';
 import {setupChannels} from './src/notifications/Channels';
 import {doNetworkInfo} from './src/libraries/Network';
 import {initialSettings} from './src/libraries/Settings';
+import {SettingsView} from './src/components/views/Settings/Settings';
+import {twitarrTheme} from './src/styles/Theme';
+import {SettingDetail} from "./src/components/views/Settings/SettingDetail";
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -31,10 +34,12 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <PaperProvider>
+      <PaperProvider theme={twitarrTheme}>
         <Stack.Navigator>
           <Stack.Screen name={'Home'} component={MainView} />
           <Stack.Screen name={'Login'} component={LoginView} />
+          <Stack.Screen name={'Settings'} component={SettingsView} />
+          <Stack.Screen name={'SettingDetail'} component={SettingDetail}/>
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

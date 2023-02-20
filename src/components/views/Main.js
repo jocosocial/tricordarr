@@ -51,6 +51,7 @@ export const MainView = ({navigation}) => {
           </Section>
           <Section title="Navigation">
             <Button color={'green'} title={'Login'} onPress={() => navigation.navigate('Login')} />
+            <Button color={'green'} title={'Settings'} onPress={() => navigation.navigate('Settings')} />
           </Section>
           <Section title={'Information'}>
             <Button title={'SSID'} onPress={() => showSSID()} />

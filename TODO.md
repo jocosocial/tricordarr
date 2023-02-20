@@ -7,3 +7,4 @@
 * foreground service status, no idea if its running or not
 * prompt for permissions. never got asked.
 * https://github.com/zoontek/react-native-permissions#checknotifications
+* https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation

@@ -1,12 +1,7 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 
-export async function apiQuery(
-  endpoint,
-  method = 'GET',
-  headers = {},
-  body = undefined,
-) {
+export async function apiQuery(endpoint, method = 'GET', headers = {}, body = undefined) {
   let serverUrl = 'https://beta.twitarr.com';
   let urlPrefix = '/api/v3';
   let apiUrlString = serverUrl + urlPrefix + endpoint;
@@ -44,11 +39,7 @@ export async function apiQuery(
  * @param token     Optional String containing an OAuth2 token.
  * @returns {{authorization: string}}
  */
-export function getAuthHeaders(
-  username = undefined,
-  password = undefined,
-  token = undefined,
-) {
+export function getAuthHeaders(username = undefined, password = undefined, token = undefined) {
   let encodedCredentials = '';
   let authScheme = '';
   if (username && password) {
