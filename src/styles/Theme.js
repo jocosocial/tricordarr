@@ -1,5 +1,6 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
+// with a couple of added values from the Swiftarr UI.
 export const twitarrTheme = {
   colors: {
     primary: 'rgb(0, 101, 145)',
@@ -42,5 +43,8 @@ export const twitarrTheme = {
     surfaceDisabled: 'rgba(25, 28, 30, 0.12)',
     onSurfaceDisabled: 'rgba(25, 28, 30, 0.38)',
     backdrop: 'rgba(43, 49, 55, 0.4)',
+    twitarrNeutralButton: 'rgb(13, 110, 253)',
+    twitarrPositiveButton: 'rgb(25, 135, 84)',
+    twitarrNegativeButton: 'rgb(220, 53, 69)',
   },
 };

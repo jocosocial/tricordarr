@@ -1,6 +1,6 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useTheme, List, Divider, Text, TextInput} from 'react-native-paper';
+import {useTheme, List, Divider, Button, TextInput} from 'react-native-paper';
 import {Settings} from '../../../libraries/Settings';
 
 export const SettingDetail = ({route, navigation}) => {
@@ -11,15 +11,11 @@ export const SettingDetail = ({route, navigation}) => {
   useEffect(() => {
     console.log('EFFECTING NAV')
     navigation.setOptions({title: settingKey})
-  }, [route])
-
-  useEffect(() => {
-    console.log('EFFECTING VALUE')
     async function getValue() {
       setValue(await Settings.getSetting(settingKey));
     }
     getValue().catch(console.error)
-  }, [value])
+  }, [route])
 
   // console.log("Setting!!!!", await Settings.getSetting('SERVER_URL'))
 
@@ -28,7 +24,10 @@ export const SettingDetail = ({route, navigation}) => {
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           {/*<Text>This is where the setting {settingKey} goes</Text>*/}
-          <TextInput label={'value'} value={value} onChangeText={text => setValue(text)}></TextInput>
+          <TextInput label={'Value'} value={value} onChangeText={text => setValue(text)}></TextInput>
+          <Button buttonColor={theme.colors.twitarrPositiveButton} style={{margin: 20}} mode="contained">Save</Button>
+          <Button buttonColor={theme.colors.twitarrNeutralButton} style={{margin: 20}} mode="contained">Cancel</Button>
+          <Button buttonColor={theme.colors.twitarrNegativeButton} style={{margin: 20}} mode="contained">Reset</Button>
         </View>
       </ScrollView>
     </SafeAreaView>
