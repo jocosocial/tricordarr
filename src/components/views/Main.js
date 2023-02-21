@@ -3,7 +3,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React, {useEffect} from 'react';
 import {
   checkNotificationPermission,
-  enableNotifications,
+  enableNotifications, setupBackgroundEventHandler,
   startForegroundService,
   stopForegroundService,
 } from '../../notifications';
@@ -18,7 +18,6 @@ export const MainView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   // useEffect(() => {
-  checkNotificationPermission().then();
   // }, []);
 
   const backgroundStyle = {

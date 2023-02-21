@@ -18,8 +18,6 @@ const styles = StyleSheet.create({
 
 // @TODO make this do things with Formik.
 export const BooleanSettingForm = ({value, setValue, onSave}) => {
-  // console.log(value);
-  console.log(onSave);
   return (
     <View>
       <TouchableRipple onPress={() => setValue(!value)}>

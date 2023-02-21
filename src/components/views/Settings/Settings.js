@@ -12,7 +12,7 @@ export const SettingsView = ({navigation}) => {
         <View style={{backgroundColor: theme.colors.background}}>
           <List.Section>
             <List.Subheader>Notifications</List.Subheader>
-            <SettingListItem setting={Settings.ENABLE_NOTIFICATIONS} />
+            <SettingListItem setting={Settings.ENABLE_NOTIFICATIONS} navComponent={'NotificationSettings'} />
           </List.Section>
           <Divider bold={true} />
           <List.Section>

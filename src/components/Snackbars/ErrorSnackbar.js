@@ -9,6 +9,8 @@ const styles = StyleSheet.create({
   },
 });
 
+// @TODO this junk is not working. Runs once and never again.
+
 // Lifted right from the source.
 // https://callstack.github.io/react-native-paper/docs/components/Snackbar
 export const ErrorSnackbar = ({actionLabel = 'Close', message}) => {

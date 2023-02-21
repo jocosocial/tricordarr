@@ -5,30 +5,32 @@ import {getAuthHeaders} from '../libraries/APIClient';
 // import useWebSocket from 'react-use-websocket';
 import {serviceChannel, seamailChannel} from './Channels';
 
-console.log('Setting up background events...');
-notifee.onBackgroundEvent(async ({type, detail}) => {
-  const {notification, pressAction} = detail;
+export async function setupBackgroundEventHandler() {
+  console.log('Setting up background events...');
+  notifee.onBackgroundEvent(async ({type, detail}) => {
+    const {notification, pressAction} = detail;
 
-  console.log('WE GOT AN EVENT THING');
-  console.log(type);
-  console.log(detail);
-  console.log('END EVENT THINGY');
+    console.log('WE GOT AN EVENT THING');
+    console.log(type);
+    console.log(detail);
+    console.log('END EVENT THINGY');
 
-  // Check if the user pressed the "Mark as read" action
-  if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
-    // Update external API
-    // await fetch(`https://my-api.com/chat/${notification.data.chatId}/read`, {
-    //     method: 'POST',
-    // });
+    // Check if the user pressed the "Mark as read" action
+    if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
+      // Update external API
+      // await fetch(`https://my-api.com/chat/${notification.data.chatId}/read`, {
+      //     method: 'POST',
+      // });
 
-    // Remove the notification
-    await notifee.cancelNotification(notification.id);
-  }
+      // Remove the notification
+      await notifee.cancelNotification(notification.id);
+    }
 
-  if (type === EventType.PRESS) {
-    await notifee.cancelNotification(notification.id);
-  }
-});
+    if (type === EventType.PRESS) {
+      await notifee.cancelNotification(notification.id);
+    }
+  });
+}
 
 // export async function initBackgroundFetch() {
 //   // BackgroundFetch event handler.
@@ -180,5 +182,7 @@ export async function checkNotificationPermission() {
 
 export async function enableNotifications() {
   console.log('Enabling notifications');
-  await notifee.openNotificationSettings();
+  notifee.openNotificationSettings().then(() => {
+    console.log('Done enabling notifications');
+  });
 }

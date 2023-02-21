@@ -1,12 +1,6 @@
 import {Button, useTheme} from 'react-native-paper';
 import React from 'react';
-import {StyleSheet} from 'react-native';
-
-const style = StyleSheet.create({
-  button: {
-    margin: 20,
-  },
-});
+import {buttonStyles} from '../../styles/Buttons';
 
 export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefined}) => {
   const theme = useTheme();
@@ -16,7 +10,7 @@ export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefine
   }
 
   return (
-    <Button buttonColor={buttonColor} style={style.button} mode="contained" onPress={() => onPress()}>
+    <Button buttonColor={buttonColor} style={buttonStyles.setting} mode="contained" onPress={() => onPress()}>
       {buttonText}
     </Button>
   );

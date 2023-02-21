@@ -17,7 +17,8 @@ import {doNetworkInfo} from './src/libraries/Network';
 import {initialSettings} from './src/libraries/Settings';
 import {SettingsView} from './src/components/views/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
-import {SettingDetail} from "./src/components/views/Settings/SettingDetail";
+import {SettingDetail} from './src/components/views/Settings/SettingDetail';
+import {NotificationSettings} from './src/components/views/Settings/NotificationSettings';
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -39,7 +40,8 @@ function App(): JSX.Element {
           <Stack.Screen name={'Home'} component={MainView} />
           <Stack.Screen name={'Login'} component={LoginView} />
           <Stack.Screen name={'Settings'} component={SettingsView} />
-          <Stack.Screen name={'SettingDetail'} component={SettingDetail}/>
+          <Stack.Screen name={'SettingDetail'} component={SettingDetail} />
+          <Stack.Screen name={'NotificationSettings'} component={NotificationSettings} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>
