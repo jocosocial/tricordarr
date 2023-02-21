@@ -7,21 +7,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-export class Settings {
+export class AppSettings {
   key: string;
   isSecure: boolean;
   dataType: any;
   title: string;
   description: string;
 
-  static SERVER_URL = new Settings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
-  static LOG_LEVEL = new Settings('LOG_LEVEL', false, String, 'Log Level', 'Level of application logs to generate.');
-  static ENABLE_NOTIFICATIONS = new Settings(
+  static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
+  static LOG_LEVEL = new AppSettings('LOG_LEVEL', false, String, 'Log Level', 'Level of application logs to generate.');
+  static ENABLE_NOTIFICATIONS = new AppSettings(
     'ENABLE_NOTIFICATIONS',
     false,
     Boolean,
     'Enable Local Notifications',
     'Allow this app to generate Twitarr notifications on your device.',
+  );
+  static USERNAME = new AppSettings(
+    'username', // @TODO change this
+    false,
+    String,
+    'Username',
+    'Twitarr account username.',
   );
 
   constructor(key: string, isSecure: boolean, dataType: any = String, title: string, description: string) {

@@ -11,7 +11,7 @@ import {Section} from '../Section';
 import {requestNotificationPermission, requestPermission} from '../../libraries/AppPermissions';
 import {displayTestNotification, cancelTestNotification} from '../../notifications/TestNotification';
 import {getCurrentSSID} from '../../libraries/Network';
-import {Settings} from '../../libraries/Settings';
+import {AppSettings} from '../../libraries/AppSettings';
 import {dumpStorageKeys} from '../../libraries/Storage';
 import NetInfo from "@react-native-community/netinfo";
 

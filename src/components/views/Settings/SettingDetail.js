@@ -1,7 +1,7 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from 'react-native-paper';
-import {Settings} from '../../../libraries/Settings';
+import {AppSettings} from '../../../libraries/AppSettings';
 import {StringSettingForm} from '../../forms/StringSettingForm';
 import {BooleanSettingForm} from '../../forms/BooleanSettingForm';
 import {ErrorSnackbar} from "../../Snackbars/ErrorSnackbar";
@@ -10,7 +10,7 @@ export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState(undefined);
   const [errorMessage, setErrorMessage] = useState('');
   const {settingKey} = route.params;
-  const setting = Settings[settingKey];
+  const setting = AppSettings[settingKey];
   const theme = useTheme();
 
   useEffect(() => {

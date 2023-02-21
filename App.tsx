@@ -14,12 +14,13 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {MainView} from './src/components/views/Main';
 import {setupChannels} from './src/notifications/Channels';
 // import {doNetworkInfo} from './src/libraries/Network';
-import {initialSettings} from './src/libraries/Settings';
+import {initialSettings} from './src/libraries/AppSettings';
 import {SettingsView} from './src/components/views/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
 import {SettingDetail} from './src/components/views/Settings/SettingDetail';
 import {NotificationSettings} from './src/components/views/Settings/NotificationSettings';
 import {NetworkInfoSettings} from './src/components/views/Settings/NetworkInfoSettings';
+import {AccountSettings} from "./src/components/views/Settings/AccountSettings";
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -44,6 +45,7 @@ function App(): JSX.Element {
           <Stack.Screen name={'SettingDetail'} component={SettingDetail} />
           <Stack.Screen name={'NotificationSettings'} component={NotificationSettings} />
           <Stack.Screen name={'NetworkInfoSettings'} component={NetworkInfoSettings} />
+          <Stack.Screen name={'AccountSettings'} component={AccountSettings} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

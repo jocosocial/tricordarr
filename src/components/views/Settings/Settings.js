@@ -1,12 +1,13 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import React from 'react';
 import {useTheme, List, Divider} from 'react-native-paper';
-import {Settings} from '../../../libraries/Settings';
+import {AppSettings} from '../../../libraries/AppSettings';
 import {SettingListItem} from '../../Lists/SettingListItem';
 import {PERMISSIONS} from 'react-native-permissions';
 import {PermissionListItem} from "../../Lists/PermissionListItem";
 import {AppPermissions} from "../../../libraries/AppPermissions";
 import {NavigationListItem} from "../../Lists/NavigationListItem";
+import {AccountListItem} from "../../Lists/AccountListItem";
 
 export const SettingsView = ({navigation}) => {
   const theme = useTheme();
@@ -23,12 +24,12 @@ export const SettingsView = ({navigation}) => {
           <Divider bold={true} />
           <List.Section>
             <List.Subheader>Network</List.Subheader>
-            <SettingListItem setting={Settings.SERVER_URL} />
+            <SettingListItem setting={AppSettings.SERVER_URL} />
           </List.Section>
           <Divider bold={true} />
           <List.Section>
             <List.Subheader>Account</List.Subheader>
-            <List.Item title={'Username'} />
+            <AccountListItem />
           </List.Section>
           <Divider bold={true} />
           <List.Section>
