@@ -2,26 +2,25 @@ import {SafeAreaView, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useTheme} from 'react-native-paper';
 import {Settings} from '../../../libraries/Settings';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StringSettingForm} from '../../forms/StringSettingForm';
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState(undefined);
   const {settingKey} = route.params;
+  const setting = Settings[settingKey];
   const theme = useTheme();
 
   useEffect(() => {
-    navigation.setOptions({title: settingKey});
+    navigation.setOptions({title: setting.title});
     async function getValue() {
-      setValue(await Settings.getSetting(settingKey));
+      setValue(await setting.getValue());
     }
     getValue().catch(console.error);
-  }, [navigation, route, settingKey]);
+  }, [navigation, route, setting]);
 
   async function saveSetting() {
-    console.log('SAVING SETTING', value);
     try {
-      await AsyncStorage.setItem(settingKey, value);
+      await setting.setValue(value);
       navigation.goBack();
     } catch (e) {
       console.error('Failed to save:', e);

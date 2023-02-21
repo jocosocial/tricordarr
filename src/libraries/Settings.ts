@@ -3,35 +3,50 @@
 // https://medium.com/differential/managing-configuration-in-react-native-cd2dfb5e6f7b
 // https://github.com/luggit/react-native-config
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Config from 'react-native-config';
-
-export const PrivateSettings = Object.freeze({
-  SERVER_URL: Symbol('SERVER_URL'),
-  LOG_LEVEL: Symbol('LOG_LEVEL'),
-});
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export class Settings {
-  // key: string;
-  static SERVER_URL = new Settings('SERVER_URL', false, String);
-  static LOG_LEVEL = new Settings('LOG_LEVEL', false, String);
+  key: string;
+  isSecure: boolean;
+  dataType: any;
+  title: string;
+  description: string;
 
-  constructor(key: string, isSecure: boolean, type: any = String) {
-    // this.key = key;
-    console.log('New Key:', key);
-    console.log('Secure?', isSecure);
-    console.log('Type?', type);
+  static SERVER_URL = new Settings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
+  static LOG_LEVEL = new Settings('LOG_LEVEL', false, String, 'Log Level', 'Level of application logs to generate.');
+
+  constructor(key: string, isSecure: boolean, dataType: any = String, title: string, description: string) {
+    this.key = key;
+    this.isSecure = isSecure;
+    this.dataType = dataType;
+    this.title = title;
+    this.description = description;
   }
 
-  static async getSetting(key: string) {
-    return await AsyncStorage.getItem(key)
+  async getValue() {
+    if (this.isSecure) {
+      return await EncryptedStorage.getItem(this.key);
+    }
+    return await AsyncStorage.getItem(this.key);
+  }
+
+  async setValue(newValue: string) {
+    console.log('SAVING SETTING', this.key, newValue);
+    if (this.isSecure) {
+      return await EncryptedStorage.setItem(this.key, newValue);
+    }
+    return await AsyncStorage.setItem(this.key, newValue);
   }
 }
 
+// @TODO deprecate this.
 const SettingKeys = Object.freeze({
   SERVER_URL: 'SERVER_URL',
 });
 
+// @TODO deprecate this.
 export async function initialSettings() {
   console.log('Doing initial settings');
   try {
