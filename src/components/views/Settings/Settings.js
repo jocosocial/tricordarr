@@ -6,6 +6,7 @@ import {SettingListItem} from '../../Lists/SettingListItem';
 import {PERMISSIONS} from 'react-native-permissions';
 import {PermissionListItem} from "../../Lists/PermissionListItem";
 import {AppPermissions} from "../../../libraries/AppPermissions";
+import {NavigationListItem} from "../../Lists/NavigationListItem";
 
 export const SettingsView = ({navigation}) => {
   const theme = useTheme();
@@ -37,6 +38,11 @@ export const SettingsView = ({navigation}) => {
           <Divider bold={true} />
           <List.Section>
             <List.Subheader>About</List.Subheader>
+            <NavigationListItem
+              title={'Network Info'}
+              description={"View details about your device's current network environment."}
+              navComponent={'NetworkInfoSettings'}
+            />
             <List.Item title={'App Information'} />
           </List.Section>
         </View>

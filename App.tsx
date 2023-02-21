@@ -19,6 +19,7 @@ import {SettingsView} from './src/components/views/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
 import {SettingDetail} from './src/components/views/Settings/SettingDetail';
 import {NotificationSettings} from './src/components/views/Settings/NotificationSettings';
+import {NetworkInfoSettings} from './src/components/views/Settings/NetworkInfoSettings';
 
 function App(): JSX.Element {
   // Set up the navigation stack.
@@ -42,6 +43,7 @@ function App(): JSX.Element {
           <Stack.Screen name={'Settings'} component={SettingsView} />
           <Stack.Screen name={'SettingDetail'} component={SettingDetail} />
           <Stack.Screen name={'NotificationSettings'} component={NotificationSettings} />
+          <Stack.Screen name={'NetworkInfoSettings'} component={NetworkInfoSettings} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>
