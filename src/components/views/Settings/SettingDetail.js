@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from 'react-native-paper';
 import {Settings} from '../../../libraries/Settings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SettingForm} from '../../forms/SettingForm';
+import {StringSettingForm} from '../../forms/StringSettingForm';
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState(undefined);
@@ -32,7 +32,7 @@ export const SettingDetail = ({route, navigation}) => {
     <SafeAreaView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
-          <SettingForm value={value} setValue={setValue} saveSetting={saveSetting} />
+          <StringSettingForm value={value} setValue={setValue} saveSetting={saveSetting} />
           {/*<TextInput label={'Value'} value={value} onChangeText={text => setValue(text)} />*/}
           {/*<SaveButton onPress={saveSetting} />*/}
         </View>
