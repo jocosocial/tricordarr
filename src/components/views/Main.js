@@ -8,7 +8,7 @@ import {
   stopForegroundService,
 } from '../../notifications';
 import {Section} from '../Section';
-import {requestPermission} from '../../libraries/Permissions';
+import {requestNotificationPermission, requestPermission} from '../../libraries/AppPermissions';
 import {displayTestNotification, cancelTestNotification} from '../../notifications/TestNotification';
 import {getCurrentSSID} from '../../libraries/Network';
 import {Settings} from '../../libraries/Settings';
@@ -38,8 +38,6 @@ export const MainView = ({navigation}) => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Step One">
-            <Button title={'Enable Notifications'} onPress={() => enableNotifications()} />
-            <Button color={'teal'} title={'Enable Perms'} onPress={() => requestPermission()} />
             <Button title="Display Notification" onPress={() => displayTestNotification()} />
             {'\n'}
             <Button title="Cancel" onPress={() => cancelTestNotification()} />
