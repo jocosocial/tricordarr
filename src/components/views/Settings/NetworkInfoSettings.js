@@ -1,37 +1,41 @@
-import {SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Text, DataTable, useTheme} from 'react-native-paper';
+import React, {useEffect, useState, useCallback} from 'react';
+import {RefreshControl, SafeAreaView, ScrollView, View} from 'react-native';
+import {DataTable, useTheme} from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
-import {SaveButton} from '../../Buttons/SaveButton';
+// import {SaveButton} from '../../Buttons/SaveButton';
 
 export const NetworkInfoSettings = ({route, navigation}) => {
   const theme = useTheme();
   const [data, setData] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    NetInfo.refresh().then(setData({}));
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    let netData = await NetInfo.fetch();
+    // Some day we should try flattening this. I tried
+    // https://stackoverflow.com/questions/33036487/one-liner-to-flatten-nested-object,
+    // but I kept encountering an endless loop of useEffects.
+    setData(netData.details);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
   }, [navigation, route.params.title]);
 
   useEffect(() => {
-    console.log('useEffect');
-    async function fetchData() {
-      let netData = await NetInfo.fetch();
-      // Some day we should try flattening this. I tried
-      // https://stackoverflow.com/questions/33036487/one-liner-to-flatten-nested-object,
-      // but I kept encountering an endless loop of useEffects.
-      setData(netData.details);
-    }
     fetchData().catch(e => console.error);
-  }, [data]);
-
-  function refresh() {
-    NetInfo.refresh();
-    setData({});
-  }
+  }, [fetchData, data]);
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{backgroundColor: theme.colors.background}}>
           <DataTable>
             <DataTable.Header>
@@ -45,7 +49,7 @@ export const NetworkInfoSettings = ({route, navigation}) => {
               </DataTable.Row>
             ))}
           </DataTable>
-          <SaveButton buttonText={'Refresh'} onPress={() => refresh()} />
+          {/*<SaveButton buttonText={'Refresh'} onPress={() => onRefresh()} />*/}
         </View>
       </ScrollView>
     </SafeAreaView>

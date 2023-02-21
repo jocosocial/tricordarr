@@ -52,8 +52,6 @@ export const MainView = ({navigation}) => {
             <Button color={'green'} title={'Settings'} onPress={() => navigation.navigate('Settings')} />
           </Section>
           <Section title={'Information'}>
-            <Button title={'SSID'} onPress={() => showSSID()} />
-            <Button title={'Refresh'} onPress={() => NetInfo.refresh()} />
             <Button title={'Storage Keys'} onPress={() => dumpStorageKeys()} />
           </Section>
         </View>
