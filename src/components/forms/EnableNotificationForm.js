@@ -1,10 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {Button, Switch, Text, TouchableRipple, List} from 'react-native-paper';
-import {SaveButton} from '../Buttons/SaveButton';
-import {StyleSheet, View} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {AppState, StyleSheet, View} from 'react-native';
+import {Button, Text} from 'react-native-paper';
+import notifee, {AuthorizationStatus} from '@notifee/react-native';
 import {buttonStyles} from '../../styles/Buttons';
-import notifee, {EventType, AndroidColor, AuthorizationStatus} from '@notifee/react-native';
-
 
 const styles = StyleSheet.create({
   container: {
@@ -39,31 +37,50 @@ async function checkNotificationAuthorization() {
 // https://stackoverflow.com/questions/52480339/activity-restart-every-time-when-disable-permission-from-setting
 // its expected.
 export const EnableNotificationForm = () => {
-  // const [authorized, setAuthorized] = useState(checkNotificationAuthorization());
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [authorized, setAuthorized] = useState(false);
 
-  // useEffect(() => {
-  //   checkNotificationAuthorization().then(isAuthorized => {
-  //     setAuthorized(isAuthorized);
-  //   });
-  // }, [authorized]);
+  // https://reactnative.dev/docs/appstate.html
+  useEffect(() => {
+    // Set the initial state when we load. For some reason this didn't behave well
+    // in the useState default above.
+    checkNotificationAuthorization().then(isAuthorized => {
+      setAuthorized(isAuthorized);
+    });
 
-  let message = 'Tricorder does not have permission to send you notifications. Tap the button below to enable sending notifications.';
-  // if (authorized) {
-  //   message = 'Tricorder has permission to send you notifications. You can change this and other notification settings by tapping the button below.';
-  // }
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      // Transitioning from Background to Foreground. Specifically this means that
+      // we are likely returning from the Android permissions dialog.
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        checkNotificationAuthorization().then(isAuthorized => {
+          setAuthorized(isAuthorized);
+        });
+      }
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
+    // https://reactjs.org/docs/hooks-effect.html
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  let message =
+    'Tricorder does not have permission to send you notifications. ' +
+    'Tap the button below to enable sending notifications.';
+  if (authorized) {
+    message =
+      'Tricorder has permission to send you notifications. ' +
+      'You can change this and other notification settings by tapping the button below.';
+  }
   return (
     <View style={styles.container}>
       <Text>{message}</Text>
       <Button style={buttonStyles.setting} mode="contained" onPress={() => notifee.openNotificationSettings()}>
         Open Android Permissions
       </Button>
-      {/*<TouchableRipple onPress={() => setValue(!value)}>*/}
-      {/*  <View style={styles.row}>*/}
-      {/*    <Text>Enable</Text>*/}
-      {/*    <Switch value={value} onValueChange={() => setValue(!value)} />*/}
-      {/*  </View>*/}
-      {/*</TouchableRipple>*/}
-      {/*<SaveButton onPress={onSave} />*/}
     </View>
   );
 };
