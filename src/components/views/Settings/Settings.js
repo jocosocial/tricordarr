@@ -11,6 +11,11 @@ export const SettingsView = ({navigation}) => {
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           <List.Section>
+            <List.Subheader>Notifications</List.Subheader>
+            <SettingListItem setting={Settings.ENABLE_NOTIFICATIONS} />
+          </List.Section>
+          <Divider bold={true} />
+          <List.Section>
             <List.Subheader>Network</List.Subheader>
             <SettingListItem setting={Settings.SERVER_URL} />
           </List.Section>

@@ -3,9 +3,12 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from 'react-native-paper';
 import {Settings} from '../../../libraries/Settings';
 import {StringSettingForm} from '../../forms/StringSettingForm';
+import {BooleanSettingForm} from '../../forms/BooleanSettingForm';
+import {ErrorSnackbar} from "../../Snackbars/ErrorSnackbar";
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState(undefined);
+  const [errorMessage, setErrorMessage] = useState('');
   const {settingKey} = route.params;
   const setting = Settings[settingKey];
   const theme = useTheme();
@@ -18,12 +21,13 @@ export const SettingDetail = ({route, navigation}) => {
     getValue().catch(console.error);
   }, [navigation, route, setting]);
 
-  async function saveSetting() {
+  async function onSave() {
     try {
       await setting.setValue(value);
       navigation.goBack();
     } catch (e) {
       console.error('Failed to save:', e);
+      setErrorMessage('GRRRR ARRRGHH');
     }
   }
 
@@ -31,9 +35,15 @@ export const SettingDetail = ({route, navigation}) => {
     <SafeAreaView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
-          <StringSettingForm value={value} setValue={setValue} saveSetting={saveSetting} />
+          {setting.dataType === String && (
+            <StringSettingForm value={value} setValue={setValue} onSave={onSave} />
+          )}
+          {setting.dataType === Boolean && (
+            <BooleanSettingForm value={value} setValue={setValue} onSave={onSave} />
+          )}
           {/*<TextInput label={'Value'} value={value} onChangeText={text => setValue(text)} />*/}
           {/*<SaveButton onPress={saveSetting} />*/}
+          {errorMessage && errorMessage !== '' && <ErrorSnackbar message={errorMessage} />}
         </View>
       </ScrollView>
     </SafeAreaView>

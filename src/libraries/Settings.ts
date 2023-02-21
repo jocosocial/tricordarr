@@ -16,6 +16,13 @@ export class Settings {
 
   static SERVER_URL = new Settings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static LOG_LEVEL = new Settings('LOG_LEVEL', false, String, 'Log Level', 'Level of application logs to generate.');
+  static ENABLE_NOTIFICATIONS = new Settings(
+    'ENABLE_NOTIFICATIONS',
+    false,
+    Boolean,
+    'Enable Local Notifications',
+    'Allow this app to generate Twitarr notifications on your device.',
+  );
 
   constructor(key: string, isSecure: boolean, dataType: any = String, title: string, description: string) {
     this.key = key;
