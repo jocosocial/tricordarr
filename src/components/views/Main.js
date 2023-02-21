@@ -13,6 +13,7 @@ import {displayTestNotification, cancelTestNotification} from '../../notificatio
 import {getCurrentSSID} from '../../libraries/Network';
 import {Settings} from '../../libraries/Settings';
 import {dumpStorageKeys} from '../../libraries/Storage';
+import NetInfo from "@react-native-community/netinfo";
 
 export const MainView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -52,7 +53,7 @@ export const MainView = ({navigation}) => {
           </Section>
           <Section title={'Information'}>
             <Button title={'SSID'} onPress={() => showSSID()} />
-            <Button title={'Server'} onPress={() => console.log(Settings.SERVER_URL)} />
+            <Button title={'Refresh'} onPress={() => NetInfo.refresh()} />
             <Button title={'Storage Keys'} onPress={() => dumpStorageKeys()} />
           </Section>
         </View>

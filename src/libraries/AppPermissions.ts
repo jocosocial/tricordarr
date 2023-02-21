@@ -1,9 +1,11 @@
 import {check as checkPermission, request as requestPermission, RESULTS, PERMISSIONS} from 'react-native-permissions';
+import NetInfo from '@react-native-community/netinfo';
 
 export class AppPermissions {
   permission: any;
   title: string;
   description: string;
+  onChange: () => void;
 
   static NOTIFICATIONS = new AppPermissions(
     PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
@@ -11,16 +13,22 @@ export class AppPermissions {
     'Show Twitarr notifications on this device.',
   );
 
+  // https://github.com/react-native-netinfo/react-native-netinfo/issues/593
+  // If NetInfo.fetch() was called before permissions were given the current wifi
+  // would be undefined. This ensures the cached information gets refreshed
+  // when the permission gets granted.
   static LOCATION = new AppPermissions(
     PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     'Location',
     "Determine if you're on the boat by looking at the WiFi network. Helps conserve battery.",
+    () => NetInfo.refresh(),
   );
 
-  constructor(permission: any, title: string, description: string) {
+  constructor(permission: any, title: string, description: string, onChange: () => void = () => {}) {
     this.permission = permission;
     this.title = title;
     this.description = description;
+    this.onChange = onChange;
   }
 
   // https://github.com/zoontek/react-native-permissions

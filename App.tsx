@@ -13,7 +13,7 @@ import {LoginView} from './src/components/views/Login';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {MainView} from './src/components/views/Main';
 import {setupChannels} from './src/notifications/Channels';
-import {doNetworkInfo} from './src/libraries/Network';
+// import {doNetworkInfo} from './src/libraries/Network';
 import {initialSettings} from './src/libraries/Settings';
 import {SettingsView} from './src/components/views/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
@@ -28,7 +28,7 @@ function App(): JSX.Element {
     console.error('Error setting up notification channels:', error);
   });
 
-  doNetworkInfo();
+  // doNetworkInfo();
   initialSettings().catch(error => {
     console.error('Error with settings:', error);
   });

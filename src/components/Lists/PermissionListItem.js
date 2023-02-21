@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {List} from 'react-native-paper';
 
 export const PermissionListItem = ({appPermission}) => {
@@ -7,6 +7,9 @@ export const PermissionListItem = ({appPermission}) => {
     const newResult = await appPermission.request();
     if (currentResult === newResult) {
       console.log('No change in permission');
+    } else {
+      console.log('Permissions changed');
+      appPermission.onChange();
     }
   }
 
