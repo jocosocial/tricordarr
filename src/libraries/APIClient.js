@@ -1,5 +1,30 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
+import axios from 'axios';
+import {AppSettings} from './AppSettings';
+
+const defaultHeaders = {
+  Accept: 'application/json',
+};
+
+export const apiQueryV3 = async ({queryKey}) => {
+  const serverUrl = await AppSettings.SERVER_URL.getValue();
+  const urlPrefix = await AppSettings.URL_PREFIX.getValue();
+  const authToken = await AppSettings.AUTH_TOKEN.getValue();
+  let headers = defaultHeaders;
+  if (authToken != null) {
+    headers.authorization = `Bearer ${authToken}`;
+  }
+  const requestConfig = {
+    headers: headers,
+  };
+  console.log('Performing V3 Query');
+  console.log(headers);
+  const url = `${serverUrl}${urlPrefix}${queryKey[0]}`;
+  console.log(url);
+  const {data} = await axios.get(url, requestConfig);
+  return data;
+};
 
 export async function apiQuery(endpoint, method = 'GET', headers = {}, body = undefined) {
   let serverUrl = 'https://beta.twitarr.com';

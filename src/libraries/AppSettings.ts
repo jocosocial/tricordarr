@@ -15,23 +15,17 @@ export class AppSettings {
   description: string;
 
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
-  static LOG_LEVEL = new AppSettings('LOG_LEVEL', false, String, 'Log Level', 'Level of application logs to generate.');
-  static ENABLE_NOTIFICATIONS = new AppSettings(
-    'ENABLE_NOTIFICATIONS',
-    false,
-    Boolean,
-    'Enable Local Notifications',
-    'Allow this app to generate Twitarr notifications on your device.',
-  );
-  static USERNAME = new AppSettings(
-    'username', // @TODO change this
-    false,
-    String,
-    'Username',
-    'Twitarr account username.',
-  );
+  static USERNAME = new AppSettings('username');
+  static URL_PREFIX = new AppSettings('URL_PREFIX');
+  static AUTH_TOKEN = new AppSettings('token', true);
 
-  constructor(key: string, isSecure: boolean, dataType: any = String, title: string, description: string) {
+  constructor(
+    key: string,
+    isSecure: boolean = false,
+    dataType: any = String,
+    title: string = '',
+    description: string = '',
+  ) {
     this.key = key;
     this.isSecure = isSecure;
     this.dataType = dataType;
@@ -64,6 +58,7 @@ const SettingKeys = Object.freeze({
 export async function initialSettings() {
   console.log('Doing initial settings');
   try {
+    await AsyncStorage.setItem('URL_PREFIX', '/api/v3');
     let setting = await AsyncStorage.getItem(SettingKeys.SERVER_URL);
     if (setting === null && Config.SERVER_URL !== undefined) {
       await AsyncStorage.setItem(SettingKeys.SERVER_URL, Config.SERVER_URL);
