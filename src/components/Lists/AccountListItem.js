@@ -4,22 +4,26 @@ import {useNavigation} from '@react-navigation/native';
 import {AppSettings} from "../../libraries/AppSettings";
 
 export const AccountListItem = () => {
-  const [title, setTitle] = useState('Login');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [title, setTitle] = useState('');
   const navigation = useNavigation();
   const description = 'Manage your Twitarr account.';
 
   useEffect(() => {
-    async function getCurrentUser() {
-      setTitle((await AppSettings.USERNAME.getValue()) || 'Login');
+    async function determineLoginStatus() {
+      const isUserLoggedIn = !!(await AppSettings.USERNAME.getValue()) && !!(await AppSettings.AUTH_TOKEN.getValue());
+      console.log('Is user logged in?', isUserLoggedIn);
+      setIsLoggedIn(isUserLoggedIn);
+      setTitle(isUserLoggedIn ? await AppSettings.USERNAME.getValue() : 'Login');
     }
-    getCurrentUser().catch(console.error);
+    determineLoginStatus();
   }, []);
 
   return (
     <List.Item
       title={title}
       description={description}
-      onPress={() => navigation.push('AccountSettings', {title: title})}
+      onPress={() => navigation.push('AccountSettings', {title: title, isLoggedIn: isLoggedIn})}
     />
   );
 };

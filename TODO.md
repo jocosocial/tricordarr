@@ -9,3 +9,8 @@
 * https://github.com/zoontek/react-native-permissions#checknotifications
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 * rename views to settings
+
+Questions
+---------
+* Where do I draw the component line for a logout button? Functionality in a LogoutButton or the page?
+* Centralize Mutations?

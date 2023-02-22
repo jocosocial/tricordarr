@@ -28,6 +28,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: apiQueryV3,
+      cacheTime: 0,
     },
   },
 });

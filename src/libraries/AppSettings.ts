@@ -47,6 +47,13 @@ export class AppSettings {
     }
     return await AsyncStorage.setItem(this.key, newValue);
   }
+
+  async remove() {
+    if (this.isSecure) {
+      return await EncryptedStorage.removeItem(this.key);
+    }
+    return await AsyncStorage.removeItem(this.key);
+  }
 }
 
 // @TODO deprecate this.

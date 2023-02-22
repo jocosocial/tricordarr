@@ -4,15 +4,17 @@ import axios from 'axios';
 import {AppSettings} from './AppSettings';
 
 export async function setupAxiosStuff() {
-  console.log('AXIOS!');
+  // console.log('AXIOS!');
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
-    console.log('BOom INtercepted!');
-    console.log(config);
+    console.log('Boom! Intercepted!');
+    // console.log('BEFORE:', config);
     // URL
     const serverUrl = await AppSettings.SERVER_URL.getValue();
     const urlPrefix = await AppSettings.URL_PREFIX.getValue();
-    config.url = `${serverUrl}${urlPrefix}${config.url}`;
+    if (!config.url.startsWith(`${serverUrl}${urlPrefix}`)) {
+      config.url = `${serverUrl}${urlPrefix}${config.url}`;
+    }
     // Authentication
     const authToken = await AppSettings.AUTH_TOKEN.getValue();
     if (authToken != null && !config.headers.authorization) {
@@ -21,7 +23,7 @@ export async function setupAxiosStuff() {
     // Other Headers
     config.headers.Accept = 'application/json';
     // Return
-    console.log(config);
+    // console.log('AFTER:', config);
     return config;
   });
 }
