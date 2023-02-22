@@ -5,15 +5,24 @@ import axios from 'axios';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
-// import {useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+
+export const TempUserProfile = () => {
+  const {isLoading, error, data} = useQuery({
+    queryKey: ['/user/profile'],
+  });
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+  if (error) {
+    return <Text>{error.message}</Text>;
+  }
+  return <Text>{JSON.stringify(data)}</Text>;
+};
 
 export const LogoutView = () => {
   const theme = useTheme();
-  // const navigation = useNavigation();
-  const {isLoading, error, data} = useQuery({
-    queryKey: ['/user/profile'],
-    enabled: false,
-  });
+  const navigation = useNavigation();
 
   const logoutMutation = useMutation(
     async () => {
@@ -25,14 +34,19 @@ export const LogoutView = () => {
     },
     {retry: 0},
   );
+
+  function onPress() {
+    logoutMutation.mutate(null, {
+      onSuccess: () => {
+        navigation.goBack();
+      },
+    });
+  }
+
   return (
     <View style={{backgroundColor: theme.colors.background}}>
-      <Text>{JSON.stringify(data)}</Text>
-      <SaveButton
-        buttonColor={theme.colors.twitarrNegativeButton}
-        buttonText={'Logout'}
-        onPress={() => logoutMutation.mutate()}
-      />
+      <TempUserProfile />
+      <SaveButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress} />
       {logoutMutation.isError ? <Text>An error occurred: {logoutMutation.error.message}</Text> : null}
       {logoutMutation.isSuccess ? <Text>Logged out!</Text> : null}
     </View>

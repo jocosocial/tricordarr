@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
-import {LoginForm} from '../../forms/Login';
+import {LoginForm} from '../../forms/LoginForm';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {getAuthHeaders} from "../../../libraries/APIClient";
 import {useMutation} from "@tanstack/react-query";

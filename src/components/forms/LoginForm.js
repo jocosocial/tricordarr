@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, View} from 'react-native';
+import {View} from 'react-native';
 import {Formik} from 'formik';
 import {TextInput} from 'react-native-paper';
+import {SaveButton} from '../Buttons/SaveButton';
 
 // https://formik.org/docs/guides/react-native
 export const LoginForm = ({onSubmit = () => {}, initialValues = {}}) => {
@@ -26,7 +27,7 @@ export const LoginForm = ({onSubmit = () => {}, initialValues = {}}) => {
             mode={'outlined'}
             secureTextEntry={true}
           />
-          <Button onPress={handleSubmit} title={'Login'} />
+          <SaveButton onPress={handleSubmit} buttonText={'Login'} />
         </View>
       )}
     </Formik>
