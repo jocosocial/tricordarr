@@ -32,17 +32,22 @@ export const SettingsView = ({navigation}) => {
             <AccountListItem />
           </List.Section>
           <Divider bold={true} />
-          <List.Section>
-            <List.Subheader>Preferences</List.Subheader>
-            <List.Item title={'SoonTM'} />
-          </List.Section>
-          <Divider bold={true} />
+          {/*<List.Section>*/}
+          {/*  <List.Subheader>Preferences</List.Subheader>*/}
+          {/*  <List.Item title={'SoonTM'} />*/}
+          {/*</List.Section>*/}
+          {/*<Divider bold={true} />*/}
           <List.Section>
             <List.Subheader>About</List.Subheader>
             <NavigationListItem
               title={'Network Info'}
               description={"View details about your device's current network environment."}
               navComponent={'NetworkInfoSettings'}
+            />
+            <NavigationListItem
+              title={'Storage Keys'}
+              description={'View the contents of internal app storage.'}
+              navComponent={'StorageKeysSettings'}
             />
             <List.Item title={'App Information'} />
           </List.Section>

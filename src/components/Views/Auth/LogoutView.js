@@ -43,10 +43,19 @@ export const LogoutView = () => {
     });
   }
 
+  async function clearAuthData() {
+    console.log('Clearing auth data.');
+    console.log('Old username was:', await AppSettings.USERNAME.getValue());
+    console.log('Old token was:', await AppSettings.AUTH_TOKEN.getValue());
+    await AppSettings.AUTH_TOKEN.remove();
+    await AppSettings.USERNAME.remove();
+  }
+
   return (
     <View style={{backgroundColor: theme.colors.background}}>
       <TempUserProfile />
       <SaveButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress} />
+      <SaveButton buttonColor={theme.colors.twitarrNeutralButton} buttonText={'Clear Auth Data'} onPress={clearAuthData} />
       {logoutMutation.isError ? <Text>An error occurred: {logoutMutation.error.message}</Text> : null}
       {logoutMutation.isSuccess ? <Text>Logged out!</Text> : null}
     </View>

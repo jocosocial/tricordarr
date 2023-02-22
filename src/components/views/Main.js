@@ -50,9 +50,6 @@ export const MainView = ({navigation}) => {
           <Section title="Navigation">
             <Button color={'green'} title={'Settings'} onPress={() => navigation.navigate('Settings')} />
           </Section>
-          <Section title={'Information'}>
-            <Button title={'Storage Keys'} onPress={() => dumpStorageKeys()} />
-          </Section>
         </View>
       </ScrollView>
     </SafeAreaView>
