@@ -23,7 +23,7 @@ export const LogoutView = () => {
       await AppSettings.USERNAME.remove();
       return response;
     },
-    {retry: 1},
+    {retry: 0},
   );
   return (
     <View style={{backgroundColor: theme.colors.background}}>

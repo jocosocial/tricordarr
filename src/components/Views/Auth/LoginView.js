@@ -4,11 +4,15 @@ import {useTheme, Text} from 'react-native-paper';
 import {LoginForm} from '../../forms/Login';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {getAuthHeaders} from "../../../libraries/APIClient";
+import {useMutation} from "@tanstack/react-query";
+import axios from "axios";
+import {useNavigation} from '@react-navigation/native';
 
 // @ts-ignore
 export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -17,18 +21,35 @@ export const LoginView = () => {
     loadSettings();
   }, []);
 
-  const fetchData = useCallback(async credentials => {
-    console.log('FetchData');
-  }, []);
+  const loginMutation = useMutation(
+    async formValues => {
+      const username = formValues.username;
+      const password = formValues.password;
+      console.log('Creds:', username, password);
+      // https://github.com/axios/axios/issues/2235
+      // let response = await axios.post('/auth/login', {}, {auth: {username: username, password: password}});
+      let authHeaders = getAuthHeaders(username, password);
+      let response = await axios.post('/auth/login', {}, {headers: authHeaders});
+      return response;
+    },
+    {retry: 0},
+  );
 
   const onSubmit = useCallback(
     async formValues => {
-      await fetchData(formValues).catch(e => {
-        console.log(e);
-        // setErrorMessage(e.toString());
+      loginMutation.mutate(formValues, {
+        onSuccess: (data, variables, context) => {
+          AppSettings.AUTH_TOKEN.setValue(data.data.token);
+          AppSettings.USERNAME.setValue(variables.username);
+          navigation.goBack();
+          // console.log('data', data.data);
+          // console.log('vars', variables);
+          // console.log('context', context);
+
+        },
       });
     },
-    [fetchData],
+    [loginMutation],
   );
 
   return (
