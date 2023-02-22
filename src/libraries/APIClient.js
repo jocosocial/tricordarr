@@ -3,26 +3,36 @@ import {encode as base64_encode} from 'base-64';
 import axios from 'axios';
 import {AppSettings} from './AppSettings';
 
-const defaultHeaders = {
-  Accept: 'application/json',
-};
+export async function setupAxiosStuff() {
+  console.log('AXIOS!');
+  // https://github.com/axios/axios/issues/3870
+  axios.interceptors.request.use(async config => {
+    console.log('BOom INtercepted!');
+    console.log(config);
+    // URL
+    const serverUrl = await AppSettings.SERVER_URL.getValue();
+    const urlPrefix = await AppSettings.URL_PREFIX.getValue();
+    config.url = `${serverUrl}${urlPrefix}${config.url}`;
+    // Authentication
+    const authToken = await AppSettings.AUTH_TOKEN.getValue();
+    if (authToken != null && !config.headers.authorization) {
+      config.headers.authorization = `Bearer ${authToken}`;
+    }
+    // Other Headers
+    config.headers.Accept = 'application/json';
+    // Return
+    console.log(config);
+    return config;
+  });
+}
 
 export const apiQueryV3 = async ({queryKey}) => {
-  const serverUrl = await AppSettings.SERVER_URL.getValue();
-  const urlPrefix = await AppSettings.URL_PREFIX.getValue();
-  const authToken = await AppSettings.AUTH_TOKEN.getValue();
-  let headers = defaultHeaders;
-  if (authToken != null) {
-    headers.authorization = `Bearer ${authToken}`;
-  }
-  const requestConfig = {
-    headers: headers,
-  };
+  // const serverUrl = await AppSettings.SERVER_URL.getValue();
+  // const urlPrefix = await AppSettings.URL_PREFIX.getValue();
   console.log('Performing V3 Query');
-  console.log(headers);
-  const url = `${serverUrl}${urlPrefix}${queryKey[0]}`;
-  console.log(url);
-  const {data} = await axios.get(url, requestConfig);
+  // const url = `${serverUrl}${urlPrefix}${queryKey[0]}`;
+  // console.log(url);
+  const {data} = await axios.get(queryKey[0]);
   return data;
 };
 

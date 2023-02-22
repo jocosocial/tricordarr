@@ -21,7 +21,7 @@ import {NotificationSettings} from './src/components/views/Settings/Notification
 import {NetworkInfoSettings} from './src/components/views/Settings/NetworkInfoSettings';
 import {AccountSettings} from './src/components/views/Settings/AccountSettings';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {apiQueryV3} from './src/libraries/APIClient';
+import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -31,6 +31,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+setupAxiosStuff();
 
 function App(): JSX.Element {
   // Set up the navigation stack.
