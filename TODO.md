@@ -10,10 +10,3 @@
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 * rename views to settings
 * https://react-query-v3.tanstack.com/guides/mutations
-
-Questions
----------
-* Where do I draw the component line for a logout button? Functionality in a LogoutButton or the page?
-* Centralize Mutations?
-* ... not working on loginView.
-* Good idea for global state of isLoggedIn?

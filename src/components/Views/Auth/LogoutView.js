@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
+import {UserContext} from '../../../../App';
 
 export const TempUserProfile = () => {
   const {isLoading, error, data} = useQuery({
@@ -22,7 +23,8 @@ export const TempUserProfile = () => {
 
 export const LogoutView = () => {
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation()
+  const {setIsUserLoggedIn} = useContext(UserContext);
 
   const logoutMutation = useMutation(
     async () => {
@@ -37,6 +39,7 @@ export const LogoutView = () => {
   function onPress() {
     logoutMutation.mutate(null, {
       onSuccess: () => {
+        setIsUserLoggedIn(false);
         navigation.goBack();
       },
     });
@@ -48,6 +51,8 @@ export const LogoutView = () => {
     console.log('Old token was:', await AppSettings.AUTH_TOKEN.getValue());
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
+    setIsUserLoggedIn(false);
+    navigation.goBack();
   }
 
   return (

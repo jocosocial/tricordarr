@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
 import {LoginView} from '../../Views/Auth/LoginView';
 import {LogoutView} from '../../Views/Auth/LogoutView';
 import {AppSettings} from '../../../libraries/AppSettings';
+import {UserContext} from '../../../../App';
 
 export const AccountSettings = ({route, navigation}) => {
-  const {isLoggedIn} = route.params;
+  const {isUserLoggedIn} = useContext(UserContext);
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
@@ -14,8 +15,8 @@ export const AccountSettings = ({route, navigation}) => {
   return (
     <SafeAreaView>
       <ScrollView>
-        {isLoggedIn && <LogoutView />}
-        {!isLoggedIn && <LoginView />}
+        {isUserLoggedIn && <LogoutView />}
+        {!isUserLoggedIn && <LoginView />}
       </ScrollView>
     </SafeAreaView>
   );

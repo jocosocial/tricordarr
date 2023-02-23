@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {createContext, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -34,9 +34,13 @@ const queryClient = new QueryClient({
 });
 setupAxiosStuff();
 
+export const UserContext = createContext({});
+
 function App(): JSX.Element {
   // Set up the navigation stack.
   const Stack = createNativeStackNavigator();
+
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
@@ -51,6 +55,7 @@ function App(): JSX.Element {
     <NavigationContainer>
       <PaperProvider theme={twitarrTheme}>
         <QueryClientProvider client={queryClient}>
+          <UserContext.Provider value={{isUserLoggedIn, setIsUserLoggedIn}}>
           <Stack.Navigator>
             <Stack.Screen name={'Home'} component={MainView} />
             <Stack.Screen name={'Settings'} component={SettingsView} />
@@ -60,6 +65,7 @@ function App(): JSX.Element {
             <Stack.Screen name={'StorageKeysSettings'} component={StorageKeysSettings} />
             <Stack.Screen name={'AccountSettings'} component={AccountSettings} />
           </Stack.Navigator>
+          </UserContext.Provider>
         </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>

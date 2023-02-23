@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
 import {LoginForm} from '../../forms/LoginForm';
@@ -7,12 +7,13 @@ import {getAuthHeaders} from "../../../libraries/APIClient";
 import {useMutation} from "@tanstack/react-query";
 import axios from "axios";
 import {useNavigation} from '@react-navigation/native';
+import {UserContext} from '../../../../App';
 
-// @ts-ignore
 export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
+  const {setIsUserLoggedIn} = useContext(UserContext);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -22,9 +23,9 @@ export const LoginView = () => {
   }, []);
 
   const loginMutation = useMutation(
-    async formValues => {
-      const username = formValues.username;
-      const password = formValues.password;
+    async ({username, password}) => {
+      // const username = formValues.username;
+      // const password = formValues.password;
       console.log('Creds:', username, password);
       // https://github.com/axios/axios/issues/2235
       // let response = await axios.post('/auth/login', {}, {auth: {username: username, password: password}});
@@ -41,6 +42,7 @@ export const LoginView = () => {
         onSuccess: (data, variables, context) => {
           AppSettings.AUTH_TOKEN.setValue(data.data.token);
           AppSettings.USERNAME.setValue(variables.username);
+          setIsUserLoggedIn(true);
           navigation.goBack();
           // console.log('data', data.data);
           // console.log('vars', variables);

@@ -1,5 +1,5 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import {useTheme, List, Divider} from 'react-native-paper';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {SettingListItem} from '../../Lists/SettingListItem';
