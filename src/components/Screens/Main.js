@@ -1,12 +1,6 @@
 import {Button, SafeAreaView, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React, {useEffect} from 'react';
-import {
-  checkNotificationPermission,
-  enableNotifications, setupBackgroundEventHandler,
-  startForegroundService,
-  stopForegroundService,
-} from '../../notifications';
 import {Section} from '../Section';
 import {requestNotificationPermission, requestPermission} from '../../libraries/AppPermissions';
 import {displayTestNotification, cancelTestNotification} from '../../notifications/TestNotification';
@@ -14,6 +8,9 @@ import {getCurrentSSID} from '../../libraries/Network';
 import {AppSettings} from '../../libraries/AppSettings';
 import {dumpStorageKeys} from '../../libraries/Storage';
 import NetInfo from "@react-native-community/netinfo";
+import notifee, {AndroidColor} from "@notifee/react-native";
+import {serviceChannel} from "../../notifications/Channels";
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../libraries/Service";
 
 export const MainView = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -27,6 +24,22 @@ export const MainView = ({navigation}) => {
 
   async function showSSID() {
     console.log('The current SSID is:', await getCurrentSSID());
+  }
+
+  async function doThing() {
+    await notifee.displayNotification({
+      title: 'FGS GO',
+      body: 'lolz',
+      android: {
+        channelId: serviceChannel.id,
+        asForegroundService: true,
+        color: AndroidColor.RED,
+        colorized: true,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
   }
 
   return (
@@ -44,8 +57,8 @@ export const MainView = ({navigation}) => {
             <Button title="Cancel" onPress={() => cancelTestNotification()} />
           </Section>
           <Section title="Foreground Service">
-            <Button title={'Start'} onPress={() => startForegroundService().catch(console.error)} />
-            <Button color={'red'} title={'Stop'} onPress={() => stopForegroundService().catch(console.error)} />
+            <Button title={'Start'} onPress={() => startForegroundServiceWorker().catch(console.error)} />
+            <Button color={'red'} title={'Stop'} onPress={() => stopForegroundServiceWorker().catch(console.error)} />
           </Section>
           <Section title="Navigation">
             <Button color={'green'} title={'Settings'} onPress={() => navigation.navigate('Settings')} />

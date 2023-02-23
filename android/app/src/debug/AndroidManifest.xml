@@ -17,6 +17,11 @@
     which is used to determine whether we are on the boat.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--
+    Foreground Services are a "normal" permission so the system grants it automatically.
+    But just to be safe I'm doing it here too.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:usesCleartextTraffic="true"
