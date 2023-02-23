@@ -25,6 +25,7 @@ UI/UX
 * See if making dark mode is easy
 
 Work Queue
+* weebsocketretry
 * Decode messages as enum
 * More FGS to Settings
 * Consider provider/context for server URL.

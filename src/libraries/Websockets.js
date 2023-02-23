@@ -9,32 +9,38 @@ import {NotificationType} from "./Enums/NotificationType";
  */
 export function setupWebsocket(endpoint, options = {}) {
   const ws = new WebSocket(endpoint, null, options);
-  ws.onerror = error => console.error('[error]', error);
-  ws.onopen = () => {
-    console.log('[open] Connection established');
-    ws.send('PING');
-  };
-  ws.onmessage = event => {
-    console.log(`[message] Data received from server: ${event.data}`);
-    const notificationData = JSON.parse(event.data);
-    let channel;
-    console.log(event.data.type);
-    switch (event.data.type) {
-      case NotificationType.seamailUnreadMsg:
-        console.log("GOT A SEAMAIL!!!!!!!!!!");
-        channel = seamailChannel;
-        break;
-    }
-    generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel);
-  };
-  ws.onclose = event => {
-    if (event.wasClean) {
-      console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-    } else {
-      // e.g. server process killed or network down
-      // event.code is usually 1006 in this case
-      console.log('[close] Connection died');
-    }
-  };
+  ws.onerror = wsErrorHandler;
+  ws.onopen = wsOpenHandler;
+  ws.onmessage = wsMessageHandler;
+  ws.onclose = wsCloseHandler;
   return ws;
+}
+
+const wsErrorHandler = error => console.error('[error]', error);
+
+const wsOpenHandler = () => console.log('[open] Connection established');
+
+function wsMessageHandler(event) {
+  console.log(`[message] Data received from server: ${event.data}`);
+  const notificationData = JSON.parse(event.data);
+  // @TODO come back to this.
+  // let channel = seamailChannel;
+  // console.log(event.data.type);
+  // switch (event.data.type) {
+  //   case NotificationType.seamailUnreadMsg:
+  //     console.log("GOT A SEAMAIL!!!!!!!!!!");
+  //     channel = seamailChannel;
+  //     break;
+  // }
+  generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, seamailChannel);
+}
+
+function wsCloseHandler(event) {
+  if (event.wasClean) {
+    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+    console.log('[close] Connection died');
+  }
 }

@@ -5,14 +5,14 @@
  * @format
  */
 
-import React, {createContext, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {MainView} from './src/components/Screens/Main';
 import {setupChannels} from './src/notifications/Channels';
-import {initialSettings} from './src/libraries/AppSettings';
+import {AppSettings, initialSettings} from './src/libraries/AppSettings';
 import {SettingsView} from './src/components/Screens/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
 import {SettingDetail} from './src/components/Screens/Settings/SettingDetail';
@@ -22,7 +22,7 @@ import {AccountSettings} from './src/components/Screens/Settings/AccountSettings
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 import {StorageKeysSettings} from './src/components/Screens/Settings/StorageKeys';
-import {startForegroundServiceWorker} from './src/libraries/Service';
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from './src/libraries/Service';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -54,6 +54,24 @@ function App(): JSX.Element {
   startForegroundServiceWorker().catch(error => {
     console.error('Error starting FGS:', error);
   });
+
+  // @TODO move the logic to the detailed logincontext type that Ben talked about.
+  useEffect(() => {
+    console.log('Calling useEffect from Main App.');
+    async function checkForLogin() {
+      if (!!(await AppSettings.USERNAME.getValue()) && !!(await AppSettings.AUTH_TOKEN.getValue())) {
+        setIsUserLoggedIn(true);
+        startForegroundServiceWorker().catch(error => {
+          console.error('Error starting FGS:', error);
+        });
+      } else {
+        stopForegroundServiceWorker().catch(error => {
+          console.error('Error stopping FGS:', error);
+        });
+      }
+    }
+    checkForLogin().catch(console.error);
+  }, [isUserLoggedIn]);
 
   return (
     <NavigationContainer>
