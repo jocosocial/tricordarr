@@ -11,10 +11,10 @@ export const NetworkInfoSettings = ({route, navigation}) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    NetInfo.refresh().then(setData({}));
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 500);
+    NetInfo.refresh().then(() => setData({})).finally(() => setRefreshing(false));
+    // setTimeout(() => {
+    //   setRefreshing(false);
+    // }, 500);
   }, []);
 
   const fetchData = useCallback(async () => {
