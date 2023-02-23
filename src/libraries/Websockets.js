@@ -1,5 +1,6 @@
 import {generateContentNotification} from "./Notifications";
 import {seamailChannel} from "../notifications/Channels";
+import {NotificationType} from "./Enums/NotificationType";
 
 /**
  * Browser Websocket doesn't support the ping function.
@@ -16,7 +17,15 @@ export function setupWebsocket(endpoint, options = {}) {
   ws.onmessage = event => {
     console.log(`[message] Data received from server: ${event.data}`);
     const notificationData = JSON.parse(event.data);
-    generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, seamailChannel);
+    let channel;
+    console.log(event.data.type);
+    switch (event.data.type) {
+      case NotificationType.seamailUnreadMsg:
+        console.log("GOT A SEAMAIL!!!!!!!!!!");
+        channel = seamailChannel;
+        break;
+    }
+    generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel);
   };
   ws.onclose = event => {
     if (event.wasClean) {

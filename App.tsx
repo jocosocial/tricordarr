@@ -21,7 +21,8 @@ import {NetworkInfoSettings} from './src/components/Screens/Settings/NetworkInfo
 import {AccountSettings} from './src/components/Screens/Settings/AccountSettings';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
-import {StorageKeysSettings} from "./src/components/Screens/Settings/StorageKeys";
+import {StorageKeysSettings} from './src/components/Screens/Settings/StorageKeys';
+import {startForegroundServiceWorker} from './src/libraries/Service';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -46,9 +47,12 @@ function App(): JSX.Element {
     console.error('Error setting up notification channels:', error);
   });
 
-  // doNetworkInfo();
   initialSettings().catch(error => {
     console.error('Error with settings:', error);
+  });
+
+  startForegroundServiceWorker().catch(error => {
+    console.error('Error starting FGS:', error);
   });
 
   return (
@@ -56,15 +60,15 @@ function App(): JSX.Element {
       <PaperProvider theme={twitarrTheme}>
         <QueryClientProvider client={queryClient}>
           <UserContext.Provider value={{isUserLoggedIn, setIsUserLoggedIn}}>
-          <Stack.Navigator>
-            <Stack.Screen name={'Home'} component={MainView} />
-            <Stack.Screen name={'Settings'} component={SettingsView} />
-            <Stack.Screen name={'SettingDetail'} component={SettingDetail} />
-            <Stack.Screen name={'NotificationSettings'} component={NotificationSettings} />
-            <Stack.Screen name={'NetworkInfoSettings'} component={NetworkInfoSettings} />
-            <Stack.Screen name={'StorageKeysSettings'} component={StorageKeysSettings} />
-            <Stack.Screen name={'AccountSettings'} component={AccountSettings} />
-          </Stack.Navigator>
+            <Stack.Navigator>
+              <Stack.Screen name={'Home'} component={MainView} />
+              <Stack.Screen name={'Settings'} component={SettingsView} />
+              <Stack.Screen name={'SettingDetail'} component={SettingDetail} />
+              <Stack.Screen name={'NotificationSettings'} component={NotificationSettings} />
+              <Stack.Screen name={'NetworkInfoSettings'} component={NetworkInfoSettings} />
+              <Stack.Screen name={'StorageKeysSettings'} component={StorageKeysSettings} />
+              <Stack.Screen name={'AccountSettings'} component={AccountSettings} />
+            </Stack.Navigator>
           </UserContext.Provider>
         </QueryClientProvider>
       </PaperProvider>

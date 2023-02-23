@@ -22,26 +22,6 @@ export const MainView = ({navigation}) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  async function showSSID() {
-    console.log('The current SSID is:', await getCurrentSSID());
-  }
-
-  async function doThing() {
-    await notifee.displayNotification({
-      title: 'FGS GO',
-      body: 'lolz',
-      android: {
-        channelId: serviceChannel.id,
-        asForegroundService: true,
-        color: AndroidColor.RED,
-        colorized: true,
-        pressAction: {
-          id: 'default',
-        },
-      },
-    });
-  }
-
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
