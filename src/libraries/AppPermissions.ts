@@ -9,7 +9,7 @@ export class AppPermissions {
 
   static NOTIFICATIONS = new AppPermissions(
     PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
-    'Notifications',
+    'Notifications.js',
     'Show Twitarr notifications on this device.',
   );
 

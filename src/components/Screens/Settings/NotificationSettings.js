@@ -7,7 +7,7 @@ export const NotificationSettings = ({route, navigation}) => {
   const theme = useTheme();
 
   useEffect(() => {
-    navigation.setOptions({title: 'Local Notifications'});
+    navigation.setOptions({title: 'Local Notifications.js'});
   }, [navigation]);
 
   return (

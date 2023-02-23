@@ -1,8 +1,9 @@
-import {getLoginData} from "./Storage";
-import {getAuthHeaders} from "./APIClient";
-import notifee, {AndroidColor} from "@notifee/react-native";
-import {seamailChannel, serviceChannel} from "../notifications/Channels";
-import {AppSettings} from "./AppSettings";
+import {getLoginData} from './Storage';
+import {getAuthHeaders} from './APIClient';
+import notifee, {AndroidColor} from '@notifee/react-native';
+import {seamailChannel, serviceChannel} from '../notifications/Channels';
+import {AppSettings} from './AppSettings';
+import {setupWebsocket} from './Websockets';
 
 // React-Native does not support all the same properties as browser URL
 // objects. Big sad.
@@ -25,49 +26,7 @@ async function fgsWorker() {
   const wsUrl = await buildWebsocketURL();
   const loginData = await getLoginData();
   const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
-  let socket = new WebSocket(wsUrl, null, {
-    headers: authHeaders,
-  });
-
-  socket.onopen = function (e) {
-    console.log('[open] Connection established');
-    console.log('Sending to server');
-    socket.send('PING');
-  };
-
-  socket.onmessage = function (event) {
-    console.log(`[message] Data received from server: ${event.data}`);
-    const notificationData = JSON.parse(event.data);
-    console.log(notificationData);
-    notifee.displayNotification({
-      id: notificationData.contentID,
-      title: 'New Seamail Message',
-      body: notificationData.info,
-      android: {
-        channelId: seamailChannel.id,
-        // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
-        autoCancel: true,
-        // https://notifee.app/react-native/docs/android/interaction
-        pressAction: {
-          id: 'default',
-        },
-      },
-    });
-  };
-
-  socket.onclose = function (event) {
-    if (event.wasClean) {
-      console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-    } else {
-      // e.g. server process killed or network down
-      // event.code is usually 1006 in this case
-      console.log('[close] Connection died');
-    }
-  };
-
-  socket.onerror = function (error) {
-    console.log('[error] ', error);
-  };
+  setupWebsocket(wsUrl, {headers: authHeaders});
 }
 
 export function registerForegroundServiceWorker() {
@@ -80,7 +39,7 @@ export function registerForegroundServiceWorker() {
 export async function stopForegroundServiceWorker() {
   notifee.stopForegroundService().then(() => {
     console.log('Stopped FGS.');
-  })
+  });
 }
 
 export async function startForegroundServiceWorker() {
