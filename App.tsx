@@ -10,18 +10,18 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {MainView} from './src/components/views/Main';
+import {MainView} from './src/components/Screens/Main';
 import {setupChannels} from './src/notifications/Channels';
 import {initialSettings} from './src/libraries/AppSettings';
-import {SettingsView} from './src/components/views/Settings/Settings';
+import {SettingsView} from './src/components/Screens/Settings/Settings';
 import {twitarrTheme} from './src/styles/Theme';
-import {SettingDetail} from './src/components/views/Settings/SettingDetail';
-import {NotificationSettings} from './src/components/views/Settings/NotificationSettings';
-import {NetworkInfoSettings} from './src/components/views/Settings/NetworkInfoSettings';
-import {AccountSettings} from './src/components/views/Settings/AccountSettings';
+import {SettingDetail} from './src/components/Screens/Settings/SettingDetail';
+import {NotificationSettings} from './src/components/Screens/Settings/NotificationSettings';
+import {NetworkInfoSettings} from './src/components/Screens/Settings/NetworkInfoSettings';
+import {AccountSettings} from './src/components/Screens/Settings/AccountSettings';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
-import {StorageKeysSettings} from "./src/components/views/Settings/StorageKeys";
+import {StorageKeysSettings} from "./src/components/Screens/Settings/StorageKeys";
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({

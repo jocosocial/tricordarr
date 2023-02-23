@@ -28,8 +28,7 @@ export const LogoutView = () => {
     async () => {
       // Gotta do the call before clearing our local state.
       let response = await axios.post('/auth/logout');
-      await AppSettings.AUTH_TOKEN.remove();
-      await AppSettings.USERNAME.remove();
+      await clearAuthData();
       return response;
     },
     {retry: 0},
