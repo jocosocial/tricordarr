@@ -25,6 +25,7 @@ UI/UX
 * See if making dark mode is easy
 
 Work Queue
+* websocket connection status pull to refresh similar to netinfo
 * notification needs to be quiet and not vibrate
 * Decode messages as enum
 * Consider provider/context for server URL.
