@@ -1,5 +1,5 @@
 import notifee, {AndroidColor} from '@notifee/react-native';
-import {serviceChannel} from "../notifications/Channels";
+import {serviceChannel} from '../notifications/Channels';
 
 export function generateContentNotification(id, title, body, channel) {
   notifee
@@ -22,19 +22,32 @@ export function generateContentNotification(id, title, body, channel) {
     });
 }
 
-export async function generateForegroundServiceNotification(body, color = AndroidColor.GRAY) {
-  await notifee.displayNotification({
-    id: 'FGSWorkerNotificationID',
-    title: 'Foreground service',
-    body: body,
-    android: {
-      channelId: serviceChannel.id,
-      asForegroundService: true,
-      color: color,
-      colorized: true,
-      pressAction: {
-        id: 'default',
-      },
-    },
+export async function generateForegroundServiceNotification(body, color = AndroidColor.GRAY, onlyIfShowing = false) {
+  let show = !onlyIfShowing;
+  const displayedNotifications = await notifee.getDisplayedNotifications();
+  displayedNotifications.map(entry => {
+    console.log('lolol', entry.id);
+    if (entry.id === 'FGSWorkerNotificationID') {
+      // We are currently showing.
+      if (onlyIfShowing) {
+        show = true;
+      }
+    }
   });
+  if (show) {
+    await notifee.displayNotification({
+      id: 'FGSWorkerNotificationID',
+      title: 'Foreground service',
+      body: body,
+      android: {
+        channelId: serviceChannel.id,
+        asForegroundService: true,
+        color: color,
+        colorized: true,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
 }

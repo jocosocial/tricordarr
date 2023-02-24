@@ -25,7 +25,7 @@ async function fgsWorker() {
       color = AndroidColor.GREEN;
     }
     console.log(message);
-    await generateForegroundServiceNotification(message, color);
+    await generateForegroundServiceNotification(message, color, true);
   }, 10000);
 }
 
