@@ -4,6 +4,7 @@ import {NotificationType} from './Enums/NotificationType';
 import {getLoginData} from "./Storage";
 import {getAuthHeaders} from "./APIClient";
 import {AppSettings} from "./AppSettings";
+import ReconnectingWebSocket from "reconnecting-websocket";
 
 /**
  * React-Native does not support all the same properties as browser URL
@@ -27,12 +28,33 @@ let sharedWebSocket;
 export const getSharedWebSocket = async () => sharedWebSocket;
 export const setSharedWebSocket = async ws => (sharedWebSocket = ws);
 
+// https://github.com/pladaria/reconnecting-websocket/issues/138
+function createWebSocketClass(options) {
+  return class extends WebSocket {
+    constructor(url, protocols) {
+      super(url, protocols, options);
+    }
+  };
+}
+
 export async function buildWebSocket() {
   const wsUrl = await buildWebsocketURL();
   const loginData = await getLoginData();
   const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
 
-  const ws = new WebSocket(wsUrl, null, {headers: authHeaders});
+  // https://www.npmjs.com/package/reconnecting-websocket
+  const ws = new ReconnectingWebSocket(wsUrl, [], {
+    WebSocket: createWebSocketClass({
+      headers: authHeaders,
+    }),
+    connectionTimeout: 10000,
+    maxRetries: 5,
+    minReconnectionDelay: 1000,
+    maxReconnectionDelay: 5000,
+    debug: true,
+    reconnectionDelayGrowFactor: 2,
+  });
+  // const ws = new WebSocket(wsUrl, null, {headers: authHeaders});
   ws.onerror = wsErrorHandler;
   ws.onopen = wsOpenHandler;
   ws.onmessage = wsMessageHandler;

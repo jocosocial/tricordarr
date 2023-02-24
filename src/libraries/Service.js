@@ -27,7 +27,9 @@ export function registerForegroundServiceWorker() {
 export async function stopForegroundServiceWorker() {
   notifee.stopForegroundService().then(async () => {
     const ws = await getSharedWebSocket();
-    ws.close(1000, 'FGS was stopped.');
+    if (ws) {
+      ws.close(1000, 'FGS was stopped.');
+    }
     console.log('Stopped FGS.');
   });
 }
