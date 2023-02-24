@@ -5,6 +5,7 @@ Websocket/Connection
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * Exponential back off retry generic
 * Calculate setting for websocket notification url. Consider onupdate callback in settings to trigger revalc
+* FGS should not run at all unless on specified wifi networks or with a toggle
 
 App Structure
 * Functional only components. Maybe a provider? Something that has no UI but is still present to trigger
