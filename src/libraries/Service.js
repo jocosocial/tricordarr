@@ -3,30 +3,22 @@ import {getAuthHeaders} from './APIClient';
 import notifee, {AndroidColor} from '@notifee/react-native';
 import {seamailChannel, serviceChannel} from '../notifications/Channels';
 import {AppSettings} from './AppSettings';
-import {setupWebsocket} from './Websockets';
-
-// React-Native does not support all the same properties as browser URL
-// objects. Big sad.
-async function buildWebsocketURL() {
-  const serverHttpUrl = await AppSettings.SERVER_URL.getValue();
-  const serverApiPrefix = await AppSettings.URL_PREFIX.getValue();
-  let wsUrl = `${serverHttpUrl}${serverApiPrefix}/notification/socket`;
-  if (wsUrl.startsWith('https://')) {
-    wsUrl.replace('https', 'wss');
-  } else {
-    wsUrl.replace('http', 'ws');
-  }
-  console.log('Websocket URL is', wsUrl);
-  return wsUrl;
-}
+import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
 
 // https://javascript.info/websocket
 async function fgsWorker() {
-  console.log('Foreground Service');
-  const wsUrl = await buildWebsocketURL();
-  const loginData = await getLoginData();
-  const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
-  setupWebsocket(wsUrl, {headers: authHeaders});
+  console.log('Foreground Service is starting');
+  setupWebsocket(getSharedWebSocket())
+    .catch(e => {
+      console.error('FGS Websocket error:', e);
+    })
+    .then(ws => {
+      setSharedWebSocket(ws);
+    });
+  console.log('Foreground Service startup has finished');
+  // while (true) {
+  //   setTimeout(() => console.log('healthcheck'), 1000);
+  // }
 }
 
 export function registerForegroundServiceWorker() {
@@ -38,6 +30,8 @@ export function registerForegroundServiceWorker() {
 
 export async function stopForegroundServiceWorker() {
   notifee.stopForegroundService().then(() => {
+    const ws = getSharedWebSocket();
+    ws.close();
     console.log('Stopped FGS.');
   });
 }
