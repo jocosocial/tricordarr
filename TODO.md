@@ -25,6 +25,7 @@ UI/UX
 * See if making dark mode is easy
 
 Work Queue
+* notification needs to be quiet and not vibrate
 * Decode messages as enum
 * Consider provider/context for server URL.
 * Expand user context to more details.
