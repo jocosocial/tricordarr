@@ -8,13 +8,9 @@ import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websocke
 // https://javascript.info/websocket
 async function fgsWorker() {
   console.log('Foreground Service is starting');
-  setupWebsocket(getSharedWebSocket())
-    .catch(e => {
-      console.error('FGS Websocket error:', e);
-    })
-    .then(ws => {
-      setSharedWebSocket(ws);
-    });
+  setupWebsocket().catch(e => {
+    console.error('FGS Websocket error:', e);
+  });
   console.log('Foreground Service startup has finished');
   // while (true) {
   //   setTimeout(() => console.log('healthcheck'), 1000);
@@ -29,9 +25,9 @@ export function registerForegroundServiceWorker() {
 }
 
 export async function stopForegroundServiceWorker() {
-  notifee.stopForegroundService().then(() => {
-    const ws = getSharedWebSocket();
-    ws.close();
+  notifee.stopForegroundService().then(async () => {
+    const ws = await getSharedWebSocket();
+    ws.close(1000, 'FGS was stopped.');
     console.log('Stopped FGS.');
   });
 }

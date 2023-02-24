@@ -24,33 +24,43 @@ async function buildWebsocketURL() {
 
 let sharedWebSocket;
 
-export const getSharedWebSocket = () => sharedWebSocket;
-export const setSharedWebSocket = ws => (sharedWebSocket = ws);
+export const getSharedWebSocket = async () => sharedWebSocket;
+export const setSharedWebSocket = async ws => (sharedWebSocket = ws);
+
+export async function buildWebSocket() {
+  const wsUrl = await buildWebsocketURL();
+  const loginData = await getLoginData();
+  const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
+
+  const ws = new WebSocket(wsUrl, null, {headers: authHeaders});
+  ws.onerror = wsErrorHandler;
+  ws.onopen = wsOpenHandler;
+  ws.onmessage = wsMessageHandler;
+  ws.onclose = wsCloseHandler;
+  return ws;
+}
 
 /**
  * Browser Websocket doesn't support the ping function.
  * https://github.com/websockets/ws doesn't support React-Native + Android.
  * Sad.
  */
-export async function setupWebsocket(ws) {
-  console.log('Websocket Construction Started.');
-  const wsUrl = await buildWebsocketURL();
-  const loginData = await getLoginData();
-  const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
-
-  ws = new WebSocket(wsUrl, null, {headers: authHeaders});
-  ws.onerror = wsErrorHandler;
-  ws.onopen = wsOpenHandler;
-  ws.onmessage = wsMessageHandler;
-  ws.onclose = wsCloseHandler;
-
-  console.log('Websocket Construction Complete.');
-  return ws;
+export async function setupWebsocket() {
+  console.warn('Websocket Construction Started.');
+  let ws = await getSharedWebSocket();
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.warn('Re-using existing connection');
+  } else {
+    console.warn('Building new socket connection');
+    ws = buildWebSocket();
+  }
+  console.warn('Websocket Construction Complete.');
+  await setSharedWebSocket(ws);
 }
 
 const wsErrorHandler = error => console.error('[error]', error);
 
-const wsOpenHandler = () => console.log('[open] Connection established');
+const wsOpenHandler = () => console.warn('[open] Connection established');
 
 function wsMessageHandler(event) {
   console.log(`[message] Data received from server: ${event.data}`);
@@ -69,10 +79,10 @@ function wsMessageHandler(event) {
 
 function wsCloseHandler(event) {
   if (event.wasClean) {
-    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    console.warn(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
     // e.g. server process killed or network down
     // event.code is usually 1006 in this case
-    console.log(`[close] Connection died, code=${event.code} reason=${event.reason}`);
+    console.warn(`[close] Connection died, code=${event.code} reason=${event.reason}`);
   }
 }
