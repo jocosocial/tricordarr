@@ -36,10 +36,6 @@ export const MainView = ({navigation}) => {
             {'\n'}
             <Button title="Cancel" onPress={() => cancelTestNotification()} />
           </Section>
-          <Section title="Foreground Service">
-            <Button title={'Start'} onPress={() => startForegroundServiceWorker().catch(console.error)} />
-            <Button color={'red'} title={'Stop'} onPress={() => stopForegroundServiceWorker().catch(console.error)} />
-          </Section>
           <Section title="Navigation">
             <Button color={'green'} title={'Settings'} onPress={() => navigation.navigate('Settings')} />
           </Section>

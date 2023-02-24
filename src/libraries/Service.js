@@ -6,6 +6,8 @@ import {AppSettings} from './AppSettings';
 import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
 import {generateForegroundServiceNotification} from "./Notifications";
 
+let fgsWorkerTimer;
+
 // https://javascript.info/websocket
 async function fgsWorker() {
   console.log('Foreground Service is starting');
@@ -13,10 +15,7 @@ async function fgsWorker() {
     console.error('FGS Websocket error:', e);
   });
   console.log('Foreground Service startup has finished');
-  // while (true) {
-  //   setTimeout(() => console.log('healthcheck'), 1000);
-  // }
-  setInterval(async () => {
+  fgsWorkerTimer = setInterval(async () => {
     console.log('Updating status');
     const ws = await getSharedWebSocket();
     let message = 'Server connection ERROR!';
@@ -39,6 +38,7 @@ export function registerForegroundServiceWorker() {
 
 export async function stopForegroundServiceWorker() {
   notifee.stopForegroundService().then(async () => {
+    clearInterval(fgsWorkerTimer);
     const ws = await getSharedWebSocket();
     if (ws) {
       ws.close(1000, 'FGS was stopped.');

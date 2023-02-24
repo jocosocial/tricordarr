@@ -99,12 +99,17 @@ function wsMessageHandler(event) {
   generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, seamailChannel);
 }
 
-function wsCloseHandler(event) {
+async function wsCloseHandler(event) {
   if (event.wasClean) {
     console.warn(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
     // e.g. server process killed or network down
     // event.code is usually 1006 in this case
     console.warn(`[close] Connection died, code=${event.code} reason=${event.reason}`);
+  }
+  // https://github.com/pladaria/reconnecting-websocket/issues/78
+  if (event.code === 1000) {
+    const ws = await getSharedWebSocket();
+    ws.close();
   }
 }

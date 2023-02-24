@@ -25,6 +25,11 @@ export const SettingsView = ({navigation}) => {
           <List.Section>
             <List.Subheader>Network</List.Subheader>
             <SettingListItem setting={AppSettings.SERVER_URL} />
+            <NavigationListItem
+              title={'Server Connection'}
+              description={'Manage the worker that maintains a connection to the server.'}
+              navComponent={'ServerConnectionSettings'}
+            />
           </List.Section>
           <Divider bold={true} />
           <List.Section>

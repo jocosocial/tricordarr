@@ -25,9 +25,7 @@ UI/UX
 * See if making dark mode is easy
 
 Work Queue
-* weebsocketretry
 * Decode messages as enum
-* More FGS to Settings
 * Consider provider/context for server URL.
 * Expand user context to more details.
 * Backoff https://www.npmjs.com/package/exponential-backoff

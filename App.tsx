@@ -23,6 +23,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 import {StorageKeysSettings} from './src/components/Screens/Settings/StorageKeys';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from './src/libraries/Service';
+import {ServerConnectionSettings} from "./src/components/Screens/Settings/ServerConnectionSettings";
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -86,6 +87,7 @@ function App(): JSX.Element {
               <Stack.Screen name={'NetworkInfoSettings'} component={NetworkInfoSettings} />
               <Stack.Screen name={'StorageKeysSettings'} component={StorageKeysSettings} />
               <Stack.Screen name={'AccountSettings'} component={AccountSettings} />
+              <Stack.Screen name={'ServerConnectionSettings'} component={ServerConnectionSettings} />
             </Stack.Navigator>
           </UserContext.Provider>
         </QueryClientProvider>
