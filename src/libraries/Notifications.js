@@ -1,4 +1,5 @@
-import notifee from '@notifee/react-native';
+import notifee, {AndroidColor} from '@notifee/react-native';
+import {serviceChannel} from "../notifications/Channels";
 
 export function generateContentNotification(id, title, body, channel) {
   notifee
@@ -19,4 +20,21 @@ export function generateContentNotification(id, title, body, channel) {
     .catch(e => {
       console.error(e);
     });
+}
+
+export async function generateForegroundServiceNotification(body, color = AndroidColor.GRAY) {
+  await notifee.displayNotification({
+    id: 'FGSWorkerNotificationID',
+    title: 'Foreground service',
+    body: body,
+    android: {
+      channelId: serviceChannel.id,
+      asForegroundService: true,
+      color: color,
+      colorized: true,
+      pressAction: {
+        id: 'default',
+      },
+    },
+  });
 }

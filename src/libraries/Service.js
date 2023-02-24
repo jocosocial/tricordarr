@@ -4,6 +4,7 @@ import notifee, {AndroidColor} from '@notifee/react-native';
 import {seamailChannel, serviceChannel} from '../notifications/Channels';
 import {AppSettings} from './AppSettings';
 import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
+import {generateForegroundServiceNotification} from "./Notifications";
 
 // https://javascript.info/websocket
 async function fgsWorker() {
@@ -15,6 +16,18 @@ async function fgsWorker() {
   // while (true) {
   //   setTimeout(() => console.log('healthcheck'), 1000);
   // }
+  setInterval(async () => {
+    console.log('Updating status');
+    const ws = await getSharedWebSocket();
+    let message = 'Server connection ERROR!';
+    let color = AndroidColor.RED;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      message = 'Server connection healthy!';
+      color = AndroidColor.GREEN;
+    }
+    console.log(message);
+    await generateForegroundServiceNotification(message, color);
+  }, 10000);
 }
 
 export function registerForegroundServiceWorker() {
@@ -35,17 +48,5 @@ export async function stopForegroundServiceWorker() {
 }
 
 export async function startForegroundServiceWorker() {
-  await notifee.displayNotification({
-    title: 'Foreground service',
-    body: 'This notification will exist for the lifetime of the service runner',
-    android: {
-      channelId: serviceChannel.id,
-      asForegroundService: true,
-      color: AndroidColor.RED,
-      colorized: true,
-      pressAction: {
-        id: 'default',
-      },
-    },
-  });
+  await generateForegroundServiceNotification('This notification will exist for the lifetime of the service runner');
 }
