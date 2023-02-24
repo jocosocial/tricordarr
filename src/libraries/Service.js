@@ -6,7 +6,7 @@ import {AppSettings} from './AppSettings';
 import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
 import {generateForegroundServiceNotification} from "./Notifications";
 
-let fgsWorkerTimer;
+// let fgsWorkerTimer;
 
 // https://javascript.info/websocket
 async function fgsWorker() {
@@ -15,18 +15,18 @@ async function fgsWorker() {
     console.error('FGS Websocket error:', e);
   });
   console.log('Foreground Service startup has finished');
-  fgsWorkerTimer = setInterval(async () => {
-    console.log('Updating status');
-    const ws = await getSharedWebSocket();
-    let message = 'Server connection ERROR!';
-    let color = AndroidColor.RED;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      message = 'Server connection healthy!';
-      color = AndroidColor.GREEN;
-    }
-    console.log(message);
-    await generateForegroundServiceNotification(message, color, true);
-  }, 10000);
+  // fgsWorkerTimer = setInterval(async () => {
+  //   console.log('Updating status');
+  //   const ws = await getSharedWebSocket();
+  //   let message = 'Server connection ERROR!';
+  //   let color = AndroidColor.RED;
+  //   if (ws && ws.readyState === WebSocket.OPEN) {
+  //     message = 'Server connection healthy!';
+  //     color = AndroidColor.GREEN;
+  //   }
+  //   console.log(message);
+  //   await generateForegroundServiceNotification(message, color, true);
+  // }, 10000);
 }
 
 export function registerForegroundServiceWorker() {
@@ -38,7 +38,7 @@ export function registerForegroundServiceWorker() {
 
 export async function stopForegroundServiceWorker() {
   notifee.stopForegroundService().then(async () => {
-    clearInterval(fgsWorkerTimer);
+    // clearInterval(fgsWorkerTimer);
     const ws = await getSharedWebSocket();
     if (ws) {
       ws.close(1000, 'FGS was stopped.');

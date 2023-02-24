@@ -14,7 +14,7 @@ import {MainView} from './src/components/Screens/Main';
 import {setupChannels} from './src/notifications/Channels';
 import {AppSettings, initialSettings} from './src/libraries/AppSettings';
 import {SettingsView} from './src/components/Screens/Settings/Settings';
-import {twitarrTheme} from './src/styles/Theme';
+import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {SettingDetail} from './src/components/Screens/Settings/SettingDetail';
 import {NotificationSettings} from './src/components/Screens/Settings/NotificationSettings';
 import {NetworkInfoSettings} from './src/components/Screens/Settings/NetworkInfoSettings';
@@ -24,6 +24,7 @@ import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 import {StorageKeysSettings} from './src/components/Screens/Settings/StorageKeys';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from './src/libraries/Service';
 import {ServerConnectionSettings} from "./src/components/Screens/Settings/ServerConnectionSettings";
+import {useColorScheme} from 'react-native';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ export const UserContext = createContext({});
 function App(): JSX.Element {
   // Set up the navigation stack.
   const Stack = createNativeStackNavigator();
+  const colorScheme = useColorScheme();
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
@@ -76,7 +78,7 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <PaperProvider theme={twitarrTheme}>
+      <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
           <UserContext.Provider value={{isUserLoggedIn, setIsUserLoggedIn}}>
             <Stack.Navigator>

@@ -3,9 +3,9 @@ Websocket/Connection
 * if not on ship wifi pause
 * https://github.com/websockets/ws/#how-to-detect-and-close-broken-connections
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
-* Exponential back off retry generic
 * Calculate setting for websocket notification url. Consider onupdate callback in settings to trigger revalc
 * FGS should not run at all unless on specified wifi networks or with a toggle
+* Add last healthcheck date. Store that somewhere
 
 App Structure
 * Functional only components. Maybe a provider? Something that has no UI but is still present to trigger
@@ -23,12 +23,10 @@ API Interaction
 
 UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
-* See if making dark mode is easy
 
 Work Queue
-* websocket connection status pull to refresh similar to netinfo
-* notification needs to be quiet and not vibrate
+* Healthcheck and WiFI
+* Navigation
 * Decode messages as enum
 * Consider provider/context for server URL.
 * Expand user context to more details.
-* Backoff https://www.npmjs.com/package/exponential-backoff
