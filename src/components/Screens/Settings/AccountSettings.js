@@ -6,7 +6,7 @@ import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Contexts/UserDataContext';
 
 export const AccountSettings = ({route, navigation}) => {
-  const {tokenStringData} = useUserData();
+  const {isLoggedIn} = useUserData();
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
@@ -15,8 +15,8 @@ export const AccountSettings = ({route, navigation}) => {
   return (
     <AppView>
       <ScrollView>
-        {tokenStringData.token && <LogoutView />}
-        {!tokenStringData.token && <LoginView />}
+        {isLoggedIn && <LogoutView />}
+        {!isLoggedIn && <LoginView />}
       </ScrollView>
     </AppView>
   );

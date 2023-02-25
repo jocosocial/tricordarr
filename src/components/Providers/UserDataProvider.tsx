@@ -19,35 +19,65 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
   const [tokenStringData, setTokenStringData] = useState({} as TokenStringData);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const {data} = useQuery<ProfilePublicData>({
-    queryKey: ['/user/profile'],
-    enabled: isLoggedIn,
-  });
+  // const {data} = useQuery<ProfilePublicData>({
+  //   queryKey: ['/user/profile'],
+  //   enabled: !!tokenStringData.token,
+  // });
+  async function determineLoginStatus() {
+    const state = !!(await AppSettings.AUTH_TOKEN.getValue());
+    setIsLoggedIn(state);
+    console.log('Is logged in?', state);
+    return state;
+  }
 
   useEffect(() => {
-    console.log('tokenStringData was influenced');
-    console.log(tokenStringData);
-    console.log('Is Logged in?', isLoggedIn);
-    if (tokenStringData.token) {
-      storeCredentials(tokenStringData).then(() => setIsLoggedIn(true));
-    } else {
-      setIsLoggedIn(false);
-    }
-    if (data) {
-      console.log('Profile Data:', data);
-      setProfilePublicData(data);
-    }
-  }, [tokenStringData, isLoggedIn, data]);
+    console.log('tokenStringData triggered');
+    console.log('Current token data:', tokenStringData);
+    determineLoginStatus();
+    // if (tokenStringData.token) {
+    //   storeCredentials(tokenStringData);
+    // }
+  }, [tokenStringData]);
 
   useEffect(() => {
-    console.log('profilePublicData was influenced');
-    if (profilePublicData.header && profilePublicData.header.username) {
-      storeUserData(profilePublicData);
-    }
+    console.log('profilePublicData triggered');
+    console.log('Current public data:', profilePublicData);
+    // console.log('received data', data);
   }, [profilePublicData]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.debug('YOU ARE LOGGED IN!');
+    } else {
+      console.debug('YOU ARE NOT LOGGED IN. FIGURE IT OUT.');
+    }
+  }, [isLoggedIn]);
+  //
+  // useEffect(() => {
+  //   console.log('tokenStringData was influenced');
+  //   console.log(tokenStringData);
+  //   console.log('Is Logged in?', isLoggedIn);
+  //   if (tokenStringData.token) {
+  //     storeCredentials(tokenStringData).then(() => setIsLoggedIn(true));
+  //   } else {
+  //     setIsLoggedIn(false);
+  //   }
+  //   if (data) {
+  //     console.log('Profile Data:', data);
+  //     setProfilePublicData(data);
+  //   }
+  // }, [tokenStringData, isLoggedIn, data]);
+  //
+  // useEffect(() => {
+  //   console.log('profilePublicData was influenced');
+  //   if (profilePublicData.header && profilePublicData.header.username) {
+  //     storeUserData(profilePublicData);
+  //   }
+  // }, [profilePublicData]);
+
   return (
-    <UserDataContext.Provider value={{profilePublicData, setProfilePublicData, tokenStringData, setTokenStringData}}>
+    <UserDataContext.Provider
+      value={{profilePublicData, setProfilePublicData, tokenStringData, setTokenStringData, isLoggedIn, setIsLoggedIn}}>
       {children}
     </UserDataContext.Provider>
   );

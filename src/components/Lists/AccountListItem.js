@@ -8,16 +8,16 @@ export const AccountListItem = () => {
   const [title, setTitle] = useState('');
   const navigation = useNavigation();
   const description = 'Manage your Twitarr account.';
-  const {tokenStringData} = useUserData();
+  const {isLoggedIn} = useUserData();
 
   useEffect(() => {
     async function determineLoginStatus() {
-      const uname = await AppSettings.USERNAME.getValue();
-      console.log('The settings things you are', uname);
-      setTitle(uname ? uname : 'Login');
+      const userID = await AppSettings.USER_ID.getValue();
+      console.log('The settings things you are', userID);
+      setTitle(isLoggedIn ? userID : 'Login');
     }
     determineLoginStatus();
-  }, [tokenStringData]);
+  }, [isLoggedIn]);
 
   return (
     <List.Item

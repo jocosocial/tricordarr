@@ -6,6 +6,8 @@ export interface UserDataContextType {
   setProfilePublicData: Dispatch<SetStateAction<ProfilePublicData>>;
   tokenStringData: TokenStringData;
   setTokenStringData: Dispatch<SetStateAction<TokenStringData>>;
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 export const UserDataContext = createContext(<UserDataContextType>{});

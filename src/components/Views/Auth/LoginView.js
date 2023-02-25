@@ -35,6 +35,8 @@ export const LoginView = () => {
   const storeLoginData = useCallback(
     (data, variables, context) => {
       setTokenStringData(data.data);
+      AppSettings.AUTH_TOKEN.setValue(data.data.token);
+      AppSettings.USER_ID.setValue(data.data.userID);
       navigation.goBack();
     },
     [navigation, setTokenStringData],
