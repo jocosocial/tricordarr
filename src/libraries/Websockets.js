@@ -94,7 +94,7 @@ function wsMessageHandler(event) {
     case NotificationType.seamailUnreadMsg:
       console.log("GOT A SEAMAIL!!!!!!!!!!");
       channel = seamailChannel;
-      url = `/seamail/${notificationData.contentID}`;
+      url = `/seamail/${notificationData.contentID}#newposts`;
       break;
   }
   
