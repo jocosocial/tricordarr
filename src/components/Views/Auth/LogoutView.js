@@ -23,7 +23,7 @@ export const TempUserProfile = () => {
 
 export const LogoutView = () => {
   const theme = useTheme();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const {setIsUserLoggedIn} = useContext(UserContext);
 
   const logoutMutation = useMutation(

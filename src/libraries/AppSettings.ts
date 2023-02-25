@@ -14,10 +14,12 @@ export class AppSettings {
   title: string;
   description: string;
 
+  // @TODO make these consistent
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static USERNAME = new AppSettings('username');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
   static AUTH_TOKEN = new AppSettings('token', true);
+  static SHIP_SSID = new AppSettings('SHIP_SSID');
 
   constructor(
     key: string,

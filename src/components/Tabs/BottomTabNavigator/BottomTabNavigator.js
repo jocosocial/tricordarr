@@ -3,6 +3,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {SettingsStack} from '../../Stacks/SettingsStack';
 import {MainView} from '../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
+import {SeamailView} from "../../Views/Seamail/SeamailView";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -15,6 +16,14 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Home',
           tabBarIcon: ({color, size}) => <NavBarIcon icon={'home-account'} size={size} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="SeamailTab"
+        component={SeamailView}
+        options={{
+          title: 'Seamail',
+          tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
         }}
       />
       <Tab.Screen
