@@ -87,16 +87,17 @@ const wsOpenHandler = () => console.warn('[open] Connection established');
 function wsMessageHandler(event) {
   console.log(`[message] Data received from server: ${event.data}`);
   const notificationData = JSON.parse(event.data);
-  // @TODO come back to this.
-  // let channel = seamailChannel;
-  // console.log(event.data.type);
-  // switch (event.data.type) {
-  //   case NotificationType.seamailUnreadMsg:
-  //     console.log("GOT A SEAMAIL!!!!!!!!!!");
-  //     channel = seamailChannel;
-  //     break;
-  // }
-  generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, seamailChannel);
+  let channel, type;
+  
+  switch (Object.keys(notificationData.type)[0]) {
+    case NotificationType.seamailUnreadMsg:
+      console.log("GOT A SEAMAIL!!!!!!!!!!");
+      channel = seamailChannel;
+      type = "seamail";
+      break;
+  }
+  
+  generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel, type);
 }
 
 async function wsCloseHandler(event) {

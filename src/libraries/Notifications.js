@@ -1,12 +1,13 @@
 import notifee, {AndroidColor} from '@notifee/react-native';
 import {serviceChannel} from '../notifications/Channels';
 
-export function generateContentNotification(id, title, body, channel) {
+export function generateContentNotification(id, title, body, channel, type) {
   notifee
     .displayNotification({
       id: id,
       title: title,
       body: body,
+      data: { type: type },
       android: {
         channelId: channel.id,
         // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.

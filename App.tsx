@@ -25,6 +25,7 @@ import {StorageKeysSettings} from './src/components/Screens/Settings/StorageKeys
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from './src/libraries/Service';
 import {ServerConnectionSettings} from "./src/components/Screens/Settings/ServerConnectionSettings";
 import {useColorScheme} from 'react-native';
+import {bootstrap} from './src/notifications';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -68,11 +69,13 @@ function App(): JSX.Element {
           console.error('Error starting FGS:', error);
         });
       } else {
-        stopForegroundServiceWorker().catch(error => {
-          console.error('Error stopping FGS:', error);
-        });
+        // @TODO: Prevent this from closing the app
+        // stopForegroundServiceWorker().catch(error => {
+        //   console.error('Error stopping FGS:', error);
+        // });
       }
     }
+    bootstrap().catch(console.error);
     checkForLogin().catch(console.error);
   }, [isUserLoggedIn]);
 
