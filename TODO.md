@@ -25,6 +25,7 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
+* Permissions
 * Healthcheck and WiFI
 * Decode messages as enum
 * Consider provider/context for server URL and any settings.

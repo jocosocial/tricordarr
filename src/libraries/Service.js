@@ -48,5 +48,5 @@ export async function stopForegroundServiceWorker() {
 }
 
 export async function startForegroundServiceWorker() {
-  await generateForegroundServiceNotification('This notification will exist for the lifetime of the service runner');
+  await generateForegroundServiceNotification('A background worker has been started to maintain a connection to the Twitarr server.');
 }

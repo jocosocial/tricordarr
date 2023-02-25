@@ -4,11 +4,29 @@ import {UserNotificationData} from '../../libraries/structs/ControllerStructs';
 import {DefaultProviderProps} from './ProviderTypes';
 import {AppSettings} from "../../libraries/AppSettings";
 import {useQuery} from "@tanstack/react-query";
+import {useUserData} from "../Contexts/UserDataContext";
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../libraries/Service";
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
+// Consider renaming to UserNotificationProvider?
 export const UserNotificationDataProvider = ({children}: DefaultProviderProps) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
+  const {isLoggedIn} = useUserData();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.debug('YOU ARE LOGGED IN! Starting FGS.');
+      startForegroundServiceWorker().catch(error => {
+        console.error('Error starting FGS:', error);
+      });
+    } else {
+      console.debug('YOU ARE NOT LOGGED IN! Stopping FGS.');
+      stopForegroundServiceWorker().catch(error => {
+        console.error('Error stopping FGS:', error);
+      });
+    }
+  }, [isLoggedIn]);
   // Disabling this feature until I come back to it.
   // const {error, data, refetch} = useQuery<UserNotificationData>({
   //   queryKey: ['/notification/global'],

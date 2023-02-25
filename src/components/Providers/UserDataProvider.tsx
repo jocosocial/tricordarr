@@ -45,13 +45,6 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
     // console.log('received data', data);
   }, [profilePublicData]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      console.debug('YOU ARE LOGGED IN!');
-    } else {
-      console.debug('YOU ARE NOT LOGGED IN. FIGURE IT OUT.');
-    }
-  }, [isLoggedIn]);
   //
   // useEffect(() => {
   //   console.log('tokenStringData was influenced');

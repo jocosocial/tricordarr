@@ -13,8 +13,7 @@ export const AccountListItem = () => {
   useEffect(() => {
     async function determineLoginStatus() {
       const userID = await AppSettings.USER_ID.getValue();
-      console.log('The settings things you are', userID);
-      setTitle(isLoggedIn ? userID : 'Login');
+      setTitle(isLoggedIn && userID ? userID : 'Login');
     }
     determineLoginStatus();
   }, [isLoggedIn]);
