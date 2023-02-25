@@ -31,6 +31,7 @@ export const SettingsView = ({navigation}) => {
               description={'Manage the worker that maintains a connection to the server.'}
               navComponent={'ServerConnectionSettingsScreen'}
             />
+            <SettingListItem setting={AppSettings.SHIP_SSID} />
           </List.Section>
           <Divider bold={true} />
           <List.Section>
