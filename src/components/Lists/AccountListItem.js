@@ -21,7 +21,7 @@ export const AccountListItem = () => {
     <List.Item
       title={title}
       description={description}
-      onPress={() => navigation.push('AccountSettings', {title: title})}
+      onPress={() => navigation.push('AccountSettingsScreen', {title: title})}
     />
   );
 };

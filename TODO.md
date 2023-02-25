@@ -26,7 +26,7 @@ UI/UX
 
 Work Queue
 * Healthcheck and WiFI
-* Navigation
+* full page views
 * Decode messages as enum
 * Consider provider/context for server URL.
 * Expand user context to more details.
