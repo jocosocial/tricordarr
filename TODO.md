@@ -27,7 +27,7 @@ UI/UX
 Work Queue
 * Healthcheck and WiFI
 * Decode messages as enum
-* Consider provider/context for server URL.
+* Consider provider/context for server URL and any settings.
 * Expand user context to more details.
 * Snackbar warning/error handling.
 * Fresh installation - permissions issue via dustin?

@@ -33,6 +33,7 @@ export class AppSettings {
     'Notification Poll Interval',
     'How often to check for new notifications from the server.',
   );
+  static USER_ID = new AppSettings('USER_ID');
 
   constructor(
     key: string,

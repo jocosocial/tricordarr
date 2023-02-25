@@ -7,6 +7,7 @@ import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserContext} from '../../Contexts/UserContext';
+import {useUserData} from '../../Contexts/UserDataContext';
 
 export const TempUserProfile = () => {
   const {isLoading, error, data} = useQuery({
@@ -25,6 +26,7 @@ export const LogoutView = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const {setIsUserLoggedIn} = useUserContext();
+  const {setTokenStringData, setProfilePublicData} = useUserData();
 
   const logoutMutation = useMutation(
     async () => {
@@ -39,7 +41,9 @@ export const LogoutView = () => {
   function onPress() {
     logoutMutation.mutate(null, {
       onSuccess: () => {
-        setIsUserLoggedIn(false);
+        // setTokenStringData({});
+        // setProfilePublicData({});
+        // setIsUserLoggedIn(false);
         navigation.goBack();
       },
     });
@@ -51,7 +55,10 @@ export const LogoutView = () => {
     console.log('Old token was:', await AppSettings.AUTH_TOKEN.getValue());
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
-    setIsUserLoggedIn(false);
+    await AppSettings.USER_ID.remove();
+    setTokenStringData({});
+    setProfilePublicData({});
+    // setIsUserLoggedIn(false);
     navigation.goBack();
   }
 

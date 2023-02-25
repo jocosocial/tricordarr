@@ -18,6 +18,7 @@ import {useColorScheme} from 'react-native';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
 import {UserProvider} from './src/components/Providers/UserProvider';
 import {UserNotificationDataProvider} from './src/components/Providers/UserNotificationDataProvider';
+import {UserDataProvider} from './src/components/Providers/UserDataProvider';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -41,19 +42,21 @@ function App(): JSX.Element {
     console.error('Error with settings:', error);
   });
 
-  startForegroundServiceWorker().catch(error => {
-    console.error('Error starting FGS:', error);
-  });
+  // startForegroundServiceWorker().catch(error => {
+  //   console.error('Error starting FGS:', error);
+  // });
 
   return (
     <NavigationContainer>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
-          <UserProvider>
-            <UserNotificationDataProvider>
-              <BottomTabNavigator />
-            </UserNotificationDataProvider>
-          </UserProvider>
+          {/*<UserProvider>*/}
+            <UserDataProvider>
+              <UserNotificationDataProvider>
+                <BottomTabNavigator />
+              </UserNotificationDataProvider>
+            </UserDataProvider>
+          {/*</UserProvider>*/}
         </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>

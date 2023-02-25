@@ -1,22 +1,13 @@
-import {createContext, Dispatch, SetStateAction} from 'react';
-import {ProfilePublicData, UserNotificationData} from '../../libraries/structs/ControllerStructs';
+import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+import {ProfilePublicData, TokenStringData} from '../../libraries/structs/ControllerStructs';
 
 export interface UserDataContextType {
-  // userData: {
-  //   userNotificationData: UserNotificationData;
-  //   publicProfileData: ProfilePublicData;
-  // };
-  // userData: Partial<UserNotificationData>;
-  data: string;
-  setData: Dispatch<SetStateAction<UserDataContextType>>;
+  profilePublicData: ProfilePublicData;
+  setProfilePublicData: Dispatch<SetStateAction<ProfilePublicData>>;
+  tokenStringData: TokenStringData;
+  setTokenStringData: Dispatch<SetStateAction<TokenStringData>>;
 }
 
-// export const initialUserDataContextState = {
-//   userData: {
-//     userNotificationData: <UserNotificationData>{},
-//     publicProfileData: <ProfilePublicData>{},
-//   },
-//   setUserData: () => {},
-// };
-
 export const UserDataContext = createContext(<UserDataContextType>{});
+
+export const useUserData = () => useContext(UserDataContext);

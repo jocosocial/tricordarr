@@ -1,16 +1,14 @@
 /**
- * Used to return a token string for use in HTTP Bearer Authentication.
+ * All of these interfaces come from Swiftarr.
+ * https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Controllers/Structs/ControllerStructs.swift
  */
-export class TokenStringData {
+export interface TokenStringData {
+  /// The user ID of the newly logged in user.
   userID: string;
+  /// The user's access level.
   accessLevel: string;
+  /// The token string.
   token: string;
-
-  constructor(userID: string, accessLevel: string, token: string) {
-    this.userID = userID;
-    this.accessLevel = accessLevel;
-    this.token = token;
-  }
 }
 
 export interface UserHeader {
