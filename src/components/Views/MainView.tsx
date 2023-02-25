@@ -2,11 +2,13 @@ import React, {useEffect} from 'react';
 import {Button, Text} from 'react-native-paper';
 import {AppView} from './AppView';
 import {useQuery} from '@tanstack/react-query';
-import {useIsFocused} from "@react-navigation/native";
-import {AppSettings} from "../../libraries/AppSettings";
+import {useIsFocused} from '@react-navigation/native';
+import {AppSettings} from '../../libraries/AppSettings';
+import {UserDataContext} from '../Contexts/UserDataContext';
+import {UserNotificationData} from '../../libraries/structs/ControllerStructs';
 
 export const FetchUserData = () => {
-  const {isLoading, error, data, refetch} = useQuery({
+  const {isLoading, error, data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
   });
 
@@ -17,6 +19,8 @@ export const FetchUserData = () => {
   useEffect(() => {
     console.log('Renderless useEffect');
     console.log('Got Data:', data);
+    // const userDataContext: UserNotificationData = data;
+    // console.log('created data', userDataContext);
     try {
       AppSettings.SHIP_SSID.setValue(data.shipWifiSSID);
     } catch (e) {
@@ -44,11 +48,12 @@ export const FetchUserData = () => {
   }, [isFocused]);
 
   if (isLoading) {
-    return;
+    return <></>;
   }
   if (error) {
     console.error('Renderless Fetch Error', error);
   }
+  return <></>;
 };
 
 export const MainView = () => {

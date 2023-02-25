@@ -16,6 +16,8 @@ import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from './src/libraries/Service';
 import {useColorScheme} from 'react-native';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
+import {UserDataContextType, UserDataContext} from './src/components/Contexts/UserDataContext';
+import {ProfilePublicData, UserNotificationData} from './src/libraries/structs/ControllerStructs';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -30,10 +32,36 @@ setupAxiosStuff();
 
 export const UserContext = createContext({});
 
+
+
+
+// const defaultUserContext: UserDataContextType = {
+//   setUserData(): {} {
+//     return {};
+//   },
+//   userData: {
+//     publicProfileData: {} as ProfilePublicData,
+//     userNotificationData: {} as UserNotificationData,
+//   },
+// };
+// const initialUserDataContextState = {
+//   // userData: {
+//   //   userNotificationData: {} as UserNotificationData,
+//   //   publicProfileData: {} as ProfilePublicData,
+//   // },
+//   // userData: {} as UserNotificationData,
+//   // userData: {},
+//   data: '',
+//   setData: () => {},
+// };
+
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  // https://www.carlrippon.com/typed-usestate-with-typescript/
+  // https://www.typescriptlang.org/docs/handbook/jsx.html
+  // const [userData, setUserData] = useState(initialUserDataContextState);
 
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
@@ -70,7 +98,9 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
           <UserContext.Provider value={{isUserLoggedIn, setIsUserLoggedIn}}>
-            <BottomTabNavigator />
+            {/*<UserDataContext.Provider value={{data, setUserData}}>*/}
+              <BottomTabNavigator />
+            {/*</UserDataContext.Provider>*/}
           </UserContext.Provider>
         </QueryClientProvider>
       </PaperProvider>
