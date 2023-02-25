@@ -3,6 +3,7 @@ import React, {useEffect} from 'react';
 import {useTheme} from 'react-native-paper';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {cancelTestNotification, displayTestNotification} from '../../../notifications/TestNotification';
+import {AppView} from "../../Views/AppView";
 
 export const TestNotificationScreen = ({route, navigation}) => {
   const theme = useTheme();
@@ -12,7 +13,7 @@ export const TestNotificationScreen = ({route, navigation}) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           <SaveButton
@@ -27,6 +28,6 @@ export const TestNotificationScreen = ({route, navigation}) => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

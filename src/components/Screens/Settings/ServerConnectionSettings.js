@@ -5,6 +5,7 @@ import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../.
 import {SaveButton} from '../../Buttons/SaveButton';
 import {getSharedWebSocket} from '../../../libraries/Websockets';
 import NetInfo from "@react-native-community/netinfo";
+import {AppView} from "../../Views/AppView";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -47,7 +48,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   }, [fetchSocketState]);
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{backgroundColor: theme.colors.background, padding: 20}}>
           <View>
@@ -72,6 +73,6 @@ export const ServerConnectionSettings = ({route, navigation}) => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

@@ -5,6 +5,7 @@ import {AppSettings} from '../../../libraries/AppSettings';
 import {StringSettingForm} from '../../forms/StringSettingForm';
 import {BooleanSettingForm} from '../../forms/BooleanSettingForm';
 import {ErrorSnackbar} from "../../Snackbars/ErrorSnackbar";
+import {AppView} from "../../Views/AppView";
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState(undefined);
@@ -32,7 +33,7 @@ export const SettingDetail = ({route, navigation}) => {
   }
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           {setting.dataType === String && (
@@ -46,6 +47,6 @@ export const SettingDetail = ({route, navigation}) => {
           {errorMessage && errorMessage !== '' && <ErrorSnackbar message={errorMessage} />}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

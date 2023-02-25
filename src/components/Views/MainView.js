@@ -1,11 +1,11 @@
 import React from 'react';
-import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {AppView} from './AppView';
 
 export const MainView = () => {
   return (
-    <View style={{backgroundColor: 'orange', flex: 1}}>
+    <AppView>
       <Text variant={'titleLarge'}>Welcome to Boat!</Text>
-    </View>
+    </AppView>
   );
 };

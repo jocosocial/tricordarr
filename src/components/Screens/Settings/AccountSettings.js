@@ -4,6 +4,7 @@ import {LoginView} from '../../Views/Auth/LoginView';
 import {LogoutView} from '../../Views/Auth/LogoutView';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {UserContext} from '../../../../App';
+import {AppView} from "../../Views/AppView";
 
 export const AccountSettings = ({route, navigation}) => {
   const {isUserLoggedIn} = useContext(UserContext);
@@ -13,11 +14,11 @@ export const AccountSettings = ({route, navigation}) => {
   }, [navigation, route.params.title]);
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         {isUserLoggedIn && <LogoutView />}
         {!isUserLoggedIn && <LoginView />}
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

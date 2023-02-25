@@ -8,11 +8,12 @@ import {PermissionListItem} from "../../Lists/PermissionListItem";
 import {AppPermissions} from "../../../libraries/AppPermissions";
 import {NavigationListItem} from "../../Lists/NavigationListItem";
 import {AccountListItem} from "../../Lists/AccountListItem";
+import {AppView} from "../../Views/AppView";
 
 export const SettingsView = ({navigation}) => {
   const theme = useTheme();
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           <List.Section>
@@ -62,6 +63,6 @@ export const SettingsView = ({navigation}) => {
           </List.Section>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };
