@@ -1,13 +1,10 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppSettings} from '../../libraries/AppSettings';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../libraries/Service';
 import {UserContext} from '../Contexts/UserContext';
+import {DefaultProviderProps} from './ProviderTypes';
 
-interface Props {
-  children?: ReactNode;
-}
-
-export const UserProvider = ({children}: Props) => {
+export const UserProvider = ({children}: DefaultProviderProps) => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   // @TODO move the logic to the detailed logincontext type that Ben talked about.

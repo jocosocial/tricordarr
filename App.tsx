@@ -17,6 +17,7 @@ import {startForegroundServiceWorker} from './src/libraries/Service';
 import {useColorScheme} from 'react-native';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
 import {UserProvider} from './src/components/Providers/UserProvider';
+import {UserNotificationDataProvider} from './src/components/Providers/UserNotificationDataProvider';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -49,9 +50,9 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
           <UserProvider>
-            {/*<UserNotificationDataProvider>*/}
-            <BottomTabNavigator />
-            {/*</UserNotificationDataProvider>*/}
+            <UserNotificationDataProvider>
+              <BottomTabNavigator />
+            </UserNotificationDataProvider>
           </UserProvider>
         </QueryClientProvider>
       </PaperProvider>
