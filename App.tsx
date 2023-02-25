@@ -13,10 +13,8 @@ import {initialSettings} from './src/libraries/AppSettings';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
-import {startForegroundServiceWorker} from './src/libraries/Service';
 import {useColorScheme} from 'react-native';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
-import {UserProvider} from './src/components/Providers/UserProvider';
 import {UserNotificationDataProvider} from './src/components/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Providers/UserDataProvider';
 
@@ -42,21 +40,15 @@ function App(): JSX.Element {
     console.error('Error with settings:', error);
   });
 
-  // startForegroundServiceWorker().catch(error => {
-  //   console.error('Error starting FGS:', error);
-  // });
-
   return (
     <NavigationContainer>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
-          {/*<UserProvider>*/}
-            <UserDataProvider>
-              <UserNotificationDataProvider>
-                <BottomTabNavigator />
-              </UserNotificationDataProvider>
-            </UserDataProvider>
-          {/*</UserProvider>*/}
+          <UserDataProvider>
+            <UserNotificationDataProvider>
+              <BottomTabNavigator />
+            </UserNotificationDataProvider>
+          </UserDataProvider>
         </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>

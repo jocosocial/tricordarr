@@ -6,7 +6,6 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
-import {useUserContext} from '../../Contexts/UserContext';
 import {useUserData} from '../../Contexts/UserDataContext';
 
 export const TempUserProfile = () => {
@@ -25,7 +24,6 @@ export const TempUserProfile = () => {
 export const LogoutView = () => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const {setIsUserLoggedIn} = useUserContext();
   const {setTokenStringData, setProfilePublicData} = useUserData();
 
   const logoutMutation = useMutation(
@@ -41,9 +39,6 @@ export const LogoutView = () => {
   function onPress() {
     logoutMutation.mutate(null, {
       onSuccess: () => {
-        // setTokenStringData({});
-        // setProfilePublicData({});
-        // setIsUserLoggedIn(false);
         navigation.goBack();
       },
     });
@@ -58,7 +53,6 @@ export const LogoutView = () => {
     await AppSettings.USER_ID.remove();
     setTokenStringData({});
     setProfilePublicData({});
-    // setIsUserLoggedIn(false);
     navigation.goBack();
   }
 

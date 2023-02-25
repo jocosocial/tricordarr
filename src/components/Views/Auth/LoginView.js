@@ -7,14 +7,12 @@ import {getAuthHeaders} from '../../../libraries/APIClient';
 import {useMutation} from '@tanstack/react-query';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {useUserContext} from '../../Contexts/UserContext';
 import {useUserData} from '../../Contexts/UserDataContext';
 
 export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
-  const {setIsUserLoggedIn} = useUserContext();
   const {setTokenStringData} = useUserData();
 
   useEffect(() => {
@@ -37,12 +35,9 @@ export const LoginView = () => {
   const storeLoginData = useCallback(
     (data, variables, context) => {
       setTokenStringData(data.data);
-      // AppSettings.AUTH_TOKEN.setValue(data.data.token);
-      // AppSettings.USERNAME.setValue(variables.username);
-      // setIsUserLoggedIn(true);
       navigation.goBack();
     },
-    [navigation, setIsUserLoggedIn, setTokenStringData],
+    [navigation, setTokenStringData],
   );
 
   const onSubmit = useCallback(
