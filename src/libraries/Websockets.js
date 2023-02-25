@@ -51,7 +51,7 @@ export async function buildWebSocket() {
     maxRetries: 5,
     minReconnectionDelay: 1000,
     maxReconnectionDelay: 5000,
-    debug: true,
+    // debug: true,
     reconnectionDelayGrowFactor: 2,
   });
   // const ws = new WebSocket(wsUrl, null, {headers: authHeaders});
@@ -68,21 +68,21 @@ export async function buildWebSocket() {
  * Sad.
  */
 export async function setupWebsocket() {
-  console.warn('Websocket Construction Started.');
+  console.log('Websocket Construction Started.');
   let ws = await getSharedWebSocket();
   if (ws && ws.readyState === WebSocket.OPEN) {
-    console.warn('Re-using existing connection');
+    console.log('Re-using existing connection');
   } else {
-    console.warn('Building new socket connection');
+    console.log('Building new socket connection');
     ws = buildWebSocket();
   }
-  console.warn('Websocket Construction Complete.');
+  console.log('Websocket Construction Complete.');
   await setSharedWebSocket(ws);
 }
 
 const wsErrorHandler = error => console.error('[error]', error);
 
-const wsOpenHandler = () => console.warn('[open] Connection established');
+const wsOpenHandler = () => console.log('[open] Connection established');
 
 function wsMessageHandler(event) {
   console.log(`[message] Data received from server: ${event.data}`);
@@ -101,11 +101,11 @@ function wsMessageHandler(event) {
 
 async function wsCloseHandler(event) {
   if (event.wasClean) {
-    console.warn(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
     // e.g. server process killed or network down
     // event.code is usually 1006 in this case
-    console.warn(`[close] Connection died, code=${event.code} reason=${event.reason}`);
+    console.log(`[close] Connection died, code=${event.code} reason=${event.reason}`);
   }
   // https://github.com/pladaria/reconnecting-websocket/issues/78
   if (event.code === 1000) {

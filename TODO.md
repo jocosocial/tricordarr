@@ -29,3 +29,5 @@ Work Queue
 * Decode messages as enum
 * Consider provider/context for server URL.
 * Expand user context to more details.
+* Snackbar warning/error handling.
+* Fresh installation - permissions issue via dustin?

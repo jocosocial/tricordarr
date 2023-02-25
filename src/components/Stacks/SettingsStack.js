@@ -8,12 +8,23 @@ import {AccountSettings} from '../Screens/Settings/AccountSettings';
 import {ServerConnectionSettings} from '../Screens/Settings/ServerConnectionSettings';
 import {SettingsView} from '../Screens/Settings/Settings';
 import {TestNotificationScreen} from '../Screens/Settings/TestNotificationScreen';
+import {useTheme} from 'react-native-paper';
 
 export const SettingsStack = () => {
   const Stack = createNativeStackNavigator();
+  const theme = useTheme();
+  const screenOptions = {
+    headerStyle: {
+      backgroundColor: theme.colors.background,
+    },
+    headerTitleStyle: {
+      color: theme.colors.onBackground,
+    },
+    headerTintColor: theme.colors.onBackground,
+  };
 
   return (
-    <Stack.Navigator initialRouteName={'SettingsScreen'}>
+    <Stack.Navigator initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
       <Stack.Screen name={'SettingsStack'} component={SettingsView} options={{title: 'Settings'}} />
       <Stack.Screen name={'SettingDetailScreen'} component={SettingDetail} />
       <Stack.Screen name={'NotificationSettingsScreen'} component={NotificationSettings} />
