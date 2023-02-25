@@ -1,10 +1,9 @@
 import React, {useEffect} from 'react';
-import {Button, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {AppView} from './AppView';
 import {useQuery} from '@tanstack/react-query';
 import {useIsFocused} from '@react-navigation/native';
 import {AppSettings} from '../../libraries/AppSettings';
-import {UserDataContext} from '../Contexts/UserDataContext';
 import {UserNotificationData} from '../../libraries/structs/ControllerStructs';
 
 export const FetchUserData = () => {
@@ -60,7 +59,7 @@ export const MainView = () => {
   return (
     <AppView>
       <Text variant={'titleLarge'}>Welcome to Boat!</Text>
-      <FetchUserData />
+      {/*<FetchUserData />*/}
     </AppView>
   );
 };
