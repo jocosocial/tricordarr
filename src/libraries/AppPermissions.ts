@@ -71,8 +71,7 @@ export class AppPermissions {
 
     let permissionStatuses = await requestMultiple(perm);
 
-    const result = permissionStatuses[perm[0]] && permissionStatuses[perm[1]];
-    if (result !== RESULTS.GRANTED) {
+    if (permissionStatuses[perm[0]] !== RESULTS.GRANTED || permissionStatuses[perm[1]] !== RESULTS.GRANTED) {
       Alert.alert(
         'Insufficient permissions!',
         'This app requires both Notifications and Precise Location permissions. Please enable them in the app settings',
