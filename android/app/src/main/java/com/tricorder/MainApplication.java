@@ -1,4 +1,4 @@
-package com.tricorder;
+package com.tricordarr;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
