@@ -15,6 +15,12 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
   const {isLoggedIn} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState(false);
+  const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
+
+  const {data, refetch} = useQuery<UserNotificationData>({
+    queryKey: ['/notification/global'],
+    enabled: enableUserNotifications,
+  });
 
   useEffect(() => {
     async function determineNotificationEnable() {
@@ -43,41 +49,42 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       stopForegroundServiceWorker().catch(error => {
         console.error('Error stopping FGS:', error);
       });
+      setUserNotificationData({} as UserNotificationData);
     }
   }, [enableUserNotifications]);
 
-  // Disabling this feature until I come back to it.
-  // const {error, data, refetch} = useQuery<UserNotificationData>({
-  //   queryKey: ['/notification/global'],
-  // });
+  useEffect(() => {
+    console.log('UserNotificationDataProvider useEffect::data', data);
+    if (data) {
+      setUserNotificationData(data);
+    }
+  }, [data]);
 
-  // useEffect(() => {
-  //   console.log('TODO this is where I should check if poll is enabled');
-  //   async function getTimerInterval() {
-  //     let pollInterval: string | null = await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue();
-  //     if (!pollInterval) {
-  //       pollInterval = '300000';
-  //     }
-  //     return Number(pollInterval);
-  //   }
-  //
-  //   const refreshInterval = getTimerInterval().then(timeout => {
-  //     return setInterval(() => {
-  //       console.log('Refreshing notification data...');
-  //       refetch();
-  //       if (data) {
-  //         setUserNotificationData(data);
-  //         console.log('Stored new data.');
-  //       }
-  //     }, timeout);
-  //   });
-  //   // This is returning every run and I don't like it. It at least stops when the
-  //   // app gets backgrounded so the result is desired.
-  //   return () => {
-  //     console.log('Stopping UserNotificationDataProvider.');
-  //     refreshInterval.then(clearInterval);
-  //   };
-  // }, [data, refetch]);
+  useEffect(() => {
+    async function startPollInterval() {
+      let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
+      return setInterval(() => {
+        refetch();
+      }, pollInterval);
+    }
+    if (enableUserNotifications) {
+      console.log('enable');
+      if (pollSetIntervalID === 0) {
+        startPollInterval()
+          .then(setPollSetIntervalID)
+          .finally(() => refetch());
+      }
+    } else {
+      console.log('disable');
+      clearInterval(pollSetIntervalID);
+      setPollSetIntervalID(0);
+    }
+    // This clears when the component unmounts.
+    return () => {
+      clearInterval(pollSetIntervalID);
+      console.log('Cleared setInterval with ID', pollSetIntervalID);
+    };
+  }, [enableUserNotifications, pollSetIntervalID, refetch]);
 
   return (
     <UserNotificationDataContext.Provider

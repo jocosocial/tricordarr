@@ -26,9 +26,7 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
-* Permissions
 * wifi override switch
-* Pull badges
 * Instructions
 * Snackbar warning/error handling.
 * finish user context to more details.
