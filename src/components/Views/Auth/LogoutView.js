@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import axios from 'axios';
@@ -9,16 +9,30 @@ import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Contexts/UserDataContext';
 
 export const TempUserProfile = () => {
+  const [token, setToken] = useState('unknown');
   const {isLoading, error, data} = useQuery({
     queryKey: ['/user/profile'],
   });
+
+  useEffect(() => {
+    async function getToken() {
+      setToken(await AppSettings.AUTH_TOKEN.getValue());
+    }
+    getToken();
+  }, []);
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
   if (error) {
     return <Text>{error.message}</Text>;
   }
-  return <Text>{JSON.stringify(data)}</Text>;
+  return (
+    <>
+      <Text>{JSON.stringify(data)}</Text>
+      <Text>Auth Token: {token}</Text>
+    </>
+  );
 };
 
 export const LogoutView = () => {

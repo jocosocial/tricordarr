@@ -18,9 +18,9 @@ export const SettingDetail = ({route, navigation}) => {
     getValue().catch(console.error);
   }, [navigation, route, setting, value]);
 
-  async function onSave() {
+  async function onSave(values) {
     try {
-      await setting.setValue(value);
+      await setting.setValue(values.settingValue);
       navigation.goBack();
     } catch (e) {
       console.error('Failed to save:', e);

@@ -38,6 +38,7 @@ function createWebSocketClass(options) {
 }
 
 export async function buildWebSocket() {
+  console.debug('buildWebSocket called');
   const wsUrl = await buildWebsocketURL();
   const loginData = await getLoginData();
   const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
@@ -74,7 +75,7 @@ export async function setupWebsocket() {
     console.log('Re-using existing connection');
   } else {
     console.log('Building new socket connection');
-    ws = buildWebSocket();
+    ws = await buildWebSocket();
   }
   console.log('Websocket Construction Complete.');
   await setSharedWebSocket(ws);

@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
 import {UserNotificationData} from '../../libraries/structs/ControllerStructs';
 import {DefaultProviderProps} from './ProviderTypes';
-import {AppSettings} from "../../libraries/AppSettings";
-import {useQuery} from "@tanstack/react-query";
-import {useUserData} from "../Contexts/UserDataContext";
-import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../libraries/Service";
+import {AppSettings} from '../../libraries/AppSettings';
+import {useQuery} from '@tanstack/react-query';
+import {useUserData} from '../Contexts/UserDataContext';
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../libraries/Service';
+import {getCurrentSSID} from '../../libraries/Network';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -13,20 +14,38 @@ import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../l
 export const UserNotificationDataProvider = ({children}: DefaultProviderProps) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
   const {isLoggedIn} = useUserData();
+  const [enableUserNotifications, setEnableUserNotifications] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      console.debug('YOU ARE LOGGED IN! Starting FGS.');
+    async function determineNotificationEnable() {
+      const currentWifiSSID = await getCurrentSSID();
+      const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
+      // Add an override switch
+      if (currentWifiSSID === shipWifiSSID && isLoggedIn) {
+        console.debug('UserNotificationDataProvider enableUserNotifications');
+        setEnableUserNotifications(true);
+      } else {
+        console.debug('UserNotificationDataProvider disableUserNotifications');
+        setEnableUserNotifications(false);
+      }
+    }
+    determineNotificationEnable().catch(console.error);
+  }, [enableUserNotifications, isLoggedIn]);
+
+  useEffect(() => {
+    if (enableUserNotifications) {
+      console.debug('UserNotificationDataProvider startFgs');
       startForegroundServiceWorker().catch(error => {
         console.error('Error starting FGS:', error);
       });
     } else {
-      console.debug('YOU ARE NOT LOGGED IN! Stopping FGS.');
+      console.debug('UserNotificationDataProvider stopFgs');
       stopForegroundServiceWorker().catch(error => {
         console.error('Error stopping FGS:', error);
       });
     }
-  }, [isLoggedIn]);
+  }, [enableUserNotifications]);
+
   // Disabling this feature until I come back to it.
   // const {error, data, refetch} = useQuery<UserNotificationData>({
   //   queryKey: ['/notification/global'],
@@ -61,7 +80,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   // }, [data, refetch]);
 
   return (
-    <UserNotificationDataContext.Provider value={{userNotificationData, setUserNotificationData}}>
+    <UserNotificationDataContext.Provider
+      value={{userNotificationData, setUserNotificationData, enableUserNotifications, setEnableUserNotifications}}>
       {children}
     </UserNotificationDataContext.Provider>
   );

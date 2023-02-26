@@ -4,8 +4,9 @@ import {useTheme, Text, DataTable} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {getSharedWebSocket} from '../../../libraries/Websockets';
-import NetInfo from "@react-native-community/netinfo";
-import {AppView} from "../../Views/AppView";
+import NetInfo from '@react-native-community/netinfo';
+import {AppView} from '../../Views/AppView';
+import {useUserNotificationData} from '../../Contexts/UserNotificationDataContext';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -21,6 +22,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const theme = useTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
+  const {enableUserNotifications} = useUserNotificationData();
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -52,25 +54,36 @@ export const ServerConnectionSettings = ({route, navigation}) => {
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{backgroundColor: theme.colors.background, padding: 20}}>
           <View>
-            <Text variant={'titleLarge'}>Websocket State</Text>
+            <Text variant={'titleLarge'}>Websocket</Text>
             <DataTable>
               <DataTable.Row key={'wsState'}>
-                <DataTable.Cell>{'Status'}</DataTable.Cell>
+                <DataTable.Cell>{'Socket State'}</DataTable.Cell>
                 <DataTable.Cell>{WebSocketState[socketState]}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </View>
-          <Text variant={'titleLarge'}>FGS Control</Text>
-          <SaveButton
-            buttonText={'Start'}
-            buttonColor={theme.colors.twitarrPositiveButton}
-            onPress={() => startForegroundServiceWorker().catch(console.error)}
-          />
-          <SaveButton
-            buttonText={'Stop'}
-            buttonColor={theme.colors.twitarrNegativeButton}
-            onPress={() => stopForegroundServiceWorker().catch(console.error)}
-          />
+          <View>
+            <Text variant={'titleLarge'}>Notifications</Text>
+            <DataTable>
+              <DataTable.Row key={'notifications'}>
+                <DataTable.Cell>{'Enabled'}</DataTable.Cell>
+                <DataTable.Cell>{enableUserNotifications.toString()}</DataTable.Cell>
+              </DataTable.Row>
+            </DataTable>
+          </View>
+          <View>
+            <Text variant={'titleLarge'}>FGS Control</Text>
+            <SaveButton
+              buttonText={'Start'}
+              buttonColor={theme.colors.twitarrPositiveButton}
+              onPress={() => startForegroundServiceWorker().catch(console.error)}
+            />
+            <SaveButton
+              buttonText={'Stop'}
+              buttonColor={theme.colors.twitarrNegativeButton}
+              onPress={() => stopForegroundServiceWorker().catch(console.error)}
+            />
+          </View>
         </View>
       </ScrollView>
     </AppView>
