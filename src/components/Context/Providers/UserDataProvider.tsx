@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {ProfilePublicData, TokenStringData} from '../../libraries/structs/ControllerStructs';
+import {ProfilePublicData, TokenStringData} from '../../../libraries/./Structs/ControllerStructs';
 import {DefaultProviderProps} from './ProviderTypes';
 import {UserDataContext} from '../Contexts/UserDataContext';
-import {AppSettings} from '../../libraries/AppSettings';
+import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from "@tanstack/react-query";
 
 async function storeCredentials(data: TokenStringData) {

@@ -1,7 +1,7 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 import axios from 'axios';
-import {AppSettings} from './AppSettings';
+import {AppSettings} from '../AppSettings';
 
 export async function setupAxiosStuff() {
   // console.log('AXIOS!');

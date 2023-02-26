@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {SettingsStack} from '../../Stacks/SettingsStack';
-import {MainView} from '../../Views/MainView';
+import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
-import {SeamailView} from '../../Views/Seamail/SeamailView';
+import {SeamailView} from '../../../Views/Seamail/SeamailView';
 
 const Tab = createMaterialBottomTabNavigator();
 
