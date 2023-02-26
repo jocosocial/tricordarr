@@ -17,12 +17,13 @@ async function storeUserData(data: ProfilePublicData) {
 export const UserDataProvider = ({children}: DefaultProviderProps) => {
   const [profilePublicData, setProfilePublicData] = useState({} as ProfilePublicData);
   const [tokenStringData, setTokenStringData] = useState({} as TokenStringData);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(undefined as unknown);
 
   // const {data} = useQuery<ProfilePublicData>({
   //   queryKey: ['/user/profile'],
   //   enabled: !!tokenStringData.token,
   // });
+  // @TODO this maybe shouldnt be an effect.
   async function determineLoginStatus() {
     const state = !!(await AppSettings.AUTH_TOKEN.getValue());
     setIsLoggedIn(state);

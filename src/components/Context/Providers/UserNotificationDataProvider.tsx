@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
 import {UserNotificationData} from '../../../libraries/./Structs/ControllerStructs';
 import {DefaultProviderProps} from './ProviderTypes';
@@ -26,26 +26,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     enabled: enableUserNotifications,
   });
 
-  useEffect(() => {
-    async function determineNotificationEnable() {
-      const currentWifiSSID = await getCurrentSSID();
-      const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
-      // Add an override switch
-      if (currentWifiSSID === shipWifiSSID && isLoggedIn) {
-        console.debug('UserNotificationDataProvider enableUserNotifications');
-        setEnableUserNotifications(true);
-      } else {
-        console.debug('UserNotificationDataProvider disableUserNotifications');
-        setEnableUserNotifications(false);
-      }
-    }
-    determineNotificationEnable().catch(console.error);
-  }, [enableUserNotifications, isLoggedIn]);
-
-  useEffect(() => {
-    console.warn('UNDP useEffect triggered');
-    console.debug('Current enableUserNotifications is:', enableUserNotifications);
-    if (enableUserNotifications) {
+  const controlFgs = useCallback((enable: boolean) => {
+    if (enable) {
       console.debug('UserNotificationDataProvider startFgs');
       startForegroundServiceWorker().catch(error => {
         console.error('Error starting FGS:', error);
@@ -57,7 +39,32 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       });
       setUserNotificationData({} as UserNotificationData);
     }
-  }, [enableUserNotifications]);
+  }, []);
+
+  const determineNotificationEnable = useCallback(async () => {
+    const currentWifiSSID = await getCurrentSSID();
+    const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
+    // Add an override switch
+    if (currentWifiSSID === shipWifiSSID && isLoggedIn) {
+      console.debug('UserNotificationDataProvider enableUserNotifications');
+      await setEnableUserNotifications(true);
+      controlFgs(true);
+    } else {
+      console.debug('UserNotificationDataProvider disableUserNotifications');
+      await setEnableUserNotifications(false);
+      controlFgs(false);
+    }
+  }, [controlFgs, isLoggedIn]);
+
+  useEffect(() => {
+    // isLoggedIn from UserDataProvider initializes as undefined because
+    // we determine that based on whether a token has been set in settings.
+    // This caused the FGS to be reloaded twice in quick succession because
+    // the first render of components would always be false/disabled.
+    if (isLoggedIn !== undefined) {
+      determineNotificationEnable().catch(console.error);
+    }
+  }, [isLoggedIn, determineNotificationEnable]);
 
   useEffect(() => {
     console.log('UserNotificationDataProvider useEffect::data', data);
