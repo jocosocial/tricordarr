@@ -16,5 +16,5 @@ npx react-native start
 
 Notes
 -----
-* Uninstall clears storage and terminates FGS.
+* Uninstall terminates FGS. Doesnt seem to clear storage.
 * Icon library: https://pictogrammers.com/library/mdi/

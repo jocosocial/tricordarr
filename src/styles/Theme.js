@@ -1,6 +1,8 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
+export const twitarrPrimaryColor = '#063953';
+
 export const twitarrTheme = {
   colors: {
     primary: 'rgb(0, 101, 145)',

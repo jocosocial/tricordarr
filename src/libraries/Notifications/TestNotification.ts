@@ -1,6 +1,5 @@
 import notifee from '@notifee/react-native';
 import {serviceChannel} from './Channels';
-import {cancel} from './index';
 
 /**
  * Generate a test notification.
@@ -25,7 +24,7 @@ export async function displayTestNotification() {
 /**
  * Cancel a test notification.
  */
-export function cancelTestNotification() {
+export async function cancelTestNotification() {
   console.log('CANCELING AT return::onPress');
-  cancel('abc123').catch(console.error);
+  await notifee.cancelNotification('abc123');
 }

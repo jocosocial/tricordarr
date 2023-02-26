@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import {setupWebsocket, getSharedWebSocket} from './Network/Websockets';
-import {generateForegroundServiceNotification} from './Notifications';
+import {fgsNotificationID, generateForegroundServiceNotification} from './Notifications/ForegroundService';
 
 // let fgsWorkerTimer;
 
@@ -45,7 +45,7 @@ export async function stopForegroundServiceWorker() {
       console.log('Stopped FGS.');
     })
     .then(async () => {
-      await notifee.cancelNotification('FGSWorkerNotificationID');
+      await notifee.cancelNotification(fgsNotificationID);
     })
     .catch(error => {
       console.error('Error during FGS stop', error);

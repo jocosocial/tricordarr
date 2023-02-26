@@ -3,9 +3,9 @@ import React, {useContext} from 'react';
 import {useTheme, List, Divider} from 'react-native-paper';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {SettingListItem} from '../../Lists/SettingListItem';
-import {NavigationListItem} from "../../Lists/NavigationListItem";
-import {AccountListItem} from "../../Lists/AccountListItem";
-import {AppView} from "../../Views/AppView";
+import {NavigationListItem} from '../../Lists/NavigationListItem';
+import {AccountListItem} from '../../Lists/AccountListItem';
+import {AppView} from '../../Views/AppView';
 
 export const SettingsView = ({navigation}) => {
   const theme = useTheme();

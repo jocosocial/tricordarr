@@ -1,5 +1,5 @@
-import {generateContentNotification} from '../Notifications';
-import {seamailChannel} from '../../notifications/Channels';
+import {generateContentNotification} from '../Notifications/Content';
+import {seamailChannel} from '../Notifications/Channels';
 import {NotificationType} from '../Enums/NotificationType';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';

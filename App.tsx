@@ -8,17 +8,17 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {setupChannels} from './src/notifications/Channels';
+import {setupChannels} from './src/libraries/Notifications/Channels';
 import {initialSettings} from './src/libraries/AppSettings';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';
 import {useColorScheme} from 'react-native';
-import {bootstrap} from './src/notifications';
 import {BottomTabNavigator} from './src/components/Navigation/Tabs/BottomTabNavigator/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
+import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -46,7 +46,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log('Calling useEffect from Main App.');
-    bootstrap().catch(console.error);
+    setupInitialNotification().catch(console.error);
   }, []);
 
   return (

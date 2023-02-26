@@ -9,5 +9,5 @@ export const commonStyles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 20,
-  }
+  },
 });
