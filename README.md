@@ -18,3 +18,13 @@ Notes
 -----
 * Uninstall terminates FGS. Doesnt seem to clear storage.
 * Icon library: https://pictogrammers.com/library/mdi/
+
+Releasing
+---------
+https://reactnative.dev/docs/signed-apk-android
+
+```
+cd android
+./gradlew bundleRelease # To build AAB
+./gradlew assembleRelease # For an APK
+```
