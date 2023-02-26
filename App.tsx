@@ -35,7 +35,7 @@ function App(): JSX.Element {
   const colorScheme = useColorScheme();
 
   AppPermissions.requestRequiredPermissions();
-  
+
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
   });
