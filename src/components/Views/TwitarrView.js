@@ -12,7 +12,5 @@ export const TwitarrView = () => {
     loadSettings();
   }, []);
 
-  console.log(serverUrl)
-
   return <WebView source={{ uri: serverUrl }} />;
 };
