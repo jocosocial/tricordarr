@@ -11,12 +11,12 @@
     The default notification permission behavior changed in Android 13.
     https://developer.android.com/develop/ui/views/notifications/notification-permission
      -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" android:required="true"/>
     <!--
     The location permission is needed to find what Wi-Fi SSID we are on,
     which is used to determine whether we are on the boat.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:required="true"/>
     <!--
     Foreground Services are a "normal" permission so the system grants it automatically.
     But just to be safe I'm doing it here too.
