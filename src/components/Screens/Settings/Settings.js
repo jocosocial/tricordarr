@@ -8,11 +8,12 @@ import {PermissionListItem} from "../../Lists/PermissionListItem";
 import {AppPermissions} from "../../../libraries/AppPermissions";
 import {NavigationListItem} from "../../Lists/NavigationListItem";
 import {AccountListItem} from "../../Lists/AccountListItem";
+import {AppView} from "../../Views/AppView";
 
 export const SettingsView = ({navigation}) => {
   const theme = useTheme();
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           <List.Section>
@@ -26,10 +27,11 @@ export const SettingsView = ({navigation}) => {
             <List.Subheader>Network</List.Subheader>
             <SettingListItem setting={AppSettings.SERVER_URL} />
             <NavigationListItem
-              title={'Server Connection'}
+              title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
-              navComponent={'ServerConnectionSettings'}
+              navComponent={'ServerConnectionSettingsScreen'}
             />
+            <SettingListItem setting={AppSettings.SHIP_SSID} />
           </List.Section>
           <Divider bold={true} />
           <List.Section>
@@ -37,27 +39,31 @@ export const SettingsView = ({navigation}) => {
             <AccountListItem />
           </List.Section>
           <Divider bold={true} />
-          {/*<List.Section>*/}
-          {/*  <List.Subheader>Preferences</List.Subheader>*/}
-          {/*  <List.Item title={'SoonTM'} />*/}
-          {/*</List.Section>*/}
-          {/*<Divider bold={true} />*/}
+          <List.Section>
+            <List.Subheader>Notifications</List.Subheader>
+            <NavigationListItem
+              title={'Test Notification'}
+              description={'Generate a test notification for debugging.'}
+              navComponent={'TestNotificationScreen'}
+            />
+          </List.Section>
+          <Divider bold={true} />
           <List.Section>
             <List.Subheader>About</List.Subheader>
             <NavigationListItem
               title={'Network Info'}
               description={"View details about your device's current network environment."}
-              navComponent={'NetworkInfoSettings'}
+              navComponent={'NetworkInfoSettingsScreen'}
             />
             <NavigationListItem
               title={'Storage Keys'}
               description={'View the contents of internal app storage.'}
-              navComponent={'StorageKeysSettings'}
+              navComponent={'StorageKeysSettingsScreen'}
             />
             <List.Item title={'App Information'} />
           </List.Section>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

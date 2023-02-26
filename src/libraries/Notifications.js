@@ -37,7 +37,7 @@ export async function generateForegroundServiceNotification(body, color = Androi
   if (show) {
     await notifee.displayNotification({
       id: 'FGSWorkerNotificationID',
-      title: 'Foreground service',
+      title: 'Twitarr Server Connection',
       body: body,
       android: {
         channelId: serviceChannel.id,
