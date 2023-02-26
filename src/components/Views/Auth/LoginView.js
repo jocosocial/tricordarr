@@ -1,19 +1,19 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {useTheme, Text} from 'react-native-paper';
-import {LoginForm} from '../../forms/LoginForm';
+import {Text, useTheme} from 'react-native-paper';
+import {LoginForm} from '../../Forms/LoginForm';
 import {AppSettings} from '../../../libraries/AppSettings';
-import {getAuthHeaders} from "../../../libraries/APIClient";
-import {useMutation} from "@tanstack/react-query";
-import axios from "axios";
+import {getAuthHeaders} from '../../../libraries/APIClient';
+import {useMutation} from '@tanstack/react-query';
+import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {UserContext} from '../../../../App';
+import {useUserData} from '../../Contexts/UserDataContext';
 
 export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
-  const {setIsUserLoggedIn} = useContext(UserContext);
+  const {setTokenStringData} = useUserData();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -24,34 +24,31 @@ export const LoginView = () => {
 
   const loginMutation = useMutation(
     async ({username, password}) => {
-      // const username = formValues.username;
-      // const password = formValues.password;
       console.log('Creds:', username, password);
       // https://github.com/axios/axios/issues/2235
-      // let response = await axios.post('/auth/login', {}, {auth: {username: username, password: password}});
       let authHeaders = getAuthHeaders(username, password);
-      let response = await axios.post('/auth/login', {}, {headers: authHeaders});
-      return response;
+      return await axios.post('/auth/login', {}, {headers: authHeaders});
     },
     {retry: 0},
+  );
+
+  const storeLoginData = useCallback(
+    (data, variables, context) => {
+      setTokenStringData(data.data);
+      AppSettings.AUTH_TOKEN.setValue(data.data.token);
+      AppSettings.USER_ID.setValue(data.data.userID);
+      navigation.goBack();
+    },
+    [navigation, setTokenStringData],
   );
 
   const onSubmit = useCallback(
     async formValues => {
       loginMutation.mutate(formValues, {
-        onSuccess: (data, variables, context) => {
-          AppSettings.AUTH_TOKEN.setValue(data.data.token);
-          AppSettings.USERNAME.setValue(variables.username);
-          setIsUserLoggedIn(true);
-          navigation.goBack();
-          // console.log('data', data.data);
-          // console.log('vars', variables);
-          // console.log('context', context);
-
-        },
+        onSuccess: storeLoginData,
       });
     },
-    [loginMutation],
+    [loginMutation, storeLoginData],
   );
 
   return (

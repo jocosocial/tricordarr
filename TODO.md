@@ -25,8 +25,9 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
-* Healthcheck and WiFI
-* Navigation
+* Permissions
 * Decode messages as enum
-* Consider provider/context for server URL.
+* Consider provider/context for server URL and any settings.
 * Expand user context to more details.
+* Snackbar warning/error handling.
+* Fresh installation - permissions issue via dustin?

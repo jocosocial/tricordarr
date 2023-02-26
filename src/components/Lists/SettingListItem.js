@@ -2,7 +2,7 @@ import React from 'react';
 import {List} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 
-export const SettingListItem = ({setting, navComponent = 'SettingDetail'}) => {
+export const SettingListItem = ({setting, navComponent = 'SettingDetailScreen'}) => {
   const navigation = useNavigation();
 
   return (

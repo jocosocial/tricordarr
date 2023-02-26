@@ -14,10 +14,26 @@ export class AppSettings {
   title: string;
   description: string;
 
+  // @TODO make these consistent
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static USERNAME = new AppSettings('username');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
   static AUTH_TOKEN = new AppSettings('token', true);
+  static SHIP_SSID = new AppSettings(
+    'SHIP_SSID',
+    false,
+    String,
+    'WiFi Network',
+    'Configure the SSID of the ship WiFi. Influences notification checking behavior.',
+  );
+  static NOTIFICATION_POLL_INTERVAL = new AppSettings(
+    'NOTIFICATION_POLL_INTERVAL',
+    false,
+    Number,
+    'Notification Poll Interval',
+    'How often to check for new notifications from the server.',
+  );
+  static USER_ID = new AppSettings('USER_ID');
 
   constructor(
     key: string,
@@ -65,6 +81,8 @@ const SettingKeys = Object.freeze({
 export async function initialSettings() {
   console.log('Doing initial settings');
   try {
+    await AppSettings.NOTIFICATION_POLL_INTERVAL.remove();
+    await AppSettings.NOTIFICATION_POLL_INTERVAL.setValue('10000');
     await AsyncStorage.setItem('URL_PREFIX', '/api/v3');
     let setting = await AsyncStorage.getItem(SettingKeys.SERVER_URL);
     if (setting === null && Config.SERVER_URL !== undefined) {
@@ -72,29 +90,14 @@ export async function initialSettings() {
     } else {
       console.log('Server URL is already set');
     }
+    let wifi = await AppSettings.SHIP_SSID.getValue();
+    if (wifi === null && Config.SHIP_SSID !== undefined) {
+      await AppSettings.SHIP_SSID.setValue(Config.SHIP_SSID);
+    } else {
+      console.log('Ship WiFi is already set');
+    }
   } catch (e) {
     console.error(e);
   }
   console.log('Server URL is:', await AsyncStorage.getItem(SettingKeys.SERVER_URL));
 }
-
-// export interface Setting {
-//   key: string;
-//   secure: boolean;
-// }
-//
-//
-//
-// export class Settings {
-//   // static SERVER_URL: string = new Setting();
-//   // key: string;
-//   // value: string;
-//   // get(key: string) {
-//   //   console.log('Getting setting', key);
-//   // }
-//   // constructor(setting: Setting) {
-//   //   this.key = key;
-//   //   this.value = value;
-//   //   // this.secure = secure;
-//   // }
-// }

@@ -22,6 +22,7 @@ export async function setupAxiosStuff() {
     }
     // Other Headers
     config.headers.Accept = 'application/json';
+    config.headers['X-Swiftarr-Client'] = 'tricorder';
     // Return
     // console.log('AFTER:', config);
     return config;

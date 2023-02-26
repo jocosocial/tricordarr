@@ -1,7 +1,8 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {useTheme} from 'react-native-paper';
-import {EnableNotificationForm} from '../../forms/EnableNotificationForm';
+import {EnableNotificationForm} from '../../Forms/EnableNotificationForm';
+import {AppView} from "../../Views/AppView";
 
 export const NotificationSettings = ({route, navigation}) => {
   const theme = useTheme();
@@ -11,12 +12,12 @@ export const NotificationSettings = ({route, navigation}) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView>
         <View style={{backgroundColor: theme.colors.background}}>
           <EnableNotificationForm />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

@@ -3,6 +3,7 @@ import {RefreshControl, SafeAreaView, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {AppView} from "../../Views/AppView";
 // import {SaveButton} from '../../Buttons/SaveButton';
 
 export const StorageKeysSettings = ({route, navigation}) => {
@@ -36,7 +37,7 @@ export const StorageKeysSettings = ({route, navigation}) => {
   }, [fetchData, data]);
 
   return (
-    <SafeAreaView>
+    <AppView>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{backgroundColor: theme.colors.background}}>
           <DataTable>
@@ -54,6 +55,6 @@ export const StorageKeysSettings = ({route, navigation}) => {
           {/*<SaveButton buttonText={'Refresh'} onPress={() => onRefresh()} />*/}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppView>
   );
 };

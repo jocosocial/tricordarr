@@ -4,7 +4,8 @@ import notifee, {AndroidColor} from '@notifee/react-native';
 import {seamailChannel, serviceChannel} from '../notifications/Channels';
 import {AppSettings} from './AppSettings';
 import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
-import {generateForegroundServiceNotification} from "./Notifications";
+import {generateForegroundServiceNotification} from './Notifications';
+import {getCurrentSSID} from './Network';
 
 // let fgsWorkerTimer;
 
@@ -37,16 +38,28 @@ export function registerForegroundServiceWorker() {
 }
 
 export async function stopForegroundServiceWorker() {
-  notifee.stopForegroundService().then(async () => {
-    // clearInterval(fgsWorkerTimer);
-    const ws = await getSharedWebSocket();
-    if (ws) {
-      ws.close(1000, 'FGS was stopped.');
-    }
-    console.log('Stopped FGS.');
-  });
+  console.log('Stopping FGS.');
+  notifee
+    .stopForegroundService()
+    .then(async () => {
+      // clearInterval(fgsWorkerTimer);
+      const ws = await getSharedWebSocket();
+      if (ws) {
+        ws.close(1000, 'FGS was stopped.');
+      }
+      console.log('Stopped FGS.');
+    })
+    .then(async () => {
+      await notifee.cancelNotification('FGSWorkerNotificationID');
+    })
+    .catch(error => {
+      console.error('Error during FGS stop', error);
+    });
 }
 
 export async function startForegroundServiceWorker() {
-  await generateForegroundServiceNotification('This notification will exist for the lifetime of the service runner');
+  console.log('Starting FGS');
+  await generateForegroundServiceNotification(
+    'A background worker has been started to maintain a connection to the Twitarr server.',
+  );
 }

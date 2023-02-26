@@ -21,4 +21,11 @@ Things to look at
 -----------------
 * react-query
 * react-context or redux? https://github.com/pmndrs/zustand
-* 
+* https://oblador.github.io/react-native-vector-icons/
+* icons seem to come from materialcommunity
+* https://pictogrammers.com/library/mdi/
+
+Android Notes
+-------------
+* Uninstall clears storage and terminates FGS.
+
