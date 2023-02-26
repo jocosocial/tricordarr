@@ -18,6 +18,7 @@ import {bootstrap} from './src/notifications';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Providers/UserDataProvider';
+import {AppPermissions} from './src/libraries/AppPermissions';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -33,6 +34,8 @@ setupAxiosStuff();
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
 
+  AppPermissions.requestRequiredPermissions();
+  
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
   });
