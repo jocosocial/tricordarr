@@ -23,8 +23,7 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
-* Maybe don't cycle the FGS on app start?
+* onmessage trigger after login doesnt work
 * wifi override switch
 * Instructions
 * Snackbar warning/error handling.
-* trigger refresh of usernotificationdata on websocket message. 

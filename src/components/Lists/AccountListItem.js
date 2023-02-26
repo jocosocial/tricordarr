@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {List} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {AppSettings} from '../../libraries/AppSettings';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const AccountListItem = () => {
   const [title, setTitle] = useState('');
   const navigation = useNavigation();
   const description = 'Manage your Twitarr account.';
-  const {isLoggedIn} = useUserData();
+  const {isLoggedIn, profilePublicData} = useUserData();
 
   useEffect(() => {
-    async function determineLoginStatus() {
-      const userID = await AppSettings.USER_ID.getValue();
-      setTitle(isLoggedIn && userID ? userID : 'Login');
+    async function determineTitle() {
+      if (isLoggedIn && profilePublicData.header && profilePublicData.header.username) {
+        setTitle(profilePublicData.header.username);
+      } else {
+        setTitle('Login');
+      }
     }
-    determineLoginStatus();
-  }, [isLoggedIn]);
+    determineTitle();
+  }, [isLoggedIn, profilePublicData.header]);
 
   return (
     <List.Item
