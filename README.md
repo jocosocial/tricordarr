@@ -24,3 +24,8 @@ Things to look at
 * https://oblador.github.io/react-native-vector-icons/
 * icons seem to come from materialcommunity
 * https://pictogrammers.com/library/mdi/
+
+Android Notes
+-------------
+* Uninstall clears storage and terminates FGS.
+

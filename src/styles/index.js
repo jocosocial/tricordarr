@@ -7,4 +7,7 @@ export const commonStyles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  marginTop: {
+    marginTop: 20,
+  }
 });

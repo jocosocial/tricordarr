@@ -10,7 +10,7 @@ export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefine
   }
 
   const buttonStyle = {
-    ...commonStyles.margin,
+    ...commonStyles.marginTop,
   };
 
   return (

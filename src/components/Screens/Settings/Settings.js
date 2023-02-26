@@ -27,7 +27,7 @@ export const SettingsView = ({navigation}) => {
             <List.Subheader>Network</List.Subheader>
             <SettingListItem setting={AppSettings.SERVER_URL} />
             <NavigationListItem
-              title={'Server Connection'}
+              title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
               navComponent={'ServerConnectionSettingsScreen'}
             />
