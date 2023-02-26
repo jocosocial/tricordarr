@@ -7,6 +7,7 @@ import {useQuery} from '@tanstack/react-query';
 import {useUserData} from '../Contexts/UserDataContext';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
+import {useAppState} from '../Contexts/AppStateContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -16,6 +17,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const {isLoggedIn} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState(false);
   const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
+  const {appStateVisible} = useAppState();
+  console.debug('The current app state is', appStateVisible);
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
@@ -60,6 +63,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     }
   }, [data]);
 
+  // We can call refetch aggressively because we can cache the result for a while
+  // and avoid hitting the server for new data. Maybe that can be done based on an event?
   useEffect(() => {
     async function startPollInterval() {
       let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
@@ -67,15 +72,13 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         refetch();
       }, pollInterval);
     }
-    if (enableUserNotifications) {
-      console.log('enable');
+    if (enableUserNotifications && appStateVisible === 'active') {
       if (pollSetIntervalID === 0) {
         startPollInterval()
           .then(setPollSetIntervalID)
           .finally(() => refetch());
       }
     } else {
-      console.log('disable');
       clearInterval(pollSetIntervalID);
       setPollSetIntervalID(0);
     }
@@ -84,7 +87,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       clearInterval(pollSetIntervalID);
       console.log('Cleared setInterval with ID', pollSetIntervalID);
     };
-  }, [enableUserNotifications, pollSetIntervalID, refetch]);
+  }, [enableUserNotifications, pollSetIntervalID, refetch, appStateVisible]);
 
   return (
     <UserNotificationDataContext.Provider

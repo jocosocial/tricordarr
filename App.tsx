@@ -19,6 +19,7 @@ import {UserNotificationDataProvider} from './src/components/Context/Providers/U
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
+import {AppStateProvider} from './src/components/Context/Providers/AppStateProvider';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -53,11 +54,13 @@ function App(): JSX.Element {
     <NavigationContainer>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
-          <UserDataProvider>
-            <UserNotificationDataProvider>
-              <BottomTabNavigator />
-            </UserNotificationDataProvider>
-          </UserDataProvider>
+          <AppStateProvider>
+            <UserDataProvider>
+              <UserNotificationDataProvider>
+                <BottomTabNavigator />
+              </UserNotificationDataProvider>
+            </UserDataProvider>
+          </AppStateProvider>
         </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>

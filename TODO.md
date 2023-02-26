@@ -1,10 +1,7 @@
 Websocket/Connection
 * if on ship wifi reconnect more aggressively
-* if not on ship wifi pause
-* https://github.com/websockets/ws/#how-to-detect-and-close-broken-connections
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * Calculate setting for websocket notification url. Consider onupdate callback in settings to trigger revalc
-* FGS should not run at all unless on specified wifi networks or with a toggle
 * Add last healthcheck date. Store that somewhere
 
 App Structure
