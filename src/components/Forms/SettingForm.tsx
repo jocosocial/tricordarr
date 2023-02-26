@@ -9,6 +9,16 @@ interface SettingFormProps {
   onSave: () => void | Promise<any>;
 }
 
+// This was the old code for doing boolean, but never fully implemented.
+// Should probably do something about it.
+// <TouchableRipple onPress={() => setValue(!value)}>
+//         <View style={styles.row}>
+//           <Text>Enable</Text>
+//           <Switch value={value} onValueChange={() => setValue(!value)} />
+//         </View>
+//       </TouchableRipple>
+//       <SaveButton onPress={onSave} />
+
 export const SettingForm = ({value, onSave}: SettingFormProps) => {
   return (
     <Formik enableReinitialize initialValues={{settingValue: value}} onSubmit={onSave}>

@@ -3,7 +3,7 @@ import {ScrollView, View} from 'react-native';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {AppView} from '../../Views/AppView';
 import {AppContainerView} from '../../Views/AppContainerView';
-import {SettingForm} from '../../forms/SettingForm';
+import {SettingForm} from '../../Forms/SettingForm';
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState('');
