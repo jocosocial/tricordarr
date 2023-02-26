@@ -27,6 +27,7 @@ UI/UX
 
 Work Queue
 * Permissions
-* Pull notifications
+* Pull badges
+* Instructions
 * Snackbar warning/error handling.
 * finish user context to more details.
