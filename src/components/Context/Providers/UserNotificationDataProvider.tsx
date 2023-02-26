@@ -8,6 +8,7 @@ import {useUserData} from '../Contexts/UserDataContext';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
 import {useAppState} from '../Contexts/AppStateContext';
+import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -42,6 +43,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   }, [enableUserNotifications, isLoggedIn]);
 
   useEffect(() => {
+    console.warn('UNDP useEffect triggered');
+    console.debug('Current enableUserNotifications is:', enableUserNotifications);
     if (enableUserNotifications) {
       console.debug('UserNotificationDataProvider startFgs');
       startForegroundServiceWorker().catch(error => {
@@ -64,8 +67,29 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   }, [data]);
 
   // We can call refetch aggressively because we can cache the result for a while
-  // and avoid hitting the server for new data. Maybe that can be done based on an event?
+  // and avoid hitting the server for new data.
   useEffect(() => {
+    async function unmountProvider() {
+      let ws = await getSharedWebSocket();
+      // if (ws && ws.readyState === WebSocket.OPEN) {
+      if (ws) {
+        ws.removeEventListener('message', () => refetch());
+      }
+      clearInterval(pollSetIntervalID);
+      console.log('Cleared setInterval with ID', pollSetIntervalID);
+    }
+    async function startWsListener() {
+      console.debug('Considering attaching websocket listener');
+      let ws = await getSharedWebSocket();
+      // if (ws && ws.readyState === WebSocket.OPEN) {
+      if (ws) {
+        console.debug('Attaching listener to socket.');
+        ws.addEventListener('message', () => refetch());
+      } else {
+        console.debug('Skipping attaching to socket', ws);
+      }
+      console.debug('finished attaching or not');
+    }
     async function startPollInterval() {
       let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
       return setInterval(() => {
@@ -77,21 +101,34 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         startPollInterval()
           .then(setPollSetIntervalID)
           .finally(() => refetch());
+        startWsListener().catch(error => {
+          console.error('Error startWsListener', error);
+        });
       }
     } else {
       clearInterval(pollSetIntervalID);
       setPollSetIntervalID(0);
     }
-    // This clears when the component unmounts.
     return () => {
-      clearInterval(pollSetIntervalID);
-      console.log('Cleared setInterval with ID', pollSetIntervalID);
+      unmountProvider()
+        .then(() => {
+          console.log('UserNotificationDataProvider unmounted');
+        })
+        .catch(error => {
+          console.error('UserNotificationDataProvider cleanup failed', error);
+        });
     };
   }, [enableUserNotifications, pollSetIntervalID, refetch, appStateVisible]);
 
   return (
     <UserNotificationDataContext.Provider
-      value={{userNotificationData, setUserNotificationData, enableUserNotifications, setEnableUserNotifications}}>
+      value={{
+        userNotificationData,
+        setUserNotificationData,
+        enableUserNotifications,
+        setEnableUserNotifications,
+        refetch,
+      }}>
       {children}
     </UserNotificationDataContext.Provider>
   );
