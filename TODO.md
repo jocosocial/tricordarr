@@ -26,7 +26,6 @@ UI/UX
 
 Work Queue
 * Permissions
-* Healthcheck and WiFI
 * Decode messages as enum
 * Consider provider/context for server URL and any settings.
 * Expand user context to more details.
