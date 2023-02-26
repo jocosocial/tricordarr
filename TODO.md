@@ -12,6 +12,7 @@ App Structure
   all the backend and setup stuff
 * Renderless Components!
 * more typescript conversion
+* Consider provider/context for server URL and any settings.
 
 Permissions
 * Notifications switch to dialog if granted. Maybe bring back the page with explainer text.
@@ -26,8 +27,6 @@ UI/UX
 
 Work Queue
 * Permissions
-* Decode messages as enum
-* Consider provider/context for server URL and any settings.
-* Expand user context to more details.
+* Pull notifications
 * Snackbar warning/error handling.
-* Fresh installation - permissions issue via dustin?
+* finish user context to more details.
