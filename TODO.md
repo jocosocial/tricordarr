@@ -23,7 +23,7 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
+* onmessage trigger after login doesnt work
 * wifi override switch
 * Instructions
 * Snackbar warning/error handling.
-* finish user context to more details.

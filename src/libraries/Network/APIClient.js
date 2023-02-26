@@ -4,11 +4,8 @@ import axios from 'axios';
 import {AppSettings} from '../AppSettings';
 
 export async function setupAxiosStuff() {
-  // console.log('AXIOS!');
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
-    console.log('Boom! Intercepted!');
-    // console.log('BEFORE:', config);
     // URL
     const serverUrl = await AppSettings.SERVER_URL.getValue();
     const urlPrefix = await AppSettings.URL_PREFIX.getValue();
@@ -24,49 +21,20 @@ export async function setupAxiosStuff() {
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = 'tricordarr';
     // Return
-    // console.log('AFTER:', config);
+    console.info(`API Query: ${config.method.toUpperCase()} ${config.url}`);
     return config;
   });
 }
 
+/**
+ * Default query function for React-Query registered in App.tsx.
+ * @param queryKey
+ * @returns {Promise<*>}
+ */
 export const apiQueryV3 = async ({queryKey}) => {
-  // const serverUrl = await AppSettings.SERVER_URL.getValue();
-  // const urlPrefix = await AppSettings.URL_PREFIX.getValue();
-  console.log('Performing V3 Query');
-  // const url = `${serverUrl}${urlPrefix}${queryKey[0]}`;
-  // console.log(url);
   const {data} = await axios.get(queryKey[0]);
   return data;
 };
-
-export async function apiQuery(endpoint, method = 'GET', headers = {}, body = undefined) {
-  let serverUrl = 'https://beta.twitarr.com';
-  let urlPrefix = '/api/v3';
-  let apiUrlString = serverUrl + urlPrefix + endpoint;
-
-  const defaultHeaders = {
-    Accept: 'application/json',
-  };
-
-  let apiResponse;
-  try {
-    apiResponse = await fetch(apiUrlString, {
-      method: method,
-      headers: Object.assign({}, defaultHeaders, headers),
-      // body: JSON.stringify(body),
-    });
-    // return await response.json();
-  } catch (apiError) {
-    // console.log("apiQuery failed:")
-    // console.log(apiError)
-    throw new Error('apiQuery failed:', apiError);
-  }
-  if (apiResponse.status >= 400) {
-    let responseBody = await apiResponse.json();
-    throw new Error(responseBody.reason);
-  }
-  return apiResponse;
-}
 
 /**
  * Generate the HTTP headers needed to authenticate with the Twitarr API.

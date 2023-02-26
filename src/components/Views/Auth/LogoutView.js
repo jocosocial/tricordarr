@@ -65,8 +65,9 @@ export const LogoutView = () => {
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
     await AppSettings.USER_ID.remove();
-    setTokenStringData({});
-    setProfilePublicData({});
+    // I don't know why await is needed here.
+    await setTokenStringData({});
+    await setProfilePublicData({});
     navigation.goBack();
   }
 
