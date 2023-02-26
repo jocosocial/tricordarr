@@ -27,6 +27,7 @@ UI/UX
 
 Work Queue
 * Permissions
+* wifi override switch
 * Pull badges
 * Instructions
 * Snackbar warning/error handling.
