@@ -3,10 +3,10 @@ import {RefreshControl, SafeAreaView, ScrollView, View} from 'react-native';
 import {useTheme, Text, DataTable} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {SaveButton} from '../../Buttons/SaveButton';
-import {getSharedWebSocket} from '../../../libraries/Websockets';
+import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import NetInfo from '@react-native-community/netinfo';
 import {AppView} from '../../Views/AppView';
-import {useUserNotificationData} from '../../Contexts/UserNotificationDataContext';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({

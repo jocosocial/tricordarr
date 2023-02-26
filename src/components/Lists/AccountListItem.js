@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {List} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {AppSettings} from '../../libraries/AppSettings';
-import {useUserData} from '../Contexts/UserDataContext';
+import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const AccountListItem = () => {
   const [title, setTitle] = useState('');

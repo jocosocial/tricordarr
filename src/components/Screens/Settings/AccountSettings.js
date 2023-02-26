@@ -3,7 +3,7 @@ import {ScrollView} from 'react-native';
 import {LoginView} from '../../Views/Auth/LoginView';
 import {LogoutView} from '../../Views/Auth/LogoutView';
 import {AppView} from '../../Views/AppView';
-import {useUserData} from '../../Contexts/UserDataContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export const AccountSettings = ({route, navigation}) => {
   const {isLoggedIn} = useUserData();

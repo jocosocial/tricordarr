@@ -6,7 +6,7 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
-import {useUserData} from '../../Contexts/UserDataContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export const TempUserProfile = () => {
   const [token, setToken] = useState('unknown');

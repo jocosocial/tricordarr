@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {ProfilePublicData, TokenStringData} from '../../libraries/structs/ControllerStructs';
+import {ProfilePublicData, TokenStringData} from '../../../libraries/./Structs/ControllerStructs';
 
 export interface UserDataContextType {
   profilePublicData: ProfilePublicData;

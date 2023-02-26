@@ -1,11 +1,6 @@
-import {getLoginData} from './Storage';
-import {getAuthHeaders} from './APIClient';
-import notifee, {AndroidColor} from '@notifee/react-native';
-import {seamailChannel, serviceChannel} from '../notifications/Channels';
-import {AppSettings} from './AppSettings';
-import {setupWebsocket, getSharedWebSocket, setSharedWebSocket} from './Websockets';
+import notifee from '@notifee/react-native';
+import {setupWebsocket, getSharedWebSocket} from './Network/Websockets';
 import {generateForegroundServiceNotification} from './Notifications';
-import {getCurrentSSID} from './Network';
 
 // let fgsWorkerTimer;
 

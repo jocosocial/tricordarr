@@ -1,10 +1,9 @@
-import {generateContentNotification} from './Notifications';
-import {seamailChannel} from '../notifications/Channels';
-import {NotificationType} from './Enums/NotificationType';
-import {getLoginData} from "./Storage";
-import {getAuthHeaders} from "./APIClient";
-import {AppSettings} from "./AppSettings";
-import ReconnectingWebSocket from "reconnecting-websocket";
+import {generateContentNotification} from '../Notifications';
+import {seamailChannel} from '../../notifications/Channels';
+import {NotificationType} from '../Enums/NotificationType';
+import {getAuthHeaders} from './APIClient';
+import {AppSettings} from '../AppSettings';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 /**
  * React-Native does not support all the same properties as browser URL
@@ -40,8 +39,8 @@ function createWebSocketClass(options) {
 export async function buildWebSocket() {
   console.debug('buildWebSocket called');
   const wsUrl = await buildWebsocketURL();
-  const loginData = await getLoginData();
-  const authHeaders = getAuthHeaders(undefined, undefined, loginData.token);
+  const token = await AppSettings.AUTH_TOKEN.getValue();
+  const authHeaders = getAuthHeaders(undefined, undefined, token);
 
   // https://www.npmjs.com/package/reconnecting-websocket
   const ws = new ReconnectingWebSocket(wsUrl, [], {
@@ -90,15 +89,15 @@ function wsMessageHandler(event) {
   const notificationData = JSON.parse(event.data);
   const type = Object.keys(notificationData.type)[0];
   let channel, url;
-  
+
   switch (type) {
     case NotificationType.seamailUnreadMsg:
-      console.log("GOT A SEAMAIL!!!!!!!!!!");
+      console.log('GOT A SEAMAIL!!!!!!!!!!');
       channel = seamailChannel;
       url = `/seamail/${notificationData.contentID}#newposts`;
       break;
   }
-  
+
   generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel, type, url);
 }
 

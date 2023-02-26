@@ -3,11 +3,11 @@ import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {LoginForm} from '../../Forms/LoginForm';
 import {AppSettings} from '../../../libraries/AppSettings';
-import {getAuthHeaders} from '../../../libraries/APIClient';
+import {getAuthHeaders} from '../../../libraries/Network/APIClient';
 import {useMutation} from '@tanstack/react-query';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {useUserData} from '../../Contexts/UserDataContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export const LoginView = () => {
   const theme = useTheme();
