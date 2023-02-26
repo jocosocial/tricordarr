@@ -7,6 +7,7 @@ import {useQuery} from '@tanstack/react-query';
 import {useUserData} from '../Contexts/UserDataContext';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
+import {useAppState} from '../Contexts/AppStateContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -15,6 +16,14 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
   const {isLoggedIn} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState(false);
+  const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
+  const {appStateVisible} = useAppState();
+  console.debug('The current app state is', appStateVisible);
+
+  const {data, refetch} = useQuery<UserNotificationData>({
+    queryKey: ['/notification/global'],
+    enabled: enableUserNotifications,
+  });
 
   useEffect(() => {
     async function determineNotificationEnable() {
@@ -43,41 +52,42 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       stopForegroundServiceWorker().catch(error => {
         console.error('Error stopping FGS:', error);
       });
+      setUserNotificationData({} as UserNotificationData);
     }
   }, [enableUserNotifications]);
 
-  // Disabling this feature until I come back to it.
-  // const {error, data, refetch} = useQuery<UserNotificationData>({
-  //   queryKey: ['/notification/global'],
-  // });
+  useEffect(() => {
+    console.log('UserNotificationDataProvider useEffect::data', data);
+    if (data) {
+      setUserNotificationData(data);
+    }
+  }, [data]);
 
-  // useEffect(() => {
-  //   console.log('TODO this is where I should check if poll is enabled');
-  //   async function getTimerInterval() {
-  //     let pollInterval: string | null = await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue();
-  //     if (!pollInterval) {
-  //       pollInterval = '300000';
-  //     }
-  //     return Number(pollInterval);
-  //   }
-  //
-  //   const refreshInterval = getTimerInterval().then(timeout => {
-  //     return setInterval(() => {
-  //       console.log('Refreshing notification data...');
-  //       refetch();
-  //       if (data) {
-  //         setUserNotificationData(data);
-  //         console.log('Stored new data.');
-  //       }
-  //     }, timeout);
-  //   });
-  //   // This is returning every run and I don't like it. It at least stops when the
-  //   // app gets backgrounded so the result is desired.
-  //   return () => {
-  //     console.log('Stopping UserNotificationDataProvider.');
-  //     refreshInterval.then(clearInterval);
-  //   };
-  // }, [data, refetch]);
+  // We can call refetch aggressively because we can cache the result for a while
+  // and avoid hitting the server for new data. Maybe that can be done based on an event?
+  useEffect(() => {
+    async function startPollInterval() {
+      let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
+      return setInterval(() => {
+        refetch();
+      }, pollInterval);
+    }
+    if (enableUserNotifications && appStateVisible === 'active') {
+      if (pollSetIntervalID === 0) {
+        startPollInterval()
+          .then(setPollSetIntervalID)
+          .finally(() => refetch());
+      }
+    } else {
+      clearInterval(pollSetIntervalID);
+      setPollSetIntervalID(0);
+    }
+    // This clears when the component unmounts.
+    return () => {
+      clearInterval(pollSetIntervalID);
+      console.log('Cleared setInterval with ID', pollSetIntervalID);
+    };
+  }, [enableUserNotifications, pollSetIntervalID, refetch, appStateVisible]);
 
   return (
     <UserNotificationDataContext.Provider

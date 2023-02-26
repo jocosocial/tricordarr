@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {SettingsStack} from '../../Stacks/SettingsStack';
 import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
 import {SeamailView} from '../../../Views/Seamail/SeamailView';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -15,8 +16,8 @@ function getBadgeDisplayValue(input) {
 }
 
 export const BottomTabNavigator = () => {
-  // @TODO make this read from the usernotification context.
-  const [seamailUnreadMsg, setSeamailUnreadMsg] = useState(5);
+  const {userNotificationData} = useUserNotificationData();
+
   return (
     <Tab.Navigator initialRouteName={'HomeTab'}>
       <Tab.Screen
@@ -33,7 +34,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Seamail',
           tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
-          tabBarBadge: getBadgeDisplayValue(seamailUnreadMsg),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
         }}
       />
       <Tab.Screen
