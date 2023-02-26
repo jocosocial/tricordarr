@@ -9,9 +9,6 @@ export async function bootstrap() {
   if (initialNotification) {
     console.log('Notification caused application to open', initialNotification.notification);
     console.log('Press action used to open the app', initialNotification.pressAction);
-    // console.log("POOP")
-    // console.log(initialNotification)
-    // console.log("POOP")
     console.log('CANCELING AT bootstrap::initialNotification');
     await cancel(initialNotification.notification.id);
   }

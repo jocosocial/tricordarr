@@ -14,6 +14,7 @@ import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/APIClient';
 import {useColorScheme} from 'react-native';
+import {bootstrap} from './src/notifications';
 import {BottomTabNavigator} from './src/components/Tabs/BottomTabNavigator/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Providers/UserDataProvider';
@@ -39,6 +40,11 @@ function App(): JSX.Element {
   initialSettings().catch(error => {
     console.error('Error with settings:', error);
   });
+
+  useEffect(() => {
+    console.log('Calling useEffect from Main App.');
+    bootstrap().catch(console.error);
+  }, []);
 
   return (
     <NavigationContainer>
