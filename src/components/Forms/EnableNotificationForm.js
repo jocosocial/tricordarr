@@ -68,11 +68,11 @@
 //   }, []);
 //
 //   let message =
-//     'Tricorder does not have permission to send you notifications. ' +
+//     'Tricordarr does not have permission to send you notifications. ' +
 //     'Tap the button below to enable sending notifications.';
 //   if (authorized) {
 //     message =
-//       'Tricorder has permission to send you notifications. ' +
+//       'Tricordarr has permission to send you notifications. ' +
 //       'You can change this and other notification settings by tapping the button below.';
 //   }
 //   return (

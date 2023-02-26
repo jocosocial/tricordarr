@@ -1,14 +1,14 @@
 import notifee, {AndroidChannelGroup} from '@notifee/react-native';
 
 /**
- * System channel is for notifications for Tricorder-specific events.
+ * System channel is for notifications for Tricordarr-specific events.
  * These include mandatory foreground service notifications, server connection
  * events, self destruct, etc.
  */
 export const systemChannelGroup: AndroidChannelGroup = {
   id: 'system',
   name: 'System',
-  description: 'Tricorder-specific events such as server connection issues and alerts.',
+  description: 'Tricordarr-specific events such as server connection issues and alerts.',
 };
 
 /**

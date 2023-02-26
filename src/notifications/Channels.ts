@@ -29,7 +29,7 @@ export const serviceChannel: AndroidChannel = {
   id: 'service',
   name: 'Service',
   groupId: systemChannelGroup.id,
-  description: 'Background processes associated with Tricorder.',
+  description: 'Background processes associated with Tricordarr.',
   badge: false,
 };
 
