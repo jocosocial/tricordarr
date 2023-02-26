@@ -5,6 +5,7 @@ import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
 import {SeamailView} from '../../../Views/Seamail/SeamailView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import { TwitarrView } from '../../../Views/TwitarrView';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -35,6 +36,14 @@ export const BottomTabNavigator = () => {
           title: 'Seamail',
           tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
           tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
+        }}
+      />
+      <Tab.Screen
+        name="TwitarrTab"
+        component={TwitarrView}
+        options={{
+          title: 'Twit-arr',
+          tabBarIcon: ({color, size}) => <NavBarIcon icon={'web'} size={size} color={color} />,
         }}
       />
       <Tab.Screen
