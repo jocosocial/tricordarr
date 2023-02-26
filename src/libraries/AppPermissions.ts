@@ -1,4 +1,11 @@
-import {check as checkPermission, request as requestPermission, RESULTS, PERMISSIONS} from 'react-native-permissions';
+import {
+  check as checkPermission,
+  request as requestPermission,
+  requestMultiple,
+  RESULTS,
+  PERMISSIONS,
+} from 'react-native-permissions';
+import {Alert, Linking, BackHandler} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 export class AppPermissions {
@@ -58,4 +65,24 @@ export class AppPermissions {
   async request() {
     return await requestPermission(this.permission);
   }
+
+  static requestRequiredPermissions = async () => {
+    let perm = [PERMISSIONS.ANDROID.POST_NOTIFICATIONS, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION];
+
+    let permissionStatuses = await requestMultiple(perm);
+
+    const result = permissionStatuses[perm[0]] && permissionStatuses[perm[1]];
+    if (result !== RESULTS.GRANTED) {
+      Alert.alert(
+        'Insufficient permissions!',
+        'This app requires both Notifications and Precise Location permissions. Please enable them in the app settings',
+        [
+          {text: 'Open Settings', onPress: () => Linking.openSettings()},
+          {text: 'Exit', onPress: () => BackHandler.exitApp()},
+        ],
+      );
+      return false;
+    }
+    return true;
+  };
 }
