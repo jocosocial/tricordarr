@@ -146,7 +146,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         setEnableUserNotifications,
         // refetch,
       }}>
-      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} />
+      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} isLoggedIn={isLoggedIn} />
       {children}
     </UserNotificationDataContext.Provider>
   );
