@@ -1,53 +1,48 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAppState} from '../../Context/Contexts/AppStateContext';
-import {AppState} from 'react-native';
-import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {AppSettings} from '../../../libraries/AppSettings';
 
 interface NotificationPollerProps {
   isLoading: boolean;
-  isVisible: string;
+  enable: boolean;
+  isLoggedIn: boolean;
 }
 
-export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps) => {
-  console.log('Welcome to the NotificationPoller!');
-  console.log('Loading', isLoading);
-  console.log('Enable', enable);
-
+export const NotificationPoller = ({isLoading, enable, isLoggedIn}: NotificationPollerProps) => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
 
-  const cleanupNotificationPoller = useCallback(async () => {
-    // For some reason this is reversed when inside the useEffect. I have no idea why
-    // and will deal with it later. The state should be 'background' or something.
-    console.log('Cleaning up');
-    if (appStateVisible === 'active') {
-      clearInterval(pollIntervalID);
+  function cleanupNotificationPoller() {
+    if (pollIntervalID !== 0) {
       setPollIntervalID(0);
+      clearInterval(pollIntervalID);
       console.log('Cleared setInterval with ID', pollIntervalID);
     }
-  }, [appStateVisible, pollIntervalID]);
-
-  if (!isLoading && enable && appStateVisible === 'active') {
-    console.log('The poller should be started');
   }
-  console.log('Current poll ID is', pollIntervalID);
-  // } else {
-  //   console.log('The poller must be killed');
-  //   clearInterval(pollIntervalID);
-  //   setPollIntervalID(0);
-  //   // cleanupNotificationPoller().catch(error => setErrorMessage(error.toString()));
-  // }
 
-  console.log('NotificationPoller app state is', appStateVisible);
+  async function startNotificationPoller() {
+    let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
+    const id = setInterval(() => {
+      console.log('POLLING!');
+    }, pollInterval);
+    setPollIntervalID(id);
+  }
 
-  useEffect(() => {
-    return () => {
-      cleanupNotificationPoller().catch(error => {
-        console.error('NotificationPoller cleanup failed', error);
-      });
-    };
-  }, [cleanupNotificationPoller, appStateVisible]);
+  if (appStateVisible !== 'active' || !enable || !isLoggedIn) {
+    cleanupNotificationPoller();
+    console.log('NotificationPoller has shut down');
+  } else if (!isLoading && isLoggedIn && enable && appStateVisible === 'active') {
+    if (pollIntervalID === 0) {
+      startNotificationPoller()
+        .catch(error => setErrorMessage(error.toString()))
+        .finally(() => console.log('initial'));
+    } else {
+      console.log('A running interval already exists with id', pollIntervalID);
+    }
+    console.log('NotificationPoller was running or has started.');
+  }
 
   return <></>;
 };

@@ -90,7 +90,7 @@ export async function initialSettings() {
   console.log('Doing initial settings');
   try {
     await AppSettings.NOTIFICATION_POLL_INTERVAL.remove();
-    await AppSettings.NOTIFICATION_POLL_INTERVAL.setValue('60000');
+    await AppSettings.NOTIFICATION_POLL_INTERVAL.setValue('5000');
     await AsyncStorage.setItem('URL_PREFIX', '/api/v3');
     let setting = await AsyncStorage.getItem(SettingKeys.SERVER_URL);
     if (setting === null && Config.SERVER_URL !== undefined) {
