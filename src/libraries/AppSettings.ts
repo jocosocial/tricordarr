@@ -15,6 +15,7 @@ export class AppSettings {
   description: string;
 
   // @TODO make these consistent
+  // @TODO make datatype mean something
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static USERNAME = new AppSettings('username');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
@@ -34,6 +35,13 @@ export class AppSettings {
     'How often to check for new notifications from the server.',
   );
   static USER_ID = new AppSettings('USER_ID');
+  static OVERRIDE_WIFI_CHECK = new AppSettings(
+    'OVERRIDE_WIFI_CHECK',
+    false,
+    Boolean,
+    'Override WiFi Check',
+    'Attempt server connection even if not on configured WiFi network. Requires app restart. May use more battery.',
+  );
 
   constructor(
     key: string,

@@ -10,4 +10,9 @@ export const commonStyles = StyleSheet.create({
   marginTop: {
     marginTop: 20,
   },
+  booleanSettingRowView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 });

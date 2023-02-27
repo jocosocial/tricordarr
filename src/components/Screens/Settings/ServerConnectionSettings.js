@@ -1,12 +1,15 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {RefreshControl, SafeAreaView, ScrollView, View} from 'react-native';
-import {useTheme, Text, DataTable} from 'react-native-paper';
+import {RefreshControl, SafeAreaView, ScrollView, Switch, View} from 'react-native';
+import {useTheme, Text, DataTable, TouchableRipple} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import NetInfo from '@react-native-community/netinfo';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {commonStyles} from "../../../styles";
+import {AppSettings} from "../../../libraries/AppSettings";
+import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -23,6 +26,8 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useUserNotificationData();
+  const [override, setOverride] = useState(false);
+  const {setErrorMessage} = useErrorHandler();
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -35,10 +40,6 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchSocketState().finally(() => setRefreshing(false));
-    // NetInfo.refresh().then(() => setData({})).finally(() => setRefreshing(false));
-    // setTimeout(() => {
-    //   setRefreshing(false);
-    // }, 500);
   }, [fetchSocketState]);
 
   useEffect(() => {
@@ -48,6 +49,19 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   useEffect(() => {
     fetchSocketState().catch(console.error);
   }, [fetchSocketState]);
+
+  useEffect(() => {
+    async function getSettingValue() {
+      // https://stackoverflow.com/questions/263965/how-can-i-convert-a-string-to-boolean-in-javascript
+      setOverride((await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true');
+    }
+    getSettingValue().catch(e => setErrorMessage(e.toString()));
+  }, [setErrorMessage]);
+
+  async function toggleOverride() {
+    await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override))
+    setOverride(!override);
+  }
 
   return (
     <AppView>
@@ -62,7 +76,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
               </DataTable.Row>
             </DataTable>
           </View>
-          <View>
+          <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>Notifications</Text>
             <DataTable>
               <DataTable.Row key={'notifications'}>
@@ -71,7 +85,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
               </DataTable.Row>
             </DataTable>
           </View>
-          <View>
+          <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>FGS Control</Text>
             <SaveButton
               buttonText={'Start'}
@@ -83,6 +97,16 @@ export const ServerConnectionSettings = ({route, navigation}) => {
               buttonColor={theme.colors.twitarrNegativeButton}
               onPress={() => stopForegroundServiceWorker().catch(console.error)}
             />
+          </View>
+          <View style={commonStyles.marginTop}>
+            <Text variant={'titleLarge'}>Override WiFi Check</Text>
+            <Text>{AppSettings.OVERRIDE_WIFI_CHECK.description}</Text>
+            <TouchableRipple onPress={toggleOverride}>
+              <View style={commonStyles.booleanSettingRowView}>
+                <Text>Enable</Text>
+                <Switch value={override} onValueChange={toggleOverride} />
+              </View>
+            </TouchableRipple>
           </View>
         </View>
       </ScrollView>

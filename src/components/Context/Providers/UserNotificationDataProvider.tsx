@@ -43,8 +43,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const determineNotificationEnable = useCallback(async () => {
     const currentWifiSSID = await getCurrentSSID();
     const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
-    // Add an override switch
-    if (currentWifiSSID === shipWifiSSID && isLoggedIn) {
+    const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
+    if ((currentWifiSSID === shipWifiSSID || overrideWifi) && isLoggedIn) {
       console.log('UserNotificationDataProvider enableUserNotifications');
       await setEnableUserNotifications(true);
       controlFgs(true);
