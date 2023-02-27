@@ -1,19 +1,33 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppState} from '../../Context/Contexts/AppStateContext';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {AppSettings} from '../../../libraries/AppSettings';
+import {useQuery} from '@tanstack/react-query';
+import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 interface NotificationPollerProps {
   isLoading: boolean;
   enable: boolean;
   isLoggedIn: boolean;
-  fetch: any;
 }
 
-export const NotificationPoller = ({isLoading, enable, isLoggedIn, fetch}: NotificationPollerProps) => {
+export const NotificationPoller = ({isLoading, enable, isLoggedIn}: NotificationPollerProps) => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
+  const {setUserNotificationData} = useUserNotificationData();
+
+  const {data, refetch} = useQuery<UserNotificationData>({
+    queryKey: ['/notification/global'],
+    enabled: enable,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setUserNotificationData(data);
+    }
+  }, [data, setUserNotificationData]);
 
   function cleanupNotificationPoller() {
     if (pollIntervalID !== 0) {
@@ -26,7 +40,7 @@ export const NotificationPoller = ({isLoading, enable, isLoggedIn, fetch}: Notif
   async function startNotificationPoller() {
     let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
     const id = setInterval(() => {
-      fetch();
+      refetch();
     }, pollInterval);
     setPollIntervalID(id);
     console.log('Started NotificationPoller with ID', id);
@@ -38,13 +52,13 @@ export const NotificationPoller = ({isLoading, enable, isLoggedIn, fetch}: Notif
   } else if (!isLoading && isLoggedIn && enable && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
-        .then(() => fetch())
+        .then(() => refetch())
         .catch(error => setErrorMessage(error.toString()));
     } else {
-      console.log('A running interval already exists with id', pollIntervalID);
+      // console.log('A running interval already exists with id', pollIntervalID);
     }
-    console.log('NotificationPoller was running or has started.');
+    // console.log('NotificationPoller was running or has started.');
   }
 
-  return <></>;
+  return null;
 };
