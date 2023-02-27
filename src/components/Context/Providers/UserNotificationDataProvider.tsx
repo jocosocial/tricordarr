@@ -24,10 +24,10 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   // const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
   // const {appStateVisible} = useAppState();
 
-  // const {data, refetch} = useQuery<UserNotificationData>({
-  //   queryKey: ['/notification/global'],
-  //   enabled: enableUserNotifications,
-  // });
+  const {data: queryData, refetch: fetchUserNotificationData} = useQuery<UserNotificationData>({
+    queryKey: ['/notification/global'],
+    enabled: enableUserNotifications,
+  });
   //
   // const controlFgs = useCallback((enable: boolean) => {
   //   if (enable) {
@@ -73,12 +73,12 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     //   }
   }, [isLoggedIn, isLoading, determineNotificationEnable, setErrorMessage]);
 
-  // useEffect(() => {
-  //   console.debug('UserNotificationDataProvider :: data');
-  //   if (data) {
-  //     setUserNotificationData(data);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    console.debug('UserNotificationDataProvider :: data :: ', queryData);
+    if (queryData) {
+      setUserNotificationData(queryData);
+    }
+  }, [queryData]);
   //
   // // We can call refetch aggressively because we can cache the result for a while
   // // and avoid hitting the server for new data.
@@ -144,9 +144,14 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         setUserNotificationData,
         enableUserNotifications,
         setEnableUserNotifications,
-        // refetch,
+        fetchUserNotificationData,
       }}>
-      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} isLoggedIn={isLoggedIn} />
+      <NotificationPoller
+        enable={enableUserNotifications}
+        isLoading={isLoading}
+        isLoggedIn={isLoggedIn}
+        fetch={fetchUserNotificationData}
+      />
       {children}
     </UserNotificationDataContext.Provider>
   );
