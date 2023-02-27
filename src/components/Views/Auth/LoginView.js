@@ -8,12 +8,14 @@ import {useMutation} from '@tanstack/react-query';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
   const {setTokenStringData} = useUserData();
+  const {setErrorMessage} = useErrorHandler();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -33,10 +35,10 @@ export const LoginView = () => {
   );
 
   const storeLoginData = useCallback(
-    (data, variables, context) => {
-      setTokenStringData(data.data);
-      AppSettings.AUTH_TOKEN.setValue(data.data.token);
-      AppSettings.USER_ID.setValue(data.data.userID);
+    async data => {
+      await setTokenStringData(data.data);
+      await AppSettings.AUTH_TOKEN.setValue(data.data.token);
+      await AppSettings.USER_ID.setValue(data.data.userID);
       navigation.goBack();
     },
     [navigation, setTokenStringData],
@@ -46,9 +48,10 @@ export const LoginView = () => {
     async formValues => {
       loginMutation.mutate(formValues, {
         onSuccess: storeLoginData,
+        onError: error => setErrorMessage(error.response.data.reason),
       });
     },
-    [loginMutation, storeLoginData],
+    [loginMutation, setErrorMessage, storeLoginData],
   );
 
   return (
