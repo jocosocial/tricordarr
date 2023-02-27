@@ -9,16 +9,20 @@ import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../.
 import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
 import {useAppState} from '../Contexts/AppStateContext';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
+import {useErrorHandler} from "../Contexts/ErrorHandlerContext";
+import {NotificationPoller} from '../../Libraries/Notifications/NotificationPoller';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 // Consider renaming to UserNotificationProvider?
 export const UserNotificationDataProvider = ({children}: DefaultProviderProps) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
-  const {isLoggedIn} = useUserData();
+  const {isLoggedIn, isLoading} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState(false);
-  const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
-  const {appStateVisible} = useAppState();
+  const {setErrorMessage} = useErrorHandler();
+
+  // const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
+  // const {appStateVisible} = useAppState();
 
   // const {data, refetch} = useQuery<UserNotificationData>({
   //   queryKey: ['/notification/global'],
@@ -40,32 +44,35 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   //   }
   // }, []);
   //
-  // const determineNotificationEnable = useCallback(async () => {
-  //   const currentWifiSSID = await getCurrentSSID();
-  //   const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
-  //   const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
-  //   if ((currentWifiSSID === shipWifiSSID || overrideWifi) && isLoggedIn) {
-  //     console.log('UserNotificationDataProvider enableUserNotifications');
-  //     await setEnableUserNotifications(true);
-  //     controlFgs(true);
-  //   } else {
-  //     console.log('UserNotificationDataProvider disableUserNotifications');
-  //     await setEnableUserNotifications(false);
-  //     controlFgs(false);
-  //   }
-  // }, [controlFgs, isLoggedIn]);
-  //
-  // useEffect(() => {
-  //   console.debug('UserNotificationDataProvider :: isLoggedIn');
-  //   // isLoggedIn from UserDataProvider initializes as undefined because
-  //   // we determine that based on whether a token has been set in settings.
-  //   // This caused the FGS to be reloaded twice in quick succession because
-  //   // the first render of components would always be false/disabled.
-  //   if (isLoggedIn !== undefined) {
-  //     determineNotificationEnable().catch(console.error);
-  //   }
-  // }, [isLoggedIn, determineNotificationEnable]);
-  //
+  const determineNotificationEnable = useCallback(async () => {
+    const currentWifiSSID = await getCurrentSSID();
+    const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
+    const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
+    if ((currentWifiSSID === shipWifiSSID || overrideWifi) && isLoggedIn) {
+      setEnableUserNotifications(true);
+    } else {
+      setEnableUserNotifications(false);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    // If we're done loading, and you're logged in, do the fancy checks.
+    // Otherwise, don't even bother trying to enable notifications.
+    if (!isLoading && isLoggedIn) {
+      determineNotificationEnable().catch(error => setErrorMessage(error.toString()));
+    } else {
+      setEnableUserNotifications(false);
+    }
+    //   console.debug('UserNotificationDataProvider :: isLoggedIn');
+    //   // isLoggedIn from UserDataProvider initializes as undefined because
+    //   // we determine that based on whether a token has been set in settings.
+    //   // This caused the FGS to be reloaded twice in quick succession because
+    //   // the first render of components would always be false/disabled.
+    //   if (isLoggedIn !== undefined) {
+    //     determineNotificationEnable().catch(console.error);
+    //   }
+  }, [isLoggedIn, isLoading, determineNotificationEnable, setErrorMessage]);
+
   // useEffect(() => {
   //   console.debug('UserNotificationDataProvider :: data');
   //   if (data) {
@@ -128,6 +135,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   //   };
   // }, [enableUserNotifications, pollSetIntervalID, refetch, appStateVisible]);
 
+  // console.log('Notifications enable?', enableUserNotifications);
+
   return (
     <UserNotificationDataContext.Provider
       value={{
@@ -137,6 +146,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         setEnableUserNotifications,
         // refetch,
       }}>
+      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} />
       {children}
     </UserNotificationDataContext.Provider>
   );
