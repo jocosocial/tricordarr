@@ -24,5 +24,7 @@ UI/UX
 
 Work Queue
 * onmessage trigger after login doesnt work
+* bunch of state update after login doesnt work. fgs didnt start?
+* connection notification should direct to connection settings. or instructions
 * login name still busted
 * Instructions
