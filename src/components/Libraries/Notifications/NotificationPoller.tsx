@@ -7,9 +7,10 @@ interface NotificationPollerProps {
   isLoading: boolean;
   enable: boolean;
   isLoggedIn: boolean;
+  fetch: any;
 }
 
-export const NotificationPoller = ({isLoading, enable, isLoggedIn}: NotificationPollerProps) => {
+export const NotificationPoller = ({isLoading, enable, isLoggedIn, fetch}: NotificationPollerProps) => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
@@ -25,9 +26,10 @@ export const NotificationPoller = ({isLoading, enable, isLoggedIn}: Notification
   async function startNotificationPoller() {
     let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');
     const id = setInterval(() => {
-      console.log('POLLING!');
+      fetch();
     }, pollInterval);
     setPollIntervalID(id);
+    console.log('Started NotificationPoller with ID', id);
   }
 
   if (appStateVisible !== 'active' || !enable || !isLoggedIn) {
@@ -36,8 +38,8 @@ export const NotificationPoller = ({isLoading, enable, isLoggedIn}: Notification
   } else if (!isLoading && isLoggedIn && enable && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
-        .catch(error => setErrorMessage(error.toString()))
-        .finally(() => console.log('initial'));
+        .then(() => fetch())
+        .catch(error => setErrorMessage(error.toString()));
     } else {
       console.log('A running interval already exists with id', pollIntervalID);
     }
