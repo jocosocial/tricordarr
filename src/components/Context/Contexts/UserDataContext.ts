@@ -1,13 +1,15 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {ProfilePublicData, TokenStringData} from '../../../libraries/Structs/ControllerStructs';
+import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 
 export interface UserDataContextType {
   profilePublicData: ProfilePublicData;
   setProfilePublicData: Dispatch<SetStateAction<ProfilePublicData>>;
-  tokenStringData: TokenStringData;
-  setTokenStringData: Dispatch<SetStateAction<TokenStringData>>;
-  isLoggedIn: unknown;
-  setIsLoggedIn: Dispatch<SetStateAction<unknown>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  // authToken: string;
+  // setAuthToken: Dispatch<SetStateAction<string>>;
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 export const UserDataContext = createContext(<UserDataContextType>{});

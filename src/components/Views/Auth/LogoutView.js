@@ -7,31 +7,24 @@ import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useUserNotificationData} from "../../Context/Contexts/UserNotificationDataContext";
-import {stopForegroundServiceWorker} from "../../../libraries/Service";
+import {stopForegroundServiceWorker} from '../../../libraries/Service';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export const TempUserProfile = () => {
   const [token, setToken] = useState('unknown');
-  const {isLoading, error, data} = useQuery({
-    queryKey: ['/user/profile'],
-  });
+  const {profilePublicData} = useUserData();
+  const {setErrorMessage} = useErrorHandler();
 
   useEffect(() => {
     async function getToken() {
       setToken(await AppSettings.AUTH_TOKEN.getValue());
     }
-    getToken();
-  }, []);
+    getToken().catch(error => setErrorMessage(error.toString()));
+  }, [setErrorMessage]);
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-  if (error) {
-    return <Text>{error.message}</Text>;
-  }
   return (
     <>
-      <Text>{JSON.stringify(data)}</Text>
+      <Text>{JSON.stringify(profilePublicData)}</Text>
       <Text>Auth Token: {token}</Text>
     </>
   );
@@ -40,12 +33,12 @@ export const TempUserProfile = () => {
 export const LogoutView = () => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const {setTokenStringData, setProfilePublicData, setIsLoggedIn} = useUserData();
+  const {setIsLoggedIn, setProfilePublicData} = useUserData();
 
   const logoutMutation = useMutation(
     async () => {
       // Gotta do the call before clearing our local state.
-      await stopForegroundServiceWorker();
+      // await stopForegroundServiceWorker();
       let response = await axios.post('/auth/logout');
       await clearAuthData();
       return response;
@@ -68,9 +61,8 @@ export const LogoutView = () => {
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
     await AppSettings.USER_ID.remove();
-    // I don't know why await is needed here.
-    await setTokenStringData({});
-    await setProfilePublicData({});
+    setIsLoggedIn(false);
+    setProfilePublicData({});
     navigation.goBack();
   }
 

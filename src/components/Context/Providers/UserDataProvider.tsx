@@ -4,43 +4,45 @@ import {DefaultProviderProps} from './ProviderTypes';
 import {UserDataContext} from '../Contexts/UserDataContext';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
+import {useErrorHandler} from "../Contexts/ErrorHandlerContext";
 
+// https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: DefaultProviderProps) => {
   const [profilePublicData, setProfilePublicData] = useState({} as ProfilePublicData);
-  const [tokenStringData, setTokenStringData] = useState({} as TokenStringData);
-  const [isLoggedIn, setIsLoggedIn] = useState(undefined as unknown);
+  // const [authToken, setAuthToken] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const {setErrorMessage} = useErrorHandler();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // console.debug('authToken', authToken);
+  console.debug('isLoggedIn', isLoggedIn);
+  console.debug('isLoading', isLoading);
+
+  useEffect(() => {
+    async function getSettings() {
+      const tokenSetting = await AppSettings.AUTH_TOKEN.getValue();
+      if (tokenSetting) {
+        setIsLoggedIn(true);
+      }
+      setIsLoading(false);
+    }
+    getSettings().catch(error => setErrorMessage(error.toString()));
+  }, [setErrorMessage]);
 
   const {data: profileQueryData} = useQuery<ProfilePublicData>({
     queryKey: ['/user/profile'],
-    enabled: !!isLoggedIn,
+    enabled: !isLoading && isLoggedIn,
   });
 
-  // @TODO this maybe shouldnt be an effect.
-  async function determineLoginStatus() {
-    const state = !!(await AppSettings.AUTH_TOKEN.getValue());
-    setIsLoggedIn(state);
-    console.log('Is logged in?', state);
-    return state;
-  }
-
-  // tokenStringData will only exist after a login.
-  // I think this is a hack that continues to keep working.
-  // Eventually move the store credential code here?
   useEffect(() => {
-    console.log('tokenStringData triggered');
-    console.log('Current token data:', tokenStringData);
-    determineLoginStatus();
-  }, [tokenStringData]);
-
-  useEffect(() => {
-    if (profileQueryData) {
+    if (!isLoading && isLoggedIn && profileQueryData) {
       setProfilePublicData(profileQueryData);
     }
-  }, [profileQueryData]);
+  }, [isLoading, isLoggedIn, profileQueryData]);
 
   return (
     <UserDataContext.Provider
-      value={{profilePublicData, setProfilePublicData, tokenStringData, setTokenStringData, isLoggedIn, setIsLoggedIn}}>
+      value={{profilePublicData, setProfilePublicData, isLoggedIn, setIsLoggedIn, isLoading, setIsLoading}}>
       {children}
     </UserDataContext.Provider>
   );

@@ -14,7 +14,7 @@ export const LoginView = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
-  const {setTokenStringData} = useUserData();
+  const {setIsLoading, setIsLoggedIn} = useUserData();
   const {setErrorMessage} = useErrorHandler();
 
   useEffect(() => {
@@ -27,8 +27,10 @@ export const LoginView = () => {
   const loginMutation = useMutation(
     async ({username, password}) => {
       console.log('Creds:', username, password);
+      // Axios and the base64 encoding get weird, so we do it ourselves.
       // https://github.com/axios/axios/issues/2235
       let authHeaders = getAuthHeaders(username, password);
+      // @TODO headers should not be allowed to be undefined.
       return await axios.post('/auth/login', {}, {headers: authHeaders});
     },
     {retry: 0},
@@ -36,12 +38,13 @@ export const LoginView = () => {
 
   const storeLoginData = useCallback(
     async data => {
-      await setTokenStringData(data.data);
       await AppSettings.AUTH_TOKEN.setValue(data.data.token);
       await AppSettings.USER_ID.setValue(data.data.userID);
+      await setIsLoggedIn(true);
+      await setIsLoading(false);
       navigation.goBack();
     },
-    [navigation, setTokenStringData],
+    [navigation, setIsLoggedIn, setIsLoading],
   );
 
   const onSubmit = useCallback(
