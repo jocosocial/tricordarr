@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 import {AppView} from './AppView';
 import {useUserData} from '../Context/Contexts/UserDataContext';
-import {useUserNotificationData} from "../Context/Contexts/UserNotificationDataContext";
+import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 
 export const MainView = () => {
   const {profilePublicData, tokenStringData} = useUserData();

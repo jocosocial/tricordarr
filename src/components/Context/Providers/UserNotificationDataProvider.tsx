@@ -19,7 +19,6 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const [enableUserNotifications, setEnableUserNotifications] = useState(false);
   const [pollSetIntervalID, setPollSetIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
-  console.debug('The current app state is', appStateVisible);
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
@@ -28,12 +27,12 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
 
   const controlFgs = useCallback((enable: boolean) => {
     if (enable) {
-      console.debug('UserNotificationDataProvider startFgs');
+      console.log('UserNotificationDataProvider startFgs');
       startForegroundServiceWorker().catch(error => {
         console.error('Error starting FGS:', error);
       });
     } else {
-      console.debug('UserNotificationDataProvider stopFgs');
+      console.log('UserNotificationDataProvider stopFgs');
       stopForegroundServiceWorker().catch(error => {
         console.error('Error stopping FGS:', error);
       });
@@ -46,17 +45,18 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
     // Add an override switch
     if (currentWifiSSID === shipWifiSSID && isLoggedIn) {
-      console.debug('UserNotificationDataProvider enableUserNotifications');
+      console.log('UserNotificationDataProvider enableUserNotifications');
       await setEnableUserNotifications(true);
       controlFgs(true);
     } else {
-      console.debug('UserNotificationDataProvider disableUserNotifications');
+      console.log('UserNotificationDataProvider disableUserNotifications');
       await setEnableUserNotifications(false);
       controlFgs(false);
     }
   }, [controlFgs, isLoggedIn]);
 
   useEffect(() => {
+    console.debug('UserNotificationDataProvider :: isLoggedIn');
     // isLoggedIn from UserDataProvider initializes as undefined because
     // we determine that based on whether a token has been set in settings.
     // This caused the FGS to be reloaded twice in quick succession because
@@ -67,7 +67,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   }, [isLoggedIn, determineNotificationEnable]);
 
   useEffect(() => {
-    console.log('UserNotificationDataProvider useEffect::data', data);
+    console.debug('UserNotificationDataProvider :: data');
     if (data) {
       setUserNotificationData(data);
     }
@@ -76,6 +76,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   // We can call refetch aggressively because we can cache the result for a while
   // and avoid hitting the server for new data.
   useEffect(() => {
+    console.debug('UserNotificationDataProvider :: thebigone');
     async function unmountProvider() {
       let ws = await getSharedWebSocket();
       // if (ws && ws.readyState === WebSocket.OPEN) {
@@ -86,16 +87,16 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       console.log('Cleared setInterval with ID', pollSetIntervalID);
     }
     async function startWsListener() {
-      console.debug('Considering attaching websocket listener');
+      console.log('Considering attaching websocket listener');
       let ws = await getSharedWebSocket();
       // if (ws && ws.readyState === WebSocket.OPEN) {
       if (ws) {
-        console.debug('Attaching listener to socket.');
+        console.log('Attaching listener to socket.');
         ws.addEventListener('message', () => refetch());
       } else {
-        console.debug('Skipping attaching to socket', ws);
+        console.log('Skipping attaching to socket', ws);
       }
-      console.debug('finished attaching or not');
+      console.log('finished attaching or not');
     }
     async function startPollInterval() {
       let pollInterval: number = Number((await AppSettings.NOTIFICATION_POLL_INTERVAL.getValue()) ?? '5000');

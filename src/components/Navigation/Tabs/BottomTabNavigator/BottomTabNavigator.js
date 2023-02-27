@@ -5,7 +5,7 @@ import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
 import {SeamailView} from '../../../Views/Seamail/SeamailView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import { TwitarrView } from '../../../Views/TwitarrView';
+import {TwitarrView} from '../../../Views/TwitarrView';
 
 const Tab = createMaterialBottomTabNavigator();
 

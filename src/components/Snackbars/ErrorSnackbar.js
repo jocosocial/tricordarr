@@ -1,49 +1,30 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Snackbar} from 'react-native-paper';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-});
-
-// @TODO this junk is not working. Runs once and never again.
+import React from 'react';
+import {Snackbar, Text, useTheme} from 'react-native-paper';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 
 // Lifted right from the source.
 // https://callstack.github.io/react-native-paper/docs/components/Snackbar
-export const ErrorSnackbar = ({actionLabel = 'Close', message}) => {
-  const [visible, setVisible] = useState(!!message);
-  // const [msg, setMsg] = useState(message);
-  // const [triggerVisible, setTriggerVisible] = useState(trigger);
+export const ErrorSnackbar = ({actionLabel = 'Close'}) => {
+  const {errorMessage, setErrorMessage} = useErrorHandler();
+  const onDismissSnackBar = () => setErrorMessage('');
+  const theme = useTheme();
 
-  // useEffect(() => {
-  //   if (message !== '' && message) {
-  //     setVisible(true);
-  //     // setTriggerVisible(true);
-  //   }
-  // }, [message, msg]);
-
-  console.log('Yodas message is', message);
-  // const onToggleSnackBar = () => setVisible(!visible);
-  function onDismissSnackBar() {
-    setVisible(false);
-    // setMsg(undefined);
-    // setz
-    // setTriggerVisible(false);
-  }
+  // Snackbar uses .onSurface color, so we need to invert
+  // any custom text.
+  // https://callstack.github.io/react-native-paper/docs/components/Snackbar/
+  const textStyle = {
+    color: theme.colors.surface,
+  };
 
   return (
-    <View style={styles.container}>
-      <Snackbar
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        action={{
-          label: actionLabel,
-        }}>
-        {message}
-      </Snackbar>
-    </View>
+    <Snackbar
+      visible={!!errorMessage}
+      onDismiss={onDismissSnackBar}
+      action={{
+        label: actionLabel,
+      }}>
+      {/*{errorMessage}*/}
+      <Text style={textStyle}>🚨 {errorMessage}</Text>
+    </Snackbar>
   );
 };

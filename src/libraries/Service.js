@@ -34,22 +34,19 @@ export function registerForegroundServiceWorker() {
 
 export async function stopForegroundServiceWorker() {
   console.log('Stopping FGS.');
-  notifee
-    .stopForegroundService()
-    .then(async () => {
-      // clearInterval(fgsWorkerTimer);
-      const ws = await getSharedWebSocket();
-      if (ws) {
-        ws.close(1000, 'FGS was stopped.');
-      }
-      console.log('Stopped FGS.');
-    })
-    .then(async () => {
-      await notifee.cancelNotification(fgsNotificationID);
-    })
-    .catch(error => {
-      console.error('Error during FGS stop', error);
-    });
+  try {
+    const ws = await getSharedWebSocket();
+    if (ws) {
+      console.log('Closing websocket', ws);
+      // ws.close(1000, 'FGS was stopped.');
+      ws.close();
+    }
+    await notifee.stopForegroundService();
+    await notifee.cancelNotification(fgsNotificationID);
+    console.log('Stopped FGS.');
+  } catch (error) {
+    console.error('FGS stop error:', error);
+  }
 }
 
 export async function startForegroundServiceWorker() {

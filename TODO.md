@@ -24,6 +24,6 @@ UI/UX
 
 Work Queue
 * onmessage trigger after login doesnt work
+* login name still busted
 * wifi override switch
 * Instructions
-* Snackbar warning/error handling.

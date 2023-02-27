@@ -20,6 +20,8 @@ import {UserDataProvider} from './src/components/Context/Providers/UserDataProvi
 import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {AppStateProvider} from './src/components/Context/Providers/AppStateProvider';
+import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
+import {ErrorSnackbar} from "./src/components/Snackbars/ErrorSnackbar";
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -53,15 +55,17 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
-        <QueryClientProvider client={queryClient}>
-          <AppStateProvider>
-            <UserDataProvider>
-              <UserNotificationDataProvider>
-                <BottomTabNavigator />
-              </UserNotificationDataProvider>
-            </UserDataProvider>
-          </AppStateProvider>
-        </QueryClientProvider>
+        <ErrorHandlerProvider>
+          <QueryClientProvider client={queryClient}>
+            <AppStateProvider>
+              <UserDataProvider>
+                <UserNotificationDataProvider>
+                  <BottomTabNavigator />
+                </UserNotificationDataProvider>
+              </UserDataProvider>
+            </AppStateProvider>
+          </QueryClientProvider>
+        </ErrorHandlerProvider>
       </PaperProvider>
     </NavigationContainer>
   );

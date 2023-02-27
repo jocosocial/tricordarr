@@ -7,6 +7,8 @@ import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useUserNotificationData} from "../../Context/Contexts/UserNotificationDataContext";
+import {stopForegroundServiceWorker} from "../../../libraries/Service";
 
 export const TempUserProfile = () => {
   const [token, setToken] = useState('unknown');
@@ -38,11 +40,12 @@ export const TempUserProfile = () => {
 export const LogoutView = () => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const {setTokenStringData, setProfilePublicData} = useUserData();
+  const {setTokenStringData, setProfilePublicData, setIsLoggedIn} = useUserData();
 
   const logoutMutation = useMutation(
     async () => {
       // Gotta do the call before clearing our local state.
+      await stopForegroundServiceWorker();
       let response = await axios.post('/auth/logout');
       await clearAuthData();
       return response;

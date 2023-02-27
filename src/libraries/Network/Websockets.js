@@ -37,7 +37,7 @@ function createWebSocketClass(options) {
 }
 
 export async function buildWebSocket() {
-  console.debug('buildWebSocket called');
+  console.log('buildWebSocket called');
   const wsUrl = await buildWebsocketURL();
   const token = await AppSettings.AUTH_TOKEN.getValue();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
