@@ -51,6 +51,37 @@ export async function stopForegroundServiceWorker() {
 
 export async function startForegroundServiceWorker() {
   console.log('Starting FGS');
+  // If the notification is showing then we can assume the FGS Worker is active.
+  // This is currently duplicated with generateForegroundServiceNotification()
+  // because I don't know the future of that function and if it still needs to.
+  let isFgsNotificationShowing = false;
+  const displayedNotifications = await notifee.getDisplayedNotifications();
+  displayedNotifications.map(entry => {
+    if (entry.id === 'FGSWorkerNotificationID') {
+      isFgsNotificationShowing = true;
+    }
+  });
+  if (isFgsNotificationShowing) {
+    console.log('FGS worker assumed to be running since notification still active');
+    return;
+  }
+
+  try {
+    const ws = await getSharedWebSocket();
+    if (ws) {
+      if (ws.readyState === WebSocket.OPEN) {
+        console.log('FGS worker assumed to be running since websocket is open');
+        return;
+      } else {
+        console.log('HOW DID WE GET HERE?', ws);
+      }
+    } else {
+      console.log('NO SOCKET BAD DAY', ws);
+    }
+  } catch (error) {
+    console.warn('couldnt get shared websocket', error);
+  }
+
   await generateForegroundServiceNotification(
     'A background worker has been started to maintain a connection to the Twitarr server.',
   );
