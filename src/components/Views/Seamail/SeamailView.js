@@ -10,12 +10,11 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 
 export const SeamailView = () => {
   const theme = useTheme();
-  const {refetch} = useUserNotificationData();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
+  //   setRefreshing(true);
+  //   refetch().finally(() => setRefreshing(false));
   }, []);
 
   async function onPress() {

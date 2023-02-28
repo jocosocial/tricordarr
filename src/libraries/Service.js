@@ -6,23 +6,11 @@ import {fgsNotificationID, generateForegroundServiceNotification} from './Notifi
 
 // https://javascript.info/websocket
 async function fgsWorker() {
-  console.log('Foreground Service is starting');
+  console.log('FGS Worker is starting');
   setupWebsocket().catch(e => {
     console.error('FGS Websocket error:', e);
   });
-  console.log('Foreground Service startup has finished');
-  // fgsWorkerTimer = setInterval(async () => {
-  //   console.log('Updating status');
-  //   const ws = await getSharedWebSocket();
-  //   let message = 'Server connection ERROR!';
-  //   let color = AndroidColor.RED;
-  //   if (ws && ws.readyState === WebSocket.OPEN) {
-  //     message = 'Server connection healthy!';
-  //     color = AndroidColor.GREEN;
-  //   }
-  //   console.log(message);
-  //   await generateForegroundServiceNotification(message, color, true);
-  // }, 10000);
+  console.log('FGS Worker startup has finished');
 }
 
 export function registerForegroundServiceWorker() {
@@ -68,15 +56,9 @@ export async function startForegroundServiceWorker() {
 
   try {
     const ws = await getSharedWebSocket();
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        console.log('FGS worker assumed to be running since websocket is open');
-        return;
-      } else {
-        console.log('HOW DID WE GET HERE?', ws);
-      }
-    } else {
-      console.log('NO SOCKET BAD DAY', ws);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      console.log('FGS worker assumed to be running since websocket is open');
+      return;
     }
   } catch (error) {
     console.warn('couldnt get shared websocket', error);

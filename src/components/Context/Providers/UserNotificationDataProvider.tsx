@@ -51,7 +51,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         enableUserNotifications,
         setEnableUserNotifications,
       }}>
-      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} isLoggedIn={isLoggedIn} />
+      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} />
       <ForegroundService enable={enableUserNotifications} isLoading={isLoading} />
       {children}
     </UserNotificationDataContext.Provider>
