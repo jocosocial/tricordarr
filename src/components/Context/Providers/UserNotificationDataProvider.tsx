@@ -1,17 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
-import {UserNotificationData} from '../../../libraries/./Structs/ControllerStructs';
+import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {DefaultProviderProps} from './ProviderTypes';
 import {AppSettings} from '../../../libraries/AppSettings';
-import {useQuery} from '@tanstack/react-query';
 import {useUserData} from '../Contexts/UserDataContext';
-import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
-import {useAppState} from '../Contexts/AppStateContext';
-import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
-import {NotificationPoller} from '../../Libraries/Notifications/NotificationPoller';
-import {ForegroundService} from '../../Libraries/Notifications/ForegroundService';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -51,8 +45,6 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         enableUserNotifications,
         setEnableUserNotifications,
       }}>
-      <NotificationPoller />
-      <ForegroundService />
       {children}
     </UserNotificationDataContext.Provider>
   );
