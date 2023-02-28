@@ -18,6 +18,9 @@ Notes
 -----
 * Uninstall terminates FGS. Doesnt seem to clear storage.
 * Icon library: https://pictogrammers.com/library/mdi/
+* navigation.setOptions must be called witin a useEffect else you get
+  an error that youre trying to update a parent component during another component.
+
 
 Releasing
 ---------

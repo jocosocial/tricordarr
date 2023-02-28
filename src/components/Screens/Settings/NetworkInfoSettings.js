@@ -1,38 +1,22 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {RefreshControl, SafeAreaView, ScrollView, View} from 'react-native';
+import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
-import NetInfo from '@react-native-community/netinfo';
-import {AppView} from "../../Views/AppView";
-// import {SaveButton} from '../../Buttons/SaveButton';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import {AppView} from '../../Views/AppView';
 
 export const NetworkInfoSettings = ({route, navigation}) => {
   const theme = useTheme();
-  const [data, setData] = useState({});
   const [refreshing, setRefreshing] = useState(false);
+  const data = useNetInfo();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    NetInfo.refresh().then(() => setData({})).finally(() => setRefreshing(false));
-    // setTimeout(() => {
-    //   setRefreshing(false);
-    // }, 500);
-  }, []);
-
-  const fetchData = useCallback(async () => {
-    let netData = await NetInfo.fetch();
-    // Some day we should try flattening this. I tried
-    // https://stackoverflow.com/questions/33036487/one-liner-to-flatten-nested-object,
-    // but I kept encountering an endless loop of useEffects.
-    setData(netData.details);
+    NetInfo.refresh().finally(() => setRefreshing(false));
   }, []);
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
   }, [navigation, route.params.title]);
-
-  useEffect(() => {
-    fetchData().catch(e => console.error);
-  }, [fetchData, data]);
 
   return (
     <AppView>
@@ -43,14 +27,13 @@ export const NetworkInfoSettings = ({route, navigation}) => {
               <DataTable.Title>Key</DataTable.Title>
               <DataTable.Title>Value</DataTable.Title>
             </DataTable.Header>
-            {Object.keys(data).map(key => (
+            {Object.keys(data.details).map(key => (
               <DataTable.Row key={key}>
                 <DataTable.Cell>{key}</DataTable.Cell>
-                <DataTable.Cell>{data[key].toString()}</DataTable.Cell>
+                <DataTable.Cell>{data.details[key].toString()}</DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>
-          {/*<SaveButton buttonText={'Refresh'} onPress={() => onRefresh()} />*/}
         </View>
       </ScrollView>
     </AppView>
