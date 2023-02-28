@@ -19,7 +19,7 @@ export async function setupAxiosStuff() {
     }
     // Other Headers
     config.headers.Accept = 'application/json';
-    config.headers['X-Swiftarr-Client'] = 'tricordarr';
+    config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
     // Return
     console.info(`API Query: ${config.method.toUpperCase()} ${config.url}`);
     return config;
