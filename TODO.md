@@ -6,6 +6,7 @@ Notifications
 * connection notification should direct to connection settings. or instructions
 * replace NotificationDataListener with notifee event driven system?
 * Consider killing the polling.
+* "kate" mode - no push display notifications. in-app only.
 
 Websocket/Connection
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
@@ -18,10 +19,9 @@ App Structure
 
 UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
+* Help modal provider
 
 Work Queue
 * TEST AND RELEASE!
   mark seamails as read button
-  Help modal provider
   Do a cron post test
-  Consider a button to reset the websocket?

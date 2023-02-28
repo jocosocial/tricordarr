@@ -93,7 +93,10 @@ export async function wsHealthcheck() {
 
 const wsErrorHandler = error => console.error('[error]', error);
 
-const wsOpenHandler = () => console.log('[open] Connection established');
+const wsOpenHandler = async () => {
+  console.log('[open] Connection established');
+  await AppSettings.WS_OPEN_DATE.setValue(new Date().toISOString());
+};
 
 function wsMessageHandler(event) {
   console.log(`[message] Data received from server: ${event.data}`);
@@ -125,4 +128,7 @@ async function wsCloseHandler(event) {
     const ws = await getSharedWebSocket();
     ws.close();
   }
+  await AppSettings.WS_OPEN_DATE.remove();
+  // I think I want to keep the healthcheck date around.
+  // await AppSettings.WS_HEALTHCHECK_DATE.remove();
 }
