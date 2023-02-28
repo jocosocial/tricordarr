@@ -12,6 +12,8 @@ nvm use lts/fermium (v16.19.1)
 npm install
 
 npx react-native start
+
+npx uri-scheme open tricordarr:// --android
 ```
 
 Notes

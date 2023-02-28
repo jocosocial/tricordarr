@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {LinkingOptions, NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {initialSettings} from './src/libraries/AppSettings';
@@ -54,8 +54,22 @@ function App(): JSX.Element {
     setupInitialNotification().catch(console.error);
   }, []);
 
+  const deepLinksConf = {
+    screens: {
+      HomeTab: 'hometab',
+      SeamailTab: 'seamailtab',
+      TwitarrTab: 'twitarrtab/:resource?/:id?',
+      SettingsTab: 'settingstab',
+    },
+  };
+
+  const linking: LinkingOptions<any> = {
+    prefixes: ['tricordarr://'],
+    config: deepLinksConf
+  }
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <ErrorHandlerProvider>
           <QueryClientProvider client={queryClient}>
