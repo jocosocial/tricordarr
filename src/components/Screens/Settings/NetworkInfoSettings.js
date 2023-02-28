@@ -27,7 +27,7 @@ export const NetworkInfoSettings = ({route, navigation}) => {
               <DataTable.Title>Key</DataTable.Title>
               <DataTable.Title>Value</DataTable.Title>
             </DataTable.Header>
-            {Object.keys(data.details).map(key => (
+            {Object.keys(data.details ?? []).map(key => (
               <DataTable.Row key={key}>
                 <DataTable.Cell>{key}</DataTable.Cell>
                 <DataTable.Cell>{data.details[key].toString()}</DataTable.Cell>

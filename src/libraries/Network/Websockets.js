@@ -53,7 +53,7 @@ export async function buildWebSocket() {
     minReconnectionDelay: 1000,
     maxReconnectionDelay: 30000,
     reconnectionDelayGrowFactor: 2,
-    debug: true,
+    // debug: true,
   });
   ws.onerror = wsErrorHandler;
   ws.onopen = wsOpenHandler;
