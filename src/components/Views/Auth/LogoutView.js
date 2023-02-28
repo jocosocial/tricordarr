@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {stopForegroundServiceWorker} from '../../../libraries/Service';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 export const TempUserProfile = () => {
   const [token, setToken] = useState('unknown');
@@ -34,6 +35,7 @@ export const LogoutView = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const {setIsLoggedIn, setProfilePublicData} = useUserData();
+  const {setEnableUserNotifications, setUserNotificationData} = useUserNotificationData();
 
   const logoutMutation = useMutation(
     async () => {
@@ -47,6 +49,10 @@ export const LogoutView = () => {
   );
 
   function onPress() {
+    setIsLoggedIn(false);
+    setEnableUserNotifications(false);
+    setProfilePublicData({});
+    setUserNotificationData({});
     logoutMutation.mutate(null, {
       onSuccess: () => {
         navigation.goBack();
@@ -61,8 +67,6 @@ export const LogoutView = () => {
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
     await AppSettings.USER_ID.remove();
-    setIsLoggedIn(false);
-    setProfilePublicData({});
     navigation.goBack();
   }
 

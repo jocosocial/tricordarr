@@ -81,7 +81,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
             <DataTable>
               <DataTable.Row key={'notifications'}>
                 <DataTable.Cell>{'Enabled'}</DataTable.Cell>
-                <DataTable.Cell>{enableUserNotifications.toString()}</DataTable.Cell>
+                <DataTable.Cell>{String(enableUserNotifications)}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </View>

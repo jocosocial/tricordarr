@@ -4,8 +4,8 @@ import {UserNotificationData} from '../../../libraries/./Structs/ControllerStruc
 interface UserNotificationDataContextType {
   userNotificationData: UserNotificationData;
   setUserNotificationData: Dispatch<SetStateAction<UserNotificationData>>;
-  enableUserNotifications: boolean;
-  setEnableUserNotifications: Dispatch<SetStateAction<boolean>>;
+  enableUserNotifications: boolean | null;
+  setEnableUserNotifications: Dispatch<SetStateAction<boolean | null>>;
 }
 
 export const UserNotificationDataContext = createContext({} as UserNotificationDataContextType);

@@ -19,7 +19,7 @@ import {ForegroundService} from '../../Libraries/Notifications/ForegroundService
 export const UserNotificationDataProvider = ({children}: DefaultProviderProps) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
   const {isLoggedIn, isLoading} = useUserData();
-  const [enableUserNotifications, setEnableUserNotifications] = useState(false);
+  const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {setErrorMessage} = useErrorHandler();
 
   const determineNotificationEnable = useCallback(async () => {
@@ -38,9 +38,10 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     // Otherwise, don't even bother trying to enable notifications.
     if (!isLoading && isLoggedIn) {
       determineNotificationEnable().catch(error => setErrorMessage(error.toString()));
-    } else {
-      setEnableUserNotifications(false);
     }
+    // } else {
+    //   setEnableUserNotifications(false);
+    // }
   }, [isLoggedIn, isLoading, determineNotificationEnable, setErrorMessage]);
 
   return (
