@@ -29,7 +29,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false" />
 
-        <activity android:name="com.tricordarr"
+        <activity android:name=".MainActivity"
+            android:label="@string/app_name"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -38,6 +39,5 @@
                 <data android:scheme="tricordarr" />
             </intent-filter>
         </activity>
-
     </application>
 </manifest>
