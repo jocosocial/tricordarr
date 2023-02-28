@@ -20,3 +20,12 @@ UI/UX
 
 Work Queue
 * TEST AND RELEASE!
+  mark seamails as read button
+  switch to turn off polling
+  consider disabling polling
+  Help modal provider
+  Do a cron post test
+  Tell user to change battery settings to performance
+  Healthcheck date
+  Consider a button to reset the websocket?
+  Disable vibration on socket start

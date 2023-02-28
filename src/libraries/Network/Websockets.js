@@ -28,7 +28,7 @@ export const getSharedWebSocket = async () => sharedWebSocket;
 export const setSharedWebSocket = async ws => (sharedWebSocket = ws);
 
 // https://github.com/pladaria/reconnecting-websocket/issues/138
-function createWebSocketClass(options) {
+function WebSocketConstructor(options) {
   return class extends WebSocket {
     constructor(url, protocols) {
       super(url, protocols, options);
@@ -44,17 +44,17 @@ export async function buildWebSocket() {
 
   // https://www.npmjs.com/package/reconnecting-websocket
   const ws = new ReconnectingWebSocket(wsUrl, [], {
-    WebSocket: createWebSocketClass({
+    WebSocket: WebSocketConstructor({
       headers: authHeaders,
     }),
+    // https://github.com/pladaria/reconnecting-websocket
     connectionTimeout: 10000,
-    maxRetries: 5,
+    maxRetries: 20,
     minReconnectionDelay: 1000,
-    maxReconnectionDelay: 5000,
-    // debug: true,
+    maxReconnectionDelay: 30000,
     reconnectionDelayGrowFactor: 2,
+    debug: true,
   });
-  // const ws = new WebSocket(wsUrl, null, {headers: authHeaders});
   ws.onerror = wsErrorHandler;
   ws.onopen = wsOpenHandler;
   ws.onmessage = wsMessageHandler;
