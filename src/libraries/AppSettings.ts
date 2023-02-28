@@ -42,6 +42,7 @@ export class AppSettings {
     'Override WiFi Check',
     "Attempt server connection even if you're not on configured WiFi network. Requires app restart. May consume more battery.",
   );
+  static WS_HEALTHCHECK_DATE = new AppSettings('WS_HEALTHCHECK_DATE');
 
   constructor(
     key: string,

@@ -2,6 +2,8 @@
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
 export const twitarrPrimaryColor = '#063953';
+// @TODO make a function that does rgb-to-hex.
+export const twitarrErrorColor = '#BA1A1A';
 
 export const twitarrTheme = {
   colors: {

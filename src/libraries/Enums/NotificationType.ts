@@ -12,3 +12,8 @@ export enum NotificationType {
   forumMention = 'forumMention',
   nextFollowedEventTime = 'nextFollowedEventTime',
 }
+
+export enum fgsWorkerNotificationIDs {
+  worker = 'fgsWorkerNotificationID',
+  shutdown = 'fgsShutdownNotificationID',
+}
