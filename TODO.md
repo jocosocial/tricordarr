@@ -1,5 +1,6 @@
-Notifications
+Login/Logout
 * Logout should wipe all notifications
+* Wipe all query cache too
 
 Websocket/Connection
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
@@ -14,7 +15,6 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
-* onmessage trigger after login doesnt work
 * connection notification should direct to connection settings. or instructions
 * Instructions
 * test wifi change
