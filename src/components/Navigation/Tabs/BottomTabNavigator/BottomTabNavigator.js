@@ -6,6 +6,9 @@ import {NavBarIcon} from './BottomTabIcon';
 import {SeamailView} from '../../../Views/Seamail/SeamailView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {TwitarrView} from '../../../Views/TwitarrView';
+import {handleEvent} from '../../../../libraries/Events';
+import notifee from "@notifee/react-native";
+import {useLinkTo} from '@react-navigation/native';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -18,6 +21,25 @@ function getBadgeDisplayValue(input) {
 
 export const BottomTabNavigator = () => {
   const {userNotificationData} = useUserNotificationData();
+  const linkTo = useLinkTo();
+
+  notifee.onForegroundEvent(async ({type, detail}) => {
+    const {notification, pressAction} = detail;
+    const url = handleEvent(type, notification, pressAction);
+
+    if(typeof(url) === "undefined") { 
+      return;
+    }
+
+    linkTo(url);
+  });
+
+  notifee.onBackgroundEvent(async ({type, detail}) => {
+    const {notification, pressAction} = detail;
+    const url = handleEvent(type, notification, pressAction) || "/hometab";
+
+    linkTo(url);
+  });
 
   return (
     <Tab.Navigator initialRouteName={'HomeTab'}>
