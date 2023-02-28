@@ -5,21 +5,23 @@ import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {useUserData} from "../../Context/Contexts/UserDataContext";
 
 interface NotificationPollerProps {
-  isLoading: boolean;
-  enable: boolean | null;
+  // isLoading: boolean;
+  // enable: boolean | null;
 }
 
-export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps) => {
+export const NotificationPoller = () => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
-  const {setUserNotificationData} = useUserNotificationData();
+  const {setUserNotificationData, enableUserNotifications} = useUserNotificationData();
+  const {isLoading} = useUserData();
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
-    enabled: !!enable,
+    enabled: !!enableUserNotifications,
   });
 
   useEffect(() => {
@@ -45,9 +47,9 @@ export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps)
     console.log('Started NotificationPoller with ID', id);
   }
 
-  if (appStateVisible !== 'active' || !enable) {
+  if (appStateVisible !== 'active' || !enableUserNotifications) {
     cleanupNotificationPoller();
-  } else if (!isLoading && enable && appStateVisible === 'active') {
+  } else if (!isLoading && enableUserNotifications && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
         .then(() => refetch())

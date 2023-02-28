@@ -1,23 +1,27 @@
 import React from 'react';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../../libraries/Service";
 import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
+import {useUserData} from "../../Context/Contexts/UserDataContext";
+import {useUserNotificationData} from "../../Context/Contexts/UserNotificationDataContext";
 
 interface ForegroundServicePropsType {
   isLoading: boolean;
   enable: boolean | null;
 }
 
-export const ForegroundService = ({isLoading, enable}: ForegroundServicePropsType) => {
+export const ForegroundService = () => {
   const {setErrorMessage} = useErrorHandler();
+  const {isLoading} = useUserData();
+  const {enableUserNotifications} = useUserNotificationData();
 
-  if (isLoading || enable === null) {
+  if (isLoading || enableUserNotifications === null) {
     return null;
   }
 
   console.debug('FGS Loading', isLoading);
-  console.debug('FGS Enable', enable);
+  console.debug('FGS Enable', enableUserNotifications);
 
-  if (!isLoading && enable) {
+  if (!isLoading && enableUserNotifications) {
     console.log('Starting FGS');
     startForegroundServiceWorker().catch(error => setErrorMessage(error.toString()));
   } else {

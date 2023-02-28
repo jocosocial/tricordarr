@@ -33,15 +33,14 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     }
   }, [isLoggedIn]);
 
+  // @TODO something with the polling is triggering this.
   useEffect(() => {
     // If we're done loading, and you're logged in, do the fancy checks.
-    // Otherwise, don't even bother trying to enable notifications.
+    // Otherwise, don't even bother trying to enable notifications. Leave
+    // it alone so that we don't force the value to change too much.
     if (!isLoading && isLoggedIn) {
       determineNotificationEnable().catch(error => setErrorMessage(error.toString()));
     }
-    // } else {
-    //   setEnableUserNotifications(false);
-    // }
   }, [isLoggedIn, isLoading, determineNotificationEnable, setErrorMessage]);
 
   return (
@@ -52,8 +51,8 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
         enableUserNotifications,
         setEnableUserNotifications,
       }}>
-      <NotificationPoller enable={enableUserNotifications} isLoading={isLoading} />
-      <ForegroundService enable={enableUserNotifications} isLoading={isLoading} />
+      <NotificationPoller />
+      <ForegroundService />
       {children}
     </UserNotificationDataContext.Provider>
   );
