@@ -1,13 +1,7 @@
-import React from 'react';
-import {startForegroundServiceWorker, stopForegroundServiceWorker} from "../../../libraries/Service";
-import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
-import {useUserData} from "../../Context/Contexts/UserDataContext";
-import {useUserNotificationData} from "../../Context/Contexts/UserNotificationDataContext";
-
-interface ForegroundServicePropsType {
-  isLoading: boolean;
-  enable: boolean | null;
-}
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 export const ForegroundService = () => {
   const {setErrorMessage} = useErrorHandler();
