@@ -9,10 +9,9 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 interface NotificationPollerProps {
   isLoading: boolean;
   enable: boolean;
-  isLoggedIn: boolean;
 }
 
-export const NotificationPoller = ({isLoading, enable, isLoggedIn}: NotificationPollerProps) => {
+export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps) => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
@@ -46,10 +45,10 @@ export const NotificationPoller = ({isLoading, enable, isLoggedIn}: Notification
     console.log('Started NotificationPoller with ID', id);
   }
 
-  if (appStateVisible !== 'active' || !enable || !isLoggedIn) {
+  if (appStateVisible !== 'active' || !enable) {
     cleanupNotificationPoller();
     console.log('NotificationPoller has shut down');
-  } else if (!isLoading && isLoggedIn && enable && appStateVisible === 'active') {
+  } else if (!isLoading && enable && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
         .then(() => refetch())
