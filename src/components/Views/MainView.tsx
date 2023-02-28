@@ -40,6 +40,7 @@ export const MainView = () => {
             <Text>{'\u2022 Double check the Server URL (Settings).'}</Text>
             <Text>{'\u2022 In the Server Connection settings, if you dont see "open" try stop/start the FGS service.'}</Text>
             <Text>{'\u2022 Close the app (dismiss from background too) and relaunch.'}</Text>
+            <Text>{'\u2022 You may need to adjust the apps battery usage to unrestricted.'}</Text>
             <Text>{'\u2022 Post on Twitarr via the website and maybe someone can help.'}</Text>
           </View>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>

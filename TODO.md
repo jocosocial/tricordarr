@@ -24,5 +24,4 @@ Work Queue
   mark seamails as read button
   Help modal provider
   Do a cron post test
-  Tell user to change battery settings to performance
   Consider a button to reset the websocket?
