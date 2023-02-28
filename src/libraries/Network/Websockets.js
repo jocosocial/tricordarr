@@ -80,6 +80,17 @@ export async function setupWebsocket() {
   await setSharedWebSocket(ws);
 }
 
+export async function wsHealthcheck() {
+  let ws = await getSharedWebSocket();
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.log('WebSocket is open and healthy');
+    await AppSettings.WS_HEALTHCHECK_DATE.setValue(new Date().toISOString());
+    return true;
+  }
+  console.warn('WebSocket is unhealthy!');
+  return false;
+}
+
 const wsErrorHandler = error => console.error('[error]', error);
 
 const wsOpenHandler = () => console.log('[open] Connection established');

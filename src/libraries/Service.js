@@ -1,15 +1,32 @@
 import notifee from '@notifee/react-native';
-import {setupWebsocket, getSharedWebSocket} from './Network/Websockets';
-import {fgsNotificationID, generateForegroundServiceNotification} from './Notifications/ForegroundService';
+import {setupWebsocket, getSharedWebSocket, wsHealthcheck} from './Network/Websockets';
+import {
+  generateFgsShutdownNotification,
+  generateForegroundServiceNotification,
+} from './Notifications/ForegroundService';
+import {fgsWorkerNotificationIDs} from './Enums/NotificationType';
 
-// let fgsWorkerTimer;
+let fgsWorkerTimer;
+let fgsFailedCounter = 0;
+
+async function fgsWorkerHealthcheck() {
+  console.debug('FGS Worker Healthcheck');
+  if (fgsFailedCounter < 5) {
+    await setupWebsocket();
+    const passed = await wsHealthcheck();
+    !passed ? (fgsFailedCounter += 1) : null;
+  } else {
+    console.error(`WebSocket failed too many consecutive times (${fgsFailedCounter} of 5). Shutting down.`);
+    await generateFgsShutdownNotification();
+    await stopForegroundServiceWorker();
+  }
+}
 
 // https://javascript.info/websocket
 async function fgsWorker() {
   console.log('FGS Worker is starting');
-  setupWebsocket().catch(e => {
-    console.error('FGS Websocket error:', e);
-  });
+  await setupWebsocket();
+  fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, 30000);
   console.log('FGS Worker startup has finished');
 }
 
@@ -26,11 +43,12 @@ export async function stopForegroundServiceWorker() {
     const ws = await getSharedWebSocket();
     if (ws) {
       console.log('Closing websocket', ws);
-      // ws.close(1000, 'FGS was stopped.');
       ws.close();
     }
     await notifee.stopForegroundService();
-    await notifee.cancelNotification(fgsNotificationID);
+    await notifee.cancelNotification(fgsWorkerNotificationIDs.worker);
+    clearInterval(fgsWorkerTimer);
+    console.log('Cleared fgsWorkerTimer with ID', fgsWorkerTimer);
     console.log('Stopped FGS.');
   } catch (error) {
     console.error('FGS stop error:', error);
@@ -39,23 +57,6 @@ export async function stopForegroundServiceWorker() {
 
 export async function startForegroundServiceWorker() {
   console.log('Starting FGS');
-  // NONE OF THIS IS VALID
-  // If you never dismissed the notification then it's still there.
-  // If the notification is showing then we can assume the FGS Worker is active.
-  // This is currently duplicated with generateForegroundServiceNotification()
-  // because I don't know the future of that function and if it still needs to.
-  // let isFgsNotificationShowing = false;
-  // const displayedNotifications = await notifee.getDisplayedNotifications();
-  // displayedNotifications.map(entry => {
-  //   if (entry.id === 'FGSWorkerNotificationID') {
-  //     isFgsNotificationShowing = true;
-  //   }
-  // });
-  // if (isFgsNotificationShowing) {
-  //   console.log('FGS worker assumed to be running since notification still active');
-  //   return;
-  // }
-
   try {
     const ws = await getSharedWebSocket();
     if (ws && ws.readyState === WebSocket.OPEN) {
@@ -69,4 +70,6 @@ export async function startForegroundServiceWorker() {
   await generateForegroundServiceNotification(
     'A background worker has been started to maintain a connection to the Twitarr server.',
   );
+  // Reset the health counter
+  fgsFailedCounter = 0;
 }

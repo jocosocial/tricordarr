@@ -28,6 +28,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const {enableUserNotifications} = useUserNotificationData();
   const [override, setOverride] = useState(false);
   const {setErrorMessage} = useErrorHandler();
+  const [wsHealthcheckDate, setWsHealthcheckDate] = useState('unknown');
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -54,9 +55,10 @@ export const ServerConnectionSettings = ({route, navigation}) => {
     async function getSettingValue() {
       // https://stackoverflow.com/questions/263965/how-can-i-convert-a-string-to-boolean-in-javascript
       setOverride((await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true');
+      setWsHealthcheckDate(await AppSettings.WS_HEALTHCHECK_DATE.getValue());
     }
     getSettingValue().catch(e => setErrorMessage(e.toString()));
-  }, [setErrorMessage]);
+  }, [setErrorMessage, refreshing]);
 
   async function toggleOverride() {
     await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override))
@@ -73,6 +75,10 @@ export const ServerConnectionSettings = ({route, navigation}) => {
               <DataTable.Row key={'wsState'}>
                 <DataTable.Cell>{'Socket State'}</DataTable.Cell>
                 <DataTable.Cell>{WebSocketState[socketState]}</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row key={'wsHealthcheckDate'}>
+                <DataTable.Cell>Last Healthcheck</DataTable.Cell>
+                <DataTable.Cell>{wsHealthcheckDate}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </View>
