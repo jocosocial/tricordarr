@@ -21,6 +21,8 @@ import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {AppStateProvider} from './src/components/Context/Providers/AppStateProvider';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
+import {NotificationPoller} from './src/components/Libraries/Notifications/NotificationPoller';
+import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -59,6 +61,8 @@ function App(): JSX.Element {
             <AppStateProvider>
               <UserDataProvider>
                 <UserNotificationDataProvider>
+                  <NotificationPoller />
+                  <ForegroundService />
                   <BottomTabNavigator />
                 </UserNotificationDataProvider>
               </UserDataProvider>
