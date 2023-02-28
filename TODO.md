@@ -19,4 +19,5 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 
 Work Queue
-* Instructions
+* Add pull to refresh on seamail back
+* Reduce intervals
