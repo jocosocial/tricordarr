@@ -10,7 +10,7 @@ export const MainView = () => {
     <AppView>
       <AppContainerView>
         <ScrollView>
-          <Text variant={'displayLarge'}>Hello Boat!</Text>
+          <Text variant={'displayMedium'}>Hello Boat!</Text>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>⚠️ Warning ⚠️</Text>
           <Text>This app is an extremely experimental prototype and should be treated as such.</Text>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>

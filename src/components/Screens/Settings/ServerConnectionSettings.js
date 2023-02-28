@@ -7,9 +7,9 @@ import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import NetInfo from '@react-native-community/netinfo';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {commonStyles} from "../../../styles";
-import {AppSettings} from "../../../libraries/AppSettings";
-import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
+import {commonStyles} from '../../../styles';
+import {AppSettings} from '../../../libraries/AppSettings';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -29,6 +29,7 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const [override, setOverride] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const [wsHealthcheckDate, setWsHealthcheckDate] = useState('unknown');
+  const [wsOpenDate, setWsOpenDate] = useState('unknown');
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -56,12 +57,13 @@ export const ServerConnectionSettings = ({route, navigation}) => {
       // https://stackoverflow.com/questions/263965/how-can-i-convert-a-string-to-boolean-in-javascript
       setOverride((await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true');
       setWsHealthcheckDate(await AppSettings.WS_HEALTHCHECK_DATE.getValue());
+      setWsOpenDate(await AppSettings.WS_OPEN_DATE.getValue());
     }
     getSettingValue().catch(e => setErrorMessage(e.toString()));
   }, [setErrorMessage, refreshing]);
 
   async function toggleOverride() {
-    await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override))
+    await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override));
     setOverride(!override);
   }
 
@@ -79,6 +81,10 @@ export const ServerConnectionSettings = ({route, navigation}) => {
               <DataTable.Row key={'wsHealthcheckDate'}>
                 <DataTable.Cell>Last Healthcheck</DataTable.Cell>
                 <DataTable.Cell>{wsHealthcheckDate}</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row key={'wsOpenDate'}>
+                <DataTable.Cell>Opened</DataTable.Cell>
+                <DataTable.Cell>{wsOpenDate}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </View>
@@ -106,13 +112,15 @@ export const ServerConnectionSettings = ({route, navigation}) => {
           </View>
           <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>Override WiFi Check</Text>
-            <Text>{AppSettings.OVERRIDE_WIFI_CHECK.description}</Text>
-            <TouchableRipple onPress={toggleOverride}>
-              <View style={commonStyles.booleanSettingRowView}>
-                <Text>Enable</Text>
-                <Switch value={override} onValueChange={toggleOverride} />
-              </View>
-            </TouchableRipple>
+            <View>
+              <Text>{AppSettings.OVERRIDE_WIFI_CHECK.description}</Text>
+              <TouchableRipple style={commonStyles.marginTop} onPress={toggleOverride}>
+                <View style={commonStyles.booleanSettingRowView}>
+                  <Text>Enable</Text>
+                  <Switch value={override} onValueChange={toggleOverride} />
+                </View>
+              </TouchableRipple>
+            </View>
           </View>
         </View>
       </ScrollView>
