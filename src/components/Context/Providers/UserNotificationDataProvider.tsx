@@ -28,6 +28,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   }, [isLoggedIn]);
 
   // @TODO something with the polling is triggering this.
+  // It's the setUserNotificationData(data); from NotificationPoller.
   useEffect(() => {
     // If we're done loading, and you're logged in, do the fancy checks.
     // Otherwise, don't even bother trying to enable notifications. Leave

@@ -1,18 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAppState} from '../../Context/Contexts/AppStateContext';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {useUserData} from "../../Context/Contexts/UserDataContext";
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
-interface NotificationPollerProps {
-  // isLoading: boolean;
-  // enable: boolean | null;
-}
-
-export const NotificationPoller = () => {
+export const NotificationDataPoller = () => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
   const {appStateVisible} = useAppState();
   const {setErrorMessage} = useErrorHandler();
