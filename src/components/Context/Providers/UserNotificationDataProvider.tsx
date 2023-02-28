@@ -4,8 +4,8 @@ import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs
 import {DefaultProviderProps} from './ProviderTypes';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useUserData} from '../Contexts/UserDataContext';
-import {getCurrentSSID} from '../../../libraries/Network/NetworkInfo';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -15,9 +15,10 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
   const {isLoggedIn, isLoading} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {setErrorMessage} = useErrorHandler();
+  const netInfo = useNetInfo();
 
   const determineNotificationEnable = useCallback(async () => {
-    const currentWifiSSID = await getCurrentSSID();
+    const currentWifiSSID = netInfo.type === 'wifi' && netInfo.details.ssid ? netInfo.details.ssid : 'ERR_NO_WIFI';
     const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
     const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
     if ((currentWifiSSID === shipWifiSSID || overrideWifi) && isLoggedIn) {
@@ -25,7 +26,7 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
     } else {
       setEnableUserNotifications(false);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, netInfo.type, netInfo.details]);
 
   // @TODO something with the polling is triggering this.
   // It's the setUserNotificationData(data); from NotificationPoller.

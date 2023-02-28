@@ -20,6 +20,7 @@ UI/UX
 
 Work Queue
 * TEST AND RELEASE!
+* If the connection is broken it doesnt attempt to restart it. Only reconnect initially.
   mark seamails as read button
   switch to turn off polling
   consider disabling polling
@@ -28,4 +29,4 @@ Work Queue
   Tell user to change battery settings to performance
   Healthcheck date
   Consider a button to reset the websocket?
-  Disable vibration on socket start
+  Disable vibration on socket start 
