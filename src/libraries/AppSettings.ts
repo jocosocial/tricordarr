@@ -40,7 +40,7 @@ export class AppSettings {
     false,
     Boolean,
     'Override WiFi Check',
-    'Attempt server connection even if not on configured WiFi network. Requires app restart. May use more battery.',
+    "Attempt server connection even if you're not on configured WiFi network. Requires app restart. May consume more battery.",
   );
 
   constructor(

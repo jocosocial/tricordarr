@@ -29,7 +29,7 @@ export const SeamailView = () => {
         <AppContainerView>
           <Text variant={'titleLarge'}>This area is still under construction!</Text>
           <Text style={commonStyles.marginTop}>Press the button below to open Twitarr in your browser.</Text>
-          <Text>You can also pull to refresh this page to reload the notification data.</Text>
+          {/*<Text>You can also pull to refresh this page to reload the notification data.</Text>*/}
           <SaveButton buttonText={'Open Browser'} buttonColor={theme.colors.twitarrNeutralButton} onPress={onPress} />
         </AppContainerView>
       </ScrollView>

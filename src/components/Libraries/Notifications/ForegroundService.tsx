@@ -4,19 +4,18 @@ import {useErrorHandler} from "../../Context/Contexts/ErrorHandlerContext";
 
 interface ForegroundServicePropsType {
   isLoading: boolean;
-  enable: boolean;
+  enable: boolean | null;
 }
 
 export const ForegroundService = ({isLoading, enable}: ForegroundServicePropsType) => {
   const {setErrorMessage} = useErrorHandler();
-  console.log('Foreground Service Enter');
 
-  if (isLoading) {
+  if (isLoading || enable === null) {
     return null;
   }
 
-  console.debug('Loading', isLoading);
-  console.debug('Enable', enable);
+  console.debug('FGS Loading', isLoading);
+  console.debug('FGS Enable', enable);
 
   if (!isLoading && enable) {
     console.log('Starting FGS');

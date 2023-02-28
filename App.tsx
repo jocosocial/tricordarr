@@ -21,7 +21,6 @@ import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {AppStateProvider} from './src/components/Context/Providers/AppStateProvider';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
-import {ErrorSnackbar} from "./src/components/Snackbars/ErrorSnackbar";
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({

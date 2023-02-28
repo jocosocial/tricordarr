@@ -8,7 +8,7 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 
 interface NotificationPollerProps {
   isLoading: boolean;
-  enable: boolean;
+  enable: boolean | null;
 }
 
 export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps) => {
@@ -19,7 +19,7 @@ export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps)
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
-    enabled: enable,
+    enabled: !!enable,
   });
 
   useEffect(() => {
@@ -47,7 +47,6 @@ export const NotificationPoller = ({isLoading, enable}: NotificationPollerProps)
 
   if (appStateVisible !== 'active' || !enable) {
     cleanupNotificationPoller();
-    console.log('NotificationPoller has shut down');
   } else if (!isLoading && enable && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
