@@ -1,4 +1,5 @@
 import notifee from '@notifee/react-native';
+import {NotificationPressAction} from '../Enums/Notifications';
 
 export function generateContentNotification(id, title, body, channel, type, url) {
   notifee
@@ -13,7 +14,7 @@ export function generateContentNotification(id, title, body, channel, type, url)
         autoCancel: true,
         // https://notifee.app/react-native/docs/android/interaction
         pressAction: {
-          id: 'default',
+          id: NotificationPressAction.twitarrTab,
         },
       },
     })

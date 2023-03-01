@@ -9,7 +9,7 @@ import {SettingsView} from '../../Screens/Settings/Settings';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
 import {useTheme} from 'react-native-paper';
 
-export const SettingsStack = () => {
+export const SettingsStack = ({route}) => {
   const Stack = createNativeStackNavigator();
   const theme = useTheme();
   const screenOptions = {
@@ -21,6 +21,8 @@ export const SettingsStack = () => {
     },
     headerTintColor: theme.colors.onBackground,
   };
+
+  console.debug('The route is', route);
 
   return (
     <Stack.Navigator initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>

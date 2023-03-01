@@ -1,7 +1,7 @@
 import notifee from '@notifee/react-native';
 import {serviceChannel} from './Channels';
 import {twitarrErrorColor, twitarrPrimaryColor} from '../../styles/Theme';
-import {fgsWorkerNotificationIDs} from '../Enums/NotificationType';
+import {fgsWorkerNotificationIDs, NotificationPressAction} from '../Enums/Notifications';
 
 export async function generateForegroundServiceNotification(body, color = twitarrPrimaryColor, onlyIfShowing = false) {
   // Kill a shutdown notification if we had one
@@ -30,7 +30,7 @@ export async function generateForegroundServiceNotification(body, color = twitar
         color: color,
         colorized: true,
         pressAction: {
-          id: 'default',
+          id: NotificationPressAction.worker,
         },
       },
     });
@@ -48,7 +48,7 @@ export async function generateFgsShutdownNotification() {
       color: twitarrErrorColor,
       colorized: true,
       pressAction: {
-        id: 'doSomething',
+        id: NotificationPressAction.worker,
       },
     },
   });
