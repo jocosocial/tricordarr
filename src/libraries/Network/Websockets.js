@@ -1,6 +1,6 @@
 import {generateContentNotification} from '../Notifications/Content';
 import {seamailChannel} from '../Notifications/Channels';
-import {NotificationType} from '../Enums/NotificationType';
+import {NotificationType} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';

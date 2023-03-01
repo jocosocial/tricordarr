@@ -4,7 +4,7 @@ import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
 } from './Notifications/ForegroundService';
-import {fgsWorkerNotificationIDs} from './Enums/NotificationType';
+import {fgsWorkerNotificationIDs} from './Enums/Notifications';
 
 let fgsWorkerTimer;
 let fgsFailedCounter = 0;

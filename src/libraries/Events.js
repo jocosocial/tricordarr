@@ -1,15 +1,11 @@
 import notifee, {EventType} from '@notifee/react-native';
-import {NotificationType} from './Enums/NotificationType';
+import {NotificationPressAction, NotificationType} from './Enums/Notifications';
 
 export function handleEvent(type, notification, pressAction) {
-  // Check if the user pressed the "Mark as read" action
-  if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
-    // Do something
-    // Remove the notification
-    notifee.cancelNotification(notification.id);
-  }
+  // Someday we may add a 'mark as read' button to content notifications.
+  // if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
 
-  if (type === EventType.PRESS) {
+  if (type === EventType.PRESS && pressAction.id === NotificationPressAction.twitarrTab) {
     notifee.cancelNotification(notification.id);
 
     let url = `/twitarrtab/${Date.now()}`;
@@ -22,5 +18,9 @@ export function handleEvent(type, notification, pressAction) {
     }
 
     return url;
+  }
+
+  if (type === EventType.PRESS && pressAction.id === NotificationPressAction.worker) {
+    return '/settingstab';
   }
 }
