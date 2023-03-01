@@ -12,7 +12,7 @@ export function handleEvent(type, notification, pressAction) {
   if (type === EventType.PRESS) {
     notifee.cancelNotification(notification.id);
 
-    let url = '/twitarrtab';
+    let url = `/twitarrtab/${Date.now()}`;
 
     // Only build URLs for handled types
     switch (notification.data.type) {
