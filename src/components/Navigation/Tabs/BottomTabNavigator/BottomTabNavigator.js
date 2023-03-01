@@ -3,32 +3,32 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {SettingsStack} from '../../Stacks/SettingsStack';
 import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
-import {SeamailView} from '../../../Views/Seamail/SeamailView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+// import {SeamailView} from '../../../Views/Seamail/SeamailView';
+// import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {TwitarrView} from '../../../Views/TwitarrView';
 import {handleEvent} from '../../../../libraries/Events';
-import notifee from "@notifee/react-native";
+import notifee from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
-import {Linking} from 'react-native'
+import {Linking} from 'react-native';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function getBadgeDisplayValue(input) {
-  if (input === 0) {
-    return null;
-  }
-  return input;
-}
+// function getBadgeDisplayValue(input) {
+//   if (input === 0) {
+//     return null;
+//   }
+//   return input;
+// }
 
 export const BottomTabNavigator = () => {
-  const {userNotificationData} = useUserNotificationData();
+  // const {userNotificationData} = useUserNotificationData();
   const linkTo = useLinkTo();
 
   notifee.onForegroundEvent(async ({type, detail}) => {
     const {notification, pressAction} = detail;
     const url = handleEvent(type, notification, pressAction);
 
-    if(typeof(url) === "undefined") { 
+    if (typeof url === 'undefined') {
       return;
     }
 
@@ -37,9 +37,9 @@ export const BottomTabNavigator = () => {
 
   notifee.onBackgroundEvent(async ({type, detail}) => {
     const {notification, pressAction} = detail;
-    const url = handleEvent(type, notification, pressAction) || "tricordarr://hometab";
+    const url = handleEvent(type, notification, pressAction) || 'tricordarr://hometab';
 
-    Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one
+    await Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one
   });
 
   return (
@@ -52,15 +52,15 @@ export const BottomTabNavigator = () => {
           tabBarIcon: ({color, size}) => <NavBarIcon icon={'home-account'} size={size} color={color} />,
         }}
       />
-      <Tab.Screen
-        name="SeamailTab"
-        component={SeamailView}
-        options={{
-          title: 'Seamail',
-          tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
-          tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
-        }}
-      />
+      {/*<Tab.Screen*/}
+      {/*  name="SeamailTab"*/}
+      {/*  component={SeamailView}*/}
+      {/*  options={{*/}
+      {/*    title: 'Seamail',*/}
+      {/*    tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,*/}
+      {/*    tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),*/}
+      {/*  }}*/}
+      {/*/>*/}
       <Tab.Screen
         name="TwitarrTab"
         component={TwitarrView}
