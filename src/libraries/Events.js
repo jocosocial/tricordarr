@@ -1,4 +1,4 @@
-import notifee, {EventType} from "@notifee/react-native";
+import notifee, {EventType} from '@notifee/react-native';
 import {NotificationType} from './Enums/NotificationType';
 
 export function handleEvent(type, notification, pressAction) {
