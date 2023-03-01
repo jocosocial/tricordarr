@@ -20,7 +20,7 @@ import {UserDataProvider} from './src/components/Context/Providers/UserDataProvi
 import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
-import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
+// import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
 
@@ -75,7 +75,7 @@ function App(): JSX.Element {
           <QueryClientProvider client={queryClient}>
             <UserDataProvider>
               <UserNotificationDataProvider>
-                <NotificationDataPoller />
+                {/*<NotificationDataPoller />*/}
                 <ForegroundService />
                 <NotificationDataListener />
                 <BottomTabNavigator />
