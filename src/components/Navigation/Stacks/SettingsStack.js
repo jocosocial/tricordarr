@@ -24,7 +24,7 @@ export const SettingsStack = () => {
 
   return (
     <Stack.Navigator initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
-      <Stack.Screen name={'SettingsStack'} component={SettingsView} options={{title: 'Settings'}} />
+      <Stack.Screen name={'SettingsScreen'} component={SettingsView} options={{title: 'Settings'}} />
       <Stack.Screen name={'SettingDetailScreen'} component={SettingDetail} />
       <Stack.Screen name={'NetworkInfoSettingsScreen'} component={NetworkInfoSettings} />
       <Stack.Screen name={'StorageKeysSettingsScreen'} component={StorageKeysSettings} />
