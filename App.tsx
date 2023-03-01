@@ -59,7 +59,7 @@ function App(): JSX.Element {
     screens: {
       HomeTab: 'hometab',
       SeamailTab: 'seamailtab',
-      TwitarrTab: 'twitarrtab/:token?/:resource?/:id?',
+      TwitarrTab: 'twitarrtab/:timestamp?/:resource?/:id?',
       SettingsTab: 'settingstab',
     },
   };
