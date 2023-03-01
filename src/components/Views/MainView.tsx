@@ -30,8 +30,9 @@ export const MainView = () => {
             Setup Instructions:
           </Text>
           <View>
-            <Text>{'1. Go into the Settings menu and tap Login and enter your Twitarr credentials. You must already have an account created.'}</Text>
+            <Text>1. Go into the Settings menu and tap Login and enter your Twitarr credentials. You must already have an account created.</Text>
             <Text>2. You should see a notification generate 10 seconds later titled Twitarr Server Connection. By Android Law(tm) I am required to show this to you. As of Android 13 you can dismiss it and the worker will keep running.</Text>
+            <Text>3. Go to the Twit-arr tab, and log in there, too.</Text>
           </View>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>
             Troubleshooting:
