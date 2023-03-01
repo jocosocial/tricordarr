@@ -9,6 +9,7 @@ import {TwitarrView} from '../../../Views/TwitarrView';
 import {handleEvent} from '../../../../libraries/Events';
 import notifee from "@notifee/react-native";
 import {useLinkTo} from '@react-navigation/native';
+import {Linking} from 'react-native'
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -36,9 +37,9 @@ export const BottomTabNavigator = () => {
 
   notifee.onBackgroundEvent(async ({type, detail}) => {
     const {notification, pressAction} = detail;
-    const url = handleEvent(type, notification, pressAction) || "/hometab";
+    const url = handleEvent(type, notification, pressAction) || "tricordarr://hometab";
 
-    linkTo(url);
+    Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one
   });
 
   return (
