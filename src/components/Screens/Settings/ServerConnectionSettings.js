@@ -21,7 +21,7 @@ const WebSocketState = Object.freeze({
   69: 'Uninitialized',
 });
 
-export const ServerConnectionSettings = ({route, navigation}) => {
+export const ServerConnectionSettings = ({navigation}) => {
   const theme = useTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
@@ -30,6 +30,8 @@ export const ServerConnectionSettings = ({route, navigation}) => {
   const {setErrorMessage} = useErrorHandler();
   const [wsHealthcheckDate, setWsHealthcheckDate] = useState('unknown');
   const [wsOpenDate, setWsOpenDate] = useState('unknown');
+
+  navigation.setOptions({title: 'Background Connection'});
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -43,10 +45,6 @@ export const ServerConnectionSettings = ({route, navigation}) => {
     setRefreshing(true);
     fetchSocketState().finally(() => setRefreshing(false));
   }, [fetchSocketState]);
-
-  useEffect(() => {
-    navigation.setOptions({title: route.params.title});
-  }, [navigation, route.params.title]);
 
   useEffect(() => {
     fetchSocketState().catch(console.error);

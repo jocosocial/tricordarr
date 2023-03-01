@@ -21,6 +21,6 @@ export function handleEvent(type, notification, pressAction) {
   }
 
   if (type === EventType.PRESS && pressAction.id === NotificationPressAction.worker) {
-    return '/settingstab';
+    return '/settingstab/serverconnectionsettingsscreen';
   }
 }
