@@ -59,7 +59,12 @@ function App(): JSX.Element {
       HomeTab: 'hometab',
       SeamailTab: 'seamailtab',
       TwitarrTab: 'twitarrtab/:timestamp?/:resource?/:id?',
-      SettingsTab: 'settingstab',
+      SettingsTab: {
+        screens: {
+          SettingsTab: 'settingstab',
+          ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
+        },
+      },
     },
   };
 

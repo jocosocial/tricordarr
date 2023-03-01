@@ -16,6 +16,7 @@ Websocket/Connection
 App Structure
 * more typescript conversion
 * Consider provider/context for server URL and any settings.
+* Better way to manage settings descriptions/titles for less useEffect and more compatibility with deep linking.
 
 UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
