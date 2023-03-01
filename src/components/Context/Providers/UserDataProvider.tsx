@@ -5,12 +5,13 @@ import {UserDataContext} from '../Contexts/UserDataContext';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
+import {AxiosError} from 'axios';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: DefaultProviderProps) => {
   const [profilePublicData, setProfilePublicData] = useState({} as ProfilePublicData);
   const [isLoading, setIsLoading] = useState(true);
-  const {setErrorMessage} = useErrorHandler();
+  const {setErrorMessage, setErrorBanner} = useErrorHandler();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
     getSettings().catch(error => setErrorMessage(error.toString()));
   }, [setErrorMessage]);
 
-  const {data: profileQueryData} = useQuery<ProfilePublicData>({
+  const {data: profileQueryData, error: profileQueryError} = useQuery<ProfilePublicData, AxiosError>({
     queryKey: ['/user/profile'],
     enabled: !isLoading && isLoggedIn,
   });
@@ -33,7 +34,14 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
     if (!isLoading && isLoggedIn && profileQueryData) {
       setProfilePublicData(profileQueryData);
     }
-  }, [isLoading, isLoggedIn, profileQueryData]);
+    if (!isLoading && profileQueryError && profileQueryError.response) {
+      if (profileQueryError.response.status === 401) {
+        setErrorBanner('You are not logged in (or your token is no longer valid). Please log in again.');
+      }
+    } else if (!isLoading && profileQueryError) {
+      setErrorBanner(profileQueryError.message);
+    }
+  }, [isLoading, isLoggedIn, profileQueryData, profileQueryError, setErrorBanner]);
 
   return (
     <UserDataContext.Provider
