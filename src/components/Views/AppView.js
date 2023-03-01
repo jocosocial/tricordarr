@@ -2,7 +2,8 @@ import React from 'react';
 import {View} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {commonStyles} from '../../styles';
-import {ErrorSnackbar} from '../Snackbars/ErrorSnackbar';
+import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
+import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 
 export const AppView = ({children}) => {
   const theme = useTheme();
@@ -14,6 +15,7 @@ export const AppView = ({children}) => {
 
   return (
     <View style={style}>
+      <ErrorBanner />
       {children}
       <ErrorSnackbar />
     </View>

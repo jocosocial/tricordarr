@@ -23,5 +23,3 @@ UI/UX
 
 Work Queue
 * TEST AND RELEASE!
-  mark seamails as read button
-  Do a cron post test

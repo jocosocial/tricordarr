@@ -31,6 +31,7 @@ const queryClient = new QueryClient({
     queries: {
       queryFn: apiQueryV3,
       cacheTime: 0,
+      retry: 2,
     },
   },
 });
@@ -65,8 +66,8 @@ function App(): JSX.Element {
 
   const linking: LinkingOptions<any> = {
     prefixes: ['tricordarr://'],
-    config: deepLinksConf
-  }
+    config: deepLinksConf,
+  };
 
   return (
     <NavigationContainer linking={linking}>
