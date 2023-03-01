@@ -47,7 +47,7 @@ export const MainView = () => {
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>
             Credits:
           </Text>
-          <Text>Grant Cohoe (@grant) built this app with contributions from Dustin Hendrickson (@hendusoone) and support from the rest of the Twitarr team and viewers like you. Thank you!</Text>
+          <Text>Grant Cohoe (@grant) built this app with contributions from Dustin Hendrickson (@hendu) and support from the rest of the Twitarr team and viewers like you. Thank you!</Text>
         </ScrollView>
       </AppContainerView>
     </AppView>
