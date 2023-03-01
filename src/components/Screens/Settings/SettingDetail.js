@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {AppView} from '../../Views/AppView';
 import {AppContainerView} from '../../Views/AppContainerView';
 import {SettingForm} from '../../Forms/SettingForm';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState('');
   const {settingKey} = route.params;
   const setting = AppSettings[settingKey];
+  const {setErrorMessage} = useErrorHandler();
 
   useEffect(() => {
     navigation.setOptions({title: setting.title});
@@ -23,7 +25,7 @@ export const SettingDetail = ({route, navigation}) => {
       await setting.setValue(values.settingValue);
       navigation.goBack();
     } catch (e) {
-      console.error('Failed to save:', e);
+      setErrorMessage(e.toString());
     }
   }
 

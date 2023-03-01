@@ -23,4 +23,3 @@ UI/UX
 
 Work Queue
 * TEST AND RELEASE!
-* DOesnt start on first login fresh install
