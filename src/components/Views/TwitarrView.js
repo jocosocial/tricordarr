@@ -13,7 +13,6 @@ export const TwitarrView = ({route}) => {
 
   const handleBackButtonPress = () => {
     try {
-      console.log("WEBVIEW BACK BUTTON PRESSED");
       webViewRef.current?.goBack();
       return true;
     } catch (err) {
