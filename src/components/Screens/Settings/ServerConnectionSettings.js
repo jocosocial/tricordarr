@@ -10,6 +10,7 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {commonStyles} from '../../../styles';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useBackHandler} from '@react-native-community/hooks';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -59,6 +60,12 @@ export const ServerConnectionSettings = ({navigation}) => {
     }
     getSettingValue().catch(e => setErrorMessage(e.toString()));
   }, [setErrorMessage, refreshing]);
+
+  // @TODO there has to be a better way to deal with background-loaded view not having a stack screen to go back to.
+  useBackHandler(() => {
+    navigation.replace('SettingsScreen');
+    return true;
+  });
 
   async function toggleOverride() {
     await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override));
