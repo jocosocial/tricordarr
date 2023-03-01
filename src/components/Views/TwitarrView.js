@@ -50,7 +50,7 @@ export const TwitarrView = ({route}) => {
       setIsLoading(false);
     }
 
-    if(route?.params?.token) {
+    if(route?.params?.token != token) {
       setToken(route?.params?.token);
       setHandleGoBack(false);
     }
