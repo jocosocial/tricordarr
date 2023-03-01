@@ -7,7 +7,7 @@ import {useBackHandler} from '@react-native-community/hooks'
 export const TwitarrView = ({route}) => {
   const [url, setUrl] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState();
+  const [key, setKey] = useState();
   const [handleGoBack, setHandleGoBack] = useState(false);
   const webViewRef = useRef();
 
@@ -50,18 +50,18 @@ export const TwitarrView = ({route}) => {
       setIsLoading(false);
     }
 
-    if(route?.params?.token != token) {
-      setToken(route?.params?.token);
+    if(route?.params?.timestamp != key) {
+      setKey(route?.params?.timestamp);
       setHandleGoBack(false);
     }
 
     loadSettings();
-  }, [route?.params?.token, route?.params?.resource, route?.params?.id, isLoading]);
+  }, [route?.params?.timestamp, route?.params?.resource, route?.params?.id, isLoading]);
 
   return (
     isLoading ? <ActivityIndicator /> :
     <WebView source={{ uri: url }}
-      key={token}
+      key={key}
       ref={webViewRef} 
       onNavigationStateChange={handleWebViewNavigationStateChange}
     />
