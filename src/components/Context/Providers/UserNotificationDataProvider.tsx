@@ -25,8 +25,9 @@ export const UserNotificationDataProvider = ({children}: DefaultProviderProps) =
       setEnableUserNotifications(true);
     } else {
       setEnableUserNotifications(false);
+      setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [isLoggedIn, netInfo.type, netInfo.details]);
+  }, [setErrorMessage, isLoggedIn, netInfo.type, netInfo.details]);
 
   // @TODO something with the polling is triggering this.
   // It's the setUserNotificationData(data); from NotificationPoller.

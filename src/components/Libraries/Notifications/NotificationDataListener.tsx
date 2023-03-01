@@ -5,13 +5,13 @@ import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {useQuery} from '@tanstack/react-query';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {useCallback, useEffect} from 'react';
-import {useAppState} from "../../Context/Contexts/AppStateContext";
+import {useAppState} from '@react-native-community/hooks';
 
 export const NotificationDataListener = () => {
   const {setErrorMessage} = useErrorHandler();
   const {isLoading} = useUserData();
   const {enableUserNotifications, setUserNotificationData} = useUserNotificationData();
-  const {appStateVisible} = useAppState();
+  const appStateVisible = useAppState();
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],

@@ -15,7 +15,7 @@ export const LoginView = () => {
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
   const {setIsLoading, setIsLoggedIn} = useUserData();
-  const {setErrorMessage} = useErrorHandler();
+  const {setErrorMessage, setErrorBanner} = useErrorHandler();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -42,6 +42,9 @@ export const LoginView = () => {
       await AppSettings.USER_ID.setValue(data.data.userID);
       await setIsLoggedIn(true);
       await setIsLoading(false);
+      // I don't love this.
+      setErrorBanner('');
+      setErrorMessage('');
       navigation.goBack();
     },
     [navigation, setIsLoggedIn, setIsLoading],

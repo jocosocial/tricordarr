@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useAppState} from '../../Context/Contexts/AppStateContext';
+import {useAppState} from '@react-native-community/hooks';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
@@ -9,7 +9,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export const NotificationDataPoller = () => {
   const [pollIntervalID, setPollIntervalID] = useState(0);
-  const {appStateVisible} = useAppState();
+  const appStateVisible = useAppState();
   const {setErrorMessage} = useErrorHandler();
   const {setUserNotificationData, enableUserNotifications} = useUserNotificationData();
   const {isLoading} = useUserData();

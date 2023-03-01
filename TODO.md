@@ -23,3 +23,4 @@ UI/UX
 
 Work Queue
 * TEST AND RELEASE!
+* Build a bundle with different env file

@@ -19,7 +19,6 @@ import {UserNotificationDataProvider} from './src/components/Context/Providers/U
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
-import {AppStateProvider} from './src/components/Context/Providers/AppStateProvider';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
 import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
@@ -74,16 +73,14 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <ErrorHandlerProvider>
           <QueryClientProvider client={queryClient}>
-            <AppStateProvider>
-              <UserDataProvider>
-                <UserNotificationDataProvider>
-                  <NotificationDataPoller />
-                  <ForegroundService />
-                  <NotificationDataListener />
-                  <BottomTabNavigator />
-                </UserNotificationDataProvider>
-              </UserDataProvider>
-            </AppStateProvider>
+            <UserDataProvider>
+              <UserNotificationDataProvider>
+                <NotificationDataPoller />
+                <ForegroundService />
+                <NotificationDataListener />
+                <BottomTabNavigator />
+              </UserNotificationDataProvider>
+            </UserDataProvider>
           </QueryClientProvider>
         </ErrorHandlerProvider>
       </PaperProvider>
