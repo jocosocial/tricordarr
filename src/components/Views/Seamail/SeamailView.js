@@ -35,7 +35,11 @@ export const SeamailView = () => {
   }, [data, refetch, setUserNotificationData]);
 
   async function onPress() {
-    linkTo("/twitarrtab/seamail");
+    linkTo(`/twitarrtab/${Date.now()}/seamail`);
+  }
+
+  async function onPress2() {
+    linkTo(`/twitarrtab/${Date.now()}/events`);
   }
 
   // @ts-ignore
@@ -47,6 +51,7 @@ export const SeamailView = () => {
           <Text style={commonStyles.marginTop}>Press the button below to open the Twit-arr Seamail page.</Text>
           <Text>You can also pull to refresh this page to reload the notification data.</Text>
           <SaveButton buttonText={'Open Seamail'} buttonColor={theme.colors.twitarrNeutralButton} onPress={onPress} />
+          <SaveButton buttonText={'Open Schedule'} buttonColor={theme.colors.twitarrNeutralButton} onPress={onPress2} />
         </AppContainerView>
       </ScrollView>
     </AppView>
