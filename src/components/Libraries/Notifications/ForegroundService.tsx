@@ -12,9 +12,6 @@ export const ForegroundService = () => {
     return null;
   }
 
-  console.debug('FGS Loading', isLoading);
-  console.debug('FGS Enable', enableUserNotifications);
-
   if (!isLoading && enableUserNotifications) {
     console.log('Starting FGS');
     startForegroundServiceWorker().catch(error => setErrorMessage(error.toString()));

@@ -11,7 +11,7 @@ let fgsFailedCounter = 0;
 
 // 10 attempts @ 30 second interval = 5 minutes until death
 async function fgsWorkerHealthcheck() {
-  console.debug('FGS Worker Healthcheck');
+  console.log('FGS Worker Healthcheck');
   if (fgsFailedCounter < 10) {
     await setupWebsocket();
     const passed = await wsHealthcheck();
@@ -43,7 +43,7 @@ export async function stopForegroundServiceWorker() {
   try {
     const ws = await getSharedWebSocket();
     if (ws) {
-      console.log('Closing websocket', ws);
+      console.log(`Closing websocket in state ${ws.readyState}`);
       ws.close();
     }
     await notifee.stopForegroundService();
