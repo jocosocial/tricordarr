@@ -9,6 +9,7 @@ import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import NetInfo from '@react-native-community/netinfo';
 
 export const LoginView = () => {
   const theme = useTheme();
@@ -26,7 +27,6 @@ export const LoginView = () => {
 
   const loginMutation = useMutation(
     async ({username, password}) => {
-      console.log('Creds:', username, password);
       // Axios and the base64 encoding get weird, so we do it ourselves.
       // https://github.com/axios/axios/issues/2235
       let authHeaders = getAuthHeaders(username, password);
@@ -40,6 +40,7 @@ export const LoginView = () => {
     async data => {
       await AppSettings.AUTH_TOKEN.setValue(data.data.token);
       await AppSettings.USER_ID.setValue(data.data.userID);
+      await NetInfo.refresh();
       await setIsLoggedIn(true);
       await setIsLoading(false);
       // I don't love this.
@@ -47,7 +48,7 @@ export const LoginView = () => {
       setErrorMessage('');
       navigation.goBack();
     },
-    [navigation, setIsLoggedIn, setIsLoading],
+    [setIsLoggedIn, setIsLoading, setErrorBanner, setErrorMessage, navigation],
   );
 
   const onSubmit = useCallback(
