@@ -11,7 +11,7 @@ Notifications
 Websocket/Connection
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * Calculate setting for websocket notification url. Consider onupdate callback in settings to trigger revalc
-* Add last healthcheck date. Store that somewhere
+* Changing server URL should trigger something or yell at you to restart.
 
 App Structure
 * more typescript conversion

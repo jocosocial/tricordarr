@@ -29,7 +29,11 @@ export const SettingsStack = () => {
       <Stack.Screen name={'NetworkInfoSettingsScreen'} component={NetworkInfoSettings} />
       <Stack.Screen name={'StorageKeysSettingsScreen'} component={StorageKeysSettings} />
       <Stack.Screen name={'AccountSettingsScreen'} component={AccountSettings} />
-      <Stack.Screen name={'ServerConnectionSettingsScreen'} component={ServerConnectionSettings} />
+      <Stack.Screen
+        name={'ServerConnectionSettingsScreen'}
+        component={ServerConnectionSettings}
+        options={{title: 'Background Connection'}}
+      />
       <Stack.Screen name={'TestNotificationScreen'} component={TestNotificationScreen} />
     </Stack.Navigator>
   );

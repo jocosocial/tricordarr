@@ -1,16 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {RefreshControl, SafeAreaView, ScrollView, Switch, View} from 'react-native';
+import {RefreshControl, ScrollView, Switch, View} from 'react-native';
 import {useTheme, Text, DataTable, TouchableRipple} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
-import NetInfo from '@react-native-community/netinfo';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {commonStyles} from '../../../styles';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useBackHandler} from '@react-native-community/hooks';
+import {fgsFailedCounter} from '../../../libraries/Service';
+import {AppContainerView} from '../../Views/AppContainerView';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -31,8 +32,6 @@ export const ServerConnectionSettings = ({navigation}) => {
   const {setErrorMessage} = useErrorHandler();
   const [wsHealthcheckDate, setWsHealthcheckDate] = useState('unknown');
   const [wsOpenDate, setWsOpenDate] = useState('unknown');
-
-  navigation.setOptions({title: 'Background Connection'});
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -75,8 +74,16 @@ export const ServerConnectionSettings = ({navigation}) => {
   return (
     <AppView>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={{backgroundColor: theme.colors.background, padding: 20}}>
+        <AppContainerView isStack={true}>
           <View>
+            <Text>
+              A connection to the server is made in the background and persists when the app
+              is not running or immediately visible. To achieve this, Android Law(tm) requires
+              you to be notified that the process is running. Android 13 allows you to dismiss
+              the notification while keeping the background process running.
+            </Text>
+          </View>
+          <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>Websocket</Text>
             <DataTable>
               <DataTable.Row key={'wsState'}>
@@ -90,6 +97,10 @@ export const ServerConnectionSettings = ({navigation}) => {
               <DataTable.Row key={'wsOpenDate'}>
                 <DataTable.Cell>Opened</DataTable.Cell>
                 <DataTable.Cell>{wsOpenDate}</DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row key={'wsFailCount'}>
+                <DataTable.Cell>Failed Health Count</DataTable.Cell>
+                <DataTable.Cell>{fgsFailedCounter}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </View>
@@ -127,7 +138,7 @@ export const ServerConnectionSettings = ({navigation}) => {
               </TouchableRipple>
             </View>
           </View>
-        </View>
+        </AppContainerView>
       </ScrollView>
     </AppView>
   );
