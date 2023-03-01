@@ -18,7 +18,7 @@ export const MainView = () => {
           </Text>
           <View>
             <Text>{'\u2022 Push notifications for Seamail/Chat.'}</Text>
-            <Text>{'\u2022 Periodic pull notifications for Seamail/Chat in app.'}</Text>
+            <Text>{'\u2022 Notifications open content within the app.'}</Text>
           </View>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>
             Features that are missing:
