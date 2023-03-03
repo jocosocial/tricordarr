@@ -1,34 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import axios from 'axios';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {stopForegroundServiceWorker} from '../../../libraries/Service';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 export const TempUserProfile = () => {
-  const [token, setToken] = useState('unknown');
   const {profilePublicData} = useUserData();
-  const {setErrorMessage} = useErrorHandler();
 
-  useEffect(() => {
-    async function getToken() {
-      setToken(await AppSettings.AUTH_TOKEN.getValue());
-    }
-    getToken().catch(error => setErrorMessage(error.toString()));
-  }, [setErrorMessage]);
-
-  return (
-    <>
-      <Text>{JSON.stringify(profilePublicData)}</Text>
-      <Text>Auth Token: {token}</Text>
-    </>
-  );
+  return <Text>{JSON.stringify(profilePublicData)}</Text>;
 };
 
 export const LogoutView = () => {
