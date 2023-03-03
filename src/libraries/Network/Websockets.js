@@ -1,5 +1,5 @@
 import {generateContentNotification} from '../Notifications/Content';
-import {seamailChannel} from '../Notifications/Channels';
+import {seamailChannel, lfgChannel} from '../Notifications/Channels';
 import {NotificationType} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
@@ -109,6 +109,11 @@ function wsMessageHandler(event) {
       console.log('GOT A SEAMAIL!!!!!!!!!!');
       channel = seamailChannel;
       url = `/seamail/${notificationData.contentID}#newposts`;
+      break;
+    case NotificationType.fezUnreadMsg:
+      console.log('GOT A LFG MESSAGE!!!!!!!!!!');
+      channel = lfgChannel;
+      url = `/fez/${notificationData.contentID}#newposts`;
       break;
   }
 
