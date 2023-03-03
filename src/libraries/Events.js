@@ -15,6 +15,9 @@ export function handleEvent(type, notification, pressAction) {
       case NotificationType.seamailUnreadMsg:
         url += notification.data.url;
         break;
+      case NotificationType.fezUnreadMsg:
+        url+= notification.data.url;
+        break;
     }
 
     return url;

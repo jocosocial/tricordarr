@@ -44,6 +44,16 @@ export const seamailChannel: AndroidChannel = {
 };
 
 /**
+ * Notification channel for LFG content.
+ */
+export const lfgChannel: AndroidChannel = {
+  id: 'lfg',
+  name: 'LFG',
+  groupId: contentChannelGroup.id,
+  description: 'LFG content from the Twitarr server.',
+};
+
+/**
  * Setup function to ensure that the channels and their groups exist.
  */
 export async function setupChannels() {
@@ -51,4 +61,5 @@ export async function setupChannels() {
   await notifee.createChannel(connectionChannel);
   await notifee.createChannel(serviceChannel);
   await notifee.createChannel(seamailChannel);
+  await notifee.createChannel(lfgChannel);
 }
