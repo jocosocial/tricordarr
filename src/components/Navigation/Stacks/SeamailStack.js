@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTheme} from 'react-native-paper';
-import {SeamailView} from '../../Screens/Seamail/Seamail';
+import {SeamailScreen} from '../../Screens/Seamail/Seamail';
 
 export const SeamailStack = () => {
   const Stack = createNativeStackNavigator();
@@ -18,7 +18,7 @@ export const SeamailStack = () => {
 
   return (
     <Stack.Navigator initialRouteName={'SeamailScreen'} screenOptions={screenOptions}>
-      <Stack.Screen name={'SeamailScreen'} component={SeamailView} options={{title: 'Seamail'}} />
+      <Stack.Screen name={'SeamailScreen'} component={SeamailScreen} options={{headerShown: false, title: 'Seamail'}} />
     </Stack.Navigator>
   );
 };

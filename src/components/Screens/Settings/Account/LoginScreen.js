@@ -1,17 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
-import {LoginForm} from '../../Forms/LoginForm';
-import {AppSettings} from '../../../libraries/AppSettings';
-import {getAuthHeaders} from '../../../libraries/Network/APIClient';
+import {LoginForm} from '../../../Forms/LoginForm';
+import {AppSettings} from '../../../../libraries/AppSettings';
+import {getAuthHeaders} from '../../../../libraries/Network/APIClient';
 import {useMutation} from '@tanstack/react-query';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import NetInfo from '@react-native-community/netinfo';
 
-export const LoginView = () => {
+export const LoginScreen = () => {
   const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
@@ -40,6 +40,7 @@ export const LoginView = () => {
     async data => {
       await AppSettings.AUTH_TOKEN.setValue(data.data.token);
       await AppSettings.USER_ID.setValue(data.data.userID);
+      await AppSettings.ACCESS_LEVEL.setValue(data.data.accessLevel);
       await NetInfo.refresh();
       await setIsLoggedIn(true);
       await setIsLoading(false);

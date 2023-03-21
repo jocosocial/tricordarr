@@ -3,11 +3,11 @@ import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import axios from 'axios';
 import {useMutation} from '@tanstack/react-query';
-import {SaveButton} from '../../Buttons/SaveButton';
-import {AppSettings} from '../../../libraries/AppSettings';
+import {SaveButton} from '../../../Buttons/SaveButton';
+import {AppSettings} from '../../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -15,7 +15,7 @@ export const TempUserProfile = () => {
   return <Text>{JSON.stringify(profilePublicData)}</Text>;
 };
 
-export const LogoutView = () => {
+export const LogoutScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const {setIsLoggedIn, setProfilePublicData} = useUserData();
@@ -51,6 +51,7 @@ export const LogoutView = () => {
     await AppSettings.AUTH_TOKEN.remove();
     await AppSettings.USERNAME.remove();
     await AppSettings.USER_ID.remove();
+    await AppSettings.ACCESS_LEVEL.remove();
     navigation.goBack();
   }
 

@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import {ScrollView} from 'react-native';
-import {LoginView} from '../../Views/Auth/LoginView';
-import {LogoutView} from '../../Views/Auth/LogoutView';
-import {AppView} from '../../Views/AppView';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {LoginScreen} from './LoginScreen';
+import {LogoutScreen} from './LogoutScreen';
+import {AppView} from '../../../Views/AppView';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
 
 export const AccountSettings = ({route, navigation}) => {
   const {isLoggedIn, isLoading} = useUserData();
@@ -15,8 +15,8 @@ export const AccountSettings = ({route, navigation}) => {
   return (
     <AppView>
       <ScrollView>
-        {!isLoading && isLoggedIn && <LogoutView />}
-        {!isLoading && !isLoggedIn && <LoginView />}
+        {!isLoading && isLoggedIn && <LogoutScreen />}
+        {!isLoading && !isLoggedIn && <LoginScreen />}
       </ScrollView>
     </AppView>
   );
