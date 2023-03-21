@@ -14,6 +14,9 @@ export const commonStyles = StyleSheet.create({
   marginTop: {
     marginTop: styleDefaults.marginSize,
   },
+  marginBottom: {
+    marginBottom: styleDefaults.marginSize,
+  },
   marginNotTop: {
     marginLeft: styleDefaults.marginSize,
     marginRight: styleDefaults.marginSize,
