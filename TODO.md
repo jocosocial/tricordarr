@@ -23,4 +23,8 @@ UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
 * Help modal provider
 
+Questions for Ben
+* redux traps, gotchas
+* left function callback warning about re-defining component
+
 Work Queue

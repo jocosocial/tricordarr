@@ -19,7 +19,7 @@ export const SeamailView = () => {
 
   const {data, refetch} = useQuery<FezListData>({
     queryKey: ['/fez/joined?type=closed&type=open'],
-    enabled: !!isLoggedIn,
+    enabled: isLoggedIn,
   });
 
   const onRefresh = useCallback(() => {
@@ -35,7 +35,7 @@ export const SeamailView = () => {
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <Divider bold={true} />
         <AppContainerView>
-          <Searchbar placeholder={'Search Seamail messages.'} onChangeText={onChangeSearch} value={searchQuery} />
+          <Searchbar placeholder={'Search messages'} onChangeText={onChangeSearch} value={searchQuery} />
           <SegmentedButtons
             value={value}
             onValueChange={setValue}
