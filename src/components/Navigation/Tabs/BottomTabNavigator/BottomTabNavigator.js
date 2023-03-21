@@ -3,25 +3,26 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {SettingsStack} from '../../Stacks/SettingsStack';
 import {MainView} from '../../../Views/MainView';
 import {NavBarIcon} from './BottomTabIcon';
-// import {SeamailView} from '../../../Views/Seamail/SeamailView';
-// import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {Seamail} from '../../../Screens/Seamail/Seamail';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {TwitarrView} from '../../../Views/TwitarrView';
 import {handleEvent} from '../../../../libraries/Events';
 import notifee from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {Linking} from 'react-native';
+import {SeamailStack} from "../../Stacks/SeamailStack";
 
 const Tab = createMaterialBottomTabNavigator();
 
-// function getBadgeDisplayValue(input) {
-//   if (input === 0) {
-//     return null;
-//   }
-//   return input;
-// }
+function getBadgeDisplayValue(input) {
+  if (input === 0) {
+    return null;
+  }
+  return input;
+}
 
 export const BottomTabNavigator = () => {
-  // const {userNotificationData} = useUserNotificationData();
+  const {userNotificationData} = useUserNotificationData();
   const linkTo = useLinkTo();
 
   notifee.onForegroundEvent(async ({type, detail}) => {
@@ -52,15 +53,15 @@ export const BottomTabNavigator = () => {
           tabBarIcon: ({color, size}) => <NavBarIcon icon={'home-account'} size={size} color={color} />,
         }}
       />
-      {/*<Tab.Screen*/}
-      {/*  name="SeamailTab"*/}
-      {/*  component={SeamailView}*/}
-      {/*  options={{*/}
-      {/*    title: 'Seamail',*/}
-      {/*    tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,*/}
-      {/*    tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),*/}
-      {/*  }}*/}
-      {/*/>*/}
+      <Tab.Screen
+        name="SeamailTab"
+        component={SeamailStack}
+        options={{
+          title: 'Seamail',
+          tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
+          tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
+        }}
+      />
       <Tab.Screen
         name="TwitarrTab"
         component={TwitarrView}

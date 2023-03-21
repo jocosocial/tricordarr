@@ -2,6 +2,7 @@
 import {encode as base64_encode} from 'base-64';
 import axios from 'axios';
 import {AppSettings} from '../AppSettings';
+import {Buffer} from '@craftzdog/react-native-buffer';
 
 export async function setupAxiosStuff() {
   // https://github.com/axios/axios/issues/3870
@@ -64,3 +65,15 @@ export function getAuthHeaders(username = undefined, password = undefined, token
   console.log('Authentication Headers:', authHeaders);
   return authHeaders;
 }
+
+// https://stackoverflow.com/questions/41846669/download-an-image-using-axios-and-convert-it-to-base64
+// https://www.npmjs.com/package/@craftzdog/react-native-buffer
+// https://reactnative.dev/docs/images
+export const apiQueryImageUri = async ({queryKey}) => {
+  const {data, headers} = await axios.get(queryKey[0], {
+    responseType: 'arraybuffer',
+  });
+  const b64Data = Buffer.from(data, 'binary').toString('base64');
+  const contentType = headers.get('content-type');
+  return `data:${contentType};base64,${b64Data}`;
+};
