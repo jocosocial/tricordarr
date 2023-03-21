@@ -24,4 +24,3 @@ UI/UX
 * Help modal provider
 
 Work Queue
-* TEST AND RELEASE!

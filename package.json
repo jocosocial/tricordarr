@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@craftzdog/react-native-buffer": "^6.0.5",
     "@notifee/react-native": "^7.4.0",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/hooks": "^3.0.0",
