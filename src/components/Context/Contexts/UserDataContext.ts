@@ -1,5 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
+import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 export interface UserDataContextType {
   profilePublicData: ProfilePublicData;
@@ -10,6 +11,8 @@ export interface UserDataContextType {
   // setAuthToken: Dispatch<SetStateAction<string>>;
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  accessLevel: UserAccessLevel;
+  setAccessLevel: Dispatch<SetStateAction<UserAccessLevel>>;
 }
 
 export const UserDataContext = createContext(<UserDataContextType>{});
