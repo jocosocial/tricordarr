@@ -26,5 +26,6 @@ UI/UX
 Questions for Ben
 * redux traps, gotchas
 * left function callback warning about re-defining component
+* wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 
 Work Queue

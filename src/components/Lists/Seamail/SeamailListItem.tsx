@@ -13,7 +13,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
   const {profilePublicData} = useUserData();
   // const navigation = useNavigation();
 
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header?.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => <FezImage fez={fez} />;

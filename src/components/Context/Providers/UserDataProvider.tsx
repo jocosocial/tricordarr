@@ -6,6 +6,7 @@ import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {AxiosError} from 'axios';
+import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: DefaultProviderProps) => {
@@ -13,12 +14,18 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const {setErrorMessage, setErrorBanner} = useErrorHandler();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [accessLevel, setAccessLevel] = useState(UserAccessLevel.unverified);
 
   useEffect(() => {
     async function getSettings() {
       const tokenSetting = await AppSettings.AUTH_TOKEN.getValue();
       if (tokenSetting) {
         setIsLoggedIn(true);
+      }
+      const accessLevelSetting = await AppSettings.ACCESS_LEVEL.getValue();
+      if (accessLevelSetting) {
+        // https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
+        setAccessLevel(UserAccessLevel[accessLevelSetting as keyof typeof UserAccessLevel]);
       }
       setIsLoading(false);
     }
@@ -45,7 +52,16 @@ export const UserDataProvider = ({children}: DefaultProviderProps) => {
 
   return (
     <UserDataContext.Provider
-      value={{profilePublicData, setProfilePublicData, isLoggedIn, setIsLoggedIn, isLoading, setIsLoading}}>
+      value={{
+        profilePublicData,
+        setProfilePublicData,
+        isLoggedIn,
+        setIsLoggedIn,
+        isLoading,
+        setIsLoading,
+        accessLevel,
+        setAccessLevel,
+      }}>
       {children}
     </UserDataContext.Provider>
   );

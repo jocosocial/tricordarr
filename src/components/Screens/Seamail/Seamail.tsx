@@ -12,11 +12,12 @@ import {commonStyles} from "../../../styles";
 import {SeamailSearchBar} from "../../Search/SeamailSearchBar";
 import {SeamailAccountButtons} from "../../Buttons/SeamailAccountButtons";
 import {NotLoggedInView} from "../../Views/NotLoggedInView";
+import {LoadingView} from "../../Views/LoadingView";
 
 export const SeamailScreen = () => {
   const theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const {isLoggedIn} = useUserData();
+  const {isLoggedIn, isLoading} = useUserData();
   // const {setUserNotificationData} = useUserNotificationData();
 
   const {data, refetch} = useQuery<FezListData>({
@@ -31,6 +32,10 @@ export const SeamailScreen = () => {
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
+  }
+
+  if (isLoading) {
+    return <LoadingView />;
   }
 
   return (
