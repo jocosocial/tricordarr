@@ -1,18 +1,19 @@
 import {AppView} from '../../Views/AppView';
 import {Divider, useTheme} from 'react-native-paper';
 import React, {useCallback, useState} from 'react';
-import {AppContainerView} from '../../Views/AppContainerView';
-import {RefreshControl, ScrollView} from 'react-native';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {RefreshControl, ScrollView, View} from 'react-native';
 import {useQuery} from '@tanstack/react-query';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SegmentedButtons, List} from 'react-native-paper';
-import {SeamailListItem} from "../../Lists/Seamail/SeamailListItem";
-import {FezListData} from "../../../libraries/Structs/ControllerStructs";
-import {commonStyles} from "../../../styles";
-import {SeamailSearchBar} from "../../Search/SeamailSearchBar";
-import {SeamailAccountButtons} from "../../Buttons/SeamailAccountButtons";
-import {NotLoggedInView} from "../../Views/NotLoggedInView";
-import {LoadingView} from "../../Views/LoadingView";
+import {SeamailListItem} from '../../Lists/Seamail/SeamailListItem';
+import {FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {commonStyles} from '../../../styles';
+import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
+import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import {LoadingView} from '../../Views/Static/LoadingView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 export const SeamailScreen = () => {
   const theme = useTheme();
@@ -40,18 +41,15 @@ export const SeamailScreen = () => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <Divider bold={true} />
-        <AppContainerView>
-          <SeamailSearchBar />
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View>
+          <PaddedContentView>
+            <SeamailSearchBar />
+          </PaddedContentView>
           <SeamailAccountButtons />
-          <List.Section>
-            {data && data.fezzes.map(fez => (
-              <SeamailListItem key={fez.fezID} fez={fez} />
-            ))}
-          </List.Section>
-        </AppContainerView>
-      </ScrollView>
+          <List.Section>{data && data.fezzes.map(fez => <SeamailListItem key={fez.fezID} fez={fez} />)}</List.Section>
+        </View>
+      </ScrollingContentView>
     </AppView>
   );
 };

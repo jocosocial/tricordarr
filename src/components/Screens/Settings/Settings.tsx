@@ -1,18 +1,18 @@
-import {SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useContext} from 'react';
-import {useTheme, List, Divider} from 'react-native-paper';
+import React from 'react';
+import {View} from 'react-native';
+import {List, Divider} from 'react-native-paper';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {SettingListItem} from '../../Lists/SettingListItem';
 import {NavigationListItem} from '../../Lists/NavigationListItem';
 import {AccountListItem} from '../../Lists/AccountListItem';
 import {AppView} from '../../Views/AppView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 
-export const SettingsView = ({navigation}) => {
-  const theme = useTheme();
+export const SettingsView = () => {
   return (
     <AppView>
-      <ScrollView>
-        <View style={{backgroundColor: theme.colors.background}}>
+      <ScrollingContentView isStack={true}>
+        <View>
           <Divider bold={true} />
           <List.Section>
             <List.Subheader>Network</List.Subheader>
@@ -54,7 +54,7 @@ export const SettingsView = ({navigation}) => {
             <List.Item title={'App Information'} />
           </List.Section>
         </View>
-      </ScrollView>
+      </ScrollingContentView>
     </AppView>
   );
 };

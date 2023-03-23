@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {RefreshControl, ScrollView, Switch, View} from 'react-native';
+import {RefreshControl, Switch, View} from 'react-native';
 import {useTheme, Text, DataTable, TouchableRipple} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {SaveButton} from '../../Buttons/SaveButton';
@@ -11,7 +11,8 @@ import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useBackHandler} from '@react-native-community/hooks';
 import {fgsFailedCounter} from '../../../libraries/Service';
-import {AppContainerView} from '../../Views/AppContainerView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -57,6 +58,7 @@ export const ServerConnectionSettings = ({navigation}) => {
       setWsHealthcheckDate(await AppSettings.WS_HEALTHCHECK_DATE.getValue());
       setWsOpenDate(await AppSettings.WS_OPEN_DATE.getValue());
     }
+
     getSettingValue().catch(e => setErrorMessage(e.toString()));
   }, [setErrorMessage, refreshing]);
 
@@ -73,14 +75,15 @@ export const ServerConnectionSettings = ({navigation}) => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <AppContainerView isStack={true}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <PaddedContentView>
           <View>
             <Text>
-              A connection to the server is made in the background and persists when the app
-              is not running or immediately visible. To achieve this, Android Law(tm) requires
-              you to be notified that the process is running. Android 13 allows you to dismiss
-              the notification while keeping the background process running.
+              A connection to the server is made in the background and persists when the app is not running or
+              immediately visible. To achieve this, Android Law(tm) requires you to be notified that the process is
+              running. Android 13 allows you to dismiss the notification while keeping the background process running.
             </Text>
           </View>
           <View style={commonStyles.marginTop}>
@@ -138,8 +141,8 @@ export const ServerConnectionSettings = ({navigation}) => {
               </TouchableRipple>
             </View>
           </View>
-        </AppContainerView>
-      </ScrollView>
+        </PaddedContentView>
+      </ScrollingContentView>
     </AppView>
   );
 };

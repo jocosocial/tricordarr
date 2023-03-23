@@ -27,4 +27,12 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  paddingSides: {
+    paddingLeft: styleDefaults.marginSize,
+    paddingRight: styleDefaults.marginSize,
+  },
+  marginSides: {
+    marginLeft: styleDefaults.marginSize,
+    marginRight: styleDefaults.marginSize,
+  },
 });
