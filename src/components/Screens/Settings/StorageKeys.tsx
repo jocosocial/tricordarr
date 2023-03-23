@@ -1,22 +1,43 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppView} from '../../Views/AppView';
 
-export const NetworkInfoSettings = ({route, navigation}) => {
+interface StorageKeysSettingsProps {
+  route: any;
+  navigation: any;
+}
+
+export const StorageKeysSettings = ({route, navigation}: StorageKeysSettingsProps) => {
   const theme = useTheme();
+  const [data, setData] = useState({});
   const [refreshing, setRefreshing] = useState(false);
-  const data = useNetInfo();
+
+  const fetchData = useCallback(async () => {
+    const storageKeys = await AsyncStorage.getAllKeys();
+    const storageData = {};
+    for (const key of storageKeys) {
+      storageData[key] = await AsyncStorage.getItem(key);
+    }
+    setData(storageData);
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    NetInfo.refresh().finally(() => setRefreshing(false));
+    fetchData().catch(console.error);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
   }, []);
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
   }, [navigation, route.params.title]);
+
+  useEffect(() => {
+    fetchData().catch(e => console.error);
+  }, [fetchData, data]);
 
   return (
     <AppView>
@@ -27,10 +48,10 @@ export const NetworkInfoSettings = ({route, navigation}) => {
               <DataTable.Title>Key</DataTable.Title>
               <DataTable.Title>Value</DataTable.Title>
             </DataTable.Header>
-            {Object.keys(data.details ?? []).map(key => (
+            {Object.keys(data).map(key => (
               <DataTable.Row key={key}>
                 <DataTable.Cell>{key}</DataTable.Cell>
-                <DataTable.Cell>{data.details[key].toString()}</DataTable.Cell>
+                <DataTable.Cell>{data[key]}</DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>

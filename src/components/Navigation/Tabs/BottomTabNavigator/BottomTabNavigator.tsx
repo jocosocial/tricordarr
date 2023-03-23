@@ -14,7 +14,7 @@ import {SeamailStack} from "../../Stacks/SeamailStack";
 
 const Tab = createMaterialBottomTabNavigator();
 
-function getBadgeDisplayValue(input) {
+function getBadgeDisplayValue(input: number) {
   if (input === 0) {
     return null;
   }

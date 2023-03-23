@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {LoginForm} from '../../../Forms/LoginForm';
 import {AppSettings} from '../../../../libraries/AppSettings';

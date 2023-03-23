@@ -7,7 +7,12 @@ import {SettingForm} from '../../Forms/SettingForm';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
-export const SettingDetail = ({route, navigation}) => {
+interface SettingDetailProps {
+  route: any;
+  navigation: any;
+}
+
+export const SettingDetail = ({route, navigation}: SettingDetailProps) => {
   const [value, setValue] = useState('');
   const {settingKey} = route.params;
   const setting = AppSettings[settingKey];

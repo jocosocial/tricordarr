@@ -24,7 +24,11 @@ const WebSocketState = Object.freeze({
   69: 'Uninitialized',
 });
 
-export const ServerConnectionSettings = ({navigation}) => {
+interface ServerConnectionSettingsProps {
+  navigation: any;
+}
+
+export const ServerConnectionSettings = ({navigation}: ServerConnectionSettingsProps) => {
   const theme = useTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
