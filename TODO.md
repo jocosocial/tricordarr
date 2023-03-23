@@ -29,3 +29,7 @@ Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 
 Work Queue
+* JSX.Element array vs single
+* TSX validation
+* duplicating types everywhere
+* read https://reactnavigation.org/docs/typescript

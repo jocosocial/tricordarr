@@ -2,7 +2,13 @@ import {Button, useTheme} from 'react-native-paper';
 import React from 'react';
 import {commonStyles} from '../../styles';
 
-export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefined}) => {
+interface SaveButtonProps {
+  buttonText: string;
+  onPress: Function;
+  buttonColor?: string;
+}
+
+export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefined}: SaveButtonProps) => {
   const theme = useTheme();
 
   if (!buttonColor) {

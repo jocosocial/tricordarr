@@ -2,7 +2,11 @@ import React from 'react';
 import {View} from 'react-native';
 import {commonStyles} from '../../../styles';
 
-export const PaddedContentView = ({children}) => {
+interface PaddedContentViewProps {
+  children: [JSX.Element];
+}
+
+export const PaddedContentView = ({children}: PaddedContentViewProps) => {
   const style = {
     ...commonStyles.flex,
     ...commonStyles.paddingSides,

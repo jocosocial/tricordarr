@@ -3,7 +3,12 @@ import {LoginScreen} from './LoginScreen';
 import {LogoutScreen} from './LogoutScreen';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 
-export const AccountSettings = ({route, navigation}) => {
+interface AccountSettingsProps {
+  route: any;
+  navigation: any;
+}
+
+export const AccountSettings = ({route, navigation}: AccountSettingsProps) => {
   const {isLoggedIn, isLoading} = useUserData();
 
   useEffect(() => {
@@ -12,7 +17,7 @@ export const AccountSettings = ({route, navigation}) => {
 
   if (!isLoading && isLoggedIn) {
     return <LogoutScreen />;
-  } else if (!isLoading && !isLoggedIn){
+  } else if (!isLoading && !isLoggedIn) {
     return <LoginScreen />;
   } else {
     return <></>;
