@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView} from 'react-native';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {AppView} from '../../Views/AppView';
-import {AppContainerView} from '../../Views/AppContainerView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {SettingForm} from '../../Forms/SettingForm';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 export const SettingDetail = ({route, navigation}) => {
   const [value, setValue] = useState('');
@@ -14,9 +15,11 @@ export const SettingDetail = ({route, navigation}) => {
 
   useEffect(() => {
     navigation.setOptions({title: setting.title});
+
     async function getValue() {
       setValue(await setting.getValue());
     }
+
     getValue().catch(console.error);
   }, [navigation, route, setting, value]);
 
@@ -32,9 +35,11 @@ export const SettingDetail = ({route, navigation}) => {
   return (
     <AppView>
       <ScrollView>
-        <AppContainerView>
-          <SettingForm value={value} onSave={onSave} />
-        </AppContainerView>
+        <ScrollingContentView>
+          <PaddedContentView>
+            <SettingForm value={value} onSave={onSave}/>
+          </PaddedContentView>
+        </ScrollingContentView>
       </ScrollView>
     </AppView>
   );

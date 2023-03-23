@@ -10,6 +10,9 @@ import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import NetInfo from '@react-native-community/netinfo';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {AppView} from '../../../Views/AppView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 
 export const LoginScreen = () => {
   const theme = useTheme();
@@ -63,9 +66,13 @@ export const LoginScreen = () => {
   );
 
   return (
-    <View style={{backgroundColor: theme.colors.background, padding: 20}}>
-      <Text style={{paddingBottom: 20}}>Logging in to {serverUrl}.</Text>
-      <LoginForm onSubmit={onSubmit} />
-    </View>
+    <AppView>
+      <ScrollingContentView isStack={true}>
+        <PaddedContentView>
+          <Text style={{paddingBottom: 20}}>Logging in to {serverUrl}.</Text>
+          <LoginForm onSubmit={onSubmit} />
+        </PaddedContentView>
+      </ScrollingContentView>
+    </AppView>
   );
 };

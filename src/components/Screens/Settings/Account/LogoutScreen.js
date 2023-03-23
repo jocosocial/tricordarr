@@ -1,5 +1,4 @@
 import React from 'react';
-import {View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import axios from 'axios';
 import {useMutation} from '@tanstack/react-query';
@@ -8,6 +7,9 @@ import {AppSettings} from '../../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {AppView} from '../../../Views/AppView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -56,16 +58,20 @@ export const LogoutScreen = () => {
   }
 
   return (
-    <View style={{backgroundColor: theme.colors.background}}>
-      <TempUserProfile />
-      <SaveButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress} />
-      <SaveButton
-        buttonColor={theme.colors.twitarrNeutralButton}
-        buttonText={'Clear Auth Data'}
-        onPress={clearAuthData}
-      />
-      {logoutMutation.isError ? <Text>An error occurred: {logoutMutation.error.message}</Text> : null}
-      {logoutMutation.isSuccess ? <Text>Logged out!</Text> : null}
-    </View>
+    <AppView>
+      <ScrollingContentView isStack={true}>
+        <PaddedContentView>
+          <TempUserProfile />
+          <SaveButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress}/>
+          <SaveButton
+            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonText={'Clear Auth Data'}
+            onPress={clearAuthData}
+          />
+          {logoutMutation.isError ? <Text>An error occurred: {logoutMutation.error.message}</Text> : null}
+          {logoutMutation.isSuccess ? <Text>Logged out!</Text> : null}
+        </PaddedContentView>
+      </ScrollingContentView>
+    </AppView>
   );
 };
