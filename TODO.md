@@ -33,3 +33,4 @@ Work Queue
 * TSX validation
 * duplicating types everywhere
 * read https://reactnavigation.org/docs/typescript
+* https://callstack.github.io/react-native-paper/docs/guides/theming/#typescript
