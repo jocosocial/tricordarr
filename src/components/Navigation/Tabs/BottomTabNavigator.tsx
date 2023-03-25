@@ -1,22 +1,21 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {SettingsStack} from '../../Stacks/SettingsStack';
-import {MainView} from '../../../Views/Static/MainView';
-import {NavBarIcon} from './BottomTabIcon';
-import {Seamail} from '../../../Screens/Seamail/Seamail';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import {TwitarrView} from '../../../Views/TwitarrView';
-import {handleEvent} from '../../../../libraries/Events';
+import {SettingsStack} from '../Stacks/SettingsStack';
+import {MainView} from '../../Views/Static/MainView';
+import {NavBarIcon} from '../../Icons/NavBarIcon';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {TwitarrView} from '../../Views/TwitarrView';
+import {handleEvent} from '../../../libraries/Events';
 import notifee from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {Linking} from 'react-native';
-import {SeamailStack} from "../../Stacks/SeamailStack";
+import {SeamailStack} from '../Stacks/SeamailStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function getBadgeDisplayValue(input: number) {
+function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
-    return null;
+    return undefined;
   }
   return input;
 }
@@ -43,6 +42,10 @@ export const BottomTabNavigator = () => {
     await Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one
   });
 
+  function getIcon(icon: string) {
+    return <NavBarIcon icon={icon} />;
+  }
+
   return (
     <Tab.Navigator initialRouteName={'HomeTab'}>
       <Tab.Screen
@@ -50,7 +53,7 @@ export const BottomTabNavigator = () => {
         component={MainView}
         options={{
           title: 'Home',
-          tabBarIcon: ({color, size}) => <NavBarIcon icon={'home-account'} size={size} color={color} />,
+          tabBarIcon: () => getIcon('home-account'),
         }}
       />
       <Tab.Screen
@@ -58,7 +61,7 @@ export const BottomTabNavigator = () => {
         component={SeamailStack}
         options={{
           title: 'Seamail',
-          tabBarIcon: ({color, size}) => <NavBarIcon icon={'email'} size={size} color={color} />,
+          tabBarIcon: () => getIcon('email'),
           tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
         }}
       />
@@ -67,7 +70,7 @@ export const BottomTabNavigator = () => {
         component={TwitarrView}
         options={{
           title: 'Twit-arr',
-          tabBarIcon: ({color, size}) => <NavBarIcon icon={'web'} size={size} color={color} />,
+          tabBarIcon: () => getIcon('web'),
         }}
       />
       <Tab.Screen
@@ -75,7 +78,7 @@ export const BottomTabNavigator = () => {
         component={SettingsStack}
         options={{
           title: 'Settings',
-          tabBarIcon: ({color, size}) => <NavBarIcon icon={'cog'} size={size} color={color} />,
+          tabBarIcon: () => getIcon('cog'),
         }}
       />
     </Tab.Navigator>

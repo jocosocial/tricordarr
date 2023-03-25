@@ -18,6 +18,8 @@ App Structure
 * Consider provider/context for server URL and any settings.
 * Better way to manage settings descriptions/titles for less useEffect and more compatibility with deep linking.
 * Improve navigation with deep linked screens (non-twitarr content).
+* Unified form handling props (LoginForm and SettingForm).
+* bottomtabnavigator screens should be dynamically generated.
 
 UI/UX
 * https://callstack.github.io/react-native-paper/docs/guides/theming-with-react-navigation
@@ -29,9 +31,10 @@ Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 
 Work Queue
+* Do the type thingies for all stack navigators
 * JSX.Element array vs single for all high level containers
 * TSX validation
 * duplicating types everywhere
 * read https://reactnavigation.org/docs/typescript
-* https://callstack.github.io/react-native-paper/docs/guides/theming/#typescript
 * PropsWithChildren, https://blog.logrocket.com/using-react-children-prop-with-typescript/
+* Remove `any` type usage
