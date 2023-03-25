@@ -6,7 +6,7 @@ import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 
 interface AppViewProps {
-  children: [JSX.Element];
+  children: [JSX.Element] | JSX.Element;
 }
 
 /**
