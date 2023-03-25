@@ -1,7 +1,9 @@
 import {StyleSheet} from 'react-native';
 
-const styleDefaults = {
+export const styleDefaults = {
   marginSize: 20,
+  iconSize: 25,
+  avatarSize: 36,
 };
 
 export const commonStyles = StyleSheet.create({

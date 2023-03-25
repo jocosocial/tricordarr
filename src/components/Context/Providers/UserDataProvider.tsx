@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, PropsWithChildren} from 'react';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
-import {DefaultProviderProps} from './ProviderTypes';
 import {UserDataContext} from '../Contexts/UserDataContext';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQuery} from '@tanstack/react-query';
@@ -9,7 +8,7 @@ import {AxiosError} from 'axios';
 import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 // https://reactnavigation.org/docs/auth-flow/
-export const UserDataProvider = ({children}: DefaultProviderProps) => {
+export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState({} as ProfilePublicData);
   const [isLoading, setIsLoading] = useState(true);
   const {setErrorMessage, setErrorBanner} = useErrorHandler();

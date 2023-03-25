@@ -14,7 +14,7 @@ import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';
 import {useColorScheme} from 'react-native';
-import {BottomTabNavigator} from './src/components/Navigation/Tabs/BottomTabNavigator/BottomTabNavigator';
+import {BottomTabNavigator} from './src/components/Navigation/Tabs/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';

@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, PropsWithChildren} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
-import {DefaultProviderProps} from './ProviderTypes';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useUserData} from '../Contexts/UserDataContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
@@ -10,7 +9,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 // Consider renaming to UserNotificationProvider?
-export const UserNotificationDataProvider = ({children}: DefaultProviderProps) => {
+export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
   const {isLoggedIn, isLoading} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);

@@ -1,14 +1,12 @@
-import {AppView} from '../../Views/AppView';
-import {Divider, useTheme} from 'react-native-paper';
 import React, {useCallback, useState} from 'react';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
+import {List} from 'react-native-paper';
 import {useQuery} from '@tanstack/react-query';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {SegmentedButtons, List} from 'react-native-paper';
 import {SeamailListItem} from '../../Lists/Seamail/SeamailListItem';
 import {FezListData} from '../../../libraries/Structs/ControllerStructs';
-import {commonStyles} from '../../../styles';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
@@ -16,7 +14,6 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 export const SeamailScreen = () => {
-  const theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   // const {setUserNotificationData} = useUserNotificationData();

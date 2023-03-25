@@ -1,15 +1,12 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
-import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useQuery} from '@tanstack/react-query';
 import {apiQueryImageUri} from '../../libraries/Network/APIClient';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {FezDataProps} from '../../types';
+import {styleDefaults} from '../../styles';
 
-interface FezImageProps {
-  fez: FezData;
-}
-
-export const FezImage = ({fez}: FezImageProps) => {
+export const FezAvatarImage = ({fez}: FezDataProps) => {
   const {isLoggedIn, profilePublicData} = useUserData();
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header.userID) || [];
@@ -22,12 +19,12 @@ export const FezImage = ({fez}: FezImageProps) => {
   });
 
   if (otherParticipants.length > 1) {
-    return <Avatar.Icon size={36} icon="account-group" />;
+    return <Avatar.Icon size={styleDefaults.avatarSize} icon="account-group" />;
   }
 
   if (!avatarImageUri) {
-    return <Avatar.Icon size={36} icon="account" />;
+    return <Avatar.Icon size={styleDefaults.avatarSize} icon="account" />;
   }
 
-  return <Avatar.Image size={36} source={{uri: avatarImageUri}} />;
+  return <Avatar.Image size={styleDefaults.avatarSize} source={{uri: avatarImageUri}} />;
 };

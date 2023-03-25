@@ -8,6 +8,7 @@ import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionS
 import {SettingsView} from '../../Screens/Settings/Settings';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
 import {useTheme} from 'react-native-paper';
+import {NavigatorIDs, SettingsStackScreenIDs} from '../../../libraries/Enums/Navigation';
 
 export const SettingsStack = () => {
   const Stack = createNativeStackNavigator();
@@ -23,18 +24,18 @@ export const SettingsStack = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
-      <Stack.Screen name={'SettingsScreen'} component={SettingsView} options={{title: 'Settings'}} />
-      <Stack.Screen name={'SettingDetailScreen'} component={SettingDetail} />
-      <Stack.Screen name={'NetworkInfoSettingsScreen'} component={NetworkInfoSettings} />
-      <Stack.Screen name={'StorageKeysSettingsScreen'} component={StorageKeysSettings} />
-      <Stack.Screen name={'AccountSettingsScreen'} component={AccountSettings} />
+    <Stack.Navigator id={NavigatorIDs.settingsStack} initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
+      <Stack.Screen name={SettingsStackScreenIDs.settings} component={SettingsView} options={{title: 'Settings'}} />
+      <Stack.Screen name={SettingsStackScreenIDs.settingDetail} component={SettingDetail} />
+      <Stack.Screen name={SettingsStackScreenIDs.networkInfoSettings} component={NetworkInfoSettings} />
+      <Stack.Screen name={SettingsStackScreenIDs.storageKeySettings} component={StorageKeysSettings} />
+      <Stack.Screen name={SettingsStackScreenIDs.accountSettings} component={AccountSettings} />
       <Stack.Screen
-        name={'ServerConnectionSettingsScreen'}
+        name={SettingsStackScreenIDs.serverConnectionSettings}
         component={ServerConnectionSettings}
         options={{title: 'Background Connection'}}
       />
-      <Stack.Screen name={'TestNotificationScreen'} component={TestNotificationScreen} />
+      <Stack.Screen name={SettingsStackScreenIDs.testNotification} component={TestNotificationScreen} />
     </Stack.Navigator>
   );
 };

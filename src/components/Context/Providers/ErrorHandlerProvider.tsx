@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
-import {DefaultProviderProps} from './ProviderTypes';
+import React, {useState, PropsWithChildren} from 'react';
 import {ErrorHandlerContext} from '../Contexts/ErrorHandlerContext';
 
-export const ErrorHandlerProvider = ({children}: DefaultProviderProps) => {
+export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorBanner, setErrorBanner] = useState('');
 

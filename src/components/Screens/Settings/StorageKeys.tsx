@@ -3,13 +3,17 @@ import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppView} from '../../Views/AppView';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ParamListBase} from '@react-navigation/native';
+import {NavigatorIDs, SettingsStackScreenIDs} from '../../../libraries/Enums/Navigation';
 
-interface StorageKeysSettingsProps {
-  route: any;
-  navigation: any;
-}
+type Props = NativeStackScreenProps<
+  ParamListBase,
+  SettingsStackScreenIDs.storageKeySettings,
+  NavigatorIDs.settingsStack
+>;
 
-export const StorageKeysSettings = ({route, navigation}: StorageKeysSettingsProps) => {
+export const StorageKeysSettings = ({route, navigation}: Props) => {
   const theme = useTheme();
   const [data, setData] = useState({});
   const [refreshing, setRefreshing] = useState(false);
