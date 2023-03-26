@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Text, useTheme} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {LoginForm} from '../../../Forms/LoginForm';
 import {AppSettings} from '../../../../libraries/AppSettings';
 import {getAuthHeaders} from '../../../../libraries/Network/APIClient';
@@ -12,9 +12,10 @@ import NetInfo from '@react-native-community/netinfo';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {LoginFormValues} from '../../../../libraries/Types/FormValues';
+import {commonStyles} from '../../../../styles';
 
 export const LoginScreen = () => {
-  const theme = useTheme();
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
   const {setIsLoading, setIsLoggedIn} = useUserData();
@@ -22,13 +23,13 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      setServerUrl(await AppSettings.SERVER_URL.getValue());
+      setServerUrl((await AppSettings.SERVER_URL.getValue()) ?? 'unknown server');
     };
     loadSettings();
   }, []);
 
   const loginMutation = useMutation(
-    async ({username, password}) => {
+    async ({username, password}: LoginFormValues) => {
       // Axios and the base64 encoding get weird, so we do it ourselves.
       // https://github.com/axios/axios/issues/2235
       let authHeaders = getAuthHeaders(username, password);
@@ -55,7 +56,7 @@ export const LoginScreen = () => {
   );
 
   const onSubmit = useCallback(
-    async formValues => {
+    async (formValues: LoginFormValues) => {
       loginMutation.mutate(formValues, {
         onSuccess: storeLoginData,
         onError: error => setErrorMessage(error.response.data.reason),
@@ -68,7 +69,7 @@ export const LoginScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView>
-          <Text style={{paddingBottom: 20}}>Logging in to {serverUrl}.</Text>
+          <Text style={commonStyles.marginBottom}>Logging in to {serverUrl}.</Text>
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>
       </ScrollingContentView>

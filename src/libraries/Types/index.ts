@@ -10,7 +10,3 @@ export interface KvObject {
 }
 
 export type StringOrError = string | Error;
-
-export interface SettingFormValues {
-  settingValue: string;
-}

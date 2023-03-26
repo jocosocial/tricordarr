@@ -6,7 +6,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {SettingForm} from '../../Forms/SettingForm';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SettingFormValues} from '../../../libraries/Types';
+import {SettingFormValues} from '../../../libraries/Types/FormValues';
 
 interface SettingDetailProps {
   route: any;

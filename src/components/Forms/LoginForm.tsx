@@ -3,15 +3,11 @@ import {View} from 'react-native';
 import {Formik} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {SaveButton} from '../Buttons/SaveButton';
-
-interface LoginFormValues {
-  username?: string;
-  password?: string;
-}
+import {LoginFormValues} from '../../libraries/Types/FormValues';
 
 interface LoginFormProps {
   onSubmit: any;
-  initialValues: LoginFormValues;
+  initialValues?: LoginFormValues;
 }
 
 // https://formik.org/docs/guides/react-native

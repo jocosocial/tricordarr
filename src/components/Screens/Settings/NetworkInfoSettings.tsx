@@ -35,7 +35,9 @@ export const NetworkInfoSettings = ({route, navigation}: NetworkInfoSettingsProp
             {Object.keys(data.details ?? []).map(key => (
               <DataTable.Row key={key}>
                 <DataTable.Cell>{key}</DataTable.Cell>
-                <DataTable.Cell>{data.details[key].toString()}</DataTable.Cell>
+                <DataTable.Cell>
+                  {data.details ? data.details[key as keyof typeof data.details].toString() : 'UNKNOWN'}
+                </DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>

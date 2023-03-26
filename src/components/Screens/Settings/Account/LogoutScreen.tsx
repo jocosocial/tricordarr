@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, useTheme} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import axios from 'axios';
 import {useMutation} from '@tanstack/react-query';
 import {SaveButton} from '../../../Buttons/SaveButton';
@@ -10,6 +10,8 @@ import {useUserNotificationData} from '../../../Context/Contexts/UserNotificatio
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {useAppTheme} from '../../../../styles/Theme';
+import {ProfilePublicData, UserNotificationData} from '../../../../libraries/Structs/ControllerStructs';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -18,7 +20,7 @@ export const TempUserProfile = () => {
 };
 
 export const LogoutScreen = () => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const navigation = useNavigation();
   const {setIsLoggedIn, setProfilePublicData} = useUserData();
   const {setEnableUserNotifications, setUserNotificationData} = useUserNotificationData();
@@ -37,9 +39,9 @@ export const LogoutScreen = () => {
   function onPress() {
     setIsLoggedIn(false);
     setEnableUserNotifications(false);
-    setProfilePublicData({});
-    setUserNotificationData({});
-    logoutMutation.mutate(null, {
+    setProfilePublicData({} as ProfilePublicData);
+    setUserNotificationData({} as UserNotificationData);
+    logoutMutation.mutate(undefined, {
       onSuccess: () => {
         navigation.goBack();
       },
@@ -68,8 +70,6 @@ export const LogoutScreen = () => {
             buttonText={'Clear Auth Data'}
             onPress={clearAuthData}
           />
-          {logoutMutation.isError ? <Text>An error occurred: {logoutMutation.error.message}</Text> : null}
-          {logoutMutation.isSuccess ? <Text>Logged out!</Text> : null}
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

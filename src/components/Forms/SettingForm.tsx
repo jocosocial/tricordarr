@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import {SaveButton} from '../Buttons/SaveButton';
-import {SettingFormValues} from '../../libraries/Types';
+import {SettingFormValues} from '../../libraries/Types/FormValues';
 
 interface SettingFormProps {
   value: string;
