@@ -12,6 +12,9 @@ import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
+import {commonStyles} from '../../../styles';
+import {ListSection} from '../../Lists/ListSection';
 
 export const SeamailScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -43,19 +46,22 @@ export const SeamailScreen = () => {
           <PaddedContentView>
             <SeamailSearchBar />
           </PaddedContentView>
-          <SeamailAccountButtons />
-          <List.Section>
+          <PaddedContentView>
+            <SeamailAccountButtons />
+          </PaddedContentView>
+          <ListSection>
             <Divider />
             {data &&
               data.fezzes.map(fez => (
                 <>
                   <SeamailListItem key={fez.fezID} fez={fez} />
-                  <Divider />
+                  <Divider bold={true} />
                 </>
               ))}
-          </List.Section>
+          </ListSection>
         </View>
       </ScrollingContentView>
+      <SeamailNewFAB />
     </AppView>
   );
 };

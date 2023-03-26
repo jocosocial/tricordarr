@@ -36,6 +36,9 @@ export const commonStyles = StyleSheet.create({
     paddingLeft: styleDefaults.marginSize,
     paddingRight: styleDefaults.marginSize,
   },
+  paddingBottom: {
+    paddingBottom: styleDefaults.marginSize,
+  },
   marginSides: {
     marginLeft: styleDefaults.marginSize,
     marginRight: styleDefaults.marginSize,
@@ -49,5 +52,8 @@ export const commonStyles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold',
+  },
+  marginZero: {
+    margin: 0,
   },
 });

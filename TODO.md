@@ -9,3 +9,4 @@ Work Queue
 * read https://reactnavigation.org/docs/typescript
 * Remove `any` type usage
 * Enum or something the various navcomponents
+* Replace all List.Section with ListSection
