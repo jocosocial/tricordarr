@@ -48,7 +48,6 @@ export const SeamailAccountButtons = () => {
         value={forUser}
         onValueChange={setForUser}
         buttons={buttons}
-        style={commonStyles.marginTop}
       />
     );
   }
