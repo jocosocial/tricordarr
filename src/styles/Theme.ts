@@ -1,7 +1,7 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
-import {useTheme} from "react-native-paper";
+import {useTheme} from 'react-native-paper';
 
 export const twitarrPrimaryColor = '#063953';
 // @TODO make a function that does rgb-to-hex.

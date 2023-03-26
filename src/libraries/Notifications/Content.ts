@@ -1,7 +1,14 @@
-import notifee from '@notifee/react-native';
-import {NotificationPressAction} from '../Enums/Notifications';
+import notifee, {AndroidChannelGroup} from '@notifee/react-native';
+import {PressAction} from '../Enums/Notifications';
 
-export function generateContentNotification(id, title, body, channel, type, url) {
+export function generateContentNotification(
+  id: string,
+  title: string,
+  body: string,
+  channel: AndroidChannelGroup,
+  type: string,
+  url: string,
+) {
   notifee
     .displayNotification({
       id: id,
@@ -14,7 +21,7 @@ export function generateContentNotification(id, title, body, channel, type, url)
         autoCancel: true,
         // https://notifee.app/react-native/docs/android/interaction
         pressAction: {
-          id: NotificationPressAction.twitarrTab,
+          id: PressAction.twitarrTab,
         },
       },
     })

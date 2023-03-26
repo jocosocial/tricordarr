@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import {serviceChannel} from './Channels';
-import {NotificationPressAction} from '../Enums/Notifications';
+import {PressAction} from '../Enums/Notifications';
 
 /**
  * Generate a test notification.
@@ -16,7 +16,7 @@ export async function displayTestNotification() {
       autoCancel: false,
       // https://notifee.app/react-native/docs/android/interaction
       pressAction: {
-        id: NotificationPressAction.default,
+        id: PressAction.default,
       },
     },
   });

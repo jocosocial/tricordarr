@@ -6,7 +6,7 @@ import {
 } from './Notifications/ForegroundService';
 import {fgsWorkerNotificationIDs} from './Enums/Notifications';
 
-let fgsWorkerTimer;
+let fgsWorkerTimer: number;
 export let fgsFailedCounter = 0;
 
 // 10 attempts @ 30 second interval = 5 minutes until death
