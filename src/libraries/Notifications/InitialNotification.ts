@@ -9,6 +9,8 @@ export async function setupInitialNotification() {
     console.log('Notification caused application to open', initialNotification.notification);
     console.log('Press action used to open the app', initialNotification.pressAction);
     console.log('CANCELING AT bootstrap::initialNotification');
-    await notifee.cancelNotification(initialNotification.notification.id);
+    if (initialNotification.notification.id != null) {
+      await notifee.cancelNotification(initialNotification.notification.id);
+    }
   }
 }

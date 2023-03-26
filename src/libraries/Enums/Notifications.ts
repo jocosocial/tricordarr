@@ -18,7 +18,7 @@ export enum fgsWorkerNotificationIDs {
   shutdown = 'fgsShutdownNotificationID',
 }
 
-export enum NotificationPressAction {
+export enum PressAction {
   default = 'default',
   twitarrTab = 'twitarrTab',
   worker = 'worker',

@@ -31,6 +31,7 @@ export const serviceChannel: AndroidChannel = {
   groupId: systemChannelGroup.id,
   description: 'Background processes associated with Tricordarr.',
   badge: false,
+  vibration: false,
 };
 
 /**
