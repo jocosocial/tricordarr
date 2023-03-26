@@ -3,15 +3,19 @@ import {View} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import {SaveButton} from '../Buttons/SaveButton';
+import {SettingFormValues} from '../../libraries/Types';
 
 interface SettingFormProps {
   value: string;
-  onSave: () => void | Promise<any>;
+  onSave: any | Promise<any>;
 }
 
 export const SettingForm = ({value, onSave}: SettingFormProps) => {
+  const initialFormValues: SettingFormValues = {
+    settingValue: value,
+  };
   return (
-    <Formik enableReinitialize initialValues={{settingValue: value}} onSubmit={onSave}>
+    <Formik enableReinitialize initialValues={initialFormValues} onSubmit={onSave}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
         <View>
           <TextInput

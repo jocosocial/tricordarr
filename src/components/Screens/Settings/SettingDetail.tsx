@@ -6,6 +6,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {SettingForm} from '../../Forms/SettingForm';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {SettingFormValues} from '../../../libraries/Types';
 
 interface SettingDetailProps {
   route: any;
@@ -14,26 +15,26 @@ interface SettingDetailProps {
 
 export const SettingDetail = ({route, navigation}: SettingDetailProps) => {
   const [value, setValue] = useState('');
-  const {settingKey} = route.params;
-  const setting = AppSettings[settingKey];
+  const {settingKey}: {settingKey: string} = route.params;
+  const setting: AppSettings = AppSettings[settingKey as keyof typeof AppSettings];
   const {setErrorMessage} = useErrorHandler();
 
   useEffect(() => {
     navigation.setOptions({title: setting.title});
 
     async function getValue() {
-      setValue(await setting.getValue());
+      setValue((await setting.getValue()) ?? '');
     }
 
     getValue().catch(console.error);
   }, [navigation, route, setting, value]);
 
-  async function onSave(values) {
+  async function onSave(values: SettingFormValues) {
     try {
       await setting.setValue(values.settingValue);
       navigation.goBack();
     } catch (e) {
-      setErrorMessage(e.toString());
+      setErrorMessage(e);
     }
   }
 
@@ -42,7 +43,7 @@ export const SettingDetail = ({route, navigation}: SettingDetailProps) => {
       <ScrollView>
         <ScrollingContentView>
           <PaddedContentView>
-            <SettingForm value={value} onSave={onSave}/>
+            <SettingForm value={value} onSave={onSave} />
           </PaddedContentView>
         </ScrollingContentView>
       </ScrollView>

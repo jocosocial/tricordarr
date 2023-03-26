@@ -52,7 +52,6 @@ export const SettingsView = () => {
               description={'View the contents of internal app storage.'}
               navComponent={SettingsStackScreenComponents.storageKeySettings}
             />
-            <List.Item title={'App Information'} />
           </List.Section>
         </View>
       </ScrollingContentView>
