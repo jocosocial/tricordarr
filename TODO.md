@@ -14,7 +14,6 @@ Websocket/Connection
 * Changing server URL should trigger something or yell at you to restart.
 
 App Structure
-* more typescript conversion
 * Consider provider/context for server URL and any settings.
 * Better way to manage settings descriptions/titles for less useEffect and more compatibility with deep linking.
 * Improve navigation with deep linked screens (non-twitarr content).
@@ -32,7 +31,6 @@ Questions for Ben
 
 Work Queue
 * Do the type thingies for all stack navigators
-* TSX validation
 * duplicating types everywhere
 * read https://reactnavigation.org/docs/typescript
 * Remove `any` type usage

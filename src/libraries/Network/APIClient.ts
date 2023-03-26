@@ -10,7 +10,7 @@ export async function setupAxiosStuff() {
     // URL
     const serverUrl = await AppSettings.SERVER_URL.getValue();
     const urlPrefix = await AppSettings.URL_PREFIX.getValue();
-    if (!config.url.startsWith(`${serverUrl}${urlPrefix}`)) {
+    if (config.url && !config.url.startsWith(`${serverUrl}${urlPrefix}`)) {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }
     // Authentication
@@ -22,7 +22,7 @@ export async function setupAxiosStuff() {
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
     // Return
-    console.info(`API Query: ${config.method.toUpperCase()} ${config.url}`);
+    console.info(`API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`);
     return config;
   });
 }
@@ -32,7 +32,7 @@ export async function setupAxiosStuff() {
  * @param queryKey
  * @returns {Promise<*>}
  */
-export const apiQueryV3 = async ({queryKey}) => {
+export const apiQueryV3 = async ({queryKey}: {queryKey: string}) => {
   const {data} = await axios.get(queryKey[0]);
   return data;
 };
@@ -46,7 +46,11 @@ export const apiQueryV3 = async ({queryKey}) => {
  * @param token     Optional String containing an OAuth2 token.
  * @returns {{authorization: string}}
  */
-export function getAuthHeaders(username = undefined, password = undefined, token = undefined) {
+export function getAuthHeaders(
+  username: string | undefined = undefined,
+  password: string | undefined = undefined,
+  token: string | undefined = undefined,
+) {
   let encodedCredentials = '';
   let authScheme = '';
   if (username && password) {
@@ -69,11 +73,11 @@ export function getAuthHeaders(username = undefined, password = undefined, token
 // https://stackoverflow.com/questions/41846669/download-an-image-using-axios-and-convert-it-to-base64
 // https://www.npmjs.com/package/@craftzdog/react-native-buffer
 // https://reactnative.dev/docs/images
-export const apiQueryImageUri = async ({queryKey}) => {
+export const apiQueryImageUri = async ({queryKey}: {queryKey: string}) => {
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
   });
   const b64Data = Buffer.from(data, 'binary').toString('base64');
-  const contentType = headers.get('content-type');
+  const contentType = headers['Content-Type'];
   return `data:${contentType};base64,${b64Data}`;
 };

@@ -1,5 +1,5 @@
 import {generateContentNotification} from '../Notifications/Content';
-import {seamailChannel, lfgChannel} from '../Notifications/Channels';
+import {seamailChannel, lfgChannel, serviceChannel} from '../Notifications/Channels';
 import {NotificationType} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
@@ -22,15 +22,15 @@ async function buildWebsocketURL() {
   return wsUrl;
 }
 
-let sharedWebSocket;
+let sharedWebSocket: ReconnectingWebSocket;
 
 export const getSharedWebSocket = async () => sharedWebSocket;
-export const setSharedWebSocket = async ws => (sharedWebSocket = ws);
+export const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
 
 // https://github.com/pladaria/reconnecting-websocket/issues/138
-function WebSocketConstructor(options) {
+function WebSocketConstructor(options: any) {
   return class extends WebSocket {
-    constructor(url, protocols) {
+    constructor(url: string, protocols: string | string[]) {
       super(url, protocols, options);
     }
   };
@@ -39,7 +39,7 @@ function WebSocketConstructor(options) {
 export async function buildWebSocket() {
   console.log('buildWebSocket called');
   const wsUrl = await buildWebsocketURL();
-  const token = await AppSettings.AUTH_TOKEN.getValue();
+  const token = (await AppSettings.AUTH_TOKEN.getValue()) ?? undefined;
   const authHeaders = getAuthHeaders(undefined, undefined, token);
 
   // https://www.npmjs.com/package/reconnecting-websocket
@@ -91,18 +91,19 @@ export async function wsHealthcheck() {
   return false;
 }
 
-const wsErrorHandler = error => console.error('[error]', error);
+const wsErrorHandler = (error: WebSocketErrorEvent) => console.error('[error]', error);
 
 const wsOpenHandler = async () => {
   console.log('[open] Connection established');
   await AppSettings.WS_OPEN_DATE.setValue(new Date().toISOString());
 };
 
-function wsMessageHandler(event) {
+function wsMessageHandler(event: WebSocketMessageEvent) {
   console.log(`[message] Data received from server: ${event.data}`);
   const notificationData = JSON.parse(event.data);
   const type = Object.keys(notificationData.type)[0];
-  let channel, url;
+  let channel = serviceChannel;
+  let url: string = '';
 
   switch (type) {
     case NotificationType.seamailUnreadMsg:
@@ -120,14 +121,10 @@ function wsMessageHandler(event) {
   generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel, type, url);
 }
 
-async function wsCloseHandler(event) {
-  if (event.wasClean) {
-    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-  } else {
-    // e.g. server process killed or network down
-    // event.code is usually 1006 in this case
-    console.log(`[close] Connection died, code=${event.code} reason=${event.reason}`);
-  }
+async function wsCloseHandler(event: WebSocketCloseEvent) {
+  // e.g. server process killed or network down
+  // event.code is usually 1006 in this case
+  console.log(`[close] Connection died, code=${event.code} reason=${event.reason}`);
   // https://github.com/pladaria/reconnecting-websocket/issues/78
   if (event.code === 1000) {
     const ws = await getSharedWebSocket();
