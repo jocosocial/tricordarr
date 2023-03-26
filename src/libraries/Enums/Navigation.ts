@@ -7,7 +7,7 @@ export enum NavigatorIDs {
   seamailStack = 'SeamailStackNavigator',
 }
 
-export enum SettingsStackScreenIDs {
+export enum SettingsStackScreenComponents {
   storageKeySettings = 'StorageKeysSettingsScreen',
   settings = 'SettingsScreen',
   settingDetail = 'SettingDetailScreen',

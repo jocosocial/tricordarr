@@ -5,22 +5,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppView} from '../../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ParamListBase} from '@react-navigation/native';
-import {NavigatorIDs, SettingsStackScreenIDs} from '../../../libraries/Enums/Navigation';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {KvObject} from '../../../libraries/Types';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 type Props = NativeStackScreenProps<
   ParamListBase,
-  SettingsStackScreenIDs.storageKeySettings,
+  SettingsStackScreenComponents.storageKeySettings,
   NavigatorIDs.settingsStack
 >;
 
 export const StorageKeysSettings = ({route, navigation}: Props) => {
   const theme = useTheme();
-  const [data, setData] = useState({});
+  const [data, setData] = useState<KvObject>({});
   const [refreshing, setRefreshing] = useState(false);
+  const {setErrorMessage} = useErrorHandler();
 
   const fetchData = useCallback(async () => {
     const storageKeys = await AsyncStorage.getAllKeys();
-    const storageData = {};
+    const storageData: KvObject = {};
     for (const key of storageKeys) {
       storageData[key] = await AsyncStorage.getItem(key);
     }
@@ -28,20 +31,23 @@ export const StorageKeysSettings = ({route, navigation}: Props) => {
   }, []);
 
   const onRefresh = useCallback(() => {
+    console.log('onRefresh GO');
     setRefreshing(true);
     fetchData().catch(console.error);
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
-    navigation.setOptions({title: route.params.title});
-  }, [navigation, route.params.title]);
+    if (route.params && route.params.hasOwnProperty('title')) {
+      navigation.setOptions({title: route.params?.title});
+    }
+  }, [navigation, route]);
 
   useEffect(() => {
-    fetchData().catch(e => console.error);
-  }, [fetchData, data]);
+    fetchData().catch(e => setErrorMessage(e));
+  }, [fetchData, data, setErrorMessage]);
 
   return (
     <AppView>

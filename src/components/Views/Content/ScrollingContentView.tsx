@@ -1,18 +1,21 @@
-import React from 'react';
+import React, {PropsWithChildren, ReactElement} from 'react';
 import {ScrollView, View} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface ScrollingContentViewProps {
-  children: JSX.Element;
   isStack?: boolean;
-  refreshControl?: JSX.Element;
+  refreshControl?: ReactElement;
 }
 
 /**
  * View container for app content that scrolls. Also do some formatting to look good.
  * Accepts a single element as a child.
  */
-export const ScrollingContentView = ({children, isStack = false, refreshControl}: ScrollingContentViewProps) => {
+export const ScrollingContentView = ({
+  children,
+  isStack = false,
+  refreshControl,
+}: PropsWithChildren<ScrollingContentViewProps>) => {
   const style = {
     ...commonStyles.flex,
     ...(isStack ? null : commonStyles.marginTop),

@@ -7,6 +7,7 @@ import {NavigationListItem} from '../../Lists/NavigationListItem';
 import {AccountListItem} from '../../Lists/AccountListItem';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 
 export const SettingsView = () => {
   return (
@@ -20,7 +21,7 @@ export const SettingsView = () => {
             <NavigationListItem
               title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
-              navComponent={'ServerConnectionSettingsScreen'}
+              navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
             <SettingListItem setting={AppSettings.SHIP_SSID} />
           </List.Section>
@@ -35,7 +36,7 @@ export const SettingsView = () => {
             <NavigationListItem
               title={'Test Notification'}
               description={'Generate a test notification for debugging.'}
-              navComponent={'TestNotificationScreen'}
+              navComponent={SettingsStackScreenComponents.testNotification}
             />
           </List.Section>
           <Divider bold={true} />
@@ -44,12 +45,12 @@ export const SettingsView = () => {
             <NavigationListItem
               title={'Network Info'}
               description={"View details about your device's current network environment."}
-              navComponent={'NetworkInfoSettingsScreen'}
+              navComponent={SettingsStackScreenComponents.networkInfoSettings}
             />
             <NavigationListItem
               title={'Storage Keys'}
               description={'View the contents of internal app storage.'}
-              navComponent={'StorageKeysSettingsScreen'}
+              navComponent={SettingsStackScreenComponents.storageKeySettings}
             />
             <List.Item title={'App Information'} />
           </List.Section>
