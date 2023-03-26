@@ -32,7 +32,7 @@ export async function setupAxiosStuff() {
  * @param queryKey
  * @returns {Promise<*>}
  */
-export const apiQueryV3 = async ({queryKey}: {queryKey: string}) => {
+export const apiQueryV3 = async ({queryKey}: {queryKey: string | string[]}) => {
   const {data} = await axios.get(queryKey[0]);
   return data;
 };
@@ -73,7 +73,7 @@ export function getAuthHeaders(
 // https://stackoverflow.com/questions/41846669/download-an-image-using-axios-and-convert-it-to-base64
 // https://www.npmjs.com/package/@craftzdog/react-native-buffer
 // https://reactnative.dev/docs/images
-export const apiQueryImageUri = async ({queryKey}: {queryKey: string}) => {
+export const apiQueryImageUri = async ({queryKey}: {queryKey: string | string[]}) => {
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
   });
