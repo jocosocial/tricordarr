@@ -27,7 +27,11 @@ export const SettingsStack = () => {
   // so we're always consistent between setting name and header title.
   return (
     <Stack.Navigator id={NavigatorIDs.settingsStack} initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
-      <Stack.Screen name={SettingsStackScreenComponents.settings} component={SettingsView} options={{title: 'Settings'}} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.settings}
+        component={SettingsView}
+        options={{title: 'Settings'}}
+      />
       <Stack.Screen name={SettingsStackScreenComponents.settingDetail} component={SettingDetail} />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
       <Stack.Screen name={SettingsStackScreenComponents.storageKeySettings} component={StorageKeysSettings} />

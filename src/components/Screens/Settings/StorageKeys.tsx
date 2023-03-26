@@ -39,11 +39,11 @@ export const StorageKeysSettings = ({route, navigation}: Props) => {
     }, 500);
   }, [fetchData]);
 
-  useEffect(() => {
-    if (route.params && route.params.hasOwnProperty('title')) {
-      navigation.setOptions({title: route.params?.title});
-    }
-  }, [navigation, route]);
+  // useEffect(() => {
+  //   if (route.params && route.params.hasOwnProperty('title')) {
+  //     navigation.setOptions({title: route.params?.title});
+  //   }
+  // }, [navigation, route]);
 
   useEffect(() => {
     fetchData().catch(e => setErrorMessage(e));
