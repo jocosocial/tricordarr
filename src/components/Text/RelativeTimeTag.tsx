@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import {Text} from 'react-native-paper';
 import ReactTimeAgo from 'react-time-ago';
+import {commonStyles} from '../../styles';
 
 interface RelativeTimeTagProps {
   date?: Date;
+  bold?: boolean;
 }
+
+// ReactTimeAgo doesn't support dynamic styling of the component, and it's own
+// style parameter is not what you think it is.
+const BoldText = ({children}: PropsWithChildren) => {
+  return <Text style={{...commonStyles.bold}}>{children}</Text>;
+};
 
 /**
  * This follows the RelativeTimeTag from Swiftarr.
@@ -14,9 +22,10 @@ interface RelativeTimeTagProps {
  * https://catamphetamine.gitlab.io/react-time-ago/
  * https://gitlab.com/catamphetamine/react-time-ago
  */
-export const RelativeTimeTag = ({date}: RelativeTimeTagProps) => {
+export const RelativeTimeTag = ({date, bold = false}: RelativeTimeTagProps) => {
   if (!date) {
     return <></>;
   }
-  return <ReactTimeAgo date={date} locale="en-US" component={Text} />;
+  const component = bold ? BoldText : Text;
+  return <ReactTimeAgo date={date} locale="en-US" component={component} />;
 };
