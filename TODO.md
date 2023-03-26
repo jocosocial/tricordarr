@@ -32,9 +32,8 @@ Questions for Ben
 
 Work Queue
 * Do the type thingies for all stack navigators
-* JSX.Element array vs single for all high level containers
 * TSX validation
 * duplicating types everywhere
 * read https://reactnavigation.org/docs/typescript
-* PropsWithChildren, https://blog.logrocket.com/using-react-children-prop-with-typescript/
 * Remove `any` type usage
+* Enum or something the various navcomponents

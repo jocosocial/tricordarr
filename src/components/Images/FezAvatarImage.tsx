@@ -3,7 +3,7 @@ import {Avatar} from 'react-native-paper';
 import {useQuery} from '@tanstack/react-query';
 import {apiQueryImageUri} from '../../libraries/Network/APIClient';
 import {useUserData} from '../Context/Contexts/UserDataContext';
-import {FezDataProps} from '../../types';
+import {FezDataProps} from '../../libraries/Types';
 import {styleDefaults} from '../../styles';
 
 export const FezAvatarImage = ({fez}: FezDataProps) => {

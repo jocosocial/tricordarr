@@ -3,7 +3,7 @@ import {List} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
-import {FezDataProps} from '../../../types';
+import {FezDataProps} from '../../../libraries/Types';
 
 export const SeamailListItem = ({fez}: FezDataProps) => {
   const {profilePublicData} = useUserData();
