@@ -1,9 +1,17 @@
 import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
 import {PressAction, NotificationType} from './Enums/Notifications';
 
-export function handleEvent(type: EventType, notification: Notification, pressAction: NotificationPressAction) {
+export function handleEvent(
+  type: EventType,
+  notification: Notification | undefined,
+  pressAction: NotificationPressAction | undefined,
+) {
   // Someday we may add a 'mark as read' button to content notifications.
   // if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
+
+  if (!notification || !pressAction) {
+    return;
+  }
 
   console.log('Got press action:', pressAction);
   if (type === EventType.PRESS && pressAction.id === PressAction.twitarrTab) {

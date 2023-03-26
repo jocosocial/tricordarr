@@ -35,7 +35,9 @@ export const NotificationDataListener = () => {
     if (ws) {
       // https://stackoverflow.com/questions/4587061/how-to-determine-if-object-is-in-array
       // console.log(ws._listeners);
+      // @ts-ignore
       for (let i = 0; i < ws._listeners.message.length; i++) {
+        // @ts-ignore
         if (ws._listeners.message[i] === wsMessageHandler) {
           console.log('wsMessageHandler is already present on socket.');
           return;

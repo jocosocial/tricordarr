@@ -40,7 +40,7 @@ export const LoginScreen = () => {
   );
 
   const storeLoginData = useCallback(
-    async data => {
+    async (data: any) => {
       await AppSettings.AUTH_TOKEN.setValue(data.data.token);
       await AppSettings.USER_ID.setValue(data.data.userID);
       await AppSettings.ACCESS_LEVEL.setValue(data.data.accessLevel);
