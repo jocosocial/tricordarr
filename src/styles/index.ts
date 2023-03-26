@@ -13,6 +13,9 @@ export const commonStyles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  flexRow: {
+    flexDirection: 'row',
+  },
   marginTop: {
     marginTop: styleDefaults.marginSize,
   },
@@ -36,5 +39,15 @@ export const commonStyles = StyleSheet.create({
   marginSides: {
     marginLeft: styleDefaults.marginSize,
     marginRight: styleDefaults.marginSize,
+  },
+  verticalCenterContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  marginLeftSmall: {
+    marginLeft: styleDefaults.marginSize / 2,
+  },
+  bold: {
+    fontWeight: 'bold',
   },
 });

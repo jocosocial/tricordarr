@@ -23,6 +23,10 @@ import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHand
 // import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
+
+TimeAgo.addDefaultLocale(en);
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({

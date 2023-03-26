@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {List} from 'react-native-paper';
+import {Divider, List} from 'react-native-paper';
 import {useQuery} from '@tanstack/react-query';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {AppView} from '../../Views/AppView';
@@ -44,7 +44,16 @@ export const SeamailScreen = () => {
             <SeamailSearchBar />
           </PaddedContentView>
           <SeamailAccountButtons />
-          <List.Section>{data && data.fezzes.map(fez => <SeamailListItem key={fez.fezID} fez={fez} />)}</List.Section>
+          <List.Section>
+            <Divider />
+            {data &&
+              data.fezzes.map(fez => (
+                <>
+                  <SeamailListItem key={fez.fezID} fez={fez} />
+                  <Divider />
+                </>
+              ))}
+          </List.Section>
         </View>
       </ScrollingContentView>
     </AppView>
