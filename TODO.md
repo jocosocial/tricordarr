@@ -10,3 +10,4 @@ Work Queue
 * Remove `any` type usage
 * Enum or something the various navcomponents
 * invalid prop date supplied to seamail things, likely a null or first load issue
+* https://github.com/catamphetamine/react-time-ago/issues/18
