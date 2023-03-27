@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {Divider, List} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {useQuery} from '@tanstack/react-query';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {AppView} from '../../Views/AppView';
@@ -13,7 +13,6 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
-import {commonStyles} from '../../../styles';
 import {ListSection} from '../../Lists/ListSection';
 
 export const SeamailScreen = () => {
