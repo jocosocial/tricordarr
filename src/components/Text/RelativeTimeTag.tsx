@@ -27,5 +27,7 @@ export const RelativeTimeTag = ({date, bold = false}: RelativeTimeTagProps) => {
     return <></>;
   }
   const component = bold ? BoldText : Text;
-  return <ReactTimeAgo date={date} locale="en-US" component={component} />;
+  // The Date.parse(date.toString()) is dumb.
+  // https://github.com/catamphetamine/react-time-ago/issues/18
+  return <ReactTimeAgo date={Date.parse(date.toString())} locale="en-US" component={component} />;
 };
