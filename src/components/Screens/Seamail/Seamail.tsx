@@ -53,10 +53,10 @@ export const SeamailScreen = () => {
             <Divider />
             {data &&
               data.fezzes.map(fez => (
-                <>
-                  <SeamailListItem key={fez.fezID} fez={fez} />
+                <View key={fez.fezID}>
+                  <SeamailListItem fez={fez} />
                   <Divider bold={true} />
-                </>
+                </View>
               ))}
           </ListSection>
         </View>
