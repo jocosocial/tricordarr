@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {View} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {Portal, Provider, useTheme} from 'react-native-paper';
 import {commonStyles} from '../../styles';
 import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
@@ -18,10 +18,12 @@ export const AppView = ({children}: PropsWithChildren) => {
   };
 
   return (
-    <View style={style}>
-      <ErrorBanner />
-      {children}
-      <ErrorSnackbar />
-    </View>
+    <Portal.Host>
+      <View style={style}>
+        <ErrorBanner />
+        {children}
+        <ErrorSnackbar />
+      </View>
+    </Portal.Host>
   );
 };

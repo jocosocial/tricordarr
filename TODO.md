@@ -5,5 +5,4 @@ Work Queue
 * Do the type thingies for all stack navigators
 * duplicating types everywhere
 * read https://reactnavigation.org/docs/typescript
-* Remove `any` type usage
 * Enum or something the various navcomponents
