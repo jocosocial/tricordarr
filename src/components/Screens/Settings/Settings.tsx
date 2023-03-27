@@ -8,6 +8,7 @@ import {AccountListItem} from '../../Lists/AccountListItem';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {ListSection} from '../../Lists/ListSection';
 
 export const SettingsView = () => {
   return (
@@ -15,7 +16,7 @@ export const SettingsView = () => {
       <ScrollingContentView isStack={true}>
         <View>
           <Divider bold={true} />
-          <List.Section>
+          <ListSection>
             <List.Subheader>Network</List.Subheader>
             <SettingListItem setting={AppSettings.SERVER_URL} />
             <NavigationListItem
@@ -24,23 +25,23 @@ export const SettingsView = () => {
               navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
             <SettingListItem setting={AppSettings.SHIP_SSID} />
-          </List.Section>
+          </ListSection>
           <Divider bold={true} />
-          <List.Section>
+          <ListSection>
             <List.Subheader>Account</List.Subheader>
             <AccountListItem />
-          </List.Section>
+          </ListSection>
           <Divider bold={true} />
-          <List.Section>
+          <ListSection>
             <List.Subheader>Notifications</List.Subheader>
             <NavigationListItem
               title={'Test Notification'}
               description={'Generate a test notification for debugging.'}
               navComponent={SettingsStackScreenComponents.testNotification}
             />
-          </List.Section>
+          </ListSection>
           <Divider bold={true} />
-          <List.Section>
+          <ListSection>
             <List.Subheader>About</List.Subheader>
             <NavigationListItem
               title={'Network Info'}
@@ -52,7 +53,7 @@ export const SettingsView = () => {
               description={'View the contents of internal app storage.'}
               navComponent={SettingsStackScreenComponents.storageKeySettings}
             />
-          </List.Section>
+          </ListSection>
         </View>
       </ScrollingContentView>
     </AppView>
