@@ -2,7 +2,6 @@ import React from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
-import {commonStyles} from '../../styles';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData, isLoading, accessLevel} = useUserData();
@@ -19,7 +18,7 @@ export const SeamailAccountButtons = () => {
   let buttons = [];
 
   // Moderator
-  if ([UserAccessLevel.moderator, UserAccessLevel.twitarrteam, UserAccessLevel.tho].includes(accessLevel)) {
+  if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator)) {
     buttons.push({
       value: 'moderator',
       label: 'Moderator',
@@ -27,7 +26,7 @@ export const SeamailAccountButtons = () => {
   }
 
   // TwitarrTeam
-  if ([UserAccessLevel.twitarrteam, UserAccessLevel.tho].includes(accessLevel)) {
+  if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam)) {
     buttons.push({
       value: 'twitarrteam',
       label: 'TwitarrTeam',
@@ -35,7 +34,7 @@ export const SeamailAccountButtons = () => {
   }
 
   // All Privileged Users
-  if ([UserAccessLevel.moderator, UserAccessLevel.twitarrteam, UserAccessLevel.tho].includes(accessLevel)) {
+  if (buttons.length !== 0) {
     buttons.unshift({
       value: profilePublicData.header.username,
       label: profilePublicData.header.displayName || profilePublicData.header.username,

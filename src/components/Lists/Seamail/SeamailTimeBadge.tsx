@@ -6,7 +6,7 @@ import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
 
 export const SeamailTimeBadge = ({date, badgeCount}: {date: Date; badgeCount: number}) => {
   return (
-    <View style={commonStyles.verticalCenterContainer}>
+    <View style={commonStyles.verticalContainer}>
       <View style={commonStyles.flexRow}>
         <RelativeTimeTag date={date} bold={!!badgeCount} />
         {!!badgeCount && <Badge style={commonStyles.marginLeftSmall}>{badgeCount}</Badge>}

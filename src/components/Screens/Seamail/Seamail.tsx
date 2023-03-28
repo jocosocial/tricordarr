@@ -14,16 +14,20 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
 import {ListSection} from '../../Lists/ListSection';
+import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 export const SeamailScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   // const {setUserNotificationData} = useUserNotificationData();
+  const {accessLevel} = useUserData();
 
   const {data, refetch} = useQuery<FezListData>({
     queryKey: ['/fez/joined?type=closed&type=open'],
     enabled: isLoggedIn,
   });
+
+  const isPrivileged = UserAccessLevel.isPrivileged(accessLevel);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -45,11 +49,13 @@ export const SeamailScreen = () => {
           <PaddedContentView>
             <SeamailSearchBar />
           </PaddedContentView>
-          <PaddedContentView>
-            <SeamailAccountButtons />
-          </PaddedContentView>
+          {isPrivileged && (
+            <PaddedContentView>
+              <SeamailAccountButtons />
+            </PaddedContentView>
+          )}
           <ListSection>
-            <Divider />
+            <Divider bold={true} />
             {data &&
               data.fezzes.map(fez => (
                 <View key={fez.fezID}>
