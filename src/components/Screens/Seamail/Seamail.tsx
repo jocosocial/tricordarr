@@ -9,27 +9,18 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-
-export type SeamailScreenParams = {
-  fezID: string;
-  title: string;
-};
-
-export type SeamailScreenParamList = {
-  SeamailScreen: SeamailScreenParams;
-};
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 
 export type Props = NativeStackScreenProps<
-  SeamailScreenParamList,
+  SeamailStackParamList,
   SeamailStackScreenComponents.seamailScreen,
   NavigatorIDs.seamailStack
 >;
 
-export const SeamailScreen = ({navigation, route}: Props) => {
+export const SeamailScreen = ({route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   // const {accessLevel} = useUserData();
-  // navigation.setParams({title: route.params.title});
 
   const {data, refetch} = useQuery<FezData>({
     queryKey: [`/fez/${route.params.fezID}`],
