@@ -5,10 +5,13 @@ import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {FezDataProps} from '../../../libraries/Types';
 import {SeamailTimeBadge} from './SeamailTimeBadge';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 
 export const SeamailListItem = ({fez}: FezDataProps) => {
   const {profilePublicData} = useUserData();
-  // const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;
@@ -26,7 +29,11 @@ export const SeamailListItem = ({fez}: FezDataProps) => {
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => <FezAvatarImage fez={fez} />;
-  const onPress = () => console.log('foo');
+  const onPress = () =>
+    navigation.push(SeamailStackScreenComponents.seamailScreen, {
+      title: fez.title,
+      fezID: fez.fezID,
+    });
   const getTimeBadge = () => <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />;
 
   return (

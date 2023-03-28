@@ -1,7 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTheme} from 'react-native-paper';
+import {SeamailsScreen} from '../../Screens/Seamail/Seamails';
 import {SeamailScreen} from '../../Screens/Seamail/Seamail';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 
 export const SeamailStack = () => {
   const Stack = createNativeStackNavigator();
@@ -17,8 +19,17 @@ export const SeamailStack = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName={'SeamailScreen'} screenOptions={screenOptions}>
-      <Stack.Screen name={'SeamailScreen'} component={SeamailScreen} options={{headerShown: false, title: 'Seamail'}} />
+    <Stack.Navigator initialRouteName={'SeamailsScreen'} screenOptions={screenOptions}>
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailsScreen}
+        component={SeamailsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailScreen}
+        component={SeamailScreen}
+        options={({route}: {route: any}) => ({title: route.params.title})}
+      />
     </Stack.Navigator>
   );
 };
