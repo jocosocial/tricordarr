@@ -16,3 +16,8 @@ export enum SettingsStackScreenComponents {
   serverConnectionSettings = 'ServerConnectionSettingsScreen',
   testNotification = 'TestNotificationScreen',
 }
+
+export enum SeamailStackScreenComponents {
+  seamailsScreen = 'SeamailsScreen',
+  seamailScreen = 'SeamailScreen',
+}
