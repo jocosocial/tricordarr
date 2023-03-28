@@ -5,8 +5,17 @@ import {SeamailsScreen} from '../../Screens/Seamail/Seamails';
 import {SeamailScreen} from '../../Screens/Seamail/Seamail';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 
+// Beware: https://github.com/react-navigation/react-navigation/issues/10802
+export type SeamailStackParamList = {
+  SeamailsScreen: undefined;
+  SeamailScreen: {
+    fezID: string;
+    title: string;
+  };
+};
+
 export const SeamailStack = () => {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<SeamailStackParamList>();
   const theme = useTheme();
   const screenOptions = {
     headerStyle: {
@@ -19,7 +28,7 @@ export const SeamailStack = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName={'SeamailsScreen'} screenOptions={screenOptions}>
+    <Stack.Navigator initialRouteName={SeamailStackScreenComponents.seamailsScreen} screenOptions={screenOptions}>
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailsScreen}
         component={SeamailsScreen}
@@ -28,7 +37,7 @@ export const SeamailStack = () => {
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailScreen}
         component={SeamailScreen}
-        options={({route}: {route: any}) => ({title: route.params.title})}
+        options={({route}) => ({title: route.params.title})}
       />
     </Stack.Navigator>
   );

@@ -8,7 +8,8 @@ Backlog
 * Enum or something the various navcomponents
 
 Work Queue
-* https://github.com/react-navigation/react-navigation/issues/10802
+* put isPrivileged in the user data provider
+* unified screenOptions across all stacks
 * New pattern for stack navigators starts with seamail
 * Seamail
   * Viewing (pagination)
