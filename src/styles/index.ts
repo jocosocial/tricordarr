@@ -43,9 +43,9 @@ export const commonStyles = StyleSheet.create({
     marginLeft: styleDefaults.marginSize,
     marginRight: styleDefaults.marginSize,
   },
-  verticalCenterContainer: {
+  verticalContainer: {
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   marginLeftSmall: {
     marginLeft: styleDefaults.marginSize / 2,
@@ -54,6 +54,8 @@ export const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   marginZero: {
-    margin: 0,
+    // margin: 0 not good enough.
+    marginVertical: 0,
+    marginHorizontal: 0,
   },
 });

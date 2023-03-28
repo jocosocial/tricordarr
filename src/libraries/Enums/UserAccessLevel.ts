@@ -25,3 +25,38 @@ export enum UserAccessLevel {
   /// An Administrator account, unrestricted access.
   admin = 'admin',
 }
+
+/**
+ * As far as I know, TypeScript doesn't have an equivalent to the Swift
+ * Comparable protocol, nor does it let you add functions to enums.
+ */
+export namespace UserAccessLevel {
+  function orderFromEnum(val: UserAccessLevel) {
+    switch (val) {
+      case UserAccessLevel.unverified:
+        return 1;
+      case UserAccessLevel.banned:
+        return 2;
+      case UserAccessLevel.quarantined:
+        return 3;
+      case UserAccessLevel.verified:
+        return 4;
+      case UserAccessLevel.client:
+        return 5;
+      case UserAccessLevel.moderator:
+        return 6;
+      case UserAccessLevel.twitarrteam:
+        return 7;
+      case UserAccessLevel.tho:
+        return 8;
+      case UserAccessLevel.admin:
+        return 9;
+    }
+  }
+  export function hasAccess(source: UserAccessLevel, target: UserAccessLevel): boolean {
+    return orderFromEnum(source) >= orderFromEnum(target);
+  }
+  export function isPrivileged(source: UserAccessLevel): boolean {
+    return orderFromEnum(source) > orderFromEnum(UserAccessLevel.verified);
+  }
+}
