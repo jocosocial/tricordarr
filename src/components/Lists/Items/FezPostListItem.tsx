@@ -17,32 +17,38 @@ interface FezPostListItemProps {
     unhighlight: () => void;
     updateProps: (select: 'leading' | 'trailing', newProps: any) => void;
   };
+  showAuthor: boolean;
 }
 
-export const FezPostListItem = ({item, index, separators}: FezPostListItemProps) => {
+export const FezPostListItem = ({item, index, separators, showAuthor = true}: FezPostListItemProps) => {
   const theme = useAppTheme();
   const {profilePublicData} = useUserData();
   const postBySelf = profilePublicData.header.userID === item.author.userID;
+  const spacerMargin = postBySelf ? commonStyles.marginRightSmall : commonStyles.marginLeftSmall;
 
   type Styles = {
     messageView: ViewStyle;
-    containerView: ViewStyle;
+    listItemContentView: ViewStyle;
     messageText: TextStyle;
     messageTextHeader: TextStyle;
-    avatarContainer: ViewStyle;
+    avatarContainerView: ViewStyle;
+    listItemContainerView: ViewStyle;
+    messageViewContainer: ViewStyle;
+    spacerView: ViewStyle;
   };
 
   const styles: Styles = {
+    listItemContainerView: {
+      ...commonStyles.flex,
+      ...commonStyles.marginHorizontal,
+    },
     messageView: {
       backgroundColor: postBySelf ? theme.colors.primaryContainer : theme.colors.secondaryContainer,
-      // ...commonStyles.paddingSides,
-      // ...commonStyles.paddingVertical,
       borderRadius: theme.roundness * 4,
       alignSelf: postBySelf ? 'flex-end' : 'flex-start',
       padding: styleDefaults.marginSize / 2,
     },
-    containerView: {
-      ...commonStyles.marginHorizontal,
+    listItemContentView: {
       ...commonStyles.flex,
       ...commonStyles.flexRow,
       alignSelf: postBySelf ? 'flex-end' : 'flex-start',
@@ -54,24 +60,39 @@ export const FezPostListItem = ({item, index, separators}: FezPostListItemProps)
       display: postBySelf ? 'none' : 'flex',
       fontWeight: 'bold',
     },
-    avatarContainer: {
+    avatarContainerView: {
       ...commonStyles.marginRightSmall,
       ...commonStyles.flexColumn,
       alignSelf: 'flex-end',
       // Don't do Display here because it'll trigger an unncessary avatar load.
     },
+    messageViewContainer: {
+      flex: 1,
+    },
+    spacerView: {
+      ...spacerMargin,
+      width: styleDefaults.avatarSizeSmall * 2,
+    },
   };
 
   return (
-    <View style={styles.containerView}>
-      {!postBySelf && (
-        <View style={styles.avatarContainer}>
-          <UserAvatarImage userID={item.author.userID} small={true} />
+    <View style={styles.listItemContainerView}>
+      <View style={styles.listItemContentView}>
+        {!postBySelf && (
+          <View style={styles.avatarContainerView}>
+            <UserAvatarImage userID={item.author.userID} small={true} />
+          </View>
+        )}
+        {postBySelf && <View style={styles.spacerView} />}
+        <View style={styles.messageViewContainer}>
+          <View style={styles.messageView}>
+            {showAuthor && (
+              <Text style={{...styles.messageText, ...styles.messageTextHeader}}>{item.author.username}</Text>
+            )}
+            <Text style={styles.messageText}>{item.text}</Text>
+          </View>
         </View>
-      )}
-      <View style={styles.messageView}>
-        <Text style={{...styles.messageText, ...styles.messageTextHeader}}>{item.author.username}</Text>
-        <Text style={styles.messageText}>{item.text}</Text>
+        {!postBySelf && <View style={styles.spacerView} />}
       </View>
     </View>
   );

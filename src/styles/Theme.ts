@@ -1,11 +1,17 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
-import {DefaultTheme, useTheme} from 'react-native-paper';
+import {configureFonts, DefaultTheme, useTheme} from 'react-native-paper';
 
 export const twitarrPrimaryColor = '#063953';
 // @TODO make a function that does rgb-to-hex.
 export const twitarrErrorColor = '#BA1A1A';
+
+const fontConfig = {
+  default: {
+    fontSize: 16,
+  },
+};
 
 export const twitarrTheme = {
   ...DefaultTheme,
@@ -58,6 +64,7 @@ export const twitarrTheme = {
 
 export const twitarrThemeDark = {
   ...DefaultTheme,
+  fonts: configureFonts({config: fontConfig}),
   colors: {
     primary: 'rgb(137, 206, 255)',
     onPrimary: 'rgb(0, 52, 77)',

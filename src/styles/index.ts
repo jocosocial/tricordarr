@@ -4,6 +4,7 @@ export const styleDefaults = {
   marginSize: 20,
   iconSize: 25,
   avatarSize: 36,
+  avatarSizeSmall: 24, // 2/3rds.
 };
 
 export const commonStyles = StyleSheet.create({
@@ -32,6 +33,9 @@ export const commonStyles = StyleSheet.create({
   },
   marginRight: {
     marginRight: styleDefaults.marginSize,
+  },
+  marginVertical: {
+    marginVertical: styleDefaults.marginSize,
   },
   booleanSettingRowView: {
     flexDirection: 'row',

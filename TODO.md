@@ -10,6 +10,7 @@ Backlog
 * Enum or something the various navcomponents
 
 Work Queue
+* Sane font size defaults
 * put isPrivileged in the user data provider
 * unified screenOptions across all stacks
 * New pattern for stack navigators starts with seamail
@@ -18,6 +19,3 @@ Work Queue
   * Responding
   * New
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
-* fez avatar should use new useravatar under the hood
-* figure out message spacing
-* increase font size for messages

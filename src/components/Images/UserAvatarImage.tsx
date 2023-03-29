@@ -12,7 +12,7 @@ type UserAvatarImageProps = {
 
 export const UserAvatarImage = ({userID, small = false}: UserAvatarImageProps) => {
   const {isLoggedIn} = useUserData();
-  const size = small ? styleDefaults.avatarSize * (2 / 3) : styleDefaults.avatarSize;
+  const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
 
   const {data: avatarImageUri} = useQuery({
     queryKey: [`/image/user/thumb/${userID}`],
