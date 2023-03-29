@@ -42,7 +42,7 @@ export const SeamailScreen = ({route}: Props) => {
   return (
     <AppView>
       <FlatList
-        style={{...commonStyles.marginVertical}}
+        style={{...commonStyles.marginBottom}}
         ItemSeparatorComponent={ListSeparator}
         data={data?.members?.posts}
         renderItem={({item, index, separators}) => (
