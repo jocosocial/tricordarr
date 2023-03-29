@@ -19,3 +19,4 @@ Work Queue
   * Responding
   * New
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
+* enable selecting text and hyperlinks

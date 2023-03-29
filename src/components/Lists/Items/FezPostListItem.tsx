@@ -1,5 +1,4 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
 import {FezPostData} from '../../../libraries/Structs/ControllerStructs';
 import {View, ViewStyle, TextStyle} from 'react-native';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
@@ -7,6 +6,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {commonStyles, styleDefaults} from '../../../styles';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserAvatarImage} from '../../Images/UserAvatarImage';
+import {Text} from 'react-native-paper';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
@@ -87,9 +87,13 @@ export const FezPostListItem = ({item, index, separators, showAuthor = true}: Fe
         <View style={styles.messageViewContainer}>
           <View style={styles.messageView}>
             {showAuthor && (
-              <Text style={{...styles.messageText, ...styles.messageTextHeader}}>{item.author.username}</Text>
+              <Text variant={'labelLarge'} style={{...styles.messageText, ...styles.messageTextHeader}}>
+                {item.author.username}
+              </Text>
             )}
-            <Text style={styles.messageText}>{item.text}</Text>
+            <Text variant={'bodyLarge'} style={styles.messageText}>
+              {item.text}
+            </Text>
           </View>
         </View>
         {!postBySelf && <View style={styles.spacerView} />}
