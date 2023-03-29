@@ -1,5 +1,7 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
+* what to do about styles
+* type vs interface
 
 Backlog
 * read https://reactnavigation.org/docs/typescript
@@ -16,3 +18,5 @@ Work Queue
   * Responding
   * New
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
+* fez avatar should use new useravatar under the hood
+* figure out message spacing
