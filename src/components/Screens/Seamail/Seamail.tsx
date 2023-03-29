@@ -12,6 +12,7 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {ListSeparator} from '../../Lists/ListSeparator';
+import {commonStyles} from '../../../styles';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -29,7 +30,7 @@ export const SeamailScreen = ({route}: Props) => {
     enabled: isLoggedIn && !isLoading && !!route.params.fezID,
   });
 
-  console.log(data?.members?.posts.length);
+  const showPostAuthor = !!(data && data.participantCount > 2);
 
   // const isPrivileged = UserAccessLevel.isPrivileged(accessLevel);
 
@@ -41,10 +42,11 @@ export const SeamailScreen = ({route}: Props) => {
   return (
     <AppView>
       <FlatList
+        style={{...commonStyles.marginVertical}}
         ItemSeparatorComponent={ListSeparator}
         data={data?.members?.posts}
         renderItem={({item, index, separators}) => (
-          <FezPostListItem item={item} index={index} separators={separators} />
+          <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
         )}
       />
     </AppView>
