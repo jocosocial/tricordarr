@@ -16,6 +16,9 @@ export const commonStyles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
   },
+  flexColumn: {
+    flexDirection: 'column',
+  },
   marginTop: {
     marginTop: styleDefaults.marginSize,
   },
@@ -26,6 +29,9 @@ export const commonStyles = StyleSheet.create({
     marginLeft: styleDefaults.marginSize,
     marginRight: styleDefaults.marginSize,
     marginBottom: styleDefaults.marginSize,
+  },
+  marginRight: {
+    marginRight: styleDefaults.marginSize,
   },
   booleanSettingRowView: {
     flexDirection: 'row',
@@ -51,6 +57,9 @@ export const commonStyles = StyleSheet.create({
   },
   marginLeftSmall: {
     marginLeft: styleDefaults.marginSize / 2,
+  },
+  marginRightSmall: {
+    marginRight: styleDefaults.marginSize / 2,
   },
   marginTopSmall: {
     marginTop: styleDefaults.marginSize / 2,
