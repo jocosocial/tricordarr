@@ -20,3 +20,4 @@ Work Queue
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * fez avatar should use new useravatar under the hood
 * figure out message spacing
+* increase font size for messages
