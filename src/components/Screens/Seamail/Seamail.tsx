@@ -1,15 +1,17 @@
 import {AppView} from '../../Views/AppView';
-import {RefreshControl} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useQuery} from '@tanstack/react-query';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
+import {ListSeparator} from '../../Lists/ListSeparator';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -27,7 +29,7 @@ export const SeamailScreen = ({route}: Props) => {
     enabled: isLoggedIn && !isLoading && !!route.params.fezID,
   });
 
-  console.log(data);
+  console.log(data?.members?.posts.length);
 
   // const isPrivileged = UserAccessLevel.isPrivileged(accessLevel);
 
@@ -38,11 +40,13 @@ export const SeamailScreen = ({route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView>
-          <Text>{data && data.lastModificationTime.toString()}</Text>
-        </PaddedContentView>
-      </ScrollingContentView>
+      <FlatList
+        ItemSeparatorComponent={ListSeparator}
+        data={data?.members?.posts}
+        renderItem={({item, index, separators}) => (
+          <FezPostListItem item={item} index={index} separators={separators} />
+        )}
+      />
     </AppView>
   );
 };

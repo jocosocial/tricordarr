@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {List} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {useUserData} from '../Context/Contexts/UserDataContext';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 export const AccountListItem = () => {

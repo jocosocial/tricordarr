@@ -15,3 +15,4 @@ Work Queue
   * Viewing (pagination)
   * Responding
   * New
+* consider replacing ScrollView lists with FlatView or at least using the Separators feature?
