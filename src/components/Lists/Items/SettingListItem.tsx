@@ -1,9 +1,9 @@
 import React from 'react';
 import {List} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {AppSettings} from '../../libraries/AppSettings';
+import {AppSettings} from '../../../libraries/AppSettings';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 
 interface SettingListItemProps {
   setting: AppSettings;

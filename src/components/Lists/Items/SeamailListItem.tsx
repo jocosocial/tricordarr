@@ -4,7 +4,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {FezDataProps} from '../../../libraries/Types';
-import {SeamailTimeBadge} from './SeamailTimeBadge';
+import {SeamailTimeBadge} from '../Seamail/SeamailTimeBadge';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';

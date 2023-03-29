@@ -36,12 +36,14 @@ export const commonStyles = StyleSheet.create({
     paddingLeft: styleDefaults.marginSize,
     paddingRight: styleDefaults.marginSize,
   },
+  paddingVertical: {
+    paddingVertical: styleDefaults.marginSize,
+  },
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
   },
-  marginSides: {
-    marginLeft: styleDefaults.marginSize,
-    marginRight: styleDefaults.marginSize,
+  marginHorizontal: {
+    marginHorizontal: styleDefaults.marginSize,
   },
   verticalContainer: {
     flexDirection: 'column',
@@ -49,6 +51,9 @@ export const commonStyles = StyleSheet.create({
   },
   marginLeftSmall: {
     marginLeft: styleDefaults.marginSize / 2,
+  },
+  marginTopSmall: {
+    marginTop: styleDefaults.marginSize / 2,
   },
   bold: {
     fontWeight: 'bold',
