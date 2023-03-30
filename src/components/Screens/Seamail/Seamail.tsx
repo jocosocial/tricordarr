@@ -44,7 +44,9 @@ export const SeamailScreen = ({route}: Props) => {
         ItemSeparatorComponent={ListSeparator}
         data={data?.members?.posts}
         renderItem={({item, index, separators}) => (
-          <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
+          <PaddedContentView padBottom={false}>
+            <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
+          </PaddedContentView>
         )}
       />
     </AppView>

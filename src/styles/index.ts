@@ -11,6 +11,12 @@ export const commonStyles = StyleSheet.create({
   margin: {
     margin: styleDefaults.marginSize,
   },
+  displayNone: {
+    display: 'none',
+  },
+  displayFlex: {
+    display: 'flex',
+  },
   flex: {
     flex: 1,
   },
@@ -19,6 +25,12 @@ export const commonStyles = StyleSheet.create({
   },
   flexColumn: {
     flexDirection: 'column',
+  },
+  flexStart: {
+    alignSelf: 'flex-start',
+  },
+  flexEnd: {
+    alignSelf: 'flex-end',
   },
   marginTop: {
     marginTop: styleDefaults.marginSize,
@@ -52,6 +64,9 @@ export const commonStyles = StyleSheet.create({
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
   },
+  paddingSmall: {
+    padding: styleDefaults.marginSize / 2,
+  },
   marginHorizontal: {
     marginHorizontal: styleDefaults.marginSize,
   },
@@ -75,5 +90,8 @@ export const commonStyles = StyleSheet.create({
     // margin: 0 not good enough.
     marginVertical: 0,
     marginHorizontal: 0,
+  },
+  spacerWidth: {
+    width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
   },
 });
