@@ -25,6 +25,7 @@ import {ForegroundService} from './src/components/Libraries/Notifications/Foregr
 import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
+import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -80,18 +81,20 @@ function App(): JSX.Element {
   return (
     <NavigationContainer linking={linking}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
-        <ErrorHandlerProvider>
-          <QueryClientProvider client={queryClient}>
-            <UserDataProvider>
-              <UserNotificationDataProvider>
-                {/*<NotificationDataPoller />*/}
-                <ForegroundService />
-                <NotificationDataListener />
-                <BottomTabNavigator />
-              </UserNotificationDataProvider>
-            </UserDataProvider>
-          </QueryClientProvider>
-        </ErrorHandlerProvider>
+        <StyleProvider>
+          <ErrorHandlerProvider>
+            <QueryClientProvider client={queryClient}>
+              <UserDataProvider>
+                <UserNotificationDataProvider>
+                  {/*<NotificationDataPoller />*/}
+                  <ForegroundService />
+                  <NotificationDataListener />
+                  <BottomTabNavigator />
+                </UserNotificationDataProvider>
+              </UserDataProvider>
+            </QueryClientProvider>
+          </ErrorHandlerProvider>
+        </StyleProvider>
       </PaperProvider>
     </NavigationContainer>
   );

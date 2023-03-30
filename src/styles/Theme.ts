@@ -125,5 +125,5 @@ export const twitarrThemeDark = {
 };
 
 // https://callstack.github.io/react-native-paper/docs/guides/theming/#typescript
-export type AppTheme = typeof twitarrTheme;
-export const useAppTheme = () => useTheme<AppTheme>();
+export type AppThemeType = typeof twitarrTheme;
+export const useAppTheme = () => useTheme<AppThemeType>();
