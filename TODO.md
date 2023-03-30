@@ -1,7 +1,6 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 * what to do about styles
-* type vs interface
 
 Backlog
 * read https://reactnavigation.org/docs/typescript
@@ -21,4 +20,6 @@ Work Queue
 * cleanup styles in fezpostlistitem
 * selectable is buggy
 * reload button
-* consider pull down to refrehs?
+* consider pull down to refresh?
+* switch to styles being lists instead of dicts
+* find a way to get themes in commonstyles
