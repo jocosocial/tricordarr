@@ -10,7 +10,6 @@ Backlog
 * Enum or something the various navcomponents
 
 Work Queue
-* put isPrivileged in the user data provider
 * unified screenOptions across all stacks
 * New pattern for stack navigators starts with seamail
 * Seamail
@@ -18,4 +17,8 @@ Work Queue
   * Responding
   * New
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
-* enable selecting text and hyperlinks
+* enable hyperlinks
+* cleanup styles in fezpostlistitem
+* selectable is buggy
+* reload button
+* consider pull down to refrehs?
