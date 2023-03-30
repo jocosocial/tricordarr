@@ -1,14 +1,32 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
-import {DefaultTheme, useTheme} from 'react-native-paper';
+import {configureFonts, DefaultTheme, useTheme} from 'react-native-paper';
 
+// Primary color is the blue-ish element we use for everything.
 export const twitarrPrimaryColor = '#063953';
-// @TODO make a function that does rgb-to-hex.
+// Error color for things that have gone wrong.
 export const twitarrErrorColor = '#BA1A1A';
+
+/**
+ * This may need some additional love and care. I don't enjoy that we are
+ * using the "default" for everything, but I also don't want to go override a bajillion
+ * different properties because React-Native-Paper stock styling bothers me.
+ * https://callstack.github.io/react-native-paper/docs/guides/fonts/#variable-fonts
+ */
+const fontConfig = {
+  default: {
+    fontSize: 16,
+    fontFamily: 'FontFamily',
+    fontWeight: undefined,
+    letterSpacing: 0,
+    lineHeight: 20,
+  },
+};
 
 export const twitarrTheme = {
   ...DefaultTheme,
+  fonts: configureFonts({config: fontConfig}),
   colors: {
     primary: 'rgb(0, 101, 145)',
     onPrimary: 'rgb(255, 255, 255)',
@@ -58,6 +76,7 @@ export const twitarrTheme = {
 
 export const twitarrThemeDark = {
   ...DefaultTheme,
+  fonts: configureFonts({config: fontConfig}),
   colors: {
     primary: 'rgb(137, 206, 255)',
     onPrimary: 'rgb(0, 52, 77)',
