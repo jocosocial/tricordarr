@@ -13,6 +13,8 @@ export interface UserDataContextType {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
   accessLevel: UserAccessLevel;
   setAccessLevel: Dispatch<SetStateAction<UserAccessLevel>>;
+  isPrivileged: boolean;
+  setIsPrivileged: Dispatch<SetStateAction<boolean>>;
 }
 
 export const UserDataContext = createContext(<UserDataContextType>{});

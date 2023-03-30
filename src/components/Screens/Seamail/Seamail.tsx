@@ -32,8 +32,6 @@ export const SeamailScreen = ({route}: Props) => {
 
   const showPostAuthor = !!(data && data.participantCount > 2);
 
-  // const isPrivileged = UserAccessLevel.isPrivileged(accessLevel);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch().finally(() => setRefreshing(false));

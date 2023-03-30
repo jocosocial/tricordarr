@@ -13,7 +13,8 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
   const {setErrorMessage, setErrorBanner} = useErrorHandler();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [accessLevel, setAccessLevel] = useState(UserAccessLevel.unverified);
+  const [accessLevel, setAccessLevel] = useState<UserAccessLevel>(UserAccessLevel.unverified);
+  const [isPrivileged, setIsPrivileged] = useState(false);
 
   useEffect(() => {
     async function getSettings() {
@@ -25,6 +26,7 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
       if (accessLevelSetting) {
         // https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
         setAccessLevel(UserAccessLevel[accessLevelSetting as keyof typeof UserAccessLevel]);
+        setIsPrivileged(UserAccessLevel.isPrivileged(accessLevel));
       }
       setIsLoading(false);
     }
@@ -60,6 +62,8 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
         setIsLoading,
         accessLevel,
         setAccessLevel,
+        isPrivileged,
+        setIsPrivileged,
       }}>
       {children}
     </UserDataContext.Provider>
