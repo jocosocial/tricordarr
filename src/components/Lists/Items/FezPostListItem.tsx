@@ -87,13 +87,9 @@ export const FezPostListItem = ({item, index, separators, showAuthor = true}: Fe
         <View style={styles.messageViewContainer}>
           <View style={styles.messageView}>
             {showAuthor && (
-              <Text variant={'labelLarge'} style={{...styles.messageText, ...styles.messageTextHeader}}>
-                {item.author.username}
-              </Text>
+              <Text style={{...styles.messageText, ...styles.messageTextHeader}}>{item.author.username}</Text>
             )}
-            <Text variant={'bodyLarge'} style={styles.messageText}>
-              {item.text}
-            </Text>
+            <Text style={styles.messageText}>{item.text}</Text>
           </View>
         </View>
         {!postBySelf && <View style={styles.spacerView} />}

@@ -10,7 +10,6 @@ Backlog
 * Enum or something the various navcomponents
 
 Work Queue
-* Sane font size defaults
 * put isPrivileged in the user data provider
 * unified screenOptions across all stacks
 * New pattern for stack navigators starts with seamail
