@@ -17,8 +17,6 @@ Work Queue
   * New
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * enable hyperlinks
-* cleanup styles in fezpostlistitem
-* selectable is buggy
 * reload button
 * consider pull down to refresh?
 * switch to styles being lists instead of dicts
