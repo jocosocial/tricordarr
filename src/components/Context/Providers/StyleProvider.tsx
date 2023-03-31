@@ -20,6 +20,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       backgroundColor: theme.colors.secondaryContainer,
       color: theme.colors.onSecondaryContainer,
     },
+    primary: {
+      backgroundColor: theme.colors.primary,
+      color: theme.colors.onPrimary,
+    },
   });
 
   return <StyleContext.Provider value={{commonStyles: themedStyles, styleDefaults}}>{children}</StyleContext.Provider>;

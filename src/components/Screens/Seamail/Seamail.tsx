@@ -40,6 +40,9 @@ export const SeamailScreen = ({route}: Props) => {
   return (
     <AppView>
       <FlatList
+        // This is dumb.
+        // https://github.com/facebook/react-native/issues/26264
+        removeClippedSubviews={false}
         style={{...commonStyles.marginBottom}}
         ItemSeparatorComponent={ListSeparator}
         data={data?.members?.posts}
