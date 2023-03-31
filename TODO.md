@@ -15,9 +15,17 @@ Work Queue
   * Viewing (pagination)
   * Responding
   * New
+  * Scroll to bottom on open
+  * enable hyperlinks
+  * reload button
+  * consider pull down to refresh?
+  * Tap on Avatar takes you to profile
+  * Tap on nav bar brings you to profile or details. I think details would be acceptable
+  * Details view three dots menu should contain participants and open closed status
+  * tap and hold message for actions. Details, Report, FUTURE USE: reactions
+  * custom platform emoji
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
-* enable hyperlinks
-* reload button
-* consider pull down to refresh?
 * switch to styles being lists instead of dicts
-* find a way to get themes in commonstyles
+* Error Handling
+  * I broke Snackbar and Banner dismissing somewhere along the line
+  * Make a way to test these things
