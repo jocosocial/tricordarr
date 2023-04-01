@@ -61,6 +61,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         style={{...commonStyles.marginBottom}}
         ItemSeparatorComponent={ListSeparator}
         data={data?.members?.posts}
+        inverted={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({item, index, separators}) => (
           <PaddedContentView padBottom={false}>
