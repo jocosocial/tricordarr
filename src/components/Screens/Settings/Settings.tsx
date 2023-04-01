@@ -33,11 +33,16 @@ export const SettingsView = () => {
           </ListSection>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Notifications</List.Subheader>
+            <List.Subheader>Tests</List.Subheader>
             <NavigationListItem
-              title={'Test Notification'}
+              title={'Notifications'}
               description={'Generate a test notification for debugging.'}
               navComponent={SettingsStackScreenComponents.testNotification}
+            />
+            <NavigationListItem
+              title={'Errors'}
+              description={'Generate test error messages.'}
+              navComponent={SettingsStackScreenComponents.testError}
             />
           </ListSection>
           <Divider bold={true} />

@@ -9,6 +9,7 @@ import {SettingsView} from '../../Screens/Settings/Settings';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
 import {useTheme} from 'react-native-paper';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
 
 export const SettingsStack = () => {
   const Stack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ export const SettingsStack = () => {
         options={{title: 'Background Connection'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.testNotification} component={TestNotificationScreen} />
+      <Stack.Screen name={SettingsStackScreenComponents.testError} component={TestErrorScreen} />
     </Stack.Navigator>
   );
 };

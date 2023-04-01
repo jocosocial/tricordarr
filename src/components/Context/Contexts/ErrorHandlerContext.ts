@@ -1,9 +1,9 @@
 import {createContext, useContext} from 'react';
 
 export interface ErrorHandlerContextType {
-  errorMessage: string;
+  errorMessage?: string;
   setErrorMessage: Function;
-  errorBanner: string;
+  errorBanner?: string;
   setErrorBanner: Function;
 }
 
