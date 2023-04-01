@@ -4,6 +4,7 @@ import {useTheme} from 'react-native-paper';
 import {SeamailsScreen} from '../../Screens/Seamail/Seamails';
 import {SeamailScreen} from '../../Screens/Seamail/Seamail';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {SeamailDetailsScreen} from '../../Screens/Seamail/SeamailDetailsScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -11,6 +12,9 @@ export type SeamailStackParamList = {
   SeamailScreen: {
     fezID: string;
     title: string;
+  };
+  SeamailDetailsScreen: {
+    fezID: string;
   };
 };
 
@@ -38,6 +42,11 @@ export const SeamailStack = () => {
         name={SeamailStackScreenComponents.seamailScreen}
         component={SeamailScreen}
         options={({route}) => ({title: route.params.title})}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailDetailsScreen}
+        component={SeamailDetailsScreen}
+        options={() => ({title: 'Chat Details'})}
       />
     </Stack.Navigator>
   );

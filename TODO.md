@@ -19,7 +19,6 @@ Work Queue
   * enable hyperlinks
   * Tap on Avatar takes you to profile
   * Tap on nav bar brings you to profile or details. I think details would be acceptable
-  * Details view three dots menu should contain participants and open closed status
   * tap and hold message for actions. Details, Report, FUTURE USE: reactions
   * custom platform emoji
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
