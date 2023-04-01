@@ -83,6 +83,9 @@ export const commonStyles = StyleSheet.create({
   marginTopSmall: {
     marginTop: styleDefaults.marginSize / 2,
   },
+  marginBottomSmall: {
+    marginBottom: styleDefaults.marginSize / 2,
+  },
   bold: {
     fontWeight: 'bold',
   },

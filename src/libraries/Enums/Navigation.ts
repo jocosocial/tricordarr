@@ -21,4 +21,5 @@ export enum SettingsStackScreenComponents {
 export enum SeamailStackScreenComponents {
   seamailsScreen = 'SeamailsScreen',
   seamailScreen = 'SeamailScreen',
+  seamailDetailsScreen = 'SeamailDetailsScreen',
 }

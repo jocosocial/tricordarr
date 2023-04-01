@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface PaddedContentViewProps {
+  padSides?: boolean;
   padBottom?: boolean;
 }
 
@@ -10,8 +11,16 @@ interface PaddedContentViewProps {
  * High level container used to wrap content that maybe shouldn't extend
  * to the edges of the screen.
  */
-export const PaddedContentView = ({children, padBottom = true}: PropsWithChildren<PaddedContentViewProps>) => {
-  const style = [commonStyles.flex, commonStyles.paddingSides, padBottom ? commonStyles.paddingBottom : undefined];
+export const PaddedContentView = ({
+  children,
+  padBottom = true,
+  padSides = true,
+}: PropsWithChildren<PaddedContentViewProps>) => {
+  const style = [
+    commonStyles.flex,
+    padSides ? commonStyles.paddingSides : undefined,
+    padBottom ? commonStyles.paddingBottom : undefined,
+  ];
 
   return <View style={style}>{children}</View>;
 };

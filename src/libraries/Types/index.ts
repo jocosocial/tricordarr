@@ -1,7 +1,11 @@
-import {FezData} from '../Structs/ControllerStructs';
+import {FezData, UserHeader} from '../Structs/ControllerStructs';
 
 export interface FezDataProps {
   fez: FezData;
+}
+
+export interface UserHeaderProps {
+  user: UserHeader;
 }
 
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
