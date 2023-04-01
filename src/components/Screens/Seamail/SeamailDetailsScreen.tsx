@@ -37,7 +37,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
         <PaddedContentView>
-          <TitleTag>Seamail Name</TitleTag>
+          <TitleTag>Title</TitleTag>
           <Text>{data?.title}</Text>
         </PaddedContentView>
         <PaddedContentView>
