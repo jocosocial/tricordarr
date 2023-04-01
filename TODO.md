@@ -26,6 +26,3 @@ Work Queue
   * custom platform emoji
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
-* Error Handling
-  * I broke Snackbar and Banner dismissing somewhere along the line
-  * Make a way to test these things
