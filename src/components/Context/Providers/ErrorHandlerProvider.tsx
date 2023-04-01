@@ -1,4 +1,4 @@
-import React, {useState, PropsWithChildren} from 'react';
+import React, {useState, PropsWithChildren, useCallback} from 'react';
 import {ErrorHandlerContext} from '../Contexts/ErrorHandlerContext';
 import {StringOrError} from '../../../libraries/Types';
 
@@ -8,17 +8,25 @@ function getErrorMessage(e: StringOrError) {
     return e.message;
   } else if (typeof e === 'string') {
     return e;
+  } else if (typeof e === 'undefined') {
+    return undefined;
   }
   console.error('Unable to determine error type!', e);
   return 'Unknown Error!';
 }
 
 export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
-  const [errorMessage, setErrorMessageString] = useState('');
-  const [errorBanner, setErrorBannerString] = useState('');
+  const [errorMessage, setErrorMessageString] = useState<string | undefined>();
+  const [errorBanner, setErrorBannerString] = useState<string | undefined>();
 
-  const setErrorMessage = (e: StringOrError) => setErrorMessageString(getErrorMessage(e));
-  const setErrorBanner = (e: StringOrError) => setErrorBannerString(getErrorMessage(e));
+  const setErrorMessage = useCallback(
+    (e: StringOrError) => setErrorMessageString(getErrorMessage(e)),
+    [setErrorMessageString],
+  );
+  const setErrorBanner = useCallback(
+    (e: StringOrError) => setErrorBannerString(getErrorMessage(e)),
+    [setErrorBannerString],
+  );
 
   return (
     <ErrorHandlerContext.Provider value={{errorMessage, setErrorMessage, errorBanner, setErrorBanner}}>

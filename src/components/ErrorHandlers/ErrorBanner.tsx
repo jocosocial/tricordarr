@@ -35,7 +35,7 @@ export const ErrorBanner = () => {
         },
         {
           label: 'Dismiss',
-          onPress: () => setErrorBanner(''),
+          onPress: () => setErrorBanner(undefined),
           labelStyle: styles.button,
         },
       ]}>
