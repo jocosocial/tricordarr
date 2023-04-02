@@ -13,6 +13,7 @@ import {ListSeparator} from '../../Lists/ListSeparator';
 import {NavBarIconButton} from '../../Buttons/NavBarIconButton';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -52,6 +53,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  if (!data) {
+    return <LoadingView />;
+  }
+  // This is a big sketch.
+  // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
+  // The inverted=true + data.reverse() bits could get interesting with
+  // dynamically adding more messages to the array.
+  const fezPostData = [...(data?.members?.posts || [])].reverse();
   return (
     <AppView>
       <FlatList
@@ -60,9 +69,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         removeClippedSubviews={false}
         style={{...commonStyles.marginBottom}}
         ItemSeparatorComponent={ListSeparator}
-        data={data?.members?.posts}
+        data={fezPostData}
         inverted={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
         renderItem={({item, index, separators}) => (
           <PaddedContentView padBottom={false}>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
