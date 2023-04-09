@@ -10,10 +10,11 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {ListSeparator} from '../../Lists/ListSeparator';
-import {NavBarIconButton} from '../../Buttons/NavBarIconButton';
+import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {FezPostForm} from '../../Forms/FezPostForm';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -53,6 +54,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  const onSubmit = (values: object) => console.log(values);
+
   if (!data) {
     return <LoadingView />;
   }
@@ -67,7 +70,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // This is dumb.
         // https://github.com/facebook/react-native/issues/26264
         removeClippedSubviews={false}
-        style={{...commonStyles.marginBottom}}
         ItemSeparatorComponent={ListSeparator}
         data={fezPostData}
         inverted={true}
@@ -78,6 +80,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
           </PaddedContentView>
         )}
       />
+      <FezPostForm onSubmit={onSubmit} />
     </AppView>
   );
 };

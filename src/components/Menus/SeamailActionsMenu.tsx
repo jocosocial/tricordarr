@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Menu} from 'react-native-paper';
-import {NavBarIconButton} from '../Buttons/NavBarIconButton';
+import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {FezDataProps} from '../../libraries/Types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';

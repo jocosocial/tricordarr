@@ -43,11 +43,17 @@ export const commonStyles = StyleSheet.create({
     marginRight: styleDefaults.marginSize,
     marginBottom: styleDefaults.marginSize,
   },
+  marginLeft: {
+    marginLeft: styleDefaults.marginSize,
+  },
   marginRight: {
     marginRight: styleDefaults.marginSize,
   },
   marginVertical: {
     marginVertical: styleDefaults.marginSize,
+  },
+  marginVerticalSmall: {
+    marginVertical: styleDefaults.marginSize / 2,
   },
   booleanSettingRowView: {
     flexDirection: 'row',
@@ -96,5 +102,8 @@ export const commonStyles = StyleSheet.create({
   },
   spacerWidth: {
     width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
+  },
+  justifyCenter: {
+    justifyContent: 'center',
   },
 });
