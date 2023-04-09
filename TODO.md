@@ -18,7 +18,9 @@ Work Queue
   * enable hyperlinks
   * Tap on Avatar takes you to profile
   * tap and hold message for actions. Details, Report, FUTURE USE: reactions
-  * custom platform emoji
+  * custom platform emoji (add button)
+  * disable if post text is empty
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug
+* rename savebutton to something more generic

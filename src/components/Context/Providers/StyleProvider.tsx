@@ -11,6 +11,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     ...commonStyles,
     roundedBorder: {
       borderRadius: theme.roundness * 4,
+      borderTopLeftRadius: theme.roundness * 4,
+      borderTopRightRadius: theme.roundness * 4,
     },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
@@ -23,6 +25,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     primary: {
       backgroundColor: theme.colors.primary,
       color: theme.colors.onPrimary,
+    },
+    twitarrPositive: {
+      backgroundColor: theme.colors.twitarrPositiveButton,
+      // color: theme.colors.onPrimary,
     },
   });
 
