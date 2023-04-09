@@ -1,6 +1,7 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 * what to do about styles
+* typescript signature for () => void, anything better?
 
 Backlog
 * read https://reactnavigation.org/docs/typescript
@@ -12,14 +13,15 @@ Work Queue
 * unified screenOptions across all stacks
 * New pattern for stack navigators starts with seamail
 * Seamail
-  * Viewing (pagination)
-  * Responding
   * New
-  * enable hyperlinks
-  * Tap on Avatar takes you to profile
-  * tap and hold message for actions. Details, Report, FUTURE USE: reactions
-  * custom platform emoji (add button)
-  * disable if post text is empty
+  * Viewing (pagination)
+    * enable hyperlinks
+    * reduce seamail page size from 50 to like 10
+    * Tap on Avatar takes you to profile
+    * tap and hold message for actions. Details, Report, FUTURE USE: reactions
+  * Responding
+    * custom platform emoji (add button)
+    * disable if post text is empty
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug
