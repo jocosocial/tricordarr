@@ -181,3 +181,25 @@ export interface ErrorResponse {
   /// keyed by the keypath to the fields that failed validation.
   fieldErrors?: string | string[];
 }
+
+export interface ImageUploadData {
+  /// The filename of an existing image previously uploaded to the server. Ignored if image is set.
+  filename?: string;
+  /// The image in `Data` format.
+  image?: ArrayBuffer;
+}
+
+export interface PostContentData {
+  /// The new text of the forum post.
+  text: string;
+  /// An array of up to 4 images (1 when used in a Fez post). Each image can specify either new image data or an existing image filename.
+  /// For new posts, images will generally contain all new image data. When editing existing posts, images may contain a mix of new and existing images.
+  /// Reorder ImageUploadDatas to change presentation order. Set images to [] to remove images attached to post when editing.
+  images: ImageUploadData[];
+  /// If the poster has moderator privileges and this field is TRUE, this post will be authored by 'moderator' instead of the author.
+  /// Set this to FALSE unless the user is a moderator who specifically chooses this option.
+  postAsModerator: boolean;
+  /// If the poster has moderator privileges and this field is TRUE, this post will be authored by 'TwitarrTeam' instead of the author.
+  /// Set this to FALSE unless the user is a moderator who specifically chooses this option.
+  postAsTwitarrTeam: boolean;
+}

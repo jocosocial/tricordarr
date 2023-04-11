@@ -21,7 +21,6 @@ Work Queue
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
   * Responding
     * custom platform emoji (add button)
-    * disable if post text is empty
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug
