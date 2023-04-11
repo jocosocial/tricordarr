@@ -1,6 +1,7 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
 * typescript signature for () => void, anything better?
+* react query useThing mutation component. something about this rings a bell
 
 Backlog
 * read https://reactnavigation.org/docs/typescript
@@ -21,7 +22,8 @@ Work Queue
     * render custom emoji
   * Responding
     * custom platform emoji (add button)
-  * Reload when message comes in
+    * box styling needs to match the button
+  * open socket and update content when message comes in
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug

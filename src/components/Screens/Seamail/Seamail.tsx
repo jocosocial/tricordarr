@@ -2,8 +2,8 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {FezData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
+import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -16,7 +16,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import axios, {AxiosError} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<
@@ -29,6 +29,10 @@ interface FezPostMutationProps {
   fezID: string;
   postContentData: PostContentData;
 }
+
+const fezPostHandler = async ({fezID, postContentData}: FezPostMutationProps): Promise<AxiosResponse<FezPostData>> => {
+  return await axios.post(`/fez/${fezID}/post`, postContentData);
+};
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -63,34 +67,31 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const fezPostMutation = useMutation(
-    async ({fezID, postContentData}: FezPostMutationProps) => {
-      return await axios.post(`/fez/${fezID}/post`, postContentData);
-    },
-    {retry: 0},
-  );
+  const fezPostMutation: UseMutationResult<
+    AxiosResponse<FezPostData>,
+    AxiosError<ErrorResponse>,
+    FezPostMutationProps
+  > = useMutation(fezPostHandler, {
+    retry: 0,
+  });
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-      console.log(values);
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
-          onSuccess: () => {
+          onSuccess: response => {
             formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
-            // @TODO eventually this should update state rather than cheat and refresh.
-            onRefresh();
+            data?.members?.posts?.push(response.data);
           },
           onError: error => {
-            // @TODO havent dealt with the typing issues on login either.
-            console.error(error);
-            setErrorMessage(error.response.data.reason);
+            setErrorMessage(error.response?.data.reason);
           },
         },
       );
     },
-    [fezPostMutation, onRefresh, route.params.fezID, setErrorMessage],
+    [data?.members?.posts, fezPostMutation, route.params.fezID, setErrorMessage],
   );
 
   if (!data) {
