@@ -15,6 +15,8 @@ import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
+import {FezPostFormValues} from '../../../libraries/Types/FormValues';
+import {FormikHelpers, FormikProps} from 'formik';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -54,7 +56,16 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const onSubmit = (values: object) => console.log(values);
+  const onSubmit = useCallback(
+    (values: FezPostFormValues, formikHelpers: FormikHelpers<FezPostFormValues>) => {
+      console.log(values);
+      formikHelpers.setSubmitting(false);
+      formikHelpers.resetForm();
+      // @TODO eventually this should update state rather than cheat and refresh.
+      onRefresh();
+    },
+    [onRefresh],
+  );
 
   if (!data) {
     return <LoadingView />;

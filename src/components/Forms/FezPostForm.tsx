@@ -1,19 +1,24 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
+import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 
 interface FezPostFormProps {
-  onSubmit: (values: object) => void;
-  initialValues?: {
-    text?: string;
-  };
+  onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
 }
 
+const initialValues: PostContentData = {
+  images: [],
+  postAsModerator: false,
+  postAsTwitarrTeam: false,
+  text: '',
+};
+
 // https://formik.org/docs/guides/react-native
-export const FezPostForm = ({onSubmit, initialValues = {}}: FezPostFormProps) => {
+export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
 
   const styles = {
@@ -28,8 +33,11 @@ export const FezPostForm = ({onSubmit, initialValues = {}}: FezPostFormProps) =>
     ],
   };
 
+  // https://formik.org/docs/api/withFormik
+  // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
+  // https://formik.org/docs/guides/react-native
   return (
-    <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)}>
+    <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
         <View style={styles.wrapperView}>
           <SubmitIconButton colorize={false} onPress={() => console.log('add image')} icon={'image-plus'} />
@@ -43,7 +51,7 @@ export const FezPostForm = ({onSubmit, initialValues = {}}: FezPostFormProps) =>
             onBlur={handleBlur('text')}
             value={values.text}
           />
-          <SubmitIconButton onPress={handleSubmit} />
+          <SubmitIconButton disabled={!values.text} onPress={handleSubmit} />
         </View>
       )}
     </Formik>
