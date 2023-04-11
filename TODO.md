@@ -1,6 +1,5 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
-* what to do about styles
 * typescript signature for () => void, anything better?
 
 Backlog
@@ -19,9 +18,12 @@ Work Queue
     * reduce seamail page size from 50 to like 10
     * Tap on Avatar takes you to profile
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
+    * render custom emoji
   * Responding
     * custom platform emoji (add button)
+  * Reload when message comes in
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug
 * rename savebutton to something more generic
+* proper error handling for axios errors
