@@ -1,6 +1,5 @@
 Questions for Ben
 * wtf https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript
-* typescript signature for () => void, anything better?
 * react query useThing mutation component. something about this rings a bell
 
 Backlog
@@ -20,9 +19,12 @@ Work Queue
     * Tap on Avatar takes you to profile
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * render custom emoji
+    * excessive scrolling murders flatlist, and the app
   * Responding
     * custom platform emoji (add button)
     * box styling needs to match the button
+    * Display loading during mutation 
+    * disable button otherwise you can double post
   * open socket and update content when message comes in
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
