@@ -112,6 +112,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         data={fezPostData}
         inverted={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+        keyExtractor={(item: FezPostData) => String(item.postID)}
         renderItem={({item, index, separators}) => (
           <PaddedContentView padBottom={false}>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
