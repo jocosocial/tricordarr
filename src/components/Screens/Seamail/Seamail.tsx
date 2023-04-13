@@ -97,12 +97,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   if (!data) {
     return <LoadingView />;
   }
-  // This is a big sketch.
+  // This is a big sketch. See below for more reasons why this is a thing.
   // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
-  // The inverted=true + data.reverse() bits could get interesting with
-  // dynamically adding more messages to the array.
-  const fezPostData = [...(data?.members?.posts || [])].reverse();
-  // const fezPostData = data?.members?.posts || [];
+  const fezPostData: FezPostData[] = [...(data?.members?.posts || [])].reverse();
   return (
     <AppView>
       <FlatList
@@ -112,6 +109,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ItemSeparatorComponent={ListSeparator}
         data={fezPostData}
         // Inverted murders performance to the point of locking the app.
+        // So we do a series of verticallyInverted, relying on a deprecated style prop.
         // https://github.com/facebook/react-native/issues/30034
         // inverted={true}
         style={commonStyles.verticallyInverted}

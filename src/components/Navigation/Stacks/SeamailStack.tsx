@@ -46,7 +46,7 @@ export const SeamailStack = () => {
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailDetailsScreen}
         component={SeamailDetailsScreen}
-        options={() => ({title: 'Chat Details'})}
+        options={() => ({title: 'Seamail Details'})}
       />
     </Stack.Navigator>
   );
