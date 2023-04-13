@@ -38,7 +38,7 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
   // https://formik.org/docs/guides/react-native
   return (
     <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+      {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
         <View style={styles.wrapperView}>
           <SubmitIconButton colorize={false} onPress={() => console.log('add image')} icon={'image-plus'} />
           <TextInput
@@ -51,7 +51,7 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
             onBlur={handleBlur('text')}
             value={values.text}
           />
-          <SubmitIconButton disabled={!values.text} onPress={handleSubmit} />
+          <SubmitIconButton disabled={!values.text} submitting={isSubmitting} onPress={handleSubmit} />
         </View>
       )}
     </Formik>

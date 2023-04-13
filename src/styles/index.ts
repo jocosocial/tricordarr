@@ -106,4 +106,8 @@ export const commonStyles = StyleSheet.create({
   justifyCenter: {
     justifyContent: 'center',
   },
+  // https://github.com/facebook/react-native/issues/30034
+  verticallyInverted: {
+    scaleY: -1,
+  },
 });

@@ -1,10 +1,11 @@
 import React, {PropsWithChildren} from 'react';
-import {View} from 'react-native';
+import {View, ViewStyle} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface PaddedContentViewProps {
   padSides?: boolean;
   padBottom?: boolean;
+  style?: ViewStyle;
 }
 
 /**
@@ -15,12 +16,14 @@ export const PaddedContentView = ({
   children,
   padBottom = true,
   padSides = true,
+  style = {},
 }: PropsWithChildren<PaddedContentViewProps>) => {
-  const style = [
+  const paddedContentViewStyle = [
+    ...[style],
     commonStyles.flex,
     padSides ? commonStyles.paddingSides : undefined,
     padBottom ? commonStyles.paddingBottom : undefined,
   ];
 
-  return <View style={style}>{children}</View>;
+  return <View style={paddedContentViewStyle}>{children}</View>;
 };
