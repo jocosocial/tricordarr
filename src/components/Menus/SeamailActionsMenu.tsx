@@ -23,7 +23,7 @@ export const SeamailActionsMenu = ({fez}: FezDataProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<NavBarIconButton icon={'dots-vertical'} onPress={openMenu} />}>
-      <Menu.Item onPress={detailsAction} title="Chat Details" />
+      <Menu.Item onPress={detailsAction} title="Seamail Details" />
     </Menu>
   );
 };

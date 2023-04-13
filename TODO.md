@@ -19,11 +19,13 @@ Work Queue
     * Tap on Avatar takes you to profile
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * render custom emoji
+    * open socket and update content when message comes in
+    * in chat details, expand description of type or add a help section
+    * disable manage members for non-open/lfg fezs
+    * add help to the three-dots menu in seamail
   * Responding
     * custom platform emoji (add button)
-    * box styling needs to match the button
-    * cleanup styling
-  * open socket and update content when message comes in
+  * FAB drawing on top of snack bar
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * switch to styles being lists instead of dicts
 * fix the initial login userID undefined bug
