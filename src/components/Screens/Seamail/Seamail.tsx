@@ -102,6 +102,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // The inverted=true + data.reverse() bits could get interesting with
   // dynamically adding more messages to the array.
   const fezPostData = [...(data?.members?.posts || [])].reverse();
+  // const fezPostData = data?.members?.posts || [];
   return (
     <AppView>
       <FlatList
@@ -110,11 +111,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         removeClippedSubviews={false}
         ItemSeparatorComponent={ListSeparator}
         data={fezPostData}
-        inverted={true}
+        // Inverted murders performance to the point of locking the app.
+        // https://github.com/facebook/react-native/issues/30034
+        // inverted={true}
+        style={commonStyles.verticallyInverted}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
         keyExtractor={(item: FezPostData) => String(item.postID)}
         renderItem={({item, index, separators}) => (
-          <PaddedContentView padBottom={false}>
+          <PaddedContentView style={commonStyles.verticallyInverted} padBottom={false}>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
           </PaddedContentView>
         )}
