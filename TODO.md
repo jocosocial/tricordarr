@@ -23,6 +23,7 @@ Work Queue
     * in chat details, expand description of type or add a help section
     * disable manage members for non-open/lfg fezs
     * add help to the three-dots menu in seamail
+    * start at unread, start at top of converstation
   * Responding
     * custom platform emoji (add button)
   * FAB drawing on top of snack bar

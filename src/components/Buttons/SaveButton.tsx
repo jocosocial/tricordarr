@@ -7,9 +7,15 @@ interface SaveButtonProps {
   buttonText: string;
   onPress: Function;
   buttonColor?: string;
+  disabled?: boolean;
 }
 
-export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefined}: SaveButtonProps) => {
+export const SaveButton = ({
+  buttonText = 'Save',
+  onPress,
+  buttonColor = undefined,
+  disabled = false,
+}: SaveButtonProps) => {
   const theme = useAppTheme();
 
   if (!buttonColor) {
@@ -21,7 +27,12 @@ export const SaveButton = ({buttonText = 'Save', onPress, buttonColor = undefine
   };
 
   return (
-    <Button buttonColor={buttonColor} style={buttonStyle} mode="contained" onPress={() => onPress()}>
+    <Button
+      buttonColor={buttonColor}
+      style={buttonStyle}
+      mode="contained"
+      onPress={() => onPress()}
+      disabled={disabled}>
       {buttonText}
     </Button>
   );

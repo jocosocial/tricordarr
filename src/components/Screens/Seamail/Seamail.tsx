@@ -2,7 +2,7 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
 import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -18,6 +18,8 @@ import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {Text} from 'react-native-paper';
+import {SaveButton} from '../../Buttons/SaveButton';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -34,18 +36,72 @@ const fezPostHandler = async ({fezID, postContentData}: FezPostMutationProps): P
   return await axios.post(`/fez/${fezID}/post`, postContentData);
 };
 
+// @TODO make this a setting or something.
+const PAGE_SIZE = 10;
+
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [startIndex, setStartIndex] = useState<number | undefined>(undefined);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const {setErrorMessage} = useErrorHandler();
 
-  const {data, refetch} = useQuery<FezData>({
-    queryKey: [`/fez/${route.params.fezID}`],
-    enabled: isLoggedIn && !isLoading && !!route.params.fezID,
-  });
+  const {
+    data,
+    refetch,
+    // fetchNextPage,
+    fetchPreviousPage,
+    // hasNextPage,
+    hasPreviousPage,
+    // isFetchingNextPage,
+    isFetchingPreviousPage,
+    // isError,
+  } = useInfiniteQuery<FezData, Error>(
+    [`/fez/${route.params.fezID}?limit=${PAGE_SIZE}&start=${startIndex}`],
+    async ({pageParam = {start: undefined, limit: PAGE_SIZE}}) => {
+      const {data: responseData} = await axios.get<FezData>(
+        `/fez/${route.params.fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
+      );
+      return responseData;
+    },
+    {
+      enabled: isLoggedIn && !isLoading && !!route.params.fezID,
+      getNextPageParam: lastPage => {
+        if (lastPage.members) {
+          const {limit, start, total} = lastPage.members.paginator;
+          const nextStart = start + limit;
+          return nextStart < total ? {start: nextStart, limit} : undefined;
+        }
+        throw new Error('getNextPageParam no member');
+      },
+      getPreviousPageParam: firstPage => {
+        if (firstPage.members) {
+          const {limit, start} = firstPage.members.paginator;
+          const prevStart = start - limit;
+          return prevStart >= 0 ? {start: prevStart, limit} : undefined;
+        }
+        throw new Error('getPreviousPageParam no member');
+      },
+    },
+  );
 
-  const showPostAuthor = !!(data && data.participantCount > 2);
+  //
+  // const handleLoadMore = () => {
+  //   if (!isFetchingNextPage) {
+  //     fetchNextPage();
+  //   }
+  // };
+
+  const handleLoadPrevious = () => {
+    if (!isFetchingPreviousPage && hasPreviousPage) {
+      setRefreshing(true);
+      fetchPreviousPage().finally(() => {
+        setRefreshing(false);
+      });
+    }
+  };
+
+  const showPostAuthor = !!(data && data.pages[0].participantCount > 2);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -56,7 +112,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     return (
       <View style={[commonStyles.flexRow]}>
         <NavBarIconButton icon={'reload'} onPress={onRefresh} />
-        {data && <SeamailActionsMenu fez={data} />}
+        {data && <SeamailActionsMenu fez={data.pages[0]} />}
       </View>
     );
   }, [commonStyles.flexRow, data, onRefresh]);
@@ -75,6 +131,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     retry: 0,
   });
 
+  // const onSubmit = () => console.log('disabled for now');
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       fezPostMutation.mutate(
@@ -83,7 +140,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
           onSuccess: response => {
             formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
-            data?.members?.posts?.push(response.data);
+            // As the paginator moves, the array ordering is also changed.
+            // Slice returns a copy, and there's no Array.last property :(
+            data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
           },
           onError: error => {
             setErrorMessage(error.response?.data.reason);
@@ -91,15 +150,27 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         },
       );
     },
-    [data?.members?.posts, fezPostMutation, route.params.fezID, setErrorMessage],
+    [data?.pages, fezPostMutation, route.params.fezID, setErrorMessage],
   );
 
-  if (!data) {
+  if (!data || isLoading) {
     return <LoadingView />;
   }
+
+  const renderHeader = () => {
+    return (
+      <PaddedContentView padTop={true} invertVertical={true}>
+        {!hasPreviousPage && (
+          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
+        )}
+      </PaddedContentView>
+    );
+  };
+
+  // console.log(data.members?.paginator);
   // This is a big sketch. See below for more reasons why this is a thing.
   // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
-  const fezPostData: FezPostData[] = [...(data?.members?.posts || [])].reverse();
+  const fezPostData: FezPostData[] = [...data.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
       <FlatList
@@ -115,11 +186,15 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         style={commonStyles.verticallyInverted}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
         keyExtractor={(item: FezPostData) => String(item.postID)}
+        // This is the Footer because of all the inversion crap. In our case,
+        // footer renders at the top.
+        ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
-          <PaddedContentView style={commonStyles.verticallyInverted} padBottom={false}>
+          <PaddedContentView invertVertical={true} padBottom={false}>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
           </PaddedContentView>
         )}
+        onEndReached={handleLoadPrevious}
       />
       <FezPostForm onSubmit={onSubmit} />
     </AppView>

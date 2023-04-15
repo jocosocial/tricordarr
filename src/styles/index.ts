@@ -70,6 +70,9 @@ export const commonStyles = StyleSheet.create({
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
   },
+  paddingTop: {
+    paddingTop: styleDefaults.marginSize,
+  },
   paddingSmall: {
     padding: styleDefaults.marginSize / 2,
   },
