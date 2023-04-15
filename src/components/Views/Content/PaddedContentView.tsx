@@ -5,7 +5,9 @@ import {commonStyles} from '../../../styles';
 interface PaddedContentViewProps {
   padSides?: boolean;
   padBottom?: boolean;
+  padTop?: boolean;
   style?: ViewStyle;
+  invertVertical?: boolean;
 }
 
 /**
@@ -16,13 +18,18 @@ export const PaddedContentView = ({
   children,
   padBottom = true,
   padSides = true,
+  padTop = false,
+  invertVertical = false,
   style = {},
 }: PropsWithChildren<PaddedContentViewProps>) => {
   const paddedContentViewStyle = [
     ...[style],
     commonStyles.flex,
+    padTop ? commonStyles.paddingTop : undefined,
     padSides ? commonStyles.paddingSides : undefined,
     padBottom ? commonStyles.paddingBottom : undefined,
+    // https://github.com/facebook/react-native/issues/30034
+    invertVertical ? commonStyles.verticallyInverted : undefined,
   ];
 
   return <View style={paddedContentViewStyle}>{children}</View>;
