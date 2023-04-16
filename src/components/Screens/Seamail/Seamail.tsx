@@ -1,6 +1,6 @@
 import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useInfiniteQuery, useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
 import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
@@ -18,8 +18,9 @@ import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {Text} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {SaveButton} from '../../Buttons/SaveButton';
+import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -45,6 +46,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const {setErrorMessage} = useErrorHandler();
+  const flatListRef = useRef<FlatList>(null);
+  const [showButton, setShowButton] = useState(false);
 
   const {
     data,
@@ -167,6 +170,20 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     );
   };
 
+  // Because of the inversion / up-is-down nonsense, we use scrollToOffset
+  // rather than scrollToEnd.
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+  };
+
+  const handleScroll = (event: any) => {
+    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
+    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  };
+
+  // console.log('should show?');
+  // const shouldShowButton = scrollOffset > 450;
+
   // console.log(data.members?.paginator);
   // This is a big sketch. See below for more reasons why this is a thing.
   // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
@@ -174,6 +191,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   return (
     <AppView>
       <FlatList
+        ref={flatListRef}
+        // I am not sure about the performance here. onScroll is great but fires A LOT.
+        // onScrollBeginDrag={handleScroll}
+        // onScrollEndDrag={handleScroll}
+        onScroll={handleScroll}
         // This is dumb.
         // https://github.com/facebook/react-native/issues/26264
         removeClippedSubviews={false}
@@ -196,6 +218,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         )}
         onEndReached={handleLoadPrevious}
       />
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
       <FezPostForm onSubmit={onSubmit} />
     </AppView>
   );
