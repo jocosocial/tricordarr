@@ -1,7 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
-import {commonStyles} from '../../styles';
+import {commonStyles} from '../../../styles';
 
-export const ListSeparator = () => {
+// @TODO deprecate this
+export const SpaceDivider = () => {
   return <View style={commonStyles.marginTopSmall} />;
 };
