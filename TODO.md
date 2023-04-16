@@ -15,7 +15,6 @@ Work Queue
   * New
   * Viewing (pagination)
     * enable hyperlinks
-    * reduce seamail page size from 50 to like 10
     * Tap on Avatar takes you to profile
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * render custom emoji
@@ -24,6 +23,8 @@ Work Queue
     * disable manage members for non-open/lfg fezs
     * add help to the three-dots menu in seamail
     * start at unread, start at top of converstation
+    * refetch fetching all once caching is enabled?
+    * "new" separator
   * Responding
     * custom platform emoji (add button)
   * FAB drawing on top of snack bar
