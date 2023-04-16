@@ -2,25 +2,26 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useInfiniteQuery, useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
+import {InfiniteData, useInfiniteQuery, useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
 import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
-import {ListSeparator} from '../../Lists/ListSeparator';
+import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosError, AxiosResponse, post} from 'axios';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {IconButton, Text} from 'react-native-paper';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
+import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -87,6 +88,22 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       },
     },
   );
+
+  function getPostCount(fezData: InfiniteData<FezData>) {
+    let postCount = 0;
+    fezData?.pages.flatMap(p => {
+      if (p.members) {
+        postCount += p.members.paginator.limit;
+        console.log('by the way, readCount is', p.members.readCount);
+        console.log('total is', p.members.postCount);
+      }
+    });
+    return postCount;
+  }
+
+  const startIdx = data?.pages[0].members?.paginator.start;
+  const endIdx = data?.pages[0].members?.paginator.start + getPostCount(data);
+  console.log(`currently showing ${startIdx} through ${endIdx}`);
 
   //
   // const handleLoadMore = () => {
@@ -196,10 +213,10 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // onScrollBeginDrag={handleScroll}
         // onScrollEndDrag={handleScroll}
         onScroll={handleScroll}
-        // This is dumb.
+        // This is dumb. Have to take the performance hit to allow selecting text.
         // https://github.com/facebook/react-native/issues/26264
         removeClippedSubviews={false}
-        ItemSeparatorComponent={ListSeparator}
+        ItemSeparatorComponent={SpaceDivider}
         data={fezPostData}
         // Inverted murders performance to the point of locking the app.
         // So we do a series of verticallyInverted, relying on a deprecated style prop.
@@ -213,9 +230,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
+            <Text>{index}</Text>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
           </PaddedContentView>
         )}
+        // End is Start, Start is End.
         onEndReached={handleLoadPrevious}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}

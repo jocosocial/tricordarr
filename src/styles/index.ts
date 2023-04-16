@@ -113,4 +113,7 @@ export const commonStyles = StyleSheet.create({
   verticallyInverted: {
     scaleY: -1,
   },
+  fullWidth: {
+    width: '100%',
+  },
 });
