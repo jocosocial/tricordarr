@@ -230,7 +230,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
-            <Text>{index}</Text>
             <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
           </PaddedContentView>
         )}
