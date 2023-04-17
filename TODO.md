@@ -7,6 +7,7 @@ Backlog
 * duplicating types everywhere
 * Do the type thingies for all stack navigators
 * Enum or something the various navcomponents
+* useNavStack to replace the any's (like Seamail and user profile)
 
 Work Queue
 * unified screenOptions across all stacks

@@ -7,6 +7,8 @@ import {MessageViewContainer} from '../../Views/MessageViewContainer';
 import {MessageSpacerView} from '../../Views/MessageSpacerView';
 import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../Views/Content/FlatListItemContent';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
@@ -23,11 +25,19 @@ interface FezPostListItemProps {
 export const FezPostListItem = ({item, index, separators, showAuthor = true}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
   const postBySelf = profilePublicData.header.userID === item.author.userID;
+  const navigation = useSeamailStack();
+
+  const onPress = () => {
+    navigation.push(SeamailStackScreenComponents.userProfileScreen, {
+      userID: item.author.userID,
+      username: item.author.username,
+    });
+  };
 
   return (
     <FlatListItemContent>
       {!postBySelf && (
-        <MessageAvatarContainerView>
+        <MessageAvatarContainerView onPress={onPress}>
           <UserAvatarImage userID={item.author.userID} small={true} />
         </MessageAvatarContainerView>
       )}

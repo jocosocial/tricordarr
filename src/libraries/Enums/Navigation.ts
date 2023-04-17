@@ -5,6 +5,7 @@
 export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
   seamailStack = 'SeamailStackNavigator',
+  userStack = 'UserStack',
 }
 
 export enum SettingsStackScreenComponents {
@@ -22,4 +23,10 @@ export enum SeamailStackScreenComponents {
   seamailsScreen = 'SeamailsScreen',
   seamailScreen = 'SeamailScreen',
   seamailDetailsScreen = 'SeamailDetailsScreen',
+  userProfileScreen = 'UserProfileScreen',
 }
+
+// @TODO how can this be a thing? Should it be?
+// export enum UserStackScreenComponents {
+//   userProfileScreen = 'UserProfileScreen',
+// }
