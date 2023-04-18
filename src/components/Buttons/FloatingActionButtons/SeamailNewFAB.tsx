@@ -24,7 +24,7 @@ export const SeamailNewFAB = () => {
         label={open ? 'Create new' : undefined}
         // This might need to be moved out due to the rendered-too-many-hooks thing.
         actions={[
-          FabGroupAction({icon: 'email', label: 'Seamail', onPress: () => console.log('new seamail')}),
+          FabGroupAction({icon: 'email-plus', label: 'Seamail', onPress: () => console.log('new seamail')}),
           FabGroupAction({icon: 'phone-outgoing', label: 'KrakenTalk', onPress: () => console.log('krakentalk')}),
         ]}
         onStateChange={onStateChange}

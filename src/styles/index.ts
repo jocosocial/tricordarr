@@ -5,11 +5,15 @@ export const styleDefaults = {
   iconSize: 25,
   avatarSize: 36,
   avatarSizeSmall: 24, // 2/3rds.
+  headerImageSize: 216,
 };
 
 export const commonStyles = StyleSheet.create({
   margin: {
     margin: styleDefaults.marginSize,
+  },
+  marginHorizontal: {
+    marginHorizontal: styleDefaults.marginSize,
   },
   displayNone: {
     display: 'none',
@@ -54,6 +58,9 @@ export const commonStyles = StyleSheet.create({
   },
   marginVerticalSmall: {
     marginVertical: styleDefaults.marginSize / 2,
+  },
+  marginHorizontalSmall: {
+    marginHorizontal: styleDefaults.marginSize / 2,
   },
   booleanSettingRowView: {
     flexDirection: 'row',
@@ -115,5 +122,9 @@ export const commonStyles = StyleSheet.create({
   },
   fullWidth: {
     width: '100%',
+  },
+  headerImage: {
+    width: styleDefaults.headerImageSize,
+    height: styleDefaults.headerImageSize,
   },
 });

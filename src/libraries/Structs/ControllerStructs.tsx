@@ -24,6 +24,16 @@ export interface UserHeader {
   userImage?: string;
 }
 
+export namespace UserHeader {
+  // This is sorta based on https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift#L562
+  export function getByline(header: UserHeader) {
+    if (header.displayName) {
+      return `${header.displayName} (@${header.username})`;
+    }
+    return `@${header.username}`;
+  }
+}
+
 export interface ProfilePublicData {
   /// Basic info about the user--their ID, username, displayname, and avatar image.
   header: UserHeader;
