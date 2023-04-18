@@ -1,5 +1,5 @@
 import {Text} from 'react-native-paper';
-import {TextStyle, View, ViewStyle} from 'react-native';
+import {StyleProp, TextStyle, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import ReactTimeAgo from "react-time-ago";
@@ -13,10 +13,10 @@ interface MessageViewProps {
 }
 
 interface MessageViewStyles {
-  messageView: ViewStyle[];
-  messageText: TextStyle[];
-  messageTextHeader: TextStyle[];
-  messageDateText: TextStyle[];
+  messageView: StyleProp<ViewStyle>;
+  messageText: StyleProp<TextStyle>;
+  messageTextHeader: StyleProp<TextStyle>;
+  messageDateText: StyleProp<TextStyle>;
 }
 
 export const MessageView = ({text, author, timestamp = undefined, postBySelf = false}: MessageViewProps) => {

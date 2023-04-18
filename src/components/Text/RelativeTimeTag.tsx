@@ -1,12 +1,12 @@
 import React, {PropsWithChildren} from 'react';
-import {TextStyle} from "react-native";
+import {StyleProp, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import ReactTimeAgo from 'react-time-ago';
-import {MD3TypescaleKey} from "react-native-paper/lib/typescript/types";
+import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 
 interface RelativeTimeTagProps {
   date?: Date;
-  style?: TextStyle[];
+  style?: StyleProp<TextStyle>;
   variant?: keyof typeof MD3TypescaleKey;
 }
 
@@ -26,7 +26,11 @@ export const RelativeTimeTag = ({date, style = [], variant = undefined}: Relativ
   // ReactTimeAgo doesn't support dynamic styling of the component, and it's own
   // style parameter is not what you think it is.
   const StylizedText = ({children}: PropsWithChildren) => {
-    return <Text variant={variant} style={style}>{children}</Text>;
+    return (
+      <Text variant={variant} style={style}>
+        {children}
+      </Text>
+    );
   };
 
   // The Date.parse(date.toString()) is dumb but necessary.
