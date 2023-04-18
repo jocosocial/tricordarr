@@ -4,6 +4,7 @@ import {useQuery} from '@tanstack/react-query';
 import {apiQueryImageUri} from '../../libraries/Network/APIClient';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {Image, ImageStyle, StyleProp} from 'react-native';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 type AppImageProps = {
   path: string;
@@ -20,7 +21,7 @@ export const AppImage = ({path, style}: AppImageProps) => {
   });
 
   if (!imageUri) {
-    return <Avatar.Icon style={style} icon="alert-circle-outline" />;
+    return <Avatar.Icon style={style} icon={AppIcons.error} />;
   }
 
   return <Image style={style} source={{uri: imageUri}} />;

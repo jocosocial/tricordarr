@@ -4,6 +4,7 @@ import {Formik, FormikHelpers} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -36,7 +37,7 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
     <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
         <View style={styles.formView}>
-          <SubmitIconButton colorize={false} onPress={() => console.log('add image')} icon={'image-plus'} />
+          <SubmitIconButton colorize={false} onPress={() => console.log('add image')} icon={AppIcons.newImage} />
           <View style={styles.inputWrapperView}>
             <TextInput
               underlineColorAndroid={'transparent'}

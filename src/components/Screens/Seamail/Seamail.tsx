@@ -2,7 +2,7 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {InfiniteData, useInfiniteQuery, useMutation, UseMutationResult, useQuery} from '@tanstack/react-query';
+import {InfiniteData, useInfiniteQuery, useMutation, UseMutationResult} from '@tanstack/react-query';
 import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -16,12 +16,11 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import axios, {AxiosError, AxiosResponse, post} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {IconButton, Text} from 'react-native-paper';
-import {SaveButton} from '../../Buttons/SaveButton';
+import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -131,7 +130,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={'reload'} onPress={onRefresh} />
+        <NavBarIconButton icon={AppIcons.reload} onPress={onRefresh} />
         {data && <SeamailActionsMenu fez={data.pages[0]} />}
       </View>
     );

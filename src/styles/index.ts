@@ -110,6 +110,9 @@ export const commonStyles = StyleSheet.create({
     marginVertical: 0,
     marginHorizontal: 0,
   },
+  paddingHorizontalZero: {
+    paddingHorizontal: 0,
+  },
   spacerWidth: {
     width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
   },
@@ -126,5 +129,11 @@ export const commonStyles = StyleSheet.create({
   headerImage: {
     width: styleDefaults.headerImageSize,
     height: styleDefaults.headerImageSize,
+  },
+  backgroundTransparent: {
+    backgroundColor: 'transparent',
+  },
+  positionAbsolute: {
+    position: 'absolute',
   },
 });

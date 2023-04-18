@@ -4,6 +4,7 @@ import {useQuery} from '@tanstack/react-query';
 import {apiQueryImageUri} from '../../libraries/Network/APIClient';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {styleDefaults} from '../../styles';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 type UserAvatarImageProps = {
   userID: string;
@@ -21,7 +22,7 @@ export const UserAvatarImage = ({userID, small = false}: UserAvatarImageProps) =
   });
 
   if (!avatarImageUri) {
-    return <Avatar.Icon size={size} icon="account" />;
+    return <Avatar.Icon size={size} icon={AppIcons.user} />;
   }
 
   return <Avatar.Image size={size} source={{uri: avatarImageUri}} />;

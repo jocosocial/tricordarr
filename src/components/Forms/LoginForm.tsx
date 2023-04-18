@@ -4,6 +4,7 @@ import {Formik} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {SaveButton} from '../Buttons/SaveButton';
 import {LoginFormValues} from '../../libraries/Types/FormValues';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 interface LoginFormProps {
   onSubmit: any;
@@ -18,14 +19,14 @@ export const LoginForm = ({onSubmit, initialValues = {}}: LoginFormProps) => {
         <View>
           <TextInput
             label={'Username'}
-            left={<TextInput.Icon icon="account" />}
+            left={<TextInput.Icon icon={AppIcons.user} />}
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
           />
           <TextInput
             label={'Password'}
-            left={<TextInput.Icon icon="form-textbox-password" />}
+            left={<TextInput.Icon icon={AppIcons.password} />}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             value={values.password}
