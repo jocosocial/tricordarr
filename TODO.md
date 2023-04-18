@@ -8,6 +8,9 @@ Backlog
 * Do the type thingies for all stack navigators
 * Enum or something the various navcomponents
 * useNavStack to replace the any's (like Seamail and user profile)
+* images
+  * tap and hold to save?
+  * open in a big zoomable view that has save button?
 
 Work Queue
 * unified screenOptions across all stacks
@@ -16,7 +19,6 @@ Work Queue
   * New
   * Viewing (pagination)
     * enable hyperlinks
-    * Tap on Avatar takes you to profile
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * render custom emoji
     * open socket and update content when message comes in
