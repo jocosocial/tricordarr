@@ -3,32 +3,28 @@ import {View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../styles/Theme';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 interface FloatingScrollButtonProps {
   onPress: () => void;
 }
 
+/**
+ * Button to float above content and give the user something to jump to the bottom.
+ */
 export const FloatingScrollButton = ({onPress}: FloatingScrollButtonProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const style = {
+    ...commonStyles.flexRow,
+    ...commonStyles.justifyCenter,
+    ...commonStyles.fullWidth,
+    ...commonStyles.backgroundTransparent,
+    ...commonStyles.positionAbsolute,
+    bottom: 64, // this may not behave as expected
+  };
   return (
-    <View
-      style={{
-        ...commonStyles.flexRow,
-        ...commonStyles.justifyCenter,
-        backgroundColor: 'transparent',
-        width: '100%',
-        position: 'absolute',
-        bottom: 64,
-      }}>
-      <IconButton
-        icon="arrow-down-circle"
-        size={30}
-        onPress={onPress}
-        mode={'contained-tonal'}
-        // containerColor={theme.colors.background}
-        // style={{ position: 'absolute', bottom: 20, right: 20 }}
-      />
+    <View style={style}>
+      <IconButton icon={AppIcons.scrollDown} size={30} onPress={onPress} mode={'contained-tonal'} />
     </View>
   );
 };

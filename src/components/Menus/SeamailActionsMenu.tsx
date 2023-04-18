@@ -5,6 +5,7 @@ import {FezDataProps} from '../../libraries/Types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 import {SeamailStackScreenComponents} from '../../libraries/Enums/Navigation';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 export const SeamailActionsMenu = ({fez}: FezDataProps) => {
   const [visible, setVisible] = React.useState(false);
@@ -22,7 +23,7 @@ export const SeamailActionsMenu = ({fez}: FezDataProps) => {
     <Menu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<NavBarIconButton icon={'dots-vertical'} onPress={openMenu} />}>
+      anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item onPress={detailsAction} title="Seamail Details" />
     </Menu>
   );

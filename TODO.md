@@ -26,3 +26,5 @@ Work Queue
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * fix the initial login userID undefined bug
 * proper error handling for axios errors
+* Profile
+  * block/report/mute modal.

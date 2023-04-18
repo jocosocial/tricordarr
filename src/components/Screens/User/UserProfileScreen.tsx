@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Card, Divider, Text} from 'react-native-paper';
+import {Card, Text, List} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
@@ -16,6 +16,8 @@ import {ListSection} from '../../Lists/ListSection';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
+import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -41,12 +43,12 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={'star'} onPress={() => console.log('favorite')} />
-        <NavBarIconButton icon={'email-plus'} onPress={() => console.log('seamail')} />
-        <NavBarIconButton icon={'phone-outgoing'} onPress={() => console.log('krakentalk')} />
+        <NavBarIconButton icon={AppIcons.seamailCreate} onPress={() => console.log('seamail')} />
+        <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={() => console.log('krakentalk')} />
+        {data && <UserProfileActionsMenu profile={data} />}
       </View>
     );
-  }, [commonStyles.flexRow]);
+  }, [commonStyles.flexRow, data]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -57,7 +59,6 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   if (!data) {
     return <LoadingView />;
   }
-  console.log(data);
 
   const styles = {
     image: [commonStyles.roundedBorder, commonStyles.headerImage],
@@ -83,31 +84,20 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
             {UserHeader.getByline(data.header)}
           </Text>
         </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
-          <Button style={styles.button} icon={'cancel'} mode={'contained-tonal'} onPress={() => console.log('block')}>
-            Block
-          </Button>
-          <Button
-            style={styles.button}
-            icon={'volume-off'}
-            mode={'contained-tonal'}
-            onPress={() => console.log('mute')}>
-            Mute
-          </Button>
-          <Button
-            style={styles.button}
-            icon={'alert-octagon'}
-            mode={'contained-tonal'}
-            onPress={() => console.log('report')}>
-            Report
-          </Button>
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
+        {data.note && (
+          <PaddedContentView>
+            <Card>
+              <Card.Title title="Private Note" />
+              <Card.Content>
+                <Text selectable={true}>{data.note}</Text>
+              </Card.Content>
+            </Card>
+          </PaddedContentView>
+        )}
+        <PaddedContentView>
           <Card>
             <Card.Title title="User Profile" />
-            <Card.Content>
+            <Card.Content style={[commonStyles.paddingHorizontalZero]}>
               <ListSection>
                 {data.header.username && <DataFieldListItem title={'Username'} description={data.header.username} />}
                 {data.header.displayName && (
@@ -134,13 +124,14 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
         )}
         <PaddedContentView>
           <Card>
-            <Card.Title title="Private Note" />
-            <Card.Content>
-              <Text selectable={true}>{data.note}</Text>
+            <Card.Title title={`Content by @${data.header.username}`} />
+            <Card.Content style={[commonStyles.paddingHorizontalZero]}>
+              <ListSection>
+                <List.Item title={'Twarrts'} onPress={() => console.log('waaa')} />
+                <List.Item title={'Forums'} onPress={() => console.log('waaa')} />
+                <List.Item title={'LFGs'} onPress={() => console.log('waaa')} />
+              </ListSection>
             </Card.Content>
-            <Card.Actions>
-              <Button mode={'contained-tonal'}>Edit</Button>
-            </Card.Actions>
           </Card>
         </PaddedContentView>
       </ScrollingContentView>

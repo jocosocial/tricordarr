@@ -3,6 +3,7 @@ import {IconButton} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ActivityIndicator} from 'react-native-paper';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 interface SubmitIconButtonProps {
   onPress: () => void;
@@ -14,7 +15,7 @@ interface SubmitIconButtonProps {
 
 export const SubmitIconButton = ({
   onPress,
-  icon = 'send-circle-outline',
+  icon = AppIcons.submit,
   colorize = true,
   disabled = false,
   submitting = false,
