@@ -83,9 +83,6 @@ export const commonStyles = StyleSheet.create({
   paddingSmall: {
     padding: styleDefaults.marginSize / 2,
   },
-  marginHorizontal: {
-    marginHorizontal: styleDefaults.marginSize,
-  },
   verticalContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',

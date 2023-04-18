@@ -2,7 +2,7 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {InfiniteData, useInfiniteQuery, useMutation, UseMutationResult} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation, UseMutationResult} from '@tanstack/react-query';
 import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -42,7 +42,6 @@ const PAGE_SIZE = 10;
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [startIndex, setStartIndex] = useState<number | undefined>(undefined);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const {setErrorMessage} = useErrorHandler();
@@ -60,7 +59,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     isFetchingPreviousPage,
     // isError,
   } = useInfiniteQuery<FezData, Error>(
-    [`/fez/${route.params.fezID}?limit=${PAGE_SIZE}&start=${startIndex}`],
+    // @TODO the key needs start too
+    [`/fez/${route.params.fezID}?limit=${PAGE_SIZE}`],
     async ({pageParam = {start: undefined, limit: PAGE_SIZE}}) => {
       const {data: responseData} = await axios.get<FezData>(
         `/fez/${route.params.fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
@@ -88,21 +88,21 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     },
   );
 
-  function getPostCount(fezData: InfiniteData<FezData>) {
-    let postCount = 0;
-    fezData?.pages.flatMap(p => {
-      if (p.members) {
-        postCount += p.members.paginator.limit;
-        console.log('by the way, readCount is', p.members.readCount);
-        console.log('total is', p.members.postCount);
-      }
-    });
-    return postCount;
-  }
+  // function getPostCount(fezData: InfiniteData<FezData>) {
+  //   let postCount = 0;
+  //   fezData?.pages.flatMap(p => {
+  //     if (p.members) {
+  //       postCount += p.members.paginator.limit;
+  //       console.log('by the way, readCount is', p.members.readCount);
+  //       console.log('total is', p.members.postCount);
+  //     }
+  //   });
+  //   return postCount;
+  // }
 
-  const startIdx = data?.pages[0].members?.paginator.start;
-  const endIdx = data?.pages[0].members?.paginator.start + getPostCount(data);
-  console.log(`currently showing ${startIdx} through ${endIdx}`);
+  // const startIdx = data?.pages[0].members?.paginator.start;
+  // const endIdx = data?.pages[0].members?.paginator.start + getPostCount(data);
+  // console.log(`currently showing ${startIdx} through ${endIdx}`);
 
   //
   // const handleLoadMore = () => {
