@@ -15,4 +15,7 @@ export enum AppIcons {
   user = 'account',
   group = 'account-group',
   password = 'form-textbox-password',
+  moderator = 'security',
+  twitarteam = 'check-decagram',
+  tho = 'shield-crown',
 }

@@ -8,6 +8,8 @@ Backlog
 * Enum or something the various navcomponents
 * useNavStack to replace the any's (like Seamail and user profile)
 * seamailstack is technically chatstack
+* replace server connection boolean settings with the new components.
+* maybe all settings for that matter?
 
 Work Queue
 * unified screenOptions across all stacks
@@ -32,3 +34,4 @@ Work Queue
   * welcome message needs top padding after all. Not much but some
   * private note should be a different color
 * Props types PropsWithUserHeader
+* rename NavBarIcon
