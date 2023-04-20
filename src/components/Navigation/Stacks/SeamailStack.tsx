@@ -7,6 +7,7 @@ import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation'
 import {SeamailDetailsScreen} from '../../Screens/Seamail/SeamailDetailsScreen';
 import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {useNavigation} from '@react-navigation/native';
+import {SeamailCreateScreen} from '../../Screens/Seamail/SeamailCreateScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -22,6 +23,7 @@ export type SeamailStackParamList = {
     userID: string;
     username: string;
   };
+  SeamailCreateScreen: undefined;
 };
 
 export const SeamailStack = () => {
@@ -58,6 +60,11 @@ export const SeamailStack = () => {
         name={SeamailStackScreenComponents.userProfileScreen}
         component={UserProfileScreen}
         options={({route}) => ({title: route.params.username})}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailCreateScreen}
+        component={SeamailCreateScreen}
+        options={{title: 'New Seamail'}}
       />
     </Stack.Navigator>
   );

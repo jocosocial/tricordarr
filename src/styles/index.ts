@@ -36,6 +36,9 @@ export const commonStyles = StyleSheet.create({
   flexEnd: {
     alignSelf: 'flex-end',
   },
+  flexWrap: {
+    flexWrap: 'wrap',
+  },
   marginTop: {
     marginTop: styleDefaults.marginSize,
   },
