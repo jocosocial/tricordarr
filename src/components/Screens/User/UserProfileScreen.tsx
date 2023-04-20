@@ -61,7 +61,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   }
 
   const styles = {
-    image: [commonStyles.roundedBorder, commonStyles.headerImage],
+    image: [commonStyles.roundedBorderLarge, commonStyles.headerImage],
     listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],
     button: [commonStyles.marginHorizontalSmall],
   };

@@ -25,7 +25,7 @@ export const MessageView = ({text, author, timestamp = undefined, postBySelf = f
   const styles: MessageViewStyles = {
     messageView: [
       commonStyles.paddingSmall,
-      commonStyles.roundedBorder,
+      commonStyles.roundedBorderLarge,
       postBySelf ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
       postBySelf ? commonStyles.flexEnd : commonStyles.flexStart,
     ],

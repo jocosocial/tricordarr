@@ -6,6 +6,7 @@ export const styleDefaults = {
   avatarSize: 36,
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
+  fontSize: 16, // This is copied from styles/Theme.
 };
 
 export const commonStyles = StyleSheet.create({
@@ -70,6 +71,12 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
+  paddingLeftSmall: {
+    paddingLeft: styleDefaults.marginSize / 2
+  },
   paddingSides: {
     paddingLeft: styleDefaults.marginSize,
     paddingRight: styleDefaults.marginSize,
@@ -82,6 +89,9 @@ export const commonStyles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: styleDefaults.marginSize,
+  },
+  paddingTopSmall: {
+    paddingTop: styleDefaults.marginSize / 2,
   },
   paddingSmall: {
     padding: styleDefaults.marginSize / 2,
@@ -118,6 +128,9 @@ export const commonStyles = StyleSheet.create({
   },
   justifyCenter: {
     justifyContent: 'center',
+  },
+  justifySpaceBetween: {
+    justifyContent: 'space-between',
   },
   // https://github.com/facebook/react-native/issues/30034
   verticallyInverted: {

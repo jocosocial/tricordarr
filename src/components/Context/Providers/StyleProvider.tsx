@@ -9,10 +9,15 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
 
   const themedStyles = StyleSheet.create({
     ...commonStyles,
-    roundedBorder: {
+    roundedBorderLarge: {
       borderRadius: theme.roundness * 4,
       borderTopLeftRadius: theme.roundness * 4,
       borderTopRightRadius: theme.roundness * 4,
+    },
+    roundedBorder: {
+      borderRadius: theme.roundness,
+      borderTopLeftRadius: theme.roundness,
+      borderTopRightRadius: theme.roundness,
     },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
@@ -29,6 +34,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     twitarrPositive: {
       backgroundColor: theme.colors.twitarrPositiveButton,
       // color: theme.colors.onPrimary,
+    },
+    background: {
+      backgroundColor: theme.colors.background,
+      color: theme.colors.onBackground,
     },
   });
 

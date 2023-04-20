@@ -17,3 +17,5 @@ export interface KvObject {
 export type StringOrError = string | Error;
 
 export type PropsWithUserHeader<P = unknown> = P & {userHeader: UserHeader};
+
+export type PropsWithOnPress<P = unknown> = P & {onPress: () => void};

@@ -24,7 +24,7 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
   const styles = {
     formView: [commonStyles.flexRow, commonStyles.marginVerticalSmall],
     inputWrapperView: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.flexColumn],
-    input: [commonStyles.roundedBorder, commonStyles.paddingSides, commonStyles.secondaryContainer],
+    input: [commonStyles.roundedBorderLarge, commonStyles.paddingSides, commonStyles.secondaryContainer],
   };
 
   // https://formik.org/docs/api/withFormik
