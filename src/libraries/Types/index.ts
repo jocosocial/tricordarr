@@ -1,4 +1,5 @@
 import {FezData, UserHeader} from '../Structs/ControllerStructs';
+import {ReactNode} from 'react';
 
 export interface FezDataProps {
   fez: FezData;
@@ -14,3 +15,5 @@ export interface KvObject {
 }
 
 export type StringOrError = string | Error;
+
+export type PropsWithUserHeader<P = unknown> = P & {userHeader: UserHeader};

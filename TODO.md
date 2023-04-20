@@ -7,6 +7,7 @@ Backlog
 * Do the type thingies for all stack navigators
 * Enum or something the various navcomponents
 * useNavStack to replace the any's (like Seamail and user profile)
+* seamailstack is technically chatstack
 
 Work Queue
 * unified screenOptions across all stacks
@@ -28,3 +29,6 @@ Work Queue
 * proper error handling for axios errors
 * Profile
   * block/report/mute modal.
+  * welcome message needs top padding after all. Not much but some
+  * private note should be a different color
+* Props types PropsWithUserHeader
