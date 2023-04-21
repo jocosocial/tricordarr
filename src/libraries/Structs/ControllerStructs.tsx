@@ -213,3 +213,28 @@ export interface PostContentData {
   /// Set this to FALSE unless the user is a moderator who specifically chooses this option.
   postAsTwitarrTeam: boolean;
 }
+
+export interface FezContentData {
+  /// The `FezType` .label of the fez.
+  fezType: FezType;
+  /// The title for the FriendlyFez.
+  title: string;
+  /// A description of the fez.
+  info: string;
+  /// The starting time for the fez.
+  startTime?: Date;
+  /// The ending time for the fez.
+  endTime?: Date;
+  /// The location for the fez.
+  location?: string;
+  /// The minimum number of users needed for the fez.
+  minCapacity: number;
+  /// The maximum number of users for the fez.
+  maxCapacity: number;
+  /// Users to add to the fez upon creation. The creator is always added as the first user.
+  initialUsers: string[];
+  /// If TRUE, the Fez will be created by user @moderator instead of the current user. Current user must be a mod.
+  createdByModerator?: boolean;
+  /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
+  createdByTwitarrTeam?: boolean;
+}

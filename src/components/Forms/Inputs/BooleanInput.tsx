@@ -1,9 +1,9 @@
 import React from 'react';
 import {Switch, View} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../styles/Theme';
-import {NavBarIcon} from '../Icons/NavBarIcon';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useAppTheme} from '../../../styles/Theme';
+import {NavBarIcon} from '../../Icons/NavBarIcon';
 
 interface BooleanInputProps {
   onPress: () => void;
