@@ -1,16 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {Text, TextInput} from 'react-native-paper';
+import React from 'react';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {TextInput} from 'react-native-paper';
 import {View} from 'react-native';
-import {FezContentData, UserHeader} from '../../libraries/Structs/ControllerStructs';
-import {UserChip} from '../Chips/UserChip';
-import {BooleanInput} from './Inputs/BooleanInput';
+import {FezContentData} from '../../libraries/Structs/ControllerStructs';
+import {BooleanField} from './Fields/BooleanField';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {PaddedContentView} from '../Views/Content/PaddedContentView';
 import {FezType} from '../../libraries/Enums/FezType';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {useUserData} from '../Context/Contexts/UserDataContext';
-import {UserSearchBar} from '../Search/UserSearchBar';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
@@ -31,7 +27,7 @@ const initialValues: FezContentData = {
 export const SeamailCreateForm = ({onSubmit, formRef}: SeamailCreateFormProps) => {
   return (
     <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+      {({handleChange, handleBlur, values, setFieldValue}) => (
         <View>
           <PaddedContentView>
             <TextInput
@@ -41,6 +37,15 @@ export const SeamailCreateForm = ({onSubmit, formRef}: SeamailCreateFormProps) =
               value={values.title}
               label={'Subject'}
             />
+            <BooleanField
+              name={'fezType'}
+              label={'Open Chat'}
+              helperText={'Allows you to add or remove users later.'}
+              onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
+              value={values.fezType === FezType.open}
+            />
+            <BooleanField name={'createdByModerator'} label={'Post as Moderator'} icon={AppIcons.moderator} />
+            <BooleanField name={'createdByTwitarrTeam'} label={'Post as TwitarrTeam'} icon={AppIcons.twitarteam} />
           </PaddedContentView>
         </View>
       )}
