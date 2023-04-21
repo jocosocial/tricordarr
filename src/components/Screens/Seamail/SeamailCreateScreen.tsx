@@ -10,7 +10,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {UserChip} from '../../Chips/UserChip';
 import {Chip, Text, TextInput} from 'react-native-paper';
 import {FezPostForm} from '../../Forms/FezPostForm';
-import {BooleanInput} from '../../Forms/Inputs/BooleanInput';
+import {BooleanField} from '../../Forms/Fields/BooleanField';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
