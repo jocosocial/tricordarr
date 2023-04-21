@@ -10,6 +10,9 @@ Backlog
 * seamailstack is technically chatstack
 * replace server connection boolean settings with the new components.
 * maybe all settings for that matter?
+* proper error handling for axios errors
+* FAB drawing on top of snack bar
+* consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 
 Work Queue
 * unified screenOptions across all stacks
@@ -25,13 +28,11 @@ Work Queue
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
-  * FAB drawing on top of snack bar
-* consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * fix the initial login userID undefined bug
-* proper error handling for axios errors
 * Profile
   * block/report/mute modal.
   * welcome message needs top padding after all. Not much but some
   * private note should be a different color
 * Props types PropsWithUserHeader
 * rename NavBarIcon
+* rename SubmitIconButton
