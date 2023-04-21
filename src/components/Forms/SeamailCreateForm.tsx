@@ -1,5 +1,5 @@
 import React from 'react';
-import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {FastField, Formik, FormikHelpers, FormikProps} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {View} from 'react-native';
 import {FezContentData} from '../../libraries/Structs/ControllerStructs';
@@ -7,6 +7,7 @@ import {BooleanField} from './Fields/BooleanField';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {PaddedContentView} from '../Views/Content/PaddedContentView';
 import {FezType} from '../../libraries/Enums/FezType';
+import {UserChipsField} from './Fields/UserChipsField';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
@@ -25,18 +26,24 @@ const initialValues: FezContentData = {
 };
 
 export const SeamailCreateForm = ({onSubmit, formRef}: SeamailCreateFormProps) => {
+  console.info('Rendering SeamailCreateForm');
   return (
     <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, values, setFieldValue}) => (
         <View>
           <PaddedContentView>
-            <TextInput
-              mode={'outlined'}
-              onChangeText={handleChange('title')}
-              onBlur={handleBlur('title')}
-              value={values.title}
-              label={'Subject'}
-            />
+            <UserChipsField name={'initialUsers'} />
+            <FastField name={'title'}>
+              {() => (
+                <TextInput
+                  mode={'outlined'}
+                  onChangeText={handleChange('title')}
+                  onBlur={handleBlur('title')}
+                  value={values.title}
+                  label={'Subject'}
+                />
+              )}
+            </FastField>
             <BooleanField
               name={'fezType'}
               label={'Open Chat'}

@@ -19,6 +19,8 @@ Work Queue
 * New pattern for stack navigators starts with seamail
 * Seamail
   * New
+    * Formik is rerendering on each action of every field, even with fastfield
+    * wire up the mutations
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * open socket and update content when message comes in
