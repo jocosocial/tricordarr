@@ -8,7 +8,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 interface SubmitIconButtonProps {
   onPress: () => void;
   icon?: string;
-  colorize?: boolean;
+  containerColor?: string;
   disabled?: boolean;
   submitting?: boolean;
 }
@@ -16,7 +16,7 @@ interface SubmitIconButtonProps {
 export const SubmitIconButton = ({
   onPress,
   icon = AppIcons.submit,
-  colorize = true,
+  containerColor,
   disabled = false,
   submitting = false,
 }: SubmitIconButtonProps) => {
@@ -28,7 +28,7 @@ export const SubmitIconButton = ({
   return (
     <IconButton
       iconColor={theme.colors.onBackground}
-      containerColor={colorize ? theme.colors.twitarrNeutralButton : theme.colors.background}
+      containerColor={containerColor}
       onPress={onPress}
       size={styleDefaults.iconSize}
       icon={iconProp}
