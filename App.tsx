@@ -34,6 +34,7 @@ import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -95,10 +96,12 @@ function App(): JSX.Element {
             <QueryClientProvider client={queryClient}>
               <UserDataProvider>
                 <UserNotificationDataProvider>
-                  {/*<NotificationDataPoller />*/}
-                  <ForegroundService />
-                  <NotificationDataListener />
-                  <BottomTabNavigator />
+                  <PrivilegeProvider>
+                    {/*<NotificationDataPoller />*/}
+                    <ForegroundService />
+                    <NotificationDataListener />
+                    <BottomTabNavigator />
+                  </PrivilegeProvider>
                 </UserNotificationDataProvider>
               </UserDataProvider>
             </QueryClientProvider>

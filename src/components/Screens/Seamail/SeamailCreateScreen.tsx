@@ -1,19 +1,10 @@
-import React, {MutableRefObject, useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {AppView} from '../../Views/AppView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {UserSearchBar} from '../../Search/UserSearchBar';
-import {Switch, View} from 'react-native';
-import {FezContentData, PostContentData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {FezContentData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {UserChip} from '../../Chips/UserChip';
-import {Chip, Text, TextInput} from 'react-native-paper';
 import {FezPostForm} from '../../Forms/FezPostForm';
-import {BooleanField} from '../../Forms/Fields/BooleanField';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
-import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {FormikHelpers, FormikProps} from 'formik';
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
 export const SeamailCreateScreen = () => {

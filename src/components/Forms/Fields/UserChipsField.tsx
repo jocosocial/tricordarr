@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {FastField, useField, useFormikContext} from 'formik';
 import {UserSearchBar} from '../../Search/UserSearchBar';
@@ -39,14 +39,15 @@ export const UserChipsField = ({name, allowRemoveSelf = false}: UserChipsFieldPr
     setUserHeaders(userHeaders.filter(header => header.userID !== user.userID));
   };
 
-  if (field.value.length !== userHeaders.length) {
-    setFieldValue(
-      name,
-      userHeaders.flatMap(header => header.userID),
-    );
-  }
-
-  console.info('### TRIGGERING IN USERCHIPSFIELD');
+  // https://stackoverflow.com/questions/62336340/cannot-update-a-component-while-rendering-a-different-component-warning
+  useEffect(() => {
+    if (field.value.length !== userHeaders.length) {
+      setFieldValue(
+        name,
+        userHeaders.flatMap(header => header.userID),
+      );
+    }
+  }, [field.value.length, name, setFieldValue, userHeaders]);
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   return (

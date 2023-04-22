@@ -18,7 +18,6 @@ Backlog
 Work Queue
 * Seamail
   * New
-    * Formik is rerendering on each action of every field, even with fastfield
     * wire up the mutations
     * postastwitarrteam or moderator should change color of post button
     * reset should clear booleans and chips
