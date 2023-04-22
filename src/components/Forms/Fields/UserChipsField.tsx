@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {FastField, useField, useFormikContext} from 'formik';
+import {Field, useField, useFormikContext} from 'formik';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserChip} from '../../Chips/UserChip';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {Text} from 'react-native-paper';
 
 interface UserChipsFieldProps {
   name: string;
   allowRemoveSelf?: boolean;
+  label?: string;
 }
-export const UserChipsField = ({name, allowRemoveSelf = false}: UserChipsFieldProps) => {
+export const UserChipsField = ({name, label, allowRemoveSelf = false}: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const [userHeaders, setUserHeaders] = useState<UserHeader[]>([profilePublicData.header]);
@@ -51,12 +53,13 @@ export const UserChipsField = ({name, allowRemoveSelf = false}: UserChipsFieldPr
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   return (
-    <FastField name={name}>
+    <Field name={name}>
       {() => (
         <View style={styles.parentContainer}>
           <View style={styles.searchBarContainer}>
             <UserSearchBar userHeaders={userHeaders} onPress={addUserHeader} />
           </View>
+          {label && <Text>{label}</Text>}
           <View style={styles.chipContainer}>
             {userHeaders.flatMap((user: UserHeader) => (
               <UserChip
@@ -69,6 +72,6 @@ export const UserChipsField = ({name, allowRemoveSelf = false}: UserChipsFieldPr
           </View>
         </View>
       )}
-    </FastField>
+    </Field>
   );
 };

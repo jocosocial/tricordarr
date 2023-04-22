@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
-import {FastField, Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {TextInput} from 'react-native-paper';
-import {View} from 'react-native';
+import {Field, Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
+import {Text, TextInput} from 'react-native-paper';
 import {FezContentData} from '../../libraries/Structs/ControllerStructs';
 import {BooleanField} from './Fields/BooleanField';
 import {AppIcons} from '../../libraries/Enums/Icons';
@@ -40,31 +39,39 @@ const InnerSeamailCreateForm = () => {
   }, [values, setAsModerator, setAsTwitarrTeam]);
 
   return (
-    <View>
-      <PaddedContentView>
-        <UserChipsField name={'initialUsers'} />
-        <FastField name={'title'}>
-          {() => (
-            <TextInput
-              mode={'outlined'}
-              onChangeText={handleChange('title')}
-              onBlur={handleBlur('title')}
-              value={values.title}
-              label={'Subject'}
-            />
-          )}
-        </FastField>
-        <BooleanField
-          name={'fezType'}
-          label={'Open Chat'}
-          helperText={'Allows you to add or remove users later.'}
-          onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
-          value={values.fezType === FezType.open}
-        />
-        <BooleanField name={'createdByModerator'} label={'Post as Moderator'} icon={AppIcons.moderator} />
-        <BooleanField name={'createdByTwitarrTeam'} label={'Post as TwitarrTeam'} icon={AppIcons.twitarteam} />
-      </PaddedContentView>
-    </View>
+    <PaddedContentView>
+      <UserChipsField name={'initialUsers'} label={'Participants'} />
+      <Text>Subject</Text>
+      <Field name={'title'}>
+        {() => (
+          <TextInput
+            mode={'outlined'}
+            onChangeText={handleChange('title')}
+            onBlur={handleBlur('title')}
+            value={values.title}
+          />
+        )}
+      </Field>
+      <BooleanField
+        name={'fezType'}
+        label={'Open Chat'}
+        helperText={'Allows you to add or remove users later.'}
+        onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
+        value={values.fezType === FezType.open}
+      />
+      <BooleanField
+        name={'createdByModerator'}
+        label={'Post as Moderator'}
+        icon={AppIcons.moderator}
+        helperText={'This will also create the seamail as the Moderator user.'}
+      />
+      <BooleanField
+        name={'createdByTwitarrTeam'}
+        label={'Post as TwitarrTeam'}
+        icon={AppIcons.twitarteam}
+        helperText={'This will also create the seamail as the TwitarrTeam user.'}
+      />
+    </PaddedContentView>
   );
 };
 
