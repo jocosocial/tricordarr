@@ -8,7 +8,7 @@ interface TextFieldProps {
   mode?: 'flat' | 'outlined' | undefined;
 }
 
-export const TextField = ({name, mode = 'outlined', T}: TextFieldProps) => {
+export const TextField = ({name, mode = 'outlined'}: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched} = useFormikContext();
   return (
     <Field name={name}>
