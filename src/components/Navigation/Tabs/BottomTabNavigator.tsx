@@ -2,7 +2,7 @@ import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {SettingsStack} from '../Stacks/SettingsStack';
 import {MainView} from '../../Views/Static/MainView';
-import {NavBarIcon} from '../../Icons/NavBarIcon';
+import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {handleEvent} from '../../../libraries/Events';
@@ -43,7 +43,7 @@ export const BottomTabNavigator = () => {
   });
 
   function getIcon(icon: string) {
-    return <NavBarIcon icon={icon} />;
+    return <AppIcon icon={icon} />;
   }
 
   return (

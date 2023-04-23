@@ -1,17 +1,17 @@
 import React from 'react';
+import {StyleProp, TextStyle} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useAppTheme} from '../../styles/Theme';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {StyleProp, TextStyle} from 'react-native';
 
-interface NavBarIconProps {
+interface AppIconProps {
   icon: string;
   color?: string;
   size?: number;
   style?: StyleProp<TextStyle>;
 }
 
-export const NavBarIcon = ({icon, size, color, style}: NavBarIconProps) => {
+export const AppIcon = ({icon, size, color, style}: AppIconProps) => {
   const theme = useAppTheme();
   const {styleDefaults} = useStyles();
 
