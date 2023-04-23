@@ -15,7 +15,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
 import {ListSection} from '../../Lists/ListSection';
 
-export const SeamailsScreen = () => {
+export const SeamailListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   // const {setUserNotificationData} = useUserNotificationData();
