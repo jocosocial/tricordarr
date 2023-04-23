@@ -20,7 +20,7 @@ export enum SettingsStackScreenComponents {
 }
 
 export enum SeamailStackScreenComponents {
-  seamailsScreen = 'SeamailsScreen',
+  seamailListScreen = 'SeamailListScreen',
   seamailScreen = 'SeamailScreen',
   seamailDetailsScreen = 'SeamailDetailsScreen',
   userProfileScreen = 'UserProfileScreen',

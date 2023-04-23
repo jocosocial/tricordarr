@@ -96,12 +96,10 @@ function App(): JSX.Element {
             <QueryClientProvider client={queryClient}>
               <UserDataProvider>
                 <UserNotificationDataProvider>
-                  <PrivilegeProvider>
-                    {/*<NotificationDataPoller />*/}
-                    <ForegroundService />
-                    <NotificationDataListener />
-                    <BottomTabNavigator />
-                  </PrivilegeProvider>
+                  {/*<NotificationDataPoller />*/}
+                  <ForegroundService />
+                  <NotificationDataListener />
+                  <BottomTabNavigator />
                 </UserNotificationDataProvider>
               </UserDataProvider>
             </QueryClientProvider>

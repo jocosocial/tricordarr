@@ -19,8 +19,6 @@ Work Queue
 * Seamail
   * New
     * wire up the mutations
-    * postastwitarrteam or moderator should change color of post button
-    * reset should clear booleans and chips
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * open socket and update content when message comes in
@@ -35,6 +33,6 @@ Work Queue
   * block/report/mute modal.
   * welcome message needs top padding after all. Not much but some
   * private note should be a different color
-* Props types PropsWithUserHeader - this may be overkill. reconsider.
 * rename NavBarIcon
 * rename SubmitIconButton
+* Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

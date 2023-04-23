@@ -5,6 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
+import {PrivilegeProvider} from '../../Context/Providers/PrivilegeProvider';
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
 export const SeamailCreateScreen = () => {
@@ -34,10 +35,12 @@ export const SeamailCreateScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
-        <SeamailCreateForm formRef={seamailCreateFormRef} onSubmit={onFezSubmit} />
-      </ScrollingContentView>
-      <FezPostForm onSubmit={onPostSubmit} />
+      <PrivilegeProvider>
+        <ScrollingContentView>
+          <SeamailCreateForm formRef={seamailCreateFormRef} onSubmit={onFezSubmit} />
+        </ScrollingContentView>
+        <FezPostForm onSubmit={onPostSubmit} />
+      </PrivilegeProvider>
     </AppView>
   );
 };
