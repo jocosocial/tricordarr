@@ -14,6 +14,7 @@ Backlog
 * FAB drawing on top of snack bar
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * Go back and adjust settings stack
+* combine and rename SubmitIconButton and NavBarIconButton
 
 Work Queue
 * Seamail
@@ -33,6 +34,4 @@ Work Queue
   * block/report/mute modal.
   * welcome message needs top padding after all. Not much but some
   * private note should be a different color
-* rename NavBarIcon
-* rename SubmitIconButton
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

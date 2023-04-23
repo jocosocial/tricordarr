@@ -3,7 +3,7 @@ import {Switch, View} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {NavBarIcon} from '../../Icons/NavBarIcon';
+import {AppIcon} from '../../Images/AppIcon';
 import {Field, useField, useFormikContext} from 'formik';
 
 interface BooleanFieldProps {
@@ -44,7 +44,7 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value}: Bo
                 {icon && (
                   // This is a bit hacky. I am not proud. View did weird aligning nonsense.
                   <>
-                    <NavBarIcon size={styleDefaults.fontSize} icon={icon} />
+                    <AppIcon size={styleDefaults.fontSize} icon={icon} />
                     &nbsp;
                   </>
                 )}
