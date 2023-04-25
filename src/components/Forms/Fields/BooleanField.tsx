@@ -1,10 +1,10 @@
 import React from 'react';
 import {Switch, View} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
+import {FastField, useField, useFormikContext} from 'formik';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {AppIcon} from '../../Images/AppIcon';
-import {Field, useField, useFormikContext} from 'formik';
 
 interface BooleanFieldProps {
   onPress?: () => void;
@@ -35,7 +35,7 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value}: Bo
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   return (
-    <Field name={name}>
+    <FastField name={name}>
       {() => (
         <TouchableRipple style={styles.ripple} onPress={onPress || onPressDefault}>
           <View>
@@ -60,6 +60,6 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value}: Bo
           </View>
         </TouchableRipple>
       )}
-    </Field>
+    </FastField>
   );
 };

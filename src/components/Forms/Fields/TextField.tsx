@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
-import {Field, useFormikContext} from 'formik';
+import {FastField, useFormikContext} from 'formik';
 
 interface TextFieldProps {
   name: string;
@@ -11,7 +11,7 @@ interface TextFieldProps {
 export const TextField = ({name, mode = 'outlined'}: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched} = useFormikContext();
   return (
-    <Field name={name}>
+    <FastField name={name}>
       {() => (
         <View>
           <TextInput
@@ -26,6 +26,6 @@ export const TextField = ({name, mode = 'outlined'}: TextFieldProps) => {
           </HelperText>
         </View>
       )}
-    </Field>
+    </FastField>
   );
 };

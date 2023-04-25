@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Field, useField, useFormikContext} from 'formik';
+import {Text} from 'react-native-paper';
+import {FastField, useField, useFormikContext} from 'formik';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserChip} from '../../Chips/UserChip';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {Text} from 'react-native-paper';
 
 interface UserChipsFieldProps {
   name: string;
@@ -53,7 +53,7 @@ export const UserChipsField = ({name, label, allowRemoveSelf = false}: UserChips
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   return (
-    <Field name={name}>
+    <FastField name={name}>
       {() => (
         <View style={styles.parentContainer}>
           <View style={styles.searchBarContainer}>
@@ -72,6 +72,6 @@ export const UserChipsField = ({name, label, allowRemoveSelf = false}: UserChips
           </View>
         </View>
       )}
-    </Field>
+    </FastField>
   );
 };
