@@ -21,6 +21,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -28,14 +29,14 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.seamailStack
 >;
 
-interface FezPostMutationProps {
-  fezID: string;
-  postContentData: PostContentData;
-}
-
-const fezPostHandler = async ({fezID, postContentData}: FezPostMutationProps): Promise<AxiosResponse<FezPostData>> => {
-  return await axios.post(`/fez/${fezID}/post`, postContentData);
-};
+// interface FezPostMutationProps {
+//   fezID: string;
+//   postContentData: PostContentData;
+// }
+//
+// const fezPostHandler = async ({fezID, postContentData}: FezPostMutationProps): Promise<AxiosResponse<FezPostData>> => {
+//   return await axios.post(`/fez/${fezID}/post`, postContentData);
+// };
 
 // @TODO make this a setting or something.
 const PAGE_SIZE = 10;
@@ -44,7 +45,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
-  const {setErrorMessage} = useErrorHandler();
+  // const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList>(null);
   const [showButton, setShowButton] = useState(false);
 
@@ -142,15 +143,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const fezPostMutation: UseMutationResult<
-    AxiosResponse<FezPostData>,
-    AxiosError<ErrorResponse>,
-    FezPostMutationProps
-  > = useMutation(fezPostHandler, {
-    retry: 0,
-  });
+  const fezPostMutation = useFezPostMutation();
 
-  // const onSubmit = () => console.log('disabled for now');
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       fezPostMutation.mutate(
@@ -163,13 +157,10 @@ export const SeamailScreen = ({route, navigation}: Props) => {
             // Slice returns a copy, and there's no Array.last property :(
             data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
           },
-          onError: error => {
-            setErrorMessage(error.response?.data.reason);
-          },
         },
       );
     },
-    [data?.pages, fezPostMutation, route.params.fezID, setErrorMessage],
+    [data?.pages, fezPostMutation, route.params.fezID],
   );
 
   if (!data || isLoading) {
