@@ -18,6 +18,9 @@ Backlog
 
 Work Queue
 * Seamail
+  * List
+    * Implement the forUser buttons
+    * when switched to a privileged forUser, change FAB color
   * New
     * Going "back" needs to add the new conversation to the list
     * focus on subject or message should clear search
