@@ -25,7 +25,6 @@ Work Queue
     * Going "back" needs to add the new conversation to the list
     * focus on subject or message should clear search
   * Viewing (pagination)
-    * avatars at the top of the seamail, maybe include names too?
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
     * open socket and update content when message comes in
