@@ -39,8 +39,10 @@ export const SeamailCreateScreen = ({navigation}: Props) => {
         {fezContentData: values},
         {
           onSuccess: response => {
-            console.log(response.data.fezID);
             setNewSeamail(response.data);
+            // Whatever we picked in the SeamailCreate is what should be set in the Post.
+            seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
+            seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
             seamailPostFormRef.current?.submitForm();
           },
           onError: error => {
