@@ -25,9 +25,6 @@ export enum SeamailStackScreenComponents {
   seamailDetailsScreen = 'SeamailDetailsScreen',
   userProfileScreen = 'UserProfileScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
+  krakentalkCreateScreen = 'KrakenTalkCreateScreen',
 }
 
-// @TODO how can this be a thing? Should it be?
-// export enum UserStackScreenComponents {
-//   userProfileScreen = 'UserProfileScreen',
-// }

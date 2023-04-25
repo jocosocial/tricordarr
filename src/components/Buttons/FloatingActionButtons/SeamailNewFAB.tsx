@@ -36,7 +36,7 @@ export const SeamailNewFAB = () => {
           FabGroupAction({
             icon: AppIcons.krakentalkCreate,
             label: 'KrakenTalk',
-            onPress: () => console.log('krakentalk'),
+            onPress: () => navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen),
           }),
         ]}
         onStateChange={onStateChange}
