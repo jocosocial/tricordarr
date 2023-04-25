@@ -2,6 +2,7 @@ import React from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData, isLoading, accessLevel} = useUserData();
@@ -22,6 +23,7 @@ export const SeamailAccountButtons = () => {
     buttons.push({
       value: 'moderator',
       label: 'Moderator',
+      icon: AppIcons.moderator,
     });
   }
 
@@ -30,6 +32,7 @@ export const SeamailAccountButtons = () => {
     buttons.push({
       value: 'twitarrteam',
       label: 'TwitarrTeam',
+      icon: AppIcons.twitarteam,
     });
   }
 
@@ -38,6 +41,7 @@ export const SeamailAccountButtons = () => {
     buttons.unshift({
       value: profilePublicData.header.username,
       label: profilePublicData.header.displayName || profilePublicData.header.username,
+      icon: AppIcons.user,
     });
   }
 
