@@ -154,4 +154,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: 20,
     lineHeight: undefined,
   },
+  italics: {
+    fontStyle: 'italic',
+  },
 });
