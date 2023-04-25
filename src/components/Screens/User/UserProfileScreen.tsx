@@ -72,7 +72,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {data.message && (
-          <PaddedContentView padBottom={false} style={[styles.listContentCenter]}>
+          <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
             <Text selectable={true}>{data.message}</Text>
           </PaddedContentView>
         )}
@@ -86,10 +86,10 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         {data.note && (
           <PaddedContentView>
-            <Card>
-              <Card.Title title="Private Note" />
+            <Card style={[commonStyles.noteContainer]}>
+              <Card.Title title="Private Note" titleStyle={[commonStyles.onNoteContainer]} />
               <Card.Content>
-                <Text selectable={true}>{data.note}</Text>
+                <Text selectable={true} style={[commonStyles.onNoteContainer, commonStyles.italics]}>{data.note}</Text>
               </Card.Content>
             </Card>
           </PaddedContentView>
@@ -99,11 +99,11 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
             <Card.Title title="User Profile" />
             <Card.Content style={[commonStyles.paddingHorizontalZero]}>
               <ListSection>
-                {data.header.username && <DataFieldListItem title={'Username'} description={data.header.username} />}
                 {data.header.displayName && (
                   <DataFieldListItem title={'Display Name'} description={data.header.displayName} />
                 )}
                 {data.realName && <DataFieldListItem title={'Real Name'} description={data.realName} />}
+                {data.header.username && <DataFieldListItem title={'Username'} description={data.header.username} />}
                 {data.preferredPronoun && <DataFieldListItem title={'Pronouns'} description={data.preferredPronoun} />}
                 {data.email && <DataFieldListItem title={'Email'} description={data.email} />}
                 {data.homeLocation && <DataFieldListItem title={'Home Location'} description={data.homeLocation} />}

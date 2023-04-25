@@ -1,8 +1,9 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleContext} from '../Contexts/StyleContext';
-import {useAppTheme} from '../../../styles/Theme';
+import {twitarrNoteColor, useAppTheme} from '../../../styles/Theme';
 import {commonStyles, styleDefaults} from '../../../styles';
 import {StyleSheet} from 'react-native';
+import {AndroidColor} from '@notifee/react-native';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const theme = useAppTheme();
@@ -38,6 +39,19 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     background: {
       backgroundColor: theme.colors.background,
       color: theme.colors.onBackground,
+    },
+    tertiaryContainer: {
+      backgroundColor: theme.colors.tertiaryContainer,
+      // color: theme.colors.onTertiaryContainer,
+    },
+    onTertiaryContainer: {
+      color: theme.colors.onTertiaryContainer,
+    },
+    noteContainer: {
+      backgroundColor: twitarrNoteColor,
+    },
+    onNoteContainer: {
+      color: AndroidColor.BLACK,
     },
   });
 
