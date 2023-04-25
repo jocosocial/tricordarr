@@ -18,8 +18,6 @@ Backlog
 
 Work Queue
 * Seamail
-  * New
-    * wire up the mutations
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
     * open socket and update content when message comes in
@@ -29,6 +27,7 @@ Work Queue
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
+    * twitarrteam and moderator
 * fix the initial login userID undefined bug
 * Profile
   * block/report/mute modal.
