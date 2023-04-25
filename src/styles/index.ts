@@ -149,4 +149,9 @@ export const commonStyles = StyleSheet.create({
   positionAbsolute: {
     position: 'absolute',
   },
+  navigationHeaderTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    lineHeight: undefined,
+  },
 });
