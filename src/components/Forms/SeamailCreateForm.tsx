@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
-import {Field, Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {HelperText, Text, TextInput} from 'react-native-paper';
+import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
+import {Text} from 'react-native-paper';
 import {FezContentData} from '../../libraries/Structs/ControllerStructs';
 import {BooleanField} from './Fields/BooleanField';
 import {AppIcons} from '../../libraries/Enums/Icons';
@@ -9,8 +9,9 @@ import {FezType} from '../../libraries/Enums/FezType';
 import {UserChipsField} from './Fields/UserChipsField';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import * as Yup from 'yup';
-import {View} from 'react-native';
 import {TextField} from './Fields/TextField';
+import {useUserData} from '../Context/Contexts/UserDataContext';
+import {UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
@@ -35,6 +36,7 @@ const validationSchema = Yup.object().shape({
 const InnerSeamailCreateForm = () => {
   const {values, setFieldValue} = useFormikContext<FezContentData>();
   const {setAsModerator, setAsTwitarrTeam} = usePrivilege();
+  const {accessLevel} = useUserData();
 
   useEffect(() => {
     if (values.createdByModerator !== undefined) {
@@ -57,18 +59,22 @@ const InnerSeamailCreateForm = () => {
         onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
         value={values.fezType === FezType.open}
       />
-      <BooleanField
-        name={'createdByModerator'}
-        label={'Post as Moderator'}
-        icon={AppIcons.moderator}
-        helperText={'This will also create the seamail as the Moderator user.'}
-      />
-      <BooleanField
-        name={'createdByTwitarrTeam'}
-        label={'Post as TwitarrTeam'}
-        icon={AppIcons.twitarteam}
-        helperText={'This will also create the seamail as the TwitarrTeam user.'}
-      />
+      {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator) && (
+        <BooleanField
+          name={'createdByModerator'}
+          label={'Post as Moderator'}
+          icon={AppIcons.moderator}
+          helperText={'This will also create the seamail as the Moderator user.'}
+        />
+      )}
+      {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam) && (
+        <BooleanField
+          name={'createdByTwitarrTeam'}
+          label={'Post as TwitarrTeam'}
+          icon={AppIcons.twitarteam}
+          helperText={'This will also create the seamail as the TwitarrTeam user.'}
+        />
+      )}
     </PaddedContentView>
   );
 };

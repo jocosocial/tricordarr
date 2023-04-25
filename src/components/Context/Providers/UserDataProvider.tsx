@@ -31,7 +31,7 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
       setIsLoading(false);
     }
     getSettings().catch(error => setErrorMessage(error.toString()));
-  }, [setErrorMessage]);
+  }, [accessLevel, setErrorMessage]);
 
   const {data: profileQueryData, error: profileQueryError} = useQuery<ProfilePublicData, AxiosError>({
     queryKey: ['/user/profile'],
