@@ -55,8 +55,8 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={AppIcons.seamailCreate} onPress={seamailCreateHandler} />
-        <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />
+        {data && <NavBarIconButton icon={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
+        {data && <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
         {data && <UserProfileActionsMenu profile={data} />}
       </View>
     );
