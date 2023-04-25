@@ -12,11 +12,14 @@ interface UserChipsFieldProps {
   name: string;
   allowRemoveSelf?: boolean;
   label?: string;
+  initialUserHeader?: UserHeader;
 }
-export const UserChipsField = ({name, label, allowRemoveSelf = false}: UserChipsFieldProps) => {
+export const UserChipsField = ({name, label, allowRemoveSelf = false, initialUserHeader}: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
-  const [userHeaders, setUserHeaders] = useState<UserHeader[]>([profilePublicData.header]);
+  const [userHeaders, setUserHeaders] = useState<UserHeader[]>(
+    initialUserHeader ? [profilePublicData.header, initialUserHeader] : [profilePublicData.header],
+  );
   const {setFieldValue} = useFormikContext();
   const [field, meta, helpers] = useField<string[]>(name);
 
