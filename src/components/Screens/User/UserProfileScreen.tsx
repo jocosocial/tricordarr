@@ -40,11 +40,23 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
 
+  const seamailCreateHandler = () => {
+    navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
+      initialUserHeader: data?.header,
+    });
+  };
+
+  const krakentalkCreateHandler = () => {
+    navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen, {
+      initialUserHeader: data?.header,
+    });
+  };
+
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={AppIcons.seamailCreate} onPress={() => console.log('seamail')} />
-        <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={() => console.log('krakentalk')} />
+        <NavBarIconButton icon={AppIcons.seamailCreate} onPress={seamailCreateHandler} />
+        <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />
         {data && <UserProfileActionsMenu profile={data} />}
       </View>
     );

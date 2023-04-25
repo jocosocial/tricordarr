@@ -15,6 +15,7 @@ Backlog
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * Go back and adjust settings stack
 * combine and rename SubmitIconButton and NavBarIconButton
+* variablize the initial source userheader, change with buttons, combine with destination userheader
 
 Work Queue
 * Seamail
@@ -38,5 +39,4 @@ Work Queue
 * fix the initial login userID undefined bug
 * Profile
   * block/report/mute modal.
-  * wire up the new buttons
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

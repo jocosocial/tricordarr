@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import {Text} from 'react-native-paper';
-import {FezContentData} from '../../libraries/Structs/ControllerStructs';
+import {FezContentData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {BooleanField} from './Fields/BooleanField';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {PaddedContentView} from '../Views/Content/PaddedContentView';
@@ -16,6 +16,7 @@ import {UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
   formRef: React.RefObject<FormikProps<FezContentData>>;
+  initialUserHeader?: UserHeader;
 }
 
 const initialValues: FezContentData = {
@@ -33,7 +34,7 @@ const validationSchema = Yup.object().shape({
   title: Yup.string().required('Subject cannot be empty.'),
 });
 
-const InnerSeamailCreateForm = () => {
+const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader: UserHeader}) => {
   const {values, setFieldValue} = useFormikContext<FezContentData>();
   const {setAsModerator, setAsTwitarrTeam} = usePrivilege();
   const {accessLevel} = useUserData();
@@ -49,7 +50,7 @@ const InnerSeamailCreateForm = () => {
 
   return (
     <PaddedContentView>
-      <UserChipsField name={'initialUsers'} label={'Participants'} />
+      <UserChipsField name={'initialUsers'} label={'Participants'} initialUserHeader={initialUserHeader} />
       <Text>Subject</Text>
       <TextField name={'title'} />
       <BooleanField
@@ -79,7 +80,7 @@ const InnerSeamailCreateForm = () => {
   );
 };
 
-export const SeamailCreateForm = ({onSubmit, formRef}: SeamailCreateFormProps) => {
+export const SeamailCreateForm = ({onSubmit, formRef, initialUserHeader}: SeamailCreateFormProps) => {
   return (
     <Formik
       innerRef={formRef}
@@ -87,7 +88,7 @@ export const SeamailCreateForm = ({onSubmit, formRef}: SeamailCreateFormProps) =
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      <InnerSeamailCreateForm />
+      <InnerSeamailCreateForm initialUserHeader={initialUserHeader} />
     </Formik>
   );
 };

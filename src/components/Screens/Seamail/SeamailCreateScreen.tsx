@@ -20,7 +20,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
-export const SeamailCreateScreen = ({navigation}: Props) => {
+export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const seamailCreateFormRef = useRef<FormikProps<FezContentData>>(null);
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
   const fezMutation = useFezMutation();
@@ -92,7 +92,11 @@ export const SeamailCreateScreen = ({navigation}: Props) => {
     <AppView>
       <PrivilegeProvider>
         <ScrollingContentView>
-          <SeamailCreateForm formRef={seamailCreateFormRef} onSubmit={onFezSubmit} />
+          <SeamailCreateForm
+            initialUserHeader={route.params?.initialUserHeader}
+            formRef={seamailCreateFormRef}
+            onSubmit={onFezSubmit}
+          />
         </ScrollingContentView>
         <FezPostForm
           formRef={seamailPostFormRef}
