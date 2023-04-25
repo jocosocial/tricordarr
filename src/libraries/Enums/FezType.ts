@@ -4,21 +4,21 @@
 export enum FezType {
   announcement = 'announcement',
   /// A closed chat. Participants are set at creation and can't be changed. No location, start/end time, or capacity.
-  closed = 'Closed',
+  closed = 'closed',
   /// An open chat. Participants can be added/removed after creation *and your UI should make this clear*. No location, start/end time, or capacity.
-  open = 'Open',
+  open = 'open',
   /// Some type of activity.
-  activity = 'Activity',
+  activity = 'activity',
   /// A dining LFG.
-  dining = 'Dining',
+  dining = 'dining',
   /// A gaming LFG.
-  gaming = 'Gaming',
+  gaming = 'gaming',
   /// A general meetup.
-  meetup = 'Meetup',
+  meetup = 'meetup',
   /// A music-related LFG.
-  music = 'Music',
+  music = 'music',
   /// Some other type of LFG.
-  other = 'Other',
+  other = 'other',
   /// A shore excursion LFG.
-  shore = 'Shore',
+  shore = 'shore',
 }

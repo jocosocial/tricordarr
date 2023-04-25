@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TextInput} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
@@ -10,6 +10,9 @@ import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
+  formRef?: React.RefObject<FormikProps<PostContentData>>;
+  onPress?: () => void;
+  overrideSubmitting?: boolean;
 }
 
 const initialValues: PostContentData = {
@@ -20,7 +23,7 @@ const initialValues: PostContentData = {
 };
 
 // https://formik.org/docs/guides/react-native
-export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
+export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const {asPrivileged} = usePrivilege();
@@ -41,7 +44,7 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
   // This uses the native TextInput rather than Paper since Paper's was way more
   // annoying to try and stylize for this use.
   return (
-    <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
         <View style={styles.formView}>
           <SubmitIconButton onPress={() => console.log('add image')} icon={AppIcons.newImage} />
@@ -58,8 +61,8 @@ export const FezPostForm = ({onSubmit}: FezPostFormProps) => {
           <SubmitIconButton
             containerColor={submitButtonContainerColor}
             disabled={!values.text}
-            submitting={isSubmitting}
-            onPress={handleSubmit}
+            submitting={overrideSubmitting || isSubmitting}
+            onPress={onPress || handleSubmit}
           />
         </View>
       )}
