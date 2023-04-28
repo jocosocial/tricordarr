@@ -16,6 +16,8 @@ Backlog
 * Go back and adjust settings stack
 * combine and rename SubmitIconButton and NavBarIconButton
 * variablize the initial source userheader, change with buttons, combine with destination userheader
+* make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
+* implement registration code view
 
 Work Queue
 * Seamail
@@ -45,9 +47,10 @@ Work Queue
     * manage members
     * disable manage members for non-open/lfg fezs
     * title selectable
+  * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Profile
   * block/report/mute modal.
-  * add button for show regcode. not necessarily have to implement the entire view
   * dont show buttons if self profile
+  * hold to copy
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

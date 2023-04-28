@@ -21,6 +21,7 @@ export const UserProfileActionsMenu = ({profile}: UserProfileActionsMenuProps) =
 
   const handleModerate = () => console.log('Navigating to moderate user', profile.header.username);
   const handleFavorite = () => console.log('Triggering favorite mutation');
+  const handleRegCode = () => console.log('Navigating to reg code');
   const handleModal = (content: ReactNode) => {
     closeMenu();
     setModalContent(content);
@@ -30,17 +31,18 @@ export const UserProfileActionsMenu = ({profile}: UserProfileActionsMenuProps) =
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item leadingIcon={AppIcons.favorite} title={'Favorite'} onPress={handleFavorite} />
-      <Menu.Item
-        leadingIcon={AppIcons.privateNoteEdit}
-        title={'Add Private Note'}
-        onPress={() => handleModal(<ReportModalView content={profile} />)}
-      />
+      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Add Private Note'} />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.block} title={'Block'} />
       <Menu.Item leadingIcon={AppIcons.mute} title={'Mute'} />
-      <Menu.Item leadingIcon={AppIcons.report} title={'Report'} />
+      <Menu.Item
+        leadingIcon={AppIcons.report}
+        title={'Report'}
+        onPress={() => handleModal(<ReportModalView content={profile} />)}
+      />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />
+      <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Registration'} onPress={handleRegCode} />
     </Menu>
   );
 };

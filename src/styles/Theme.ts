@@ -69,7 +69,7 @@ export const twitarrTheme = {
     },
     surfaceDisabled: 'rgba(25, 28, 30, 0.12)',
     onSurfaceDisabled: 'rgba(25, 28, 30, 0.38)',
-    backdrop: 'rgba(43, 49, 55, 0.4)',
+    backdrop: 'rgba(43, 49, 55, 0.7)', // Alpha from 0.4
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
@@ -119,7 +119,7 @@ export const twitarrThemeDark = {
     },
     surfaceDisabled: 'rgba(226, 226, 229, 0.12)',
     onSurfaceDisabled: 'rgba(226, 226, 229, 0.38)',
-    backdrop: 'rgba(43, 49, 55, 0.4)',
+    backdrop: 'rgba(43, 49, 55, 0.7)', // Alpha from 0.4
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
