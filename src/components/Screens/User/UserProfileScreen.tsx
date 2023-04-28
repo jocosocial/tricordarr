@@ -40,17 +40,17 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
 
-  const seamailCreateHandler = () => {
+  const seamailCreateHandler = useCallback(() => {
     navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
       initialUserHeader: data?.header,
     });
-  };
+  }, [data?.header, navigation]);
 
-  const krakentalkCreateHandler = () => {
+  const krakentalkCreateHandler = useCallback(() => {
     navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen, {
       initialUserHeader: data?.header,
     });
-  };
+  }, [data?.header, navigation]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -60,7 +60,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
         {data && <UserProfileActionsMenu profile={data} />}
       </View>
     );
-  }, [commonStyles.flexRow, data]);
+  }, [commonStyles.flexRow, data, krakentalkCreateHandler, seamailCreateHandler]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -101,7 +101,9 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
             <Card style={[commonStyles.noteContainer]}>
               <Card.Title title="Private Note" titleStyle={[commonStyles.onNoteContainer]} />
               <Card.Content>
-                <Text selectable={true} style={[commonStyles.onNoteContainer, commonStyles.italics]}>{data.note}</Text>
+                <Text selectable={true} style={[commonStyles.onNoteContainer, commonStyles.italics]}>
+                  {data.note}
+                </Text>
               </Card.Content>
             </Card>
           </PaddedContentView>

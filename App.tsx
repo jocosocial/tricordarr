@@ -35,6 +35,7 @@ import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
+import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -93,16 +94,18 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
           <ErrorHandlerProvider>
-            <QueryClientProvider client={queryClient}>
-              <UserDataProvider>
-                <UserNotificationDataProvider>
-                  {/*<NotificationDataPoller />*/}
-                  <ForegroundService />
-                  <NotificationDataListener />
-                  <BottomTabNavigator />
-                </UserNotificationDataProvider>
-              </UserDataProvider>
-            </QueryClientProvider>
+            <ModalProvider>
+              <QueryClientProvider client={queryClient}>
+                <UserDataProvider>
+                  <UserNotificationDataProvider>
+                    {/*<NotificationDataPoller />*/}
+                    <ForegroundService />
+                    <NotificationDataListener />
+                    <BottomTabNavigator />
+                  </UserNotificationDataProvider>
+                </UserDataProvider>
+              </QueryClientProvider>
+            </ModalProvider>
           </ErrorHandlerProvider>
         </StyleProvider>
       </PaperProvider>

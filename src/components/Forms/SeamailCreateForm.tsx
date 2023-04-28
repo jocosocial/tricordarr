@@ -34,7 +34,7 @@ const validationSchema = Yup.object().shape({
   title: Yup.string().required('Subject cannot be empty.'),
 });
 
-const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader: UserHeader}) => {
+const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHeader}) => {
   const {values, setFieldValue} = useFormikContext<FezContentData>();
   const {setAsModerator, setAsTwitarrTeam} = usePrivilege();
   const {accessLevel} = useUserData();
