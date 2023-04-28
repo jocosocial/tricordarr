@@ -238,3 +238,8 @@ export interface FezContentData {
   /// If TRUE, the Fez will be created by user @TwitarrTeam instead of the current user. Current user must be a TT member.
   createdByTwitarrTeam?: boolean;
 }
+
+export interface ReportData {
+  /// An optional message from the submitting user.
+  message: String;
+}
