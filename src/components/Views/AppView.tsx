@@ -4,6 +4,8 @@ import {Portal, Provider, useTheme} from 'react-native-paper';
 import {commonStyles} from '../../styles';
 import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
+import {ModalProvider} from '../Context/Providers/ModalProvider';
+import {AppModal} from '../Modals/AppModal';
 
 /**
  * Highest level View container that contains app-specific components that
@@ -20,6 +22,9 @@ export const AppView = ({children}: PropsWithChildren) => {
   return (
     <Portal.Host>
       <View style={style}>
+        <Portal>
+          <AppModal />
+        </Portal>
         <ErrorBanner />
         {children}
         <ErrorSnackbar />

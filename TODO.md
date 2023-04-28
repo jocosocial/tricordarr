@@ -21,7 +21,10 @@ Work Queue
 * Seamail
   * List
     * Implement the forUser buttons
-    * when switched to a privileged forUser, change FAB color
+      * when switched to a privileged forUser, change FAB color
+    * Seamail search
+    * Websocket useNotifivationSocket for refreshing the seamail list view
+    * buzz on socket receive (may need to figure this out with notifications)
   * New
     * Going "back" needs to add the new conversation to the list
     * focus on subject or message should clear search
@@ -29,14 +32,22 @@ Work Queue
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
     * open socket and update content when message comes in
-    * in chat details, expand description of type or add a help section
-    * disable manage members for non-open/lfg fezs
     * add help to the three-dots menu in seamail
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
     * twitarrteam and moderator
+    * Websocket useFezSocket for seamail post updating
+    * Title bar indicator for socket status
+    * buzz on socket receive (may need to figure this out with notifications)
+  * Details
+    * in chat details, expand description of type or add a help section
+    * manage members
+    * disable manage members for non-open/lfg fezs
+    * title selectable
 * fix the initial login userID undefined bug
 * Profile
   * block/report/mute modal.
+  * add button for show regcode. not necessarily have to implement the entire view
+  * dont show buttons if self profile
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
