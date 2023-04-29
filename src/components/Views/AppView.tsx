@@ -5,18 +5,30 @@ import {commonStyles} from '../../styles';
 import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 import {AppModal} from '../Modals/AppModal';
+import {UserRelationsProvider} from '../Context/Providers/UserRelationsProvider';
+
+interface AppViewProps {
+  useUserRelations?: boolean;
+}
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children}: PropsWithChildren) => {
+export const AppView = ({children, useUserRelations}: PropsWithChildren<AppViewProps>) => {
   const theme = useTheme();
 
   const style = {
     backgroundColor: theme.colors.background,
     ...commonStyles.flex,
   };
+
+  // We can thank ChatGPT for this idea. This enables providers to be dynamically included
+  // in whatever view we are rendering. The order here will probably matter at some point.
+  let renderedChildren = children;
+  if (useUserRelations) {
+    renderedChildren = <UserRelationsProvider>{children}</UserRelationsProvider>;
+  }
 
   return (
     <Portal.Host>
@@ -26,7 +38,7 @@ export const AppView = ({children}: PropsWithChildren) => {
           <AppModal />
           <ErrorSnackbar />
         </Portal>
-        {children}
+        {renderedChildren}
       </View>
     </Portal.Host>
   );
