@@ -57,4 +57,5 @@ Work Queue
   * hold to copy
   * update nav buttons based on mute status. maybe a UserInteractionState placeholder object?
   * screen for blocks/mutes?
+  * put mutes, blocks, favorites into UserDataProvider.
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
