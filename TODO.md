@@ -18,6 +18,7 @@ Backlog
 * variablize the initial source userheader, change with buttons, combine with destination userheader
 * make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
 * implement registration code view
+* default mutation error handling isnt working. Likely getting overridden. 
 
 Work Queue
 * Seamail

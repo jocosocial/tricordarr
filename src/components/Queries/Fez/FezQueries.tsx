@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse, FezContentData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useMutation} from '@tanstack/react-query';
+import {ErrorResponse, FezContentData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
