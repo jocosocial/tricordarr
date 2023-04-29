@@ -53,6 +53,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     onNoteContainer: {
       color: AndroidColor.BLACK,
     },
+    errorContainer: {
+      backgroundColor: theme.colors.errorContainer,
+      color: theme.colors.onErrorContainer,
+    },
   });
 
   return <StyleContext.Provider value={{commonStyles: themedStyles, styleDefaults}}>{children}</StyleContext.Provider>;

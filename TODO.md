@@ -18,7 +18,8 @@ Backlog
 * variablize the initial source userheader, change with buttons, combine with destination userheader
 * make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
 * implement registration code view
-* default mutation error handling isnt working. Likely getting overridden. 
+* default mutation error handling isnt working. Likely getting overridden.
+* alt accounts affect wording for blocks/mutes.
 
 Work Queue
 * Seamail
@@ -54,4 +55,6 @@ Work Queue
   * block/mute modal.
   * dont show buttons if self profile
   * hold to copy
+  * update nav buttons based on mute status. maybe a UserInteractionState placeholder object?
+  * screen for blocks/mutes?
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

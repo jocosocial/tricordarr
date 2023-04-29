@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Text, List} from 'react-native-paper';
+import {Card, Text, List, Banner} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
@@ -18,6 +18,9 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
+import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -29,16 +32,25 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {commonStyles} = useStyles();
+  const [isMuted, setIsMuted] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
 
   const {data, refetch} = useQuery<ProfilePublicData>({
     queryKey: [`/users/${route.params.userID}/profile`],
     enabled: isLoggedIn,
   });
 
+  // @TODO provider?!
+  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
+  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+    refetch()
+      .then(() => refetchMutes())
+      .then(() => refetchBlocks())
+      .finally(() => setRefreshing(false));
+  }, [refetch, refetchMutes, refetchBlocks]);
 
   const seamailCreateHandler = useCallback(() => {
     navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
@@ -66,7 +78,21 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+    // Reset the mute/block state before re-determining.
+    setIsMuted(false);
+    setIsBlocked(false);
+    // Determine if the user should be blocked, muted, etc.
+    mutes?.map(mutedUserHeader => {
+      if (mutedUserHeader.userID === route.params.userID) {
+        setIsMuted(true);
+      }
+    });
+    blocks?.map(blockedUserHeader => {
+      if (blockedUserHeader.userID === route.params.userID) {
+        setIsBlocked(true);
+      }
+    });
+  }, [blocks, getNavButtons, mutes, navigation, route.params.userID]);
 
   if (!data) {
     return <LoadingView />;
@@ -83,6 +109,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
             <Text selectable={true}>{data.message}</Text>
