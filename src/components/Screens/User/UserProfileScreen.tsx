@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Text, List, Banner} from 'react-native-paper';
+import {Card, Text, List} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
@@ -18,9 +18,13 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
-import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
+import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
+import {UserContentCard} from '../../Cards/UserProfile/UserContentCard';
+import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
+import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
+import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
+import {AppIcon} from '../../Images/AppIcon';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -28,29 +32,28 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.userStack
 >;
 
-export const UserProfileScreen = ({route, navigation}: Props) => {
+const UserProfileScreenInner = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {commonStyles} = useStyles();
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
+  const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
 
   const {data, refetch} = useQuery<ProfilePublicData>({
     queryKey: [`/users/${route.params.userID}/profile`],
     enabled: isLoggedIn,
   });
 
-  // @TODO provider?!
-  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
-  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch()
+      .then(() => refetchFavorites())
       .then(() => refetchMutes())
       .then(() => refetchBlocks())
       .finally(() => setRefreshing(false));
-  }, [refetch, refetchMutes, refetchBlocks]);
+  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
 
   const seamailCreateHandler = useCallback(() => {
     navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
@@ -69,34 +72,38 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
       <View style={[commonStyles.flexRow]}>
         {data && <NavBarIconButton icon={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
         {data && <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
-        {data && <UserProfileActionsMenu profile={data} />}
+        {data && (
+          <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
+        )}
       </View>
     );
-  }, [commonStyles.flexRow, data, krakentalkCreateHandler, seamailCreateHandler]);
+  }, [commonStyles.flexRow, data, isBlocked, isFavorite, isMuted, krakentalkCreateHandler, seamailCreateHandler]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
     // Reset the mute/block state before re-determining.
+    setIsFavorite(false);
     setIsMuted(false);
     setIsBlocked(false);
     // Determine if the user should be blocked, muted, etc.
-    mutes?.map(mutedUserHeader => {
+    favorites.map(favoriteUserHeader => {
+      if (favoriteUserHeader.userID === route.params.userID) {
+        setIsFavorite(true);
+      }
+    });
+    mutes.map(mutedUserHeader => {
       if (mutedUserHeader.userID === route.params.userID) {
         setIsMuted(true);
       }
     });
-    blocks?.map(blockedUserHeader => {
+    blocks.map(blockedUserHeader => {
       if (blockedUserHeader.userID === route.params.userID) {
         setIsBlocked(true);
       }
     });
-  }, [blocks, getNavButtons, mutes, navigation, route.params.userID]);
-
-  if (!data) {
-    return <LoadingView />;
-  }
+  }, [blocks, favorites, getNavButtons, mutes, navigation, route.params.userID]);
 
   const styles = {
     image: [commonStyles.roundedBorderLarge, commonStyles.headerImage],
@@ -104,78 +111,53 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     button: [commonStyles.marginHorizontalSmall],
   };
 
+  if (!data) {
+    return <LoadingView />;
+  }
+
   return (
-    <AppView>
-      <ScrollingContentView
-        isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
-        {data.message && (
-          <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
-            <Text selectable={true}>{data.message}</Text>
-          </PaddedContentView>
-        )}
-        <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
-          <AppImage style={styles.image} path={`/image/user/thumb/${route.params.userID}`} />
+    <ScrollingContentView
+      isStack={true}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
+      {data.message && (
+        <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
+          <Text selectable={true}>{data.message}</Text>
         </PaddedContentView>
-        <PaddedContentView style={[styles.listContentCenter]}>
-          <Text selectable={true} variant={'headlineMedium'}>
-            {UserHeader.getByline(data.header)}
-          </Text>
-        </PaddedContentView>
-        {data.note && (
-          <PaddedContentView>
-            <Card style={[commonStyles.noteContainer]}>
-              <Card.Title title="Private Note" titleStyle={[commonStyles.onNoteContainer]} />
-              <Card.Content>
-                <Text selectable={true} style={[commonStyles.onNoteContainer, commonStyles.italics]}>
-                  {data.note}
-                </Text>
-              </Card.Content>
-            </Card>
-          </PaddedContentView>
-        )}
+      )}
+      <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
+        <AppImage style={styles.image} path={`/image/user/thumb/${route.params.userID}`} />
+      </PaddedContentView>
+      <PaddedContentView style={[styles.listContentCenter]}>
+        <Text selectable={true} variant={'headlineMedium'}>
+          {!isFavorite && <AppIcon icon={'star'} />}
+          {UserHeader.getByline(data.header)}
+        </Text>
+      </PaddedContentView>
+      {data.note && (
         <PaddedContentView>
-          <Card>
-            <Card.Title title="User Profile" />
-            <Card.Content style={[commonStyles.paddingHorizontalZero]}>
-              <ListSection>
-                {data.header.displayName && (
-                  <DataFieldListItem title={'Display Name'} description={data.header.displayName} />
-                )}
-                {data.realName && <DataFieldListItem title={'Real Name'} description={data.realName} />}
-                {data.header.username && <DataFieldListItem title={'Username'} description={data.header.username} />}
-                {data.preferredPronoun && <DataFieldListItem title={'Pronouns'} description={data.preferredPronoun} />}
-                {data.email && <DataFieldListItem title={'Email'} description={data.email} />}
-                {data.homeLocation && <DataFieldListItem title={'Home Location'} description={data.homeLocation} />}
-                {data.roomNumber && <DataFieldListItem title={'Room Number'} description={data.roomNumber} />}
-              </ListSection>
-            </Card.Content>
-          </Card>
+          <UserNoteCard user={data} />
         </PaddedContentView>
-        {data.about && (
-          <PaddedContentView>
-            <Card>
-              <Card.Title title="About" />
-              <Card.Content>
-                <Text selectable={true}>{data.about}</Text>
-              </Card.Content>
-            </Card>
-          </PaddedContentView>
-        )}
+      )}
+      <PaddedContentView>
+        <UserProfileCard user={data} />
+      </PaddedContentView>
+      {data.about && (
         <PaddedContentView>
-          <Card>
-            <Card.Title title={`Content by @${data.header.username}`} />
-            <Card.Content style={[commonStyles.paddingHorizontalZero]}>
-              <ListSection>
-                <List.Item title={'Twarrts'} onPress={() => console.log('waaa')} />
-                <List.Item title={'Forums'} onPress={() => console.log('waaa')} />
-                <List.Item title={'LFGs'} onPress={() => console.log('waaa')} />
-              </ListSection>
-            </Card.Content>
-          </Card>
+          <UserAboutCard user={data} />
         </PaddedContentView>
-      </ScrollingContentView>
+      )}
+      <PaddedContentView>
+        <UserContentCard user={data} />
+      </PaddedContentView>
+    </ScrollingContentView>
+  );
+};
+
+export const UserProfileScreen = ({route, navigation}: Props) => {
+  return (
+    <AppView useUserRelations={true}>
+      <UserProfileScreenInner navigation={navigation} route={route} />
     </AppView>
   );
 };
