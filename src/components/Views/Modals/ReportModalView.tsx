@@ -1,20 +1,45 @@
-import React from 'react';
-import {View} from 'react-native';
-import {Button, Card, Text} from 'react-native-paper';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {FezPostData, ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
-import {SaveButton} from '../../Buttons/SaveButton';
-import {useAppTheme} from '../../../styles/Theme';
-import {TextField} from '../../Forms/Fields/TextField';
+import React, {useState} from 'react';
+import {FormikHelpers} from 'formik';
+import {ProfilePublicData, ReportData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportContentForm} from '../../Forms/ReportContentForm';
+import {useReportMutation} from '../../Queries/Moderation/ModerationQueries';
+import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
+import {ReportModalSuccessView} from './ReportModalSuccessView';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 interface ReportModalViewProps {
-  content: ProfilePublicData | FezPostData;
+  content: ProfilePublicData;
 }
 
 export const ReportModalView = ({content}: ReportModalViewProps) => {
-  const onSubmit = (values) => console.log('Submit report', values);
+  const reportMutation = useReportMutation();
+  const [submitted, setSubmitted] = useState(false);
+  const {setErrorMessage} = useErrorHandler();
+
+  const onSubmit = (values: ReportData, formikHelpers: FormikHelpers<ReportData>) => {
+    reportMutation.mutate(
+      {
+        contentType: ReportContentType.users,
+        contentID: content.header.userID,
+        reportData: values,
+      },
+      {
+        onSuccess: () => {
+          formikHelpers.setSubmitting(false);
+          formikHelpers.resetForm();
+          setSubmitted(true);
+        },
+        onError: error => {
+          formikHelpers.setSubmitting(false);
+          setErrorMessage(error.response?.data.reason);
+        },
+      },
+    );
+  };
+
+  if (submitted) {
+    return <ReportModalSuccessView />;
+  }
 
   return <ReportContentForm onSubmit={onSubmit} />;
 };
