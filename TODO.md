@@ -51,7 +51,7 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Profile
-  * block/report/mute modal.
+  * block/mute modal.
   * dont show buttons if self profile
   * hold to copy
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
