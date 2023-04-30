@@ -3,17 +3,25 @@ import React, {useEffect, useState, useRef} from 'react';
 import {AppSettings} from '../../libraries/AppSettings';
 import {ActivityIndicator} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
+import {AppView} from './AppView';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NavigatorIDs, SiteUIStackScreenComponents} from '../../libraries/Enums/Navigation';
+import {SiteUIStackParamList} from '../Navigation/Stacks/SiteUIStack';
+import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
-interface TwitarrViewProps {
-  route: any;
-}
+type Props = NativeStackScreenProps<
+  SiteUIStackParamList,
+  SiteUIStackScreenComponents.siteUIScreen,
+  NavigatorIDs.siteUIStack
+>;
 
-export const TwitarrView = ({route}: TwitarrViewProps) => {
+export const TwitarrView = ({route, navigation}: Props) => {
   const [url, setUrl] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [key, setKey] = useState();
   const [handleGoBack, setHandleGoBack] = useState(false);
-  const webViewRef = useRef();
+  const webViewRef = useRef<WebView>();
 
   const handleBackButtonPress = () => {
     try {
@@ -38,6 +46,8 @@ export const TwitarrView = ({route}: TwitarrViewProps) => {
     return false;
   });
 
+  const reloadButton = () => <NavBarIconButton icon={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />;
+
   useEffect(() => {
     const loadSettings = async () => {
       let newUrl = await AppSettings.SERVER_URL.getValue();
@@ -60,16 +70,22 @@ export const TwitarrView = ({route}: TwitarrViewProps) => {
     }
 
     loadSettings();
-  }, [route?.params?.timestamp, route?.params?.resource, route?.params?.id, isLoading]);
+
+    navigation.setOptions({
+      headerRight: reloadButton,
+    });
+  }, [route.params?.timestamp, route.params?.resource, route.params?.id, isLoading, key, navigation]);
 
   return isLoading ? (
     <ActivityIndicator />
   ) : (
-    <WebView
-      source={{uri: url}}
-      key={key}
-      ref={webViewRef}
-      onNavigationStateChange={handleWebViewNavigationStateChange}
-    />
+    <AppView>
+      <WebView
+        source={{uri: url}}
+        key={key}
+        ref={webViewRef}
+        onNavigationStateChange={handleWebViewNavigationStateChange}
+      />
+    </AppView>
   );
 };

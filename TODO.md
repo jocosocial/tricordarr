@@ -10,23 +10,15 @@ Backlog
 * seamailstack is technically chatstack
 * replace server connection boolean settings with the new components.
 * maybe all settings for that matter?
-* proper error handling for axios errors
 * FAB drawing on top of snack bar
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
 * Go back and adjust settings stack
 * combine and rename SubmitIconButton and NavBarIconButton
 * variablize the initial source userheader, change with buttons, combine with destination userheader
 * make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
-* implement registration code view
 * default mutation error handling isnt working. Likely getting overridden.
-* alt accounts affect wording for blocks/mutes.
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
-* screen for blocks/mutes/favorites
-* edit profile
-* alert/mute keywords
-* alt accounts
-* change password
 
 Work Queue
 * Seamail

@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useTheme} from 'react-native-paper';
 import {SeamailListScreen} from '../../Screens/Seamail/SeamailListScreen';
 import {SeamailScreen} from '../../Screens/Seamail/SeamailScreen';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -11,6 +10,7 @@ import {SeamailCreateScreen} from '../../Screens/Seamail/SeamailCreateScreen';
 import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {getSeamailHeaderTitle} from '../Components/SeamailHeaderTitle';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {useAppTheme} from '../../../styles/Theme';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -36,7 +36,7 @@ export type SeamailStackParamList = {
 
 export const SeamailStack = () => {
   const Stack = createNativeStackNavigator<SeamailStackParamList>();
-  const theme = useTheme();
+  const theme = useAppTheme();
   const screenOptions = {
     headerStyle: {
       backgroundColor: theme.colors.background,
