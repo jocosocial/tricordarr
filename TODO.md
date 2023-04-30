@@ -31,7 +31,6 @@ Work Queue
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
     * open socket and update content when message comes in
-    * add help to the three-dots menu in seamail
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
@@ -39,11 +38,6 @@ Work Queue
     * Websocket useFezSocket for seamail post updating
     * Title bar indicator for socket status
     * buzz on socket receive (may need to figure this out with notifications)
-  * Details
-    * in chat details, expand description of type or add a help section
-    * manage members
-    * disable manage members for non-open/lfg fezs
-    * title selectable
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

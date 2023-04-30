@@ -3,6 +3,7 @@ export enum AppIcons {
   seamailCreate = 'email-plus',
   krakentalkCreate = 'phone-outgoing',
   chat = 'chat',
+  details = 'account-details',
   // Profile
   privateNoteEdit = 'note-edit',
   // Generic
@@ -21,6 +22,7 @@ export enum AppIcons {
   mute = 'volume-off',
   unmute = 'volume-high',
   report = 'alert-octagon',
+  help = 'help-circle',
   // Users
   user = 'account',
   edituser = 'account-edit',
