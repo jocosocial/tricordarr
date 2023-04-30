@@ -16,6 +16,10 @@ import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {SeamailListItem} from '../../Lists/Items/SeamailListItem';
 import {TextListItem} from '../../Lists/Items/TextListItem';
+import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
+import {LoadingView} from '../../Views/Static/LoadingView';
+import {FezType} from '../../../libraries/Enums/FezType';
+import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -27,39 +31,59 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
+  const participantMutation = useFezParticipantMutation();
 
-  const {data, refetch} = useQuery<FezData>({
+  let {data, refetch} = useQuery<FezData>({
     queryKey: [`/fez/${route.params.fezID}`],
     enabled: isLoggedIn && !isLoading && !!route.params.fezID,
   });
+
+  const onParticipantRemove = (fezID: string, userID: string) => {
+    participantMutation.mutate(
+      {
+        action: 'remove',
+        fezID: fezID,
+        userID: userID,
+      },
+      {
+        onSuccess: response => {
+          // data = response.data;
+          refetch();
+        },
+      },
+    );
+  };
+
+  if (!data) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
         <PaddedContentView>
           <TitleTag>Title</TitleTag>
-          <Text>{data?.title}</Text>
+          <Text>{data.title}</Text>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Type</TitleTag>
-          <Text>{data?.fezType}</Text>
-        </PaddedContentView>
-        <PaddedContentView padBottom={false}>
-          <TitleTag style={[]}>Options</TitleTag>
-        </PaddedContentView>
-        <PaddedContentView padSides={false}>
-          <ListSection>
-            <TextListItem title={'Manage Members'} onPress={() => console.log('some day')} />
-          </ListSection>
+          <Text>{data.fezType}</Text>
         </PaddedContentView>
         <PaddedContentView padBottom={false}>
           <TitleTag style={[]}>Participants</TitleTag>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
-            {data &&
-              data.members &&
-              data.members.participants.map(u => <FezParticipantListItem key={u.userID} user={u} />)}
+            {data.fezType === FezType.open && <FezParticipantAddItem fez={data} />}
+            {data.members &&
+              data.members.participants.map(u => (
+                <FezParticipantListItem
+                  onRemove={() => onParticipantRemove(data.fezID, u.userID)}
+                  key={u.userID}
+                  user={u}
+                  fez={data}
+                />
+              ))}
           </ListSection>
         </PaddedContentView>
       </ScrollingContentView>

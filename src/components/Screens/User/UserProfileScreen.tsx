@@ -39,8 +39,6 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
 
-  console.log('Mutes are', mutes);
-
   const {data, refetch} = useQuery<ProfilePublicData>({
     queryKey: [`/users/${route.params.userID}/profile`],
     enabled: isLoggedIn,

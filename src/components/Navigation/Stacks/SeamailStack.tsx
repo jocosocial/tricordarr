@@ -9,8 +9,9 @@ import {useNavigation} from '@react-navigation/native';
 import {SeamailCreateScreen} from '../../Screens/Seamail/SeamailCreateScreen';
 import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {getSeamailHeaderTitle} from '../Components/SeamailHeaderTitle';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
+import {SeamailAddParticipantScreen} from '../../Screens/Seamail/SeamailAddParticipantScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -31,6 +32,9 @@ export type SeamailStackParamList = {
   };
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
+  };
+  SeamailAddParticipantScreen: {
+    fez: FezData;
   };
 };
 
@@ -80,6 +84,11 @@ export const SeamailStack = () => {
         name={SeamailStackScreenComponents.krakentalkCreateScreen}
         component={KrakenTalkCreateScreen}
         options={{title: 'New Call'}}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailAddParticipantScreen}
+        component={SeamailAddParticipantScreen}
+        options={{title: 'Add Participant'}}
       />
     </Stack.Navigator>
   );
