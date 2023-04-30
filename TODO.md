@@ -23,6 +23,10 @@ Backlog
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
 * screen for blocks/mutes/favorites
+* edit profile
+* alert/mute keywords
+* alt accounts
+* change password
 
 Work Queue
 * Seamail
@@ -55,6 +59,5 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Profile
-  * dont show buttons if self profile
   * hold to copy
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

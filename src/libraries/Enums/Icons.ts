@@ -22,6 +22,7 @@ export enum AppIcons {
   report = 'alert-octagon',
   // Users
   user = 'account',
+  edituser = 'account-edit',
   group = 'account-group',
   password = 'form-textbox-password',
   moderator = 'security',
