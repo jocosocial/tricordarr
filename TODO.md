@@ -59,5 +59,4 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Profile
-  * hold to copy
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
