@@ -1,15 +1,16 @@
 import * as React from 'react';
-import {Divider, Menu, Modal} from 'react-native-paper';
+import {ReactNode, useState} from 'react';
+import {Divider, Menu} from 'react-native-paper';
 import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {ReactNode, useState} from 'react';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {MuteUserModalView} from '../Views/Modals/MuteUserModalView';
 import {useUserMuteMutation} from '../Queries/Users/UserMuteQueries';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
+import {useUserBlockMutation, useUserBlocksQuery} from '../Queries/Users/UserBlockQueries';
+import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -22,7 +23,8 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const [visible, setVisible] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
-  const {mutes, setMutes} = useUserRelations();
+  const blockMutation = useUserBlockMutation();
+  const {mutes, setMutes, blocks, setBlocks} = useUserRelations();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -45,9 +47,27 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       />
       <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Add Private Note'} />
       <Divider bold={true} />
-      <Menu.Item leadingIcon={AppIcons.block} title={isBlocked ? 'Unblock' : 'Block'} />
       <Menu.Item
-        leadingIcon={AppIcons.mute}
+        leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
+        title={isBlocked ? 'Unblock' : 'Block'}
+        onPress={() => {
+          if (isBlocked) {
+            blockMutation.mutate(
+              {userID: profile.header.userID, action: 'unblock'},
+              {
+                onSuccess: () => {
+                  setBlocks(blocks.filter(m => m.userID !== profile.header.userID));
+                  closeMenu();
+                },
+              },
+            );
+          } else {
+            handleModal(<BlockUserModalView user={profile.header} />);
+          }
+        }}
+      />
+      <Menu.Item
+        leadingIcon={isMuted ? AppIcons.unmute : AppIcons.mute}
         title={isMuted ? 'Unmute' : 'Mute'}
         onPress={() => {
           if (isMuted) {
@@ -55,9 +75,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
               {userID: profile.header.userID, action: 'unmute'},
               {
                 onSuccess: () => {
-                  console.log(mutes);
                   setMutes(mutes.filter(m => m.userID !== profile.header.userID));
-                  console.log(mutes);
                   closeMenu();
                 },
               },

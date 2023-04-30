@@ -32,7 +32,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.userStack
 >;
 
-const UserProfileScreenInner = ({route, navigation}: Props) => {
+export const UserProfileScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {commonStyles} = useStyles();
@@ -40,6 +40,8 @@ const UserProfileScreenInner = ({route, navigation}: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
+
+  console.log('Mutes are', mutes);
 
   const {data, refetch} = useQuery<ProfilePublicData>({
     queryKey: [`/users/${route.params.userID}/profile`],
@@ -116,48 +118,42 @@ const UserProfileScreenInner = ({route, navigation}: Props) => {
   }
 
   return (
-    <ScrollingContentView
-      isStack={true}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-      <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
-      {data.message && (
-        <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
-          <Text selectable={true}>{data.message}</Text>
+    <AppView>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
+        {data.message && (
+          <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
+            <Text selectable={true}>{data.message}</Text>
+          </PaddedContentView>
+        )}
+        <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
+          <AppImage style={styles.image} path={`/image/user/thumb/${route.params.userID}`} />
         </PaddedContentView>
-      )}
-      <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
-        <AppImage style={styles.image} path={`/image/user/thumb/${route.params.userID}`} />
-      </PaddedContentView>
-      <PaddedContentView style={[styles.listContentCenter]}>
-        <Text selectable={true} variant={'headlineMedium'}>
-          {!isFavorite && <AppIcon icon={'star'} />}
-          {UserHeader.getByline(data.header)}
-        </Text>
-      </PaddedContentView>
-      {data.note && (
+        <PaddedContentView style={[styles.listContentCenter]}>
+          <Text selectable={true} variant={'headlineMedium'}>
+            {!isFavorite && <AppIcon icon={'star'} />}
+            {UserHeader.getByline(data.header)}
+          </Text>
+        </PaddedContentView>
+        {data.note && (
+          <PaddedContentView>
+            <UserNoteCard user={data} />
+          </PaddedContentView>
+        )}
         <PaddedContentView>
-          <UserNoteCard user={data} />
+          <UserProfileCard user={data} />
         </PaddedContentView>
-      )}
-      <PaddedContentView>
-        <UserProfileCard user={data} />
-      </PaddedContentView>
-      {data.about && (
+        {data.about && (
+          <PaddedContentView>
+            <UserAboutCard user={data} />
+          </PaddedContentView>
+        )}
         <PaddedContentView>
-          <UserAboutCard user={data} />
+          <UserContentCard user={data} />
         </PaddedContentView>
-      )}
-      <PaddedContentView>
-        <UserContentCard user={data} />
-      </PaddedContentView>
-    </ScrollingContentView>
-  );
-};
-
-export const UserProfileScreen = ({route, navigation}: Props) => {
-  return (
-    <AppView useUserRelations={true}>
-      <UserProfileScreenInner navigation={navigation} route={route} />
+      </ScrollingContentView>
     </AppView>
   );
 };

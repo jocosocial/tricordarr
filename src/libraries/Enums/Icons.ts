@@ -14,8 +14,11 @@ export enum AppIcons {
   error = 'alert-circle-outline',
   menu = 'dots-vertical',
   favorite = 'star',
+  unfavorite = 'star-off',
   block = 'cancel',
+  unblock = 'check-circle',
   mute = 'volume-off',
+  unmute = 'volume-high',
   report = 'alert-octagon',
   // Users
   user = 'account',
