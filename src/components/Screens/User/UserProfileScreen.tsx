@@ -133,7 +133,12 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView style={[styles.listContentCenter]}>
           <Text selectable={true} variant={'headlineMedium'}>
-            {!isFavorite && <AppIcon icon={'star'} />}
+            {isFavorite && (
+              <>
+                <AppIcon icon={'star'} />
+                &nbsp;
+              </>
+            )}
             {UserHeader.getByline(data.header)}
           </Text>
         </PaddedContentView>

@@ -9,8 +9,9 @@ import {useModal} from '../Context/Contexts/ModalContext';
 import {MuteUserModalView} from '../Views/Modals/MuteUserModalView';
 import {useUserMuteMutation} from '../Queries/Users/UserMuteQueries';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
-import {useUserBlockMutation, useUserBlocksQuery} from '../Queries/Users/UserBlockQueries';
+import {useUserBlockMutation} from '../Queries/Users/UserBlockQueries';
 import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
+import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -24,13 +25,42 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const {mutes, setMutes, blocks, setBlocks} = useUserRelations();
+  const favoriteMutation = useUserFavoriteMutation();
+  const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleModerate = () => console.log('Navigating to moderate user', profile.header.username);
-  const handleFavorite = () => console.log('Triggering favorite mutation');
+  const handleFavorite = () => {
+    if (isFavorite) {
+      favoriteMutation.mutate(
+        {
+          userID: profile.header.userID,
+          action: 'unfavorite',
+        },
+        {
+          onSuccess: () => {
+            setFavorites(favorites.filter(m => m.userID !== profile.header.userID));
+            closeMenu();
+          },
+        },
+      );
+    } else {
+      favoriteMutation.mutate(
+        {
+          userID: profile.header.userID,
+          action: 'favorite',
+        },
+        {
+          onSuccess: () => {
+            setFavorites(favorites.concat([profile.header]));
+            closeMenu();
+          },
+        },
+      );
+    }
+  };
   const handleRegCode = () => console.log('Navigating to reg code');
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -41,7 +71,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item
-        leadingIcon={AppIcons.favorite}
+        leadingIcon={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
         title={isFavorite ? 'Unfavorite' : 'Favorite'}
         onPress={handleFavorite}
       />
