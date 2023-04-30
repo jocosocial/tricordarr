@@ -1,5 +1,6 @@
 import React from 'react';
-import {List, Text} from 'react-native-paper';
+import {List} from 'react-native-paper';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface DataFieldListItemProps {
   title?: string;
@@ -17,16 +18,16 @@ export const DataFieldListItem = ({title, description, onPress}: DataFieldListIt
     },
   };
 
-  const getDescriptionElement = () => <Text selectable={true}>{description}</Text>;
   const defaultOnPress = () => console.log('booo');
 
   return (
     <List.Item
       titleStyle={styles.title}
       descriptionStyle={styles.description}
-      description={getDescriptionElement}
+      description={description}
       title={title}
       onPress={onPress || defaultOnPress}
+      onLongPress={() => (description ? Clipboard.setString(description) : undefined)}
     />
   );
 };
