@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
-import {SaveButton} from '../Buttons/SaveButton';
+import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {SettingFormValues} from '../../libraries/Types/FormValues';
 
 interface SettingFormProps {
@@ -24,7 +24,7 @@ export const SettingForm = ({value, onSave}: SettingFormProps) => {
             onBlur={handleBlur('settingValue')}
             value={values.settingValue}
           />
-          <SaveButton onPress={handleSubmit} buttonText={'Save'} />
+          <PrimaryActionButton onPress={handleSubmit} buttonText={'Save'} />
         </View>
       )}
     </Formik>

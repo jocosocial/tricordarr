@@ -6,7 +6,7 @@ import {ReportData} from '../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../styles/Theme';
 import {Text} from 'react-native-paper';
 import {TextField} from './Fields/TextField';
-import {SaveButton} from '../Buttons/SaveButton';
+import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {ModalCard} from '../Cards/ModalCard';
 
 interface ReportContentFormProps {
@@ -45,7 +45,7 @@ export const ReportContentForm = ({onSubmit}: ReportContentFormProps) => {
             title={'Report'}
             content={<ReportContentFormBody />}
             actions={
-              <SaveButton
+              <PrimaryActionButton
                 buttonColor={theme.colors.twitarrNegativeButton}
                 buttonText={'Send Report'}
                 onPress={handleSubmit}

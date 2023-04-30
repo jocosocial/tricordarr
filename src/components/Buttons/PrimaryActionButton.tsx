@@ -1,11 +1,10 @@
 import {ActivityIndicator, Button} from 'react-native-paper';
 import React from 'react';
-import {commonStyles} from '../../styles';
 import {useAppTheme} from '../../styles/Theme';
 import {ViewStyle} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
 
-interface SaveButtonProps {
+interface PrimaryActionButtonProps {
   buttonText: string;
   onPress: () => void;
   buttonColor?: string;
@@ -16,7 +15,10 @@ interface SaveButtonProps {
   isLoading?: boolean;
 }
 
-export const SaveButton = ({
+/**
+ * Stylized "main" button for general use.
+ */
+export const PrimaryActionButton = ({
   buttonText = 'Save',
   onPress,
   buttonColor = undefined,
@@ -25,12 +27,10 @@ export const SaveButton = ({
   mode = 'contained',
   style = {},
   isLoading = false,
-}: SaveButtonProps) => {
+}: PrimaryActionButtonProps) => {
   const theme = useAppTheme();
 
   const buttonStyle = {
-    // @TODO retrofit this out.
-    // ...commonStyles.marginTop,
     borderWidth: 0,
     ...style,
   };

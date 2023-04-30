@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {SaveButton} from '../../Buttons/SaveButton';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {cancelTestNotification, displayTestNotification} from '../../../libraries/Notifications/TestNotification';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -21,12 +21,12 @@ export const TestNotificationScreen = ({navigation}: TestNotificationScreenProps
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <SaveButton
+          <PrimaryActionButton
             buttonText="Display Notification"
             buttonColor={theme.colors.twitarrNeutralButton}
             onPress={() => displayTestNotification()}
           />
-          <SaveButton
+          <PrimaryActionButton
             buttonText="Cancel"
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => cancelTestNotification()}

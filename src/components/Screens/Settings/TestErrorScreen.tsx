@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {SaveButton} from '../../Buttons/SaveButton';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -24,13 +24,13 @@ export const TestErrorScreen = ({navigation}: TestErrorScreenProps) => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text>Banner: {errorBanner}</Text>
-          <SaveButton
+          <PrimaryActionButton
             buttonText="Banner"
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => setErrorBanner('This is a banner error.')}
           />
           <Text>Snackbar: {errorMessage}</Text>
-          <SaveButton
+          <PrimaryActionButton
             buttonText="Snackbar"
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => setErrorMessage('This is a snackbar error.')}

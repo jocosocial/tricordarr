@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, Switch, View} from 'react-native';
 import {useTheme, Text, DataTable, TouchableRipple} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
-import {SaveButton} from '../../Buttons/SaveButton';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
@@ -122,12 +122,12 @@ export const ServerConnectionSettings = ({navigation}: ServerConnectionSettingsP
           </View>
           <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>FGS Control</Text>
-            <SaveButton
+            <PrimaryActionButton
               buttonText={'Start'}
               buttonColor={theme.colors.twitarrPositiveButton}
               onPress={() => startForegroundServiceWorker().catch(console.error)}
             />
-            <SaveButton
+            <PrimaryActionButton
               buttonText={'Stop'}
               buttonColor={theme.colors.twitarrNegativeButton}
               onPress={() => stopForegroundServiceWorker().catch(console.error)}

@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 import axios from 'axios';
 import {useMutation} from '@tanstack/react-query';
-import {SaveButton} from '../../../Buttons/SaveButton';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {AppSettings} from '../../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
@@ -64,8 +64,8 @@ export const LogoutScreen = () => {
       <ScrollingContentView isStack={true}>
         <PaddedContentView>
           <TempUserProfile />
-          <SaveButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress}/>
-          <SaveButton
+          <PrimaryActionButton buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Logout'} onPress={onPress}/>
+          <PrimaryActionButton
             buttonColor={theme.colors.twitarrNeutralButton}
             buttonText={'Clear Auth Data'}
             onPress={clearAuthData}
