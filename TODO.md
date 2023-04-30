@@ -22,6 +22,7 @@ Backlog
 * alt accounts affect wording for blocks/mutes.
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
+* screen for blocks/mutes/favorites
 
 Work Queue
 * Seamail
@@ -56,6 +57,4 @@ Work Queue
 * Profile
   * dont show buttons if self profile
   * hold to copy
-  * update nav buttons based on mute status. maybe a UserInteractionState placeholder object?
-  * screen for blocks/mutes?
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
