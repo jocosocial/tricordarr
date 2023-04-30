@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -21,6 +21,10 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -28,12 +32,18 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.seamailStack
 >;
 
+const helpContent = [
+  'Seamail titles cannot be modified.',
+  'With Open seamails, the creator can add or remove members at any time.',
+];
+
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez} = useTwitarr();
+  const {setModalContent, setModalVisible} = useModal();
 
   const {data, refetch} = useQuery<FezData>({
     queryKey: [`/fez/${route.params.fezID}`],
@@ -57,11 +67,27 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     );
   };
 
+  const getHeaderRight = useCallback(
+    () => (
+      <NavBarIconButton
+        icon={AppIcons.help}
+        onPress={() => {
+          setModalContent(<HelpModalView text={helpContent} />);
+          setModalVisible(true);
+        }}
+      />
+    ),
+    [setModalContent, setModalVisible],
+  );
+
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: getHeaderRight,
+    });
     if (data) {
       setFez(data);
     }
-  }, [data, setFez]);
+  }, [data, getHeaderRight, navigation, setFez]);
 
   if (!fez) {
     return <LoadingView />;
@@ -72,7 +98,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
         <PaddedContentView>
           <TitleTag>Title</TitleTag>
-          <Text>{fez.title}</Text>
+          <Text selectable={true}>{fez.title}</Text>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Type</TitleTag>

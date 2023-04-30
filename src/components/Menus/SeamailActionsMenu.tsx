@@ -20,11 +20,9 @@ export const SeamailActionsMenu = ({fez}: FezDataProps) => {
   };
 
   return (
-    <Menu
-      visible={visible}
-      onDismiss={closeMenu}
-      anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item onPress={detailsAction} title="Seamail Details" />
+    <Menu visible={visible} onDismiss={closeMenu} anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
+      <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />
+      <Menu.Item leadingIcon={AppIcons.help} title={'Help'} />
     </Menu>
   );
 };

@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {PropsWithChildren, ReactNode} from 'react';
 import {Button, Card} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useModal} from '../Context/Contexts/ModalContext';
@@ -20,7 +20,8 @@ export const ModalCard = ({
   showCloseButton = true,
   closeButtonText = 'Close',
   actions,
-}: ModalCardProps) => {
+  children,
+}: PropsWithChildren<ModalCardProps>) => {
   const {commonStyles} = useStyles();
   const {setModalVisible} = useModal();
 
@@ -32,7 +33,10 @@ export const ModalCard = ({
   return (
     <Card style={styles.card}>
       <Card.Title titleVariant={'titleLarge'} title={title} />
-      <Card.Content>{content}</Card.Content>
+      <Card.Content>
+        {content}
+        {children}
+      </Card.Content>
       <Card.Actions>
         {actions}
         {showCloseButton && (
