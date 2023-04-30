@@ -8,28 +8,31 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
 import {SaveButton} from '../../Buttons/SaveButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 
-interface MuteUserModalViewProps {
+interface BlockUserModalViewProps {
   user: UserHeader;
 }
 
-const MuteUserModalContent = () => {
+const BlockUserModalContent = () => {
   const {commonStyles, styleDefaults} = useStyles();
   const {accessLevel} = useUserData();
   return (
     <>
-      <Text style={[commonStyles.marginBottomSmall]}>Muting a user will hide all that user's content from you.</Text>
+      <Text style={[commonStyles.marginBottomSmall]}>
+        Blocking a user will hide all that user's content from you, and also hide all your content from them.
+      </Text>
       {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator) && (
         <>
           <Text style={[commonStyles.marginBottomSmall]}>
             <AppIcon icon={AppIcons.moderator} size={styleDefaults.fontSize} />
             &nbsp; You're a Moderator. You'll still see their content.
+            Blocking does hide your non-Mod alt accounts from this person, and vice-versa.
           </Text>
         </>
       )}
@@ -37,22 +40,22 @@ const MuteUserModalContent = () => {
   );
 };
 
-export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
-  const muteMutation = useUserMuteMutation();
+export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
+  const blockMutation = useUserBlockMutation();
   const {setErrorMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
-  const {mutes, setMutes} = useUserRelations();
+  const {blocks, setBlocks} = useUserRelations();
 
   const onSubmit = () => {
-    muteMutation.mutate(
+    blockMutation.mutate(
       {
         userID: user.userID,
-        action: 'mute',
+        action: 'block',
       },
       {
         onSuccess: () => {
-          setMutes(mutes.concat([user]));
+          setBlocks(blocks.concat([user]));
           setModalVisible(false);
         },
         onError: error => {
@@ -65,16 +68,16 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
   const cardActions = (
     <SaveButton
       buttonColor={theme.colors.twitarrNegativeButton}
-      buttonText={'Mute'}
+      buttonText={'Block'}
       onPress={onSubmit}
-      isLoading={muteMutation.isLoading}
-      disabled={muteMutation.isLoading}
+      isLoading={blockMutation.isLoading}
+      disabled={blockMutation.isLoading}
     />
   );
 
   return (
     <View>
-      <ModalCard title={'Mute'} closeButtonText={'Cancel'} content={<MuteUserModalContent />} actions={cardActions} />
+      <ModalCard title={'Block'} closeButtonText={'Cancel'} content={<BlockUserModalContent />} actions={cardActions} />
     </View>
   );
 };

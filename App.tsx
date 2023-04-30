@@ -36,6 +36,7 @@ import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
+import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -93,20 +94,22 @@ function App(): JSX.Element {
     <NavigationContainer linking={linking}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
-          <ErrorHandlerProvider>
-            <ModalProvider>
-              <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <ErrorHandlerProvider>
+              <ModalProvider>
                 <UserDataProvider>
-                  <UserNotificationDataProvider>
-                    {/*<NotificationDataPoller />*/}
-                    <ForegroundService />
-                    <NotificationDataListener />
-                    <BottomTabNavigator />
-                  </UserNotificationDataProvider>
+                  <UserRelationsProvider>
+                    <UserNotificationDataProvider>
+                      {/*<NotificationDataPoller />*/}
+                      <ForegroundService />
+                      <NotificationDataListener />
+                      <BottomTabNavigator />
+                    </UserNotificationDataProvider>
+                  </UserRelationsProvider>
                 </UserDataProvider>
-              </QueryClientProvider>
-            </ModalProvider>
-          </ErrorHandlerProvider>
+              </ModalProvider>
+            </ErrorHandlerProvider>
+          </QueryClientProvider>
         </StyleProvider>
       </PaperProvider>
     </NavigationContainer>
