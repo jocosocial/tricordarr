@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -20,6 +20,7 @@ import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -32,8 +33,9 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const participantMutation = useFezParticipantMutation();
+  const {fez, setFez} = useTwitarr();
 
-  let {data, refetch} = useQuery<FezData>({
+  const {data, refetch} = useQuery<FezData>({
     queryKey: [`/fez/${route.params.fezID}`],
     enabled: isLoggedIn && !isLoading && !!route.params.fezID,
   });
@@ -48,13 +50,20 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
       {
         onSuccess: response => {
           // data = response.data;
-          refetch();
+          // refetch();
+          setFez(response.data);
         },
       },
     );
   };
 
-  if (!data) {
+  useEffect(() => {
+    if (data) {
+      setFez(data);
+    }
+  }, [data, setFez]);
+
+  if (!fez) {
     return <LoadingView />;
   }
 
@@ -63,25 +72,25 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
         <PaddedContentView>
           <TitleTag>Title</TitleTag>
-          <Text>{data.title}</Text>
+          <Text>{fez.title}</Text>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Type</TitleTag>
-          <Text>{data.fezType}</Text>
+          <Text>{fez.fezType}</Text>
         </PaddedContentView>
         <PaddedContentView padBottom={false}>
           <TitleTag style={[]}>Participants</TitleTag>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
-            {data.fezType === FezType.open && <FezParticipantAddItem fez={data} />}
-            {data.members &&
-              data.members.participants.map(u => (
+            {fez.fezType === FezType.open && <FezParticipantAddItem fez={fez} />}
+            {fez.members &&
+              fez.members.participants.map(u => (
                 <FezParticipantListItem
-                  onRemove={() => onParticipantRemove(data.fezID, u.userID)}
+                  onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
                   key={u.userID}
                   user={u}
-                  fez={data}
+                  fez={fez}
                 />
               ))}
           </ListSection>
