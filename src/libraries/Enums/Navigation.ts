@@ -6,6 +6,7 @@ export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
   seamailStack = 'SeamailStackNavigator',
   userStack = 'UserStack',
+  siteUIStack = 'SiteUIStack',
 }
 
 export enum SettingsStackScreenComponents {
@@ -28,3 +29,6 @@ export enum SeamailStackScreenComponents {
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
 }
 
+export enum SiteUIStackScreenComponents {
+  siteUIScreen = 'SiteUIScreen',
+}

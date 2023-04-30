@@ -10,6 +10,7 @@ import notifee from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {Linking} from 'react-native';
 import {SeamailStack} from '../Stacks/SeamailStack';
+import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -67,7 +68,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="TwitarrTab"
-        component={TwitarrView}
+        component={SiteUIStackStack}
         options={{
           title: 'Twit-arr',
           tabBarIcon: () => getIcon('web'),
