@@ -7,11 +7,12 @@ import {styleDefaults} from '../../styles';
 import {AppIcons} from '../../libraries/Enums/Icons';
 
 type UserAvatarImageProps = {
-  userID: string;
+  userID?: string;
   small?: boolean;
+  icon?: string;
 };
 
-export const UserAvatarImage = ({userID, small = false}: UserAvatarImageProps) => {
+export const UserAvatarImage = ({userID, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
   const {isLoggedIn} = useUserData();
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
 
@@ -22,7 +23,7 @@ export const UserAvatarImage = ({userID, small = false}: UserAvatarImageProps) =
   });
 
   if (!avatarImageUri) {
-    return <Avatar.Icon size={size} icon={AppIcons.user} />;
+    return <Avatar.Icon size={size} icon={icon} />;
   }
 
   return <Avatar.Image size={size} source={{uri: avatarImageUri}} />;

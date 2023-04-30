@@ -123,6 +123,9 @@ export const commonStyles = StyleSheet.create({
   paddingHorizontalZero: {
     paddingHorizontal: 0,
   },
+  paddingVerticalZero: {
+    paddingVertical: 0,
+  },
   spacerWidth: {
     width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
   },

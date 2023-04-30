@@ -8,6 +8,7 @@ export enum AppIcons {
   // Generic
   new = 'plus',
   newImage = 'image-plus',
+  delete = 'delete-forever',
   submit = 'send-circle-outline',
   scrollDown = 'arrow-down-circle',
   reload = 'reload',

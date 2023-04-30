@@ -27,6 +27,7 @@ export enum SeamailStackScreenComponents {
   userProfileScreen = 'UserProfileScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
+  seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
 }
 
 export enum SiteUIStackScreenComponents {
