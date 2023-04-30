@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Formik} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {SaveButton} from '../Buttons/SaveButton';
+import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {LoginFormValues} from '../../libraries/Types/FormValues';
 import {AppIcons} from '../../libraries/Enums/Icons';
 
@@ -33,7 +33,7 @@ export const LoginForm = ({onSubmit, initialValues = {}}: LoginFormProps) => {
             mode={'outlined'}
             secureTextEntry={true}
           />
-          <SaveButton onPress={handleSubmit} buttonText={'Login'} />
+          <PrimaryActionButton onPress={handleSubmit} buttonText={'Login'} />
         </View>
       )}
     </Formik>

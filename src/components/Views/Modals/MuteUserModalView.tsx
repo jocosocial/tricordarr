@@ -9,7 +9,7 @@ import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
-import {SaveButton} from '../../Buttons/SaveButton';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {AppIcon} from '../../Images/AppIcon';
@@ -63,7 +63,7 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
   };
 
   const cardActions = (
-    <SaveButton
+    <PrimaryActionButton
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Mute'}
       onPress={onSubmit}

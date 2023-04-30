@@ -1,6 +1,5 @@
 Questions for Ben
-* react query useThing mutation component. something about this rings a bell
-* formik rerender performance. memoize?
+* None!
 
 Backlog
 * duplicating types everywhere
