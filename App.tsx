@@ -37,6 +37,7 @@ import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/Vi
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
 import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
+import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -95,20 +96,22 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
           <QueryClientProvider client={queryClient}>
-            <ErrorHandlerProvider>
-              <ModalProvider>
-                <UserDataProvider>
-                  <UserRelationsProvider>
-                    <UserNotificationDataProvider>
-                      {/*<NotificationDataPoller />*/}
-                      <ForegroundService />
-                      <NotificationDataListener />
-                      <BottomTabNavigator />
-                    </UserNotificationDataProvider>
-                  </UserRelationsProvider>
-                </UserDataProvider>
-              </ModalProvider>
-            </ErrorHandlerProvider>
+            <TwitarrProvider>
+              <ErrorHandlerProvider>
+                <ModalProvider>
+                  <UserDataProvider>
+                    <UserRelationsProvider>
+                      <UserNotificationDataProvider>
+                        {/*<NotificationDataPoller />*/}
+                        <ForegroundService />
+                        <NotificationDataListener />
+                        <BottomTabNavigator />
+                      </UserNotificationDataProvider>
+                    </UserRelationsProvider>
+                  </UserDataProvider>
+                </ModalProvider>
+              </ErrorHandlerProvider>
+            </TwitarrProvider>
           </QueryClientProvider>
         </StyleProvider>
       </PaperProvider>

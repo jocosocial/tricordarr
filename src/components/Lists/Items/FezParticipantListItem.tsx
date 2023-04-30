@@ -7,6 +7,7 @@ import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {View} from 'react-native';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 interface FezParticipantListItemProps {
   user: UserHeader;
@@ -18,8 +19,17 @@ export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantList
   const {commonStyles} = useStyles();
   const navigation = useSeamailStack();
   let enableDelete = true;
+  const {profilePublicData} = useUserData();
 
-  if (fez.owner.userID === user.userID || (fez.members && fez.members.participants.length <= 2)) {
+  // Cannot delete participant if any condition is true:
+  // * Participant is yourself.
+  // * Would leave less than 2 participants (the API currently allows this but I disagree with it).
+  // * You are not the owner.
+  if (
+    fez.owner.userID === user.userID ||
+    (fez.members && fez.members.participants.length <= 2) ||
+    profilePublicData.header.userID !== fez.owner.userID
+  ) {
     enableDelete = false;
   }
 
@@ -48,6 +58,7 @@ export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantList
     <List.Item
       style={style}
       title={user.username}
+      description={user.displayName}
       onPress={onPress}
       left={getAvatar}
       right={enableDelete ? removeButton : undefined}

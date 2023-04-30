@@ -8,6 +8,7 @@ import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -17,6 +18,7 @@ export type Props = NativeStackScreenProps<
 
 export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
+  const {setFez} = useTwitarr();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -26,7 +28,10 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: () => navigation.goBack(),
+        onSuccess: response => {
+          setFez(response.data);
+          navigation.goBack();
+        },
       },
     );
   };
