@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
-import {ErrorResponse, FezContentData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {ErrorResponse, FezContentData, FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
@@ -20,5 +20,11 @@ export const useFezMutation = (retry = 0) => {
     onError: error => {
       setErrorMessage(error.response?.data.reason);
     },
+  });
+};
+
+export const useSeamailQuery = () => {
+  return useQuery<FezListData>({
+    queryKey: ['/fez/joined?type=closed&type=open'],
   });
 };

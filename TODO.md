@@ -27,9 +27,6 @@ Work Queue
     * Seamail search
     * Websocket useNotifivationSocket for refreshing the seamail list view
     * buzz on socket receive (may need to figure this out with notifications)
-  * New
-    * Going "back" needs to add the new conversation to the list
-    * focus on subject or message should clear search
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
@@ -49,5 +46,4 @@ Work Queue
     * title selectable
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
-* Profile
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
