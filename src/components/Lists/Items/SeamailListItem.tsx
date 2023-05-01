@@ -5,13 +5,12 @@ import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {FezDataProps} from '../../../libraries/Types';
 import {SeamailTimeBadge} from '../Seamail/SeamailTimeBadge';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 
 export const SeamailListItem = ({fez}: FezDataProps) => {
   const {profilePublicData} = useUserData();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const navigation = useSeamailStack();
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;

@@ -1,15 +1,19 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppView} from '../../Views/AppView';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 
-interface NetworkInfoSettingsProps {
-  route: any;
-  navigation: any;
-}
+type Props = NativeStackScreenProps<
+  SettingsStackParamList,
+  SettingsStackScreenComponents.networkInfoSettings,
+  NavigatorIDs.settingsStack
+>;
 
-export const NetworkInfoSettings = ({route, navigation}: NetworkInfoSettingsProps) => {
+export const NetworkInfoSettings = ({route, navigation}: Props) => {
   const theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const data = useNetInfo();
@@ -18,10 +22,6 @@ export const NetworkInfoSettings = ({route, navigation}: NetworkInfoSettingsProp
     setRefreshing(true);
     NetInfo.refresh().finally(() => setRefreshing(false));
   }, []);
-
-  useEffect(() => {
-    navigation.setOptions({title: route.params.title});
-  }, [navigation, route.params.title]);
 
   return (
     <AppView>

@@ -26,7 +26,6 @@ Work Queue
       * when switched to a privileged forUser, change FAB color
     * Seamail search
     * Websocket useNotifivationSocket for refreshing the seamail list view
-    * buzz on socket receive (may need to figure this out with notifications)
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
@@ -41,3 +40,4 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
+* screenOptions duplicated

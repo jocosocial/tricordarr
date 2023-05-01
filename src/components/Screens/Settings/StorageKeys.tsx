@@ -4,13 +4,13 @@ import {DataTable, useTheme} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppView} from '../../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ParamListBase} from '@react-navigation/native';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {KvObject} from '../../../libraries/Types';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 
 type Props = NativeStackScreenProps<
-  ParamListBase,
+  SettingsStackParamList,
   SettingsStackScreenComponents.storageKeySettings,
   NavigatorIDs.settingsStack
 >;

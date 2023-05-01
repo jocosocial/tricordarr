@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, Switch, View} from 'react-native';
-import {useTheme, Text, DataTable, TouchableRipple} from 'react-native-paper';
+import {Text, DataTable, TouchableRipple} from 'react-native-paper';
 import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
@@ -13,6 +13,10 @@ import {useBackHandler} from '@react-native-community/hooks';
 import {fgsFailedCounter} from '../../../libraries/Service';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {useAppTheme} from '../../../styles/Theme';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 const WebSocketState = Object.freeze({
@@ -24,12 +28,14 @@ const WebSocketState = Object.freeze({
   69: 'Uninitialized',
 });
 
-interface ServerConnectionSettingsProps {
-  navigation: any;
-}
+type Props = NativeStackScreenProps<
+  SettingsStackParamList,
+  SettingsStackScreenComponents.serverConnectionSettings,
+  NavigatorIDs.settingsStack
+>;
 
-export const ServerConnectionSettings = ({navigation}: ServerConnectionSettingsProps) => {
-  const theme = useTheme();
+export const ServerConnectionSettings = ({navigation}: Props) => {
+  const theme = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useUserNotificationData();
@@ -59,8 +65,8 @@ export const ServerConnectionSettings = ({navigation}: ServerConnectionSettingsP
     async function getSettingValue() {
       // https://stackoverflow.com/questions/263965/how-can-i-convert-a-string-to-boolean-in-javascript
       setOverride((await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true');
-      setWsHealthcheckDate(await AppSettings.WS_HEALTHCHECK_DATE.getValue());
-      setWsOpenDate(await AppSettings.WS_OPEN_DATE.getValue());
+      setWsHealthcheckDate((await AppSettings.WS_HEALTHCHECK_DATE.getValue()) || 'UNKNOWN');
+      setWsOpenDate((await AppSettings.WS_OPEN_DATE.getValue()) || 'UNKNOWN');
     }
 
     getSettingValue().catch(e => setErrorMessage(e.toString()));

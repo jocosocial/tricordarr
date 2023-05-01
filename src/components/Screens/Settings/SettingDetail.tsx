@@ -7,13 +7,17 @@ import {SettingForm} from '../../Forms/SettingForm';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SettingFormValues} from '../../../libraries/Types/FormValues';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 
-interface SettingDetailProps {
-  route: any;
-  navigation: any;
-}
+type Props = NativeStackScreenProps<
+  SettingsStackParamList,
+  SettingsStackScreenComponents.settingDetail,
+  NavigatorIDs.settingsStack
+>;
 
-export const SettingDetail = ({route, navigation}: SettingDetailProps) => {
+export const SettingDetail = ({route, navigation}: Props) => {
   const [value, setValue] = useState('');
   const {settingKey}: {settingKey: string} = route.params;
   const setting: AppSettings = AppSettings[settingKey as keyof typeof AppSettings];
