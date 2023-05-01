@@ -7,10 +7,10 @@ import {AccountSettings} from '../../Screens/Settings/Account/AccountSettings';
 import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
 import {SettingsView} from '../../Screens/Settings/Settings';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
-import {useTheme} from 'react-native-paper';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -28,17 +28,8 @@ export type SettingsStackParamList = {
 };
 
 export const SettingsStack = () => {
+  const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<SettingsStackParamList>();
-  const theme = useTheme();
-  const screenOptions = {
-    headerStyle: {
-      backgroundColor: theme.colors.background,
-    },
-    headerTitleStyle: {
-      color: theme.colors.onBackground,
-    },
-    headerTintColor: theme.colors.onBackground,
-  };
 
   // We don't put the title in the various Screens because we define it in the NavigationListItem
   // so we're always consistent between setting name and header title.

@@ -59,5 +59,19 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
   });
 
-  return <StyleContext.Provider value={{commonStyles: themedStyles, styleDefaults}}>{children}</StyleContext.Provider>;
+  const screenOptions = {
+    headerStyle: {
+      backgroundColor: theme.colors.background,
+    },
+    headerTitleStyle: {
+      color: theme.colors.onBackground,
+    },
+    headerTintColor: theme.colors.onBackground,
+  };
+
+  return (
+    <StyleContext.Provider value={{commonStyles: themedStyles, styleDefaults, screenOptions}}>
+      {children}
+    </StyleContext.Provider>
+  );
 };

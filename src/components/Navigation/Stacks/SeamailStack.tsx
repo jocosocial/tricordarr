@@ -10,8 +10,8 @@ import {SeamailCreateScreen} from '../../Screens/Seamail/SeamailCreateScreen';
 import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {getSeamailHeaderTitle} from '../Components/SeamailHeaderTitle';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useAppTheme} from '../../../styles/Theme';
 import {SeamailAddParticipantScreen} from '../../Screens/Seamail/SeamailAddParticipantScreen';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -39,17 +39,8 @@ export type SeamailStackParamList = {
 };
 
 export const SeamailStack = () => {
+  const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<SeamailStackParamList>();
-  const theme = useAppTheme();
-  const screenOptions = {
-    headerStyle: {
-      backgroundColor: theme.colors.background,
-    },
-    headerTitleStyle: {
-      color: theme.colors.onBackground,
-    },
-    headerTintColor: theme.colors.onBackground,
-  };
 
   return (
     <Stack.Navigator initialRouteName={SeamailStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
