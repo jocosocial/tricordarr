@@ -26,6 +26,10 @@ import {NotificationDataListener} from './src/components/Libraries/Notifications
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
+import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
+import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
+import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
+import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -34,10 +38,6 @@ import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
-import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
-import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
-import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -100,14 +100,16 @@ function App(): JSX.Element {
               <ErrorHandlerProvider>
                 <ModalProvider>
                   <UserDataProvider>
-                    <UserRelationsProvider>
-                      <UserNotificationDataProvider>
-                        {/*<NotificationDataPoller />*/}
-                        <ForegroundService />
-                        <NotificationDataListener />
-                        <BottomTabNavigator />
-                      </UserNotificationDataProvider>
-                    </UserRelationsProvider>
+                    <SocketProvider>
+                      <UserRelationsProvider>
+                        <UserNotificationDataProvider>
+                          {/*<NotificationDataPoller />*/}
+                          <ForegroundService />
+                          <NotificationDataListener />
+                          <BottomTabNavigator />
+                        </UserNotificationDataProvider>
+                      </UserRelationsProvider>
+                    </SocketProvider>
                   </UserDataProvider>
                 </ModalProvider>
               </ErrorHandlerProvider>

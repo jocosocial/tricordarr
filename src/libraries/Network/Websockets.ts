@@ -9,10 +9,13 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
  * React-Native does not support all the same properties as browser URL
  * objects. Big sad.
  */
-async function buildWebsocketURL() {
+async function buildWebsocketURL(fezID?: string) {
   const serverHttpUrl = await AppSettings.SERVER_URL.getValue();
   const serverApiPrefix = await AppSettings.URL_PREFIX.getValue();
   let wsUrl = `${serverHttpUrl}${serverApiPrefix}/notification/socket`;
+  if (fezID) {
+    wsUrl = `${serverHttpUrl}${serverApiPrefix}/fez/${fezID}/socket`;
+  }
   if (wsUrl.startsWith('https://')) {
     wsUrl.replace('https', 'wss');
   } else {
@@ -36,9 +39,29 @@ function WebSocketConstructor(options: any) {
   };
 }
 
-export async function buildWebSocket() {
+export async function buildFezSocket(fezID: string) {
+  const wsUrl = await buildWebsocketURL(fezID);
+  const token = (await AppSettings.AUTH_TOKEN.getValue()) ?? undefined;
+  const authHeaders = getAuthHeaders(undefined, undefined, token);
+
+  // https://www.npmjs.com/package/reconnecting-websocket
+  return new ReconnectingWebSocket(wsUrl, [], {
+    WebSocket: WebSocketConstructor({
+      headers: authHeaders,
+    }),
+    // https://github.com/pladaria/reconnecting-websocket
+    connectionTimeout: 10000,
+    maxRetries: 20,
+    minReconnectionDelay: 1000,
+    maxReconnectionDelay: 30000,
+    reconnectionDelayGrowFactor: 2,
+    // debug: true,
+  });
+}
+
+export async function buildWebSocket(fezID?: string) {
   console.log('buildWebSocket called');
-  const wsUrl = await buildWebsocketURL();
+  const wsUrl = await buildWebsocketURL(fezID);
   const token = (await AppSettings.AUTH_TOKEN.getValue()) ?? undefined;
   const authHeaders = getAuthHeaders(undefined, undefined, token);
 
