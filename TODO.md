@@ -40,4 +40,3 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* screenOptions duplicated
