@@ -2,13 +2,17 @@ import React, {useEffect} from 'react';
 import {LoginScreen} from './LoginScreen';
 import {LogoutScreen} from './LogoutScreen';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
 
-interface AccountSettingsProps {
-  route: any;
-  navigation: any;
-}
+type Props = NativeStackScreenProps<
+  SettingsStackParamList,
+  SettingsStackScreenComponents.accountSettings,
+  NavigatorIDs.settingsStack
+>;
 
-export const AccountSettings = ({route, navigation}: AccountSettingsProps) => {
+export const AccountSettings = ({route, navigation}: Props) => {
   const {isLoggedIn, isLoading} = useUserData();
 
   useEffect(() => {

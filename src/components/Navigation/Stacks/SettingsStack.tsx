@@ -1,5 +1,5 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SettingDetail} from '../../Screens/Settings/SettingDetail';
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
 import {StorageKeysSettings} from '../../Screens/Settings/StorageKeys';
@@ -10,9 +10,25 @@ import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScr
 import {useTheme} from 'react-native-paper';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
+import {useNavigation} from '@react-navigation/native';
+
+export type SettingsStackParamList = {
+  AccountSettingsScreen: {
+    title: string;
+  };
+  StorageKeysSettingsScreen: undefined;
+  SettingsScreen: undefined;
+  SettingDetailScreen: {
+    settingKey: string;
+  };
+  NetworkInfoSettingsScreen: undefined;
+  ServerConnectionSettingsScreen: undefined;
+  TestNotificationScreen: undefined;
+  TestErrorScreen: undefined;
+};
 
 export const SettingsStack = () => {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<SettingsStackParamList>();
   const theme = useTheme();
   const screenOptions = {
     headerStyle: {
@@ -42,8 +58,18 @@ export const SettingsStack = () => {
         component={ServerConnectionSettings}
         options={{title: 'Background Connection'}}
       />
-      <Stack.Screen name={SettingsStackScreenComponents.testNotification} component={TestNotificationScreen} />
-      <Stack.Screen name={SettingsStackScreenComponents.testError} component={TestErrorScreen} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.testNotification}
+        component={TestNotificationScreen}
+        options={{title: 'Test Notification'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.testError}
+        component={TestErrorScreen}
+        options={{title: 'Test Errors'}}
+      />
     </Stack.Navigator>
   );
 };
+
+export const useSettingsStack = () => useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
