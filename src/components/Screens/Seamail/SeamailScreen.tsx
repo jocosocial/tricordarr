@@ -133,26 +133,39 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
+        <NavBarIconButton
+          icon={AppIcons.twitarteam}
+          onPress={() => {
+            console.info(`SOCKET STATE ${fezSocket?.readyState}`);
+            console.info('Websocket: ', fezSocket);
+          }}
+        />
         <NavBarIconButton icon={AppIcons.reload} onPress={onRefresh} />
         {data && <SeamailActionsMenu fez={data.pages[0]} />}
       </View>
     );
-  }, [commonStyles.flexRow, data, onRefresh]);
+  }, [commonStyles.flexRow, data, fezSocket, onRefresh]);
 
   console.log('rendering!');
-  if (!fezSocket) {
-    openFezSocket(route.params.fezID);
-  }
 
-  // @TODO This keeps re-rendering.
   const getSocketStatusIndicator = useCallback(() => {
-    console.log('DOO DOO DOO DAA DAA DAA');
-    return <Text>{fezSocket?.readyState || 69}</Text>;
+    return <Text>{fezSocket?.readyState || '??'}</Text>;
   }, [fezSocket]);
 
+  const fezSocketMessageHandler = useCallback(
+    (event: WebSocketMessageEvent) => console.info('[fezSocket] Message!', event.data),
+    [],
+  );
+
   useEffect(() => {
+    console.log('FEZ SOCKET EFFECT');
+    openFezSocket(route.params.fezID);
+    if (fezSocket) {
+      // fezSocket.addEventListener('message', fezSocketMessageHandler);
+      fezSocket.onmessage = fezSocketMessageHandler;
+    }
     return () => closeFezSocket();
-  }, [closeFezSocket]);
+  }, [closeFezSocket, fezSocket, openFezSocket, route.params.fezID]);
 
   useEffect(() => {
     navigation.setOptions({
