@@ -1,10 +1,11 @@
 import React, {useState, PropsWithChildren} from 'react';
 import {SocketContext} from '../Contexts/SocketContext';
-import {buildFezSocket, buildWebSocket} from '../../../libraries/Network/Websockets';
+import {buildFezSocket} from '../../../libraries/Network/Websockets';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
-  const [fezSocket, setFezSocket] = useState<WebSocket>();
-  const [notificationSocket, setNotificationSocket] = useState<WebSocket>();
+  const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
+  const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
 
   const openFezSocket = (fezID: string) => {
     console.log(`[fezSocket] open for ${fezID}`);

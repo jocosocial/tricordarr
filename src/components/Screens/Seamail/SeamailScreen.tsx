@@ -22,6 +22,7 @@ import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -48,6 +49,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList>(null);
   const [showButton, setShowButton] = useState(false);
+  const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
 
   const {
     data,
@@ -137,11 +139,27 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     );
   }, [commonStyles.flexRow, data, onRefresh]);
 
+  console.log('rendering!');
+  if (!fezSocket) {
+    openFezSocket(route.params.fezID);
+  }
+
+  // @TODO This keeps re-rendering.
+  const getSocketStatusIndicator = useCallback(() => {
+    console.log('DOO DOO DOO DAA DAA DAA');
+    return <Text>{fezSocket?.readyState || 69}</Text>;
+  }, [fezSocket]);
+
+  useEffect(() => {
+    return () => closeFezSocket();
+  }, [closeFezSocket]);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
+      headerLeft: getSocketStatusIndicator,
     });
-  }, [getNavButtons, navigation]);
+  }, [getNavButtons, navigation, getSocketStatusIndicator]);
 
   const fezPostMutation = useFezPostMutation();
 

@@ -1,10 +1,11 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 interface SocketContextType {
-  fezSocket?: WebSocket;
-  setFezSocket: Dispatch<SetStateAction<WebSocket | undefined>>;
-  notificationSocket?: WebSocket;
-  setNotificationSocket: Dispatch<SetStateAction<WebSocket | undefined>>;
+  fezSocket?: ReconnectingWebSocket;
+  setFezSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
+  notificationSocket?: ReconnectingWebSocket;
+  setNotificationSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
   openFezSocket: Function;
   closeFezSocket: Function;
 }
