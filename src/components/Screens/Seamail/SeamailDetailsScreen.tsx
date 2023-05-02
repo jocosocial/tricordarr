@@ -4,18 +4,16 @@ import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {Divider, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQuery} from '@tanstack/react-query';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl, TouchableOpacity} from 'react-native';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {TitleTag} from '../../Text/TitleTag';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
-import {SeamailListItem} from '../../Lists/Items/SeamailListItem';
-import {TextListItem} from '../../Lists/Items/TextListItem';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezType} from '../../../libraries/Enums/FezType';
@@ -25,6 +23,9 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useSocket} from '../../Context/Contexts/SocketContext';
+import {WebSocketStatusIndicator} from '../../Images/WebSocketStatusIndicator';
+import {WebSocketState} from '../../../libraries/Network/Websockets';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -40,15 +41,20 @@ const helpContent = [
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading} = useUserData();
-  const {commonStyles} = useStyles();
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
+  const {fezSocket} = useSocket();
 
   const {data, refetch} = useQuery<FezData>({
     queryKey: [`/fez/${route.params.fezID}`],
     enabled: isLoggedIn && !isLoading && !!route.params.fezID,
   });
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch().then(() => setRefreshing(false));
+  };
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -59,8 +65,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          // data = response.data;
-          // refetch();
           setFez(response.data);
         },
       },
@@ -95,7 +99,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <TitleTag>Title</TitleTag>
           <Text selectable={true}>{fez.title}</Text>
@@ -103,6 +107,13 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
         <PaddedContentView>
           <TitleTag>Type</TitleTag>
           <Text>{fez.fezType}</Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <TouchableOpacity onPress={() => console.log(fezSocket)}>
+            <TitleTag>Websocket</TitleTag>
+            {fezSocket && <Text>{WebSocketState[fezSocket.readyState as keyof typeof WebSocketState]}</Text>}
+            {!fezSocket && <Text>undefined</Text>}
+          </TouchableOpacity>
         </PaddedContentView>
         <PaddedContentView padBottom={false}>
           <TitleTag style={[]}>Participants</TitleTag>

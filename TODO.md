@@ -25,19 +25,18 @@ Work Queue
     * Implement the forUser buttons
       * when switched to a privileged forUser, change FAB color
     * Seamail search
-    * Websocket useNotifivationSocket for refreshing the seamail list view
     * mark as read in list
+    * switch to provider context for data
+    * websocket for new conversations
   * Viewing (pagination)
     * tap and hold message for actions. Details, Report, FUTURE USE: reactions
       * report content modal same as profile
-    * open socket and update content when message comes in
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
     * twitarrteam and moderator
-    * Websocket useFezSocket for seamail post updating
-    * Title bar indicator for socket status
     * buzz on socket receive (may need to figure this out with notifications)
+    * switch to provider context data
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
