@@ -23,6 +23,7 @@ export enum AppIcons {
   unmute = 'volume-high',
   report = 'alert-octagon',
   help = 'help-circle',
+  copy = 'content-copy',
   // Users
   user = 'account',
   edituser = 'account-edit',
