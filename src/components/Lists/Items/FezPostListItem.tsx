@@ -43,12 +43,7 @@ export const FezPostListItem = ({item, index, separators, showAuthor = true}: Fe
       )}
       {postBySelf && <MessageSpacerView />}
       <MessageViewContainer>
-        <MessageView
-          text={item.text}
-          timestamp={item.timestamp}
-          postBySelf={postBySelf}
-          author={showAuthor ? item.author.username : undefined}
-        />
+        <MessageView fezPost={item} postBySelf={postBySelf} showAuthor={showAuthor} />
       </MessageViewContainer>
       {!postBySelf && <MessageSpacerView />}
     </FlatListItemContent>
