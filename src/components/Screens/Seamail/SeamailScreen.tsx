@@ -23,6 +23,7 @@ import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
+import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -50,6 +51,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const flatListRef = useRef<FlatList>(null);
   const [showButton, setShowButton] = useState(false);
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
+  const {profilePublicData} = useUserData();
 
   const {
     data,
@@ -148,13 +150,32 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   console.log('rendering!');
 
+  const pushPostToScreen = useCallback(
+    (fezPostData: FezPostData | SocketFezPostData) => {
+      // As the paginator moves, the array ordering is also changed.
+      // Slice returns a copy, and there's no Array.last property :(
+      data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
+    },
+    [data?.pages],
+  );
+
   const getSocketStatusIndicator = useCallback(() => {
     return <Text>{fezSocket?.readyState || '??'}</Text>;
   }, [fezSocket]);
 
   const fezSocketMessageHandler = useCallback(
-    (event: WebSocketMessageEvent) => console.info('[fezSocket] Message!', event.data),
-    [],
+    (event: WebSocketMessageEvent) => {
+      const fezPost = JSON.parse(event.data) as SocketFezPostData;
+      console.info('[fezSocket] Message received!', fezPost);
+      // Don't push our own posts via the socket.
+      if (fezPost.author.userID !== profilePublicData.header.userID) {
+        // @TODO this is busted
+        // console.log('PUSHING THIS', fezPost);
+        // pushPostToScreen(fezPost);
+        onRefresh();
+      }
+    },
+    [onRefresh, profilePublicData.header.userID],
   );
 
   useEffect(() => {
@@ -165,7 +186,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       fezSocket.onmessage = fezSocketMessageHandler;
     }
     return () => closeFezSocket();
-  }, [closeFezSocket, fezSocket, openFezSocket, route.params.fezID]);
+  }, [closeFezSocket, fezSocket, fezSocketMessageHandler, openFezSocket, route.params.fezID]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -184,14 +205,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
           onSuccess: response => {
             formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
-            // As the paginator moves, the array ordering is also changed.
-            // Slice returns a copy, and there's no Array.last property :(
-            data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
+            pushPostToScreen(response.data);
+            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
           },
         },
       );
     },
-    [data?.pages, fezPostMutation, route.params.fezID],
+    [fezPostMutation, pushPostToScreen, route.params.fezID],
   );
 
   if (!data || isLoading) {
