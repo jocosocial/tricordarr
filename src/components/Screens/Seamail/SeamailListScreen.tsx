@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useQuery} from '@tanstack/react-query';
@@ -15,12 +15,15 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
 import {ListSection} from '../../Lists/ListSection';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export const SeamailListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
+  const {asPrivilegedUser, clearPrivileges} = usePrivilege();
   // const {setUserNotificationData} = useUserNotificationData();
-  const {data, refetch} = useSeamailQuery();
+  console.log('asPrivilegedUser', asPrivilegedUser);
+  const {data, refetch} = useSeamailQuery(asPrivilegedUser);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

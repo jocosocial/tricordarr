@@ -2,6 +2,7 @@ import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {ErrorResponse, FezContentData, FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -23,8 +24,12 @@ export const useFezMutation = (retry = 0) => {
   });
 };
 
-export const useSeamailQuery = () => {
+export const useSeamailQuery = (forUser?: keyof typeof PrivilegedUserAccounts) => {
+  let queryRoute = '/fez/joined?type=closed&type=open';
+  if (forUser) {
+    queryRoute = `${queryRoute}&foruser=${forUser}`;
+  }
   return useQuery<FezListData>({
-    queryKey: ['/fez/joined?type=closed&type=open'],
+    queryKey: [queryRoute],
   });
 };

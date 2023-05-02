@@ -30,6 +30,7 @@ import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
 import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
 import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
+import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -100,16 +101,18 @@ function App(): JSX.Element {
               <ErrorHandlerProvider>
                 <ModalProvider>
                   <UserDataProvider>
-                    <SocketProvider>
-                      <UserRelationsProvider>
-                        <UserNotificationDataProvider>
-                          {/*<NotificationDataPoller />*/}
-                          <ForegroundService />
-                          <NotificationDataListener />
-                          <BottomTabNavigator />
-                        </UserNotificationDataProvider>
-                      </UserRelationsProvider>
-                    </SocketProvider>
+                    <PrivilegeProvider>
+                      <SocketProvider>
+                        <UserRelationsProvider>
+                          <UserNotificationDataProvider>
+                            {/*<NotificationDataPoller />*/}
+                            <ForegroundService />
+                            <NotificationDataListener />
+                            <BottomTabNavigator />
+                          </UserNotificationDataProvider>
+                        </UserRelationsProvider>
+                      </SocketProvider>
+                    </PrivilegeProvider>
                   </UserDataProvider>
                 </ModalProvider>
               </ErrorHandlerProvider>

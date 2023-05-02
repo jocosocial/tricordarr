@@ -53,10 +53,25 @@ export namespace UserAccessLevel {
         return 9;
     }
   }
+
+  /**
+   * Test whether a source UserAccessLevel has access to a target UserAccessLevel.
+   */
   export function hasAccess(source: UserAccessLevel, target: UserAccessLevel): boolean {
     return orderFromEnum(source) >= orderFromEnum(target);
   }
+
+  /**
+   * Convenience function to determine whether a particular UserAccessLevel is considered "privileged".
+   */
   export function isPrivileged(source: UserAccessLevel): boolean {
     return orderFromEnum(source) > orderFromEnum(UserAccessLevel.verified);
   }
 }
+
+export const PrivilegedUserAccounts = {
+  admin: 'admin',
+  twitarrteam: 'twitarrteam',
+  tho: 'tho',
+  moderator: 'moderator',
+} as const;

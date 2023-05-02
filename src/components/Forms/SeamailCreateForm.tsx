@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
 
 const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHeader}) => {
   const {values, setFieldValue} = useFormikContext<FezContentData>();
-  const {setAsModerator, setAsTwitarrTeam} = usePrivilege();
+  const {setAsModerator, setAsTwitarrTeam, clearPrivileges} = usePrivilege();
   const {accessLevel} = useUserData();
 
   useEffect(() => {
@@ -46,7 +46,8 @@ const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHe
     if (values.createdByTwitarrTeam !== undefined) {
       setAsTwitarrTeam(values.createdByTwitarrTeam);
     }
-  }, [values, setAsModerator, setAsTwitarrTeam]);
+    // return () => clearPrivileges();
+  }, [values, setAsModerator, setAsTwitarrTeam, clearPrivileges]);
 
   return (
     <PaddedContentView>

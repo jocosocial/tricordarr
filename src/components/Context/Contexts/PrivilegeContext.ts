@@ -1,4 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 
 export interface PrivilegeContextType {
   asModerator: boolean;
@@ -10,6 +11,10 @@ export interface PrivilegeContextType {
   asAdmin: boolean;
   setAsAdmin: Dispatch<SetStateAction<boolean>>;
   asPrivileged: boolean;
+  // setAsPrivilegedUser: Function;
+  clearPrivileges: () => void;
+  asPrivilegedUser?: keyof typeof PrivilegedUserAccounts;
+  becomeUser: (user: keyof typeof PrivilegedUserAccounts) => void;
 }
 
 export const PrivilegeContext = createContext(<PrivilegeContextType>{});
