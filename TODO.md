@@ -29,8 +29,6 @@ Work Queue
     * switch to provider context for data
     * websocket for new conversations
   * Viewing (pagination)
-    * tap and hold message for actions. Details, Report, FUTURE USE: reactions
-      * report content modal same as profile
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
