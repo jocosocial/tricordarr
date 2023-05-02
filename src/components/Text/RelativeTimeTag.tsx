@@ -8,6 +8,7 @@ interface RelativeTimeTagProps {
   date?: Date;
   style?: StyleProp<TextStyle>;
   variant?: keyof typeof MD3TypescaleKey;
+  raw?: boolean;
 }
 
 /**
@@ -18,7 +19,7 @@ interface RelativeTimeTagProps {
  * https://catamphetamine.gitlab.io/react-time-ago/
  * https://gitlab.com/catamphetamine/react-time-ago
  */
-export const RelativeTimeTag = ({date, style = [], variant = undefined}: RelativeTimeTagProps) => {
+export const RelativeTimeTag = ({date, style, variant, raw}: RelativeTimeTagProps) => {
   if (!date) {
     return <></>;
   }
@@ -32,6 +33,10 @@ export const RelativeTimeTag = ({date, style = [], variant = undefined}: Relativ
       </Text>
     );
   };
+
+  if (raw) {
+    return <StylizedText>{date?.toString()}</StylizedText>;
+  }
 
   // The Date.parse(date.toString()) is dumb but necessary.
   // https://github.com/catamphetamine/react-time-ago/issues/18
