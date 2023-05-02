@@ -1,7 +1,7 @@
 import {WebView} from 'react-native-webview';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {AppSettings} from '../../libraries/AppSettings';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from './AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import {NavigatorIDs, SiteUIStackScreenComponents} from '../../libraries/Enums/N
 import {SiteUIStackParamList} from '../Navigation/Stacks/SiteUIStack';
 import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {useStyles} from '../Context/Contexts/StyleContext';
 
 type Props = NativeStackScreenProps<
   SiteUIStackParamList,
@@ -22,6 +23,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
   const [key, setKey] = useState();
   const [handleGoBack, setHandleGoBack] = useState(false);
   const webViewRef = useRef<WebView>();
+  const {commonStyles} = useStyles();
 
   const handleBackButtonPress = () => {
     try {
@@ -46,7 +48,21 @@ export const TwitarrView = ({route, navigation}: Props) => {
     return false;
   });
 
-  const reloadButton = () => <NavBarIconButton icon={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />;
+  const getNavBarIcons = useCallback(
+    () => (
+      <View style={[commonStyles.flexRow]}>
+        <NavBarIconButton
+          icon={AppIcons.home}
+          onPress={async () => {
+            setUrl(await AppSettings.SERVER_URL.getValue());
+            setKey('home');
+          }}
+        />
+        <NavBarIconButton icon={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />
+      </View>
+    ),
+    [commonStyles],
+  );
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -72,9 +88,9 @@ export const TwitarrView = ({route, navigation}: Props) => {
     loadSettings();
 
     navigation.setOptions({
-      headerRight: reloadButton,
+      headerRight: getNavBarIcons,
     });
-  }, [route.params?.timestamp, route.params?.resource, route.params?.id, isLoading, key, navigation]);
+  }, [route.params?.timestamp, route.params?.resource, route.params?.id, isLoading, key, navigation, getNavBarIcons]);
 
   return isLoading ? (
     <ActivityIndicator />
