@@ -31,4 +31,5 @@ export enum AppIcons {
   moderator = 'security',
   twitarteam = 'check-decagram',
   tho = 'shield-crown',
+  home = 'home',
 }
