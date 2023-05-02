@@ -1,4 +1,4 @@
-import {Menu, Text} from 'react-native-paper';
+import {Menu, Text, Tooltip} from 'react-native-paper';
 import {
   GestureResponderEvent,
   NativeUIEvent,
@@ -30,8 +30,10 @@ interface MessageViewProps {
 export const MessageView = ({fezPost, postBySelf = false, showAuthor}: MessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
+  const [rawTime, setRawTime] = useState(false);
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
+  const toggleRawTime = () => setRawTime(!rawTime);
 
   const styles = {
     messageView: [
@@ -61,7 +63,7 @@ export const MessageView = ({fezPost, postBySelf = false, showAuthor}: MessageVi
           fezPost={fezPost}
         />
         {fezPost.timestamp && (
-          <RelativeTimeTag date={fezPost.timestamp} style={styles.messageDateText} variant={'labelSmall'} />
+          <RelativeTimeTag date={fezPost.timestamp} style={styles.messageDateText} variant={'labelSmall'} raw={rawTime} />
         )}
       </TouchableOpacity>
     </View>
