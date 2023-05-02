@@ -251,7 +251,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         onScroll={handleScroll}
         // This is dumb. Have to take the performance hit to allow selecting text.
         // https://github.com/facebook/react-native/issues/26264
-        removeClippedSubviews={false}
+        // Good thing selecting text isn't necessary anymore!
+        // removeClippedSubviews={false}
         ItemSeparatorComponent={SpaceDivider}
         data={fezPostData}
         // Inverted murders performance to the point of locking the app.
