@@ -24,6 +24,8 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
+import {AppIcon} from '../../Images/AppIcon';
+import {WebSocketStatusIndicator} from '../../Images/WebSocketStatusIndicator';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -135,18 +137,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton
-          icon={AppIcons.twitarteam}
-          onPress={() => {
-            console.info(`SOCKET STATE ${fezSocket?.readyState}`);
-            console.info('Websocket: ', fezSocket);
-          }}
-        />
         <NavBarIconButton icon={AppIcons.reload} onPress={onRefresh} />
         {data && <SeamailActionsMenu fez={data.pages[0]} />}
       </View>
     );
-  }, [commonStyles.flexRow, data, fezSocket, onRefresh]);
+  }, [commonStyles.flexRow, data, onRefresh]);
 
   console.log('rendering!');
 
@@ -159,9 +154,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     [data?.pages],
   );
 
-  const getSocketStatusIndicator = useCallback(() => {
-    return <Text>{fezSocket?.readyState || '??'}</Text>;
-  }, [fezSocket]);
+  // const getSocketStatusIndicator = useCallback(() => {
+  //   return <WebSocketStatusIndicator status={fezSocket?.readyState} />;
+  // }, [fezSocket]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -191,9 +186,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
-      headerLeft: getSocketStatusIndicator,
+      // headerLeft: getSocketStatusIndicator,
     });
-  }, [getNavButtons, navigation, getSocketStatusIndicator]);
+  }, [getNavButtons, navigation]);
 
   const fezPostMutation = useFezPostMutation();
 

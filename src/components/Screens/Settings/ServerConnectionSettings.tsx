@@ -19,6 +19,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
+// @TODO this has been moved to the library
 const WebSocketState = Object.freeze({
   0: 'Connecting',
   1: 'Open',

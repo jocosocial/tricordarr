@@ -157,3 +157,11 @@ async function wsCloseHandler(event: WebSocketCloseEvent) {
   // I think I want to keep the healthcheck date around.
   // await AppSettings.WS_HEALTHCHECK_DATE.remove();
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
+export const WebSocketState = {
+  0: 'Connecting',
+  1: 'Open',
+  2: 'Closing',
+  3: 'Closed',
+} as const;
