@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {FezContentData, FezData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -94,21 +94,19 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <PrivilegeProvider>
-        <ScrollingContentView>
-          <SeamailCreateForm
-            initialUserHeader={route.params?.initialUserHeader}
-            formRef={seamailCreateFormRef}
-            onSubmit={onFezSubmit}
-          />
-        </ScrollingContentView>
-        <FezPostForm
-          formRef={seamailPostFormRef}
-          overrideSubmitting={submitting}
-          onPress={onSubmit}
-          onSubmit={onPostSubmit}
+      <ScrollingContentView>
+        <SeamailCreateForm
+          initialUserHeader={route.params?.initialUserHeader}
+          formRef={seamailCreateFormRef}
+          onSubmit={onFezSubmit}
         />
-      </PrivilegeProvider>
+      </ScrollingContentView>
+      <FezPostForm
+        formRef={seamailPostFormRef}
+        overrideSubmitting={submitting}
+        onPress={onSubmit}
+        onSubmit={onPostSubmit}
+      />
     </AppView>
   );
 };

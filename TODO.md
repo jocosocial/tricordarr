@@ -33,7 +33,6 @@ Work Queue
     * refetch fetching all once caching is enabled?
     * "new" separator
     * twitarrteam and moderator
-    * buzz on socket receive (may need to figure this out with notifications)
     * switch to provider context data
   * Details
     * Modify participants needs to refresh the list
