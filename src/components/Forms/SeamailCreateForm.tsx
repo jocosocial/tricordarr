@@ -17,18 +17,8 @@ interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
   formRef: React.RefObject<FormikProps<FezContentData>>;
   initialUserHeader?: UserHeader;
+  initialValues: FezContentData;
 }
-
-const initialValues: FezContentData = {
-  fezType: FezType.open,
-  info: '',
-  initialUsers: [],
-  maxCapacity: 0,
-  minCapacity: 0,
-  title: '',
-  createdByTwitarrTeam: false,
-  createdByModerator: false,
-};
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Subject cannot be empty.'),
@@ -81,7 +71,7 @@ const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHe
   );
 };
 
-export const SeamailCreateForm = ({onSubmit, formRef, initialUserHeader}: SeamailCreateFormProps) => {
+export const SeamailCreateForm = ({onSubmit, formRef, initialUserHeader, initialValues}: SeamailCreateFormProps) => {
   return (
     <Formik
       innerRef={formRef}

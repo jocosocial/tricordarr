@@ -29,6 +29,8 @@ export type SeamailStackParamList = {
   };
   SeamailCreateScreen?: {
     initialUserHeader?: UserHeader;
+    initialAsModerator?: boolean;
+    initialAsTwitarrTeam?: boolean;
   };
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;

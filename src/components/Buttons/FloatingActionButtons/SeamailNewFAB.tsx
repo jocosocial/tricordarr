@@ -5,15 +5,22 @@ import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {useState} from 'react';
+import {AndroidColor} from '@notifee/react-native';
 
 export const SeamailNewFAB = () => {
-  const [state, setState] = React.useState({open: false});
+  const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const navigation = useSeamailStack();
+  const {asPrivilegedUser, asModerator, asTwitarrTeam} = usePrivilege();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
   const {open} = state;
+
+  const color = asPrivilegedUser ? AndroidColor.WHITE : theme.colors.onPrimary;
+  const backgroundColor = asPrivilegedUser ? theme.colors.twitarrNegativeButton : theme.colors.primary;
 
   return (
     <Portal>
@@ -21,9 +28,9 @@ export const SeamailNewFAB = () => {
         open={open}
         visible={true}
         icon={open ? AppIcons.chat : AppIcons.new}
-        color={theme.colors.onPrimary}
+        color={color}
         fabStyle={{
-          backgroundColor: theme.colors.primary,
+          backgroundColor: backgroundColor,
         }}
         label={open ? 'Create new' : undefined}
         // This might need to be moved out due to the rendered-too-many-hooks thing.
@@ -31,7 +38,11 @@ export const SeamailNewFAB = () => {
           FabGroupAction({
             icon: AppIcons.seamailCreate,
             label: 'Seamail',
-            onPress: () => navigation.push(SeamailStackScreenComponents.seamailCreateScreen),
+            onPress: () =>
+              navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
+                initialAsModerator: asModerator,
+                initialAsTwitarrTeam: asTwitarrTeam,
+              }),
           }),
           FabGroupAction({
             icon: AppIcons.krakentalkCreate,

@@ -12,6 +12,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {FezType} from '../../../libraries/Enums/FezType';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -29,6 +30,17 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const {refetch: refetchSeamailList} = useSeamailQuery();
+
+  const initialFormValues: FezContentData = {
+    fezType: FezType.open,
+    info: '',
+    initialUsers: [],
+    maxCapacity: 0,
+    minCapacity: 0,
+    title: '',
+    createdByTwitarrTeam: route.params?.initialAsTwitarrTeam,
+    createdByModerator: route.params?.initialAsModerator,
+  };
 
   // Handler for creating the Fez.
   const onFezSubmit = useCallback(
@@ -99,6 +111,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           initialUserHeader={route.params?.initialUserHeader}
           formRef={seamailCreateFormRef}
           onSubmit={onFezSubmit}
+          initialValues={initialFormValues}
         />
       </ScrollingContentView>
       <FezPostForm
