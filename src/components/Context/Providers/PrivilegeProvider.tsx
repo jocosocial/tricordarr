@@ -4,16 +4,13 @@ import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 
 /**
  * This provider is used for performing a privileged action as some special user.
- * It is not for determining if you are privileged or not. This is intentionally
- * not included in App.tsx with all the other providers. It is recommended to be
- * a child of <AppView> in a particular screen for whatever action is about to
- * be privileged.
  */
 export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [asModerator, setAsModerator] = useState(false);
   const [asTwitarrTeam, setAsTwitarrTeam] = useState(false);
   const [asTHO, setAsTHO] = useState(false);
   const [asAdmin, setAsAdmin] = useState(false);
+  // @TODO deprecate asPrivileged
   const [asPrivileged, setAsPrivileged] = useState(false);
   const [asPrivilegedUser, setAsPrivilegedUser] = useState<keyof typeof PrivilegedUserAccounts>();
 

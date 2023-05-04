@@ -22,8 +22,6 @@ Backlog
 Work Queue
 * Seamail
   * List
-    * Implement the forUser buttons
-      * when switched to a privileged forUser, change FAB color
     * Seamail search
     * mark as read in list
     * switch to provider context for data
@@ -32,10 +30,16 @@ Work Queue
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
-    * twitarrteam and moderator
     * switch to provider context data
+    * highlight privileged mailboxes in bright color
+    * Long title gets in the way of buttons
+    * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
+    * Seamail help long press
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
+  * Posting
+    * How to post as moderator/twitarrteam
+    * change insert button away from photos
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
