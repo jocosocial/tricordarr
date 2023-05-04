@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PrivilegedUserAccounts, UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {PrivilegeContext, usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData, isLoading, accessLevel} = useUserData();
