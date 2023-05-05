@@ -16,31 +16,19 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import axios from 'axios';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
-import {AppIcon} from '../../Images/AppIcon';
-import {WebSocketStatusIndicator} from '../../Images/WebSocketStatusIndicator';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
   SeamailStackScreenComponents.seamailScreen,
   NavigatorIDs.seamailStack
 >;
-
-// interface FezPostMutationProps {
-//   fezID: string;
-//   postContentData: PostContentData;
-// }
-//
-// const fezPostHandler = async ({fezID, postContentData}: FezPostMutationProps): Promise<AxiosResponse<FezPostData>> => {
-//   return await axios.post(`/fez/${fezID}/post`, postContentData);
-// };
 
 // @TODO make this a setting or something.
 const PAGE_SIZE = 10;
