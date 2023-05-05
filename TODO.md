@@ -34,7 +34,6 @@ Work Queue
     * highlight privileged mailboxes in bright color
     * Long title gets in the way of buttons
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
-    * Seamail help long press
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
