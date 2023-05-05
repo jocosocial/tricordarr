@@ -8,6 +8,7 @@ export enum AppIcons {
   privateNoteEdit = 'note-edit',
   // Generic
   new = 'plus',
+  insert = 'plus-circle-outline',
   newImage = 'image-plus',
   delete = 'delete-forever',
   submit = 'send-circle-outline',

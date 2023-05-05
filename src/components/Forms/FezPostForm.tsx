@@ -7,6 +7,7 @@ import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {IconButton} from 'react-native-paper';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -47,7 +48,7 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
     <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
         <View style={styles.formView}>
-          <SubmitIconButton onPress={() => console.log('add image')} icon={AppIcons.newImage} />
+          <IconButton icon={AppIcons.insert} onPress={() => console.log('insert')} />
           <View style={styles.inputWrapperView}>
             <TextInput
               underlineColorAndroid={'transparent'}
