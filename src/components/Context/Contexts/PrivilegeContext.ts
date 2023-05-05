@@ -10,8 +10,6 @@ export interface PrivilegeContextType {
   setAsTHO: Dispatch<SetStateAction<boolean>>;
   asAdmin: boolean;
   setAsAdmin: Dispatch<SetStateAction<boolean>>;
-  asPrivileged: boolean;
-  // setAsPrivilegedUser: Function;
   clearPrivileges: () => void;
   asPrivilegedUser?: keyof typeof PrivilegedUserAccounts;
   becomeUser: (user: keyof typeof PrivilegedUserAccounts) => void;
