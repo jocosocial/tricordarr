@@ -31,7 +31,6 @@ Work Queue
     * refetch fetching all once caching is enabled?
     * "new" separator
     * switch to provider context data
-    * highlight privileged mailboxes in bright color
     * Long title gets in the way of buttons
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
   * Details
@@ -39,6 +38,5 @@ Work Queue
   * Deep link to seamail from notifications
   * Posting
     * How to post as moderator/twitarrteam
-    * change insert button away from photos
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
