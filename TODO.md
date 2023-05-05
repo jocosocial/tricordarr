@@ -37,6 +37,6 @@ Work Queue
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
   * Posting
-    * How to post as moderator/twitarrteam
+    * 
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???

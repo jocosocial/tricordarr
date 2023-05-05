@@ -1,12 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {useQuery} from '@tanstack/react-query';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListItem} from '../../Lists/Items/SeamailListItem';
-import {FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';

@@ -8,6 +8,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {IconButton} from 'react-native-paper';
+import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -16,25 +17,25 @@ interface FezPostFormProps {
   overrideSubmitting?: boolean;
 }
 
-const initialValues: PostContentData = {
-  images: [],
-  postAsModerator: false,
-  postAsTwitarrTeam: false,
-  text: '',
-};
-
 // https://formik.org/docs/guides/react-native
 export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
-  const {asPrivileged} = usePrivilege();
+  const {asPrivilegedUser} = usePrivilege();
+
+  const initialValues: PostContentData = {
+    images: [],
+    postAsModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
+    postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.twitarrteam,
+    text: '',
+  };
 
   const styles = {
     formView: [commonStyles.flexRow, commonStyles.marginVerticalSmall],
     inputWrapperView: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.flexColumn],
     input: [commonStyles.roundedBorderLarge, commonStyles.paddingSides, commonStyles.secondaryContainer],
   };
-  const submitButtonContainerColor = asPrivileged
+  const submitButtonContainerColor = asPrivilegedUser
     ? theme.colors.twitarrNegativeButton
     : theme.colors.twitarrNeutralButton;
 

@@ -10,12 +10,9 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [asTwitarrTeam, setAsTwitarrTeam] = useState(false);
   const [asTHO, setAsTHO] = useState(false);
   const [asAdmin, setAsAdmin] = useState(false);
-  // @TODO deprecate asPrivileged
-  const [asPrivileged, setAsPrivileged] = useState(false);
   const [asPrivilegedUser, setAsPrivilegedUser] = useState<keyof typeof PrivilegedUserAccounts>();
 
   useEffect(() => {
-    setAsPrivileged(asModerator || asTwitarrTeam || asTHO || asAdmin);
     setAsPrivilegedUser(undefined);
     if (asAdmin) {
       setAsPrivilegedUser(PrivilegedUserAccounts.admin);
@@ -60,21 +57,6 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
       }
     }
   };
-  //
-  // const privilegedUser = () => {
-  //   if (asAdmin) {
-  //     return PrivilegedUserAccounts.admin;
-  //   }
-  //   if (asTHO) {
-  //     return PrivilegedUserAccounts.tho;
-  //   }
-  //   if (asTwitarrTeam) {
-  //     return PrivilegedUserAccounts.twitarrteam;
-  //   }
-  //   if (asModerator) {
-  //     return PrivilegedUserAccounts.moderator;
-  //   }
-  // };
 
   return (
     <PrivilegeContext.Provider
@@ -87,7 +69,6 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         setAsTHO,
         asAdmin,
         setAsAdmin,
-        asPrivileged,
         becomeUser,
         clearPrivileges,
         asPrivilegedUser,
