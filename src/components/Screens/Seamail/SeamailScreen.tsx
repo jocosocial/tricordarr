@@ -23,6 +23,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
+import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -231,6 +232,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const fezPostData: FezPostData[] = [...data.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
+      <FezPostAsUserBanner />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.
