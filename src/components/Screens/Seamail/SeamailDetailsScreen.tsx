@@ -26,6 +26,7 @@ import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {WebSocketStatusIndicator} from '../../Images/WebSocketStatusIndicator';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -101,8 +102,10 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
-          <TitleTag>Title</TitleTag>
-          <Text selectable={true}>{fez.title}</Text>
+          <TouchableOpacity onLongPress={() => Clipboard.setString(fez?.title)}>
+            <TitleTag>Title</TitleTag>
+            <Text>{fez.title}</Text>
+          </TouchableOpacity>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Type</TitleTag>

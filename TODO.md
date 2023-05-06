@@ -43,7 +43,6 @@ Work Queue
     * The red is very bright. Maybe move to a themed thing
   * Details
     * Modify participants needs to refresh the list
-    * on press title for copy rather than selectable
   * Deep link to seamail from notifications
   * Posting
     * How or where to change if youre posting as TwitarrTeam/Moderator
