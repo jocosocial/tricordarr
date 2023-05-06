@@ -9,7 +9,10 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 
-const helpContent = ['You can long press on a message for additional actions.'];
+const helpContent = [
+  'You can long press on a message for additional actions.',
+  'Press the title to easily access details.',
+];
 
 export const SeamailActionsMenu = ({fez}: FezDataProps) => {
   const [visible, setVisible] = React.useState(false);

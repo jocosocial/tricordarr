@@ -31,14 +31,11 @@ Work Queue
     * refetch fetching all once caching is enabled?
     * "new" separator
     * switch to provider context data
-    * Long title gets in the way of buttons
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * tap-n-hold report post in open seamails
     * "Testing Moderator Seamail" does not show authors
     * privileged user messages on right
     * right hand author data if viewing as a privileged
-    * Maybe set background color of nav icon button to deal with wide titles. overflow hide?
-    * Seamail help tap title for details
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
   * Details
