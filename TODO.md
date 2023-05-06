@@ -33,9 +33,6 @@ Work Queue
     * switch to provider context data
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * tap-n-hold report post in open seamails
-    * "Testing Moderator Seamail" does not show authors
-    * privileged user messages on right
-    * right hand author data if viewing as a privileged
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
   * Details

@@ -69,9 +69,14 @@ export namespace UserAccessLevel {
   }
 }
 
+/**
+ * Mapping of all privileged user accounts. The value in each key
+ * should match the username (case sensitive) of the pre-programmed
+ * privileged user in the server.
+ */
 export const PrivilegedUserAccounts = {
   admin: 'admin',
-  twitarrteam: 'twitarrteam',
-  tho: 'tho',
+  twitarrteam: 'TwitarrTeam',
+  tho: 'THO',
   moderator: 'moderator',
 } as const;

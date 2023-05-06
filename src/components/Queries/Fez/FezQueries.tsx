@@ -27,7 +27,8 @@ export const useFezMutation = (retry = 0) => {
 export const useSeamailQuery = (forUser?: keyof typeof PrivilegedUserAccounts) => {
   let queryRoute = '/fez/joined?type=closed&type=open';
   if (forUser) {
-    queryRoute = `${queryRoute}&foruser=${forUser}`;
+    // The .toLowerCase() is a workaround for https://github.com/jocosocial/swiftarr/issues/222
+    queryRoute = `${queryRoute}&foruser=${forUser.toLowerCase()}`;
   }
   return useQuery<FezListData>({
     queryKey: [queryRoute],

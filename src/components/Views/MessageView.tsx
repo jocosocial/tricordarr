@@ -19,7 +19,7 @@ import {FezPostData} from '../../libraries/Structs/ControllerStructs';
 
 interface MessageViewProps {
   fezPost: FezPostData;
-  postBySelf?: boolean;
+  messageOnRight?: boolean;
   showAuthor?: boolean;
 }
 
@@ -27,7 +27,7 @@ interface MessageViewProps {
  * This is a View container for a text message in the style of Android Messages or Signal.
  * It only contains the message itself.
  */
-export const MessageView = ({fezPost, postBySelf = false, showAuthor}: MessageViewProps) => {
+export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: MessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
   const [rawTime, setRawTime] = useState(false);
@@ -39,13 +39,13 @@ export const MessageView = ({fezPost, postBySelf = false, showAuthor}: MessageVi
     messageView: [
       // commonStyles.paddingSmall,
       commonStyles.roundedBorderLarge,
-      postBySelf ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
-      postBySelf ? commonStyles.flexEnd : commonStyles.flexStart,
+      messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
+      messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart,
     ],
-    messageText: [postBySelf ? commonStyles.primaryContainer : commonStyles.secondaryContainer],
+    messageText: [messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer],
     messageTextHeader: [
-      postBySelf ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
-      postBySelf ? commonStyles.displayNone : commonStyles.displayFlex,
+      messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
+      showAuthor ? commonStyles.displayFlex : commonStyles.displayNone,
       commonStyles.bold,
     ],
     messageDateText: [],
@@ -63,7 +63,12 @@ export const MessageView = ({fezPost, postBySelf = false, showAuthor}: MessageVi
           fezPost={fezPost}
         />
         {fezPost.timestamp && (
-          <RelativeTimeTag date={fezPost.timestamp} style={styles.messageDateText} variant={'labelSmall'} raw={rawTime} />
+          <RelativeTimeTag
+            date={fezPost.timestamp}
+            style={styles.messageDateText}
+            variant={'labelSmall'}
+            raw={rawTime}
+          />
         )}
       </TouchableOpacity>
     </View>

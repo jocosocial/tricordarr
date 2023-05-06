@@ -116,8 +116,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   };
 
-  const showPostAuthor = !!(data && data.pages[0].participantCount > 2);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch().finally(() => setRefreshing(false));
@@ -257,7 +255,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
-            <FezPostListItem item={item} index={index} separators={separators} showAuthor={showPostAuthor} />
+            <FezPostListItem fezPost={item} index={index} separators={separators} fez={data.pages[0]} />
           </PaddedContentView>
         )}
         // End is Start, Start is End.
