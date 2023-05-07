@@ -15,7 +15,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useNotificationSocket} from '../../Context/Contexts/NotificationSocketContext';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
 export const SeamailListScreen = () => {
@@ -24,7 +24,7 @@ export const SeamailListScreen = () => {
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {fezList, setFezList, incrementFezPostCount} = useTwitarr();
-  const {notificationSocket} = useNotificationSocket();
+  const {notificationSocket} = useSocket();
 
   useEffect(() => {
     setFezList(data);

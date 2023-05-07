@@ -29,9 +29,8 @@ import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
 import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
 import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
-import {NotificationSocketProvider} from './src/components/Context/Providers/NotificationSocketProvider';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
-import {FezSocketProvider} from './src/components/Context/Providers/FezSocketProvider';
+import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -103,18 +102,16 @@ function App(): JSX.Element {
                 <ModalProvider>
                   <UserDataProvider>
                     <PrivilegeProvider>
-                      <NotificationSocketProvider>
-                        <FezSocketProvider>
-                          <UserRelationsProvider>
-                            <UserNotificationDataProvider>
-                              {/*<NotificationDataPoller />*/}
-                              <ForegroundService />
-                              <NotificationDataListener />
-                              <BottomTabNavigator />
-                            </UserNotificationDataProvider>
-                          </UserRelationsProvider>
-                        </FezSocketProvider>
-                      </NotificationSocketProvider>
+                      <SocketProvider>
+                        <UserRelationsProvider>
+                          <UserNotificationDataProvider>
+                            {/*<NotificationDataPoller />*/}
+                            <ForegroundService />
+                            <NotificationDataListener />
+                            <BottomTabNavigator />
+                          </UserNotificationDataProvider>
+                        </UserRelationsProvider>
+                      </SocketProvider>
                     </PrivilegeProvider>
                   </UserDataProvider>
                 </ModalProvider>
