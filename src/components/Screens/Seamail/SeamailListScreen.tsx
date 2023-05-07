@@ -23,7 +23,7 @@ export const SeamailListScreen = () => {
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
-  const {fezList, setFezList, incrementFezPostCount} = useTwitarr();
+  const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
   const {notificationSocket} = useSocket();
 
   useEffect(() => {
@@ -43,9 +43,10 @@ export const SeamailListScreen = () => {
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
         // onRefresh();
         incrementFezPostCount(socketMessage.contentID);
+        unshiftFez(socketMessage.contentID);
       }
     },
-    [incrementFezPostCount],
+    [incrementFezPostCount, unshiftFez],
   );
 
   useEffect(() => {

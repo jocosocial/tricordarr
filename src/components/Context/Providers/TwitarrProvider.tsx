@@ -57,6 +57,26 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
     [updateFezList],
   );
 
+  const unshiftFez = useCallback(
+    (fezID: string) => {
+      if (fezList) {
+        const currentIndex = fezList.fezzes.findIndex((f: FezData) => f.fezID === fezID);
+        if (currentIndex === -1) {
+          return;
+        }
+
+        const currentFez = fezList.fezzes[currentIndex];
+        const newFezzes = [...fezList.fezzes.slice(0, currentIndex), ...fezList.fezzes.slice(currentIndex + 1)];
+        newFezzes.unshift(currentFez);
+        setFezList({
+          ...fezList,
+          fezzes: newFezzes,
+        });
+      }
+    },
+    [fezList],
+  );
+
   return (
     <TwitarrContext.Provider
       value={{
@@ -68,6 +88,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         incrementFezPostCount,
         fezPageData,
         setFezPageData,
+        unshiftFez,
       }}>
       {children}
     </TwitarrContext.Provider>

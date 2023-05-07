@@ -129,11 +129,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     setFez(data?.pages[0]);
 
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      markFezRead(fez.fezID);
+      // @TODO broke this again
+      // markFezRead(fez.fezID);
     }
-    // if (data) {
-    //   markFezRead(data.pages[0].fezID);
-    // }
 
     // Navigation Options
     if (fez) {
@@ -166,6 +164,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     openFezSocket,
     setFez,
     setFezPageData,
+    markFezRead,
   ]);
 
   const renderHeader = () => {
