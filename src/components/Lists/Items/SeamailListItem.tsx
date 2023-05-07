@@ -3,12 +3,16 @@ import {List} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
-import {FezDataProps} from '../../../libraries/Types';
 import {SeamailTimeBadge} from '../Seamail/SeamailTimeBadge';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 
-export const SeamailListItem = ({fez}: FezDataProps) => {
+interface SeamailListItemProps {
+  fez: FezData;
+}
+
+export const SeamailListItem = ({fez}: SeamailListItemProps) => {
   const {profilePublicData} = useUserData();
   const navigation = useSeamailStack();
   let badgeCount = 0;
