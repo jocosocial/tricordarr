@@ -5,7 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useFezMutation, useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezMutation, useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
@@ -28,7 +28,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const [newSeamail, setNewSeamail] = useState<FezData>();
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {refetch: refetchSeamailList} = useSeamailQuery();
+  const {refetch: refetchSeamailList} = useSeamailListQuery();
 
   const initialFormValues: FezContentData = {
     fezType: FezType.open,

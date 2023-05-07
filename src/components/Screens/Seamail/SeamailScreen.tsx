@@ -25,6 +25,7 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -32,14 +33,11 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.seamailStack
 >;
 
-// @TODO make this a setting or something.
-const PAGE_SIZE = 10;
-
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const flatListRef = useRef<FlatList>(null);
-  const {isLoggedIn, isLoading} = useUserData();
+  const {isLoading} = useUserData();
   const {commonStyles} = useStyles();
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const {profilePublicData} = useUserData();
@@ -56,35 +54,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     // isFetchingNextPage,
     isFetchingPreviousPage,
     // isError,
-  } = useInfiniteQuery<FezData, Error>(
-    // @TODO the key needs start too
-    [`/fez/${route.params.fezID}?limit=${PAGE_SIZE}`],
-    async ({pageParam = {start: undefined, limit: PAGE_SIZE}}) => {
-      const {data: responseData} = await axios.get<FezData>(
-        `/fez/${route.params.fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
-      );
-      return responseData;
-    },
-    {
-      enabled: isLoggedIn && !isLoading && !!route.params.fezID,
-      getNextPageParam: lastPage => {
-        if (lastPage.members) {
-          const {limit, start, total} = lastPage.members.paginator;
-          const nextStart = start + limit;
-          return nextStart < total ? {start: nextStart, limit} : undefined;
-        }
-        throw new Error('getNextPageParam no member');
-      },
-      getPreviousPageParam: firstPage => {
-        if (firstPage.members) {
-          const {limit, start} = firstPage.members.paginator;
-          const prevStart = start - limit;
-          return prevStart >= 0 ? {start: prevStart, limit} : undefined;
-        }
-        throw new Error('getPreviousPageParam no member');
-      },
-    },
-  );
+  } = useSeamailQuery({fezID: route.params.fezID});
 
   // function getPostCount(fezData: InfiniteData<FezData>) {
   //   let postCount = 0;

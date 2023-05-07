@@ -12,7 +12,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
 import {ListSection} from '../../Lists/ListSection';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -22,7 +22,7 @@ export const SeamailListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const {data, refetch} = useSeamailQuery(asPrivilegedUser);
+  const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {fezList, setFezList, incrementFezPostCount} = useTwitarr();
   const {notificationSocket} = useSocket();
 
