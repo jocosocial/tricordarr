@@ -18,6 +18,7 @@ Backlog
 * default mutation error handling isnt working. Likely getting overridden.
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
+* Logout should default to clearData, if user opts for all sessions then hit API 
 
 Work Queue
 * Seamail
@@ -37,5 +38,6 @@ Work Queue
   * Deep link to seamail from notifications
   * Posting
     * How or where to change if youre posting as TwitarrTeam/Moderator
+  * Audit refetch usage and replace with state updates as needed.
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
