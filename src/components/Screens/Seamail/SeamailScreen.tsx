@@ -173,22 +173,15 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   }, [closeFezSocket, fezSocket, fezSocketMessageHandler, openFezSocket, route.params.fezID]);
 
   useEffect(() => {
+    console.log('%%% SeamailScreen::useEffect::markFezRead');
     if (data) {
       console.log(`Setting fez to ${data.pages[0].fezID}`);
       setFez(data.pages[0]);
     }
-    if (data) {
-      // const refreshedFezzes = fezList.fezzes.flatMap(fez => {
-      //   if (fez.fezID === data.pages[0].fezID && fez.members) {
-      //     fez.members.readCount = fez.members.postCount;
-      //   }
-      //   return fez;
-      // });
-      // let newList = fezList;
-      // newList.fezzes = refreshedFezzes;
-      // setFezList(newList);
-      markFezRead(data.pages[0].fezID);
-    }
+    // @TODO this is causing infinite renders
+    // if (data) {
+    //   markFezRead(data.pages[0].fezID);
+    // }
     return () => setFez(undefined);
   }, [data, markFezRead, setFez]);
 

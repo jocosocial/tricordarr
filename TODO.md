@@ -24,7 +24,6 @@ Work Queue
 * Seamail
   * List
     * Seamail search
-    * Generic provider functions for markFezRead, fezPostIncrement
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
@@ -33,6 +32,7 @@ Work Queue
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
+    * broke mark as read infinite loop
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
@@ -41,3 +41,9 @@ Work Queue
   * Audit refetch usage and replace with state updates as needed.
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
+
+Websocket States
+0: 'Connecting',
+1: 'Open',
+2: 'Closing',
+3: 'Closed',

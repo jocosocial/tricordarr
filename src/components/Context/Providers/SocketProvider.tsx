@@ -9,8 +9,6 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
 
-  console.log('Rendering Provider');
-
   const openFezSocket = useCallback(
     (fezID: string) => {
       console.log(`[fezSocket] open for ${fezID}, state = ${fezSocket?.readyState}`);

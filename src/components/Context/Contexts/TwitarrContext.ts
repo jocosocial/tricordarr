@@ -7,6 +7,7 @@ interface TwitarrContextType {
   fezList?: FezListData;
   setFezList: Dispatch<SetStateAction<FezListData | undefined>>;
   markFezRead: (fezID: string) => void;
+  incrementFezPostCount: (fezID: string) => void;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});
