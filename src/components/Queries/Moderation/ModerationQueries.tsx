@@ -6,7 +6,7 @@ import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
 
 interface ModReportMutationProps {
   contentType: ReportContentType;
-  contentID: string;
+  contentID: string | number;
   reportData: ReportData;
 }
 

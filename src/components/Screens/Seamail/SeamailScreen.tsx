@@ -24,6 +24,7 @@ import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -43,6 +44,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const [showButton, setShowButton] = useState(false);
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const {profilePublicData} = useUserData();
+  const {setFez} = useTwitarr();
 
   const {
     data,
@@ -169,6 +171,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
     return () => closeFezSocket();
   }, [closeFezSocket, fezSocket, fezSocketMessageHandler, openFezSocket, route.params.fezID]);
+
+  useEffect(() => {
+    if (data) {
+      console.log(`Setting fez to ${data.pages[0].fezID}`);
+      setFez(data.pages[0]);
+    }
+    return () => setFez(undefined);
+  }, [data, setFez]);
 
   useEffect(() => {
     navigation.setOptions({

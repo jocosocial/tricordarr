@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {FormikHelpers} from 'formik';
-import {ProfilePublicData, ReportData} from '../../../libraries/Structs/ControllerStructs';
+import {FezPostData, ProfilePublicData, ReportData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportContentForm} from '../../Forms/ReportContentForm';
 import {useReportMutation} from '../../Queries/Moderation/ModerationQueries';
 import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
@@ -8,19 +8,33 @@ import {ReportModalSuccessView} from './ReportModalSuccessView';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 interface ReportModalViewProps {
-  content: ProfilePublicData;
+  profile?: ProfilePublicData;
+  fezPost?: FezPostData;
 }
 
-export const ReportModalView = ({content}: ReportModalViewProps) => {
+export const ReportModalView = ({profile, fezPost}: ReportModalViewProps) => {
   const reportMutation = useReportMutation();
   const [submitted, setSubmitted] = useState(false);
   const {setErrorMessage} = useErrorHandler();
 
+  if (!profile && !fezPost) {
+    return <></>;
+  }
+
   const onSubmit = (values: ReportData, formikHelpers: FormikHelpers<ReportData>) => {
+    let contentID;
+    let contentType;
+    if (profile) {
+      contentID = profile.header.userID;
+      contentType = ReportContentType.users;
+    } else if (fezPost) {
+      contentID = fezPost.postID;
+      contentType = ReportContentType.fezPost;
+    }
     reportMutation.mutate(
       {
-        contentType: ReportContentType.users,
-        contentID: content.header.userID,
+        contentType: contentType || ReportContentType.fezPost,
+        contentID: contentID || 0,
         reportData: values,
       },
       {
