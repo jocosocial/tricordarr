@@ -1,12 +1,16 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
 import {useUserData} from '../Context/Contexts/UserDataContext';
-import {FezDataProps} from '../../libraries/Types';
 import {styleDefaults} from '../../styles';
 import {UserAvatarImage} from './UserAvatarImage';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {FezData} from '../../libraries/Structs/ControllerStructs';
 
-export const FezAvatarImage = ({fez}: FezDataProps) => {
+interface FezAvatarImageProps {
+  fez: FezData;
+}
+
+export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
   const {profilePublicData} = useUserData();
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header.userID) || [];
