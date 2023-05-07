@@ -37,14 +37,14 @@ const PAGE_SIZE = 10;
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
   const {isLoggedIn, isLoading} = useUserData();
   const {commonStyles} = useStyles();
-  // const {setErrorMessage} = useErrorHandler();
-  const flatListRef = useRef<FlatList>(null);
-  const [showButton, setShowButton] = useState(false);
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const {profilePublicData} = useUserData();
   const {setFez, markFezRead} = useTwitarr();
+  const fezPostMutation = useFezPostMutation();
 
   const {
     data,
@@ -130,7 +130,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         {data && <SeamailActionsMenu fez={data.pages[0]} />}
       </View>
     );
-  }, [commonStyles.flexRow, data, onRefresh]);
+  }, [commonStyles, data, onRefresh]);
 
   console.log('rendering!');
 
@@ -143,10 +143,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     [data?.pages],
   );
 
-  // const getSocketStatusIndicator = useCallback(() => {
-  //   return <WebSocketStatusIndicator status={fezSocket?.readyState} />;
-  // }, [fezSocket]);
-
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const fezPost = JSON.parse(event.data) as SocketFezPostData;
@@ -155,6 +151,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       if (fezPost.author.userID !== profilePublicData.header.userID) {
         // @TODO this is busted
         // console.log('PUSHING THIS', fezPost);
+        // @TODO pushPost should push if it didn't come through the form.
         // pushPostToScreen(fezPost);
         onRefresh();
       }
@@ -162,8 +159,25 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     [onRefresh, profilePublicData.header.userID],
   );
 
+  const onSubmit = useCallback(
+    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      fezPostMutation.mutate(
+        {fezID: route.params.fezID, postContentData: values},
+        {
+          onSuccess: response => {
+            formikHelpers.setSubmitting(false);
+            formikHelpers.resetForm();
+            pushPostToScreen(response.data);
+            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
+          },
+        },
+      );
+    },
+    [fezPostMutation, pushPostToScreen, route.params.fezID],
+  );
+
   useEffect(() => {
-    console.log('FEZ SOCKET EFFECT');
+    console.log('%%% SeamailScreen::useEffect::fezSocket');
     openFezSocket(route.params.fezID);
     if (fezSocket) {
       // fezSocket.addEventListener('message', fezSocketMessageHandler);
@@ -186,30 +200,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   }, [data, markFezRead, setFez]);
 
   useEffect(() => {
+    console.log('%%% SeamailScreen::useEffect::Navigation');
     navigation.setOptions({
       headerRight: getNavButtons,
-      // headerLeft: getSocketStatusIndicator,
     });
   }, [getNavButtons, navigation]);
-
-  const fezPostMutation = useFezPostMutation();
-
-  const onSubmit = useCallback(
-    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-      fezPostMutation.mutate(
-        {fezID: route.params.fezID, postContentData: values},
-        {
-          onSuccess: response => {
-            formikHelpers.setSubmitting(false);
-            formikHelpers.resetForm();
-            pushPostToScreen(response.data);
-            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
-          },
-        },
-      );
-    },
-    [fezPostMutation, pushPostToScreen, route.params.fezID],
-  );
 
   if (!data || isLoading) {
     return <LoadingView />;
@@ -236,10 +231,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
-  // console.log('should show?');
-  // const shouldShowButton = scrollOffset > 450;
-
-  // console.log(data.members?.paginator);
   // This is a big sketch. See below for more reasons why this is a thing.
   // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
   const fezPostData: FezPostData[] = [...data.pages.flatMap(page => page.members?.posts || [])].reverse();
