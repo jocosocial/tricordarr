@@ -15,7 +15,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useSocket} from '../../Context/Contexts/SocketContext';
+import {useNotificationSocket} from '../../Context/Contexts/NotificationSocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
 export const SeamailListScreen = () => {
@@ -24,7 +24,7 @@ export const SeamailListScreen = () => {
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {fezList, setFezList, incrementFezPostCount} = useTwitarr();
-  const {notificationSocket} = useSocket();
+  const {notificationSocket} = useNotificationSocket();
 
   useEffect(() => {
     setFezList(data);
@@ -49,11 +49,13 @@ export const SeamailListScreen = () => {
   );
 
   useEffect(() => {
+    console.log('*** SeamailListScreen useEffect');
     if (notificationSocket) {
       console.log('[NotificationSocket] adding notificationHandler for SeamailListScreen');
       notificationSocket.addEventListener('message', notificationHandler);
     }
     return () => {
+      console.log('*** SeamailListScreen useEffect Return?!?!?!?!');
       if (notificationSocket) {
         console.log('[NotificationSocket] removing notificationHandler for SeamailListScreen');
         notificationSocket.removeEventListener('message', notificationHandler);

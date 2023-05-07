@@ -21,11 +21,12 @@ import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
-import {useSocket} from '../../Context/Contexts/SocketContext';
+import {useSocket} from '../../Context/Contexts/NotificationSocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezSocket} from '../../Context/Contexts/FezSocketContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -35,14 +36,12 @@ export type Props = NativeStackScreenProps<
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [showButton, setShowButton] = useState(false);
-  const flatListRef = useRef<FlatList>(null);
-  const {isLoading} = useUserData();
+  const {fez, setFez, markFezRead, setFezPageData, fezPageData} = useTwitarr();
   const {commonStyles} = useStyles();
-  const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const {profilePublicData} = useUserData();
-  const {setFez, markFezRead} = useTwitarr();
-  const fezPostMutation = useFezPostMutation();
+  const {fezSocket, closeFezSocket, openFezSocket} = useFezSocket();
+
+  console.log('vvv Starting Rendering');
 
   const {
     data,
@@ -56,189 +55,85 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     // isError,
   } = useSeamailQuery({fezID: route.params.fezID});
 
-  // function getPostCount(fezData: InfiniteData<FezData>) {
-  //   let postCount = 0;
-  //   fezData?.pages.flatMap(p => {
-  //     if (p.members) {
-  //       postCount += p.members.paginator.limit;
-  //       console.log('by the way, readCount is', p.members.readCount);
-  //       console.log('total is', p.members.postCount);
-  //     }
-  //   });
-  //   return postCount;
-  // }
-
-  // const startIdx = data?.pages[0].members?.paginator.start;
-  // const endIdx = data?.pages[0].members?.paginator.start + getPostCount(data);
-  // console.log(`currently showing ${startIdx} through ${endIdx}`);
-
-  //
-  // const handleLoadMore = () => {
-  //   if (!isFetchingNextPage) {
-  //     fetchNextPage();
-  //   }
-  // };
-
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => {
-        setRefreshing(false);
-      });
-    }
-  };
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
 
   const getNavButtons = useCallback(() => {
+    if (!fez) {
+      return <></>;
+    }
     return (
       <View style={[commonStyles.flexRow]}>
         <NavBarIconButton icon={AppIcons.reload} onPress={onRefresh} />
-        {data && <SeamailActionsMenu fez={data.pages[0]} />}
+        <SeamailActionsMenu fez={fez} />
       </View>
     );
-  }, [commonStyles, data, onRefresh]);
-
-  console.log('rendering!');
-
-  const pushPostToScreen = useCallback(
-    (fezPostData: FezPostData | SocketFezPostData) => {
-      // As the paginator moves, the array ordering is also changed.
-      // Slice returns a copy, and there's no Array.last property :(
-      data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
-    },
-    [data?.pages],
-  );
+  }, [commonStyles, fez, onRefresh]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      const fezPost = JSON.parse(event.data) as SocketFezPostData;
-      console.info('[fezSocket] Message received!', fezPost);
+      const socketFezPostData = JSON.parse(event.data) as SocketFezPostData;
+      console.info('[fezSocket] Message received!', socketFezPostData);
       // Don't push our own posts via the socket.
-      if (fezPost.author.userID !== profilePublicData.header.userID) {
-        // @TODO this is busted
-        // console.log('PUSHING THIS', fezPost);
-        // @TODO pushPost should push if it didn't come through the form.
-        // pushPostToScreen(fezPost);
+      if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
         onRefresh();
       }
     },
-    [onRefresh, profilePublicData.header.userID],
+    [onRefresh, profilePublicData],
   );
-
-  const onSubmit = useCallback(
-    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-      fezPostMutation.mutate(
-        {fezID: route.params.fezID, postContentData: values},
-        {
-          onSuccess: response => {
-            formikHelpers.setSubmitting(false);
-            formikHelpers.resetForm();
-            pushPostToScreen(response.data);
-            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
-          },
-        },
-      );
-    },
-    [fezPostMutation, pushPostToScreen, route.params.fezID],
-  );
-
-  useEffect(() => {
-    console.log('%%% SeamailScreen::useEffect::fezSocket');
-    openFezSocket(route.params.fezID);
-    if (fezSocket) {
-      // fezSocket.addEventListener('message', fezSocketMessageHandler);
-      fezSocket.onmessage = fezSocketMessageHandler;
-    }
-    return () => closeFezSocket();
-  }, [closeFezSocket, fezSocket, fezSocketMessageHandler, openFezSocket, route.params.fezID]);
-
-  useEffect(() => {
-    console.log('%%% SeamailScreen::useEffect::markFezRead');
-    if (data) {
-      console.log(`Setting fez to ${data.pages[0].fezID}`);
-      setFez(data.pages[0]);
-    }
-    // @TODO this is causing infinite renders
-    // if (data) {
-    //   markFezRead(data.pages[0].fezID);
-    // }
-    return () => setFez(undefined);
-  }, [data, markFezRead, setFez]);
 
   useEffect(() => {
     console.log('%%% SeamailScreen::useEffect::Navigation');
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
+    // Set provider data
+    // This is triggering an unmount/mount of the SeamailListScreen.
+    // Not sure if it's a problem yet.
+    setFezPageData(data);
+    setFez(data?.pages[0]);
 
-  if (!data || isLoading) {
+    // Navigation Options
+    if (fez) {
+      navigation.setOptions({
+        headerRight: getNavButtons,
+      });
+    }
+
+    // Socket. yes this is duplicated for now.
+    if (fez) {
+      openFezSocket(fez.fezID);
+      if (fezSocket && fezSocket.readyState === WebSocket.OPEN) {
+        console.log('[FezSocket] adding fezSocketMessageHandler for SeamailScreen');
+        fezSocket.addEventListener('message', fezSocketMessageHandler);
+      }
+    }
+
+    return () => {
+      console.log('%%% SeamailScreen::useEffect::return');
+      closeFezSocket();
+    };
+  }, [
+    closeFezSocket,
+    data,
+    fez,
+    fezSocket,
+    fezSocketMessageHandler,
+    getNavButtons,
+    navigation,
+    openFezSocket,
+    setFez,
+    setFezPageData,
+  ]);
+
+  console.log('^^^ Finished Rendering');
+
+  if (!fez) {
     return <LoadingView />;
   }
 
-  const renderHeader = () => {
-    return (
-      <PaddedContentView padTop={true} invertVertical={true}>
-        {!hasPreviousPage && (
-          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
-        )}
-      </PaddedContentView>
-    );
-  };
-
-  // Because of the inversion / up-is-down nonsense, we use scrollToOffset
-  // rather than scrollToEnd.
-  const scrollToBottom = () => {
-    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-  };
-
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
-  };
-
-  // This is a big sketch. See below for more reasons why this is a thing.
-  // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
-  const fezPostData: FezPostData[] = [...data.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
       <FezPostAsUserBanner />
-      <FlatList
-        ref={flatListRef}
-        // I am not sure about the performance here. onScroll is great but fires A LOT.
-        // onScrollBeginDrag={handleScroll}
-        // onScrollEndDrag={handleScroll}
-        onScroll={handleScroll}
-        // This is dumb. Have to take the performance hit to allow selecting text.
-        // https://github.com/facebook/react-native/issues/26264
-        // Good thing selecting text isn't necessary anymore!
-        // removeClippedSubviews={false}
-        ItemSeparatorComponent={SpaceDivider}
-        data={fezPostData}
-        // Inverted murders performance to the point of locking the app.
-        // So we do a series of verticallyInverted, relying on a deprecated style prop.
-        // https://github.com/facebook/react-native/issues/30034
-        // inverted={true}
-        style={commonStyles.verticallyInverted}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
-        keyExtractor={(item: FezPostData) => String(item.postID)}
-        // This is the Footer because of all the inversion crap. In our case,
-        // footer renders at the top.
-        ListFooterComponent={renderHeader}
-        renderItem={({item, index, separators}) => (
-          <PaddedContentView invertVertical={true} padBottom={false}>
-            <FezPostListItem fezPost={item} index={index} separators={separators} fez={data.pages[0]} />
-          </PaddedContentView>
-        )}
-        // End is Start, Start is End.
-        onEndReached={handleLoadPrevious}
-      />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} />
     </AppView>
   );
 };

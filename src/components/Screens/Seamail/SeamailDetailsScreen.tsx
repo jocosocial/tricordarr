@@ -5,10 +5,6 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useQuery} from '@tanstack/react-query';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, TouchableOpacity} from 'react-native';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {TitleTag} from '../../Text/TitleTag';
@@ -23,10 +19,10 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
-import {useSocket} from '../../Context/Contexts/SocketContext';
-import {WebSocketStatusIndicator} from '../../Images/WebSocketStatusIndicator';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useFezSocket} from '../../Context/Contexts/FezSocketContext';
+import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -41,16 +37,11 @@ const helpContent = [
 
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {isLoggedIn, isLoading} = useUserData();
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
-  const {fezSocket} = useSocket();
-
-  const {data, refetch} = useQuery<FezData>({
-    queryKey: [`/fez/${route.params.fezID}`],
-    enabled: isLoggedIn && !isLoading && !!route.params.fezID,
-  });
+  const {fezSocket} = useFezSocket();
+  const {refetch} = useSeamailQuery({fezID: route.params.fezID});
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -89,10 +80,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     navigation.setOptions({
       headerRight: getHeaderRight,
     });
-    if (data) {
-      setFez(data);
-    }
-  }, [data, getHeaderRight, navigation, setFez]);
+  }, [getHeaderRight, navigation]);
 
   if (!fez) {
     return <LoadingView />;
