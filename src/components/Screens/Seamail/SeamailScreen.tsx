@@ -179,10 +179,12 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   // Because of the inversion / up-is-down nonsense, we use scrollToOffset
   // rather than scrollToEnd.
+  // useCallback() didn't change any number of renders
   const scrollToBottom = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
 
+  // useCallback() didn't change any number of renders
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
     setShowButton(event.nativeEvent.contentOffset.y > 450);
