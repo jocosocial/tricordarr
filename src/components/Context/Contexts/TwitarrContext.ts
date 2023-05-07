@@ -6,6 +6,7 @@ interface TwitarrContextType {
   setFez: Dispatch<SetStateAction<FezData | undefined>>;
   fezList?: FezListData;
   setFezList: Dispatch<SetStateAction<FezListData | undefined>>;
+  markFezRead: (fezID: string) => void;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});
