@@ -21,12 +21,11 @@ import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
-import {useSocket} from '../../Context/Contexts/NotificationSocketContext';
 import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {useFezSocket} from '../../Context/Contexts/FezSocketContext';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -39,7 +38,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {fez, setFez, markFezRead, setFezPageData, fezPageData} = useTwitarr();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
-  const {fezSocket, closeFezSocket, openFezSocket} = useFezSocket();
+  const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
 
   console.log('vvv Starting Rendering');
 

@@ -21,7 +21,7 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useFezSocket} from '../../Context/Contexts/FezSocketContext';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
@@ -40,7 +40,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
-  const {fezSocket} = useFezSocket();
+  const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
 
   const onRefresh = () => {
