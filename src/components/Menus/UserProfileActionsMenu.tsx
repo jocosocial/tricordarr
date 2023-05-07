@@ -118,7 +118,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView content={profile} />)}
+        onPress={() => handleModal(<ReportModalView profile={profile} />)}
       />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />
