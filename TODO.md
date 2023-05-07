@@ -23,12 +23,12 @@ Work Queue
 * Seamail
   * List
     * Seamail search
-    * mark as read in list
+    * Generic provider functions for markFezRead, fezPostIncrement
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
-    * switch to provider context data
+    * switch to provider context data, pushPostToScreen
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
