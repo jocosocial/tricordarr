@@ -24,7 +24,6 @@ Work Queue
   * List
     * Seamail search
     * mark as read in list
-    * websocket for new conversations
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
