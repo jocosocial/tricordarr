@@ -24,7 +24,6 @@ Work Queue
 * Seamail
   * List
     * Seamail search
-    * on socket unread jump to top of list
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
