@@ -2,8 +2,7 @@ import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useInfiniteQuery, useMutation, UseMutationResult} from '@tanstack/react-query';
-import {ErrorResponse, FezData, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -130,7 +129,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       // @TODO broke this again
-      // markFezRead(fez.fezID);
+      markFezRead(fez.fezID);
     }
 
     // Navigation Options
