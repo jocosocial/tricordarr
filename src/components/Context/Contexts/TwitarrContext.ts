@@ -9,6 +9,7 @@ interface TwitarrContextType {
   setFezList: Dispatch<SetStateAction<FezListData | undefined>>;
   markFezRead: (fezID: string) => void;
   incrementFezPostCount: (fezID: string) => void;
+  unshiftFez: (fezID: string) => void;
   fezPageData?: InfiniteData<FezData>;
   setFezPageData: Dispatch<SetStateAction<InfiniteData<FezData> | undefined>>;
 }
