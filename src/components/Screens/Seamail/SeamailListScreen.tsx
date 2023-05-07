@@ -15,6 +15,8 @@ import {ListSection} from '../../Lists/ListSection';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {useSocket} from '../../Context/Contexts/SocketContext';
+import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
 export const SeamailListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -22,6 +24,7 @@ export const SeamailListScreen = () => {
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailQuery(asPrivilegedUser);
   const {fezList, setFezList} = useTwitarr();
+  const {notificationSocket} = useSocket();
 
   useEffect(() => {
     setFezList(data);
@@ -32,6 +35,27 @@ export const SeamailListScreen = () => {
     setRefreshing(true);
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
+
+  const notificationHandler = useCallback(
+    (event: WebSocketMessageEvent) => {
+      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
+      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
+        onRefresh();
+      }
+    },
+    [onRefresh],
+  );
+
+  useEffect(() => {
+    if (notificationSocket) {
+      notificationSocket.addEventListener('message', notificationHandler);
+    }
+    return () => {
+      if (notificationSocket) {
+        notificationSocket.removeEventListener('message', notificationHandler);
+      }
+    };
+  }, [notificationHandler, notificationSocket]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
