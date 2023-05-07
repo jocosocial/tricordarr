@@ -23,12 +23,12 @@ export const SeamailListScreen = () => {
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailQuery(asPrivilegedUser);
-  const {fezList, setFezList} = useTwitarr();
+  const {fezList, setFezList, incrementFezPostCount} = useTwitarr();
   const {notificationSocket} = useSocket();
 
   useEffect(() => {
     setFezList(data);
-    return () => setFezList(undefined);
+    // return () => setFezList(undefined);
   }, [data, setFezList]);
 
   const onRefresh = useCallback(() => {
@@ -39,19 +39,23 @@ export const SeamailListScreen = () => {
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
+      console.log('SeamailListScreen received', socketMessage);
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        onRefresh();
+        // onRefresh();
+        incrementFezPostCount(socketMessage.contentID);
       }
     },
-    [onRefresh],
+    [incrementFezPostCount],
   );
 
   useEffect(() => {
     if (notificationSocket) {
+      console.log('[NotificationSocket] adding notificationHandler for SeamailListScreen');
       notificationSocket.addEventListener('message', notificationHandler);
     }
     return () => {
       if (notificationSocket) {
+        console.log('[NotificationSocket] removing notificationHandler for SeamailListScreen');
         notificationSocket.removeEventListener('message', notificationHandler);
       }
     };
