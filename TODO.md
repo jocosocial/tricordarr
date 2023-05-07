@@ -24,7 +24,6 @@ Work Queue
   * List
     * Seamail search
     * mark as read in list
-    * switch to provider context for data
     * websocket for new conversations
   * Viewing (pagination)
     * start at unread, start at top of converstation
