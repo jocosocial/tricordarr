@@ -44,7 +44,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const [showButton, setShowButton] = useState(false);
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const {profilePublicData} = useUserData();
-  const {setFez} = useTwitarr();
+  const {setFez, fezList, setFezList} = useTwitarr();
 
   const {
     data,
@@ -177,8 +177,19 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       console.log(`Setting fez to ${data.pages[0].fezID}`);
       setFez(data.pages[0]);
     }
+    if (fezList && data) {
+      const refreshedFezzes = fezList.fezzes.flatMap(fez => {
+        if (fez.fezID === data.pages[0].fezID && fez.members) {
+          fez.members.readCount = fez.members.postCount;
+        }
+        return fez;
+      });
+      let newList = fezList;
+      newList.fezzes = refreshedFezzes;
+      setFezList(newList);
+    }
     return () => setFez(undefined);
-  }, [data, setFez]);
+  }, [data, setFez, fezList, setFezList]);
 
   useEffect(() => {
     navigation.setOptions({

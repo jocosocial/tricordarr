@@ -177,7 +177,7 @@ export interface FezListData {
   /// Pagination into the results set.
   paginator: Paginator;
   ///The fezzes in the result set.
-  fezzes: [FezData];
+  fezzes: FezData[];
 }
 
 export interface ErrorResponse {
