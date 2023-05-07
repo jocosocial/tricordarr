@@ -16,7 +16,6 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import axios from 'axios';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -35,10 +34,13 @@ export type Props = NativeStackScreenProps<
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
   const {fez, setFez, markFezRead, setFezPageData, fezPageData} = useTwitarr();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
+  const fezPostMutation = useFezPostMutation();
 
   console.log('vvv Starting Rendering');
 
@@ -83,6 +85,41 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     [onRefresh, profilePublicData],
   );
 
+  const handleLoadPrevious = () => {
+    if (!isFetchingPreviousPage && hasPreviousPage) {
+      setRefreshing(true);
+      fetchPreviousPage().finally(() => {
+        setRefreshing(false);
+      });
+    }
+  };
+
+  const pushPostToScreen = useCallback(
+    (fezPostData: FezPostData | SocketFezPostData) => {
+      // As the paginator moves, the array ordering is also changed.
+      // Slice returns a copy, and there's no Array.last property :(
+      data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
+    },
+    [data?.pages],
+  );
+
+  const onSubmit = useCallback(
+    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      fezPostMutation.mutate(
+        {fezID: route.params.fezID, postContentData: values},
+        {
+          onSuccess: response => {
+            formikHelpers.setSubmitting(false);
+            formikHelpers.resetForm();
+            pushPostToScreen(response.data);
+            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
+          },
+        },
+      );
+    },
+    [fezPostMutation, pushPostToScreen, route.params.fezID],
+  );
+
   useEffect(() => {
     console.log('%%% SeamailScreen::useEffect::Navigation');
     // Set provider data
@@ -90,6 +127,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     // Not sure if it's a problem yet.
     setFezPageData(data);
     setFez(data?.pages[0]);
+
+    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+      markFezRead(fez.fezID);
+    }
+    // if (data) {
+    //   markFezRead(data.pages[0].fezID);
+    // }
 
     // Navigation Options
     if (fez) {
@@ -124,15 +168,71 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     setFezPageData,
   ]);
 
+  const renderHeader = () => {
+    return (
+      <PaddedContentView padTop={true} invertVertical={true}>
+        {!hasPreviousPage && (
+          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
+        )}
+      </PaddedContentView>
+    );
+  };
+
+  // Because of the inversion / up-is-down nonsense, we use scrollToOffset
+  // rather than scrollToEnd.
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+  };
+
+  const handleScroll = (event: any) => {
+    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
+    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  };
+
   console.log('^^^ Finished Rendering');
 
-  if (!fez) {
+  if (!fez || !data) {
     return <LoadingView />;
   }
 
+  // This is a big sketch. See below for more reasons why this is a thing.
+  // https://www.reddit.com/r/reactjs/comments/rgyy68/can_somebody_help_me_understand_why_does_reverse/?rdt=33460
+  const fezPostData: FezPostData[] = [...data.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
       <FezPostAsUserBanner />
+      <FlatList
+        ref={flatListRef}
+        // I am not sure about the performance here. onScroll is great but fires A LOT.
+        // onScrollBeginDrag={handleScroll}
+        // onScrollEndDrag={handleScroll}
+        onScroll={handleScroll}
+        // This is dumb. Have to take the performance hit to allow selecting text.
+        // https://github.com/facebook/react-native/issues/26264
+        // Good thing selecting text isn't necessary anymore!
+        // removeClippedSubviews={false}
+        ItemSeparatorComponent={SpaceDivider}
+        data={fezPostData}
+        // Inverted murders performance to the point of locking the app.
+        // So we do a series of verticallyInverted, relying on a deprecated style prop.
+        // https://github.com/facebook/react-native/issues/30034
+        // inverted={true}
+        style={commonStyles.verticallyInverted}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+        keyExtractor={(item: FezPostData) => String(item.postID)}
+        // This is the Footer because of all the inversion crap. In our case,
+        // footer renders at the top.
+        ListFooterComponent={renderHeader}
+        renderItem={({item, index, separators}) => (
+          <PaddedContentView invertVertical={true} padBottom={false}>
+            <FezPostListItem fezPost={item} index={index} separators={separators} fez={data.pages[0]} />
+          </PaddedContentView>
+        )}
+        // End is Start, Start is End.
+        onEndReached={handleLoadPrevious}
+      />
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      <FezPostForm onSubmit={onSubmit} />
     </AppView>
   );
 };
