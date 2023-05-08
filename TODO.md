@@ -19,6 +19,7 @@ Backlog
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
 * Logout should default to clearData, if user opts for all sessions then hit API 
+* global settings for websocket and fezsocket enable/disable
 
 Work Queue
 * Seamail

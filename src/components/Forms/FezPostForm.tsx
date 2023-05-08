@@ -26,7 +26,7 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
   const initialValues: PostContentData = {
     images: [],
     postAsModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
-    postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.twitarrteam,
+    postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
     text: '',
   };
 

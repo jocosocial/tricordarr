@@ -76,7 +76,7 @@ export namespace UserAccessLevel {
  */
 export const PrivilegedUserAccounts = {
   admin: 'admin',
-  twitarrteam: 'TwitarrTeam',
-  tho: 'THO',
+  TwitarrTeam: 'TwitarrTeam',
+  THO: 'THO',
   moderator: 'moderator',
 } as const;
