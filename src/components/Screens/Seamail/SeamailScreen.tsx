@@ -23,6 +23,7 @@ import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {FezListActions, useFezListReducer} from '../../Reducers/FezReducers';
 // import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export type Props = NativeStackScreenProps<
@@ -35,11 +36,12 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const flatListRef = useRef<FlatList>(null);
-  const {fez, setFez, markFezRead, setFezPageData, fezPageData} = useTwitarr();
+  const {fez, setFez, setFezPageData, fezPageData} = useTwitarr();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   // const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const fezPostMutation = useFezPostMutation();
+  const [_, dispatchFezList] = useFezListReducer();
 
   console.log('vvv Starting Rendering');
 
@@ -138,6 +140,10 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       // @TODO broke this again
       // markFezRead(fez.fezID);
+      dispatchFezList({
+        type: FezListActions.markAsRead,
+        fezID: fez.fezID,
+      });
     }
 
     // Navigation Options
@@ -171,7 +177,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     // openFezSocket,
     setFez,
     setFezPageData,
-    markFezRead,
+    // markFezRead,
   ]);
 
   const renderHeader = () => {
