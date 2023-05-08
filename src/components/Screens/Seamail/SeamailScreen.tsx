@@ -137,7 +137,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       // @TODO broke this again
-      markFezRead(fez.fezID);
+      // markFezRead(fez.fezID);
     }
 
     // Navigation Options
