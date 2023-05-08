@@ -26,6 +26,8 @@ export const SeamailListScreen = () => {
   const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
   // const {notificationSocket} = useSocket();
 
+  console.log('SeamailListScreen::Render::Start');
+
   useEffect(() => {
     setFezList(data);
     // return () => setFezList(undefined);
