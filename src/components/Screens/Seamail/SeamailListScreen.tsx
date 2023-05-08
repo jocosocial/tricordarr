@@ -15,8 +15,8 @@ import {ListSection} from '../../Lists/ListSection';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useSocket} from '../../Context/Contexts/SocketContext';
-import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+// import {useSocket} from '../../Context/Contexts/SocketContext';
+// import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
 export const SeamailListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -24,7 +24,7 @@ export const SeamailListScreen = () => {
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
-  const {notificationSocket} = useSocket();
+  // const {notificationSocket} = useSocket();
 
   useEffect(() => {
     setFezList(data);
@@ -36,39 +36,39 @@ export const SeamailListScreen = () => {
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
 
-  const notificationHandler = useCallback(
-    (event: WebSocketMessageEvent) => {
-      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
-      console.log('SeamailListScreen received', socketMessage);
-      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        if (fezList?.fezzes.some(f => f.fezID === socketMessage.contentID)) {
-          incrementFezPostCount(socketMessage.contentID);
-          unshiftFez(socketMessage.contentID);
-        } else {
-          // This is kinda a lazy way out, but it works.
-          // Not using onRefresh() so that we don't show the sudden refreshing circle.
-          // Hopefully that's a decent idea.
-          refetch();
-        }
-      }
-    },
-    [incrementFezPostCount, unshiftFez],
-  );
+  // const notificationHandler = useCallback(
+  //   (event: WebSocketMessageEvent) => {
+  //     const socketMessage = JSON.parse(event.data) as SocketNotificationData;
+  //     console.log('SeamailListScreen received', socketMessage);
+  //     if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
+  //       if (fezList?.fezzes.some(f => f.fezID === socketMessage.contentID)) {
+  //         incrementFezPostCount(socketMessage.contentID);
+  //         unshiftFez(socketMessage.contentID);
+  //       } else {
+  //         // This is kinda a lazy way out, but it works.
+  //         // Not using onRefresh() so that we don't show the sudden refreshing circle.
+  //         // Hopefully that's a decent idea.
+  //         refetch();
+  //       }
+  //     }
+  //   },
+  //   [incrementFezPostCount, unshiftFez],
+  // );
 
-  useEffect(() => {
-    console.log('*** SeamailListScreen useEffect');
-    if (notificationSocket) {
-      console.log('[NotificationSocket] adding notificationHandler for SeamailListScreen');
-      notificationSocket.addEventListener('message', notificationHandler);
-    }
-    return () => {
-      console.log('*** SeamailListScreen useEffect Return?!?!?!?!');
-      if (notificationSocket) {
-        console.log('[NotificationSocket] removing notificationHandler for SeamailListScreen');
-        notificationSocket.removeEventListener('message', notificationHandler);
-      }
-    };
-  }, [notificationHandler, notificationSocket]);
+  // useEffect(() => {
+  //   console.log('*** SeamailListScreen useEffect');
+  //   if (notificationSocket) {
+  //     console.log('[NotificationSocket] adding notificationHandler for SeamailListScreen');
+  //     notificationSocket.addEventListener('message', notificationHandler);
+  //   }
+  //   return () => {
+  //     console.log('*** SeamailListScreen useEffect Return?!?!?!?!');
+  //     if (notificationSocket) {
+  //       console.log('[NotificationSocket] removing notificationHandler for SeamailListScreen');
+  //       notificationSocket.removeEventListener('message', notificationHandler);
+  //     }
+  //   };
+  // }, [notificationHandler, notificationSocket]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
