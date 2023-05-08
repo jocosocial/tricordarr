@@ -34,7 +34,7 @@ Work Queue
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
     * live updating messages is broken
-    * mark as read is causing infinite loops
+    * --->mark as read is causing infinite loops<---
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
