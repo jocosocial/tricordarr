@@ -41,9 +41,15 @@ export const SeamailListScreen = () => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       console.log('SeamailListScreen received', socketMessage);
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        // onRefresh();
-        incrementFezPostCount(socketMessage.contentID);
-        unshiftFez(socketMessage.contentID);
+        if (fezList?.fezzes.some(f => f.fezID === socketMessage.contentID)) {
+          incrementFezPostCount(socketMessage.contentID);
+          unshiftFez(socketMessage.contentID);
+        } else {
+          // This is kinda a lazy way out, but it works.
+          // Not using onRefresh() so that we don't show the sudden refreshing circle.
+          // Hopefully that's a decent idea.
+          refetch();
+        }
       }
     },
     [incrementFezPostCount, unshiftFez],
