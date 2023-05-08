@@ -15,6 +15,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {FezListActions, useFezListReducer} from '../../Reducers/FezReducers';
 // import {useSocket} from '../../Context/Contexts/SocketContext';
 // import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
@@ -23,15 +24,18 @@ export const SeamailListScreen = () => {
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
-  const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
+  // const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
   // const {notificationSocket} = useSocket();
+  const [fezList, dispatchFezList] = useFezListReducer();
 
   console.log('SeamailListScreen::Render::Start');
 
   useEffect(() => {
-    setFezList(data);
-    // return () => setFezList(undefined);
-  }, [data, setFezList]);
+    dispatchFezList({
+      type: FezListActions.set,
+      fezListData: data,
+    });
+  }, [data, dispatchFezList]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
