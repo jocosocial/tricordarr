@@ -19,11 +19,11 @@ import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
-import {SocketFezMemberChangeData, SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
+// import {SocketFezMemberChangeData, SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {useSocket} from '../../Context/Contexts/SocketContext';
+// import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -38,7 +38,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {fez, setFez, markFezRead, setFezPageData, fezPageData} = useTwitarr();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
-  const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
+  // const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
   const fezPostMutation = useFezPostMutation();
 
   console.log('vvv Starting Rendering');
@@ -72,24 +72,24 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     );
   }, [commonStyles, fez, onRefresh]);
 
-  const fezSocketMessageHandler = useCallback(
-    (event: WebSocketMessageEvent) => {
-      const socketMessage = JSON.parse(event.data);
-      console.info('[fezSocket] Message received!', socketMessage);
-      if ('joined' in socketMessage) {
-        // Then it's SocketFezMemberChangeData
-        const memberChangeData = socketMessage as SocketFezMemberChangeData;
-        console.log('Ignoring participant data', memberChangeData);
-      } else if ('postID' in socketMessage) {
-        // Don't push our own posts via the socket.
-        const socketFezPostData = socketMessage as SocketFezPostData;
-        if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-          onRefresh();
-        }
-      }
-    },
-    [onRefresh, profilePublicData],
-  );
+  // const fezSocketMessageHandler = useCallback(
+  //   (event: WebSocketMessageEvent) => {
+  //     const socketMessage = JSON.parse(event.data);
+  //     console.info('[fezSocket] Message received!', socketMessage);
+  //     if ('joined' in socketMessage) {
+  //       // Then it's SocketFezMemberChangeData
+  //       const memberChangeData = socketMessage as SocketFezMemberChangeData;
+  //       console.log('Ignoring participant data', memberChangeData);
+  //     } else if ('postID' in socketMessage) {
+  //       // Don't push our own posts via the socket.
+  //       const socketFezPostData = socketMessage as SocketFezPostData;
+  //       if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
+  //         onRefresh();
+  //       }
+  //     }
+  //   },
+  //   [onRefresh, profilePublicData],
+  // );
 
   const handleLoadPrevious = () => {
     if (!isFetchingPreviousPage && hasPreviousPage) {
@@ -101,7 +101,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   };
 
   const pushPostToScreen = useCallback(
-    (fezPostData: FezPostData | SocketFezPostData) => {
+    // Also SocketFezPostData
+    (fezPostData: FezPostData) => {
       // As the paginator moves, the array ordering is also changed.
       // Slice returns a copy, and there's no Array.last property :(
       data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
@@ -147,27 +148,27 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
 
     // Socket. yes this is duplicated for now.
-    if (fez) {
-      openFezSocket(fez.fezID);
-      if (fezSocket && fezSocket.readyState === WebSocket.OPEN) {
-        console.log('[FezSocket] adding fezSocketMessageHandler for SeamailScreen');
-        fezSocket.addEventListener('message', fezSocketMessageHandler);
-      }
-    }
+    // if (fez) {
+    //   openFezSocket(fez.fezID);
+    //   if (fezSocket && fezSocket.readyState === WebSocket.OPEN) {
+    //     console.log('[FezSocket] adding fezSocketMessageHandler for SeamailScreen');
+    //     fezSocket.addEventListener('message', fezSocketMessageHandler);
+    //   }
+    // }
 
     return () => {
       console.log('%%% SeamailScreen::useEffect::return');
-      closeFezSocket();
+      // closeFezSocket();
     };
   }, [
-    closeFezSocket,
+    // closeFezSocket,
     data,
     fez,
-    fezSocket,
-    fezSocketMessageHandler,
+    // fezSocket,
+    // fezSocketMessageHandler,
     getNavButtons,
     navigation,
-    openFezSocket,
+    // openFezSocket,
     setFez,
     setFezPageData,
     markFezRead,

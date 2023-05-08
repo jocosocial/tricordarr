@@ -46,12 +46,11 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     console.log(`[NotificationSocket] open complete, state = ${notificationSocket?.readyState}`);
   }, [notificationSocket]);
 
-  // @TODO this doesnt quite work. If the provider is changed it abandons the existing connection
-  useEffect(() => {
-    if (profilePublicData) {
-      openNotificationSocket();
-    }
-  }, [openNotificationSocket, profilePublicData]);
+  // useEffect(() => {
+  //   if (profilePublicData) {
+  //     openNotificationSocket();
+  //   }
+  // }, [openNotificationSocket, profilePublicData]);
 
   return (
     <SocketContext.Provider
