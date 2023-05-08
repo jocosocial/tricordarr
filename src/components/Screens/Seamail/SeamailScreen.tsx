@@ -19,7 +19,7 @@ import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
-import {SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
+import {SocketFezMemberChangeData, SocketFezPostData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
@@ -74,11 +74,18 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      const socketFezPostData = JSON.parse(event.data) as SocketFezPostData;
-      console.info('[fezSocket] Message received!', socketFezPostData);
-      // Don't push our own posts via the socket.
-      if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-        onRefresh();
+      const socketMessage = JSON.parse(event.data);
+      console.info('[fezSocket] Message received!', socketMessage);
+      if ('joined' in socketMessage) {
+        // Then it's SocketFezMemberChangeData
+        const memberChangeData = socketMessage as SocketFezMemberChangeData;
+        console.log('Ignoring participant data', memberChangeData);
+      } else if ('postID' in socketMessage) {
+        // Don't push our own posts via the socket.
+        const socketFezPostData = socketMessage as SocketFezPostData;
+        if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
+          onRefresh();
+        }
       }
     },
     [onRefresh, profilePublicData],
