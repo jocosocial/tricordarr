@@ -32,13 +32,11 @@ Work Queue
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
-    * broke mark as read again
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
   * Posting
     * How or where to change if youre posting as TwitarrTeam/Moderator
-  * Audit refetch usage and replace with state updates as needed.
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 
