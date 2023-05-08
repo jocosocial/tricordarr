@@ -6,11 +6,9 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 export const SeamailAccountButtons = () => {
-  const {profilePublicData, isLoading, accessLevel} = useUserData();
+  const {profilePublicData, accessLevel} = useUserData();
   const [forUser, setForUser] = useState(profilePublicData.header.username);
   const {clearPrivileges, becomeUser} = usePrivilege();
-
-  console.log('For User:', forUser);
 
   let buttons = [];
 
@@ -27,10 +25,10 @@ export const SeamailAccountButtons = () => {
   // TwitarrTeam
   if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam)) {
     buttons.push({
-      value: PrivilegedUserAccounts.twitarrteam,
+      value: PrivilegedUserAccounts.TwitarrTeam,
       label: 'TwitarrTeam',
       icon: AppIcons.twitarteam,
-      onPress: () => becomeUser(PrivilegedUserAccounts.twitarrteam),
+      onPress: () => becomeUser(PrivilegedUserAccounts.TwitarrTeam),
     });
   }
 

@@ -18,10 +18,10 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
       setAsPrivilegedUser(PrivilegedUserAccounts.admin);
     }
     if (asTHO) {
-      setAsPrivilegedUser(PrivilegedUserAccounts.tho);
+      setAsPrivilegedUser(PrivilegedUserAccounts.THO);
     }
     if (asTwitarrTeam) {
-      setAsPrivilegedUser(PrivilegedUserAccounts.twitarrteam);
+      setAsPrivilegedUser(PrivilegedUserAccounts.TwitarrTeam);
     }
     if (asModerator) {
       setAsPrivilegedUser(PrivilegedUserAccounts.moderator);
@@ -43,11 +43,11 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         setAsAdmin(true);
         break;
       }
-      case PrivilegedUserAccounts.tho: {
+      case PrivilegedUserAccounts.THO: {
         setAsTHO(true);
         break;
       }
-      case PrivilegedUserAccounts.twitarrteam: {
+      case PrivilegedUserAccounts.TwitarrTeam: {
         setAsTwitarrTeam(true);
         break;
       }

@@ -43,6 +43,8 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   // const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
 
+  console.log('rendering details');
+
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));
