@@ -29,11 +29,9 @@ Work Queue
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
-    * pushPostToScreen
     * Append FezPost from Socket if it didn't come through the form (uc: post from browser)
     * Participant change messages. What happens if this occurs?
     * The red is very bright. Maybe move to a themed thing
-    * live updating messages is broken
   * Details
     * Modify participants needs to refresh the list
   * Deep link to seamail from notifications
