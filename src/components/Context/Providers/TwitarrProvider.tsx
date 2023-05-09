@@ -1,13 +1,13 @@
 import React, {useState, PropsWithChildren} from 'react';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
-import {InfiniteData} from '@tanstack/react-query';
 import {useFezListReducer} from '../../Reducers/FezListReducers';
+import {useFezPageDataReducer} from '../../Reducers/FezPageDataReducers';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
   const [fezList, dispatchFezList] = useFezListReducer();
-  const [fezPageData, setFezPageData] = useState<InfiniteData<FezData>>();
+  const [fezPageData, dispatchFezPageData] = useFezPageDataReducer();
 
   return (
     <TwitarrContext.Provider
@@ -17,7 +17,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         fezList,
         dispatchFezList,
         fezPageData,
-        setFezPageData,
+        dispatchFezPageData,
       }}>
       {children}
     </TwitarrContext.Provider>
