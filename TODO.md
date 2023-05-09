@@ -20,11 +20,14 @@ Backlog
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
 * Logout should default to clearData, if user opts for all sessions then hit API 
 * global settings for websocket and fezsocket enable/disable
+* What to do about notifee notifications for a seamail that you have open and focused.
+* Websocket construction needs generics that don't automatically notify
 
 Work Queue
 * Seamail
   * List
     * Seamail search
+    * Paginate
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
