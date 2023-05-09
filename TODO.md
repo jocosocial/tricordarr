@@ -31,8 +31,6 @@ Work Queue
     * Participant change messages.
     * The red is very bright. Maybe move to a themed thing
   * Details
-    * Modify participants needs to refresh the list
-    * Broke adding Participant
     * Participant delete triggers websocket
   * Deep link to seamail from notifications
   * Posting

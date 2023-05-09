@@ -9,6 +9,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fezList, dispatchFezList] = useFezListReducer();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer();
 
+  console.info('*** RENDERING TWITARRPROVIDER ***');
+
   return (
     <TwitarrContext.Provider
       value={{

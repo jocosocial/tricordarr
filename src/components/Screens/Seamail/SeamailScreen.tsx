@@ -135,21 +135,24 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   );
 
   useEffect(() => {
-    console.log('%%% SeamailScreen::useEffect::Navigation');
     // Set provider data
     // This is triggering an unmount/mount of the SeamailListScreen.
     // Not sure if it's a problem yet.
     if (data) {
+      console.info('Setting fez in SeamailScreen');
       dispatchFezPostsData({
         type: FezPostsActions.set,
         fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])].reverse(),
       });
       setFez(data?.pages[0]);
     }
+  }, [data, dispatchFezPostsData, setFez]);
 
+  useEffect(() => {
+    console.log('%%% SeamailScreen::useEffect::Navigation');
+
+    // Mark as read
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      // @TODO broke this again
-      // markFezRead(fez.fezID);
       dispatchFezList({
         type: FezListActions.markAsRead,
         fezID: fez.fezID,
@@ -178,16 +181,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     };
   }, [
     closeFezSocket,
-    data,
     dispatchFezList,
-    dispatchFezPostsData,
     fez,
     fezSocket,
     fezSocketMessageHandler,
     getNavButtons,
     navigation,
     openFezSocket,
-    setFez,
   ]);
 
   const renderHeader = () => {

@@ -24,6 +24,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {FezListActions} from '../../Reducers/FezListReducers';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -39,11 +41,12 @@ const helpContent = [
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
-  const {fez, setFez} = useTwitarr();
+  const {fez, setFez, dispatchFezList} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
   const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
+  const {setErrorMessage} = useErrorHandler();
 
   console.log('rendering details');
 
@@ -61,7 +64,14 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
+          dispatchFezList({
+            type: FezListActions.updateFez,
+            fez: response.data,
+          });
           setFez(response.data);
+        },
+        onError: error => {
+          setErrorMessage(error.response?.data.reason);
         },
       },
     );
