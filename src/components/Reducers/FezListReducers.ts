@@ -6,12 +6,14 @@ export enum FezListActions {
   incrementPostCount = 'INCREMENT_POST_COUNT',
   moveToTop = 'MOVE_TO_TOP',
   set = 'SET',
+  updateFez = 'UPDATE_FEZ',
 }
 
 export type FezListActionsType =
   | {type: FezListActions.markAsRead; fezID: string}
   | {type: FezListActions.incrementPostCount; fezID: string}
   | {type: FezListActions.moveToTop; fezID: string}
+  | {type: FezListActions.updateFez; fez: FezData}
   | {type: FezListActions.set; fezListData?: FezListData};
 
 const fezListReducer = (fezListData: FezListData | undefined, action: FezListActionsType): FezListData | undefined => {
@@ -54,6 +56,18 @@ const fezListReducer = (fezListData: FezListData | undefined, action: FezListAct
         const currentFez = fezListData.fezzes[currentIndex];
         const newFezzes = [...fezListData.fezzes.slice(0, currentIndex), ...fezListData.fezzes.slice(currentIndex + 1)];
         newFezzes.unshift(currentFez);
+        return {
+          ...fezListData,
+          fezzes: newFezzes,
+        };
+      }
+      case FezListActions.updateFez: {
+        const newFezzes = fezListData.fezzes.flatMap(f => {
+          if (f.fezID === action.fez.fezID) {
+            return action.fez;
+          }
+          return f;
+        });
         return {
           ...fezListData,
           fezzes: newFezzes,
