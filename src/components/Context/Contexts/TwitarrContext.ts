@@ -2,6 +2,7 @@ import {useContext, createContext, Dispatch, SetStateAction} from 'react';
 import {InfiniteData} from '@tanstack/react-query';
 import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/FezListReducers';
+import {FezPageDataActionsType} from '../../Reducers/FezPageDataReducers';
 
 interface TwitarrContextType {
   fez?: FezData;
@@ -9,7 +10,7 @@ interface TwitarrContextType {
   fezList?: FezListData;
   dispatchFezList: Dispatch<FezListActionsType>;
   fezPageData?: InfiniteData<FezData>;
-  setFezPageData: Dispatch<SetStateAction<InfiniteData<FezData> | undefined>>;
+  dispatchFezPageData: Dispatch<FezPageDataActionsType>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

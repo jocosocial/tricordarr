@@ -15,7 +15,7 @@ export type FezListActionsType =
   | {type: FezListActions.set; fezListData?: FezListData};
 
 const fezListReducer = (fezListData: FezListData | undefined, action: FezListActionsType): FezListData | undefined => {
-  console.log('Reducing Action:', action.type);
+  console.log('fezListReducer Action:', action.type);
   if (action.type === FezListActions.set) {
     return action.fezListData;
   }
