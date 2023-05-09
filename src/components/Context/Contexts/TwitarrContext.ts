@@ -1,7 +1,7 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
 import {InfiniteData} from '@tanstack/react-query';
 import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
-import {FezListActionsType} from '../../Reducers/FezReducers';
+import {FezListActionsType} from '../../Reducers/FezListReducers';
 
 interface TwitarrContextType {
   fez?: FezData;

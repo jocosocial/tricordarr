@@ -23,7 +23,7 @@ import {SocketFezMemberChangeData, SocketFezPostData} from '../../../libraries/S
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {FezListActions} from '../../Reducers/FezReducers';
+import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export type Props = NativeStackScreenProps<
@@ -74,6 +74,16 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     );
   }, [commonStyles, fez, onRefresh]);
 
+  const pushPostToScreen = useCallback(
+    // Also SocketFezPostData
+    (fezPostData: FezPostData) => {
+      // As the paginator moves, the array ordering is also changed.
+      // Slice returns a copy, and there's no Array.last property :(
+      data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
+    },
+    [data?.pages],
+  );
+
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data);
@@ -86,11 +96,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // Don't push our own posts via the socket.
         const socketFezPostData = socketMessage as SocketFezPostData;
         if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-          onRefresh();
+          pushPostToScreen(socketFezPostData);
         }
       }
     },
-    [onRefresh, profilePublicData],
+    [profilePublicData, pushPostToScreen],
   );
 
   const handleLoadPrevious = () => {
@@ -101,16 +111,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       });
     }
   };
-
-  const pushPostToScreen = useCallback(
-    // Also SocketFezPostData
-    (fezPostData: FezPostData) => {
-      // As the paginator moves, the array ordering is also changed.
-      // Slice returns a copy, and there's no Array.last property :(
-      data?.pages[data?.pages.length - 1].members?.posts?.push(fezPostData);
-    },
-    [data?.pages],
-  );
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
@@ -156,7 +156,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     // Socket. yes this is duplicated for now.
     if (fez) {
       openFezSocket(fez.fezID);
-      if (fezSocket && fezSocket.readyState === WebSocket.OPEN) {
+      if (fezSocket) {
         console.log('[FezSocket] adding fezSocketMessageHandler for SeamailScreen');
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
