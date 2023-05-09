@@ -21,7 +21,6 @@ Backlog
 
 Work Queue
 * Seamail
-  * useWebSocket react-use-websocket 
   * List
     * Seamail search
     * Paginate

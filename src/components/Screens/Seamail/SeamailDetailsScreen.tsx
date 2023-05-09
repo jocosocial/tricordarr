@@ -23,6 +23,7 @@ import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -42,6 +43,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {setModalContent, setModalVisible} = useModal();
   const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
+  const {profilePublicData} = useUserData();
 
   console.log('rendering details');
 
@@ -88,6 +90,8 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
+  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === profilePublicData.header.userID;
+
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -113,7 +117,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
-            {fez.fezType === FezType.open && <FezParticipantAddItem fez={fez} />}
+            {manageUsers && <FezParticipantAddItem fez={fez} />}
             {fez.members &&
               fez.members.participants.map(u => (
                 <FezParticipantListItem
