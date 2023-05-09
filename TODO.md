@@ -2,18 +2,12 @@ Questions for Ben
 * None!
 
 Backlog
-* duplicating types everywhere
-* Do the type thingies for all stack navigators
-* Enum or something the various navcomponents
-* useNavStack to replace the any's (like Seamail and user profile)
 * seamailstack is technically chatstack
 * replace server connection boolean settings with the new components.
 * maybe all settings for that matter?
 * FAB drawing on top of snack bar
 * consider replacing ScrollView lists with FlatView or at least using the Separators feature?
-* Go back and adjust settings stack
 * combine and rename SubmitIconButton and NavBarIconButton
-* variablize the initial source userheader, change with buttons, combine with destination userheader
 * make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
 * default mutation error handling isnt working. Likely getting overridden.
 * nbsp after AppIcon for spacing is haxxxx
@@ -22,9 +16,12 @@ Backlog
 * global settings for websocket and fezsocket enable/disable
 * What to do about notifee notifications for a seamail that you have open and focused.
 * Websocket construction needs generics that don't automatically notify
+* Seamail tap and hold menu needs to render above bottom nav
+
 
 Work Queue
 * Seamail
+  * useWebSocket react-use-websocket 
   * List
     * Seamail search
     * Paginate
@@ -36,9 +33,14 @@ Work Queue
     * The red is very bright. Maybe move to a themed thing
   * Details
     * Modify participants needs to refresh the list
+    * Broke adding Participant
+    * Participant delete triggers websocket
   * Deep link to seamail from notifications
   * Posting
     * How or where to change if youre posting as TwitarrTeam/Moderator
+      * Go in to privileged mode via the three dots
+      * fezposts by privileged users always show author? might simplify things a bit
+      * what is posting userID if asMod is set?
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 
