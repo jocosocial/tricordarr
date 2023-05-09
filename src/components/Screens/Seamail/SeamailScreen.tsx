@@ -90,11 +90,15 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // on reload.
         socketFezPostData.timestamp = new Date();
         if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-          console.log('fezSocket appending', socketFezPostData);
-          dispatchFezPostsData({
-            type: FezPostsActions.appendPost,
-            fezPostData: socketFezPostData,
-          });
+          // console.log('fezSocket appending', socketFezPostData);
+          // dispatchFezPostsData({
+          //   type: FezPostsActions.appendPost,
+          //   fezPostData: socketFezPostData,
+          // });
+          // After all that, the server still considers the message unread until you do a GET containing it
+          // So dynamically putting messages to the screen will help the local state but that's it.
+          // And confuse any other client applications.
+          refetch();
         }
       }
     },
