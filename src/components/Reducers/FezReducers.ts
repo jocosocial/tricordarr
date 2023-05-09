@@ -1,5 +1,5 @@
-import {FezData, FezListData} from '../../libraries/Structs/ControllerStructs';
 import {useReducer} from 'react';
+import {FezData, FezListData} from '../../libraries/Structs/ControllerStructs';
 
 export enum FezListActions {
   markAsRead = 'MARK_AS_READ',
@@ -8,7 +8,7 @@ export enum FezListActions {
   set = 'SET',
 }
 
-type FezListActionsType =
+export type FezListActionsType =
   | {type: FezListActions.markAsRead; fezID: string}
   | {type: FezListActions.incrementPostCount; fezID: string}
   | {type: FezListActions.moveToTop; fezID: string}

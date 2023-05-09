@@ -1,15 +1,13 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {InfiniteData} from '@tanstack/react-query';
+import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {FezListActionsType} from '../../Reducers/FezReducers';
 
 interface TwitarrContextType {
   fez?: FezData;
   setFez: Dispatch<SetStateAction<FezData | undefined>>;
   fezList?: FezListData;
-  setFezList: Dispatch<SetStateAction<FezListData | undefined>>;
-  markFezRead: (fezID: string) => void;
-  incrementFezPostCount: (fezID: string) => void;
-  unshiftFez: (fezID: string) => void;
+  dispatchFezList: Dispatch<FezListActionsType>;
   fezPageData?: InfiniteData<FezData>;
   setFezPageData: Dispatch<SetStateAction<InfiniteData<FezData> | undefined>>;
 }
