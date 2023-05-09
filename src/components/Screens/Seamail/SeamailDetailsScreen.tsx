@@ -19,9 +19,9 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
-// import {WebSocketState} from '../../../libraries/Network/Websockets';
+import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
-// import {useSocket} from '../../Context/Contexts/SocketContext';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
@@ -40,7 +40,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
-  // const {fezSocket} = useSocket();
+  const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
 
   console.log('rendering details');
@@ -101,13 +101,13 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
           <TitleTag>Type</TitleTag>
           <Text>{fez.fezType}</Text>
         </PaddedContentView>
-        {/*<PaddedContentView>*/}
-        {/*  <TouchableOpacity onPress={() => console.log(fezSocket)}>*/}
-        {/*    <TitleTag>Websocket</TitleTag>*/}
-        {/*    {fezSocket && <Text>{WebSocketState[fezSocket.readyState as keyof typeof WebSocketState]}</Text>}*/}
-        {/*    {!fezSocket && <Text>undefined</Text>}*/}
-        {/*  </TouchableOpacity>*/}
-        {/*</PaddedContentView>*/}
+        <PaddedContentView>
+          <TouchableOpacity onPress={() => console.log(fezSocket)}>
+            <TitleTag>Websocket</TitleTag>
+            {fezSocket && <Text>{WebSocketState[fezSocket.readyState as keyof typeof WebSocketState]}</Text>}
+            {!fezSocket && <Text>undefined</Text>}
+          </TouchableOpacity>
+        </PaddedContentView>
         <PaddedContentView padBottom={false}>
           <TitleTag style={[]}>Participants</TitleTag>
         </PaddedContentView>

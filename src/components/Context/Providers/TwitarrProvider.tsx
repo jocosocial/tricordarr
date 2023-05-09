@@ -2,7 +2,7 @@ import React, {useState, PropsWithChildren} from 'react';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {InfiniteData} from '@tanstack/react-query';
-import {useFezListReducer} from '../../Reducers/FezReducers';
+import {useFezListReducer} from '../../Reducers/FezListReducers';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
