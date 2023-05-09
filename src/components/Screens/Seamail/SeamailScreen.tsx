@@ -89,17 +89,17 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // Replace it with now since it's probably now-ish anyway and we can fix it
         // on reload.
         socketFezPostData.timestamp = new Date();
-        if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-          // console.log('fezSocket appending', socketFezPostData);
-          // dispatchFezPostsData({
-          //   type: FezPostsActions.appendPost,
-          //   fezPostData: socketFezPostData,
-          // });
-          // After all that, the server still considers the message unread until you do a GET containing it
-          // So dynamically putting messages to the screen will help the local state but that's it.
-          // And confuse any other client applications.
-          refetch();
-        }
+        //   After all that, the server still considers the message unread until you do a GET containing it
+        //   So dynamically putting messages to the screen will help the local state but that's it.
+        //   And confuse any other client applications.
+        refetch();
+        // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
+        //   console.log('fezSocket appending', socketFezPostData);
+        //   dispatchFezPostsData({
+        //     type: FezPostsActions.appendPost,
+        //     fezPostData: socketFezPostData,
+        //   });
+        // }
       }
     },
     [profilePublicData, dispatchFezPostsData],
