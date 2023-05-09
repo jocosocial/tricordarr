@@ -1,13 +1,12 @@
 import * as React from 'react';
 import {Menu} from 'react-native-paper';
 import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
 import {SeamailStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
+import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -20,7 +19,7 @@ const helpContent = [
 
 export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const navigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
 
   const openMenu = () => setVisible(true);
