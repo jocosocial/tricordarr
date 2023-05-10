@@ -1,7 +1,6 @@
 import {AppView} from '../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -39,11 +38,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const flatListRef = useRef<FlatList>(null);
   const {fez, setFez} = useTwitarr();
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
-  const {fezSocket, closeFezSocket, openFezSocket} = useSocket();
+  const {fezSocket, openFezSocket} = useSocket();
   const fezPostMutation = useFezPostMutation();
   const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
-  console.log('vvv Starting Rendering');
 
   const {
     data,
@@ -77,7 +74,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data);
-      console.info('[fezSocket] Message received!', socketMessage);
       if ('joined' in socketMessage) {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
@@ -102,7 +98,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // }
       }
     },
-    [profilePublicData, dispatchFezPostsData],
+    [refetch],
   );
 
   const handleLoadPrevious = () => {
@@ -126,7 +122,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
-            // data?.pages[data?.pages.length - 1].members?.posts?.push(response.data);
           },
         },
       );
@@ -135,11 +130,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   );
 
   useEffect(() => {
-    // Set provider data
-    // This is triggering an unmount/mount of the SeamailListScreen.
-    // Not sure if it's a problem yet.
     if (data) {
-      console.info('Setting fez in SeamailScreen');
       dispatchFezPostsData({
         type: FezPostsActions.set,
         fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])].reverse(),
@@ -149,8 +140,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   }, [data, dispatchFezPostsData, setFez]);
 
   useEffect(() => {
-    console.log('%%% SeamailScreen::useEffect::Navigation');
-
     // Mark as read
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       dispatchFezList({
@@ -159,36 +148,18 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       });
     }
 
-    // Navigation Options
     if (fez) {
+      // Navigation Options
       navigation.setOptions({
         headerRight: getNavButtons,
       });
-    }
-
-    // Socket. yes this is duplicated for now.
-    if (fez) {
+      // Socket
       openFezSocket(fez.fezID);
       if (fezSocket) {
-        console.log('[FezSocket] adding fezSocketMessageHandler for SeamailScreen');
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
-
-    return () => {
-      console.log('%%% SeamailScreen::useEffect::return');
-      closeFezSocket();
-    };
-  }, [
-    closeFezSocket,
-    dispatchFezList,
-    fez,
-    fezSocket,
-    fezSocketMessageHandler,
-    getNavButtons,
-    navigation,
-    openFezSocket,
-  ]);
+  }, [dispatchFezList, fez, fezSocket, fezSocketMessageHandler, getNavButtons, navigation, openFezSocket]);
 
   const renderHeader = () => {
     return (
@@ -213,10 +184,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
-  console.log('^^^ Finished Rendering');
-
   // This is kinda hax for the fezPostData below
-  if (!fez || !data) {
+  if (!fez) {
     return <LoadingView />;
   }
 
@@ -250,7 +219,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
-            <FezPostListItem fezPost={item} index={index} separators={separators} fez={data.pages[0]} />
+            <FezPostListItem fezPost={item} index={index} separators={separators} fez={fez} />
           </PaddedContentView>
         )}
         // End is Start, Start is End.

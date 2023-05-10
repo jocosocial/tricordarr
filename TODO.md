@@ -30,8 +30,7 @@ Work Queue
     * "new" separator
     * Participant change messages.
     * The red is very bright. Maybe move to a themed thing
-  * Details
-    * Participant delete triggers websocket
+    * loading from socket unreliable on first load?
   * Deep link to seamail from notifications
   * Posting
     * How or where to change if youre posting as TwitarrTeam/Moderator

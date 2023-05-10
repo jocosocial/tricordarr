@@ -18,18 +18,25 @@ import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {useIsFocused} from '@react-navigation/native';
 
-export const SeamailListScreen = () => {
+type SeamailListScreenProps = NativeStackScreenProps<
+  SeamailStackParamList,
+  SeamailStackScreenComponents.seamailListScreen,
+  NavigatorIDs.seamailStack
+>;
+
+export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn, isLoading, isPrivileged} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
-  // const {fezList, setFezList, incrementFezPostCount, unshiftFez} = useTwitarr();
-  const {notificationSocket} = useSocket();
-  // const [fezList, dispatchFezList] = useFezListReducer();
+  const {notificationSocket, closeFezSocket} = useSocket();
   const {fezList, dispatchFezList} = useTwitarr();
-
-  console.log('SeamailListScreen::Render::Start');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     dispatchFezList({
@@ -46,7 +53,6 @@ export const SeamailListScreen = () => {
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
-      console.log('SeamailListScreen received', socketMessage);
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
         if (fezList?.fezzes.some(f => f.fezID === socketMessage.contentID)) {
           dispatchFezList({
@@ -69,19 +75,21 @@ export const SeamailListScreen = () => {
   );
 
   useEffect(() => {
-    console.log('*** SeamailListScreen useEffect');
     if (notificationSocket) {
-      console.log('[NotificationSocket] adding notificationHandler for SeamailListScreen');
       notificationSocket.addEventListener('message', notificationHandler);
     }
     return () => {
-      console.log('*** SeamailListScreen useEffect Return?!?!?!?!');
       if (notificationSocket) {
-        console.log('[NotificationSocket] removing notificationHandler for SeamailListScreen');
         notificationSocket.removeEventListener('message', notificationHandler);
       }
     };
   }, [notificationHandler, notificationSocket]);
+
+  useEffect(() => {
+    if (isFocused) {
+      closeFezSocket();
+    }
+  }, [isFocused, closeFezSocket]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
