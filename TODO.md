@@ -29,8 +29,6 @@ Work Queue
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
     * "new" separator
-    * Participant change messages.
-    * The red is very bright. Maybe move to a themed thing
     * loading from socket unreliable on first load?
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug

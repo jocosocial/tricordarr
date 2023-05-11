@@ -25,6 +25,7 @@ import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {FezPostsActions} from '../../Reducers/FezPostsReducers';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -41,6 +42,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {fezSocket, openFezSocket} = useSocket();
   const fezPostMutation = useFezPostMutation();
   const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
+  const {setErrorMessage} = useErrorHandler();
 
   const {
     data,
@@ -77,7 +79,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       if ('joined' in socketMessage) {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
-        console.log('Ignoring participant data', memberChangeData);
+        const changeActionString = memberChangeData.joined ? 'joined' : 'left';
+        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this seamail.`;
+        setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.
         const socketFezPostData = socketMessage as SocketFezPostData;
@@ -98,7 +102,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // }
       }
     },
-    [refetch],
+    [refetch, setErrorMessage],
   );
 
   const handleLoadPrevious = () => {

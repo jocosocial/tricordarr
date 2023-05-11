@@ -9,13 +9,16 @@ export const FezPostAsUserBanner = () => {
 
   const styles = {
     banner: {
-      backgroundColor: theme.colors.twitarrNegativeButton,
+      backgroundColor: theme.colors.errorContainer,
+    },
+    text: {
+      color: theme.colors.onErrorContainer,
     },
   };
 
   return (
     <Banner visible={!!asPrivilegedUser} style={styles.banner}>
-      <Text>Posting as {asPrivilegedUser}</Text>
+      <Text style={styles.text}>Posting as {asPrivilegedUser}</Text>
     </Banner>
   );
 };
