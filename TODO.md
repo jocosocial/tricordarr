@@ -17,7 +17,8 @@ Backlog
 * What to do about notifee notifications for a seamail that you have open and focused.
 * Websocket construction needs generics that don't automatically notify
 * Seamail tap and hold menu needs to render above bottom nav
-
+* deprecate the privilege stuff in userdataprovider
+* After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
 
 Work Queue
 * Seamail
@@ -32,11 +33,6 @@ Work Queue
     * The red is very bright. Maybe move to a themed thing
     * loading from socket unreliable on first load?
   * Deep link to seamail from notifications
-  * Posting
-    * How or where to change if youre posting as TwitarrTeam/Moderator
-      * Go in to privileged mode via the three dots
-      * fezposts by privileged users always show author? might simplify things a bit
-      * what is posting userID if asMod is set?
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 

@@ -1,6 +1,7 @@
-import React, {useState, PropsWithChildren, useEffect} from 'react';
+import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {PrivilegeContext} from '../Contexts/PrivilegeContext';
-import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
+import {PrivilegedUserAccounts, UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
+import {useUserData} from '../Contexts/UserDataContext';
 
 /**
  * This provider is used for performing a privileged action as some special user.
@@ -11,6 +12,22 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [asTHO, setAsTHO] = useState(false);
   const [asAdmin, setAsAdmin] = useState(false);
   const [asPrivilegedUser, setAsPrivilegedUser] = useState<keyof typeof PrivilegedUserAccounts>();
+  const [hasModerator, setHasModerator] = useState(false);
+  const [hasTwitarrTeam, setHasTwitarrTeam] = useState(false);
+  const [hasTHO, setHasTHO] = useState(false);
+  const {accessLevel} = useUserData();
+
+  useEffect(() => {
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam)) {
+      setHasTwitarrTeam(true);
+    }
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator)) {
+      setHasModerator(true);
+    }
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.tho)) {
+      setHasTHO(true);
+    }
+  }, [accessLevel]);
 
   useEffect(() => {
     setAsPrivilegedUser(undefined);
@@ -72,6 +89,9 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         becomeUser,
         clearPrivileges,
         asPrivilegedUser,
+        hasModerator,
+        hasTHO,
+        hasTwitarrTeam,
       }}>
       {children}
     </PrivilegeContext.Provider>

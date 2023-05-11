@@ -13,6 +13,9 @@ export interface PrivilegeContextType {
   clearPrivileges: () => void;
   asPrivilegedUser?: keyof typeof PrivilegedUserAccounts;
   becomeUser: (user: keyof typeof PrivilegedUserAccounts) => void;
+  hasModerator: boolean;
+  hasTwitarrTeam: boolean;
+  hasTHO: boolean;
 }
 
 export const PrivilegeContext = createContext(<PrivilegeContextType>{});
