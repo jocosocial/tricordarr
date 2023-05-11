@@ -2,9 +2,13 @@ import React from 'react';
 import {Snackbar, Text, useTheme} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 
+interface ErrorSnackbarProps {
+  actionLabel: string;
+}
+
 // Lifted right from the source.
 // https://callstack.github.io/react-native-paper/docs/components/Snackbar
-export const ErrorSnackbar = ({actionLabel = 'Close'}) => {
+export const ErrorSnackbar = ({actionLabel = 'Close'}: ErrorSnackbarProps) => {
   const {errorMessage, setErrorMessage} = useErrorHandler();
   const onDismissSnackBar = () => setErrorMessage('');
   const theme = useTheme();
@@ -23,7 +27,6 @@ export const ErrorSnackbar = ({actionLabel = 'Close'}) => {
       action={{
         label: actionLabel,
       }}>
-      {/*{errorMessage}*/}
       <Text style={textStyle}>🚨 {errorMessage}</Text>
     </Snackbar>
   );
