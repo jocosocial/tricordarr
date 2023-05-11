@@ -12,6 +12,7 @@ import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
 import {useUserBlockMutation} from '../Queries/Users/UserBlockQueries';
 import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
+import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -27,6 +28,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const blockMutation = useUserBlockMutation();
   const favoriteMutation = useUserFavoriteMutation();
   const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -120,9 +122,15 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
         title={'Report'}
         onPress={() => handleModal(<ReportModalView profile={profile} />)}
       />
-      <Divider bold={true} />
-      <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />
-      <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Registration'} onPress={handleRegCode} />
+      {(hasModerator || hasTwitarrTeam) && (
+        <>
+          <Divider bold={true} />
+          {hasModerator && <Menu.Item leadingIcon={AppIcons.moderator} title={'Moderate'} onPress={handleModerate} />}
+          {hasTwitarrTeam && (
+            <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Registration'} onPress={handleRegCode} />
+          )}
+        </>
+      )}
     </Menu>
   );
 };
