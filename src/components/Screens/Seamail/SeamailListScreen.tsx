@@ -35,7 +35,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {notificationSocket, closeFezSocket} = useSocket();
-  const {fezList, dispatchFezList} = useTwitarr();
+  const {fezList, dispatchFezList, setFez} = useTwitarr();
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -88,8 +88,9 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   useEffect(() => {
     if (isFocused) {
       closeFezSocket();
+      setFez(undefined);
     }
-  }, [isFocused, closeFezSocket]);
+  }, [isFocused, closeFezSocket, setFez]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
