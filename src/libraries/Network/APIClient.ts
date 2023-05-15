@@ -22,7 +22,10 @@ export async function setupAxiosStuff() {
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
     // Return
-    console.info(`API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`);
+    console.info(
+      `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
+      config.params,
+    );
     return config;
   });
 }

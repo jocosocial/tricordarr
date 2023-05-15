@@ -6,7 +6,6 @@ import {Divider} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 interface SeamailFlatListProps {
@@ -28,6 +27,7 @@ const SeamailListHeader = () => {
           <SeamailAccountButtons />
         </PaddedContentView>
       )}
+      <ListSeparator />
     </View>
   );
 };
@@ -38,6 +38,7 @@ export const SeamailFlatList = ({fezList, refreshControl}: SeamailFlatListProps)
       refreshControl={refreshControl}
       ItemSeparatorComponent={ListSeparator}
       ListHeaderComponent={SeamailListHeader}
+      ListFooterComponent={ListSeparator}
       data={fezList.fezzes}
       renderItem={({item}) => <SeamailListItem fez={item} />}
     />

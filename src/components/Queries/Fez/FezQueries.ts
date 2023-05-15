@@ -1,8 +1,15 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
-import {ErrorResponse, FezContentData, FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {
+  ErrorResponse,
+  FezContentData,
+  FezData,
+  FezListData,
+  Paginator
+} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
+import {FezType} from '../../../libraries/Enums/FezType';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -39,6 +46,67 @@ interface SeamailQueryProps {
   pageSize?: number;
   fezID: string;
 }
+
+/**
+ * useInfiniteQuery passes a single variable back to the query function
+ * with page data. That should be this information (to be used for paging)
+ * or undefined to indicate there is no additional page available.
+ */
+interface PaginationParams {
+  start?: number;
+  limit: number;
+}
+
+/**
+ * Tells useInfiniteQuery if there's a next page.
+ */
+const getNextPageParam = (paginator: Paginator) => {
+  const {limit, start, total} = paginator;
+  const nextStart = start + limit;
+  return nextStart < total ? {start: nextStart, limit: limit} : undefined;
+};
+
+/**
+ * Tells useInfiniteQuery if there's a previous page.
+ */
+const getPreviousPageParam = (paginator: Paginator) => {
+  const {limit, start} = paginator;
+  const prevStart = start - limit;
+  return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
+};
+
+interface SeamailListQueryOptions {
+  pageSize?: number;
+  forUser?: keyof typeof PrivilegedUserAccounts;
+}
+
+// export const useSeamailListQueryV2 = (queryOptions: SeamailListQueryOptions = {pageSize: 5}) => {
+export const useSeamailListQueryV2 = (pageSize = 5, forUser = undefined) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
+    ['/fez/joined?type=closed&type=open'],
+    async ({pageParam = {limit: pageSize}}) => {
+      const {start, limit} = pageParam as PaginationParams;
+      const queryParams = {
+        ...(start !== undefined && {start: start}),
+        ...(limit !== undefined && {limit: limit}),
+        ...(forUser !== undefined && {forUser: forUser.toLowerCase()}),
+        type: [FezType.closed, FezType.open],
+      };
+      const {data: responseData} = await axios.get<FezListData>('/fez/joined', {
+        params: queryParams,
+      });
+      return responseData;
+    },
+    {
+      getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
+      getPreviousPageParam: lastPage => getPreviousPageParam(lastPage.paginator),
+      onError: error => {
+        setErrorMessage(error?.response?.data.reason);
+      },
+    },
+  );
+};
 
 export const useSeamailQuery = ({pageSize = 10, fezID}: SeamailQueryProps) => {
   return useInfiniteQuery<FezData, Error>(
