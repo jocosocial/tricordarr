@@ -3,7 +3,7 @@ import {List} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
-import {SeamailTimeBadge} from '../Seamail/SeamailTimeBadge';
+import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
