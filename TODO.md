@@ -25,6 +25,8 @@ Work Queue
   * List
     * Seamail search
     * Paginate
+      * New query is broken with throwing away the query parameters on refetch.
+      * switch the fezlist provider to actually be a fezlist rather than pages. Or name them pages.
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
