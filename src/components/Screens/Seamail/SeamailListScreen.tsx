@@ -1,17 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
-import {Divider} from 'react-native-paper';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {RefreshControl} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {SeamailListItem} from '../../Lists/Items/SeamailListItem';
-import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
-import {ListSection} from '../../Lists/ListSection';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezListActions} from '../../Reducers/FezListReducers';
@@ -22,6 +15,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useIsFocused} from '@react-navigation/native';
+import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -31,7 +25,7 @@ type SeamailListScreenProps = NativeStackScreenProps<
 
 export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {isLoggedIn, isLoading, isPrivileged} = useUserData();
+  const {isLoggedIn, isLoading} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {data, refetch} = useSeamailListQuery(asPrivilegedUser);
   const {notificationSocket, closeFezSocket} = useSocket();
@@ -102,28 +96,12 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View>
-          <PaddedContentView>
-            <SeamailSearchBar />
-          </PaddedContentView>
-          {isPrivileged && (
-            <PaddedContentView>
-              <SeamailAccountButtons />
-            </PaddedContentView>
-          )}
-          <ListSection>
-            <Divider bold={true} />
-            {fezList &&
-              fezList.fezzes.map(fez => (
-                <View key={fez.fezID}>
-                  <SeamailListItem fez={fez} />
-                  <Divider bold={true} />
-                </View>
-              ))}
-          </ListSection>
-        </View>
-      </ScrollingContentView>
+      {fezList && (
+        <SeamailFlatList
+          fezList={fezList}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        />
+      )}
       <SeamailNewFAB />
     </AppView>
   );
