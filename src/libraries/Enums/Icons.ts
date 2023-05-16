@@ -13,6 +13,7 @@ export enum AppIcons {
   delete = 'delete-forever',
   submit = 'send-circle-outline',
   scrollDown = 'arrow-down-circle',
+  back = 'arrow-left',
   reload = 'reload',
   error = 'alert-circle-outline',
   menu = 'dots-vertical',

@@ -1,6 +1,6 @@
 import {generateContentNotification} from '../Notifications/Content';
-import {seamailChannel, lfgChannel, serviceChannel} from '../Notifications/Channels';
-import {NotificationType} from '../Enums/Notifications';
+import {lfgChannel, seamailChannel, serviceChannel} from '../Notifications/Channels';
+import {NotificationType, PressAction} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -127,12 +127,14 @@ function wsMessageHandler(event: WebSocketMessageEvent) {
   const type = Object.keys(notificationData.type)[0];
   let channel = serviceChannel;
   let url: string = '';
+  let pressActionID = PressAction.twitarrTab;
 
   switch (type) {
     case NotificationType.seamailUnreadMsg:
       console.log('GOT A SEAMAIL!!!!!!!!!!');
       channel = seamailChannel;
-      url = `/seamail/${notificationData.contentID}#newposts`;
+      url = `/seamail/${notificationData.contentID}`;
+      pressActionID = PressAction.seamail;
       break;
     case NotificationType.fezUnreadMsg:
       console.log('GOT A LFG MESSAGE!!!!!!!!!!');
@@ -141,7 +143,15 @@ function wsMessageHandler(event: WebSocketMessageEvent) {
       break;
   }
 
-  generateContentNotification(notificationData.contentID, 'New Seamail', notificationData.info, channel, type, url);
+  generateContentNotification(
+    notificationData.contentID,
+    'New Seamail',
+    notificationData.info,
+    channel,
+    type,
+    url,
+    pressActionID,
+  );
 }
 
 async function wsCloseHandler(event: WebSocketCloseEvent) {

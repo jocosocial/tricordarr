@@ -8,7 +8,9 @@ export function generateContentNotification(
   channel: AndroidChannelGroup,
   type: string,
   url: string,
+  pressActionID: string = PressAction.twitarrTab,
 ) {
+  console.log('Displaying notification with pressID', pressActionID);
   notifee
     .displayNotification({
       id: id,
@@ -21,7 +23,7 @@ export function generateContentNotification(
         autoCancel: true,
         // https://notifee.app/react-native/docs/android/interaction
         pressAction: {
-          id: PressAction.twitarrTab,
+          id: pressActionID,
         },
       },
     })

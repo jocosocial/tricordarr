@@ -14,7 +14,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import {Text} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
@@ -166,6 +166,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       // Navigation Options
       navigation.setOptions({
         headerRight: getNavButtons,
+        headerTitle: fez.title,
       });
       // Socket
       openFezSocket(fez.fezID);

@@ -6,7 +6,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {LinkingOptions, NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {initialSettings} from './src/libraries/AppSettings';
@@ -31,6 +31,7 @@ import {UserRelationsProvider} from './src/components/Context/Providers/UserRela
 import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
+import {navigationLinking} from './src/libraries/Linking';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -73,27 +74,8 @@ function App(): JSX.Element {
     setupInitialNotification().catch(console.error);
   }, []);
 
-  const deepLinksConf = {
-    screens: {
-      HomeTab: 'hometab',
-      SeamailTab: 'seamailtab',
-      TwitarrTab: 'twitarrtab/:timestamp?/:resource?/:id?',
-      SettingsTab: {
-        screens: {
-          SettingsTab: 'settingstab',
-          ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
-        },
-      },
-    },
-  };
-
-  const linking: LinkingOptions<any> = {
-    prefixes: ['tricordarr://'],
-    config: deepLinksConf,
-  };
-
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={navigationLinking}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
           <QueryClientProvider client={queryClient}>
