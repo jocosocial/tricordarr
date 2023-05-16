@@ -67,9 +67,10 @@ const getPreviousPageParam = (paginator: Paginator) => {
 interface SeamailListQueryOptions {
   pageSize?: number;
   forUser?: keyof typeof PrivilegedUserAccounts;
+  search?: string;
 }
 
-export const useSeamailListQuery = ({pageSize, forUser}: SeamailListQueryOptions = {pageSize: 50}) => {
+export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQueryOptions = {pageSize: 50}) => {
   const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined?type=closed&type=open'],
@@ -78,6 +79,7 @@ export const useSeamailListQuery = ({pageSize, forUser}: SeamailListQueryOptions
       const queryParams = {
         ...(start !== undefined && {start: start}),
         ...(limit !== undefined && {limit: limit}),
+        ...(search && {search: search}),
         // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
         ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
         type: [FezType.closed, FezType.open],
