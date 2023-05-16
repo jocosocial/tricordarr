@@ -24,9 +24,6 @@ Work Queue
 * Seamail
   * List
     * Seamail search
-    * Paginate
-      * New query is broken with throwing away the query parameters on refetch.
-      * switch the fezlist provider to actually be a fezlist rather than pages. Or name them pages.
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?
@@ -35,9 +32,3 @@ Work Queue
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-
-Websocket States
-0: 'Connecting',
-1: 'Open',
-2: 'Closing',
-3: 'Closed',
