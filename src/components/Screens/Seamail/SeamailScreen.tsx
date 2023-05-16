@@ -124,12 +124,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   };
 
-  console.log('Has Next Page?', hasNextPage);
-  if (hasNextPage) {
-    console.log('Loading next page');
-    handleLoadNext();
-  }
-
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       fezPostMutation.mutate(
@@ -204,6 +198,20 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
+  const showNewDivider = useCallback(
+    (index: number) => {
+      if (fez && fez.members) {
+        if (fez.members.postCount === fez.members.readCount) {
+          return false;
+        }
+        // index is inverted so the last message in the list is 0.
+        // Add one to the readCount so that we render below the message at the readCount.
+        return fez.members.postCount - index === fez.members.readCount + 1;
+      }
+    },
+    [fez],
+  );
+
   // This is kinda hax for the fezPostData below
   if (!fez) {
     return <LoadingView />;
@@ -239,7 +247,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
-            <LabelDivider label={index} />
+            {showNewDivider(index) && <LabelDivider label={'New'} />}
             <FezPostListItem fezPost={item} index={index} separators={separators} fez={fez} />
           </PaddedContentView>
         )}
