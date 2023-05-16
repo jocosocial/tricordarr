@@ -24,9 +24,7 @@ Work Queue
 * Seamail
   * Viewing (pagination)
     * start at unread, start at top of converstation
-    * refetch fetching all once caching is enabled?
     * "new" separator
-    * loading from socket unreliable on first load?
   * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
