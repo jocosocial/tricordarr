@@ -1,5 +1,5 @@
 import {useReducer} from 'react';
-import {FezData, FezListData} from '../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../libraries/Structs/ControllerStructs';
 
 export enum FezListActions {
   markAsRead = 'MARK_AS_READ',
@@ -14,70 +14,53 @@ export type FezListActionsType =
   | {type: FezListActions.incrementPostCount; fezID: string}
   | {type: FezListActions.moveToTop; fezID: string}
   | {type: FezListActions.updateFez; fez: FezData}
-  | {type: FezListActions.set; fezListData?: FezListData};
+  | {type: FezListActions.set; fezList: FezData[]};
 
-const fezListReducer = (fezListData: FezListData | undefined, action: FezListActionsType): FezListData | undefined => {
+const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData[] => {
   console.log('fezListReducer Action:', action.type);
   if (action.type === FezListActions.set) {
-    return action.fezListData;
+    return action.fezList;
   }
-  if (fezListData) {
-    switch (action.type) {
-      case FezListActions.markAsRead: {
-        const newFezzes = fezListData.fezzes.flatMap(f => {
-          if (f.fezID === action.fezID && f.members) {
-            f.members.readCount = f.members.postCount;
-          }
-          return f;
-        });
-        return {
-          ...fezListData,
-          fezzes: newFezzes,
-        };
-      }
-      case FezListActions.incrementPostCount: {
-        const newFezzes = fezListData.fezzes.flatMap(f => {
-          if (f.fezID === action.fezID && f.members) {
-            f.members.postCount = f.members.postCount + 1;
-            f.lastModificationTime = new Date();
-          }
-          return f;
-        });
-        return {
-          ...fezListData,
-          fezzes: newFezzes,
-        };
-      }
-      case FezListActions.moveToTop: {
-        const currentIndex = fezListData.fezzes.findIndex((f: FezData) => f.fezID === action.fezID);
-        if (currentIndex === -1) {
-          return fezListData;
+  switch (action.type) {
+    case FezListActions.markAsRead: {
+      return fezList.flatMap(f => {
+        if (f.fezID === action.fezID && f.members) {
+          f.members.readCount = f.members.postCount;
         }
-        const currentFez = fezListData.fezzes[currentIndex];
-        const newFezzes = [...fezListData.fezzes.slice(0, currentIndex), ...fezListData.fezzes.slice(currentIndex + 1)];
-        newFezzes.unshift(currentFez);
-        return {
-          ...fezListData,
-          fezzes: newFezzes,
-        };
+        return f;
+      });
+    }
+    case FezListActions.incrementPostCount: {
+      return fezList.flatMap(f => {
+        if (f.fezID === action.fezID && f.members) {
+          f.members.postCount = f.members.postCount + 1;
+          f.lastModificationTime = new Date();
+        }
+        return f;
+      });
+    }
+    case FezListActions.moveToTop: {
+      const currentIndex = fezList.findIndex((f: FezData) => f.fezID === action.fezID);
+      if (currentIndex === -1) {
+        return fezList;
       }
-      case FezListActions.updateFez: {
-        const newFezzes = fezListData.fezzes.flatMap(f => {
-          if (f.fezID === action.fez.fezID) {
-            return action.fez;
-          }
-          return f;
-        });
-        return {
-          ...fezListData,
-          fezzes: newFezzes,
-        };
-      }
-      default: {
-        throw new Error('Unknown FezListAction action');
-      }
+      const currentFez = fezList[currentIndex];
+      const newFezzes = [...fezList.slice(0, currentIndex), ...fezList.slice(currentIndex + 1)];
+      newFezzes.unshift(currentFez);
+      return newFezzes;
+    }
+    case FezListActions.updateFez: {
+      return fezList.flatMap(f => {
+        if (f.fezID === action.fez.fezID) {
+          return action.fez;
+        }
+        return f;
+      });
+    }
+    default: {
+      throw new Error('Unknown FezListAction action');
     }
   }
 };
 
-export const useFezListReducer = (initialState?: FezListData | undefined) => useReducer(fezListReducer, initialState);
+export const useFezListReducer = (initialState: FezData[]) => useReducer(fezListReducer, initialState);

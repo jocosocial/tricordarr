@@ -1,4 +1,4 @@
-import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, View} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React from 'react';

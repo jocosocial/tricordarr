@@ -5,7 +5,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
-import {useSeamailListQuery, useSeamailListQueryV2} from '../../Queries/Fez/FezQueries';
+import {useSeamailListQueryV2} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -27,9 +27,12 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQueryV2(5, asPrivilegedUser);
+  const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQueryV2(
+    5,
+    asPrivilegedUser,
+  );
   const {notificationSocket, closeFezSocket} = useSocket();
-  const {newFezList, setNewFezList, fezList, dispatchFezList, setFez} = useTwitarr();
+  const {fezList, dispatchFezList, setFez} = useTwitarr();
   const isFocused = useIsFocused();
 
   const handleLoadNext = () => {
@@ -42,14 +45,13 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   };
 
   useEffect(() => {
-    // dispatchFezList({
-    //   type: FezListActions.set,
-    //   fezListData: data?.pages[0],
-    // });
     if (data) {
-      setNewFezList(data?.pages.flatMap(p => p.fezzes));
+      dispatchFezList({
+        type: FezListActions.set,
+        fezList: data.pages.flatMap(p => p.fezzes),
+      });
     }
-  }, [data, dispatchFezList, setNewFezList]);
+  }, [data, dispatchFezList]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -64,7 +66,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        if (fezList?.fezzes.some(f => f.fezID === socketMessage.contentID)) {
+        if (fezList.some(f => f.fezID === socketMessage.contentID)) {
           dispatchFezList({
             type: FezListActions.incrementPostCount,
             fezID: socketMessage.contentID,
@@ -81,7 +83,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
         }
       }
     },
-    [dispatchFezList, fezList?.fezzes, refetch],
+    [dispatchFezList, fezList, refetch],
   );
 
   useEffect(() => {
@@ -113,7 +115,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   return (
     <AppView>
       <SeamailFlatList
-        fezList={newFezList}
+        fezList={fezList}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
