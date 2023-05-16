@@ -26,6 +26,7 @@ import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {FezPostsActions} from '../../Reducers/FezPostsReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -47,11 +48,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {
     data,
     refetch,
-    // fetchNextPage,
+    fetchNextPage,
     fetchPreviousPage,
-    // hasNextPage,
+    hasNextPage,
     hasPreviousPage,
-    // isFetchingNextPage,
+    isFetchingNextPage,
     isFetchingPreviousPage,
     // isError,
   } = useSeamailQuery({fezID: route.params.fezID});
@@ -113,6 +114,21 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       });
     }
   };
+
+  const handleLoadNext = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      setRefreshing(true);
+      fetchNextPage().finally(() => {
+        setRefreshing(false);
+      });
+    }
+  };
+
+  console.log('Has Next Page?', hasNextPage);
+  if (hasNextPage) {
+    console.log('Loading next page');
+    handleLoadNext();
+  }
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
@@ -223,6 +239,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         ListFooterComponent={renderHeader}
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
+            <LabelDivider label={index} />
             <FezPostListItem fezPost={item} index={index} separators={separators} fez={fez} />
           </PaddedContentView>
         )}

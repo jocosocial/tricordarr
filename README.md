@@ -23,6 +23,7 @@ Notes
 * navigation.setOptions must be called witin a useEffect else you get
   an error that youre trying to update a parent component during another component.
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
+* refetchPage can be passed to refetch to limit refetching
 
 
 Releasing
