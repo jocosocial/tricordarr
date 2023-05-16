@@ -37,4 +37,12 @@ export function handleEvent(
   if (type === EventType.PRESS && pressAction.id === PressAction.worker) {
     return '/settingstab/serverconnectionsettingsscreen';
   }
+
+  if (type === EventType.PRESS && pressAction.id === PressAction.seamail) {
+    console.log('THIS IS AUDIBLE');
+    if (notification.id && notification.data) {
+      // notifee.cancelNotification(notification.id);
+      return notification.data.url;
+    }
+  }
 }

@@ -22,4 +22,5 @@ export enum PressAction {
   default = 'default',
   twitarrTab = 'twitarrTab',
   worker = 'worker',
+  seamail = 'seamail',
 }
