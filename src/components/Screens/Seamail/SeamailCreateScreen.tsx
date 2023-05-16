@@ -5,13 +5,15 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useFezMutation, useSeamailListQuery} from '../../Queries/Fez/FezQueries';
+import {useFezMutation} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {FezListActions} from '../../Reducers/FezListReducers';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -28,7 +30,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const [newSeamail, setNewSeamail] = useState<FezData>();
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {refetch: refetchSeamailList} = useSeamailListQuery();
+  const {dispatchFezList} = useTwitarr();
 
   const initialFormValues: FezContentData = {
     fezType: FezType.open,
@@ -52,9 +54,10 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         {
           onSuccess: response => {
             setNewSeamail(response.data);
-            // Reload the list of seamails so that when the user goes back it'll
-            // be there. I don't love this implementation, but it gets the job done.
-            refetchSeamailList();
+            dispatchFezList({
+              type: FezListActions.insert,
+              fez: response.data,
+            });
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
@@ -67,7 +70,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         },
       );
     },
-    [fezMutation, refetchSeamailList, setErrorMessage],
+    [dispatchFezList, fezMutation, setErrorMessage],
   );
 
   // Handler for pushing the FezPost submit button.

@@ -7,6 +7,7 @@ export enum FezListActions {
   moveToTop = 'MOVE_TO_TOP',
   set = 'SET',
   updateFez = 'UPDATE_FEZ',
+  insert = 'INSERT',
 }
 
 export type FezListActionsType =
@@ -14,7 +15,8 @@ export type FezListActionsType =
   | {type: FezListActions.incrementPostCount; fezID: string}
   | {type: FezListActions.moveToTop; fezID: string}
   | {type: FezListActions.updateFez; fez: FezData}
-  | {type: FezListActions.set; fezList: FezData[]};
+  | {type: FezListActions.set; fezList: FezData[]}
+  | {type: FezListActions.insert; fez: FezData};
 
 const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData[] => {
   console.log('fezListReducer Action:', action.type);
@@ -56,6 +58,9 @@ const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData
         }
         return f;
       });
+    }
+    case FezListActions.insert: {
+      return [action.fez].concat(fezList);
     }
     default: {
       throw new Error('Unknown FezListAction action');

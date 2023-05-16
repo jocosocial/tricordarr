@@ -5,7 +5,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
-import {useSeamailListQueryV2} from '../../Queries/Fez/FezQueries';
+import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezListActions} from '../../Reducers/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -27,10 +27,9 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQueryV2(
-    5,
-    asPrivilegedUser,
-  );
+  const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQuery({
+    forUser: asPrivilegedUser,
+  });
   const {notificationSocket, closeFezSocket} = useSocket();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
   const isFocused = useIsFocused();
@@ -45,7 +44,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data && data.pages) {
       dispatchFezList({
         type: FezListActions.set,
         fezList: data.pages.flatMap(p => p.fezzes),

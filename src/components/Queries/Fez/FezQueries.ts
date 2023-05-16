@@ -1,11 +1,11 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {
   ErrorResponse,
   FezContentData,
   FezData,
   FezListData,
-  Paginator
+  Paginator,
 } from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
@@ -28,17 +28,6 @@ export const useFezMutation = (retry = 0) => {
     onError: error => {
       setErrorMessage(error.response?.data.reason);
     },
-  });
-};
-
-export const useSeamailListQuery = (forUser?: keyof typeof PrivilegedUserAccounts) => {
-  let queryRoute = '/fez/joined?type=closed&type=open';
-  if (forUser) {
-    // The .toLowerCase() is a workaround for https://github.com/jocosocial/swiftarr/issues/222
-    queryRoute = `${queryRoute}&foruser=${forUser.toLowerCase()}`;
-  }
-  return useQuery<FezListData>({
-    queryKey: [queryRoute],
   });
 };
 
@@ -80,8 +69,7 @@ interface SeamailListQueryOptions {
   forUser?: keyof typeof PrivilegedUserAccounts;
 }
 
-// export const useSeamailListQueryV2 = (queryOptions: SeamailListQueryOptions = {pageSize: 5}) => {
-export const useSeamailListQueryV2 = (pageSize = 5, forUser?: keyof typeof PrivilegedUserAccounts) => {
+export const useSeamailListQuery = ({pageSize, forUser}: SeamailListQueryOptions = {pageSize: 50}) => {
   const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined?type=closed&type=open'],
