@@ -99,7 +99,7 @@ export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQuer
   );
 };
 
-export const useSeamailQuery = ({pageSize = 5, fezID}: SeamailQueryProps) => {
+export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
   return useInfiniteQuery<FezData, Error>(
     // @TODO the key needs start too
     [`/fez/${fezID}?limit=${pageSize}`],
