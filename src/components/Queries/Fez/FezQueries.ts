@@ -81,7 +81,7 @@ interface SeamailListQueryOptions {
 }
 
 // export const useSeamailListQueryV2 = (queryOptions: SeamailListQueryOptions = {pageSize: 5}) => {
-export const useSeamailListQueryV2 = (pageSize = 5, forUser = undefined) => {
+export const useSeamailListQueryV2 = (pageSize = 5, forUser?: keyof typeof PrivilegedUserAccounts) => {
   const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined?type=closed&type=open'],
@@ -90,7 +90,8 @@ export const useSeamailListQueryV2 = (pageSize = 5, forUser = undefined) => {
       const queryParams = {
         ...(start !== undefined && {start: start}),
         ...(limit !== undefined && {limit: limit}),
-        ...(forUser !== undefined && {forUser: forUser.toLowerCase()}),
+        // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
+        ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
         type: [FezType.closed, FezType.open],
       };
       const {data: responseData} = await axios.get<FezListData>('/fez/joined', {
@@ -137,4 +138,4 @@ export const useSeamailQuery = ({pageSize = 10, fezID}: SeamailQueryProps) => {
       },
     },
   );
-}
+};

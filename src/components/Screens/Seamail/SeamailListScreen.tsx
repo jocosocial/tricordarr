@@ -27,7 +27,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {isLoggedIn} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const {data, isLoading, refetch} = useSeamailListQueryV2({forUser: asPrivilegedUser});
+  const {data, isLoading, refetch} = useSeamailListQueryV2(5, asPrivilegedUser);
   const {notificationSocket, closeFezSocket} = useSocket();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
   const isFocused = useIsFocused();
@@ -43,6 +43,10 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
     setRefreshing(true);
     refetch().finally(() => setRefreshing(false));
   }, [refetch]);
+
+  useEffect(() => {
+    onRefresh();
+  }, [asPrivilegedUser, onRefresh]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
