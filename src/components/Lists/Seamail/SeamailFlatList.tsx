@@ -1,4 +1,4 @@
-import {FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, View} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React from 'react';
@@ -9,8 +9,9 @@ import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 interface SeamailFlatListProps {
-  fezList: FezListData;
+  fezList: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
+  onEndReached?: ((info: {distanceFromEnd: number}) => void) | null | undefined;
 }
 
 const ListSeparator = () => <Divider bold={true} />;
@@ -32,14 +33,15 @@ const SeamailListHeader = () => {
   );
 };
 
-export const SeamailFlatList = ({fezList, refreshControl}: SeamailFlatListProps) => {
+export const SeamailFlatList = ({fezList, refreshControl, onEndReached}: SeamailFlatListProps) => {
   return (
     <FlatList
       refreshControl={refreshControl}
       ItemSeparatorComponent={ListSeparator}
       ListHeaderComponent={SeamailListHeader}
       ListFooterComponent={ListSeparator}
-      data={fezList.fezzes}
+      onEndReached={onEndReached}
+      data={fezList}
       renderItem={({item}) => <SeamailListItem fez={item} />}
     />
   );
