@@ -22,8 +22,6 @@ Backlog
 
 Work Queue
 * Seamail
-  * List
-    * Seamail search
   * Viewing (pagination)
     * start at unread, start at top of converstation
     * refetch fetching all once caching is enabled?

@@ -10,6 +10,8 @@ interface TwitarrContextType {
   dispatchFezList: Dispatch<FezListActionsType>;
   fezPostsData: FezPostData[];
   dispatchFezPostsData: Dispatch<FezPostsActionsType>;
+  searchString: string;
+  setSearchString: Dispatch<SetStateAction<string>>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});
