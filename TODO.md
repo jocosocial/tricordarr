@@ -21,7 +21,6 @@ Backlog
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
 
 Work Queue
-* Seamail
-  * Deep link to seamail from notifications
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
+* Cleanup of the deep linking code

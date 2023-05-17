@@ -54,8 +54,12 @@ export const SeamailStack = () => {
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailScreen}
         component={SeamailScreen}
+        // The simple headerTitle string below gets overwritten in the SeamailScreen component.
+        // This is here as a performance optimization.
+        // The reason it renders in the component is that deep linking doesnt pass in the title
+        // so it has to figure it out.
         options={({route}) => ({
-          headerTitle: getSeamailHeaderTitle(route.params.fezID, route.params.title),
+          headerTitle: route.params.title,
         })}
       />
       <Stack.Screen
