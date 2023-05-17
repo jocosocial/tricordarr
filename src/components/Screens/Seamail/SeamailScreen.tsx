@@ -27,6 +27,7 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {FezPostsActions} from '../../Reducers/FezPostsReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
+import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -166,7 +167,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       // Navigation Options
       navigation.setOptions({
         headerRight: getNavButtons,
-        headerTitle: fez.title,
+        headerTitle: getSeamailHeaderTitle(fez.fezID, fez.title),
       });
       // Socket
       openFezSocket(fez.fezID);
