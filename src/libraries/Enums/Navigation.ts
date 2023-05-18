@@ -9,6 +9,13 @@ export enum NavigatorIDs {
   siteUIStack = 'SiteUIStack',
 }
 
+export enum BottomTabComponents {
+  homeTab = 'HomeTab',
+  seamailTab = 'SeamailTab',
+  twitarrTab = 'TwitarrTab',
+  settingsTab = 'SettingsTab',
+}
+
 export enum SettingsStackScreenComponents {
   storageKeySettings = 'StorageKeysSettingsScreen',
   settings = 'SettingsScreen',
