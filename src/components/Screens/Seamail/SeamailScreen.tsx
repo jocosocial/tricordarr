@@ -125,6 +125,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   };
 
+  // This will always load all future pages. Hopefully this isn't a bad thing.
+  if (hasNextPage) {
+    handleLoadNext();
+  }
+
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       fezPostMutation.mutate(
