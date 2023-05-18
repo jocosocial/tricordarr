@@ -4,11 +4,7 @@ import {SettingsStack, SettingsStackParamList} from '../Stacks/SettingsStack';
 import {MainView} from '../../Views/Static/MainView';
 import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {TwitarrView} from '../../Views/TwitarrView';
-import {handleEvent} from '../../../libraries/Events';
-import notifee from '@notifee/react-native';
-import {NavigatorScreenParams, useLinkTo} from '@react-navigation/native';
-import {Linking} from 'react-native';
+import {NavigatorScreenParams} from '@react-navigation/native';
 import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
 import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
@@ -33,26 +29,7 @@ export type BottomTabParamList = {
 
 export const BottomTabNavigator = () => {
   const {userNotificationData} = useUserNotificationData();
-  const linkTo = useLinkTo();
   const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
-
-  notifee.onForegroundEvent(async ({type, detail}) => {
-    const {notification, pressAction} = detail;
-    const url = handleEvent(type, notification, pressAction);
-
-    if (typeof url === 'undefined') {
-      return;
-    }
-
-    linkTo(url);
-  });
-
-  notifee.onBackgroundEvent(async ({type, detail}) => {
-    const {notification, pressAction} = detail;
-    const url = handleEvent(type, notification, pressAction) || 'tricordarr://hometab';
-
-    await Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one
-  });
 
   function getIcon(icon: string) {
     return <AppIcon icon={icon} />;

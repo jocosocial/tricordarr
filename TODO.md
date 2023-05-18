@@ -23,4 +23,3 @@ Backlog
 Work Queue
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* Cleanup of the deep linking code

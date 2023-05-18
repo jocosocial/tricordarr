@@ -1,5 +1,5 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
+import {BottomTabComponents, SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
 import {BottomTabParamList} from '../components/Navigation/Tabs/BottomTabNavigator';
 
 /**
@@ -8,6 +8,7 @@ import {BottomTabParamList} from '../components/Navigation/Tabs/BottomTabNavigat
  * follow the routes that we use in the Swiftarr web UI.
  */
 const deepLinksConf = {
+  initialRouteName: BottomTabComponents.homeTab,
   screens: {
     HomeTab: 'hometab',
     SeamailTab: {
