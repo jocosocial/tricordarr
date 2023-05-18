@@ -1,18 +1,17 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {SettingsStack} from '../Stacks/SettingsStack';
+import {SettingsStack, SettingsStackParamList} from '../Stacks/SettingsStack';
 import {MainView} from '../../Views/Static/MainView';
 import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {handleEvent} from '../../../libraries/Events';
 import notifee from '@notifee/react-native';
-import {useLinkTo} from '@react-navigation/native';
+import {NavigatorScreenParams, useLinkTo} from '@react-navigation/native';
 import {Linking} from 'react-native';
-import {SeamailStack} from '../Stacks/SeamailStack';
+import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
 import {SiteUIStackStack} from '../Stacks/SiteUIStack';
-
-const Tab = createMaterialBottomTabNavigator();
+import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -21,9 +20,21 @@ function getBadgeDisplayValue(input: number | undefined) {
   return input;
 }
 
+/**
+ * This is where we define the root tabs and associate each one with its relevant
+ * navigation param list.
+ */
+export type BottomTabParamList = {
+  HomeTab: undefined;
+  SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
+  TwitarrTab: undefined;
+  SettingsTab: NavigatorScreenParams<SettingsStackParamList>;
+};
+
 export const BottomTabNavigator = () => {
   const {userNotificationData} = useUserNotificationData();
   const linkTo = useLinkTo();
+  const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
   notifee.onForegroundEvent(async ({type, detail}) => {
     const {notification, pressAction} = detail;
@@ -48,9 +59,9 @@ export const BottomTabNavigator = () => {
   }
 
   return (
-    <Tab.Navigator initialRouteName={'HomeTab'}>
+    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab}>
       <Tab.Screen
-        name="HomeTab"
+        name={BottomTabComponents.homeTab}
         component={MainView}
         options={{
           title: 'Home',
@@ -58,7 +69,7 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="SeamailTab"
+        name={BottomTabComponents.seamailTab}
         component={SeamailStack}
         options={{
           title: 'Seamail',
@@ -67,7 +78,7 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="TwitarrTab"
+        name={BottomTabComponents.twitarrTab}
         component={SiteUIStackStack}
         options={{
           title: 'Twit-arr',
@@ -75,7 +86,7 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="SettingsTab"
+        name={BottomTabComponents.settingsTab}
         component={SettingsStack}
         options={{
           title: 'Settings',
