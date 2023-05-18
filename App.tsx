@@ -40,6 +40,7 @@ import {navigationLinking} from './src/libraries/Linking';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import {EventHandler} from './src/components/Navigation/EventHandler';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -88,6 +89,7 @@ function App(): JSX.Element {
                         <UserRelationsProvider>
                           <UserNotificationDataProvider>
                             {/*<NotificationDataPoller />*/}
+                            <EventHandler />
                             <ForegroundService />
                             <NotificationDataListener />
                             <BottomTabNavigator />
