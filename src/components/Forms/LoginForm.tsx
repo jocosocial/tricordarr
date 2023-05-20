@@ -1,39 +1,59 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {LoginFormValues} from '../../libraries/Types/FormValues';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {useStyles} from '../Context/Contexts/StyleContext';
+import * as Yup from 'yup';
+import {TextField} from './Fields/TextField';
 
 interface LoginFormProps {
-  onSubmit: any;
-  initialValues?: LoginFormValues;
+  onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
 }
 
+const validationSchema = Yup.object().shape({
+  username: Yup.string().required('Username cannot be empty.'),
+  password: Yup.string().required('Password cannot be empty.'),
+});
+
+const initialValues: LoginFormValues = {
+  username: '',
+  password: '',
+};
+
 // https://formik.org/docs/guides/react-native
-export const LoginForm = ({onSubmit, initialValues = {}}: LoginFormProps) => {
+export const LoginForm = ({onSubmit}: LoginFormProps) => {
+  const {commonStyles} = useStyles();
+  const styles = {
+    inputContainer: [],
+    buttonContainer: [commonStyles.marginTopSmall],
+  };
   return (
-    <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <TextInput
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'username'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
-            onChangeText={handleChange('username')}
-            onBlur={handleBlur('username')}
-            value={values.username}
           />
-          <TextInput
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'password'}
             label={'Password'}
             left={<TextInput.Icon icon={AppIcons.password} />}
-            onChangeText={handleChange('password')}
-            onBlur={handleBlur('password')}
-            value={values.password}
-            mode={'outlined'}
             secureTextEntry={true}
           />
-          <PrimaryActionButton onPress={handleSubmit} buttonText={'Login'} />
+          <PrimaryActionButton
+            disabled={!values.username || !values.password || isSubmitting}
+            isLoading={isSubmitting}
+            viewStyle={styles.buttonContainer}
+            onPress={handleSubmit}
+            buttonText={'Login'}
+          />
         </View>
       )}
     </Formik>

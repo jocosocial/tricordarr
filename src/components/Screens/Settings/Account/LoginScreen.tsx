@@ -14,12 +14,15 @@ import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {LoginFormValues} from '../../../../libraries/Types/FormValues';
 import {commonStyles} from '../../../../styles';
+import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
+import {FormikHelpers} from 'formik';
 
 export const LoginScreen = () => {
   const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
   const {setIsLoading, setIsLoggedIn} = useUserData();
   const {setErrorMessage, setErrorBanner} = useErrorHandler();
+  const loginMutation = useLoginQuery();
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -28,16 +31,16 @@ export const LoginScreen = () => {
     loadSettings();
   }, []);
 
-  const loginMutation = useMutation(
-    async ({username, password}: LoginFormValues) => {
-      // Axios and the base64 encoding get weird, so we do it ourselves.
-      // https://github.com/axios/axios/issues/2235
-      let authHeaders = getAuthHeaders(username, password);
-      // @TODO headers should not be allowed to be undefined.
-      return await axios.post('/auth/login', {}, {headers: authHeaders});
-    },
-    {retry: 0},
-  );
+  // const loginMutation = useMutation(
+  //   async ({username, password}: LoginFormValues) => {
+  //     // Axios and the base64 encoding get weird, so we do it ourselves.
+  //     // https://github.com/axios/axios/issues/2235
+  //     let authHeaders = getAuthHeaders(username, password);
+  //     // @TODO headers should not be allowed to be undefined.
+  //     return await axios.post('/auth/login', {}, {headers: authHeaders});
+  //   },
+  //   {retry: 0},
+  // );
 
   const storeLoginData = useCallback(
     async (data: any) => {
@@ -56,14 +59,25 @@ export const LoginScreen = () => {
   );
 
   const onSubmit = useCallback(
-    async (formValues: LoginFormValues) => {
+    (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
+      console.log('Logging in with creds', formValues);
       loginMutation.mutate(formValues, {
-        onSuccess: storeLoginData,
-        onError: error => setErrorMessage(error.response.data.reason),
+        onSuccess: response => console.log(response),
       });
+      formikHelpers.setSubmitting(false);
     },
-    [loginMutation, setErrorMessage, storeLoginData],
+    [loginMutation],
   );
+
+  // const onSubmit = useCallback(
+  //   async (formValues: LoginFormValues) => {
+  //     loginMutation.mutate(formValues, {
+  //       onSuccess: storeLoginData,
+  //       onError: error => setErrorMessage(error.response.data.reason),
+  //     });
+  //   },
+  //   [loginMutation, setErrorMessage, storeLoginData],
+  // );
 
   return (
     <AppView>

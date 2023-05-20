@@ -84,22 +84,23 @@ function App(): JSX.Element {
             <TwitarrProvider>
               <ErrorHandlerProvider>
                 <ModalProvider>
-                  <AuthProvider></AuthProvider>
+                  <AuthProvider>
                   {/*<UserDataProvider>*/}
-                  {/*  <PrivilegeProvider>*/}
-                  {/*    <SocketProvider>*/}
-                  {/*      <UserRelationsProvider>*/}
-                  {/*        <UserNotificationDataProvider>*/}
-                  {/*          /!*<NotificationDataPoller />*!/*/}
-                  {/*          <EventHandler />*/}
-                  {/*          <ForegroundService />*/}
-                  {/*          <NotificationDataListener />*/}
-                  {/*          <BottomTabNavigator />*/}
-                  {/*        </UserNotificationDataProvider>*/}
-                  {/*      </UserRelationsProvider>*/}
-                  {/*    </SocketProvider>*/}
-                  {/*  </PrivilegeProvider>*/}
+                    <PrivilegeProvider>
+                      <SocketProvider>
+                        <UserRelationsProvider>
+                          <UserNotificationDataProvider>
+                            {/*<NotificationDataPoller />*/}
+                            <EventHandler />
+                            <ForegroundService />
+                            <NotificationDataListener />
+                            <BottomTabNavigator />
+                          </UserNotificationDataProvider>
+                        </UserRelationsProvider>
+                      </SocketProvider>
+                    </PrivilegeProvider>
                   {/*</UserDataProvider>*/}
+                  </AuthProvider>
                 </ModalProvider>
               </ErrorHandlerProvider>
             </TwitarrProvider>

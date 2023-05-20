@@ -23,3 +23,4 @@ Backlog
 Work Queue
 * fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
+* Move userRelationsProvider to somewhere less root-y

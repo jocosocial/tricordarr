@@ -1,7 +1,7 @@
 import {ActivityIndicator, Button} from 'react-native-paper';
 import React from 'react';
 import {useAppTheme} from '../../styles/Theme';
-import {ViewStyle} from 'react-native';
+import {StyleProp, View, ViewStyle} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
 
 interface PrimaryActionButtonProps {
@@ -11,8 +11,9 @@ interface PrimaryActionButtonProps {
   textColor?: string;
   disabled?: boolean;
   mode?: 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   isLoading?: boolean;
+  viewStyle?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -27,26 +28,28 @@ export const PrimaryActionButton = ({
   mode = 'contained',
   style = {},
   isLoading = false,
+  viewStyle,
 }: PrimaryActionButtonProps) => {
   const theme = useAppTheme();
 
   const buttonStyle = {
     borderWidth: 0,
-    ...style,
   };
 
   const getLoadingIcon = () => <ActivityIndicator />;
 
   return (
-    <Button
-      buttonColor={buttonColor || theme.colors.twitarrPositiveButton}
-      textColor={textColor || AndroidColor.WHITE}
-      style={buttonStyle}
-      mode={mode}
-      onPress={onPress}
-      icon={isLoading ? getLoadingIcon : undefined}
-      disabled={disabled}>
-      {buttonText}
-    </Button>
+    <View style={viewStyle}>
+      <Button
+        buttonColor={buttonColor || theme.colors.twitarrPositiveButton}
+        textColor={textColor || AndroidColor.WHITE}
+        style={[buttonStyle, style]}
+        mode={mode}
+        onPress={onPress}
+        icon={isLoading ? getLoadingIcon : undefined}
+        disabled={disabled}>
+        {buttonText}
+      </Button>
+    </View>
   );
 };

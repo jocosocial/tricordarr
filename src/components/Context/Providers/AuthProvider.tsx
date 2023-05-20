@@ -31,6 +31,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     });
   }, [dispatchAuthState]);
 
+  // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(
     () => ({
       signIn: () => console.log('sign in'),
