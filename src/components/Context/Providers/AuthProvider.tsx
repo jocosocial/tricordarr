@@ -34,14 +34,29 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(
     () => ({
-      signIn: () => console.log('sign in'),
-      signOut: () => console.log('sign out'),
+      signIn: async (tokenData: TokenStringData) => {
+        console.log('sign in');
+        await EncryptedStorage.setItem('TOKEN_STRING_DATA', JSON.stringify(tokenData));
+        dispatchAuthState({
+          type: AuthActions.signIn,
+          tokenData: tokenData,
+        });
+      },
+      signOut: async () => {
+        console.log('sign out');
+        await EncryptedStorage.removeItem('TOKEN_STRING_DATA');
+        dispatchAuthState({
+          type: AuthActions.signOut,
+        });
+      },
       signUp: () => console.log('sign up'),
     }),
-    [],
+    [dispatchAuthState],
   );
 
   console.log('Auth State', authState);
 
-  return <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{...authContext, tokenData: authState.tokenData}}>{children}</AuthContext.Provider>
+  );
 };

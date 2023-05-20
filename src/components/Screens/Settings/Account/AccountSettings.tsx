@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {LoginScreen} from './LoginScreen';
 import {LogoutScreen} from './LogoutScreen';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
+import {useAuth} from '../../../Context/Contexts/AuthContext';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -13,17 +13,14 @@ type Props = NativeStackScreenProps<
 >;
 
 export const AccountSettings = ({route, navigation}: Props) => {
-  const {isLoggedIn, isLoading} = useUserData();
+  const {tokenData} = useAuth();
 
   useEffect(() => {
     navigation.setOptions({title: route.params.title});
   }, [navigation, route.params.title]);
 
-  if (!isLoading && isLoggedIn) {
+  if (tokenData) {
     return <LogoutScreen />;
-  } else if (!isLoading && !isLoggedIn) {
-    return <LoginScreen />;
-  } else {
-    return <></>;
   }
+  return <LoginScreen />;
 };
