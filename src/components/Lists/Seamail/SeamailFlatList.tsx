@@ -6,7 +6,7 @@ import {Divider} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface SeamailFlatListProps {
   fezList: FezData[];
@@ -17,13 +17,13 @@ interface SeamailFlatListProps {
 const ListSeparator = () => <Divider bold={true} />;
 
 const SeamailListHeader = () => {
-  const {isPrivileged} = useUserData();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
   return (
     <View>
       <PaddedContentView padTop={true}>
         <SeamailSearchBar />
       </PaddedContentView>
-      {isPrivileged && (
+      {(hasTwitarrTeam || hasModerator) && (
         <PaddedContentView>
           <SeamailAccountButtons />
         </PaddedContentView>
