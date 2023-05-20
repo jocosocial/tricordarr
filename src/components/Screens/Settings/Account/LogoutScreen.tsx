@@ -38,31 +38,10 @@ export const LogoutScreen = () => {
     {retry: 0},
   );
 
-  function onPress() {
-    setIsLoggedIn(false);
+  const onLogout = () => {
     setEnableUserNotifications(false);
     setProfilePublicData({} as ProfilePublicData);
     setUserNotificationData({} as UserNotificationData);
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        navigation.goBack();
-      },
-    });
-  }
-
-  // async function clearAuthData() {
-  //   console.log('Clearing auth data.');
-  //   console.log('Old username was:', await AppSettings.USERNAME.getValue());
-  //   console.log('Old token was:', await AppSettings.AUTH_TOKEN.getValue());
-  //   await AppSettings.AUTH_TOKEN.remove();
-  //   await AppSettings.USERNAME.remove();
-  //   await AppSettings.USER_ID.remove();
-  //   await AppSettings.ACCESS_LEVEL.remove();
-  //   navigation.goBack();
-  // }
-
-  const onLogout = () => {
-    console.log('signing out');
     signOut();
     navigation.goBack();
   };
