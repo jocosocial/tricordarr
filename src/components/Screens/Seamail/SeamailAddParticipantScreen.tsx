@@ -10,7 +10,7 @@ import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {FezListActions} from '../../Reducers/FezListReducers';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,

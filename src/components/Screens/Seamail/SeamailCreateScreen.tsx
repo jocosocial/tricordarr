@@ -13,7 +13,7 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/FezListReducers';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,

@@ -24,7 +24,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {FezListActions} from '../../Reducers/FezListReducers';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<

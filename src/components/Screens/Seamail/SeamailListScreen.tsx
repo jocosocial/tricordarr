@@ -7,7 +7,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FezListActions} from '../../Reducers/FezListReducers';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';

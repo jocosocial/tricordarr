@@ -1,7 +1,7 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
 import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
-import {FezListActionsType} from '../../Reducers/FezListReducers';
-import {FezPostsActionsType} from '../../Reducers/FezPostsReducers';
+import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
+import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 
 interface TwitarrContextType {
   fez?: FezData;

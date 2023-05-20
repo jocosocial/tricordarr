@@ -22,9 +22,9 @@ import {SocketFezMemberChangeData, SocketFezPostData} from '../../../libraries/S
 import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {FezListActions} from '../../Reducers/FezListReducers';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {FezPostsActions} from '../../Reducers/FezPostsReducers';
+import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';

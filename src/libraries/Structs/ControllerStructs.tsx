@@ -4,7 +4,7 @@ import {FezType} from '../Enums/FezType';
  * All of these interfaces come from Swiftarr.
  * https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Controllers/Structs/ControllerStructs.swift
  */
-export interface TokensStringData {
+export interface TokenStringData {
   /// The user ID of the newly logged in user.
   userID: string;
   /// The user's access level.

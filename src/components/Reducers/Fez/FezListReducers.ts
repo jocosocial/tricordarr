@@ -1,5 +1,5 @@
 import {useReducer} from 'react';
-import {FezData} from '../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 
 export enum FezListActions {
   markAsRead = 'MARK_AS_READ',

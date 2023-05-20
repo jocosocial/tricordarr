@@ -41,6 +41,7 @@ import {navigationLinking} from './src/libraries/Linking';
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import {EventHandler} from './src/components/Navigation/EventHandler';
+import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -83,21 +84,22 @@ function App(): JSX.Element {
             <TwitarrProvider>
               <ErrorHandlerProvider>
                 <ModalProvider>
-                  <UserDataProvider>
-                    <PrivilegeProvider>
-                      <SocketProvider>
-                        <UserRelationsProvider>
-                          <UserNotificationDataProvider>
-                            {/*<NotificationDataPoller />*/}
-                            <EventHandler />
-                            <ForegroundService />
-                            <NotificationDataListener />
-                            <BottomTabNavigator />
-                          </UserNotificationDataProvider>
-                        </UserRelationsProvider>
-                      </SocketProvider>
-                    </PrivilegeProvider>
-                  </UserDataProvider>
+                  <AuthProvider></AuthProvider>
+                  {/*<UserDataProvider>*/}
+                  {/*  <PrivilegeProvider>*/}
+                  {/*    <SocketProvider>*/}
+                  {/*      <UserRelationsProvider>*/}
+                  {/*        <UserNotificationDataProvider>*/}
+                  {/*          /!*<NotificationDataPoller />*!/*/}
+                  {/*          <EventHandler />*/}
+                  {/*          <ForegroundService />*/}
+                  {/*          <NotificationDataListener />*/}
+                  {/*          <BottomTabNavigator />*/}
+                  {/*        </UserNotificationDataProvider>*/}
+                  {/*      </UserRelationsProvider>*/}
+                  {/*    </SocketProvider>*/}
+                  {/*  </PrivilegeProvider>*/}
+                  {/*</UserDataProvider>*/}
                 </ModalProvider>
               </ErrorHandlerProvider>
             </TwitarrProvider>
