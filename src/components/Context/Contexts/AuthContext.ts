@@ -1,5 +1,6 @@
 import {createContext, useContext} from 'react';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
+import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 interface AuthContextType {
   signIn: (tokenData: TokenStringData) => void;

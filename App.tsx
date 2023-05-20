@@ -85,21 +85,21 @@ function App(): JSX.Element {
               <ErrorHandlerProvider>
                 <ModalProvider>
                   <AuthProvider>
-                  {/*<UserDataProvider>*/}
-                    <PrivilegeProvider>
-                      <SocketProvider>
-                        <UserRelationsProvider>
-                          <UserNotificationDataProvider>
-                            {/*<NotificationDataPoller />*/}
-                            <EventHandler />
-                            <ForegroundService />
-                            <NotificationDataListener />
-                            <BottomTabNavigator />
-                          </UserNotificationDataProvider>
-                        </UserRelationsProvider>
-                      </SocketProvider>
-                    </PrivilegeProvider>
-                  {/*</UserDataProvider>*/}
+                    <UserDataProvider>
+                      <PrivilegeProvider>
+                        <SocketProvider>
+                          <UserRelationsProvider>
+                            <UserNotificationDataProvider>
+                              {/*<NotificationDataPoller />*/}
+                              <EventHandler />
+                              <ForegroundService />
+                              <NotificationDataListener />
+                              <BottomTabNavigator />
+                            </UserNotificationDataProvider>
+                          </UserRelationsProvider>
+                        </SocketProvider>
+                      </PrivilegeProvider>
+                    </UserDataProvider>
                   </AuthProvider>
                 </ModalProvider>
               </ErrorHandlerProvider>

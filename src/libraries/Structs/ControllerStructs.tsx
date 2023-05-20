@@ -1,4 +1,5 @@
 import {FezType} from '../Enums/FezType';
+import {UserAccessLevel} from '../Enums/UserAccessLevel';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -8,7 +9,7 @@ export interface TokenStringData {
   /// The user ID of the newly logged in user.
   userID: string;
   /// The user's access level.
-  accessLevel: string;
+  accessLevel: UserAccessLevel;
   /// The token string.
   token: string;
 }

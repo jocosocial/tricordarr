@@ -16,7 +16,6 @@ export type AuthActionsType =
 
 export interface AuthState {
   isLoading: boolean;
-  isSignout: boolean;
   tokenData: TokenStringData | null;
 }
 export const authActionReducer = (prevState: AuthState, action: AuthActionsType): AuthState => {
@@ -30,7 +29,6 @@ export const authActionReducer = (prevState: AuthState, action: AuthActionsType)
     case AuthActions.signOut: {
       return {
         ...prevState,
-        isSignout: true,
         tokenData: null,
       };
     }

@@ -3,6 +3,7 @@ import {encode as base64_encode} from 'base-64';
 import axios from 'axios';
 import {AppSettings} from '../AppSettings';
 import {Buffer} from '@craftzdog/react-native-buffer';
+import {TokenStringData} from '../Structs/ControllerStructs';
 
 export async function setupAxiosStuff() {
   // https://github.com/axios/axios/issues/3870
@@ -14,9 +15,10 @@ export async function setupAxiosStuff() {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }
     // Authentication
-    const authToken = await AppSettings.AUTH_TOKEN.getValue();
-    if (authToken != null && !config.headers.authorization) {
-      config.headers.authorization = `Bearer ${authToken}`;
+    const rawTokenData = await AppSettings.TOKEN_STRING_DATA.getValue();
+    if (rawTokenData && !config.headers.authorization) {
+      const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
+      config.headers.authorization = `Bearer ${tokenStringData.token}`;
     }
     // Other Headers
     config.headers.Accept = 'application/json';

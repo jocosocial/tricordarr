@@ -2,21 +2,20 @@ import React, {useEffect, useMemo} from 'react';
 import {PropsWithChildren} from 'react';
 import {AuthContext} from '../Contexts/AuthContext';
 import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
+import {AppSettings} from '../../../libraries/AppSettings';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const [authState, dispatchAuthState] = useAuthReducer({
     isLoading: true,
-    isSignout: false,
     tokenData: null,
   });
 
   useEffect(() => {
     const restoreTokenData = async () => {
-      const tokenString = await EncryptedStorage.getItem('TOKEN_STRING_DATA');
-      if (tokenString) {
-        return JSON.parse(tokenString) as TokenStringData;
+      const tokenStringData = await AppSettings.TOKEN_STRING_DATA.getValue();
+      if (tokenStringData) {
+        return JSON.parse(tokenStringData) as TokenStringData;
       }
     };
     restoreTokenData().then(tokenData => {
@@ -35,16 +34,14 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   const authContext = useMemo(
     () => ({
       signIn: async (tokenData: TokenStringData) => {
-        console.log('sign in');
-        await EncryptedStorage.setItem('TOKEN_STRING_DATA', JSON.stringify(tokenData));
+        await AppSettings.TOKEN_STRING_DATA.setValue(JSON.stringify(tokenData));
         dispatchAuthState({
           type: AuthActions.signIn,
           tokenData: tokenData,
         });
       },
       signOut: async () => {
-        console.log('sign out');
-        await EncryptedStorage.removeItem('TOKEN_STRING_DATA');
+        await AppSettings.TOKEN_STRING_DATA.remove();
         dispatchAuthState({
           type: AuthActions.signOut,
         });

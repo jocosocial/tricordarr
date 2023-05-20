@@ -20,6 +20,7 @@ export class AppSettings {
   static USERNAME = new AppSettings('username');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
   static AUTH_TOKEN = new AppSettings('token', true);
+  static TOKEN_STRING_DATA = new AppSettings('TOKEN_STRING_DATA', true);
   static ACCESS_LEVEL = new AppSettings('ACCESS_LEVEL');
   static SHIP_SSID = new AppSettings(
     'SHIP_SSID',
