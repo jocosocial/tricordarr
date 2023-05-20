@@ -4,6 +4,7 @@ import {NotificationType, PressAction} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import {TokenStringData} from '../Structs/ControllerStructs';
 
 /**
  * React-Native does not support all the same properties as browser URL
@@ -39,9 +40,17 @@ function WebSocketConstructor(options: any) {
   };
 }
 
+async function getToken() {
+  const rawTokenData = await AppSettings.TOKEN_STRING_DATA.getValue();
+  if (rawTokenData) {
+    const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
+    return tokenStringData.token;
+  }
+}
+
 export async function buildFezSocket(fezID: string) {
   const wsUrl = await buildWebsocketURL(fezID);
-  const token = (await AppSettings.AUTH_TOKEN.getValue()) ?? undefined;
+  const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
 
   // https://www.npmjs.com/package/reconnecting-websocket
@@ -62,7 +71,7 @@ export async function buildFezSocket(fezID: string) {
 export async function buildWebSocket(fezID?: string) {
   console.log('buildWebSocket called');
   const wsUrl = await buildWebsocketURL(fezID);
-  const token = (await AppSettings.AUTH_TOKEN.getValue()) ?? undefined;
+  const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
 
   // https://www.npmjs.com/package/reconnecting-websocket
