@@ -63,6 +63,7 @@ export namespace UserAccessLevel {
 
   /**
    * Convenience function to determine whether a particular UserAccessLevel is considered "privileged".
+   * @deprecated this should go away.
    */
   export function isPrivileged(source: UserAccessLevel): boolean {
     return orderFromEnum(source) > orderFromEnum(UserAccessLevel.verified);
