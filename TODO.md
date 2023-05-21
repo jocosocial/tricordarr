@@ -20,5 +20,4 @@ Backlog
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* logout option for all sessions
-* Move all queries to the queries section
+* User flips to unknown after login for a moment

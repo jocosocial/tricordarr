@@ -1,9 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import axios from 'axios';
-import {useMutation} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
-import {AppSettings} from '../../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
@@ -12,6 +9,7 @@ import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {useLogoutMutation} from '../../../Queries/Auth/LogoutQueries';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -25,22 +23,17 @@ export const LogoutScreen = () => {
   const {setProfilePublicData} = useUserData();
   const {setEnableUserNotifications, setUserNotificationData} = useUserNotificationData();
   const {signOut} = useAuth();
-
-  const logoutMutation = useMutation(
-    async () => {
-      // Gotta do the call before clearing our local state.
-      // await stopForegroundServiceWorker();
-      let response = await axios.post('/auth/logout');
-      await clearAuthData();
-      return response;
+  const logoutMutation = useLogoutMutation({
+    onSuccess: () => {
+      onLogout();
     },
-    {retry: 0},
-  );
+  });
 
   const onLogout = () => {
     setEnableUserNotifications(false);
     setProfilePublicData(undefined);
     setUserNotificationData(undefined);
+    // @TODO stop the websocket
     signOut();
     navigation.goBack();
   };
@@ -50,15 +43,19 @@ export const LogoutScreen = () => {
       <ScrollingContentView isStack={true}>
         <PaddedContentView>
           <TempUserProfile />
-          <PrimaryActionButton
-            buttonColor={theme.colors.twitarrNegativeButton}
-            buttonText={'Logout'}
-            onPress={onLogout}
-          />
+        </PaddedContentView>
+        <PaddedContentView>
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNeutralButton}
-            buttonText={'Clear Auth Data'}
+            buttonText={'Logout this device'}
             onPress={onLogout}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonColor={theme.colors.twitarrNegativeButton}
+            buttonText={'Logout all devices'}
+            onPress={() => logoutMutation.mutate()}
           />
         </PaddedContentView>
       </ScrollingContentView>
