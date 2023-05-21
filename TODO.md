@@ -22,3 +22,6 @@ Work Queue
 * User flips to unknown after login for a moment
 * all needs to shoot any websockets
 * cleanup settings, make a provider
+* tab notifications should come from the socket provider not the background
+* Consider throwing the user to their own profile after login. may avoid above issue.
+* settings pages need some style cleanup
