@@ -1,5 +1,6 @@
+import {useEffect} from 'react';
 import {Linking} from 'react-native';
-import notifee from '@notifee/react-native';
+import notifee, {Event} from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {getUrlForEvent} from '../../libraries/Events';
 
@@ -11,20 +12,29 @@ export const EventHandler = () => {
   const linkTo = useLinkTo();
 
   // Foreground events occur when the app is front and center in the users view.
-  notifee.onForegroundEvent(async ({type, detail}) => {
-    const {notification, pressAction} = detail;
-    const url = getUrlForEvent(type, notification, pressAction);
+  // This has to be a useEffect otherwise the navigator could be used before it's
+  // initialized. Which still functions but throws an error.
+  useEffect(() => {
+    const handleForegroundEvent = (event: Event) => {
+      const {notification, pressAction} = event.detail;
+      const url = getUrlForEvent(event.type, notification, pressAction);
+      if (url) {
+        linkTo(url);
+      }
+    };
 
-    if (url) {
-      linkTo(url);
-    }
-  });
+    const unsubscribe = notifee.onForegroundEvent(handleForegroundEvent);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [linkTo]);
 
   // Background events occur when the app is still running but not in the users view.
   // The OS may kill the app at any time.
-  notifee.onBackgroundEvent(async ({type, detail}) => {
-    const {notification, pressAction} = detail;
-    const url = getUrlForEvent(type, notification, pressAction) || 'tricordarr://hometab';
+  notifee.onBackgroundEvent(async (event: Event) => {
+    const {notification, pressAction} = event.detail;
+    const url = getUrlForEvent(event.type, notification, pressAction) || 'tricordarr://hometab';
 
     await Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one.
   });

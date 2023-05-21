@@ -21,6 +21,4 @@ Backlog
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * logout option for all sessions
-*  The 'navigation' object hasn't been initialized yet. This might happen if you don't have a navigator mounted, or if the navigator hasn't finished mounting. 
-  * Happens on tapping a foreground notification
 * Move all queries to the queries section
