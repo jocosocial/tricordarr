@@ -1,15 +1,15 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Banner, Text} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useAppTheme} from '../../styles/Theme';
-import {MaterialBottomTabNavigationProp} from '@react-navigation/material-bottom-tabs';
+import {useBottomTabNavigator} from '../Navigation/Tabs/BottomTabNavigator';
+import {BottomTabComponents, SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
 
 export const ErrorBanner = () => {
   const {errorBanner, setErrorBanner} = useErrorHandler();
   const theme = useAppTheme();
-  const navigation = useNavigation<MaterialBottomTabNavigationProp<any>>();
+  const navigation = useBottomTabNavigator();
 
   const styles = StyleSheet.create({
     banner: {
@@ -30,7 +30,10 @@ export const ErrorBanner = () => {
       actions={[
         {
           label: 'Settings',
-          onPress: () => navigation.jumpTo('SettingsTab'),
+          onPress: () =>
+            navigation.jumpTo(BottomTabComponents.settingsTab, {
+              screen: SettingsStackScreenComponents.settings,
+            }),
           labelStyle: styles.button,
         },
         {

@@ -4,10 +4,11 @@ import {SettingsStack, SettingsStackParamList} from '../Stacks/SettingsStack';
 import {MainView} from '../../Views/Static/MainView';
 import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {NavigatorScreenParams} from '@react-navigation/native';
+import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
 import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -73,3 +74,5 @@ export const BottomTabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
+export const useBottomTabNavigator = () => useNavigation<BottomTabNavigationProp<BottomTabParamList>>();

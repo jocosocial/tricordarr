@@ -1,19 +1,18 @@
 import React, {useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
 import {useUserData} from '../Context/Contexts/UserDataContext';
-import {PrivilegedUserAccounts, UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
+import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 export const SeamailAccountButtons = () => {
-  const {profilePublicData, accessLevel} = useUserData();
+  const {profilePublicData} = useUserData();
   const [forUser, setForUser] = useState(profilePublicData.header.username);
-  const {clearPrivileges, becomeUser} = usePrivilege();
+  const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam} = usePrivilege();
 
   let buttons = [];
 
-  // Moderator
-  if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator)) {
+  if (hasModerator) {
     buttons.push({
       value: PrivilegedUserAccounts.moderator,
       label: 'Moderator',
@@ -22,8 +21,7 @@ export const SeamailAccountButtons = () => {
     });
   }
 
-  // TwitarrTeam
-  if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam)) {
+  if (hasTwitarrTeam) {
     buttons.push({
       value: PrivilegedUserAccounts.TwitarrTeam,
       label: 'TwitarrTeam',

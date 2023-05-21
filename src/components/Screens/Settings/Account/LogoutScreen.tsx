@@ -40,8 +40,8 @@ export const LogoutScreen = () => {
 
   const onLogout = () => {
     setEnableUserNotifications(false);
-    setProfilePublicData({} as ProfilePublicData);
-    setUserNotificationData({} as UserNotificationData);
+    setProfilePublicData(undefined);
+    setUserNotificationData(undefined);
     signOut();
     navigation.goBack();
   };

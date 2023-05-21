@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {AppView} from '../../Views/AppView';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
@@ -16,6 +15,7 @@ import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -25,7 +25,6 @@ type SeamailListScreenProps = NativeStackScreenProps<
 
 export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {isLoggedIn} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez, searchString} = useTwitarr();
   const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQuery({
@@ -34,6 +33,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
+  const {isLoggedIn} = useAuth();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -54,9 +54,11 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   }, [data, dispatchFezList]);
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+    if (isLoggedIn) {
+      setRefreshing(true);
+      refetch().finally(() => setRefreshing(false));
+    }
+  }, [isLoggedIn, refetch]);
 
   useEffect(() => {
     onRefresh();

@@ -53,6 +53,7 @@ const queryClient = new QueryClient({
       queryFn: apiQueryV3,
       cacheTime: 0,
       retry: 2,
+      enabled: false,
     },
   },
 });

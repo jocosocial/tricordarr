@@ -8,7 +8,7 @@ import {useAuth} from '../Contexts/AuthContext';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: PropsWithChildren) => {
-  const [profilePublicData, setProfilePublicData] = useState({} as ProfilePublicData);
+  const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
   const {tokenData} = useAuth();
 

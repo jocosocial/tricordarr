@@ -16,6 +16,7 @@
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/hooks": "^3.0.0",
     "@react-native-community/netinfo": "^9.3.7",
+    "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/material-bottom-tabs": "^6.2.14",
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",

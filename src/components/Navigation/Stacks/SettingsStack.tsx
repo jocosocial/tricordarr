@@ -34,7 +34,10 @@ export const SettingsStack = () => {
   // We don't put the title in the various Screens because we define it in the NavigationListItem
   // so we're always consistent between setting name and header title.
   return (
-    <Stack.Navigator id={NavigatorIDs.settingsStack} initialRouteName={'SettingsScreen'} screenOptions={screenOptions}>
+    <Stack.Navigator
+      id={NavigatorIDs.settingsStack}
+      initialRouteName={SettingsStackScreenComponents.settings}
+      screenOptions={screenOptions}>
       <Stack.Screen
         name={SettingsStackScreenComponents.settings}
         component={SettingsView}
