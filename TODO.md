@@ -9,11 +9,10 @@ Backlog
 * combine and rename SubmitIconButton and NavBarIconButton
 * make modal cover the nav bars. organizing the App.tsx provider hell is problematic.
 * default mutation error handling isnt working. Likely getting overridden.
+  * Might have figured this out if options are passed in to the hook.
 * nbsp after AppIcon for spacing is haxxxx
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
-* Logout should default to clearData, if user opts for all sessions then hit API 
 * global settings for websocket and fezsocket enable/disable
-* What to do about notifee notifications for a seamail that you have open and focused.
 * Websocket construction needs generics that don't automatically notify
 * Seamail tap and hold menu needs to render above bottom nav
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
@@ -22,3 +21,4 @@ Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * User flips to unknown after login for a moment
 * all needs to shoot any websockets
+* cleanup settings, make a provider
