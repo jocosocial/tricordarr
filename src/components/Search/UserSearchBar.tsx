@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
-import {useQuery} from '@tanstack/react-query';
 import {UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {ListSection} from '../Lists/ListSection';
 import {UserListItem} from '../Lists/Items/UserListItem';
+import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
 
 interface UserSearchBarProps {
   userHeaders: UserHeader[];
@@ -13,10 +13,7 @@ interface UserSearchBarProps {
 
 export const UserSearchBar = ({userHeaders, onPress}: UserSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {data} = useQuery<UserHeader[]>({
-    queryKey: [`/users/match/allnames/${searchQuery}`],
-    enabled: searchQuery.length >= 2,
-  });
+  const {data} = useUserMatchQuery(searchQuery);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 

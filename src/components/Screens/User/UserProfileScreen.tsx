@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Text, List} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useQuery} from '@tanstack/react-query';
-import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -23,6 +22,7 @@ import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
 import {AppIcon} from '../../Images/AppIcon';
+import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -39,9 +39,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
 
-  const {data, refetch} = useQuery<ProfilePublicData>({
-    queryKey: [`/users/${route.params.userID}/profile`],
-  });
+  const {data, refetch} = useUserProfileQuery(route.params.userID);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {ErrorResponse, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 

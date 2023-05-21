@@ -48,8 +48,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {profilePublicData} = useUserData();
   const {setErrorMessage} = useErrorHandler();
 
-  console.log('rendering details');
-
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));

@@ -1,10 +1,8 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
-import {useQuery} from '@tanstack/react-query';
-import {apiQueryImageUri} from '../../libraries/Network/APIClient';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {Image, ImageStyle, StyleProp} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {useImageQuery} from '../Queries/ImageQuery';
 
 type AppImageProps = {
   path: string;
@@ -12,11 +10,7 @@ type AppImageProps = {
 };
 
 export const AppImage = ({path, style}: AppImageProps) => {
-  const {data: imageUri} = useQuery({
-    queryKey: [path],
-    enabled: !!path,
-    queryFn: apiQueryImageUri,
-  });
+  const {data: imageUri} = useImageQuery(path);
 
   if (!imageUri) {
     return <Avatar.Icon style={style} icon={AppIcons.error} />;

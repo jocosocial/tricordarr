@@ -1,9 +1,6 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {ErrorResponse, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {QueryKey} from '@tanstack/query-core';
-import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
-import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface UserFavoriteMutationProps {
