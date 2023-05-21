@@ -169,11 +169,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
 
     if (fez) {
-      // Navigation Options
-      navigation.setOptions({
-        headerRight: getNavButtons,
-        headerTitle: getSeamailHeaderTitle(fez.fezID, fez.title),
-      });
       // Socket
       openFezSocket(fez.fezID);
       if (fezSocket) {
@@ -181,6 +176,20 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       }
     }
   }, [dispatchFezList, fez, fezSocket, fezSocketMessageHandler, getNavButtons, navigation, openFezSocket]);
+
+  useEffect(() => {
+    if (fez) {
+      // Navigation Options
+      navigation.setOptions({
+        headerRight: getNavButtons,
+        headerTitle: getSeamailHeaderTitle(fez.fezID, fez.title),
+      });
+    } else {
+      navigation.setOptions({
+        headerTitle: 'Loading...',
+      });
+    }
+  }, [fez, getNavButtons, navigation]);
 
   const renderHeader = () => {
     return (
