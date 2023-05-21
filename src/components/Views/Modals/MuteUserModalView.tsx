@@ -4,8 +4,6 @@ import {Text} from 'react-native-paper';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
@@ -14,6 +12,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface MuteUserModalViewProps {
   user: UserHeader;
@@ -21,11 +20,11 @@ interface MuteUserModalViewProps {
 
 const MuteUserModalContent = () => {
   const {commonStyles, styleDefaults} = useStyles();
-  const {accessLevel} = useUserData();
+  const {hasModerator} = usePrivilege();
   return (
     <>
       <Text style={[commonStyles.marginBottomSmall]}>Muting a user will hide all that user's content from you.</Text>
-      {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator) && (
+      {hasModerator && (
         <>
           <Text style={[commonStyles.marginBottomSmall]}>
             <AppIcon icon={AppIcons.moderator} size={styleDefaults.fontSize} />

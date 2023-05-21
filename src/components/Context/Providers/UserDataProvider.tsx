@@ -14,7 +14,6 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
 
   const {data: profileQueryData, error: profileQueryError} = useQuery<ProfilePublicData, AxiosError>({
     queryKey: ['/user/profile'],
-    enabled: !!tokenData,
   });
 
   useEffect(() => {

@@ -32,6 +32,8 @@ import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvide
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
 import {navigationLinking} from './src/libraries/Linking';
+import {EventHandler} from './src/components/Navigation/EventHandler';
+import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -40,8 +42,6 @@ import {navigationLinking} from './src/libraries/Linking';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-import {EventHandler} from './src/components/Navigation/EventHandler';
-import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -53,6 +53,7 @@ const queryClient = new QueryClient({
       queryFn: apiQueryV3,
       cacheTime: 0,
       retry: 2,
+      // By default we disable API queries until the user has logged in.
       enabled: false,
     },
   },

@@ -12,7 +12,6 @@ export const NotificationDataPoller = () => {
   const appStateVisible = useAppState();
   const {setErrorMessage} = useErrorHandler();
   const {setUserNotificationData, enableUserNotifications} = useUserNotificationData();
-  const {isLoading} = useUserData();
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
@@ -44,7 +43,7 @@ export const NotificationDataPoller = () => {
 
   if (appStateVisible !== 'active' || !enableUserNotifications) {
     cleanupNotificationPoller();
-  } else if (!isLoading && enableUserNotifications && appStateVisible === 'active') {
+  } else if (enableUserNotifications && appStateVisible === 'active') {
     if (pollIntervalID === 0) {
       startNotificationPoller()
         .then(() => refetch())

@@ -5,6 +5,7 @@ import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
 import {AppSettings} from '../../../libraries/AppSettings';
 import {useQueryClient} from '@tanstack/react-query';
+import deepmerge from 'deepmerge';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const [authState, dispatchAuthState] = useAuthReducer({
@@ -36,12 +37,12 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   useEffect(() => {
     if (authState.tokenData) {
       const currentOptions = queryClient.getDefaultOptions();
-      queryClient.setDefaultOptions({
-        ...currentOptions,
+      const newOptions = {
         queries: {
           enabled: true,
         },
-      });
+      };
+      queryClient.setDefaultOptions(deepmerge(currentOptions, newOptions));
       console.info('API queries have been enabled');
     }
   }, [authState, queryClient]);

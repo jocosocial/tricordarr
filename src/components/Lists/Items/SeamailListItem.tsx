@@ -28,7 +28,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
     description: badgeCount ? commonStyles.bold : undefined,
   };
 
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header?.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => <FezAvatarImage fez={fez} />;

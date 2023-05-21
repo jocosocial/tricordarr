@@ -12,11 +12,9 @@ type AppImageProps = {
 };
 
 export const AppImage = ({path, style}: AppImageProps) => {
-  const {isLoggedIn} = useUserData();
-
   const {data: imageUri} = useQuery({
     queryKey: [path],
-    enabled: isLoggedIn && !!path,
+    enabled: !!path,
     queryFn: apiQueryImageUri,
   });
 

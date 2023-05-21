@@ -6,6 +6,7 @@ import {useQuery} from '@tanstack/react-query';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 // This is a little hacky in several ways.
 // 1) Using the private WebSocket._listeners array to see if we already have a listener.
@@ -43,13 +44,13 @@ async function stopWsListener(wsMessageHandler: () => void) {
 
 export const NotificationDataListener = () => {
   const {setErrorMessage} = useErrorHandler();
-  const {isLoading} = useUserData();
   const {enableUserNotifications, setUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
+  const {isLoggedIn} = useAuth();
 
   const {data, refetch} = useQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
-    enabled: !isLoading && !!enableUserNotifications,
+    enabled: isLoggedIn && !!enableUserNotifications,
   });
 
   const wsMessageHandler = useCallback(() => {

@@ -26,8 +26,7 @@ const validationSchema = Yup.object().shape({
 
 const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHeader}) => {
   const {values, setFieldValue} = useFormikContext<FezContentData>();
-  const {setAsModerator, setAsTwitarrTeam, clearPrivileges} = usePrivilege();
-  const {accessLevel} = useUserData();
+  const {setAsModerator, setAsTwitarrTeam, clearPrivileges, hasTwitarrTeam, hasModerator} = usePrivilege();
 
   useEffect(() => {
     if (values.createdByModerator !== undefined) {
@@ -51,7 +50,7 @@ const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHe
         onPress={() => setFieldValue('fezType', values.fezType === FezType.open ? FezType.closed : FezType.open)}
         value={values.fezType === FezType.open}
       />
-      {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.moderator) && (
+      {hasModerator && (
         <BooleanField
           name={'createdByModerator'}
           label={'Post as Moderator'}
@@ -59,7 +58,7 @@ const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHe
           helperText={'This will also create the seamail as the Moderator user.'}
         />
       )}
-      {UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam) && (
+      {hasTwitarrTeam && (
         <BooleanField
           name={'createdByTwitarrTeam'}
           label={'Post as TwitarrTeam'}

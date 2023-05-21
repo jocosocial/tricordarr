@@ -13,7 +13,7 @@ interface FezAvatarImageProps {
 export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
   const {profilePublicData} = useUserData();
 
-  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData.header.userID) || [];
+  const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const avatarUserID = otherParticipants[0].userID ?? '';
 
   if (otherParticipants.length > 1) {

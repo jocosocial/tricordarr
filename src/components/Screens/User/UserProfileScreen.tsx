@@ -32,7 +32,7 @@ export type Props = NativeStackScreenProps<
 
 export const UserProfileScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {isLoggedIn, profilePublicData} = useUserData();
+  const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -41,7 +41,6 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
 
   const {data, refetch} = useQuery<ProfilePublicData>({
     queryKey: [`/users/${route.params.userID}/profile`],
-    enabled: isLoggedIn,
   });
 
   const onRefresh = useCallback(() => {
@@ -66,7 +65,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   }, [data?.header, navigation]);
 
   const getNavButtons = useCallback(() => {
-    if (data?.header.userID === profilePublicData.header.userID) {
+    if (data?.header.userID === profilePublicData?.header.userID) {
       // Maybe have an edit button?
       return (
         <View style={[commonStyles.flexRow]}>
@@ -90,7 +89,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     isFavorite,
     isMuted,
     krakentalkCreateHandler,
-    profilePublicData.header.userID,
+    profilePublicData,
     seamailCreateHandler,
   ]);
 

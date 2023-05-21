@@ -2,19 +2,19 @@ import React, {useCallback, useEffect, useState, PropsWithChildren} from 'react'
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
 import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {AppSettings} from '../../../libraries/AppSettings';
-import {useUserData} from '../Contexts/UserDataContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {useAuth} from '../Contexts/AuthContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 // Consider renaming to UserNotificationProvider?
 export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
-  const {isLoggedIn, isLoading} = useUserData();
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {setErrorMessage} = useErrorHandler();
   const netInfo = useNetInfo();
+  const {isLoggedIn} = useAuth();
 
   const determineNotificationEnable = useCallback(async () => {
     const currentWifiSSID = netInfo.type === 'wifi' && netInfo.details.ssid ? netInfo.details.ssid : 'ERR_NO_WIFI';
@@ -34,10 +34,10 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
     // If we're done loading, and you're logged in, do the fancy checks.
     // Otherwise, don't even bother trying to enable notifications. Leave
     // it alone so that we don't force the value to change too much.
-    if (!isLoading && isLoggedIn) {
+    if (isLoggedIn) {
       determineNotificationEnable().catch(error => setErrorMessage(error.toString()));
     }
-  }, [isLoggedIn, isLoading, determineNotificationEnable, setErrorMessage]);
+  }, [isLoggedIn, determineNotificationEnable, setErrorMessage]);
 
   return (
     <UserNotificationDataContext.Provider

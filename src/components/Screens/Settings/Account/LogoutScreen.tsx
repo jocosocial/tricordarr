@@ -11,7 +11,6 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {useAppTheme} from '../../../../styles/Theme';
-import {ProfilePublicData, UserNotificationData} from '../../../../libraries/Structs/ControllerStructs';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 
 export const TempUserProfile = () => {
@@ -23,7 +22,7 @@ export const TempUserProfile = () => {
 export const LogoutScreen = () => {
   const theme = useAppTheme();
   const navigation = useNavigation();
-  const {setIsLoggedIn, setProfilePublicData} = useUserData();
+  const {setProfilePublicData} = useUserData();
   const {setEnableUserNotifications, setUserNotificationData} = useUserNotificationData();
   const {signOut} = useAuth();
 

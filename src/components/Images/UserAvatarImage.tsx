@@ -13,12 +13,11 @@ type UserAvatarImageProps = {
 };
 
 export const UserAvatarImage = ({userID, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
-  const {isLoggedIn} = useUserData();
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
 
   const {data: avatarImageUri} = useQuery({
     queryKey: [`/image/user/thumb/${userID}`],
-    enabled: isLoggedIn && !!userID,
+    enabled: !!userID,
     queryFn: apiQueryImageUri,
   });
 

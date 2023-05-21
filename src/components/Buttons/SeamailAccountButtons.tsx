@@ -7,7 +7,7 @@ import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData} = useUserData();
-  const [forUser, setForUser] = useState(profilePublicData.header.username);
+  const [forUser, setForUser] = useState(profilePublicData?.header.username || '');
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam} = usePrivilege();
 
   let buttons = [];
@@ -31,7 +31,7 @@ export const SeamailAccountButtons = () => {
   }
 
   // All Privileged Users
-  if (buttons.length !== 0) {
+  if (buttons.length !== 0 && profilePublicData) {
     buttons.unshift({
       value: profilePublicData.header.username,
       label: profilePublicData.header.displayName || profilePublicData.header.username,
