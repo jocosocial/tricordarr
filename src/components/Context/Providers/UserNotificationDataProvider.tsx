@@ -10,7 +10,7 @@ import {useAuth} from '../Contexts/AuthContext';
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 // Consider renaming to UserNotificationProvider?
 export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
-  const [userNotificationData, setUserNotificationData] = useState({} as UserNotificationData);
+  const [userNotificationData, setUserNotificationData] = useState<UserNotificationData>();
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {setErrorMessage} = useErrorHandler();
   const netInfo = useNetInfo();

@@ -31,7 +31,7 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
   let showAuthor = fez.participantCount > 2;
 
   // Do not show the author for the users own messages.
-  if (fezPost.author.userID === profilePublicData.header.userID) {
+  if (fezPost.author.userID === profilePublicData?.header.userID) {
     showAuthor = false;
   }
 
@@ -41,7 +41,7 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
   }
 
   const messageOnRight =
-    fezPost.author.userID === profilePublicData.header.userID || fezPost.author.username === asPrivilegedUser;
+    fezPost.author.userID === profilePublicData?.header.userID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
     navigation.push(SeamailStackScreenComponents.userProfileScreen, {

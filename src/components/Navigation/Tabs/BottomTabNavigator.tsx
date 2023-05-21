@@ -52,7 +52,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Seamail',
           tabBarIcon: () => getIcon('email'),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData.newSeamailMessageCount),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newSeamailMessageCount),
         }}
       />
       <Tab.Screen

@@ -9,7 +9,6 @@ import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
-import {useEffect, useState} from 'react';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -69,7 +68,7 @@ export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
           {(hasModerator || hasTwitarrTeam) && (
             <Menu.Item
               leadingIcon={AppIcons.user}
-              title={`Post as ${profilePublicData.header.username}`}
+              title={`Post as ${profilePublicData?.header.username}`}
               onPress={postAsSelf}
             />
           )}
