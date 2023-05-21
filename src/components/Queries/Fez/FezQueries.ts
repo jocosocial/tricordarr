@@ -1,15 +1,10 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
-import {
-  ErrorResponse,
-  FezContentData,
-  FezData,
-  FezListData,
-  Paginator,
-} from '../../../libraries/Structs/ControllerStructs';
+import {ErrorResponse, FezContentData, FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
+import {getNextPageParam, getPreviousPageParam, PaginationParams} from '../Pagination';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -35,34 +30,6 @@ interface SeamailQueryProps {
   pageSize?: number;
   fezID: string;
 }
-
-/**
- * useInfiniteQuery passes a single variable back to the query function
- * with page data. That should be this information (to be used for paging)
- * or undefined to indicate there is no additional page available.
- */
-interface PaginationParams {
-  start?: number;
-  limit: number;
-}
-
-/**
- * Tells useInfiniteQuery if there's a next page.
- */
-const getNextPageParam = (paginator: Paginator) => {
-  const {limit, start, total} = paginator;
-  const nextStart = start + limit;
-  return nextStart < total ? {start: nextStart, limit: limit} : undefined;
-};
-
-/**
- * Tells useInfiniteQuery if there's a previous page.
- */
-const getPreviousPageParam = (paginator: Paginator) => {
-  const {limit, start} = paginator;
-  const prevStart = start - limit;
-  return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
-};
 
 interface SeamailListQueryOptions {
   pageSize?: number;

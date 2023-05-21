@@ -53,8 +53,6 @@ const queryClient = new QueryClient({
       queryFn: apiQueryV3,
       cacheTime: 0,
       retry: 2,
-      // By default we disable API queries until the user has logged in.
-      enabled: false,
     },
   },
 });

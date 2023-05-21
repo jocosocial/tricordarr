@@ -34,18 +34,18 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     });
   }, [dispatchAuthState]);
 
-  useEffect(() => {
-    if (authState.tokenData) {
-      const currentOptions = queryClient.getDefaultOptions();
-      const newOptions = {
-        queries: {
-          enabled: true,
-        },
-      };
-      queryClient.setDefaultOptions(deepmerge(currentOptions, newOptions));
-      console.info('API queries have been enabled');
-    }
-  }, [authState, queryClient]);
+  // useEffect(() => {
+  //   if (authState.tokenData) {
+  //     const currentOptions = queryClient.getDefaultOptions();
+  //     const newOptions = {
+  //       queries: {
+  //         enabled: true,
+  //       },
+  //     };
+  //     queryClient.setDefaultOptions(deepmerge(currentOptions, newOptions));
+  //     console.info('API queries have been enabled');
+  //   }
+  // }, [authState, queryClient]);
 
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(

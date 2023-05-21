@@ -1,9 +1,10 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {AppSettings} from '../AppSettings';
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {TokenStringData} from '../Structs/ControllerStructs';
+import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 
 export async function setupAxiosStuff() {
   // https://github.com/axios/axios/issues/3870
@@ -34,11 +35,12 @@ export async function setupAxiosStuff() {
 
 /**
  * Default query function for React-Query registered in App.tsx.
- * @param queryKey
- * @returns {Promise<*>}
+ * It seems that the queryKey passed to the defaultQueryFn is of
+ * type unknown instead of QueryKey as expected. -ChatGPT
  */
-export const apiQueryV3 = async ({queryKey}: {queryKey: string | string[]}) => {
-  const {data} = await axios.get(queryKey[0]);
+export const apiQueryV3 = async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
+  const mutableQueryKey = queryKey as string[];
+  const {data} = await axios.get(mutableQueryKey[0]);
   return data;
 };
 
