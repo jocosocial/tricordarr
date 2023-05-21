@@ -21,3 +21,4 @@ Backlog
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * User flips to unknown after login for a moment
+* all needs to shoot any websockets
