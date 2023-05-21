@@ -1,6 +1,11 @@
-import {QueryKey} from '@tanstack/query-core';
-import {useQuery} from '@tanstack/react-query';
-import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
+import {QueryFunction, QueryKey} from '@tanstack/query-core';
+import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
 
 /**
@@ -19,6 +24,30 @@ export function useTokenAuthQuery<
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+    enabled: isLoggedIn,
+    ...options,
+  });
+}
+
+/**
+ * Clone of useInfiniteQuery but coded to require the user be logged in.
+ * Some endpoints can be used without authentication such as the schedule.
+ */
+export function useTokenAuthInfiniteQuery<
+  TQueryFnData = unknown,
+  TError = unknown,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey,
+>(
+  queryKey: TQueryKey,
+  queryFn: QueryFunction<TQueryFnData, TQueryKey>,
+  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
+): UseInfiniteQueryResult<TData, TError> {
+  const {isLoggedIn} = useAuth();
+  return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey>(
+    queryKey,
+    queryFn,
+    {
     enabled: isLoggedIn,
     ...options,
   });

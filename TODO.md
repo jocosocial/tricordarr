@@ -19,12 +19,8 @@ Backlog
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
 
 Work Queue
-* fix the initial login userID undefined bug
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * logout option for all sessions
 *  The 'navigation' object hasn't been initialized yet. This might happen if you don't have a navigator mounted, or if the navigator hasn't finished mounting. 
   * Happens on tapping a foreground notification
-* Rendering relations provider too many times which likely means something else is whack
-  * May have been a ghost?
-  * The global query disable might be getting in the way of things
-  * Not fetching. Something broken.
+* Move all queries to the queries section

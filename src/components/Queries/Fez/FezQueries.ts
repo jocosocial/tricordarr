@@ -5,6 +5,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {getNextPageParam, getPreviousPageParam, PaginationParams} from '../Pagination';
+import {useTokenAuthInfiniteQuery} from '../TokenAuthQuery';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -39,7 +40,7 @@ interface SeamailListQueryOptions {
 
 export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQueryOptions = {pageSize: 50}) => {
   const {setErrorMessage} = useErrorHandler();
-  return useInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
+  return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined?type=closed&type=open'],
     async ({pageParam = {limit: pageSize}}) => {
       const {start, limit} = pageParam as PaginationParams;
