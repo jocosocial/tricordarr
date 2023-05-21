@@ -1,10 +1,9 @@
 import React, {useEffect, useState, PropsWithChildren} from 'react';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {UserDataContext} from '../Contexts/UserDataContext';
-import {useQuery} from '@tanstack/react-query';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
-import {AxiosError} from 'axios';
 import {useAuth} from '../Contexts/AuthContext';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: PropsWithChildren) => {
@@ -12,10 +11,7 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   const {setErrorBanner} = useErrorHandler();
   const {tokenData} = useAuth();
 
-  const {data: profileQueryData, error: profileQueryError} = useQuery<ProfilePublicData, AxiosError>({
-    queryKey: ['/user/profile'],
-    enabled: !!tokenData,
-  });
+  const {data: profileQueryData, error: profileQueryError} = useUserProfileQuery();
 
   useEffect(() => {
     if (tokenData && profileQueryData) {

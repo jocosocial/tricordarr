@@ -7,6 +7,8 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
+import {AxiosError} from 'axios';
+import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -14,7 +16,7 @@ import {useAuth} from '../Context/Contexts/AuthContext';
  */
 export function useTokenAuthQuery<
   TQueryFnData = unknown,
-  TError = unknown,
+  TError = AxiosError<ErrorResponse>,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -35,7 +37,7 @@ export function useTokenAuthQuery<
  */
 export function useTokenAuthInfiniteQuery<
   TQueryFnData = unknown,
-  TError = unknown,
+  TError = AxiosError<ErrorResponse>,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -44,10 +46,7 @@ export function useTokenAuthInfiniteQuery<
   options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
 ): UseInfiniteQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
-  return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey>(
-    queryKey,
-    queryFn,
-    {
+  return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey>(queryKey, queryFn, {
     enabled: isLoggedIn,
     ...options,
   });
