@@ -25,3 +25,6 @@ Work Queue
 *  The 'navigation' object hasn't been initialized yet. This might happen if you don't have a navigator mounted, or if the navigator hasn't finished mounting. 
   * Happens on tapping a foreground notification
 * Rendering relations provider too many times which likely means something else is whack
+  * May have been a ghost?
+  * The global query disable might be getting in the way of things
+  * Not fetching. Something broken.
