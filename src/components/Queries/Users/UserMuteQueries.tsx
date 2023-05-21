@@ -1,6 +1,7 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {ErrorResponse, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface UserMuteMutationProps {
   userID: string;
@@ -18,7 +19,7 @@ export const useUserMuteMutation = (retry = 0) => {
 };
 
 export const useUserMutesQuery = () => {
-  return useQuery<UserHeader[]>({
+  return useTokenAuthQuery<UserHeader[]>({
     queryKey: ['/users/mutes'],
   });
 };
