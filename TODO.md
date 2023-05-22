@@ -25,3 +25,8 @@ Work Queue
 * tab notifications should come from the socket provider not the background
 * Consider throwing the user to their own profile after login. may avoid above issue.
 * settings pages need some style cleanup
+* Replace all color with error container to match. Post button and fab
+* App start and notification socket event need to refresh notification data
+* Self post on fez should update mod time on list
+* Get mod and team notification badges 
+* Mark as read should update notification data too
