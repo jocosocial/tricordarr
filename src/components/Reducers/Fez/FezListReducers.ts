@@ -8,6 +8,7 @@ export enum FezListActions {
   set = 'SET',
   updateFez = 'UPDATE_FEZ',
   insert = 'INSERT',
+  addSelfPost = 'ADD_SELF_POST',
 }
 
 export type FezListActionsType =
@@ -16,7 +17,8 @@ export type FezListActionsType =
   | {type: FezListActions.moveToTop; fezID: string}
   | {type: FezListActions.updateFez; fez: FezData}
   | {type: FezListActions.set; fezList: FezData[]}
-  | {type: FezListActions.insert; fez: FezData};
+  | {type: FezListActions.insert; fez: FezData}
+  | {type: FezListActions.addSelfPost; fezID: string};
 
 const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData[] => {
   console.log('fezListReducer Action:', action.type);
@@ -61,6 +63,16 @@ const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData
     }
     case FezListActions.insert: {
       return [action.fez].concat(fezList);
+    }
+    case FezListActions.addSelfPost: {
+      return fezList.flatMap(f => {
+        if (f.fezID === action.fezID && f.members) {
+          f.members.postCount = f.members.postCount + 1;
+          f.members.readCount = f.members.readCount + 1;
+          f.lastModificationTime = new Date();
+        }
+        return f;
+      });
     }
     default: {
       throw new Error('Unknown FezListAction action');

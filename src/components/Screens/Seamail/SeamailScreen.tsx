@@ -142,6 +142,10 @@ export const SeamailScreen = ({route, navigation}: Props) => {
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
+            dispatchFezList({
+              type: FezListActions.addSelfPost,
+              fezID: route.params.fezID,
+            });
           },
         },
       );
