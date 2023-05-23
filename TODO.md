@@ -26,5 +26,5 @@ Work Queue
 * Consider throwing the user to their own profile after login. may avoid above issue.
 * settings pages need some style cleanup
 * Replace all color with error container to match. Post button and fab
-* App start and notification socket event need to refresh notification data
-* Mark as read should update notification data too
+* notification socket event need to refresh notification data
+* Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
