@@ -1,13 +1,10 @@
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
-import {useQuery} from '@tanstack/react-query';
-import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
-import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {UserNotificationDataActions} from '../../Reducers/Notification/UserNotificationDataReducer';
 
 // This is a little hacky in several ways.
 // 1) Using the private WebSocket._listeners array to see if we already have a listener.
@@ -45,7 +42,7 @@ async function stopWsListener(wsMessageHandler: () => void) {
 
 export const NotificationDataListener = () => {
   const {setErrorMessage} = useErrorHandler();
-  const {enableUserNotifications, setUserNotificationData} = useUserNotificationData();
+  const {enableUserNotifications, dispatchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
   const {data, refetch} = useUserNotificationDataQuery();
 
@@ -56,14 +53,17 @@ export const NotificationDataListener = () => {
 
   useEffect(() => {
     if (data) {
-      setUserNotificationData(data);
+      dispatchUserNotificationData({
+        type: UserNotificationDataActions.set,
+        userNotificationData: data,
+      });
     }
     if (enableUserNotifications && appStateVisible === 'active') {
       startWsListener(wsMessageHandler).catch(error => setErrorMessage(error.toString));
     } else {
       stopWsListener(wsMessageHandler).catch(error => setErrorMessage(error.toString));
     }
-  }, [appStateVisible, data, enableUserNotifications, setErrorMessage, setUserNotificationData, wsMessageHandler]);
+  }, [appStateVisible, data, enableUserNotifications, setErrorMessage, dispatchUserNotificationData, wsMessageHandler]);
 
   return null;
 };

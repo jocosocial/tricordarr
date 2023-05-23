@@ -17,7 +17,6 @@ import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -36,7 +35,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {refetchUserNotificationData} = useUserNotificationData();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {

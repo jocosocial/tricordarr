@@ -10,6 +10,7 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useLogoutMutation} from '../../../Queries/Auth/LogoutQueries';
+import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -21,7 +22,7 @@ export const LogoutScreen = () => {
   const theme = useAppTheme();
   const navigation = useNavigation();
   const {setProfilePublicData} = useUserData();
-  const {setEnableUserNotifications, setUserNotificationData} = useUserNotificationData();
+  const {setEnableUserNotifications, dispatchUserNotificationData} = useUserNotificationData();
   const {signOut} = useAuth();
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
@@ -32,7 +33,9 @@ export const LogoutScreen = () => {
   const onLogout = () => {
     setEnableUserNotifications(false);
     setProfilePublicData(undefined);
-    setUserNotificationData(undefined);
+    dispatchUserNotificationData({
+      type: UserNotificationDataActions.clear,
+    });
     // @TODO stop the websocket
     signOut();
     navigation.goBack();

@@ -14,7 +14,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {FormikHelpers} from 'formik';
-import {IconButton, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
@@ -28,6 +28,8 @@ import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {UserNotificationDataActions} from '../../Reducers/Notification/UserNotificationDataReducer';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -45,6 +47,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
+  const {dispatchUserNotificationData, refetchUserNotificationData} = useUserNotificationData();
 
   const {
     data,
@@ -60,8 +63,11 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+    refetch().finally(() => {
+      refetchUserNotificationData();
+      setRefreshing(false);
+    });
+  }, [refetch, refetchUserNotificationData]);
 
   const getNavButtons = useCallback(() => {
     if (!fez) {
@@ -170,6 +176,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         type: FezListActions.markAsRead,
         fezID: fez.fezID,
       });
+      // This can't be a markAsRead count-- type situation because of idempotency issues.
+      // We can't easily "mark as read" a single fez.
+      refetchUserNotificationData();
     }
 
     if (fez) {
@@ -179,7 +188,16 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
-  }, [dispatchFezList, fez, fezSocket, fezSocketMessageHandler, getNavButtons, navigation, openFezSocket]);
+  }, [
+    dispatchFezList,
+    dispatchUserNotificationData,
+    fez,
+    fezSocket,
+    fezSocketMessageHandler,
+    getNavButtons,
+    navigation,
+    openFezSocket,
+  ]);
 
   useEffect(() => {
     if (fez) {
