@@ -4,9 +4,11 @@ import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData} = useUserData();
+  const {userNotificationData} = useUserNotificationData();
   const [forUser, setForUser] = useState(profilePublicData?.header.username || '');
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam} = usePrivilege();
 
@@ -16,7 +18,9 @@ export const SeamailAccountButtons = () => {
     buttons.push({
       value: PrivilegedUserAccounts.moderator,
       label: 'Moderator',
-      icon: AppIcons.moderator,
+      icon: userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
+        ? AppIcons.notification
+        : AppIcons.moderator,
       onPress: () => becomeUser(PrivilegedUserAccounts.moderator),
     });
   }
@@ -25,7 +29,7 @@ export const SeamailAccountButtons = () => {
     buttons.push({
       value: PrivilegedUserAccounts.TwitarrTeam,
       label: 'TwitarrTeam',
-      icon: AppIcons.twitarteam,
+      icon: userNotificationData?.moderatorData?.newTTSeamailMessageCount ? AppIcons.notification : AppIcons.twitarteam,
       onPress: () => becomeUser(PrivilegedUserAccounts.TwitarrTeam),
     });
   }
@@ -35,7 +39,7 @@ export const SeamailAccountButtons = () => {
     buttons.unshift({
       value: profilePublicData.header.username,
       label: profilePublicData.header.displayName || profilePublicData.header.username,
-      icon: AppIcons.user,
+      icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notification : AppIcons.user,
       onPress: () => clearPrivileges(),
     });
   }

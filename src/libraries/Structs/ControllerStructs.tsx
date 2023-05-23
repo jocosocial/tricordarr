@@ -1,12 +1,13 @@
 import {FezType} from '../Enums/FezType';
 import {UserAccessLevel} from '../Enums/UserAccessLevel';
+import {SwiftarrClientApp, SwiftarrFeature} from '../Enums/AppFeatures';
 
 /**
  * All of these interfaces come from Swiftarr.
  * https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Controllers/Structs/ControllerStructs.swift
  */
 export interface TokenStringData {
-  /// The user ID of the newly logged in user.
+  /// The user ID of the newly logged-in user.
   userID: string;
   /// The user's access level.
   accessLevel: UserAccessLevel;
@@ -56,6 +57,45 @@ export interface ProfilePublicData {
   note?: string;
 }
 
+export interface DisabledFeature {
+  /// AppName and featureName act as a grid, allowing a specific feature to be disabled only in a specific app. If the appName is `all`, the server
+  /// code for the feature may be causing the issue, requiring the feature be disabled for all clients.
+  appName: SwiftarrClientApp;
+  /// The feature to disable. Features roughly match API controller groups.
+  featureName: SwiftarrFeature;
+}
+
+/// Returns status about a single Alertword, for either Twarrts of ForumPost hits on that word.
+/// Used inside UserNotificationData.
+export interface UserNotificationAlertwordData {
+  /// Will be one of the user's current alert keywords.
+  alertword: string;
+  /// The total number of twarrts that include this word since the first time anyone added this alertword. We record alert word hits in
+  /// a single global list that unions all users' alert word lists. A search for this alertword may return more hits than this number indicates.
+  twarrtMentionCount: number;
+  /// The number of twarrts that include this alertword that the user has not yet seen. Calls to view twarrts with a "?search=" parameter that matches the
+  /// alertword will mark all twarrts containing this alertword as viewed.
+  newTwarrtMentionCount: number;
+  /// The total number of forum posts that include this word since the first time anyone added this alertword.
+  forumMentionCount: number;
+  /// The number of forum posts that include this alertword that the user has not yet seen.
+  newForumMentionCount: number;
+}
+
+interface ModeratorNotificationData {
+  /// The total number of open user reports. Does not count in-process reports (reports being 'handled' by a mod already).
+  /// This value counts multiple reports on the same piece of content as separate reports.
+  openReportCount: number;
+
+  /// The number of Seamails to @moderator (more precisely, ones where @moderator is a participant) that have new messages.
+  /// This value is very similar to `newSeamailMessageCount`, but for any moderator it gives the number of new seamails for @moderator.
+  newModeratorSeamailMessageCount: number;
+
+  /// The number of Seamails to @TwitarrTeam. Nil if user isn't a member of TwitarrTeam. This is in the Moderator struct because I didn't
+  /// want to make *another* sub-struct for TwitarrTeam, just to hold one value.
+  newTTSeamailMessageCount?: number;
+}
+
 export interface UserNotificationData {
   /// Always an ISO 8601 date in UTC, like "2020-03-07T12:00:00Z"
   serverTime: string;
@@ -66,7 +106,7 @@ export interface UserNotificationData {
   /// Features that are turned off by the server. If the `appName` for a feature is `all`, the feature is disabled at the API layer.
   /// For all other appName values, the disable is just a notification that the client should not show the feature to users.
   /// If the list is empty, no features have been disabled.
-  disabledFeatures: object[];
+  disabledFeatures: DisabledFeature[];
   /// The name of the shipboard Wifi network
   shipWifiSSID?: string;
   /// IDs of all active announcements
@@ -96,10 +136,11 @@ export interface UserNotificationData {
   nextFollowedEventID?: string;
 
   /// For each alertword the user has, this returns data on hit counts for that word.
-  alertWords: object[];
+  alertWords: UserNotificationAlertwordData[];
 
   /// Will be nil for non-moderator accounts.
-  moderatorData?: object;
+  moderatorData?: ModeratorNotificationData;
+  /// Notification counts that are only relevant for Moderators (and TwitarrTeam).
 }
 
 export interface Paginator {

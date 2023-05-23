@@ -27,5 +27,4 @@ Work Queue
 * settings pages need some style cleanup
 * Replace all color with error container to match. Post button and fab
 * App start and notification socket event need to refresh notification data
-* Get mod and team notification badges 
 * Mark as read should update notification data too

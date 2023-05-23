@@ -35,4 +35,5 @@ export enum AppIcons {
   twitarteam = 'check-decagram',
   tho = 'shield-crown',
   home = 'home',
+  notification = 'bell-badge',
 }
