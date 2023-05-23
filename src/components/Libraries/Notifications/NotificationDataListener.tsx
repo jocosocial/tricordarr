@@ -7,6 +7,7 @@ import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 // This is a little hacky in several ways.
 // 1) Using the private WebSocket._listeners array to see if we already have a listener.
@@ -46,12 +47,7 @@ export const NotificationDataListener = () => {
   const {setErrorMessage} = useErrorHandler();
   const {enableUserNotifications, setUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
-  const {isLoggedIn} = useAuth();
-
-  const {data, refetch} = useQuery<UserNotificationData>({
-    queryKey: ['/notification/global'],
-    enabled: isLoggedIn && !!enableUserNotifications,
-  });
+  const {data, refetch} = useUserNotificationDataQuery();
 
   const wsMessageHandler = useCallback(() => {
     console.log('UND Listener responding to message');

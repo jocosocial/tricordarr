@@ -16,6 +16,8 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -34,13 +36,12 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
-      fetchNextPage().finally(() => {
-        setRefreshing(false);
-      });
+      fetchNextPage().finally(() => setRefreshing(false));
     }
   };
 
@@ -54,11 +55,12 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   }, [data, dispatchFezList]);
 
   const onRefresh = useCallback(() => {
-    if (isLoggedIn) {
-      setRefreshing(true);
-      refetch().finally(() => setRefreshing(false));
-    }
-  }, [isLoggedIn, refetch]);
+    setRefreshing(true);
+    refetch().finally(() => {
+      refetchUserNotificationData();
+      setRefreshing(false);
+    });
+  }, [refetch, refetchUserNotificationData]);
 
   useEffect(() => {
     onRefresh();
