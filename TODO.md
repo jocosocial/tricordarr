@@ -19,12 +19,15 @@ Backlog
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* User flips to unknown after login for a moment
-* all needs to shoot any websockets
 * cleanup settings, make a provider
-* tab notifications should come from the socket provider not the background
-* Consider throwing the user to their own profile after login. may avoid above issue.
-* settings pages need some style cleanup
-* Replace all color with error container to match. Post button and fab
-* notification socket event need to refresh notification data
-* Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
+* Login
+  * User flips to unknown after login for a moment
+  * Consider throwing the user to their own profile after login. may avoid above issue.
+* Style
+  * settings pages need some style cleanup
+  * Replace all color with error container to match. Post button and fab
+* Sockets
+  * notification socket event need to refresh notification data
+  * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
+  * tab notifications should come from the socket provider not the background
+  * Logout needs to shoot any websockets
