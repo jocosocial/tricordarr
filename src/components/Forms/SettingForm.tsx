@@ -1,30 +1,27 @@
 import React from 'react';
 import {View} from 'react-native';
-import {TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {SettingFormValues} from '../../libraries/Types/FormValues';
+import {TextField} from './Fields/TextField';
+import {useStyles} from '../Context/Contexts/StyleContext';
 
 interface SettingFormProps {
   value: string;
-  onSave: any | Promise<any>;
+  onSave: (values: SettingFormValues) => void;
 }
 
 export const SettingForm = ({value, onSave}: SettingFormProps) => {
+  const {commonStyles} = useStyles();
   const initialFormValues: SettingFormValues = {
     settingValue: value,
   };
   return (
     <Formik enableReinitialize initialValues={initialFormValues} onSubmit={onSave}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+      {({handleSubmit}) => (
         <View>
-          <TextInput
-            label={'Value'}
-            onChangeText={handleChange('settingValue')}
-            onBlur={handleBlur('settingValue')}
-            value={values.settingValue}
-          />
-          <PrimaryActionButton onPress={handleSubmit} buttonText={'Save'} />
+          <TextField name={'settingValue'} />
+          <PrimaryActionButton onPress={handleSubmit} buttonText={'Save'} style={[commonStyles.marginTopSmall]} />
         </View>
       )}
     </Formik>

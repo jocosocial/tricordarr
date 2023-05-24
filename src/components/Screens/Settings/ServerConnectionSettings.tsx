@@ -73,9 +73,8 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     getSettingValue().catch(e => setErrorMessage(e.toString()));
   }, [setErrorMessage, refreshing]);
 
-  // @TODO there has to be a better way to deal with background-loaded view not having a stack screen to go back to.
   useBackHandler(() => {
-    navigation.replace('SettingsScreen');
+    navigation.replace(SettingsStackScreenComponents.settings);
     return true;
   });
 
@@ -133,11 +132,13 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
               buttonText={'Start'}
               buttonColor={theme.colors.twitarrPositiveButton}
               onPress={() => startForegroundServiceWorker().catch(console.error)}
+              style={[commonStyles.marginTopSmall]}
             />
             <PrimaryActionButton
               buttonText={'Stop'}
               buttonColor={theme.colors.twitarrNegativeButton}
               onPress={() => stopForegroundServiceWorker().catch(console.error)}
+              style={[commonStyles.marginTopSmall]}
             />
           </View>
           <View style={commonStyles.marginTop}>

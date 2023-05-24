@@ -24,7 +24,6 @@ Work Queue
   * User flips to unknown after login for a moment
   * Consider throwing the user to their own profile after login. may avoid above issue.
 * Style
-  * settings pages need some style cleanup
   * Replace all color with error container to match. Post button and fab
 * Sockets
   * notification socket event need to refresh notification data

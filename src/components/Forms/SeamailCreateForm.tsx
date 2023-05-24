@@ -10,8 +10,6 @@ import {UserChipsField} from './Fields/UserChipsField';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
-import {useUserData} from '../Context/Contexts/UserDataContext';
-import {UserAccessLevel} from '../../libraries/Enums/UserAccessLevel';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
