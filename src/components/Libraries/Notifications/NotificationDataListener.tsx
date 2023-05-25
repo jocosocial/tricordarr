@@ -1,69 +1,39 @@
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import {UserNotificationDataActions} from '../../Reducers/Notification/UserNotificationDataReducer';
-
-// This is a little hacky in several ways.
-// 1) Using the private WebSocket._listeners array to see if we already have a listener.
-// 2) Because this re-renders every time UserNotificationData updates we can ensure
-//    the listener actually gets set.
-// 3) It doesn't wait for the socket to be open or anything. It's been luck that it times well.
-// @TODO consider replacing with triggering based on notifee events.
-async function startWsListener(wsMessageHandler: () => void) {
-  console.log('Attempting to add UND WS listener');
-  let ws = await getSharedWebSocket();
-  if (ws) {
-    // https://stackoverflow.com/questions/4587061/how-to-determine-if-object-is-in-array
-    // console.log(ws._listeners);
-    // @ts-ignore
-    for (let i = 0; i < ws._listeners.message.length; i++) {
-      // @ts-ignore
-      if (ws._listeners.message[i] === wsMessageHandler) {
-        console.log('wsMessageHandler is already present on socket.');
-        return;
-      }
-    }
-    ws.addEventListener('message', wsMessageHandler);
-    console.log('Added NotificationDataListener to socket.');
-  }
-}
-
-async function stopWsListener(wsMessageHandler: () => void) {
-  console.log('Attempting to remove UND WS listener');
-  let ws = await getSharedWebSocket();
-  if (ws) {
-    ws.removeEventListener('message', wsMessageHandler);
-    console.log('Removed NotificationDataListener from socket.');
-  }
-}
+import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export const NotificationDataListener = () => {
-  const {setErrorMessage} = useErrorHandler();
-  const {enableUserNotifications, dispatchUserNotificationData} = useUserNotificationData();
+  const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
-  const {data, refetch} = useUserNotificationDataQuery();
+  const {notificationSocket} = useSocket();
 
   const wsMessageHandler = useCallback(() => {
-    console.log('UND Listener responding to message');
-    refetch().catch(error => setErrorMessage(error.toString()));
-  }, [refetch, setErrorMessage]);
+    console.log('UNDListener responding to socket message.');
+    refetchUserNotificationData();
+  }, [refetchUserNotificationData]);
+
+  const addHandler = useCallback(() => {
+    console.log('UNDListener adding handler.');
+    notificationSocket?.addEventListener('message', wsMessageHandler);
+  }, [notificationSocket, wsMessageHandler]);
+  const removeHandler = useCallback(() => {
+    console.log('UNDListener removing handler.');
+    notificationSocket?.addEventListener('message', wsMessageHandler);
+  }, [notificationSocket, wsMessageHandler]);
 
   useEffect(() => {
-    if (data) {
-      dispatchUserNotificationData({
-        type: UserNotificationDataActions.set,
-        userNotificationData: data,
-      });
-    }
+    // The check for active state may be redundant since the notification socket is only open
+    // when the app is running. At least for now...
+    // This effect does have the effect of removing the handler twice when the app
+    // goes to background. I think this is acceptable to ensure that the handler gets removed.
     if (enableUserNotifications && appStateVisible === 'active') {
-      startWsListener(wsMessageHandler).catch(error => setErrorMessage(error.toString));
+      addHandler();
     } else {
-      stopWsListener(wsMessageHandler).catch(error => setErrorMessage(error.toString));
+      removeHandler();
     }
-  }, [appStateVisible, data, enableUserNotifications, setErrorMessage, dispatchUserNotificationData, wsMessageHandler]);
+    return () => removeHandler();
+  }, [addHandler, appStateVisible, enableUserNotifications, removeHandler]);
 
   return null;
 };

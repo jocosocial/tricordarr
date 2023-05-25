@@ -32,7 +32,7 @@ import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvide
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
 import {navigationLinking} from './src/libraries/Linking';
-import {EventHandler} from './src/components/Navigation/EventHandler';
+import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
 import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 
 // https://github.com/facebook/react-native/issues/30034
@@ -91,8 +91,8 @@ function App(): JSX.Element {
                           <UserRelationsProvider>
                             <UserNotificationDataProvider>
                               {/*<NotificationDataPoller />*/}
-                              <EventHandler />
-                              <ForegroundService />
+                              <AppEventHandler />
+                              {/*<ForegroundService />*/}
                               <NotificationDataListener />
                               <BottomTabNavigator />
                             </UserNotificationDataProvider>

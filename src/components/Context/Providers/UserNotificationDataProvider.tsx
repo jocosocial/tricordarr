@@ -4,7 +4,10 @@ import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {useAuth} from '../Contexts/AuthContext';
-import {userNotificationDataReducer} from '../../Reducers/Notification/UserNotificationDataReducer';
+import {
+  UserNotificationDataActions,
+  userNotificationDataReducer
+} from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
@@ -17,7 +20,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const {isLoggedIn} = useAuth();
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
 
   const determineNotificationEnable = useCallback(async () => {
     const currentWifiSSID = netInfo.type === 'wifi' && netInfo.details.ssid ? netInfo.details.ssid : 'ERR_NO_WIFI';
@@ -42,6 +45,16 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       determineNotificationEnable().catch(error => setErrorMessage(error.toString()));
     }
   }, [isLoggedIn, determineNotificationEnable, setErrorMessage]);
+
+  useEffect(() => {
+    if (data) {
+      console.log('Setting UND data in UNDProvider');
+      dispatchUserNotificationData({
+        type: UserNotificationDataActions.set,
+        userNotificationData: data,
+      });
+    }
+  }, [data]);
 
   return (
     <UserNotificationDataContext.Provider

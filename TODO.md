@@ -24,7 +24,7 @@ Work Queue
   * User flips to unknown after login for a moment
   * Consider throwing the user to their own profile after login. may avoid above issue.
 * Sockets
-  * notification socket event need to refresh notification data
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
   * tab notifications should come from the socket provider not the background
   * Logout needs to shoot any websockets
+* double calls /notifications when mark as read
