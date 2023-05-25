@@ -90,7 +90,6 @@ function App(): JSX.Element {
                         <SocketProvider>
                           <UserRelationsProvider>
                             <UserNotificationDataProvider>
-                              {/*<NotificationDataPoller />*/}
                               <AppEventHandler />
                               {/*<ForegroundService />*/}
                               <NotificationDataListener />

@@ -23,6 +23,7 @@ export const AppEventHandler = () => {
       }
     };
 
+    // We get the unsubscribe function returned from registering the handler.
     const unsubscribe = notifee.onForegroundEvent(handleForegroundEvent);
 
     return () => {
