@@ -20,11 +20,6 @@ Backlog
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * cleanup settings, make a provider
-* Login
-  * User flips to unknown after login for a moment
-  * Consider throwing the user to their own profile after login. may avoid above issue.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-  * tab notifications should come from the socket provider not the background
-  * Logout needs to shoot any websockets
 * double calls /notifications when mark as read

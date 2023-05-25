@@ -1,10 +1,9 @@
 import {createContext, useContext} from 'react';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
-import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 interface AuthContextType {
-  signIn: (tokenData: TokenStringData) => void;
-  signOut: () => void;
+  signIn: (tokenData: TokenStringData) => Promise<void>;
+  signOut: () => Promise<void>;
   signUp: (tokenData: TokenStringData) => void;
   tokenData: TokenStringData | null;
   isLoggedIn: boolean;

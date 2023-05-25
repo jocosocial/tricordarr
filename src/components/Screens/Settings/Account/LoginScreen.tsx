@@ -30,11 +30,12 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: response => {
-          signIn(response.data);
-          // Triggering NetInfo here can tell the other providers
-          // that we may need to start the Foreground Service Worker.
-          NetInfo.refresh();
-          navigation.goBack();
+          signIn(response.data).then(() => {
+            // Triggering NetInfo here can tell the other providers
+            // that we may need to start the Foreground Service Worker.
+            NetInfo.refresh();
+            navigation.goBack();
+          });
         },
       });
       formikHelpers.setSubmitting(false);
