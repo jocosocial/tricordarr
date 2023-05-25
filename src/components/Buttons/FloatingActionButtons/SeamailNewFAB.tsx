@@ -19,8 +19,8 @@ export const SeamailNewFAB = () => {
 
   const {open} = state;
 
-  const color = asPrivilegedUser ? AndroidColor.WHITE : theme.colors.onPrimary;
-  const backgroundColor = asPrivilegedUser ? theme.colors.twitarrNegativeButton : theme.colors.primary;
+  const color = asPrivilegedUser ? theme.colors.onErrorContainer : theme.colors.onPrimary;
+  const backgroundColor = asPrivilegedUser ? theme.colors.errorContainer : theme.colors.primary;
 
   return (
     <Portal>

@@ -4,11 +4,11 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ActivityIndicator} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface SubmitIconButtonProps {
   onPress: () => void;
   icon?: string;
-  containerColor?: string;
   disabled?: boolean;
   submitting?: boolean;
 }
@@ -16,18 +16,20 @@ interface SubmitIconButtonProps {
 export const SubmitIconButton = ({
   onPress,
   icon = AppIcons.submit,
-  containerColor,
   disabled = false,
   submitting = false,
 }: SubmitIconButtonProps) => {
   const theme = useAppTheme();
   const {styleDefaults} = useStyles();
+  const {asPrivilegedUser} = usePrivilege();
+  const containerColor = asPrivilegedUser ? theme.colors.errorContainer : theme.colors.twitarrNeutralButton;
+  const iconColor = asPrivilegedUser ? theme.colors.onErrorContainer : theme.colors.onBackground;
 
   const iconProp = submitting ? () => <ActivityIndicator /> : icon;
 
   return (
     <IconButton
-      iconColor={theme.colors.onBackground}
+      iconColor={iconColor}
       containerColor={containerColor}
       onPress={onPress}
       size={styleDefaults.iconSize}

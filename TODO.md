@@ -23,8 +23,6 @@ Work Queue
 * Login
   * User flips to unknown after login for a moment
   * Consider throwing the user to their own profile after login. may avoid above issue.
-* Style
-  * Replace all color with error container to match. Post button and fab
 * Sockets
   * notification socket event need to refresh notification data
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?

@@ -35,9 +35,6 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
     inputWrapperView: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.flexColumn],
     input: [commonStyles.roundedBorderLarge, commonStyles.paddingSides, commonStyles.secondaryContainer],
   };
-  const submitButtonContainerColor = asPrivilegedUser
-    ? theme.colors.twitarrNegativeButton
-    : theme.colors.twitarrNeutralButton;
 
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
@@ -61,7 +58,6 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
             />
           </View>
           <SubmitIconButton
-            containerColor={submitButtonContainerColor}
             disabled={!values.text}
             submitting={overrideSubmitting || isSubmitting}
             onPress={onPress || handleSubmit}
