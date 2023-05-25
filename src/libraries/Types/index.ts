@@ -4,3 +4,9 @@ export interface KvObject {
 }
 
 export type StringOrError = string | Error;
+
+// Taken from the WebSocket class.
+export type WebSocketOptions = {
+  headers: {[headerName: string]: string};
+  [optionName: string]: any;
+} | null;

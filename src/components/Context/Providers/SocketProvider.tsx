@@ -1,6 +1,6 @@
 import React, {useState, PropsWithChildren, useCallback, useEffect} from 'react';
 import {SocketContext} from '../Contexts/SocketContext';
-import {buildFezSocket, buildWebSocket} from '../../../libraries/Network/Websockets';
+import {buildWebSocket} from '../../../libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {useUserData} from '../Contexts/UserDataContext';
 
@@ -15,7 +15,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
         console.log('[fezSocket] socket exists, skipping...');
       } else {
-        buildFezSocket(fezID).then(ws => setFezSocket(ws));
+        buildWebSocket(fezID).then(ws => setFezSocket(ws));
       }
       console.log(`[fezSocket] open complete, state = ${fezSocket?.readyState}`);
     },
@@ -33,6 +33,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     console.log(`[fezSocket] close complete, state = ${fezSocket?.readyState}`);
   }, [fezSocket]);
 
+  // @TODO unify these.
   const openNotificationSocket = useCallback(() => {
     console.log(`[NotificationSocket] open, state = ${notificationSocket?.readyState}`);
     if (
@@ -44,6 +45,20 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
     console.log(`[NotificationSocket] open complete, state = ${notificationSocket?.readyState}`);
+  }, [notificationSocket]);
+
+  const closeNotificationSocket = useCallback(() => {
+    console.log('[NotificationSocket] close');
+    if (
+      notificationSocket &&
+      (notificationSocket.readyState === WebSocket.OPEN || notificationSocket.readyState === WebSocket.CLOSED)
+    ) {
+      notificationSocket.close();
+      setNotificationSocket(undefined);
+    } else {
+      console.log('[NotificationSocket] socket ineligible for close. state =', notificationSocket?.readyState);
+    }
+    console.log(`[NotificationSocket] close complete, state = ${notificationSocket?.readyState}`);
   }, [notificationSocket]);
 
   useEffect(() => {
@@ -61,6 +76,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         closeFezSocket,
         notificationSocket,
         setNotificationSocket,
+        closeNotificationSocket,
       }}>
       {children}
     </SocketContext.Provider>

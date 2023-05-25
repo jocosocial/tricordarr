@@ -11,6 +11,7 @@ import {useAppTheme} from '../../../../styles/Theme';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useLogoutMutation} from '../../../Queries/Auth/LogoutQueries';
 import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
+import {useSocket} from '../../../Context/Contexts/SocketContext';
 
 export const TempUserProfile = () => {
   const {profilePublicData} = useUserData();
@@ -29,6 +30,7 @@ export const LogoutScreen = () => {
       onLogout();
     },
   });
+  const {closeNotificationSocket, closeFezSocket} = useSocket();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -36,7 +38,8 @@ export const LogoutScreen = () => {
     dispatchUserNotificationData({
       type: UserNotificationDataActions.clear,
     });
-    // @TODO stop the websocket
+    closeNotificationSocket();
+    closeFezSocket();
     signOut();
     navigation.goBack();
   };

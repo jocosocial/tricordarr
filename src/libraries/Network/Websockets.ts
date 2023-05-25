@@ -5,6 +5,7 @@ import {getAuthHeaders} from './APIClient';
 import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {TokenStringData} from '../Structs/ControllerStructs';
+import {WebSocketOptions} from '../Types';
 
 /**
  * React-Native does not support all the same properties as browser URL
@@ -32,7 +33,7 @@ export const getSharedWebSocket = async () => sharedWebSocket;
 export const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
 
 // https://github.com/pladaria/reconnecting-websocket/issues/138
-function WebSocketConstructor(options: any) {
+function WebSocketConstructor(options?: WebSocketOptions) {
   return class extends WebSocket {
     constructor(url: string, protocols: string | string[]) {
       super(url, protocols, options);
@@ -48,8 +49,15 @@ async function getToken() {
   }
 }
 
-export async function buildFezSocket(fezID: string) {
+/**
+ * Common WebSocket constructor. Used to return an automatically reconnecting WebSocket object
+ * for either the User Notification or Fez Sockets from Swiftarr.
+ */
+export const buildWebSocket = async (fezID?: string) => {
   const wsUrl = await buildWebsocketURL(fezID);
+  // The use of a token in the websocket calls is really an antipattern.
+  // Or at least seems to be based on the discussions on the internet.
+  // Swiftarr should probably fix this some day.
   const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
 
@@ -66,33 +74,33 @@ export async function buildFezSocket(fezID: string) {
     reconnectionDelayGrowFactor: 2,
     // debug: true,
   });
-}
+};
 
-export async function buildWebSocket(fezID?: string) {
-  console.log('buildWebSocket called');
-  const wsUrl = await buildWebsocketURL(fezID);
-  const token = await getToken();
-  const authHeaders = getAuthHeaders(undefined, undefined, token);
-
-  // https://www.npmjs.com/package/reconnecting-websocket
-  const ws = new ReconnectingWebSocket(wsUrl, [], {
-    WebSocket: WebSocketConstructor({
-      headers: authHeaders,
-    }),
-    // https://github.com/pladaria/reconnecting-websocket
-    connectionTimeout: 10000,
-    maxRetries: 20,
-    minReconnectionDelay: 1000,
-    maxReconnectionDelay: 30000,
-    reconnectionDelayGrowFactor: 2,
-    // debug: true,
-  });
-  ws.onerror = wsErrorHandler;
-  ws.onopen = wsOpenHandler;
-  ws.onmessage = wsMessageHandler;
-  ws.onclose = wsCloseHandler;
-  return ws;
-}
+// export async function buildWebSocketOld(fezID?: string) {
+//   console.log('buildWebSocket called');
+//   const wsUrl = await buildWebsocketURL(fezID);
+//   const token = await getToken();
+//   const authHeaders = getAuthHeaders(undefined, undefined, token);
+//
+//   // https://www.npmjs.com/package/reconnecting-websocket
+//   const ws = new ReconnectingWebSocket(wsUrl, [], {
+//     WebSocket: WebSocketConstructor({
+//       headers: authHeaders,
+//     }),
+//     // https://github.com/pladaria/reconnecting-websocket
+//     connectionTimeout: 10000,
+//     maxRetries: 20,
+//     minReconnectionDelay: 1000,
+//     maxReconnectionDelay: 30000,
+//     reconnectionDelayGrowFactor: 2,
+//     // debug: true,
+//   });
+//   ws.onerror = wsErrorHandler;
+//   ws.onopen = wsOpenHandler;
+//   ws.onmessage = wsMessageHandler;
+//   ws.onclose = wsCloseHandler;
+//   return ws;
+// }
 
 /**
  * Browser Websocket doesn't support the ping function.

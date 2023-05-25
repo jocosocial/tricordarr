@@ -8,6 +8,7 @@ interface SocketContextType {
   closeFezSocket: () => void;
   notificationSocket?: ReconnectingWebSocket;
   setNotificationSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
+  closeNotificationSocket: () => void;
 }
 
 export const SocketContext = createContext(<SocketContextType>{});

@@ -62,8 +62,10 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   }, [refetch, refetchUserNotificationData]);
 
   useEffect(() => {
-    onRefresh();
-  }, [asPrivilegedUser, searchString, onRefresh]);
+    if (isLoggedIn) {
+      onRefresh();
+    }
+  }, [asPrivilegedUser, searchString, onRefresh, isLoggedIn]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
