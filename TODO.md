@@ -19,6 +19,11 @@ Backlog
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* cleanup settings, make a provider
+* Settings
+  * General cleanup around app settings
+  * Consider making a provider. idk if that adds too much complexity since there are then two sources of truth
+    which could get complex and out of sync.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
+* Notifications
+  * Move the FGS stuff to use the new providers. Watch out for doubling

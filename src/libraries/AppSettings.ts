@@ -33,7 +33,6 @@ export class AppSettings {
     'Notification Poll Interval',
     'How often to check for new notifications from the server.',
   );
-  static USER_ID = new AppSettings('USER_ID');
   static OVERRIDE_WIFI_CHECK = new AppSettings(
     'OVERRIDE_WIFI_CHECK',
     false,
@@ -43,6 +42,13 @@ export class AppSettings {
   );
   static WS_HEALTHCHECK_DATE = new AppSettings('WS_HEALTHCHECK_DATE');
   static WS_OPEN_DATE = new AppSettings('WS_OPEN_DATE');
+  static ENABLE_BACKGROUND_NOTIFICATIONS = new AppSettings(
+    'ENABLE_BACKGROUND_NOTIFICATIONS',
+    false,
+    Boolean,
+    'Enable Background Notifications',
+    'Allow this app to listen for server notifications even when the app is closed',
+  );
 
   constructor(
     key: string,
