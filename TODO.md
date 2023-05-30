@@ -22,4 +22,3 @@ Work Queue
 * cleanup settings, make a provider
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-* double calls /notifications when mark as read - might be strict mode?

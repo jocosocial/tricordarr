@@ -159,6 +159,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     [fezPostMutation, dispatchFezPostsData, route.params.fezID],
   );
 
+  // Initial set
   useEffect(() => {
     if (data) {
       dispatchFezPostsData({
@@ -169,39 +170,21 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   }, [data, dispatchFezPostsData, setFez]);
 
+  // Socket
+  // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
+  // with rendering.
   useEffect(() => {
-    // Mark as read
-    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      dispatchFezList({
-        type: FezListActions.markAsRead,
-        fezID: fez.fezID,
-      });
-      // This can't be a markAsRead count-- type situation because of idempotency issues.
-      // We can't easily "mark as read" a single fez.
-      refetchUserNotificationData();
-    }
-
     if (fez) {
-      // Socket
       openFezSocket(fez.fezID);
       if (fezSocket) {
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
-  }, [
-    dispatchFezList,
-    dispatchUserNotificationData,
-    fez,
-    fezSocket,
-    fezSocketMessageHandler,
-    getNavButtons,
-    navigation,
-    openFezSocket,
-  ]);
+  }, [fez, fezSocket, fezSocketMessageHandler, openFezSocket]);
 
+  // Navigation
   useEffect(() => {
     if (fez) {
-      // Navigation Options
       navigation.setOptions({
         headerRight: getNavButtons,
         headerTitle: getSeamailHeaderTitle(fez.fezID, fez.title),
@@ -212,6 +195,18 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       });
     }
   }, [fez, getNavButtons, navigation]);
+
+  // Mark as Read
+  useEffect(() => {
+    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+      console.info('Doing the fez thing');
+      dispatchFezList({
+        type: FezListActions.markAsRead,
+        fezID: fez.fezID,
+      });
+      refetchUserNotificationData();
+    }
+  }, [dispatchFezList, fez, refetchUserNotificationData]);
 
   const renderHeader = () => {
     return (
