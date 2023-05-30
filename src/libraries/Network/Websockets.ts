@@ -8,6 +8,7 @@ import {TokenStringData} from '../Structs/ControllerStructs';
 import {WebSocketOptions} from '../Types';
 
 /**
+ * This function returns a normalized URL of a WebSocket API endpoint to connect to.
  * React-Native does not support all the same properties as browser URL
  * objects. Big sad.
  */
@@ -32,7 +33,12 @@ let sharedWebSocket: ReconnectingWebSocket;
 export const getSharedWebSocket = async () => sharedWebSocket;
 export const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
 
-// https://github.com/pladaria/reconnecting-websocket/issues/138
+/**
+ * Constructor/initializer function for the WebSocket class used by Reconnecting-Websocket.
+ * https://github.com/pladaria/reconnecting-websocket/issues/138
+ * @param options
+ * @constructor
+ */
 function WebSocketConstructor(options?: WebSocketOptions) {
   return class extends WebSocket {
     constructor(url: string, protocols: string | string[]) {
@@ -41,6 +47,11 @@ function WebSocketConstructor(options?: WebSocketOptions) {
   };
 }
 
+/**
+ * Returns the users current bearer token necessary to communicate with the WebSocket.
+ * Based on reading through the internet it seems like this is an anti-pattern. But is
+ * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
+ */
 async function getToken() {
   const rawTokenData = await AppSettings.TOKEN_STRING_DATA.getValue();
   if (rawTokenData) {

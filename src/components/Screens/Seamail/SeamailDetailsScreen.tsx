@@ -98,7 +98,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
-  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === profilePublicData.header.userID;
+  const manageUsers = fez.fezType === FezType.open && fez.owner.userID === profilePublicData?.header.userID;
 
   return (
     <AppView>
