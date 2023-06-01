@@ -18,6 +18,9 @@ const defaultAppConfig: AppConfig = {
   notificationPollInterval: 300000,
 };
 
+/**
+ * Generates an AppConfig object from the defaults and React Native Config "env vars".
+ */
 const getInitialAppConfig = () => {
   let config = defaultAppConfig;
   if (Config.SERVER_URL) {
@@ -29,6 +32,9 @@ const getInitialAppConfig = () => {
   return config;
 };
 
+/**
+ * Returns the current AppConfig, either from storage or generates from default + "env vars".
+ */
 export const getAppConfig = async () => {
   let rawConfig = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
   if (!rawConfig) {

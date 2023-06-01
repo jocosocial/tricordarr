@@ -5,13 +5,13 @@ import {AppSettings} from '../AppSettings';
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
+import {getAppConfig} from '../AppConfig';
 
 export async function setupAxiosStuff() {
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
     // URL
-    const serverUrl = await AppSettings.SERVER_URL.getValue();
-    const urlPrefix = await AppSettings.URL_PREFIX.getValue();
+    const {serverUrl, urlPrefix} = await getAppConfig();
     if (config.url && !config.url.startsWith(`${serverUrl}${urlPrefix}`)) {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }

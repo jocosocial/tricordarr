@@ -6,6 +6,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {StorageKeys} from './Storage';
 
 export class AppSettings {
   key: string;
@@ -18,8 +19,8 @@ export class AppSettings {
   // @TODO make datatype mean something
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
-  static TOKEN_STRING_DATA = new AppSettings('TOKEN_STRING_DATA', true);
-  static APP_CONFIG = new AppSettings('CONFIG');
+  static TOKEN_STRING_DATA = new AppSettings(StorageKeys.TOKEN_STRING_DATA, true);
+  static APP_CONFIG = new AppSettings(StorageKeys.APP_CONFIG);
   static SHIP_SSID = new AppSettings(
     'SHIP_SSID',
     false,
