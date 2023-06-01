@@ -34,6 +34,7 @@ import {SocketProvider} from './src/components/Context/Providers/SocketProvider'
 import {navigationLinking} from './src/libraries/Linking';
 import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
 import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
+import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -42,6 +43,7 @@ import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -80,30 +82,32 @@ function App(): JSX.Element {
     <NavigationContainer linking={navigationLinking}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
-          <QueryClientProvider client={queryClient}>
-            <TwitarrProvider>
-              <ErrorHandlerProvider>
-                <ModalProvider>
-                  <AuthProvider>
-                    <UserDataProvider>
-                      <PrivilegeProvider>
-                        <SocketProvider>
-                          <UserRelationsProvider>
-                            <UserNotificationDataProvider>
-                              <AppEventHandler />
-                              {/*<ForegroundService />*/}
-                              <NotificationDataListener />
-                              <BottomTabNavigator />
-                            </UserNotificationDataProvider>
-                          </UserRelationsProvider>
-                        </SocketProvider>
-                      </PrivilegeProvider>
-                    </UserDataProvider>
-                  </AuthProvider>
-                </ModalProvider>
-              </ErrorHandlerProvider>
-            </TwitarrProvider>
-          </QueryClientProvider>
+          <ConfigProvider>
+            <QueryClientProvider client={queryClient}>
+              <TwitarrProvider>
+                <ErrorHandlerProvider>
+                  <ModalProvider>
+                    <AuthProvider>
+                      <UserDataProvider>
+                        <PrivilegeProvider>
+                          <SocketProvider>
+                            <UserRelationsProvider>
+                              <UserNotificationDataProvider>
+                                <AppEventHandler />
+                                {/*<ForegroundService />*/}
+                                <NotificationDataListener />
+                                <BottomTabNavigator />
+                              </UserNotificationDataProvider>
+                            </UserRelationsProvider>
+                          </SocketProvider>
+                        </PrivilegeProvider>
+                      </UserDataProvider>
+                    </AuthProvider>
+                  </ModalProvider>
+                </ErrorHandlerProvider>
+              </TwitarrProvider>
+            </QueryClientProvider>
+          </ConfigProvider>
         </StyleProvider>
       </PaperProvider>
     </NavigationContainer>
