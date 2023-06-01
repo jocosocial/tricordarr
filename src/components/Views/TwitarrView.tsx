@@ -10,6 +10,7 @@ import {SiteUIStackParamList} from '../Navigation/Stacks/SiteUIStack';
 import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {useConfig} from '../Context/Contexts/ConfigContext';
 
 type Props = NativeStackScreenProps<
   SiteUIStackParamList,
@@ -18,12 +19,13 @@ type Props = NativeStackScreenProps<
 >;
 
 export const TwitarrView = ({route, navigation}: Props) => {
-  const [url, setUrl] = useState();
+  const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [key, setKey] = useState();
+  const [key, setKey] = useState('');
   const [handleGoBack, setHandleGoBack] = useState(false);
   const webViewRef = useRef<WebView>();
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const handleBackButtonPress = () => {
     try {
@@ -54,7 +56,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
         <NavBarIconButton
           icon={AppIcons.home}
           onPress={async () => {
-            setUrl(await AppSettings.SERVER_URL.getValue());
+            setUrl(appConfig.serverUrl);
             setKey('home');
           }}
         />
@@ -66,7 +68,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      let newUrl = await AppSettings.SERVER_URL.getValue();
+      let newUrl = appConfig.serverUrl;
 
       if (route?.params?.resource) {
         newUrl += `/${route.params.resource}`;

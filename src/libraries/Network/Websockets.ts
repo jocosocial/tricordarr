@@ -6,6 +6,7 @@ import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {WebSocketOptions} from '../Types';
+import {getAppConfig} from '../AppConfig';
 
 /**
  * This function returns a normalized URL of a WebSocket API endpoint to connect to.
@@ -13,11 +14,10 @@ import {WebSocketOptions} from '../Types';
  * objects. Big sad.
  */
 async function buildWebsocketURL(fezID?: string) {
-  const serverHttpUrl = await AppSettings.SERVER_URL.getValue();
-  const serverApiPrefix = await AppSettings.URL_PREFIX.getValue();
-  let wsUrl = `${serverHttpUrl}${serverApiPrefix}/notification/socket`;
+  const {serverUrl, urlPrefix} = await getAppConfig();
+  let wsUrl = `${serverUrl}${urlPrefix}/notification/socket`;
   if (fezID) {
-    wsUrl = `${serverHttpUrl}${serverApiPrefix}/fez/${fezID}/socket`;
+    wsUrl = `${serverUrl}${urlPrefix}/fez/${fezID}/socket`;
   }
   if (wsUrl.startsWith('https://')) {
     wsUrl.replace('https', 'wss');

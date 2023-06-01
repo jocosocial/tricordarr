@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
 import {LoginForm} from '../../../Forms/LoginForm';
-import {AppSettings} from '../../../../libraries/AppSettings';
 import {useNavigation} from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
@@ -12,19 +11,13 @@ import {commonStyles} from '../../../../styles';
 import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
 import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {useConfig} from '../../../Context/Contexts/ConfigContext';
 
 export const LoginScreen = () => {
-  const [serverUrl, setServerUrl] = useState('');
   const navigation = useNavigation();
   const loginMutation = useLoginQuery();
   const {signIn} = useAuth();
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      setServerUrl((await AppSettings.SERVER_URL.getValue()) ?? 'unknown server');
-    };
-    loadSettings();
-  }, []);
+  const {appConfig} = useConfig();
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
@@ -47,7 +40,7 @@ export const LoginScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView>
-          <Text style={commonStyles.marginBottom}>Logging in to {serverUrl}.</Text>
+          <Text style={commonStyles.marginBottom}>Logging in to {appConfig.serverUrl}.</Text>
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>
       </ScrollingContentView>
