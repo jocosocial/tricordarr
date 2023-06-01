@@ -19,19 +19,13 @@ export class AppSettings {
   static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
   static URL_PREFIX = new AppSettings('URL_PREFIX');
   static TOKEN_STRING_DATA = new AppSettings('TOKEN_STRING_DATA', true);
+  static APP_CONFIG = new AppSettings('CONFIG');
   static SHIP_SSID = new AppSettings(
     'SHIP_SSID',
     false,
     String,
     'WiFi Network',
     'Configure the SSID of the ship WiFi. Influences notification checking behavior.',
-  );
-  static NOTIFICATION_POLL_INTERVAL = new AppSettings(
-    'NOTIFICATION_POLL_INTERVAL',
-    false,
-    Number,
-    'Notification Poll Interval',
-    'How often to check for new notifications from the server.',
   );
   static OVERRIDE_WIFI_CHECK = new AppSettings(
     'OVERRIDE_WIFI_CHECK',
@@ -88,20 +82,13 @@ export class AppSettings {
 }
 
 // @TODO deprecate this.
-const SettingKeys = Object.freeze({
-  SERVER_URL: 'SERVER_URL',
-});
-
-// @TODO deprecate this.
 export async function initialSettings() {
   console.log('Doing initial settings');
   try {
-    await AppSettings.NOTIFICATION_POLL_INTERVAL.remove();
-    await AppSettings.NOTIFICATION_POLL_INTERVAL.setValue('300000');
     await AsyncStorage.setItem('URL_PREFIX', '/api/v3');
-    let setting = await AsyncStorage.getItem(SettingKeys.SERVER_URL);
+    let setting = await AsyncStorage.getItem('SERVER_URL');
     if (setting === null && Config.SERVER_URL !== undefined) {
-      await AsyncStorage.setItem(SettingKeys.SERVER_URL, Config.SERVER_URL);
+      await AsyncStorage.setItem('SERVER_URL', Config.SERVER_URL);
     } else {
       console.log('Server URL is already set');
     }
@@ -114,5 +101,5 @@ export async function initialSettings() {
   } catch (e) {
     console.error(e);
   }
-  console.log('Server URL is:', await AsyncStorage.getItem(SettingKeys.SERVER_URL));
+  console.log('Server URL is:', await AsyncStorage.getItem('SERVER_URL'));
 }
