@@ -69,10 +69,6 @@ function App(): JSX.Element {
     console.error('Error setting up notification channels:', error);
   });
 
-  initialSettings().catch(error => {
-    console.error('Error with settings:', error);
-  });
-
   useEffect(() => {
     console.log('Calling useEffect from Main App.');
     setupInitialNotification().catch(console.error);

@@ -4,7 +4,6 @@
 // https://github.com/luggit/react-native-config
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {StorageKeys} from './Storage';
 
@@ -17,17 +16,7 @@ export class AppSettings {
 
   // @TODO make these consistent
   // @TODO make datatype mean something
-  static SERVER_URL = new AppSettings('SERVER_URL', false, String, 'Server URL', 'URL of the Twitarr server.');
-  static URL_PREFIX = new AppSettings('URL_PREFIX');
   static TOKEN_STRING_DATA = new AppSettings(StorageKeys.TOKEN_STRING_DATA, true);
-  static APP_CONFIG = new AppSettings(StorageKeys.APP_CONFIG);
-  static SHIP_SSID = new AppSettings(
-    'SHIP_SSID',
-    false,
-    String,
-    'WiFi Network',
-    'Configure the SSID of the ship WiFi. Influences notification checking behavior.',
-  );
   static OVERRIDE_WIFI_CHECK = new AppSettings(
     'OVERRIDE_WIFI_CHECK',
     false,
@@ -37,13 +26,6 @@ export class AppSettings {
   );
   static WS_HEALTHCHECK_DATE = new AppSettings('WS_HEALTHCHECK_DATE');
   static WS_OPEN_DATE = new AppSettings('WS_OPEN_DATE');
-  static ENABLE_BACKGROUND_NOTIFICATIONS = new AppSettings(
-    'ENABLE_BACKGROUND_NOTIFICATIONS',
-    false,
-    Boolean,
-    'Enable Background Notifications',
-    'Allow this app to listen for server notifications even when the app is closed',
-  );
 
   constructor(
     key: string,
@@ -80,27 +62,4 @@ export class AppSettings {
     }
     return await AsyncStorage.removeItem(this.key);
   }
-}
-
-// @TODO deprecate this.
-export async function initialSettings() {
-  console.log('Doing initial settings');
-  try {
-    await AsyncStorage.setItem('URL_PREFIX', '/api/v3');
-    let setting = await AsyncStorage.getItem('SERVER_URL');
-    if (setting === null && Config.SERVER_URL !== undefined) {
-      await AsyncStorage.setItem('SERVER_URL', Config.SERVER_URL);
-    } else {
-      console.log('Server URL is already set');
-    }
-    let wifi = await AppSettings.SHIP_SSID.getValue();
-    if (wifi === null && Config.SHIP_SSID !== undefined) {
-      await AppSettings.SHIP_SSID.setValue(Config.SHIP_SSID);
-    } else {
-      console.log('Ship WiFi is already set');
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  console.log('Server URL is:', await AsyncStorage.getItem('SERVER_URL'));
 }
