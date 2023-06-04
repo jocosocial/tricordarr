@@ -39,7 +39,16 @@ export const SettingsView = () => {
           </ListSection>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Tests</List.Subheader>
+            <List.Subheader>Notifications</List.Subheader>
+          </ListSection>
+          <Divider bold={true} />
+          <ListSection>
+            <List.Subheader>Developers</List.Subheader>
+            <NavigationListItem
+              title={'Network Info'}
+              description={"View details about your device's current network environment."}
+              navComponent={SettingsStackScreenComponents.networkInfoSettings}
+            />
             <NavigationListItem
               title={'Notifications'}
               description={'Generate a test notification for debugging.'}
@@ -50,19 +59,15 @@ export const SettingsView = () => {
               description={'Generate test error messages.'}
               navComponent={SettingsStackScreenComponents.testError}
             />
-          </ListSection>
-          <Divider bold={true} />
-          <ListSection>
-            <List.Subheader>About</List.Subheader>
             <NavigationListItem
-              title={'Network Info'}
-              description={"View details about your device's current network environment."}
-              navComponent={SettingsStackScreenComponents.networkInfoSettings}
+              title={'Notifications'}
+              description={'Generate a test notification for debugging.'}
+              navComponent={SettingsStackScreenComponents.testNotification}
             />
             <NavigationListItem
-              title={'Storage Keys'}
-              description={'View the contents of internal app storage.'}
-              navComponent={SettingsStackScreenComponents.storageKeySettings}
+              title={'Sockets'}
+              description={'Enable/disable specific websocket features.'}
+              navComponent={SettingsStackScreenComponents.socketSettings}
             />
           </ListSection>
         </View>

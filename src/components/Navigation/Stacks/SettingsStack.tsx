@@ -1,7 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
-import {StorageKeysSettings} from '../../Screens/Settings/StorageKeys';
 import {AccountSettings} from '../../Screens/Settings/Account/AccountSettings';
 import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
 import {SettingsView} from '../../Screens/Settings/Settings';
@@ -12,12 +11,12 @@ import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
 import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSIDScreen';
+import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
     title: string;
   };
-  StorageKeysSettingsScreen: undefined;
   SettingsScreen: undefined;
   NetworkInfoSettingsScreen: undefined;
   ServerConnectionSettingsScreen: undefined;
@@ -25,6 +24,7 @@ export type SettingsStackParamList = {
   TestErrorScreen: undefined;
   ConfigServerUrlScreen: undefined;
   ConfigShipSSIDScreen: undefined;
+  SocketSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -44,7 +44,6 @@ export const SettingsStack = () => {
         options={{title: 'Settings'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
-      <Stack.Screen name={SettingsStackScreenComponents.storageKeySettings} component={StorageKeysSettings} />
       <Stack.Screen name={SettingsStackScreenComponents.accountSettings} component={AccountSettings} />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
@@ -70,6 +69,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.configShipSSID}
         component={ConfigShipSSIDScreen}
         options={{title: 'WiFi Network'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.socketSettings}
+        component={SocketSettingsScreen}
+        options={{title: 'Sockets'}}
       />
     </Stack.Navigator>
   );

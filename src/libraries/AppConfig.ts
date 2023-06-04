@@ -9,6 +9,8 @@ export interface AppConfig {
   enableBackgroundWorker: boolean;
   notificationPollInterval: number;
   overrideWifiCheck: boolean;
+  enableNotificationSocket: boolean;
+  enableFezSocket: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -18,6 +20,8 @@ const defaultAppConfig: AppConfig = {
   enableBackgroundWorker: true,
   notificationPollInterval: 300000,
   overrideWifiCheck: false,
+  enableNotificationSocket: true,
+  enableFezSocket: true,
 };
 
 /**

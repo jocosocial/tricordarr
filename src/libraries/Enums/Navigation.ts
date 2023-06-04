@@ -17,9 +17,7 @@ export enum BottomTabComponents {
 }
 
 export enum SettingsStackScreenComponents {
-  storageKeySettings = 'StorageKeysSettingsScreen',
   settings = 'SettingsScreen',
-  settingDetail = 'SettingDetailScreen',
   networkInfoSettings = 'NetworkInfoSettingsScreen',
   accountSettings = 'AccountSettingsScreen',
   serverConnectionSettings = 'ServerConnectionSettingsScreen',
@@ -27,6 +25,7 @@ export enum SettingsStackScreenComponents {
   testError = 'TestErrorScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   configShipSSID = 'ConfigShipSSIDScreen',
+  socketSettings = 'SocketSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
