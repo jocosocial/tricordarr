@@ -1,6 +1,11 @@
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
+import {NotificationType} from './Enums/Notifications';
+
+export type PushNotificationConfig = {
+  [key in keyof typeof NotificationType]: boolean;
+};
 
 export interface AppConfig {
   serverUrl: string;
@@ -11,6 +16,7 @@ export interface AppConfig {
   overrideWifiCheck: boolean;
   enableNotificationSocket: boolean;
   enableFezSocket: boolean;
+  pushNotifications: PushNotificationConfig;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -22,6 +28,16 @@ const defaultAppConfig: AppConfig = {
   overrideWifiCheck: false,
   enableNotificationSocket: true,
   enableFezSocket: true,
+  pushNotifications: {
+    announcement: true,
+    seamailUnreadMsg: true,
+    fezUnreadMsg: true,
+    alertwordTwarrt: false,
+    alertwordPost: true,
+    twarrtMention: false,
+    forumMention: true,
+    nextFollowedEventTime: true,
+  },
 };
 
 /**

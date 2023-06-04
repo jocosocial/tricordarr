@@ -40,6 +40,11 @@ export const SettingsView = () => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Notifications</List.Subheader>
+            <NavigationListItem
+              title={'Push Notifications'}
+              description={'Configure what events you wish to trigger a push notification.'}
+              navComponent={SettingsStackScreenComponents.pushNotificationSettings}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>

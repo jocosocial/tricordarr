@@ -12,6 +12,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
 import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSIDScreen';
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
+import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -25,6 +26,7 @@ export type SettingsStackParamList = {
   ConfigServerUrlScreen: undefined;
   ConfigShipSSIDScreen: undefined;
   SocketSettingsScreen: undefined;
+  PushNotificationSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -74,6 +76,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.socketSettings}
         component={SocketSettingsScreen}
         options={{title: 'Sockets'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.pushNotificationSettings}
+        component={PushNotificationSettingsScreen}
+        options={{title: 'Push Notifications'}}
       />
     </Stack.Navigator>
   );
