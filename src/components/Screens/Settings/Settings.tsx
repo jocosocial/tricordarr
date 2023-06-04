@@ -1,8 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {List, Divider} from 'react-native-paper';
-import {AppSettings} from '../../../libraries/AppSettings';
-import {SettingListItem} from '../../Lists/Items/SettingListItem';
+import {Divider, List} from 'react-native-paper';
 import {NavigationListItem} from '../../Lists/Items/NavigationListItem';
 import {AccountListItem} from '../../Lists/Items/AccountListItem';
 import {AppView} from '../../Views/AppView';
@@ -18,13 +16,21 @@ export const SettingsView = () => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Network</List.Subheader>
-            <SettingListItem setting={AppSettings.SERVER_URL} />
+            <NavigationListItem
+              title={'Server URL'}
+              description={'URL of the Twitarr server.'}
+              navComponent={SettingsStackScreenComponents.configServerUrl}
+            />
             <NavigationListItem
               title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
               navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
-            <SettingListItem setting={AppSettings.SHIP_SSID} />
+            <NavigationListItem
+              title={'WiFi Network'}
+              description={'Configure the known SSID of the ship WiFi. This influences notification checking behavior.'}
+              navComponent={SettingsStackScreenComponents.configShipSSID}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>
