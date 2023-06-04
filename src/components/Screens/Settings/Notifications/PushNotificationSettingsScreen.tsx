@@ -7,6 +7,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {PushNotificationConfig} from '../../../../libraries/AppConfig';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
+import {Divider, Text} from 'react-native-paper';
 
 interface NotificationCategory {
   configKey: keyof PushNotificationConfig;
@@ -51,6 +52,7 @@ export const PushNotificationSettingsScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView>
+          <Text variant={'titleLarge'}>Types</Text>
           {pushNotificationCategories.flatMap(c => (
             <SettingSwitch
               key={c.configKey}
@@ -60,7 +62,8 @@ export const PushNotificationSettingsScreen = () => {
             />
           ))}
         </PaddedContentView>
-        <PaddedContentView>
+        <Divider bold={true} />
+        <PaddedContentView padTop={true}>
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrPositiveButton}
             buttonText={'Enable All'}
@@ -74,6 +77,7 @@ export const PushNotificationSettingsScreen = () => {
             onPress={() => setAllValue(false)}
           />
         </PaddedContentView>
+        <Divider bold={true} />
       </ScrollingContentView>
     </AppView>
   );
