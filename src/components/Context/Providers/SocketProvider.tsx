@@ -3,14 +3,20 @@ import {SocketContext} from '../Contexts/SocketContext';
 import {buildWebSocket} from '../../../libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {useUserData} from '../Contexts/UserDataContext';
+import {useConfig} from '../Contexts/ConfigContext';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
   const {profilePublicData} = useUserData();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
+  const {appConfig} = useConfig();
 
   const openFezSocket = useCallback(
     (fezID: string) => {
+      if (!appConfig.enableFezSocket) {
+        console.log('[fezSocket] skipping open, fez sockets are disabled');
+        return;
+      }
       console.log(`[fezSocket] open for ${fezID}, state = ${fezSocket?.readyState}`);
       if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
         console.log('[fezSocket] socket exists, skipping...');
@@ -19,7 +25,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       }
       console.log(`[fezSocket] open complete, state = ${fezSocket?.readyState}`);
     },
-    [fezSocket],
+    [appConfig.enableFezSocket, fezSocket],
   );
 
   const closeFezSocket = useCallback(() => {
@@ -35,6 +41,10 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // @TODO unify these.
   const openNotificationSocket = useCallback(() => {
+    if (!appConfig.enableNotificationSocket) {
+      console.log('[NotificationSocket] skipping open, notification sockets are disabled');
+      return;
+    }
     console.log(`[NotificationSocket] open, state = ${notificationSocket?.readyState}`);
     if (
       notificationSocket &&
@@ -45,7 +55,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
     console.log(`[NotificationSocket] open complete, state = ${notificationSocket?.readyState}`);
-  }, [notificationSocket]);
+  }, [appConfig.enableNotificationSocket, notificationSocket]);
 
   const closeNotificationSocket = useCallback(() => {
     console.log('[NotificationSocket] close');
@@ -66,6 +76,17 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       openNotificationSocket();
     }
   }, [openNotificationSocket, profilePublicData]);
+
+  useEffect(() => {
+    if (!appConfig.enableNotificationSocket) {
+      console.log('[NotificationSocket] notification sockets are disabled. Explicitly closing.');
+      closeNotificationSocket();
+    }
+    if (!appConfig.enableFezSocket) {
+      console.log('[fezSocket] fez sockets are disabled. Explicitly closing.');
+      closeFezSocket();
+    }
+  }, [appConfig.enableFezSocket, appConfig.enableNotificationSocket, closeFezSocket, closeNotificationSocket]);
 
   return (
     <SocketContext.Provider

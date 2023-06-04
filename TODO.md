@@ -12,14 +12,11 @@ Backlog
 * Moving the blocks/mutes Menu.Item's to dedicated components broke providers. why?
 * Seamail tap and hold menu needs to render above bottom nav
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
+* notification rate limiting
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
 * Settings
-  * General cleanup around app settings
-  * Consider making a provider. idk if that adds too much complexity since there are then two sources of truth
-    which could get complex and out of sync.
-  * global settings for websocket and fezsocket enable/disable
   * replace server connection boolean settings with the new components.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
