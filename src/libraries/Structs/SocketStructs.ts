@@ -1,4 +1,5 @@
 import {UserHeader} from './ControllerStructs';
+import {NotificationType} from '../Enums/Notifications';
 
 export interface SocketFezPostData {
   /// PostID of the new post
@@ -78,5 +79,5 @@ export interface SocketNotificationData {
 
 export namespace SocketNotificationData {
   export const getType = (socketNotificationData: SocketNotificationData) =>
-    Object.keys(socketNotificationData.type)[0];
+    Object.keys(socketNotificationData.type)[0] as keyof typeof NotificationType;
 }

@@ -20,6 +20,10 @@ Work Queue
   * replace server connection boolean settings with the new components.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
+  * Switch FGS socket to use notificationsocket
 * Notifications
   * Move the FGS stuff to use the new providers. Watch out for doubling
-  * Bring back notifee socket stuff. Disabled with new socket construction. Use the provider socket.
+  * NotificationType vs NotificationTypeData
+  * Dont notifee if the seamail is the active route
+* Seamail
+  * New messages are very slow to show up on SeamailScreen after notification event

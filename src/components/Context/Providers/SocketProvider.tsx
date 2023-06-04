@@ -11,6 +11,8 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
   const {appConfig} = useConfig();
 
+  // Socket Open
+
   const openFezSocket = useCallback(
     (fezID: string) => {
       if (!appConfig.enableFezSocket) {
@@ -28,18 +30,6 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     [appConfig.enableFezSocket, fezSocket],
   );
 
-  const closeFezSocket = useCallback(() => {
-    console.log('[fezSocket] close');
-    if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
-      fezSocket.close();
-      setFezSocket(undefined);
-    } else {
-      console.log('[fezSocket] socket ineligible for close. state =', fezSocket?.readyState);
-    }
-    console.log(`[fezSocket] close complete, state = ${fezSocket?.readyState}`);
-  }, [fezSocket]);
-
-  // @TODO unify these.
   const openNotificationSocket = useCallback(() => {
     if (!appConfig.enableNotificationSocket) {
       console.log('[NotificationSocket] skipping open, notification sockets are disabled');
@@ -57,6 +47,19 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     console.log(`[NotificationSocket] open complete, state = ${notificationSocket?.readyState}`);
   }, [appConfig.enableNotificationSocket, notificationSocket]);
 
+  // Socket Close
+
+  const closeFezSocket = useCallback(() => {
+    console.log('[fezSocket] close');
+    if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
+      fezSocket.close();
+      setFezSocket(undefined);
+    } else {
+      console.log('[fezSocket] socket ineligible for close. state =', fezSocket?.readyState);
+    }
+    console.log(`[fezSocket] close complete, state = ${fezSocket?.readyState}`);
+  }, [fezSocket]);
+
   const closeNotificationSocket = useCallback(() => {
     console.log('[NotificationSocket] close');
     if (
@@ -70,6 +73,8 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     }
     console.log(`[NotificationSocket] close complete, state = ${notificationSocket?.readyState}`);
   }, [notificationSocket]);
+
+  // Effects
 
   useEffect(() => {
     if (profilePublicData) {
