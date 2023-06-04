@@ -54,7 +54,13 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   console.log('Auth State', authState);
 
   return (
-    <AuthContext.Provider value={{...authContext, tokenData: authState.tokenData, isLoggedIn: isLoggedIn}}>
+    <AuthContext.Provider
+      value={{
+        ...authContext,
+        tokenData: authState.tokenData,
+        isLoggedIn: isLoggedIn,
+        isLoading: authState.isLoading,
+      }}>
       {children}
     </AuthContext.Provider>
   );

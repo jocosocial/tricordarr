@@ -42,7 +42,6 @@ import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider'
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-
 ViewReactNativeStyleAttributes.scaleY = true;
 
 TimeAgo.addDefaultLocale(en);
@@ -58,6 +57,9 @@ const queryClient = new QueryClient({
   },
 });
 setupAxiosStuff();
+
+import {registerFgsWorker} from './src/libraries/Service';
+registerFgsWorker();
 
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
@@ -89,7 +91,7 @@ function App(): JSX.Element {
                             <UserRelationsProvider>
                               <UserNotificationDataProvider>
                                 <AppEventHandler />
-                                {/*<ForegroundService />*/}
+                                <ForegroundService />
                                 <NotificationDataListener />
                                 <BottomTabNavigator />
                               </UserNotificationDataProvider>

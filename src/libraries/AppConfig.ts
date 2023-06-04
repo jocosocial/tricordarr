@@ -17,6 +17,7 @@ export interface AppConfig {
   enableNotificationSocket: boolean;
   enableFezSocket: boolean;
   pushNotifications: PushNotificationConfig;
+  fgsWorkerHealthTimer: number;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -38,6 +39,7 @@ const defaultAppConfig: AppConfig = {
     forumMention: true,
     nextFollowedEventTime: true,
   },
+  fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
 };
 
 /**
