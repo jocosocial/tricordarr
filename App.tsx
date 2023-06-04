@@ -9,7 +9,6 @@ import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {setupChannels} from './src/libraries/Notifications/Channels';
-import {initialSettings} from './src/libraries/AppSettings';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';

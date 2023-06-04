@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useState, PropsWithChildren, useReducer} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
-import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {useAuth} from '../Contexts/AuthContext';
 import {
   UserNotificationDataActions,
-  userNotificationDataReducer
+  userNotificationDataReducer,
 } from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {useConfig} from '../Contexts/ConfigContext';
@@ -24,16 +23,16 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
 
+  // @TODO this is gonna re-trigger every time netinfo changes. That's very bad.
   const determineNotificationEnable = useCallback(async () => {
     const currentWifiSSID = netInfo.type === 'wifi' && netInfo.details.ssid ? netInfo.details.ssid : 'ERR_NO_WIFI';
-    const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
-    if ((currentWifiSSID === appConfig.shipSSID || overrideWifi) && isLoggedIn) {
+    if ((currentWifiSSID === appConfig.shipSSID || appConfig.overrideWifiCheck) && isLoggedIn) {
       setEnableUserNotifications(true);
     } else {
       setEnableUserNotifications(false);
       setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [netInfo.type, netInfo.details.ssid, appConfig.shipSSID, isLoggedIn, setErrorMessage]);
+  }, [netInfo, appConfig, isLoggedIn, setErrorMessage]);
 
   // @TODO something with the polling is triggering this.
   // It's the setUserNotificationData(data); from NotificationPoller.

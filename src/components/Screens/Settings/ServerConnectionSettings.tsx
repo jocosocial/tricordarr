@@ -7,7 +7,6 @@ import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {commonStyles} from '../../../styles';
-import {AppSettings} from '../../../libraries/AppSettings';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useBackHandler} from '@react-native-community/hooks';
 import {fgsFailedCounter} from '../../../libraries/Service';
@@ -17,6 +16,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useAppTheme} from '../../../styles/Theme';
 import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 // @TODO this has been moved to the library
@@ -40,10 +40,10 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useUserNotificationData();
-  const [override, setOverride] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const [wsHealthcheckDate, setWsHealthcheckDate] = useState('unknown');
   const [wsOpenDate, setWsOpenDate] = useState('unknown');
+  const {appConfig, updateAppConfig} = useConfig();
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -65,9 +65,8 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   useEffect(() => {
     async function getSettingValue() {
       // https://stackoverflow.com/questions/263965/how-can-i-convert-a-string-to-boolean-in-javascript
-      setOverride((await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true');
-      setWsHealthcheckDate((await AppSettings.WS_HEALTHCHECK_DATE.getValue()) || 'UNKNOWN');
-      setWsOpenDate((await AppSettings.WS_OPEN_DATE.getValue()) || 'UNKNOWN');
+      setWsHealthcheckDate('UNKNOWN');
+      setWsOpenDate('UNKNOWN');
     }
 
     getSettingValue().catch(e => setErrorMessage(e.toString()));
@@ -79,8 +78,10 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   });
 
   async function toggleOverride() {
-    await AppSettings.OVERRIDE_WIFI_CHECK.setValue(String(!override));
-    setOverride(!override);
+    updateAppConfig({
+      ...appConfig,
+      overrideWifiCheck: !appConfig.overrideWifiCheck,
+    });
   }
 
   return (
@@ -144,11 +145,14 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
           <View style={commonStyles.marginTop}>
             <Text variant={'titleLarge'}>Override WiFi Check</Text>
             <View>
-              <Text>{AppSettings.OVERRIDE_WIFI_CHECK.description}</Text>
+              <Text>
+                Attempt server connection even if you're not on configured WiFi network. Requires app restart. May
+                consume more battery.
+              </Text>
               <TouchableRipple style={commonStyles.marginTop} onPress={toggleOverride}>
                 <View style={commonStyles.booleanSettingRowView}>
                   <Text>Enable</Text>
-                  <Switch value={override} onValueChange={toggleOverride} />
+                  <Switch value={appConfig.overrideWifiCheck} onValueChange={toggleOverride} />
                 </View>
               </TouchableRipple>
             </View>
