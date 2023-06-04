@@ -9,6 +9,7 @@ import {
   userNotificationDataReducer
 } from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {useConfig} from '../Contexts/ConfigContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -21,18 +22,18 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {appConfig} = useConfig();
 
   const determineNotificationEnable = useCallback(async () => {
     const currentWifiSSID = netInfo.type === 'wifi' && netInfo.details.ssid ? netInfo.details.ssid : 'ERR_NO_WIFI';
-    const shipWifiSSID = await AppSettings.SHIP_SSID.getValue();
     const overrideWifi = (await AppSettings.OVERRIDE_WIFI_CHECK.getValue()) === 'true';
-    if ((currentWifiSSID === shipWifiSSID || overrideWifi) && isLoggedIn) {
+    if ((currentWifiSSID === appConfig.shipSSID || overrideWifi) && isLoggedIn) {
       setEnableUserNotifications(true);
     } else {
       setEnableUserNotifications(false);
       setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [setErrorMessage, isLoggedIn, netInfo.type, netInfo.details]);
+  }, [netInfo.type, netInfo.details.ssid, appConfig.shipSSID, isLoggedIn, setErrorMessage]);
 
   // @TODO something with the polling is triggering this.
   // It's the setUserNotificationData(data); from NotificationPoller.
