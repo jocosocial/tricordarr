@@ -1,6 +1,5 @@
 import {WebView} from 'react-native-webview';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {AppSettings} from '../../libraries/AppSettings';
 import {ActivityIndicator, View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from './AppView';

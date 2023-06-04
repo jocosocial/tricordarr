@@ -8,6 +8,7 @@ export interface AppConfig {
   shipSSID: string;
   enableBackgroundWorker: boolean;
   notificationPollInterval: number;
+  overrideWifiCheck: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -16,6 +17,7 @@ const defaultAppConfig: AppConfig = {
   shipSSID: 'AndroidWifi',
   enableBackgroundWorker: true,
   notificationPollInterval: 300000,
+  overrideWifiCheck: false,
 };
 
 /**

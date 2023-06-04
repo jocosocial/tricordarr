@@ -1,7 +1,6 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 import axios, {AxiosResponse} from 'axios';
-import {AppSettings} from '../AppSettings';
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
@@ -16,7 +15,7 @@ export async function setupAxiosStuff() {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }
     // Authentication
-    const rawTokenData = await AppSettings.TOKEN_STRING_DATA.getValue();
+    const rawTokenData = await TokenStringData.getLocal();
     if (rawTokenData && !config.headers.authorization) {
       const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
       config.headers.authorization = `Bearer ${tokenStringData.token}`;

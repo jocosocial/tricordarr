@@ -3,7 +3,6 @@ import {PropsWithChildren} from 'react';
 import {AuthContext} from '../Contexts/AuthContext';
 import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
-import {AppSettings} from '../../../libraries/AppSettings';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const [authState, dispatchAuthState] = useAuthReducer({
@@ -14,7 +13,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     const restoreTokenData = async () => {
-      const tokenStringData = await AppSettings.TOKEN_STRING_DATA.getValue();
+      const tokenStringData = await TokenStringData.getLocal();
       if (tokenStringData) {
         return JSON.parse(tokenStringData) as TokenStringData;
       }
@@ -35,14 +34,14 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   const authContext = useMemo(
     () => ({
       signIn: async (tokenData: TokenStringData) => {
-        await AppSettings.TOKEN_STRING_DATA.setValue(JSON.stringify(tokenData));
+        await TokenStringData.setLocal(tokenData);
         dispatchAuthState({
           type: AuthActions.signIn,
           tokenData: tokenData,
         });
       },
       signOut: async () => {
-        await AppSettings.TOKEN_STRING_DATA.remove();
+        await TokenStringData.clearLocal();
         dispatchAuthState({
           type: AuthActions.signOut,
         });

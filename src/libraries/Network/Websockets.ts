@@ -2,7 +2,6 @@ import {generateContentNotification} from '../Notifications/Content';
 import {lfgChannel, seamailChannel, serviceChannel} from '../Notifications/Channels';
 import {NotificationType, PressAction} from '../Enums/Notifications';
 import {getAuthHeaders} from './APIClient';
-import {AppSettings} from '../AppSettings';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {WebSocketOptions} from '../Types';
@@ -53,7 +52,7 @@ function WebSocketConstructor(options?: WebSocketOptions) {
  * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
  */
 async function getToken() {
-  const rawTokenData = await AppSettings.TOKEN_STRING_DATA.getValue();
+  const rawTokenData = await TokenStringData.getLocal();
   if (rawTokenData) {
     const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
     return tokenStringData.token;
@@ -135,7 +134,7 @@ export async function wsHealthcheck() {
   let ws = await getSharedWebSocket();
   if (ws && ws.readyState === WebSocket.OPEN) {
     console.log('WebSocket is open and healthy');
-    await AppSettings.WS_HEALTHCHECK_DATE.setValue(new Date().toISOString());
+    // await AppSettings.WS_HEALTHCHECK_DATE.setValue(new Date().toISOString());
     return true;
   }
   console.warn('WebSocket is unhealthy!');
@@ -146,7 +145,7 @@ const wsErrorHandler = (error: WebSocketErrorEvent) => console.error('[error]', 
 
 const wsOpenHandler = async () => {
   console.log('[open] Connection established');
-  await AppSettings.WS_OPEN_DATE.setValue(new Date().toISOString());
+  // await AppSettings.WS_OPEN_DATE.setValue(new Date().toISOString());
 };
 
 function wsMessageHandler(event: WebSocketMessageEvent) {
@@ -191,7 +190,7 @@ async function wsCloseHandler(event: WebSocketCloseEvent) {
     const ws = await getSharedWebSocket();
     ws.close();
   }
-  await AppSettings.WS_OPEN_DATE.remove();
+  // await AppSettings.WS_OPEN_DATE.remove();
   // I think I want to keep the healthcheck date around.
   // await AppSettings.WS_HEALTHCHECK_DATE.remove();
 }

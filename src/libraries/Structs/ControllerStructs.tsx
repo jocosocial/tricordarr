@@ -1,6 +1,8 @@
 import {FezType} from '../Enums/FezType';
 import {UserAccessLevel} from '../Enums/UserAccessLevel';
 import {SwiftarrClientApp, SwiftarrFeature} from '../Enums/AppFeatures';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {StorageKeys} from '../Storage';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -13,6 +15,17 @@ export interface TokenStringData {
   accessLevel: UserAccessLevel;
   /// The token string.
   token: string;
+}
+
+/**
+ * Custom functions to interact with the local encrypted copy of the users token data.
+ * I really hope I don't regret doing this.
+ */
+export namespace TokenStringData {
+  export const getLocal = async () => await EncryptedStorage.getItem(StorageKeys.TOKEN_STRING_DATA);
+  export const setLocal = async (data: TokenStringData) =>
+    await EncryptedStorage.setItem(StorageKeys.TOKEN_STRING_DATA, JSON.stringify(data));
+  export const clearLocal = async () => await EncryptedStorage.removeItem(StorageKeys.TOKEN_STRING_DATA);
 }
 
 export interface UserHeader {

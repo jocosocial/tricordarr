@@ -19,6 +19,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
+    console.info('Updating app config to', newConfig);
     AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => setAppConfig(newConfig));
   };
 
