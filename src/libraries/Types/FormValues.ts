@@ -1,5 +1,5 @@
 export interface SettingFormValues {
-  settingValue?: string;
+  settingValue: string;
 }
 
 export interface LoginFormValues {

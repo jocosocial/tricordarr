@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SettingDetail} from '../../Screens/Settings/SettingDetail';
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
 import {StorageKeysSettings} from '../../Screens/Settings/StorageKeys';
 import {AccountSettings} from '../../Screens/Settings/Account/AccountSettings';
@@ -11,6 +10,8 @@ import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/En
 import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
+import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSIDScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -18,13 +19,12 @@ export type SettingsStackParamList = {
   };
   StorageKeysSettingsScreen: undefined;
   SettingsScreen: undefined;
-  SettingDetailScreen: {
-    settingKey: string;
-  };
   NetworkInfoSettingsScreen: undefined;
   ServerConnectionSettingsScreen: undefined;
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
+  ConfigServerUrlScreen: undefined;
+  ConfigShipSSIDScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -43,7 +43,6 @@ export const SettingsStack = () => {
         component={SettingsView}
         options={{title: 'Settings'}}
       />
-      <Stack.Screen name={SettingsStackScreenComponents.settingDetail} component={SettingDetail} />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
       <Stack.Screen name={SettingsStackScreenComponents.storageKeySettings} component={StorageKeysSettings} />
       <Stack.Screen name={SettingsStackScreenComponents.accountSettings} component={AccountSettings} />
@@ -61,6 +60,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.testError}
         component={TestErrorScreen}
         options={{title: 'Test Errors'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.configServerUrl}
+        component={ConfigServerUrlScreen}
+        options={{title: 'Server URL'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.configShipSSID}
+        component={ConfigShipSSIDScreen}
+        options={{title: 'WiFi Network'}}
       />
     </Stack.Navigator>
   );

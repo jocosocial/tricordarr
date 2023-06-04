@@ -25,6 +25,8 @@ export enum SettingsStackScreenComponents {
   serverConnectionSettings = 'ServerConnectionSettingsScreen',
   testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
+  configServerUrl = 'ConfigServerUrlScreen',
+  configShipSSID = 'ConfigShipSSIDScreen',
 }
 
 export enum SeamailStackScreenComponents {
