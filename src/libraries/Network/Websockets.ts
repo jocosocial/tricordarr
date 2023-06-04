@@ -24,11 +24,6 @@ async function buildWebsocketURL(fezID?: string) {
   return wsUrl;
 }
 
-let sharedWebSocket: ReconnectingWebSocket;
-
-export const getSharedWebSocket = async () => sharedWebSocket;
-export const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
-
 /**
  * Constructor/initializer function for the WebSocket class used by Reconnecting-Websocket.
  * https://github.com/pladaria/reconnecting-websocket/issues/138
@@ -84,33 +79,16 @@ export const buildWebSocket = async (fezID?: string) => {
 };
 
 /**
- * Browser Websocket doesn't support the ping function.
- * https://github.com/websockets/ws doesn't support React-Native + Android.
- * Sad.
+ * Health check for a websocket. Tests to ensure it exists and is open.
  */
-export async function setupWebsocket() {
-  console.log('Websocket Construction Started.');
-  let ws = await getSharedWebSocket();
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    console.log('Re-using existing connection');
-  } else {
-    console.log('Building new socket connection');
-    ws = await buildWebSocket();
-  }
-  console.log('Websocket Construction Complete.');
-  await setSharedWebSocket(ws);
-}
-
-export async function wsHealthcheck() {
-  let ws = await getSharedWebSocket();
+export const wsHealthcheck = (ws?: ReconnectingWebSocket) => {
   if (ws && ws.readyState === WebSocket.OPEN) {
     console.log('WebSocket is open and healthy');
-    // await AppSettings.WS_HEALTHCHECK_DATE.setValue(new Date().toISOString());
     return true;
   }
   console.warn('WebSocket is unhealthy!');
   return false;
-}
+};
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 export const WebSocketState = {

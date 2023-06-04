@@ -20,6 +20,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
 // @TODO this has been moved to the library
+// duplicated by Websockets.ts
 const WebSocketState = Object.freeze({
   0: 'Connecting',
   1: 'Open',

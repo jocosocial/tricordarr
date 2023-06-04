@@ -2,64 +2,30 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {lfgChannel, seamailChannel, serviceChannel} from '../../../libraries/Notifications/Channels';
-import {NotificationType, PressAction} from '../../../libraries/Enums/Notifications';
-import {generateContentNotification} from '../../../libraries/Notifications/Content';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
 
+/**
+ * Functional component to respond to Notification Socket events from Swiftarr.
+ * This is only responsible for any responses that should be processed within the React UI.
+ * This is NOT responsible for push notifications.
+ */
 export const NotificationDataListener = () => {
   const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
-  const {appConfig} = useConfig();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       console.log(`[message] Data received from server: ${event.data}`);
       refetchUserNotificationData();
-      const notificationData = JSON.parse(event.data) as SocketNotificationData;
-      const notificationType = SocketNotificationData.getType(notificationData);
-      let channel = serviceChannel;
-      let url = '';
-      let pressActionID = PressAction.twitarrTab;
-      let title = '';
-
-      // Do not generate a notification if the user has disabled that category.
-      if (!appConfig.pushNotifications[notificationType]) {
-        return;
-      }
-
-      switch (notificationType) {
-        case NotificationType.seamailUnreadMsg:
-          channel = seamailChannel;
-          url = `/seamail/${notificationData.contentID}`;
-          pressActionID = PressAction.seamail;
-          title = 'New Seamail';
-          break;
-        case NotificationType.fezUnreadMsg:
-          channel = lfgChannel;
-          url = `/fez/${notificationData.contentID}#newposts`;
-          break;
-      }
-
-      generateContentNotification(
-        notificationData.contentID,
-        title,
-        notificationData.info,
-        channel,
-        notificationType,
-        url,
-        pressActionID,
-      );
     },
-    [appConfig.pushNotifications, refetchUserNotificationData],
+    [refetchUserNotificationData],
   );
 
   const addHandler = useCallback(() => {
     console.log('UNDListener adding handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
+
   const removeHandler = useCallback(() => {
     console.log('UNDListener removing handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);

@@ -7,6 +7,7 @@ interface AuthContextType {
   signUp: (tokenData: TokenStringData) => void;
   tokenData: TokenStringData | null;
   isLoggedIn: boolean;
+  isLoading: boolean;
 }
 
 export const AuthContext = createContext(<AuthContextType>{});

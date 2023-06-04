@@ -13,6 +13,7 @@ Backlog
 * Seamail tap and hold menu needs to render above bottom nav
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
 * notification rate limiting
+* axios/rnq connection pool limits.
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
@@ -20,7 +21,7 @@ Work Queue
   * replace server connection boolean settings with the new components.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-  * Switch FGS socket to use notificationsocket
+  * Restarting FGS every time the app starts
 * Notifications
   * Move the FGS stuff to use the new providers. Watch out for doubling
   * NotificationType vs NotificationTypeData
