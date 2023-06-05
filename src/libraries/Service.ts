@@ -12,7 +12,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: number;
 
-const getSharedWebSocket = async () => sharedWebSocket;
+export const getSharedWebSocket = async () => sharedWebSocket;
 const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
 
 // @TODO kill or modify this
@@ -110,6 +110,7 @@ export async function startForegroundServiceWorker() {
     console.warn('couldnt get shared websocket', error);
   }
 
+  console.log('[FGS] generating start notification');
   await generateForegroundServiceNotification(
     'A background worker has been started to maintain a connection to the Twitarr server.',
   );

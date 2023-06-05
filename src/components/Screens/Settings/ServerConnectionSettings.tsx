@@ -1,9 +1,12 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, Switch, View} from 'react-native';
 import {Text, DataTable, TouchableRipple} from 'react-native-paper';
-import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
+import {
+  getSharedWebSocket,
+  startForegroundServiceWorker,
+  stopForegroundServiceWorker,
+} from '../../../libraries/Service';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {getSharedWebSocket} from '../../../libraries/Network/Websockets';
 import {AppView} from '../../Views/AppView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {commonStyles} from '../../../styles';
@@ -17,18 +20,7 @@ import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/En
 import {useAppTheme} from '../../../styles/Theme';
 import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-
-// https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
-// @TODO this has been moved to the library
-// duplicated by Websockets.ts
-const WebSocketState = Object.freeze({
-  0: 'Connecting',
-  1: 'Open',
-  2: 'Closing',
-  3: 'Closed',
-  // I made this one up.
-  69: 'Uninitialized',
-});
+import {WebSocketState} from '../../../libraries/Network/Websockets';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -103,7 +95,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
             <DataTable>
               <DataTable.Row key={'wsState'}>
                 <DataTable.Cell>{'Socket State'}</DataTable.Cell>
-                <DataTable.Cell>{WebSocketState[socketState]}</DataTable.Cell>
+                <DataTable.Cell>{WebSocketState[socketState as keyof typeof WebSocketState]}</DataTable.Cell>
               </DataTable.Row>
               <DataTable.Row key={'wsHealthcheckDate'}>
                 <DataTable.Cell>Last Healthcheck</DataTable.Cell>
