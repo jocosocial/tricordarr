@@ -96,4 +96,6 @@ export const WebSocketState = {
   1: 'Open',
   2: 'Closing',
   3: 'Closed',
+  // I made this one up.
+  69: 'Uninitialized',
 } as const;

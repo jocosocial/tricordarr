@@ -6,24 +6,23 @@
  */
 
 import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {useColorScheme} from 'react-native';
 import {Provider as PaperProvider} from 'react-native-paper';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
+import {NavigationContainer} from '@react-navigation/native';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';
-import {useColorScheme} from 'react-native';
 import {BottomTabNavigator} from './src/components/Navigation/Tabs/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
-// import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
 import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
 import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
@@ -41,6 +40,7 @@ import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider'
 // with Android 13. To avoid it we patch a react-native style, but that style
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
+// @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 ViewReactNativeStyleAttributes.scaleY = true;
 

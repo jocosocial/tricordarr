@@ -1,4 +1,4 @@
-import {registerFgsWorker, startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from '../../../libraries/Service';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useEffect} from 'react';
 import {useAuth} from '../../Context/Contexts/AuthContext';
