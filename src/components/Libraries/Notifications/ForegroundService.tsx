@@ -17,35 +17,24 @@ export const ForegroundService = () => {
   };
 
   useEffect(() => {
-    if (isLoading) {
+    console.log('[FGS] useEffect in ForegroundService.tsx');
+    if (isLoading || enableUserNotifications === null) {
+      console.log(`[FGS] isLoading ${isLoading} enableUserNotifications ${enableUserNotifications}`);
       return;
     }
-    if (!isLoggedIn || !enableUserNotifications) {
-      console.log('[FGS] user not logged in or notifications disabled');
-      stopFgsWorker();
-      return;
-    }
+    // if (!isLoggedIn || !enableUserNotifications) {
+    //   console.log(`[FGS] user not logged in ${isLoggedIn} or notifications disabled ${enableUserNotifications}`);
+    //   stopFgsWorker();
+    //   return;
+    // }
 
+    console.log(`[FGS] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`);
     if (isLoggedIn && enableUserNotifications) {
       startFgsWorker();
     } else {
       stopFgsWorker();
     }
   }, [enableUserNotifications, isLoading, isLoggedIn]);
-
-  // useEffect(() => {
-  //   console.log('ForegroundService useEffect called');
-  //   if (isLoggedIn || enableUserNotifications === null) {
-  //     return;
-  //   }
-  //   if (!isLoggedIn && enableUserNotifications) {
-  //     console.log('Starting FGS in ForegroundService');
-  //     startForegroundServiceWorker().catch(error => setErrorMessage(error.toString()));
-  //   } else {
-  //     console.log('Stopping FGS in ForegroundService');
-  //     stopForegroundServiceWorker().catch(error => setErrorMessage(error.toString()));
-  //   }
-  // }, [isLoggedIn, enableUserNotifications, setErrorMessage]);
 
   return null;
 };
