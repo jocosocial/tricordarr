@@ -62,6 +62,7 @@ const fgsWorker = async () => {
   const appConfig = await getAppConfig();
   await createFgsSocket();
   const ws = await getSharedWebSocket();
+  console.log('Worker Socket', ws);
   fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
   if (ws) {
     ws.addEventListener('message', fgsEventListener);
@@ -100,15 +101,12 @@ export async function stopForegroundServiceWorker() {
 
 export async function startForegroundServiceWorker() {
   console.log('Starting FGS');
-  try {
-    const ws = await getSharedWebSocket();
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      console.log('FGS worker assumed to be running since websocket is open');
-      return;
-    }
-  } catch (error) {
-    console.warn('couldnt get shared websocket', error);
+  const ws = await getSharedWebSocket();
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.log('FGS worker assumed to be running since websocket is open');
+    return;
   }
+  console.log('The websocket is', ws);
 
   console.log('[FGS] generating start notification');
   await generateForegroundServiceNotification(

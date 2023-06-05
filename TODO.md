@@ -21,7 +21,7 @@ Work Queue
   * replace server connection boolean settings with the new components.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-  * Restarting FGS every time the app starts
+  * FGS not starting anymore
 * Notifications
   * Move the FGS stuff to use the new providers. Watch out for doubling
   * NotificationType vs NotificationTypeData
