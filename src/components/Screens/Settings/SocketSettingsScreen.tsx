@@ -13,13 +13,14 @@ import {StorageKeys} from '../../../libraries/Storage';
 import {RefreshControl} from 'react-native';
 import {commonStyles} from '../../../styles';
 import {useSocket} from '../../Context/Contexts/SocketContext';
+import {WebSocketState} from '../../../libraries/Network/Websockets';
 
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [rawTime, setRawTime] = useState(false);
-  const {openNotificationSocket, closeNotificationSocket} = useSocket();
+  const {openNotificationSocket, closeNotificationSocket, notificationSocket} = useSocket();
   const toggleRawTime = () => setRawTime(!rawTime);
 
   async function toggleNotificationSocket() {
@@ -67,7 +68,7 @@ export const SocketSettingsScreen = () => {
               }}
               key={'wsHealthTime'}
               onPress={() => toggleRawTime()}>
-              <DataTable.Cell>{'Last Check'}</DataTable.Cell>
+              <DataTable.Cell>{'Health Check'}</DataTable.Cell>
               <DataTable.Cell style={commonStyles.flex2}>
                 <RelativeTimeTag date={healthData?.timestamp} raw={rawTime} />
               </DataTable.Cell>
@@ -78,8 +79,17 @@ export const SocketSettingsScreen = () => {
                 ...commonStyles.borderBottomZero,
               }}
               key={'wsHealthStatus'}>
-              <DataTable.Cell>{'Last Result'}</DataTable.Cell>
+              <DataTable.Cell>{'Health Result'}</DataTable.Cell>
               <DataTable.Cell style={commonStyles.flex2}>{healthData?.result ? 'Pass' : 'Fail'}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row
+              style={{
+                ...commonStyles.paddingHorizontalZero,
+                ...commonStyles.borderBottomZero,
+              }}
+              key={'wsSocketState'}>
+              <DataTable.Cell>{'Socket State'}</DataTable.Cell>
+              <DataTable.Cell style={commonStyles.flex2}>{WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]}</DataTable.Cell>
             </DataTable.Row>
           </DataTable>
         </PaddedContentView>

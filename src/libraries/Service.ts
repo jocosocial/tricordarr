@@ -68,6 +68,10 @@ const createFgsSocket = async () => {
 const fgsWorker = async () => {
   console.log('[FGS] Worker is starting');
   const appConfig = await getAppConfig();
+  if (!appConfig.enableNotificationSocket) {
+    console.log('[FGS] notification socket not enabled in app config. Skipping...');
+    return;
+  }
   await createFgsSocket();
   const ws = await getSharedWebSocket();
   console.log('Worker Socket', ws);
