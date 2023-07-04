@@ -15,8 +15,8 @@ Backlog
 * notification rate limiting
 * axios/rnq connection pool limits.
 * Two sockets: Service.ts and SocketProvider.tsx. Resolve this.
+* New messages are very slow to show up on SeamailScreen after notification event
+
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* Seamail
-  * New messages are very slow to show up on SeamailScreen after notification event
