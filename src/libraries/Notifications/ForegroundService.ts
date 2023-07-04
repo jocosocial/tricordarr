@@ -4,7 +4,7 @@ import {twitarrErrorColor, twitarrPrimaryColor} from '../../styles/Theme';
 import {fgsWorkerNotificationIDs, PressAction} from '../Enums/Notifications';
 
 export async function generateForegroundServiceNotification(
-  body: string | undefined,
+  body: string | undefined = 'A background worker has been started to maintain a connection to the Twitarr server.',
   color = twitarrPrimaryColor,
   onlyIfShowing = false,
 ) {

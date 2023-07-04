@@ -4,7 +4,7 @@ import {NotificationType, PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
 import {getAppConfig} from '../AppConfig';
 
-export const generatePushFromEvent = async (event: WebSocketMessageEvent) => {
+export const generatePushNotificationFromEvent = async (event: WebSocketMessageEvent) => {
   const appConfig = await getAppConfig();
   const notificationData = JSON.parse(event.data) as SocketNotificationData;
   const notificationType = SocketNotificationData.getType(notificationData);

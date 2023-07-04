@@ -1,12 +1,12 @@
 import notifee from '@notifee/react-native';
-import {buildWebSocket, WebSocketState, wsHealthcheck} from './Network/Websockets';
+import {buildWebSocket, wsHealthcheck} from './Network/Websockets';
 import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
 } from './Notifications/ForegroundService';
 import {fgsWorkerNotificationIDs} from './Enums/Notifications';
 import {getAppConfig} from './AppConfig';
-import {generatePushFromEvent} from './Notifications/SocketNotification';
+import {generatePushNotificationFromEvent} from './Notifications/SocketNotification';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {SocketHealthcheckData} from './Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,45 +20,56 @@ const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket
 
 // @TODO kill or modify this
 export let fgsFailedCounter = 0;
+export let fgsFailedThreshold = 10;
 
 const fgsWorkerHealthcheck = async () => {
-  console.log('[FGS] Healthcheck');
+  console.log('[Service.ts] Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
   const healthcheckResult: SocketHealthcheckData = {
-    result: wsHealthcheck(ws),
+    result: await wsHealthcheck(ws),
     timestamp: new Date(),
   };
+
   // Store the healthcheck data
   await AsyncStorage.setItem(StorageKeys.WS_HEALTHCHECK_DATA, JSON.stringify(healthcheckResult));
-  // if (fgsFailedCounter < 10) {
-  //   await setupWebsocket();
-  //   const passed = await wsHealthcheck();
-  //   !passed ? (fgsFailedCounter += 1) : null;
-  // } else {
-  //   console.error(`WebSocket failed too many consecutive times (${fgsFailedCounter} of 10). Shutting down.`);
-  //   await generateFgsShutdownNotification();
-  //   await stopForegroundServiceWorker();
-  // }
+  if (healthcheckResult.result) {
+    fgsFailedCounter = 0;
+  } else {
+    fgsFailedCounter += 1;
+  }
+
+  // If we've failed too many times, shut down.
+  if (fgsFailedCounter >= fgsFailedThreshold) {
+    console.error(
+      `[Service.ts] WebSocket failed too many consecutive times (${fgsFailedCounter} of ${fgsFailedThreshold}). Shutting down.`,
+    );
+    await generateFgsShutdownNotification();
+    await stopForegroundServiceWorker();
+  }
 };
 
 /**
  * Handler function for Notification Socket events in the context of the Foreground Service.
  * Generates push notifications from socket events.
  */
-const fgsEventListener = (event: WebSocketMessageEvent) => {
-  console.log('[FGS] responding to event', event);
-  generatePushFromEvent(event);
+const fgsEventHandler = (event: WebSocketMessageEvent) => {
+  console.log('[Service.ts] responding to event', event);
+  generatePushNotificationFromEvent(event);
 };
 
+/**
+ * Establish a new or return an existing WebSocket for use with push notifications.
+ */
 const createFgsSocket = async () => {
   const existingSocket = await getSharedWebSocket();
   if (existingSocket && existingSocket.readyState === WebSocket.OPEN) {
-    console.log('[FGS] socket exists and is open. Not creating another one.');
-    return;
+    console.log('[Service.ts] Socket already exists and is open!');
+    return existingSocket;
   }
   const newWs = await buildWebSocket();
   await setSharedWebSocket(newWs);
-  console.log('[FGS] created new socket');
+  console.log('[Service.ts] Created new socket.');
+  return newWs;
 };
 
 /**
@@ -66,64 +77,85 @@ const createFgsSocket = async () => {
  * when the worker starts.
  */
 const fgsWorker = async () => {
-  console.log('[FGS] Worker is starting');
+  console.log('[Service.ts] Worker is starting');
+
   const appConfig = await getAppConfig();
   if (!appConfig.enableNotificationSocket) {
-    console.log('[FGS] notification socket not enabled in app config. Skipping...');
+    console.log('[Service.ts] notification socket not enabled in app config. Shutting down.');
+    // I've thought about generating a notification for when the worker shuts down, but this
+    // would trigger every time the worker "shut down" explicitly or implicitly which is not
+    // desirable behavior. For debugging the log message should be sufficient. Besides, any
+    // "Start" buttons should be disabled if the socket is disabled.
+    await stopForegroundServiceWorker();
     return;
   }
-  await createFgsSocket();
-  const ws = await getSharedWebSocket();
-  console.log('Worker Socket', ws);
+
+  // Add our event listener to respond to socket events and turn them into push notifications.
+  const ws = await createFgsSocket();
+  ws.addEventListener('message', fgsEventHandler);
+
+  // Start a regular socket health check to help ensure the socket stays open.
+  // Or at least yell at the user when it fails.
   fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
-  if (ws) {
-    ws.addEventListener('message', fgsEventListener);
-  } else {
-    console.error('[FGS] socket was undefined?');
-  }
 };
 
 /**
  * Notifee exposes an API to register a foreground service worker task that runs when the notification
  * has been triggered. Android 14 changes some of the laws around workers so this entire thing may be
- * changing in the future.
+ * changing in the future. This needs to return a new Promise(task), not just the task. I thought I
+ * could get clever but that didn't work.
+ * https://notifee.app/react-native/docs/android/foreground-service
  */
 export const registerFgsWorker = () => {
-  console.log('[FGS] Registering worker');
-  notifee.registerForegroundService(fgsWorker);
+  console.log('[Service.ts] Registering foreground service worker function.');
+  notifee.registerForegroundService(() => {
+    return new Promise(fgsWorker);
+  });
 };
 
+/**
+ * Stop the foreground service worker that was registered in App.tsx.
+ */
 export async function stopForegroundServiceWorker() {
-  console.log('Stopping FGS.');
+  console.log('[Service.ts] Stopping foreground service worker.');
   try {
     const ws = await getSharedWebSocket();
     if (ws) {
-      console.log(`Closing websocket in state ${ws.readyState}`);
+      console.log(`[Service.ts] Closing websocket in state ${ws.readyState}`);
       ws.close();
     }
     await notifee.stopForegroundService();
     await notifee.cancelNotification(fgsWorkerNotificationIDs.worker);
+
+    // Clear the healthcheck interval that was started.
     clearInterval(fgsWorkerTimer);
-    console.log('Cleared fgsWorkerTimer with ID', fgsWorkerTimer);
-    console.log('Stopped FGS.');
+    console.log('[Service.ts] Cleared fgsWorkerTimer with ID', fgsWorkerTimer);
+
+    // Done
+    console.log('[Service.ts] Foreground service worker stopped.');
   } catch (error) {
-    console.error('FGS stop error:', error);
+    console.error('[Service.ts] Error stopping service:', error);
   }
 }
 
+/**
+ * Start the foreground service worker that was registered in App.tsx.
+ * For reasons, the only way we have to "start" the worker is to generate
+ * a notification associated with the foreground service.
+ */
 export async function startForegroundServiceWorker() {
-  console.log('Starting FGS');
-  const ws = await getSharedWebSocket();
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    console.log('FGS worker assumed to be running since websocket is open');
-    return;
-  }
-  console.log('The websocket is', ws);
+  console.log('[Service.ts] Starting foreground service worker.');
+  // const ws = await getSharedWebSocket();
+  // if (ws && ws.readyState === WebSocket.OPEN) {
+  //   console.log('FGS worker assumed to be running since websocket is open');
+  //   return;
+  // }
+  // console.log('The websocket is', ws);
 
-  console.log('[FGS] generating start notification');
-  await generateForegroundServiceNotification(
-    'A background worker has been started to maintain a connection to the Twitarr server.',
-  );
+  // This actually starts the worker. You should see a log message when the worker function
+  // starts up (assuming the console.log is still in there).
+  await generateForegroundServiceNotification();
+
   // Reset the health counter
   fgsFailedCounter = 0;
 }

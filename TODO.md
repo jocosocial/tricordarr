@@ -21,7 +21,8 @@ Work Queue
   * replace server connection boolean settings with the new components.
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-  * FGS not starting anymore
+  * separate sockets: NotificationSocket and Service sharedSocket?
+  * bring back failed health count
 * Notifications
   * Move the FGS stuff to use the new providers. Watch out for doubling
   * NotificationType vs NotificationTypeData
