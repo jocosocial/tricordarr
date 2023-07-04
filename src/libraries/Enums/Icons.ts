@@ -36,4 +36,6 @@ export enum AppIcons {
   tho = 'shield-crown',
   home = 'home',
   notification = 'bell-badge',
+  forum = 'forum',
+  events = 'calendar',
 }
