@@ -1,4 +1,5 @@
 export const StorageKeys = {
   APP_CONFIG: 'APP_CONFIG',
   TOKEN_STRING_DATA: 'TOKEN_STRING_DATA',
+  WS_HEALTHCHECK_DATA: 'WS_HEALTHCHECK_DATA',
 } as const;

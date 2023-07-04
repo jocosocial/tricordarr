@@ -25,6 +25,9 @@ export const commonStyles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  flex2: {
+    flex: 2,
+  },
   // https://stackoverflow.com/questions/45503294/space-between-components-in-react-native-styling
   gap: {
     gap: styleDefaults.marginSize,
@@ -166,5 +169,8 @@ export const commonStyles = StyleSheet.create({
   },
   italics: {
     fontStyle: 'italic',
+  },
+  borderBottomZero: {
+    borderBottomWidth: 0,
   },
 });

@@ -81,3 +81,11 @@ export namespace SocketNotificationData {
   export const getType = (socketNotificationData: SocketNotificationData) =>
     Object.keys(socketNotificationData.type)[0] as keyof typeof NotificationType;
 }
+
+/**
+ * Custom to Tricordarr. Store a healthcheck result.
+ */
+export interface SocketHealthcheckData {
+  result: boolean;
+  timestamp: Date;
+}
