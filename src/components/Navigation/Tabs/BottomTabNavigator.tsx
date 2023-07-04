@@ -9,6 +9,7 @@ import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
 import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -50,9 +51,25 @@ export const BottomTabNavigator = () => {
         name={BottomTabComponents.seamailTab}
         component={SeamailStack}
         options={{
-          title: 'Seamail',
+          title: 'Chat',
           tabBarIcon: () => getIcon('email'),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newSeamailMessageCount),
+        }}
+      />
+      <Tab.Screen
+        name={'Forums'}
+        component={SiteUIStackStack}
+        options={{
+          title: 'Forums',
+          tabBarIcon: () => getIcon(AppIcons.forum),
+        }}
+      />
+      <Tab.Screen
+        name={'Schedule'}
+        component={SiteUIStackStack}
+        options={{
+          title: 'Schedule',
+          tabBarIcon: () => getIcon(AppIcons.events),
         }}
       />
       <Tab.Screen
