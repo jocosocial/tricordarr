@@ -1,10 +1,10 @@
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
-import {NotificationType} from './Enums/Notifications';
+import {NotificationTypeData} from './Structs/SocketStructs';
 
 export type PushNotificationConfig = {
-  [key in keyof typeof NotificationType]: boolean;
+  [key in keyof typeof NotificationTypeData]: boolean;
 };
 
 export interface AppConfig {
