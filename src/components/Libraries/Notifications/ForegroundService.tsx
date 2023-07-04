@@ -7,19 +7,9 @@ export const ForegroundService = () => {
   const {enableUserNotifications} = useUserNotificationData();
   const {isLoggedIn, isLoading} = useAuth();
 
-  const startFgsWorker = () => {
-    console.log('[FGS] start in ForegroundService.tsx');
-    startForegroundServiceWorker();
-  };
-  const stopFgsWorker = () => {
-    console.log('[FGS] stop in ForegroundService.tsx');
-    stopForegroundServiceWorker();
-  };
-
   useEffect(() => {
-    console.log('[FGS] useEffect in ForegroundService.tsx');
     if (isLoading || enableUserNotifications === null) {
-      console.log(`[FGS] isLoading ${isLoading} enableUserNotifications ${enableUserNotifications}`);
+      console.log(`[ForegroundService.tsx] Conditions for foreground service not met. Not starting FGS.`);
       return;
     }
     // if (!isLoggedIn || !enableUserNotifications) {
@@ -28,11 +18,11 @@ export const ForegroundService = () => {
     //   return;
     // }
 
-    console.log(`[FGS] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`);
+    console.log(`[ForegroundService.tsx] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`);
     if (isLoggedIn && enableUserNotifications) {
-      startFgsWorker();
+      startForegroundServiceWorker();
     } else {
-      stopFgsWorker();
+      stopForegroundServiceWorker();
     }
   }, [enableUserNotifications, isLoading, isLoggedIn]);
 

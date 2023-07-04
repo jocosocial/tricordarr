@@ -14,18 +14,11 @@ Backlog
 * After you've posted as twitarrteam/moderator, go back screen to previous state. factor in coming in as mod/team
 * notification rate limiting
 * axios/rnq connection pool limits.
+* Two sockets: Service.ts and SocketProvider.tsx. Resolve this.
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* Settings
-  * replace server connection boolean settings with the new components.
-* Sockets
-  * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
-  * separate sockets: NotificationSocket and Service sharedSocket?
-  * bring back failed health count
 * Notifications
-  * Move the FGS stuff to use the new providers. Watch out for doubling
   * NotificationType vs NotificationTypeData
-  * Dont notifee if the seamail is the active route
 * Seamail
   * New messages are very slow to show up on SeamailScreen after notification event

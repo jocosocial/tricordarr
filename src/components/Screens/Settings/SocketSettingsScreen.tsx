@@ -18,11 +18,8 @@ import {SettingDataTableRow} from '../../DataTables/SettingDataTableRow';
 
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
   const [refreshing, setRefreshing] = useState(false);
-  const [rawTime, setRawTime] = useState(false);
   const {openNotificationSocket, closeNotificationSocket, notificationSocket} = useSocket();
-  const toggleRawTime = () => setRawTime(!rawTime);
 
   async function toggleNotificationSocket() {
     updateAppConfig({
@@ -38,19 +35,7 @@ export const SocketSettingsScreen = () => {
     });
   }
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    AsyncStorage.getItem(StorageKeys.WS_HEALTHCHECK_DATA)
-      .then(item => {
-        if (item) {
-          const wsData = JSON.parse(item) as SocketHealthcheckData;
-          setHealthData(wsData);
-        }
-      })
-      .finally(() => {
-        setRefreshing(false);
-      });
-  }, []);
+  const onRefresh = useCallback(() => {}, []);
 
   useEffect(() => {
     onRefresh();
@@ -62,10 +47,6 @@ export const SocketSettingsScreen = () => {
         <PaddedContentView>
           <Text variant={'titleMedium'}>Notification Socket Status</Text>
           <DataTable>
-            <SettingDataTableRow onPress={() => toggleRawTime()} title={'Health Check'}>
-              <RelativeTimeTag date={healthData?.timestamp} raw={rawTime} />
-            </SettingDataTableRow>
-            <SettingDataTableRow title={'Health Result'} value={healthData?.result ? 'Pass' : 'Fail'} />
             <SettingDataTableRow
               title={'Socket State'}
               value={WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]}
@@ -79,7 +60,9 @@ export const SocketSettingsScreen = () => {
             title={'Notification Socket'}
             value={appConfig.enableNotificationSocket}
             onPress={toggleNotificationSocket}
-            description={'Used for general purpose notifications across all app features.'}
+            description={
+              'Used for general purpose notifications across all app features. Not used for background connection.'
+            }
           />
           <SettingSwitch
             title={'Fez Sockets'}
