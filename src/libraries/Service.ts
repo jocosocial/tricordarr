@@ -8,6 +8,9 @@ import {fgsWorkerNotificationIDs} from './Enums/Notifications';
 import {getAppConfig} from './AppConfig';
 import {generatePushFromEvent} from './Notifications/SocketNotification';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import {SocketHealthcheckData} from './Structs/SocketStructs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StorageKeys} from './Storage';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: number;
@@ -21,7 +24,12 @@ export let fgsFailedCounter = 0;
 const fgsWorkerHealthcheck = async () => {
   console.log('[FGS] Healthcheck');
   const ws = await getSharedWebSocket();
-  wsHealthcheck(ws);
+  const healthcheckResult: SocketHealthcheckData = {
+    result: wsHealthcheck(ws),
+    timestamp: new Date(),
+  };
+  // Store the healthcheck data
+  await AsyncStorage.setItem(StorageKeys.WS_HEALTHCHECK_DATA, JSON.stringify(healthcheckResult));
   // if (fgsFailedCounter < 10) {
   //   await setupWebsocket();
   //   const passed = await wsHealthcheck();
