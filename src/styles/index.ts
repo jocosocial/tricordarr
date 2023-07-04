@@ -25,6 +25,13 @@ export const commonStyles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  // https://stackoverflow.com/questions/45503294/space-between-components-in-react-native-styling
+  gap: {
+    gap: styleDefaults.marginSize,
+  },
+  gapSmall: {
+    gap: styleDefaults.marginSize / 2,
+  },
   flexRow: {
     flexDirection: 'row',
   },

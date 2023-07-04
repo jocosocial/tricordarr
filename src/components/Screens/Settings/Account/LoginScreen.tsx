@@ -39,7 +39,7 @@ export const LoginScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        <PaddedContentView>
+        <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottom}>Logging in to {appConfig.serverUrl}.</Text>
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>

@@ -7,15 +7,19 @@ interface SettingSwitchProps {
   title: string;
   value: boolean;
   onPress: () => void;
+  description?: string;
 }
 
-export const SettingSwitch = ({title, value, onPress}: SettingSwitchProps) => {
+export const SettingSwitch = ({title, value, onPress, description}: SettingSwitchProps) => {
   const {commonStyles} = useStyles();
   return (
     <TouchableRipple style={commonStyles.marginTop} onPress={onPress}>
-      <View style={commonStyles.booleanSettingRowView}>
-        <Text>{title}</Text>
-        <Switch value={value} onValueChange={onPress} />
+      <View>
+        <View style={commonStyles.booleanSettingRowView}>
+          <Text>{title}</Text>
+          <Switch value={value} onValueChange={onPress} />
+        </View>
+        {description && <Text variant={'bodyMedium'}>{description}</Text>}
       </View>
     </TouchableRipple>
   );
