@@ -71,7 +71,7 @@ export const SettingsView = () => {
             />
             <NavigationListItem
               title={'Sockets'}
-              description={'Enable/disable specific websocket features.'}
+              description={'Manage websocket internals.'}
               navComponent={SettingsStackScreenComponents.socketSettings}
             />
           </ListSection>
