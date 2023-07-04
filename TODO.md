@@ -22,6 +22,7 @@ Work Queue
 * Sockets
   * Socket stuff really needs cleaned up. Shared socket, notificationsocket only for notifee?
   * FGS not starting anymore
+  * socket still open even though disabled
 * Notifications
   * Move the FGS stuff to use the new providers. Watch out for doubling
   * NotificationType vs NotificationTypeData

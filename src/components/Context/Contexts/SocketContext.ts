@@ -9,6 +9,7 @@ interface SocketContextType {
   notificationSocket?: ReconnectingWebSocket;
   setNotificationSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
   closeNotificationSocket: () => void;
+  openNotificationSocket: () => void;
 }
 
 export const SocketContext = createContext(<SocketContextType>{});

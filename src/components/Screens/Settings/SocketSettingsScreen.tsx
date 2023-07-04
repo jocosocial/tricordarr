@@ -12,12 +12,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../libraries/Storage';
 import {RefreshControl} from 'react-native';
 import {commonStyles} from '../../../styles';
+import {useSocket} from '../../Context/Contexts/SocketContext';
 
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [rawTime, setRawTime] = useState(false);
+  const {openNotificationSocket, closeNotificationSocket} = useSocket();
   const toggleRawTime = () => setRawTime(!rawTime);
 
   async function toggleNotificationSocket() {
@@ -102,7 +104,12 @@ export const SocketSettingsScreen = () => {
         <Divider bold={true} />
         <PaddedContentView padTop={true}>
           <Text variant={'titleMedium'}>Control</Text>
-          <SocketControlView title={'Notification Socket'} />
+          <SocketControlView
+            title={'Notification Socket'}
+            disabled={!appConfig.enableNotificationSocket}
+            onOpen={openNotificationSocket}
+            onClose={closeNotificationSocket}
+          />
         </PaddedContentView>
         <Divider bold={true} />
       </ScrollingContentView>
