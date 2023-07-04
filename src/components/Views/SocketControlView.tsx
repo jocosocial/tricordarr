@@ -4,14 +4,15 @@ import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../styles/Theme';
-import ReconnectingWebSocket from 'reconnecting-websocket';
 
 interface SocketControlViewProps {
   title: string;
-  websocket?: ReconnectingWebSocket;
+  onOpen: () => void;
+  onClose: () => void;
+  disabled: boolean;
 }
 
-export const SocketControlView = ({title, websocket}: SocketControlViewProps) => {
+export const SocketControlView = ({title, onOpen, onClose, disabled}: SocketControlViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
@@ -27,12 +28,8 @@ export const SocketControlView = ({title, websocket}: SocketControlViewProps) =>
           ...commonStyles.flexRow,
           ...commonStyles.gapSmall,
         }}>
-        <PrimaryActionButton buttonText={'Open'} onPress={() => console.log('open')} />
-        <PrimaryActionButton
-          buttonColor={theme.colors.twitarrNegativeButton}
-          buttonText={'Close'}
-          onPress={() => console.log('close')}
-        />
+        <PrimaryActionButton disabled={disabled} buttonColor={theme.colors.twitarrPositiveButton} buttonText={'Open'} onPress={onOpen} />
+        <PrimaryActionButton disabled={disabled} buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Close'} onPress={onClose} />
       </View>
     </View>
   );

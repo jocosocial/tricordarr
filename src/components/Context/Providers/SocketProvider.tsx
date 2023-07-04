@@ -102,6 +102,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         closeFezSocket,
         notificationSocket,
         setNotificationSocket,
+        openNotificationSocket,
         closeNotificationSocket,
       }}>
       {children}
