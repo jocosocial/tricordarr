@@ -14,6 +14,7 @@ import {RefreshControl} from 'react-native';
 import {commonStyles} from '../../../styles';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
+import {SettingDataTableRow} from '../../DataTables/SettingDataTableRow';
 
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -61,36 +62,14 @@ export const SocketSettingsScreen = () => {
         <PaddedContentView>
           <Text variant={'titleMedium'}>Notification Socket Status</Text>
           <DataTable>
-            <DataTable.Row
-              style={{
-                ...commonStyles.paddingHorizontalZero,
-                ...commonStyles.borderBottomZero,
-              }}
-              key={'wsHealthTime'}
-              onPress={() => toggleRawTime()}>
-              <DataTable.Cell>{'Health Check'}</DataTable.Cell>
-              <DataTable.Cell style={commonStyles.flex2}>
-                <RelativeTimeTag date={healthData?.timestamp} raw={rawTime} />
-              </DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row
-              style={{
-                ...commonStyles.paddingHorizontalZero,
-                ...commonStyles.borderBottomZero,
-              }}
-              key={'wsHealthStatus'}>
-              <DataTable.Cell>{'Health Result'}</DataTable.Cell>
-              <DataTable.Cell style={commonStyles.flex2}>{healthData?.result ? 'Pass' : 'Fail'}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row
-              style={{
-                ...commonStyles.paddingHorizontalZero,
-                ...commonStyles.borderBottomZero,
-              }}
-              key={'wsSocketState'}>
-              <DataTable.Cell>{'Socket State'}</DataTable.Cell>
-              <DataTable.Cell style={commonStyles.flex2}>{WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]}</DataTable.Cell>
-            </DataTable.Row>
+            <SettingDataTableRow onPress={() => toggleRawTime()} title={'Health Check'}>
+              <RelativeTimeTag date={healthData?.timestamp} raw={rawTime} />
+            </SettingDataTableRow>
+            <SettingDataTableRow title={'Health Result'} value={healthData?.result ? 'Pass' : 'Fail'} />
+            <SettingDataTableRow
+              title={'Socket State'}
+              value={WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]}
+            />
           </DataTable>
         </PaddedContentView>
         <Divider bold={true} />
