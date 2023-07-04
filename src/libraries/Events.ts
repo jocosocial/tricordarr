@@ -1,5 +1,6 @@
 import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
-import {NotificationType, PressAction} from './Enums/Notifications';
+import {PressAction} from './Enums/Notifications';
+import {NotificationTypeData} from './Structs/SocketStructs';
 
 /**
  * Determine a React Navigation URL based on a notification event.
@@ -24,10 +25,10 @@ export const getUrlForEvent = (
           let url = `/twitarrtab/${Date.now()}`;
           // Only build URLs for handled types
           switch (notification.data?.type) {
-            case NotificationType.seamailUnreadMsg:
+            case NotificationTypeData.seamailUnreadMsg:
               url += notification.data.url;
               break;
-            case NotificationType.fezUnreadMsg:
+            case NotificationTypeData.fezUnreadMsg:
               url += notification.data.url;
               break;
           }

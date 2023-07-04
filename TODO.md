@@ -18,7 +18,5 @@ Backlog
 
 Work Queue
 * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-* Notifications
-  * NotificationType vs NotificationTypeData
 * Seamail
   * New messages are very slow to show up on SeamailScreen after notification event
