@@ -1,15 +1,135 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Text} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {commonStyles} from '../../../styles';
 import {PaddedContentView} from '../Content/PaddedContentView';
+import {List} from 'react-native-paper';
+import {AppIcon} from '../../Images/AppIcon';
+import {ListSection} from '../../Lists/ListSection';
+import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
+import {
+  BottomTabComponents,
+  MainStackComponents,
+  SettingsStackScreenComponents,
+} from '../../../libraries/Enums/Navigation';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useMainStack} from '../../Navigation/Stacks/MainStack';
+import {HeaderBackButton} from '@react-navigation/elements';
+import {MainNavigationListItem} from '../../Lists/Items/MainNavigationListItem';
 
 export const MainView = () => {
+  const bottomNav = useBottomTabNavigator();
+  // const mainNav = useMainStack();
+
+  function getIconButton(icon: string) {
+    return <IconButton icon={icon} />;
+  }
+
   return (
     <AppView>
       <ScrollingContentView>
+        <PaddedContentView padSides={false}>
+          <ListSection>
+            <List.Subheader>Communication</List.Subheader>
+            <MainNavigationListItem
+              title={'Forums'}
+              description={'A place to talk'}
+              onPress={() => console.log('forums')}
+              icon={AppIcons.forum}
+            />
+            <MainNavigationListItem
+              title={'Seamail'}
+              description={'Private direct messages.'}
+              onPress={() => console.log('chat')}
+              icon={AppIcons.seamail}
+            />
+            <MainNavigationListItem
+              title={'KrakenTalk'}
+              description={'On-board Wi-Fi calling.'}
+              onPress={() => console.log('kraken')}
+              icon={AppIcons.krakentalk}
+            />
+          </ListSection>
+          <ListSection>
+            <List.Subheader>Events</List.Subheader>
+            <MainNavigationListItem
+              title={'Schedule'}
+              description={'Official and Shadow calendar.'}
+              onPress={() => console.log('events')}
+              icon={AppIcons.events}
+            />
+            <MainNavigationListItem
+              title={'Looking For Group (LFG)'}
+              description={'Attendee events and gatherings.'}
+              onPress={() => console.log('LFG')}
+              icon={AppIcons.group}
+            />
+          </ListSection>
+          <ListSection>
+            <List.Subheader>Other</List.Subheader>
+            <MainNavigationListItem
+              title={'Karaoke'}
+              description={'Maps of the ship.'}
+              onPress={() => console.log('karaoke')}
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'Games'}
+              description={'Games?'}
+              onPress={() => console.log('games!')}
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'Lighter'}
+              description={'Concert.'}
+              onPress={() => console.log('lighter')}
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'Twitarr Web UI'}
+              description={'Built-in Twitarr website access.'}
+              onPress={() =>
+                bottomNav.navigate(BottomTabComponents.homeTab, {
+                  screen: MainStackComponents.siteUIScreen,
+                })
+              }
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'Settings'}
+              description={'App preferences and configuration.'}
+              onPress={() =>
+                bottomNav.navigate(BottomTabComponents.settingsTab, {
+                  screen: SettingsStackScreenComponents.settings,
+                })
+              }
+              icon={AppIcons.settings}
+            />
+          </ListSection>
+          <ListSection>
+            <List.Subheader>Help & Information</List.Subheader>
+            <MainNavigationListItem
+              title={'Deck Maps'}
+              description={'Maps of the ship.'}
+              onPress={() => console.log('map')}
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'About Twitarr'}
+              description={'Our bespoke social media service.'}
+              onPress={() => console.log('twitarr')}
+              icon={AppIcons.webview}
+            />
+            <MainNavigationListItem
+              title={'About Tricordarr'}
+              description={'This Android app.'}
+              onPress={() => console.log('app')}
+              icon={AppIcons.webview}
+            />
+          </ListSection>
+        </PaddedContentView>
         <PaddedContentView>
           <Text variant={'displayMedium'}>Hello Boat!</Text>
           <Text variant={'titleLarge'} style={commonStyles.marginTop}>

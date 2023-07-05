@@ -6,10 +6,11 @@ import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
-import {SiteUIStackStack} from '../Stacks/SiteUIStack';
+// import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {MainStack, MainStackParamList} from '../Stacks/MainStack';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -23,7 +24,7 @@ function getBadgeDisplayValue(input: number | undefined) {
  * navigation param list.
  */
 export type BottomTabParamList = {
-  HomeTab: undefined;
+  HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
   TwitarrTab: undefined;
   SettingsTab: NavigatorScreenParams<SettingsStackParamList>;
@@ -41,7 +42,7 @@ export const BottomTabNavigator = () => {
     <Tab.Navigator initialRouteName={BottomTabComponents.homeTab}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
-        component={MainView}
+        component={MainStack}
         options={{
           title: 'Home',
           tabBarIcon: () => getIcon('home-account'),
@@ -58,7 +59,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={'Forums'}
-        component={SiteUIStackStack}
+        component={SeamailStack}
         options={{
           title: 'Forums',
           tabBarIcon: () => getIcon(AppIcons.forum),
@@ -66,20 +67,20 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={'Schedule'}
-        component={SiteUIStackStack}
+        component={SeamailStack}
         options={{
           title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),
         }}
       />
-      <Tab.Screen
-        name={BottomTabComponents.twitarrTab}
-        component={SiteUIStackStack}
-        options={{
-          title: 'Twit-arr',
-          tabBarIcon: () => getIcon('web'),
-        }}
-      />
+      {/*<Tab.Screen*/}
+      {/*  name={BottomTabComponents.twitarrTab}*/}
+      {/*  component={SiteUIStackStack}*/}
+      {/*  options={{*/}
+      {/*    title: 'Twit-arr',*/}
+      {/*    tabBarIcon: () => getIcon('web'),*/}
+      {/*  }}*/}
+      {/*/>*/}
       <Tab.Screen
         name={BottomTabComponents.settingsTab}
         component={SettingsStack}

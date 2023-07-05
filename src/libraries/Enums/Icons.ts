@@ -1,7 +1,9 @@
 export enum AppIcons {
   // Chat
   seamailCreate = 'email-plus',
+  seamail = 'email',
   krakentalkCreate = 'phone-outgoing',
+  krakentalk = 'phone',
   chat = 'chat',
   details = 'account-details',
   // Profile
@@ -38,4 +40,6 @@ export enum AppIcons {
   notification = 'bell-badge',
   forum = 'forum',
   events = 'calendar',
+  settings = 'cog',
+  webview = 'web',
 }
