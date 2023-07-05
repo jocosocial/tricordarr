@@ -4,18 +4,14 @@ import {ActivityIndicator, View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from './AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, SiteUIStackScreenComponents} from '../../libraries/Enums/Navigation';
-import {SiteUIStackParamList} from '../Navigation/Stacks/SiteUIStack';
+import {MainStackComponents, NavigatorIDs} from '../../libraries/Enums/Navigation';
 import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useConfig} from '../Context/Contexts/ConfigContext';
+import {MainStackParamList} from '../Navigation/Stacks/MainStack';
 
-type Props = NativeStackScreenProps<
-  SiteUIStackParamList,
-  SiteUIStackScreenComponents.siteUIScreen,
-  NavigatorIDs.siteUIStack
->;
+type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.siteUIScreen, NavigatorIDs.mainStack>;
 
 export const TwitarrView = ({route, navigation}: Props) => {
   const [url, setUrl] = useState('');

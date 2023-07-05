@@ -6,13 +6,12 @@ export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
   seamailStack = 'SeamailStackNavigator',
   userStack = 'UserStack',
-  siteUIStack = 'SiteUIStack',
+  mainStack = 'MainStack',
 }
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',
   seamailTab = 'SeamailTab',
-  twitarrTab = 'TwitarrTab',
   settingsTab = 'SettingsTab',
 }
 
@@ -39,6 +38,7 @@ export enum SeamailStackScreenComponents {
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
 }
 
-export enum SiteUIStackScreenComponents {
+export enum MainStackComponents {
+  mainScreen = 'MainScreen',
   siteUIScreen = 'SiteUIScreen',
 }

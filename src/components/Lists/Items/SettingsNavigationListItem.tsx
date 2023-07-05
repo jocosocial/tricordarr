@@ -9,7 +9,7 @@ interface NavigationListItemProps {
   navComponent: SettingsStackScreenComponents;
 }
 
-export const NavigationListItem = ({title, description, navComponent}: NavigationListItemProps) => {
+export const SettingsNavigationListItem = ({title, description, navComponent}: NavigationListItemProps) => {
   const navigation = useSettingsStack();
 
   return (

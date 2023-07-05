@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
-import {NavigationListItem} from '../../Lists/Items/NavigationListItem';
+import {SettingsNavigationListItem} from '../../Lists/Items/SettingsNavigationListItem';
 import {AccountListItem} from '../../Lists/Items/AccountListItem';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -16,17 +16,17 @@ export const SettingsView = () => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Network</List.Subheader>
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
               navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'WiFi Network'}
               description={'Configure the known SSID of the ship WiFi. This influences notification checking behavior.'}
               navComponent={SettingsStackScreenComponents.configShipSSID}
@@ -40,7 +40,7 @@ export const SettingsView = () => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Notifications</List.Subheader>
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Push Notifications'}
               description={'Configure what events you wish to trigger a push notification.'}
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
@@ -49,27 +49,27 @@ export const SettingsView = () => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Developers</List.Subheader>
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Network Info'}
               description={"View details about your device's current network environment."}
               navComponent={SettingsStackScreenComponents.networkInfoSettings}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Notifications'}
               description={'Generate a test notification for debugging.'}
               navComponent={SettingsStackScreenComponents.testNotification}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Errors'}
               description={'Generate test error messages.'}
               navComponent={SettingsStackScreenComponents.testError}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Notifications'}
               description={'Generate a test notification for debugging.'}
               navComponent={SettingsStackScreenComponents.testNotification}
             />
-            <NavigationListItem
+            <SettingsNavigationListItem
               title={'Sockets'}
               description={'Manage websocket internals.'}
               navComponent={SettingsStackScreenComponents.socketSettings}
