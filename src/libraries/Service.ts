@@ -22,6 +22,10 @@ const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket
 export let fgsFailedCounter = 0;
 export let fgsFailedThreshold = 10;
 
+/**
+ * Healthcheck driver function. Perform the healthcheck, store the result,
+ * and maybe shutdown if we've failed too many times.
+ */
 const fgsWorkerHealthcheck = async () => {
   console.log('[Service.ts] Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
@@ -60,7 +64,7 @@ const fgsEventHandler = (event: WebSocketMessageEvent) => {
 /**
  * Establish a new or return an existing WebSocket for use with push notifications.
  */
-const createFgsSocket = async () => {
+const createSharedWebSocket = async () => {
   const existingSocket = await getSharedWebSocket();
   if (existingSocket && existingSocket.readyState === WebSocket.OPEN) {
     console.log('[Service.ts] Socket already exists and is open!');
@@ -91,7 +95,7 @@ const fgsWorker = async () => {
   }
 
   // Add our event listener to respond to socket events and turn them into push notifications.
-  const ws = await createFgsSocket();
+  const ws = await createSharedWebSocket();
   ws.addEventListener('message', fgsEventHandler);
 
   // Start a regular socket health check to help ensure the socket stays open.
@@ -142,20 +146,23 @@ export async function stopForegroundServiceWorker() {
  * Start the foreground service worker that was registered in App.tsx.
  * For reasons, the only way we have to "start" the worker is to generate
  * a notification associated with the foreground service.
+ * This function is called every time the app launches so it needs to be smart
+ * about whether it generates a new notification.
  */
 export async function startForegroundServiceWorker() {
   console.log('[Service.ts] Starting foreground service worker.');
-  // const ws = await getSharedWebSocket();
-  // if (ws && ws.readyState === WebSocket.OPEN) {
-  //   console.log('FGS worker assumed to be running since websocket is open');
-  //   return;
-  // }
-  // console.log('The websocket is', ws);
+  const ws = await getSharedWebSocket();
+
+  // Reset the health counter
+  fgsFailedCounter = 0;
+
+  // Check if we should trigger the worker.
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.log('[Service.ts] Worker assumed to be running since websocket is open.');
+    return;
+  }
 
   // This actually starts the worker. You should see a log message when the worker function
   // starts up (assuming the console.log is still in there).
   await generateForegroundServiceNotification();
-
-  // Reset the health counter
-  fgsFailedCounter = 0;
 }
