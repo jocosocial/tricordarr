@@ -13,6 +13,7 @@ import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerU
 import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSIDScreen';
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
+import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -27,6 +28,7 @@ export type SettingsStackParamList = {
   ConfigShipSSIDScreen: undefined;
   SocketSettingsScreen: undefined;
   PushNotificationSettingsScreen: undefined;
+  OobeSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -81,6 +83,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.pushNotificationSettings}
         component={PushNotificationSettingsScreen}
         options={{title: 'Push Notifications'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.oobeSettings}
+        component={OobeSettingsScreen}
+        options={{title: 'OOBE'}}
       />
     </Stack.Navigator>
   );

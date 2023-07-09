@@ -1,3 +1,5 @@
+import {OobeWelcomeScreen} from '../../components/Screens/OOBE/OobeWelcomeScreen';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -7,6 +9,7 @@ export enum NavigatorIDs {
   seamailStack = 'SeamailStackNavigator',
   userStack = 'UserStack',
   mainStack = 'MainStack',
+  rootStack = 'RootStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -26,6 +29,7 @@ export enum SettingsStackScreenComponents {
   configShipSSID = 'ConfigShipSSIDScreen',
   socketSettings = 'SocketSettingsScreen',
   pushNotificationSettings = 'PushNotificationSettingsScreen',
+  oobeSettings = 'OobeSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -41,4 +45,9 @@ export enum SeamailStackScreenComponents {
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
   siteUIScreen = 'SiteUIScreen',
+}
+
+export enum RootStackComponents {
+  oobeWelcomeScreen = 'OobeWelcomeScreen',
+  mainScreen = 'MainScreen',
 }

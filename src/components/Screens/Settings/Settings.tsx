@@ -74,6 +74,11 @@ export const SettingsView = () => {
               description={'Manage websocket internals.'}
               navComponent={SettingsStackScreenComponents.socketSettings}
             />
+            <SettingsNavigationListItem
+              title={'Out-of-box Experience'}
+              description={'Internal OOBE information.'}
+              navComponent={SettingsStackScreenComponents.oobeSettings}
+            />
           </ListSection>
         </View>
       </ScrollingContentView>
