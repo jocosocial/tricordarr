@@ -18,10 +18,12 @@ export interface AppConfig {
   enableFezSocket: boolean;
   pushNotifications: PushNotificationConfig;
   fgsWorkerHealthTimer: number;
+  oobeExpectedVersion: number;
+  oobeCompletedVersion: number;
 }
 
 const defaultAppConfig: AppConfig = {
-  serverUrl: 'http://joco.hollandamerica.com',
+  serverUrl: 'http://joco.hollandamerica.com', // This uses the deprecated URL so we can be sure its overridden later.
   urlPrefix: '/api/v3',
   shipSSID: 'AndroidWifi',
   enableBackgroundWorker: true,
@@ -40,6 +42,8 @@ const defaultAppConfig: AppConfig = {
     nextFollowedEventTime: true,
   },
   fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
+  oobeCompletedVersion: 0,
+  oobeExpectedVersion: 0,
 };
 
 /**
@@ -52,6 +56,9 @@ const getInitialAppConfig = () => {
   }
   if (Config.SHIP_SSID) {
     config.shipSSID = Config.SHIP_SSID;
+  }
+  if (Config.OOBE_VERSION) {
+    config.oobeExpectedVersion = Number(Config.OOBE_VERSION);
   }
   return config;
 };
@@ -66,5 +73,10 @@ export const getAppConfig = async () => {
     await AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(defaultConfig));
     return defaultConfig;
   }
-  return JSON.parse(rawConfig) as AppConfig;
+  let appConfig = JSON.parse(rawConfig) as AppConfig;
+  // Certain keys should always be loaded from the app environment.
+  if (Config.OOBE_VERSION) {
+    appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
+  }
+  return appConfig;
 };

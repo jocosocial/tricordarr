@@ -15,7 +15,6 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';
-import {BottomTabNavigator} from './src/components/Navigation/Tabs/BottomTabNavigator';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
@@ -59,6 +58,7 @@ const queryClient = new QueryClient({
 setupAxiosStuff();
 
 import {registerFgsWorker} from './src/libraries/Service';
+import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
 registerFgsWorker();
 
 function App(): JSX.Element {
@@ -93,7 +93,7 @@ function App(): JSX.Element {
                                 <AppEventHandler />
                                 <ForegroundService />
                                 <NotificationDataListener />
-                                <BottomTabNavigator />
+                                <RootStackNavigator />
                               </UserNotificationDataProvider>
                             </UserRelationsProvider>
                           </SocketProvider>
