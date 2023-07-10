@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {Button, Card, FAB, IconButton, Text, TouchableRipple} from 'react-native-paper';
+import {Button, Card, FAB, IconButton, Menu, Text, TouchableRipple} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {commonStyles} from '../../../styles';
@@ -21,6 +21,9 @@ import {MainNavigationListItem} from '../../Lists/Items/MainNavigationListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../Navigation/Stacks/RootStackNavigator';
 import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
+import {IconButtonMenu} from '../../Menus/IconButtonMenu';
+import {MenuProvider} from '../../Context/Providers/MenuProvider';
+import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 
 export type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -39,7 +42,9 @@ export const MainView = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+        <MenuProvider>
+          <HomeHeaderMenu />
+        </MenuProvider>
       </View>
     );
   }, []);
