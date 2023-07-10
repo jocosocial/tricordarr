@@ -39,8 +39,8 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
     maxCapacity: 0,
     minCapacity: 0,
     title: '',
-    createdByTwitarrTeam: route.params?.initialAsTwitarrTeam,
-    createdByModerator: route.params?.initialAsModerator,
+    createdByTwitarrTeam: route.params?.initialAsTwitarrTeam || false,
+    createdByModerator: route.params?.initialAsModerator || false,
   };
 
   // Handler for creating the Fez.
