@@ -10,3 +10,6 @@ Work Queue
   * add profiles sections
   * add time zone check
   * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
+
+
+Make a generic for SeamailActionsMenu
