@@ -15,7 +15,7 @@ import {
   SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useMainStack} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList, useMainStack} from '../../Navigation/Stacks/MainStack';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {MainNavigationListItem} from '../../Lists/Items/MainNavigationListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -26,9 +26,9 @@ import {MenuProvider} from '../../Context/Providers/MenuProvider';
 import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 
 export type Props = NativeStackScreenProps<
-  RootStackParamList,
-  RootStackComponents.mainScreen,
-  NavigatorIDs.rootStack
+  MainStackParamList,
+  MainStackComponents.mainScreen,
+  NavigatorIDs.mainStack
 >;
 
 export const MainView = ({navigation}: Props) => {
@@ -132,16 +132,6 @@ export const MainView = ({navigation}: Props) => {
                 })
               }
               icon={AppIcons.webview}
-            />
-            <MainNavigationListItem
-              title={'Settings'}
-              description={'App preferences and configuration.'}
-              onPress={() =>
-                bottomNav.navigate(BottomTabComponents.settingsTab, {
-                  screen: SettingsStackScreenComponents.settings,
-                })
-              }
-              icon={AppIcons.settings}
             />
           </ListSection>
           <ListSection>

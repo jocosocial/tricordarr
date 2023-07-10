@@ -1,14 +1,16 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MainStackComponents} from '../../../libraries/Enums/Navigation';
-import {useNavigation} from '@react-navigation/native';
+import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainView} from '../../Views/Static/MainView';
 import {TwitarrView} from '../../Views/TwitarrView';
+import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 
 export type MainStackParamList = {
   MainScreen: undefined;
   SiteUIScreen: undefined;
+  MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
 };
 
 export const MainStack = () => {
@@ -22,6 +24,11 @@ export const MainStack = () => {
         name={MainStackComponents.siteUIScreen}
         component={TwitarrView}
         options={{title: 'Twitarr Web UI'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.mainSettingsScreen}
+        component={SettingsStack}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
