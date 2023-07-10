@@ -6,7 +6,12 @@ import {TokenStringData} from '../Structs/ControllerStructs';
 import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
 
-export async function setupAxiosStuff() {
+/**
+ * Setup function for the Axios HTTP library. We use an interceptor to automagically
+ * configure various parameters of the HTTP request, from full URL to timeouts.
+ */
+export async function configureAxios() {
+  console.log('Configuring Axios interceptors.');
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
     // URL
@@ -23,6 +28,8 @@ export async function setupAxiosStuff() {
     // Other Headers
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
+    // Other Config
+    config.timeout = 5000;
     // Return
     console.info(
       `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
