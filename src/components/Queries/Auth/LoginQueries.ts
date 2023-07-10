@@ -18,7 +18,7 @@ export const useLoginQuery = (options = {}) => {
   const {setErrorMessage} = useErrorHandler();
   return useMutation<AxiosResponse<TokenStringData>, AxiosError<ErrorResponse>, LoginMutationProps>(queryHandler, {
     onError: error => {
-      setErrorMessage(error.response?.data.reason);
+      setErrorMessage(error.response?.data.reason || error.message);
     },
     ...options,
   });

@@ -30,8 +30,8 @@ export const LoginScreen = () => {
             navigation.goBack();
           });
         },
+        onSettled: () => formikHelpers.setSubmitting(false),
       });
-      formikHelpers.setSubmitting(false);
     },
     [loginMutation, navigation, signIn],
   );

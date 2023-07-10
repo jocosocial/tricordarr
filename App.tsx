@@ -14,7 +14,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
-import {apiQueryV3, setupAxiosStuff} from './src/libraries/Network/APIClient';
+import {apiQueryV3, configureAxios} from './src/libraries/Network/APIClient';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {AppPermissions} from './src/libraries/AppPermissions';
@@ -55,7 +55,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-setupAxiosStuff();
+configureAxios();
 
 import {registerFgsWorker} from './src/libraries/Service';
 import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';

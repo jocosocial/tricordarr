@@ -2,6 +2,7 @@ import React, {ReactNode} from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 import {FastField, useFormikContext} from 'formik';
+import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 
 interface TextFieldProps {
   name: string;
@@ -12,6 +13,7 @@ interface TextFieldProps {
   left?: ReactNode;
   secureTextEntry?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
+  inputMode?: InputModeOptions;
 }
 
 export const TextField = ({
@@ -23,6 +25,7 @@ export const TextField = ({
   label,
   left,
   viewStyle,
+  inputMode,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched, isSubmitting} = useFormikContext();
   return (
@@ -41,6 +44,7 @@ export const TextField = ({
             disabled={isSubmitting}
             left={left}
             secureTextEntry={secureTextEntry}
+            inputMode={inputMode}
           />
           <HelperText type={'error'} visible={!!errors[name] && touched[name]}>
             {errors[name]}
