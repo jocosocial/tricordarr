@@ -17,7 +17,7 @@ export const MainStack = () => {
 
   return (
     <Stack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
-      <Stack.Screen name={MainStackComponents.mainScreen} component={MainView} options={{headerShown: false}} />
+      <Stack.Screen name={MainStackComponents.mainScreen} component={MainView} options={{title: 'Twitarr Home'}} />
       <Stack.Screen
         name={MainStackComponents.siteUIScreen}
         component={TwitarrView}

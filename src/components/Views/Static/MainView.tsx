@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {IconButton, Text} from 'react-native-paper';
+import {Button, Card, FAB, IconButton, Text, TouchableRipple} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {commonStyles} from '../../../styles';
@@ -11,47 +11,78 @@ import {ListSection} from '../../Lists/ListSection';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {
   BottomTabComponents,
-  MainStackComponents,
+  MainStackComponents, NavigatorIDs, RootStackComponents,
   SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useMainStack} from '../../Navigation/Stacks/MainStack';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {MainNavigationListItem} from '../../Lists/Items/MainNavigationListItem';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../Navigation/Stacks/RootStackNavigator';
+import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 
-export const MainView = () => {
+export type Props = NativeStackScreenProps<
+  RootStackParamList,
+  RootStackComponents.mainScreen,
+  NavigatorIDs.rootStack
+>;
+
+export const MainView = ({navigation}: Props) => {
   const bottomNav = useBottomTabNavigator();
   // const mainNav = useMainStack();
 
-  function getIconButton(icon: string) {
-    return <IconButton icon={icon} />;
-  }
+  // function getIconButton(icon: string) {
+  //   return <IconButton icon={icon} />;
+  // }
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View style={[commonStyles.flexRow]}>
+        <NavBarIconButton icon={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+      </View>
+    );
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>
       <ScrollingContentView>
         <PaddedContentView padSides={false}>
-          <ListSection>
-            <List.Subheader>Communication</List.Subheader>
-            <MainNavigationListItem
-              title={'Forums'}
-              description={'A place to talk'}
-              onPress={() => console.log('forums')}
-              icon={AppIcons.forum}
-            />
-            <MainNavigationListItem
-              title={'Seamail'}
-              description={'Private direct messages.'}
-              onPress={() => console.log('chat')}
-              icon={AppIcons.seamail}
-            />
-            <MainNavigationListItem
-              title={'KrakenTalk'}
-              description={'On-board Wi-Fi calling.'}
-              onPress={() => console.log('kraken')}
-              icon={AppIcons.krakentalk}
-            />
-          </ListSection>
+          {/*<View style={{width: 100}}>*/}
+          {/*  <TouchableRipple onPress={() => console.log('press')} style={{backgroundColor: 'red', justifyContent: 'center'}}>*/}
+          {/*    <View style={{backgroundColor: 'yellow', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minWidth: 72}}>*/}
+          {/*      <AppIcon style={{justifyContent: 'center', alignItems: 'center', width: 48}} size={48} icon={AppIcons.seamail} />*/}
+          {/*      <Text variant={'bodyLarge'}>Seamail</Text>*/}
+          {/*    </View>*/}
+          {/*  </TouchableRipple>*/}
+          {/*</View>*/}
+          {/*<ListSection>*/}
+          {/*  <List.Subheader>Communication</List.Subheader>*/}
+          {/*  <MainNavigationListItem*/}
+          {/*    title={'Forums'}*/}
+          {/*    description={'A place to talk'}*/}
+          {/*    onPress={() => console.log('forums')}*/}
+          {/*    icon={AppIcons.forum}*/}
+          {/*  />*/}
+          {/*  <MainNavigationListItem*/}
+          {/*    title={'Seamail'}*/}
+          {/*    description={'Private direct messages.'}*/}
+          {/*    onPress={() => console.log('chat')}*/}
+          {/*    icon={AppIcons.seamail}*/}
+          {/*  />*/}
+          {/*  <MainNavigationListItem*/}
+          {/*    title={'KrakenTalk'}*/}
+          {/*    description={'On-board Wi-Fi calling.'}*/}
+          {/*    onPress={() => console.log('kraken')}*/}
+          {/*    icon={AppIcons.krakentalk}*/}
+          {/*  />*/}
+          {/*</ListSection>*/}
           <ListSection>
             <List.Subheader>Events</List.Subheader>
             <MainNavigationListItem
