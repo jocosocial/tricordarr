@@ -81,14 +81,14 @@ export const BottomTabNavigator = () => {
       {/*    tabBarIcon: () => getIcon('web'),*/}
       {/*  }}*/}
       {/*/>*/}
-      <Tab.Screen
-        name={BottomTabComponents.settingsTab}
-        component={SettingsStack}
-        options={{
-          title: 'Settings',
-          tabBarIcon: () => getIcon('cog'),
-        }}
-      />
+      {/*<Tab.Screen*/}
+      {/*  name={BottomTabComponents.settingsTab}*/}
+      {/*  component={SettingsStack}*/}
+      {/*  options={{*/}
+      {/*    title: 'Settings',*/}
+      {/*    tabBarIcon: () => getIcon('cog'),*/}
+      {/*  }}*/}
+      {/*/>*/}
     </Tab.Navigator>
   );
 };

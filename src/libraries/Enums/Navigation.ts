@@ -45,6 +45,7 @@ export enum SeamailStackScreenComponents {
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
   siteUIScreen = 'SiteUIScreen',
+  mainSettingsScreen = 'MainSettingsScreen',
 }
 
 export enum RootStackComponents {

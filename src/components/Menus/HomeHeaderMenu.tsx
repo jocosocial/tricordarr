@@ -14,13 +14,14 @@ import {UserAvatarImage} from '../Images/UserAvatarImage';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const HomeHeaderMenu = () => {
-  const navigation = useBottomTabNavigator();
+  const bottomTabNavigator = useBottomTabNavigator();
+  const mainStackNavigator = useMainStack();
   const {closeMenu} = useMenu();
   const {profilePublicData} = useUserData();
 
   const handleSettings = () => {
     closeMenu();
-    navigation.navigate(BottomTabComponents.settingsTab, {
+    mainStackNavigator.push(MainStackComponents.mainSettingsScreen, {
       screen: SettingsStackScreenComponents.settings,
     });
   };
@@ -28,7 +29,7 @@ export const HomeHeaderMenu = () => {
   const handleProfile = () => {
     closeMenu();
     if (profilePublicData) {
-      navigation.navigate(BottomTabComponents.seamailTab, {
+      bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
         screen: SeamailStackScreenComponents.userProfileScreen,
         params: {
           userID: profilePublicData.header.userID,

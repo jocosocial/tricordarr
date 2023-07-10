@@ -10,4 +10,4 @@ Work Queue
   * add profiles sections
   * add time zone check
   * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
-
+  * Go back and fix notification tap actions for deep linking - specifically settings 
