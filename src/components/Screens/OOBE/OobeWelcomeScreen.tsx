@@ -19,7 +19,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
     // Bop Bop Bop
-    navigation.replace(RootStackComponents.mainScreen);
+    navigation.replace(RootStackComponents.rootContentScreen);
   };
   return (
     <AppView>

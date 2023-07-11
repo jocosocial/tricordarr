@@ -1,6 +1,12 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {BottomTabComponents, SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
+import {
+  BottomTabComponents, MainStackComponents,
+  RootStackComponents,
+  SeamailStackScreenComponents,
+  SettingsStackScreenComponents
+} from './Enums/Navigation';
 import {BottomTabParamList} from '../components/Navigation/Tabs/BottomTabNavigator';
+import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
@@ -8,22 +14,29 @@ import {BottomTabParamList} from '../components/Navigation/Tabs/BottomTabNavigat
  * follow the routes that we use in the Swiftarr web UI.
  */
 const deepLinksConf = {
-  initialRouteName: BottomTabComponents.homeTab,
   screens: {
-    HomeTab: 'hometab',
-    SeamailTab: {
-      initialRouteName: SeamailStackScreenComponents.seamailListScreen,
+    OobeWelcomeScreen: 'oobe',
+    RootContentScreen: {
       screens: {
-        SeamailTab: 'seamail',
-        SeamailScreen: 'seamail/:fezID',
-      },
-    },
-    TwitarrTab: 'twitarrtab/:timestamp?/:resource?/:id?',
-    SettingsTab: {
-      initialRouteName: SettingsStackScreenComponents.settings,
-      screens: {
-        SettingsTab: 'settingstab',
-        ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
+        HomeTab: {
+          screens: {
+            SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
+            MainSettingsScreen: {
+              initialRouteName: SettingsStackScreenComponents.settings,
+              screens: {
+                SettingsTab: 'settingstab',
+                ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
+              },
+            },
+          },
+        },
+        SeamailTab: {
+          initialRouteName: SeamailStackScreenComponents.seamailListScreen,
+          screens: {
+            SeamailTab: 'seamail',
+            SeamailScreen: 'seamail/:fezID',
+          },
+        },
       },
     },
   },
@@ -32,7 +45,7 @@ const deepLinksConf = {
 /**
  * This is the actual Linking object that we export and include in App.tsx.
  */
-export const navigationLinking: LinkingOptions<BottomTabParamList> = {
+export const navigationLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['tricordarr://'],
   config: deepLinksConf,
 };

@@ -26,7 +26,6 @@ function getBadgeDisplayValue(input: number | undefined) {
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
-  TwitarrTab: undefined;
   SettingsTab: NavigatorScreenParams<SettingsStackParamList>;
 };
 

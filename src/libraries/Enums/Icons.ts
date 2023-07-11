@@ -42,4 +42,5 @@ export enum AppIcons {
   events = 'calendar',
   settings = 'cog',
   webview = 'web',
+  karaoke = 'microphone-variant',
 }
