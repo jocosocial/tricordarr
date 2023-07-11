@@ -1,8 +1,10 @@
-import {useContext, createContext, Dispatch, SetStateAction} from 'react';
+import {useContext, createContext, Dispatch, SetStateAction, ReactNode} from 'react';
 
 interface DrawerContextType {
   drawerOpen: boolean;
   setDrawerOpen: Dispatch<SetStateAction<boolean>>;
+  getLeftMainHeaderButtons: () => ReactNode;
+  getRightMainHeaderButtons: () => ReactNode;
 }
 
 export const DrawerContext = createContext(<DrawerContextType>{});

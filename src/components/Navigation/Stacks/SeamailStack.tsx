@@ -12,6 +12,7 @@ import {getSeamailHeaderTitle} from '../Components/SeamailHeaderTitle';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {SeamailAddParticipantScreen} from '../../Screens/Seamail/SeamailAddParticipantScreen';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useDrawer} from '../../Context/Contexts/DrawerContext';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -43,12 +44,18 @@ export type SeamailStackParamList = {
 export const SeamailStack = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<SeamailStackParamList>();
+  const {getLeftMainHeaderButtons, getRightMainHeaderButtons} = useDrawer();
 
   return (
     <Stack.Navigator initialRouteName={SeamailStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailListScreen}
         component={SeamailListScreen}
+        options={{
+          headerLeft: getLeftMainHeaderButtons,
+          headerRight: getRightMainHeaderButtons,
+          title: 'Seamail',
+        }}
       />
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailScreen}

@@ -22,34 +22,34 @@ export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponen
 
 export const MainView = ({navigation}: Props) => {
   const bottomNav = useBottomTabNavigator();
-  const {setDrawerOpen} = useDrawer();
-
-  const getRightButtons = useCallback(() => {
-    return (
-      <View style={[commonStyles.flexRow]}>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <HomeHeaderMenu />
-        </HeaderButtons>
-      </View>
-    );
-  }, []);
-
-  const getLeftButtons = useCallback(() => {
-    return (
-      <View style={[commonStyles.marginRightBig]}>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title="Drawer" iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
-        </HeaderButtons>
-      </View>
-    );
-  }, [setDrawerOpen]);
+  const {getLeftMainHeaderButtons, getRightMainHeaderButtons} = useDrawer();
+  //
+  // const getRightButtons = useCallback(() => {
+  //   return (
+  //     <View style={[commonStyles.flexRow]}>
+  //       <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+  //         <HomeHeaderMenu />
+  //       </HeaderButtons>
+  //     </View>
+  //   );
+  // }, []);
+  //
+  // const getLeftButtons = useCallback(() => {
+  //   return (
+  //     <View style={[commonStyles.marginRightBig]}>
+  //       <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+  //         <Item title="Drawer" iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
+  //       </HeaderButtons>
+  //     </View>
+  //   );
+  // }, [setDrawerOpen]);
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: getLeftButtons,
-      headerRight: getRightButtons,
+      headerLeft: getLeftMainHeaderButtons,
+      headerRight: getRightMainHeaderButtons,
     });
-  }, [getLeftButtons, getRightButtons, navigation]);
+  }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, navigation]);
 
   return (
     <AppView>

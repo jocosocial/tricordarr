@@ -5,7 +5,5 @@ Backlog
 Work Queue
 * Test websocket failure
 * Timestamp with connection lost
-* Navigation
-  * All stacks get the title bar, with three dots menu for settings and stuff
 * Cleanup or deprecate MaterialHeaderButton
 * Get feedback on the drawer and three-dots menu. keep both? Unify?
