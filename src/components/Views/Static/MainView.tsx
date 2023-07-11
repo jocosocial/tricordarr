@@ -24,6 +24,8 @@ import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {IconButtonMenu} from '../../Menus/IconButtonMenu';
 import {MenuProvider} from '../../Context/Providers/MenuProvider';
 import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
+import HomeDrawer from '../../Drawers/AppDrawer';
+import {useDrawer} from '../../Context/Contexts/DrawerContext';
 
 export type Props = NativeStackScreenProps<
   MainStackParamList,
@@ -33,6 +35,7 @@ export type Props = NativeStackScreenProps<
 
 export const MainView = ({navigation}: Props) => {
   const bottomNav = useBottomTabNavigator();
+  const {drawerOpen, setDrawerOpen} = useDrawer();
   // const mainNav = useMainStack();
 
   // function getIconButton(icon: string) {
@@ -49,11 +52,22 @@ export const MainView = ({navigation}: Props) => {
     );
   }, []);
 
+  const getDrawerButton = useCallback(() => {
+    return (
+      <View style={[commonStyles.flexRow]}>
+        <MenuProvider>
+          <IconButton icon={'menu'} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
+        </MenuProvider>
+      </View>
+    );
+  }, [setDrawerOpen]);
+
   useEffect(() => {
     navigation.setOptions({
+      headerLeft: getDrawerButton,
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+  }, [getDrawerButton, getNavButtons, navigation]);
 
   return (
     <AppView>

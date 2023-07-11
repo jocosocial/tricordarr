@@ -43,6 +43,9 @@ import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider'
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 ViewReactNativeStyleAttributes.scaleY = true;
 
+// https://reactnavigation.org/docs/drawer-layout/
+import 'react-native-gesture-handler';
+
 TimeAgo.addDefaultLocale(en);
 
 // https://tanstack.com/query/latest/docs/react/overview
@@ -59,6 +62,7 @@ configureAxios();
 
 import {registerFgsWorker} from './src/libraries/Service';
 import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
+import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
 registerFgsWorker();
 
 function App(): JSX.Element {
@@ -90,10 +94,12 @@ function App(): JSX.Element {
                           <SocketProvider>
                             <UserRelationsProvider>
                               <UserNotificationDataProvider>
-                                <AppEventHandler />
-                                <ForegroundService />
-                                <NotificationDataListener />
-                                <RootStackNavigator />
+                                <DrawerProvider>
+                                  <AppEventHandler />
+                                  <ForegroundService />
+                                  <NotificationDataListener />
+                                  <RootStackNavigator />
+                                </DrawerProvider>
                               </UserNotificationDataProvider>
                             </UserRelationsProvider>
                           </SocketProvider>
