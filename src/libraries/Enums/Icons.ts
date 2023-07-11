@@ -51,4 +51,6 @@ export enum AppIcons {
   twitarr = 'fruit-pineapple',
   tricordarr = 'android',
   map = 'map-marker',
+  alertword = 'alert-box-outline',
+  time = 'clock-check',
 }

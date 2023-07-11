@@ -3,7 +3,7 @@ import {Drawer} from 'react-native-drawer-layout';
 import {Drawer as PaperDrawer} from 'react-native-paper';
 import {useDrawer} from '../Context/Contexts/DrawerContext';
 import {PropsWithChildren} from 'react';
-import {Linking} from 'react-native';
+import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 
@@ -24,25 +24,49 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       onClose={() => setDrawerOpen(false)}
       renderDrawerContent={() => {
         return (
-          <>
-            <PaperDrawer.Section title="Entertainment" showDivider={false}>
+          <ScrollView>
+            <PaperDrawer.Section title={'Users'} showDivider={false}>
               <PaperDrawer.Item
-                label="Karaoke"
+                label={'Your Profile'}
+                icon={AppIcons.user}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab`)}
+              />
+              <PaperDrawer.Item
+                label={'Directory'}
+                icon={AppIcons.group}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/directory`)}
+              />
+              <PaperDrawer.Item
+                label={'Muted/Blocked Users'}
+                icon={AppIcons.block}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/blocks`)}
+              />
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Communication'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'Alert/Mute Keywords'}
+                icon={AppIcons.alertword}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/alertwords`)}
+              />
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'Karaoke'}
                 icon={AppIcons.karaoke}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
               />
               <PaperDrawer.Item
-                label="Board Games"
+                label={'Board Games'}
                 icon={AppIcons.games}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/boardgames`)}
               />
               <PaperDrawer.Item
-                label="Lighter"
+                label={'Lighter'}
                 icon={AppIcons.lighter}
                 onPress={() => handleDrawerNav('tricordarr://')}
               />
               <PaperDrawer.Item
-                label="Seamail"
+                label={'Seamail'}
                 icon={AppIcons.seamail}
                 onPress={() => handleDrawerNav('tricordarr://seamail')}
               />
@@ -52,6 +76,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 label={'Deck Map'}
                 icon={AppIcons.map}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/map`)}
+              />
+              <PaperDrawer.Item
+                label={'Time Zone Check'}
+                icon={AppIcons.time}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/time`)}
               />
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
@@ -74,7 +103,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => handleDrawerNav('tricordarr://about')}
               />
             </PaperDrawer.Section>
-          </>
+          </ScrollView>
         );
       }}>
       {children}
