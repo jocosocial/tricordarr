@@ -32,6 +32,16 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
               />
               <PaperDrawer.Item
+                label="Board Games"
+                icon={AppIcons.games}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/boardgames`)}
+              />
+              <PaperDrawer.Item
+                label="Lighter"
+                icon={AppIcons.lighter}
+                onPress={() => handleDrawerNav('tricordarr://')}
+              />
+              <PaperDrawer.Item
                 label="Seamail"
                 icon={AppIcons.seamail}
                 onPress={() => handleDrawerNav('tricordarr://seamail')}
