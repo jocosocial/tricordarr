@@ -1,5 +1,3 @@
-import {OobeWelcomeScreen} from '../../components/Screens/OOBE/OobeWelcomeScreen';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/

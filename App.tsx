@@ -7,10 +7,10 @@
 
 import React, {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {adaptNavigationTheme, Provider as PaperProvider} from 'react-native-paper';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
@@ -63,7 +63,12 @@ configureAxios();
 import {registerFgsWorker} from './src/libraries/Service';
 import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
+import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 registerFgsWorker();
+
+// https://callstack.github.io/react-native-paper/docs/guides/theming
+const {LightTheme: navLightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
+const {DarkTheme: navDarkTheme} = adaptNavigationTheme({reactNavigationDark: DefaultTheme});
 
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
@@ -80,37 +85,39 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <NavigationContainer linking={navigationLinking}>
+    <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
-          <ConfigProvider>
-            <QueryClientProvider client={queryClient}>
-              <TwitarrProvider>
-                <ErrorHandlerProvider>
-                  <ModalProvider>
-                    <AuthProvider>
-                      <UserDataProvider>
-                        <PrivilegeProvider>
-                          <SocketProvider>
-                            <UserRelationsProvider>
-                              <UserNotificationDataProvider>
-                                <DrawerProvider>
-                                  <AppEventHandler />
-                                  <ForegroundService />
-                                  <NotificationDataListener />
-                                  <RootStackNavigator />
-                                </DrawerProvider>
-                              </UserNotificationDataProvider>
-                            </UserRelationsProvider>
-                          </SocketProvider>
-                        </PrivilegeProvider>
-                      </UserDataProvider>
-                    </AuthProvider>
-                  </ModalProvider>
-                </ErrorHandlerProvider>
-              </TwitarrProvider>
-            </QueryClientProvider>
-          </ConfigProvider>
+          <HeaderButtonsProvider stackType={'native'}>
+            <ConfigProvider>
+              <QueryClientProvider client={queryClient}>
+                <TwitarrProvider>
+                  <ErrorHandlerProvider>
+                    <ModalProvider>
+                      <AuthProvider>
+                        <UserDataProvider>
+                          <PrivilegeProvider>
+                            <SocketProvider>
+                              <UserRelationsProvider>
+                                <UserNotificationDataProvider>
+                                  <DrawerProvider>
+                                    <AppEventHandler />
+                                    <ForegroundService />
+                                    <NotificationDataListener />
+                                    <RootStackNavigator />
+                                  </DrawerProvider>
+                                </UserNotificationDataProvider>
+                              </UserRelationsProvider>
+                            </SocketProvider>
+                          </PrivilegeProvider>
+                        </UserDataProvider>
+                      </AuthProvider>
+                    </ModalProvider>
+                  </ErrorHandlerProvider>
+                </TwitarrProvider>
+              </QueryClientProvider>
+            </ConfigProvider>
+          </HeaderButtonsProvider>
         </StyleProvider>
       </PaperProvider>
     </NavigationContainer>

@@ -67,6 +67,9 @@ export const commonStyles = StyleSheet.create({
   marginRight: {
     marginRight: styleDefaults.marginSize,
   },
+  marginRightBig: {
+    marginRight: styleDefaults.marginSize * 1.5,
+  },
   marginVertical: {
     marginVertical: styleDefaults.marginSize,
   },
