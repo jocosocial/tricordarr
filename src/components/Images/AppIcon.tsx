@@ -11,6 +11,10 @@ interface AppIconProps {
   style?: StyleProp<TextStyle>;
 }
 
+/**
+ * An Icon based on Material UI.
+ * https://pictogrammers.com/library/mdi/
+ */
 export const AppIcon = ({icon, size, color, style}: AppIconProps) => {
   const theme = useAppTheme();
   const {styleDefaults} = useStyles();

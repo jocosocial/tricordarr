@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {IconButton, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {commonStyles} from '../../../styles';
@@ -13,9 +13,10 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {MainNavigationListItem} from '../../Lists/Items/MainNavigationListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MenuProvider} from '../../Context/Providers/MenuProvider';
-import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -23,32 +24,32 @@ export const MainView = ({navigation}: Props) => {
   const bottomNav = useBottomTabNavigator();
   const {setDrawerOpen} = useDrawer();
 
-  const getNavButtons = useCallback(() => {
+  const getRightButtons = useCallback(() => {
     return (
       <View style={[commonStyles.flexRow]}>
-        <MenuProvider>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <HomeHeaderMenu />
-        </MenuProvider>
+        </HeaderButtons>
       </View>
     );
   }, []);
 
-  const getDrawerButton = useCallback(() => {
+  const getLeftButtons = useCallback(() => {
     return (
-      <View style={{...commonStyles.flexRow, marginLeft: -14}}>
-        <MenuProvider>
-          <IconButton icon={'menu'} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
-        </MenuProvider>
+      <View style={[commonStyles.marginRightBig]}>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title="Drawer" iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
+        </HeaderButtons>
       </View>
     );
   }, [setDrawerOpen]);
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: getDrawerButton,
-      headerRight: getNavButtons,
+      headerLeft: getLeftButtons,
+      headerRight: getRightButtons,
     });
-  }, [getDrawerButton, getNavButtons, navigation]);
+  }, [getLeftButtons, getRightButtons, navigation]);
 
   return (
     <AppView>

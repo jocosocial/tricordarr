@@ -40,6 +40,7 @@
     "react-native-screens": "^3.20.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-webview": "^11.26.1",
+    "react-navigation-header-buttons": "^11.0.0",
     "react-time-ago": "^7.2.1",
     "reconnecting-websocket": "^4.4.0",
     "yup": "^1.1.1"

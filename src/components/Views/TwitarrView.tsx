@@ -52,7 +52,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
           icon={AppIcons.home}
           onPress={async () => {
             setUrl(appConfig.serverUrl);
-            setKey('home');
+            setKey(String(Date.now()));
           }}
         />
         <NavBarIconButton icon={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />

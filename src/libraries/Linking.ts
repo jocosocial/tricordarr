@@ -1,11 +1,5 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {
-  BottomTabComponents, MainStackComponents,
-  RootStackComponents,
-  SeamailStackScreenComponents,
-  SettingsStackScreenComponents
-} from './Enums/Navigation';
-import {BottomTabParamList} from '../components/Navigation/Tabs/BottomTabNavigator';
+import {SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 
 /**

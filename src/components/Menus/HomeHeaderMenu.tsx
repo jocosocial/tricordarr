@@ -1,33 +1,29 @@
-import {IconButtonMenu} from './IconButtonMenu';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {Menu} from 'react-native-paper';
 import React from 'react';
 import {useMainStack} from '../Navigation/Stacks/MainStack';
 import {
   BottomTabComponents,
-  MainStackComponents, SeamailStackScreenComponents,
+  MainStackComponents,
+  SeamailStackScreenComponents,
   SettingsStackScreenComponents,
 } from '../../libraries/Enums/Navigation';
 import {useBottomTabNavigator} from '../Navigation/Tabs/BottomTabNavigator';
-import {useMenu} from '../Context/Contexts/MenuContext';
-import {UserAvatarImage} from '../Images/UserAvatarImage';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {AppIcon} from '../Images/AppIcon';
+import {HiddenItem, OverflowMenu} from 'react-navigation-header-buttons';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 export const HomeHeaderMenu = () => {
   const bottomTabNavigator = useBottomTabNavigator();
   const mainStackNavigator = useMainStack();
-  const {closeMenu} = useMenu();
   const {profilePublicData} = useUserData();
 
   const handleSettings = () => {
-    closeMenu();
     mainStackNavigator.push(MainStackComponents.mainSettingsScreen, {
       screen: SettingsStackScreenComponents.settings,
     });
   };
 
   const handleProfile = () => {
-    closeMenu();
     if (profilePublicData) {
       bottomTabNavigator.navigate(BottomTabComponents.seamailTab, {
         screen: SeamailStackScreenComponents.userProfileScreen,
@@ -39,10 +35,12 @@ export const HomeHeaderMenu = () => {
     }
   };
 
+  const getMenuIcon = () => <AppIcon icon={AppIcons.menu} />;
+
   return (
-    <IconButtonMenu>
-      <Menu.Item leadingIcon={AppIcons.user} title={'Profile'} onPress={handleProfile} />
-      <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />
-    </IconButtonMenu>
+    <OverflowMenu OverflowIcon={getMenuIcon}>
+      <HiddenItem icon={<AppIcon icon={AppIcons.user} />} title={'Profile'} onPress={handleProfile} />
+      <HiddenItem icon={<AppIcon icon={AppIcons.settings} />} title={'Settings'} onPress={handleSettings} />
+    </OverflowMenu>
   );
 };

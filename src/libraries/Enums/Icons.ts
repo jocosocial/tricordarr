@@ -19,6 +19,7 @@ export enum AppIcons {
   reload = 'reload',
   error = 'alert-circle-outline',
   menu = 'dots-vertical',
+  drawer = 'menu',
   favorite = 'star',
   unfavorite = 'star-off',
   block = 'cancel',
