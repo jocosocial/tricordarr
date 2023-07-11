@@ -6,11 +6,13 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainView} from '../../Views/Static/MainView';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
+import {AboutScreen} from '../../Screens/Main/AboutScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
   SiteUIScreen: undefined;
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
+  AboutScreen: undefined;
 };
 
 export const MainStack = () => {
@@ -29,6 +31,11 @@ export const MainStack = () => {
         name={MainStackComponents.mainSettingsScreen}
         component={SettingsStack}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.aboutScreen}
+        component={AboutScreen}
+        options={{title: 'About Tricordarr'}}
       />
     </Stack.Navigator>
   );

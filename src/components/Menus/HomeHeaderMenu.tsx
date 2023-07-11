@@ -11,6 +11,7 @@ import {useUserData} from '../Context/Contexts/UserDataContext';
 import {AppIcon} from '../Images/AppIcon';
 import {HiddenItem, OverflowMenu} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {Divider} from 'react-native-paper';
 
 export const HomeHeaderMenu = () => {
   const bottomTabNavigator = useBottomTabNavigator();
@@ -35,12 +36,19 @@ export const HomeHeaderMenu = () => {
     }
   };
 
+  const handleWebUI = () =>
+    bottomTabNavigator.navigate(BottomTabComponents.homeTab, {
+      screen: MainStackComponents.siteUIScreen,
+    });
+
   const getMenuIcon = () => <AppIcon icon={AppIcons.menu} />;
 
   return (
     <OverflowMenu OverflowIcon={getMenuIcon}>
       <HiddenItem icon={<AppIcon icon={AppIcons.user} />} title={'Profile'} onPress={handleProfile} />
       <HiddenItem icon={<AppIcon icon={AppIcons.settings} />} title={'Settings'} onPress={handleSettings} />
+      <Divider bold={true} />
+      <HiddenItem icon={<AppIcon icon={AppIcons.webview} />} title={'Web UI'} onPress={handleWebUI} />
     </OverflowMenu>
   );
 };
