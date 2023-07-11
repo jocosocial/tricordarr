@@ -49,7 +49,6 @@ export const SeamailStack = () => {
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailListScreen}
         component={SeamailListScreen}
-        options={{headerShown: false}}
       />
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailScreen}

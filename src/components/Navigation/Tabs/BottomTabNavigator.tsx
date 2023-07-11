@@ -11,6 +11,7 @@ import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
+import {NotImplementedView} from '../../Views/Static/NotImplementedView';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -26,7 +27,8 @@ function getBadgeDisplayValue(input: number | undefined) {
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
-  SettingsTab: NavigatorScreenParams<SettingsStackParamList>;
+  ScheduleTab: undefined;
+  ForumsTab: undefined;
 };
 
 export const BottomTabNavigator = () => {
@@ -57,37 +59,21 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={'Forums'}
-        component={SeamailStack}
+        name={BottomTabComponents.forumsTab}
+        component={NotImplementedView}
         options={{
           title: 'Forums',
           tabBarIcon: () => getIcon(AppIcons.forum),
         }}
       />
       <Tab.Screen
-        name={'Schedule'}
-        component={SeamailStack}
+        name={BottomTabComponents.scheduleTab}
+        component={NotImplementedView}
         options={{
           title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),
         }}
       />
-      {/*<Tab.Screen*/}
-      {/*  name={BottomTabComponents.twitarrTab}*/}
-      {/*  component={SiteUIStackStack}*/}
-      {/*  options={{*/}
-      {/*    title: 'Twit-arr',*/}
-      {/*    tabBarIcon: () => getIcon('web'),*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<Tab.Screen*/}
-      {/*  name={BottomTabComponents.settingsTab}*/}
-      {/*  component={SettingsStack}*/}
-      {/*  options={{*/}
-      {/*    title: 'Settings',*/}
-      {/*    tabBarIcon: () => getIcon('cog'),*/}
-      {/*  }}*/}
-      {/*/>*/}
     </Tab.Navigator>
   );
 };

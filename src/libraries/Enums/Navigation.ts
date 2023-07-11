@@ -13,7 +13,8 @@ export enum NavigatorIDs {
 export enum BottomTabComponents {
   homeTab = 'HomeTab',
   seamailTab = 'SeamailTab',
-  settingsTab = 'SettingsTab',
+  forumsTab = 'ForumsTab',
+  scheduleTab = 'ScheduleTab',
 }
 
 export enum SettingsStackScreenComponents {
