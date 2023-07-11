@@ -19,6 +19,7 @@ export const AppEventHandler = () => {
       const {notification, pressAction} = event.detail;
       const url = getUrlForEvent(event.type, notification, pressAction);
       if (url) {
+        console.log('[handleForegroundEvent] responding to url', url);
         linkTo(url);
       }
     };
@@ -36,6 +37,7 @@ export const AppEventHandler = () => {
   notifee.onBackgroundEvent(async (event: Event) => {
     const {notification, pressAction} = event.detail;
     const url = getUrlForEvent(event.type, notification, pressAction) || 'tricordarr://hometab';
+    console.log('[onBackgroundEvent] responding to url', url);
 
     await Linking.openURL(`tricordarr:/${url}`); // url starts with a /, so only add one.
   });

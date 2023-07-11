@@ -9,7 +9,7 @@ import {BottomTabNavigator} from '../Tabs/BottomTabNavigator';
 
 export type RootStackParamList = {
   OobeWelcomeScreen: undefined;
-  MainScreen: undefined;
+  RootContentScreen: undefined;
 };
 
 export const RootStackNavigator = () => {
@@ -19,13 +19,13 @@ export const RootStackNavigator = () => {
 
   let initialRouteName = RootStackComponents.oobeWelcomeScreen;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
-    initialRouteName = RootStackComponents.mainScreen;
+    initialRouteName = RootStackComponents.rootContentScreen;
   }
 
   return (
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{...screenOptions, headerShown: false}}>
       <Stack.Screen name={RootStackComponents.oobeWelcomeScreen} component={OobeWelcomeScreen} />
-      <Stack.Screen name={RootStackComponents.mainScreen} component={BottomTabNavigator} />
+      <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
     </Stack.Navigator>
   );
 };
