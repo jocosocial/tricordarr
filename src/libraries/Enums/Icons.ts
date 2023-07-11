@@ -46,4 +46,9 @@ export enum AppIcons {
   karaoke = 'microphone-variant',
   games = 'dice-5',
   lighter = 'candle',
+  faq = 'frequently-asked-questions',
+  codeofconduct = 'script-text',
+  twitarr = 'fruit-pineapple',
+  tricordarr = 'android',
+  map = 'map-marker',
 }

@@ -47,6 +47,33 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => handleDrawerNav('tricordarr://seamail')}
               />
             </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Documentation'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'Deck Map'}
+                icon={AppIcons.map}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/map`)}
+              />
+              <PaperDrawer.Item
+                label={'JoCo Cruise FAQ'}
+                icon={AppIcons.faq}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/faq`)}
+              />
+              <PaperDrawer.Item
+                label={'Code of Conduct'}
+                icon={AppIcons.codeofconduct}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/codeOfConduct`)}
+              />
+              <PaperDrawer.Item
+                label={'About Twitarr (Service)'}
+                icon={AppIcons.twitarr}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/about`)}
+              />
+              <PaperDrawer.Item
+                label={'About Tricordarr (App)'}
+                icon={AppIcons.tricordarr}
+                onPress={() => handleDrawerNav('tricordarr://about')}
+              />
+            </PaperDrawer.Section>
           </>
         );
       }}>
