@@ -44,4 +44,6 @@ export enum AppIcons {
   settings = 'cog',
   webview = 'web',
   karaoke = 'microphone-variant',
+  games = 'dice-5',
+  lighter = 'candle',
 }

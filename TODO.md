@@ -11,3 +11,5 @@ Work Queue
   * add time zone check
   * Bottom Tabs: Today, Chat, Forums, Calendar, LFG???
   * cant go back from profile in the chat tab
+* Cleanup or deprecate MaterialHeaderButton
+* 

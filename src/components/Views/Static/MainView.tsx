@@ -73,24 +73,6 @@ export const MainView = ({navigation}: Props) => {
           <ListSection>
             <List.Subheader>Other</List.Subheader>
             <MainNavigationListItem
-              title={'Karaoke'}
-              description={'Maps of the ship.'}
-              onPress={() => console.log('karaoke')}
-              icon={AppIcons.webview}
-            />
-            <MainNavigationListItem
-              title={'Games'}
-              description={'Games?'}
-              onPress={() => console.log('games!')}
-              icon={AppIcons.webview}
-            />
-            <MainNavigationListItem
-              title={'Lighter'}
-              description={'Concert.'}
-              onPress={() => console.log('lighter')}
-              icon={AppIcons.webview}
-            />
-            <MainNavigationListItem
               title={'Twitarr Web UI'}
               description={'Built-in Twitarr website access.'}
               onPress={() =>
