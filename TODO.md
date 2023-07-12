@@ -7,3 +7,4 @@ Work Queue
 * Timestamp with connection lost
 * Cleanup or deprecate MaterialHeaderButton
 * Get feedback on the drawer and three-dots menu. keep both? Unify?
+* no back available from profile (unless you've been to chat stack first?)
