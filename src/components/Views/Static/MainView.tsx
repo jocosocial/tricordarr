@@ -16,13 +16,12 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
 export const MainView = ({navigation}: Props) => {
   const bottomNav = useBottomTabNavigator();
-  const {getLeftMainHeaderButtons, getRightMainHeaderButtons} = useDrawer();
+  const {getLeftMainHeaderButtons} = useDrawer();
   //
   // const getRightButtons = useCallback(() => {
   //   return (
@@ -47,9 +46,8 @@ export const MainView = ({navigation}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerLeft: getLeftMainHeaderButtons,
-      headerRight: getRightMainHeaderButtons,
     });
-  }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, navigation]);
+  }, [getLeftMainHeaderButtons, navigation]);
 
   return (
     <AppView>

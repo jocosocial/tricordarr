@@ -5,21 +5,10 @@ import {View} from 'react-native';
 import {commonStyles} from '../../../styles';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {HomeHeaderMenu} from '../../Menus/HomeHeaderMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export const DrawerProvider = ({children}: PropsWithChildren) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-
-  const getRightMainHeaderButtons = useCallback(() => {
-    return (
-      <View style={[commonStyles.flexRow]}>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <HomeHeaderMenu />
-        </HeaderButtons>
-      </View>
-    );
-  }, []);
 
   const getLeftMainHeaderButtons = useCallback(() => {
     return (
@@ -32,7 +21,7 @@ export const DrawerProvider = ({children}: PropsWithChildren) => {
   }, [setDrawerOpen]);
 
   return (
-    <DrawerContext.Provider value={{drawerOpen, setDrawerOpen, getLeftMainHeaderButtons, getRightMainHeaderButtons}}>
+    <DrawerContext.Provider value={{drawerOpen, setDrawerOpen, getLeftMainHeaderButtons}}>
       <AppDrawer>{children}</AppDrawer>
     </DrawerContext.Provider>
   );

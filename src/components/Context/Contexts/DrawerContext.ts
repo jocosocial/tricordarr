@@ -4,7 +4,6 @@ interface DrawerContextType {
   drawerOpen: boolean;
   setDrawerOpen: Dispatch<SetStateAction<boolean>>;
   getLeftMainHeaderButtons: () => ReactNode;
-  getRightMainHeaderButtons: () => ReactNode;
 }
 
 export const DrawerContext = createContext(<DrawerContextType>{});

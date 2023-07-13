@@ -6,10 +6,12 @@ import {PropsWithChildren} from 'react';
 import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
+import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const theme = useAppTheme();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -29,7 +31,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Your Profile'}
                 icon={AppIcons.user}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab`)}
+                onPress={() => handleDrawerNav('tricordarr://twitarrtab')}
               />
               <PaperDrawer.Item
                 label={'Directory'}
@@ -102,6 +104,32 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.tricordarr}
                 onPress={() => handleDrawerNav('tricordarr://about')}
               />
+            </PaperDrawer.Section>
+            <PaperDrawer.Section title={'Advanced'} showDivider={false}>
+              <PaperDrawer.Item
+                label={'App Settings'}
+                icon={AppIcons.settings}
+                onPress={() => handleDrawerNav('tricordarr://settingstab')}
+              />
+              <PaperDrawer.Item
+                label={'Twitarr Web UI'}
+                icon={AppIcons.webview}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}`)}
+              />
+              {hasTwitarrTeam && (
+                <PaperDrawer.Item
+                  label={'Moderator Actions'}
+                  icon={AppIcons.moderator}
+                  onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
+                />
+              )}
+              {hasTwitarrTeam && (
+                <PaperDrawer.Item
+                  label={'Server Admin'}
+                  icon={AppIcons.twitarteam}
+                  onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/admin`)}
+                />
+              )}
             </PaperDrawer.Section>
           </ScrollView>
         );
