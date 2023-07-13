@@ -25,7 +25,6 @@ export type SeamailStackParamList = {
   };
   UserProfileScreen: {
     userID: string;
-    username: string;
   };
   SeamailCreateScreen?: {
     initialUserHeader?: UserHeader;
@@ -74,7 +73,7 @@ export const SeamailStack = () => {
       <Stack.Screen
         name={SeamailStackScreenComponents.userProfileScreen}
         component={UserProfileScreen}
-        options={({route}) => ({title: route.params.username})}
+        options={{title: 'User Profile'}}
       />
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailCreateScreen}

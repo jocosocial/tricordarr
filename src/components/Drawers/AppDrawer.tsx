@@ -7,11 +7,13 @@ import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const theme = useAppTheme();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {profilePublicData} = useUserData();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -27,11 +29,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       renderDrawerContent={() => {
         return (
           <ScrollView>
-            <PaperDrawer.Section title={'Users'} showDivider={false}>
+            <PaperDrawer.Section title={'User'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Your Profile'}
                 icon={AppIcons.user}
-                onPress={() => handleDrawerNav('tricordarr://twitarrtab')}
+                onPress={() => handleDrawerNav(`tricordarr://user/${profilePublicData?.header.userID}`)}
               />
               <PaperDrawer.Item
                 label={'Directory'}
@@ -116,7 +118,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.webview}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}`)}
               />
-              {hasTwitarrTeam && (
+              {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}

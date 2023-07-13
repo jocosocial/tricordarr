@@ -31,7 +31,7 @@ export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantList
     fez.fezType !== FezType.open ||
     fez.owner.userID === user.userID ||
     (fez.members && fez.members.participants.length <= 2) ||
-    profilePublicData.header.userID !== fez.owner.userID
+    profilePublicData?.header.userID !== fez.owner.userID
   ) {
     enableDelete = false;
   }
@@ -45,7 +45,6 @@ export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantList
   const onPress = () => {
     navigation.push(SeamailStackScreenComponents.userProfileScreen, {
       userID: user.userID,
-      username: user.username,
     });
   };
 
