@@ -8,7 +8,6 @@ import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {useNavigation} from '@react-navigation/native';
 import {SeamailCreateScreen} from '../../Screens/Seamail/SeamailCreateScreen';
 import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
-import {getSeamailHeaderTitle} from '../Components/SeamailHeaderTitle';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {SeamailAddParticipantScreen} from '../../Screens/Seamail/SeamailAddParticipantScreen';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -44,7 +43,7 @@ export type SeamailStackParamList = {
 export const SeamailStack = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<SeamailStackParamList>();
-  const {getLeftMainHeaderButtons, getRightMainHeaderButtons} = useDrawer();
+  const {getLeftMainHeaderButtons} = useDrawer();
 
   return (
     <Stack.Navigator initialRouteName={SeamailStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
@@ -53,7 +52,6 @@ export const SeamailStack = () => {
         component={SeamailListScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
-          headerRight: getRightMainHeaderButtons,
           title: 'Seamail',
         }}
       />
