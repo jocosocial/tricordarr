@@ -9,7 +9,7 @@ Quick Start
 nvm install lts/gallium
 nvm use lts/fermium (v16.19.1)
 
-npm install
+npm install # or npm clean-install
 
 npx react-native start
 
@@ -18,12 +18,15 @@ npx uri-scheme open tricordarr:// --android
 
 Notes
 -----
-* Uninstall terminates FGS. Yeah it does.
 * Icon library: https://pictogrammers.com/library/mdi/
-* navigation.setOptions must be called witin a useEffect else you get
-  an error that youre trying to update a parent component during another component.
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * refetchPage can be passed to refetch to limit refetching
+
+Upgrading
+---------
+The React Native upgrade process is miserable. Don't do it. Or if you do, at least
+do it on a clean dedicated branch. `npm install` doesn't honor `package-lock.json`,
+you need `npm clean-install` for that.
 
 
 Releasing
