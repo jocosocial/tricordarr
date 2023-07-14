@@ -51,4 +51,5 @@ export enum MainStackComponents {
 export enum RootStackComponents {
   oobeWelcomeScreen = 'OobeWelcomeScreen',
   rootContentScreen = 'RootContentScreen',
+  lighterScreen = 'LighterScreen',
 }

@@ -7,6 +7,7 @@ import {MainView} from '../../Views/Static/MainView';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
+import {LighterScreen} from '../../Screens/Main/LighterScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;

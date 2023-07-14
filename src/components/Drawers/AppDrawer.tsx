@@ -67,7 +67,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Lighter'}
                 icon={AppIcons.lighter}
-                onPress={() => handleDrawerNav('tricordarr://')}
+                onPress={() => handleDrawerNav('tricordarr://lighter')}
               />
               <PaperDrawer.Item
                 label={'Seamail'}
