@@ -69,11 +69,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.lighter}
                 onPress={() => handleDrawerNav('tricordarr://lighter')}
               />
-              <PaperDrawer.Item
-                label={'Seamail'}
-                icon={AppIcons.seamail}
-                onPress={() => handleDrawerNav('tricordarr://seamail')}
-              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>
               <PaperDrawer.Item

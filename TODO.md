@@ -13,3 +13,5 @@ Work Queue
 * Replace nav bar buttons with the new header buttons
 * user profile edits
 * username changes
+* Alt account management?
+* Who cares what wifi you're on
