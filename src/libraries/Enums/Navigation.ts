@@ -29,6 +29,8 @@ export enum SettingsStackScreenComponents {
   socketSettings = 'SocketSettingsScreen',
   pushNotificationSettings = 'PushNotificationSettingsScreen',
   oobeSettings = 'OobeSettingsScreen',
+  changePassword = 'ChangePasswordScreen',
+  changeUsername = 'ChangeUsernameScreen',
 }
 
 export enum SeamailStackScreenComponents {

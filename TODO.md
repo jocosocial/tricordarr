@@ -6,6 +6,7 @@ Backlog
   * Server health check
   * CoC
   * Register
+* Who cares what wifi youre on? Probably only on one anyway. remove the ship wifi field
 
 Work Queue
 * Test websocket failure
@@ -14,4 +15,4 @@ Work Queue
 * user profile edits
 * username changes
 * Alt account management?
-* Who cares what wifi you're on
+* Figure out how to go back to an arbitrary screen
