@@ -10,7 +10,6 @@ Backlog
 
 Work Queue
 * Test websocket failure
-* Timestamp with connection lost
 * Replace nav bar buttons with the new header buttons
 * user profile edits
 * username changes
