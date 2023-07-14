@@ -12,7 +12,6 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {AppImage} from '../../Images/AppImage';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
@@ -23,6 +22,8 @@ import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
 import {AppIcon} from '../../Images/AppIcon';
 import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -66,30 +67,25 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
     if (data?.header.userID === profilePublicData?.header.userID) {
       // Maybe have an edit button?
       return (
-        <View style={[commonStyles.flexRow]}>
-          <NavBarIconButton icon={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+        <View>
+          <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+          </HeaderButtons>
         </View>
       );
     }
     return (
-      <View style={[commonStyles.flexRow]}>
-        {data && <NavBarIconButton icon={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
-        {data && <NavBarIconButton icon={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
-        {data && (
-          <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
-        )}
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          {data && <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
+          {data && <Item title={'Create KrakenTalk'} iconName={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
+          {data && (
+            <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
+          )}
+        </HeaderButtons>
       </View>
     );
-  }, [
-    commonStyles.flexRow,
-    data,
-    isBlocked,
-    isFavorite,
-    isMuted,
-    krakentalkCreateHandler,
-    profilePublicData,
-    seamailCreateHandler,
-  ]);
+  }, [data, isBlocked, isFavorite, isMuted, krakentalkCreateHandler, profilePublicData, seamailCreateHandler]);
 
   useEffect(() => {
     navigation.setOptions({

@@ -5,7 +5,7 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
-import {RefreshControl, TouchableOpacity} from 'react-native';
+import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {TitleTag} from '../../Text/TitleTag';
 import {ListSection} from '../../Lists/ListSection';
@@ -15,7 +15,6 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
@@ -26,6 +25,8 @@ import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -77,13 +78,18 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
 
   const getHeaderRight = useCallback(
     () => (
-      <NavBarIconButton
-        icon={AppIcons.help}
-        onPress={() => {
-          setModalContent(<HelpModalView text={helpContent} />);
-          setModalVisible(true);
-        }}
-      />
+      <View>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              setModalContent(<HelpModalView text={helpContent} />);
+              setModalVisible(true);
+            }}
+          />
+        </HeaderButtons>
+      </View>
     ),
     [setModalContent, setModalVisible],
   );

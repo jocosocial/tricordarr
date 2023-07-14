@@ -10,7 +10,6 @@ Backlog
 
 Work Queue
 * Test websocket failure
-* Replace nav bar buttons with the new header buttons
 * user profile edits
 * username changes
 * Alt account management?

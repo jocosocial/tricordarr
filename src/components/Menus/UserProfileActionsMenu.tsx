@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
@@ -13,6 +12,7 @@ import {useUserBlockMutation} from '../Queries/Users/UserBlockQueries';
 import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {Item} from 'react-navigation-header-buttons';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -71,7 +71,10 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
+    <Menu
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item
         leadingIcon={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
         title={isFavorite ? 'Unfavorite' : 'Favorite'}

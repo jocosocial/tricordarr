@@ -5,11 +5,12 @@ import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from './AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, NavigatorIDs} from '../../libraries/Enums/Navigation';
-import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 import {MainStackParamList} from '../Navigation/Stacks/MainStack';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.siteUIScreen, NavigatorIDs.mainStack>;
 
@@ -47,15 +48,18 @@ export const TwitarrView = ({route, navigation}: Props) => {
 
   const getNavBarIcons = useCallback(
     () => (
-      <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton
-          icon={AppIcons.home}
-          onPress={async () => {
-            setUrl(appConfig.serverUrl);
-            setKey(String(Date.now()));
-          }}
-        />
-        <NavBarIconButton icon={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Home'}
+            iconName={AppIcons.home}
+            onPress={async () => {
+              setUrl(appConfig.serverUrl);
+              setKey(String(Date.now()));
+            }}
+          />
+          <Item title={'Reload'} iconName={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />
+        </HeaderButtons>
       </View>
     ),
     [commonStyles],

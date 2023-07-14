@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {NavBarIconButton} from '../Buttons/IconButtons/NavBarIconButton';
 import {SeamailStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
@@ -9,6 +8,7 @@ import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {Item} from 'react-navigation-header-buttons';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -23,14 +23,7 @@ export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const navigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
-  const {
-    hasModerator,
-    hasTwitarrTeam,
-    setAsModerator,
-    setAsTwitarrTeam,
-    asModerator,
-    asTwitarrTeam,
-  } = usePrivilege();
+  const {hasModerator, hasTwitarrTeam, setAsModerator, setAsTwitarrTeam, asModerator, asTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
 
   const openMenu = () => setVisible(true);
@@ -60,7 +53,10 @@ export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={<NavBarIconButton icon={AppIcons.menu} onPress={openMenu} />}>
+    <Menu
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />
       {(hasModerator || hasTwitarrTeam) && (
         <>
