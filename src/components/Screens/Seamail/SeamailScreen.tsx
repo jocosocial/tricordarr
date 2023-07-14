@@ -8,7 +8,6 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
-import {NavBarIconButton} from '../../Buttons/IconButtons/NavBarIconButton';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -30,6 +29,9 @@ import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {UserNotificationDataActions} from '../../Reducers/Notification/UserNotificationDataReducer';
+import {commonStyles} from '../../../styles';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -74,12 +76,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       return <></>;
     }
     return (
-      <View style={[commonStyles.flexRow]}>
-        <NavBarIconButton icon={AppIcons.reload} onPress={onRefresh} />
-        <SeamailActionsMenu fez={fez} />
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
+          <SeamailActionsMenu fez={fez} />
+        </HeaderButtons>
       </View>
     );
-  }, [commonStyles, fez, onRefresh]);
+  }, [fez, onRefresh]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
