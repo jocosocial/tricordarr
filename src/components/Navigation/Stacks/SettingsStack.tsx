@@ -14,6 +14,8 @@ import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSID
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
+import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
+import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -29,6 +31,8 @@ export type SettingsStackParamList = {
   SocketSettingsScreen: undefined;
   PushNotificationSettingsScreen: undefined;
   OobeSettingsScreen: undefined;
+  ChangePasswordScreen: undefined;
+  ChangeUsernameScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -88,6 +92,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.oobeSettings}
         component={OobeSettingsScreen}
         options={{title: 'OOBE'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.changeUsername}
+        component={ChangeUsernameScreen}
+        options={{title: 'Change Username'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.changePassword}
+        component={ChangePasswordScreen}
+        options={{title: 'Change Password'}}
       />
     </Stack.Navigator>
   );

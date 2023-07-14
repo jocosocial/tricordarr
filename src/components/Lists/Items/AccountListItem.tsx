@@ -5,6 +5,9 @@ import {useSettingsStack} from '../../Navigation/Stacks/SettingsStack';
 import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 
+/**
+ * Used in the Settings list for the users current account.
+ */
 export const AccountListItem = () => {
   const [title, setTitle] = useState('');
   const navigation = useSettingsStack();

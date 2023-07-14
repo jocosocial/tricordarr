@@ -8,6 +8,9 @@ interface DataFieldListItemProps {
   onPress?: () => void;
 }
 
+/**
+ * Item for user profile content.
+ */
 export const DataFieldListItem = ({title, description, onPress}: DataFieldListItemProps) => {
   const styles = {
     title: {
