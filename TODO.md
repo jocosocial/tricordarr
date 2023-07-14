@@ -14,3 +14,5 @@ Work Queue
 * username changes
 * Alt account management?
 * Figure out how to go back to an arbitrary screen
+* rename logoutscreen to accountscreen
+* 
