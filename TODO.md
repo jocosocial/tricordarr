@@ -15,4 +15,4 @@ Work Queue
 * Alt account management?
 * Figure out how to go back to an arbitrary screen
 * rename logoutscreen to accountscreen
-* 
+* developer settings in a seperate area, tap and hold settings to enable? 

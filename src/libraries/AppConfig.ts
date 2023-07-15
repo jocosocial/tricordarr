@@ -20,6 +20,7 @@ export interface AppConfig {
   fgsWorkerHealthTimer: number;
   oobeExpectedVersion: number;
   oobeCompletedVersion: number;
+  enableDeveloperOptions: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -44,6 +45,7 @@ const defaultAppConfig: AppConfig = {
   fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
   oobeCompletedVersion: 0,
   oobeExpectedVersion: 0,
+  enableDeveloperOptions: false,
 };
 
 /**

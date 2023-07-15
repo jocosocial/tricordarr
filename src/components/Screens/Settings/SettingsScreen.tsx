@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
 import {SettingsNavigationListItem} from '../../Lists/Items/SettingsNavigationListItem';
@@ -7,8 +7,10 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {ListSection} from '../../Lists/ListSection';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
-export const SettingsView = () => {
+export const SettingsScreen = () => {
+  const {appConfig} = useConfig();
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -50,35 +52,44 @@ export const SettingsView = () => {
           <ListSection>
             <List.Subheader>Developers</List.Subheader>
             <SettingsNavigationListItem
-              title={'Network Info'}
-              description={"View details about your device's current network environment."}
-              navComponent={SettingsStackScreenComponents.networkInfoSettings}
+              title={'Developer Options'}
+              description={'Enable developer options within this app.'}
+              navComponent={SettingsStackScreenComponents.configDeveloperOptionsScreen}
             />
-            <SettingsNavigationListItem
-              title={'Notifications'}
-              description={'Generate a test notification for debugging.'}
-              navComponent={SettingsStackScreenComponents.testNotification}
-            />
-            <SettingsNavigationListItem
-              title={'Errors'}
-              description={'Generate test error messages.'}
-              navComponent={SettingsStackScreenComponents.testError}
-            />
-            <SettingsNavigationListItem
-              title={'Notifications'}
-              description={'Generate a test notification for debugging.'}
-              navComponent={SettingsStackScreenComponents.testNotification}
-            />
-            <SettingsNavigationListItem
-              title={'Sockets'}
-              description={'Manage websocket internals.'}
-              navComponent={SettingsStackScreenComponents.socketSettings}
-            />
-            <SettingsNavigationListItem
-              title={'Out-of-box Experience'}
-              description={'Internal OOBE information.'}
-              navComponent={SettingsStackScreenComponents.oobeSettings}
-            />
+            {appConfig.enableDeveloperOptions && (
+              <>
+                <SettingsNavigationListItem
+                  title={'Network Info'}
+                  description={"View details about your device's current network environment."}
+                  navComponent={SettingsStackScreenComponents.networkInfoSettings}
+                />
+                <SettingsNavigationListItem
+                  title={'Notifications'}
+                  description={'Generate a test notification for debugging.'}
+                  navComponent={SettingsStackScreenComponents.testNotification}
+                />
+                <SettingsNavigationListItem
+                  title={'Errors'}
+                  description={'Generate test error messages.'}
+                  navComponent={SettingsStackScreenComponents.testError}
+                />
+                <SettingsNavigationListItem
+                  title={'Notifications'}
+                  description={'Generate a test notification for debugging.'}
+                  navComponent={SettingsStackScreenComponents.testNotification}
+                />
+                <SettingsNavigationListItem
+                  title={'Sockets'}
+                  description={'Manage websocket internals.'}
+                  navComponent={SettingsStackScreenComponents.socketSettings}
+                />
+                <SettingsNavigationListItem
+                  title={'Out-of-box Experience'}
+                  description={'Internal OOBE information.'}
+                  navComponent={SettingsStackScreenComponents.oobeSettings}
+                />
+              </>
+            )}
           </ListSection>
         </View>
       </ScrollingContentView>
