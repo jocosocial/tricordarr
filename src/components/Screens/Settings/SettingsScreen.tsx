@@ -70,7 +70,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <List.Subheader>Content</List.Subheader>
             <SettingsNavigationListItem
               title={'Alert Keywords'}
-              description={'Manage keywords that will generate an alert.'}
+              description={'Manage keywords that will generate a notification.'}
               navComponent={SettingsStackScreenComponents.alertKeywords}
             />
           </ListSection>
