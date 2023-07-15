@@ -7,6 +7,7 @@ Backlog
   * CoC
   * Register
 * Who cares what wifi youre on? Probably only on one anyway. remove the ship wifi field
+* Simplify the AccountListItem and downstream views/routes/etc.
 
 Work Queue
 * Test websocket failure
@@ -14,4 +15,3 @@ Work Queue
 * username changes
 * Alt account management?
 * Figure out how to go back to an arbitrary screen
-* rename logoutscreen to accountscreen

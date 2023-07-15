@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {LoginScreen} from './LoginScreen';
-import {LogoutScreen} from './LogoutScreen';
+import {AccountManagementScreen} from './AccountManagementScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
@@ -12,7 +12,12 @@ type Props = NativeStackScreenProps<
   NavigatorIDs.settingsStack
 >;
 
-export const AccountSettings = ({route, navigation}: Props) => {
+/**
+ * Base screen for managing the user account. This returns a different view based on whether
+ * the user is logged in or not. The useEffect with title setting is to rapidly set the header
+ * title based on the conditions given by the navigation.
+ */
+export const AccountSettingsScreen = ({route, navigation}: Props) => {
   const {tokenData} = useAuth();
 
   useEffect(() => {
@@ -20,7 +25,7 @@ export const AccountSettings = ({route, navigation}: Props) => {
   }, [navigation, route.params.title]);
 
   if (tokenData) {
-    return <LogoutScreen />;
+    return <AccountManagementScreen />;
   }
   return <LoginScreen />;
 };
