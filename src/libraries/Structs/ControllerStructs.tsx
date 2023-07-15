@@ -298,3 +298,8 @@ export interface ReportData {
   /// An optional message from the submitting user.
   message: String;
 }
+
+export interface KeywordData {
+  /// The keywords.
+  keywords: string[];
+}

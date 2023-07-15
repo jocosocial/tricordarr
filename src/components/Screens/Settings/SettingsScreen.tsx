@@ -66,6 +66,15 @@ export const SettingsScreen = ({navigation}: Props) => {
             />
           </ListSection>
           <Divider bold={true} />
+          <ListSection>
+            <List.Subheader>Content</List.Subheader>
+            <SettingsNavigationListItem
+              title={'Alert Keywords'}
+              description={'Manage keywords that will generate an alert.'}
+              navComponent={SettingsStackScreenComponents.alertKeywords}
+            />
+          </ListSection>
+          <Divider bold={true} />
           {appConfig.enableDeveloperOptions && (
             <ListSection>
               <List.Subheader>Developers</List.Subheader>
