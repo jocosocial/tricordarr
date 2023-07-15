@@ -11,20 +11,20 @@ import {KeywordForm} from '../../../Forms/KeywordForm';
 import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 
-export const AlertKeywordsSettingsScreen = () => {
+export const MuteKeywordsSettingsScreen = () => {
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
 
   const {data, refetch} = useUserKeywordQuery({
-    keywordType: 'alertwords',
+    keywordType: 'mutewords',
   });
   const keywordMutation = useUserKeywordMutation();
 
   const handleChipPress = (keyword: string) => {
     keywordMutation.mutate(
       {
-        keywordType: 'alertwords',
+        keywordType: 'mutewords',
         keyword: keyword,
         action: 'remove',
       },
@@ -37,7 +37,7 @@ export const AlertKeywordsSettingsScreen = () => {
   const handleNewWord = (values: KeywordFormValues, helpers: FormikHelpers<KeywordFormValues>) => {
     keywordMutation.mutate(
       {
-        keywordType: 'alertwords',
+        keywordType: 'mutewords',
         keyword: values.keyword,
         action: 'add',
       },
@@ -65,7 +65,7 @@ export const AlertKeywordsSettingsScreen = () => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
-          <Text>Generate an alert/notification whenever new content is made containing these keywords.</Text>
+          <Text>Hide any content that contains these keywords.</Text>
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Current Words:</Text>

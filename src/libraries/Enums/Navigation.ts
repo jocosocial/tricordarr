@@ -32,6 +32,7 @@ export enum SettingsStackScreenComponents {
   changePassword = 'ChangePasswordScreen',
   changeUsername = 'ChangeUsernameScreen',
   alertKeywords = 'AlertKeywordsSettingsScreen',
+  muteKeywords = 'MuteKeywordsSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {

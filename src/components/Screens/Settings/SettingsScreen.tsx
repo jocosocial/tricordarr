@@ -73,6 +73,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Manage keywords that will generate a notification.'}
               navComponent={SettingsStackScreenComponents.alertKeywords}
             />
+            <SettingsNavigationListItem
+              title={'Mute Keywords'}
+              description={'Manage keywords that will mute content.'}
+              navComponent={SettingsStackScreenComponents.muteKeywords}
+            />
           </ListSection>
           <Divider bold={true} />
           {appConfig.enableDeveloperOptions && (

@@ -17,6 +17,7 @@ import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
 import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
 import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertKeywordsSettingsScreen';
+import {MuteKeywordsSettingsScreen} from '../../Screens/Settings/Content/MuteKeywordsSettingsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -35,6 +36,7 @@ export type SettingsStackParamList = {
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
   AlertKeywordsSettingsScreen: undefined;
+  MuteKeywordsSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -109,6 +111,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.alertKeywords}
         component={AlertKeywordsSettingsScreen}
         options={{title: 'Alert Keywords'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.muteKeywords}
+        component={MuteKeywordsSettingsScreen}
+        options={{title: 'Mute Keywords'}}
       />
     </Stack.Navigator>
   );

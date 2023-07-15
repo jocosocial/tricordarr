@@ -11,6 +11,8 @@ export const useUserProfileQuery = () => {
   });
 };
 
+// The Keyword queries are a good example of the most recent pattern of designing queries and mutations.
+
 interface KeywordQueryProps {
   keywordType: KeywordType;
 }
