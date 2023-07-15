@@ -53,4 +53,5 @@ export enum AppIcons {
   map = 'map-marker',
   alertword = 'alert-box-outline',
   time = 'clock-check',
+  logout = 'logout',
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
-import {AccountSettings} from '../../Screens/Settings/Account/AccountSettings';
+import {AccountSettingsScreen} from '../../Screens/Settings/Account/AccountSettingsScreen';
 import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
 import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
@@ -52,7 +52,7 @@ export const SettingsStack = () => {
         options={{title: 'Settings'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
-      <Stack.Screen name={SettingsStackScreenComponents.accountSettings} component={AccountSettings} />
+      <Stack.Screen name={SettingsStackScreenComponents.accountSettings} component={AccountSettingsScreen} />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
         component={ServerConnectionSettings}
