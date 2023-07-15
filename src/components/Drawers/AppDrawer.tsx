@@ -46,13 +46,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/blocks`)}
               />
             </PaperDrawer.Section>
-            <PaperDrawer.Section title={'Communication'} showDivider={false}>
-              <PaperDrawer.Item
-                label={'Alert/Mute Keywords'}
-                icon={AppIcons.alertword}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/alertwords`)}
-              />
-            </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Karaoke'}
