@@ -31,6 +31,7 @@ export enum SettingsStackScreenComponents {
   oobeSettings = 'OobeSettingsScreen',
   changePassword = 'ChangePasswordScreen',
   changeUsername = 'ChangeUsernameScreen',
+  configDeveloperOptionsScreen = 'ConfigDeveloperOptionsScreen',
 }
 
 export enum SeamailStackScreenComponents {

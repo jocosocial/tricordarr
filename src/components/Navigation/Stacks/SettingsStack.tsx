@@ -3,7 +3,7 @@ import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navi
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
 import {AccountSettings} from '../../Screens/Settings/Account/AccountSettings';
 import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
-import {SettingsView} from '../../Screens/Settings/Settings';
+import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
@@ -16,6 +16,7 @@ import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notificatio
 import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
 import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
+import {ConfigDeveloperOptionsScreen} from '../../Screens/Settings/Config/ConfigDeveloperOptionsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -33,6 +34,7 @@ export type SettingsStackParamList = {
   OobeSettingsScreen: undefined;
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
+  ConfigDeveloperOptionsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -48,7 +50,7 @@ export const SettingsStack = () => {
       screenOptions={screenOptions}>
       <Stack.Screen
         name={SettingsStackScreenComponents.settings}
-        component={SettingsView}
+        component={SettingsScreen}
         options={{title: 'Settings'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
@@ -102,6 +104,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.changePassword}
         component={ChangePasswordScreen}
         options={{title: 'Change Password'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.configDeveloperOptionsScreen}
+        component={ConfigDeveloperOptionsScreen}
+        options={{title: 'Developer Options'}}
       />
     </Stack.Navigator>
   );
