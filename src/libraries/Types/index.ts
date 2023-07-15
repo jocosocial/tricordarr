@@ -10,3 +10,7 @@ export type WebSocketOptions = {
   headers: {[headerName: string]: string};
   [optionName: string]: any;
 } | null;
+
+export type KeywordAction = 'add' | 'remove';
+
+export type KeywordType = 'alertwords' | 'mutewords';

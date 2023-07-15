@@ -16,6 +16,7 @@ import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notificatio
 import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
 import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
+import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertKeywordsSettingsScreen';
 
 export type SettingsStackParamList = {
   AccountSettingsScreen: {
@@ -33,6 +34,7 @@ export type SettingsStackParamList = {
   OobeSettingsScreen: undefined;
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
+  AlertKeywordsSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -102,6 +104,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.changePassword}
         component={ChangePasswordScreen}
         options={{title: 'Change Password'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.alertKeywords}
+        component={AlertKeywordsSettingsScreen}
+        options={{title: 'Alert Keywords'}}
       />
     </Stack.Navigator>
   );

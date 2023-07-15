@@ -5,7 +5,6 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
@@ -20,7 +19,6 @@ interface FezPostFormProps {
 // https://formik.org/docs/guides/react-native
 export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
 
   const initialValues: PostContentData = {
