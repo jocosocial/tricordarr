@@ -6,8 +6,11 @@ import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton} from 'react-native-paper';
+import {IconButton, List} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
+import {ListSection} from '../Lists/ListSection';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -20,6 +23,7 @@ interface FezPostFormProps {
 export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
+  const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
 
   const initialValues: PostContentData = {
     images: [],
@@ -43,23 +47,26 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
   return (
     <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-        <View style={styles.formView}>
-          <IconButton icon={AppIcons.insert} onPress={() => console.log('insert')} />
-          <View style={styles.inputWrapperView}>
-            <TextInput
-              underlineColorAndroid={'transparent'}
-              style={styles.input}
-              multiline={true}
-              onChangeText={handleChange('text')}
-              onBlur={handleBlur('text')}
-              value={values.text}
+        <View>
+          <View style={styles.formView}>
+            <IconButton icon={AppIcons.insert} onPress={() => setInsertMenuVisible(!insertMenuVisible)} />
+            <View style={styles.inputWrapperView}>
+              <TextInput
+                underlineColorAndroid={'transparent'}
+                style={styles.input}
+                multiline={true}
+                onChangeText={handleChange('text')}
+                onBlur={handleBlur('text')}
+                value={values.text}
+              />
+            </View>
+            <SubmitIconButton
+              disabled={!values.text}
+              submitting={overrideSubmitting || isSubmitting}
+              onPress={onPress || handleSubmit}
             />
           </View>
-          <SubmitIconButton
-            disabled={!values.text}
-            submitting={overrideSubmitting || isSubmitting}
-            onPress={onPress || handleSubmit}
-          />
+          <ContentInsertMenuView visible={insertMenuVisible} setVisible={setInsertMenuVisible} />
         </View>
       )}
     </Formik>
