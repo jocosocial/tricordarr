@@ -16,3 +16,7 @@ export interface ChangePasswordFormValues {
   newPassword: string;
   newPasswordVerify: string;
 }
+
+export interface ChangeUsernameFormValues {
+  username: string;
+}

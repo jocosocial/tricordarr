@@ -3,6 +3,7 @@ import {
   KeywordData,
   ProfilePublicData,
   UserPasswordData,
+  UserUsernameData,
 } from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 import axios, {AxiosError, AxiosResponse} from 'axios';
@@ -62,6 +63,32 @@ const userPasswordHandler = async ({userPasswordData}: UserPasswordMutationProps
 export const useUserPasswordMutation = (options = {}) => {
   const {setErrorMessage} = useErrorHandler();
   return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserPasswordMutationProps>(userPasswordHandler, {
+    onError: error => {
+      setErrorMessage(error.response?.data.reason || error.message);
+    },
+    ...options,
+  });
+};
+
+interface UserUsernameMutationProps {
+  userUsernameData: UserUsernameData;
+  userID?: string;
+}
+
+const userUsernameHandler = async ({
+  userUsernameData,
+  userID,
+}: UserUsernameMutationProps): Promise<AxiosResponse<void>> => {
+  let url = '/user/username';
+  if (userID) {
+    url = `/user/${userID}/username`;
+  }
+  return await axios.post(url, userUsernameData);
+};
+
+export const useUserUsernameMutation = (options = {}) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserUsernameMutationProps>(userUsernameHandler, {
     onError: error => {
       setErrorMessage(error.response?.data.reason || error.message);
     },

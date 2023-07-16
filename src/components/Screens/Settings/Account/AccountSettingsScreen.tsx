@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {LoginScreen} from './LoginScreen';
 import {AccountManagementScreen} from './AccountManagementScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,10 +19,6 @@ type Props = NativeStackScreenProps<
  */
 export const AccountSettingsScreen = ({route, navigation}: Props) => {
   const {tokenData} = useAuth();
-
-  useEffect(() => {
-    navigation.setOptions({title: route.params.title});
-  }, [navigation, route.params.title]);
 
   if (tokenData) {
     return <AccountManagementScreen />;

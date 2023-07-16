@@ -20,9 +20,7 @@ import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertK
 import {MuteKeywordsSettingsScreen} from '../../Screens/Settings/Content/MuteKeywordsSettingsScreen';
 
 export type SettingsStackParamList = {
-  AccountSettingsScreen: {
-    title: string;
-  };
+  AccountSettingsScreen: undefined;
   SettingsScreen: undefined;
   NetworkInfoSettingsScreen: undefined;
   ServerConnectionSettingsScreen: undefined;
@@ -56,7 +54,11 @@ export const SettingsStack = () => {
         options={{title: 'Settings'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
-      <Stack.Screen name={SettingsStackScreenComponents.accountSettings} component={AccountSettingsScreen} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.accountSettings}
+        component={AccountSettingsScreen}
+        options={{title: 'Account'}}
+      />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
         component={ServerConnectionSettings}

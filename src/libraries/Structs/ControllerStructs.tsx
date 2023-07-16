@@ -340,3 +340,8 @@ export interface UserPasswordData {
   /// The user's desired new password.
   newPassword: string;
 }
+
+export interface UserUsernameData {
+  /// The user's desired new username.
+  username: string;
+}
