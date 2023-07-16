@@ -79,41 +79,43 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.muteKeywords}
             />
           </ListSection>
-          <Divider bold={true} />
           {appConfig.enableDeveloperOptions && (
-            <ListSection>
-              <List.Subheader>Developers</List.Subheader>
-              <SettingsNavigationListItem
-                title={'Network Info'}
-                description={"View details about your device's current network environment."}
-                navComponent={SettingsStackScreenComponents.networkInfoSettings}
-              />
-              <SettingsNavigationListItem
-                title={'Notifications'}
-                description={'Generate a test notification for debugging.'}
-                navComponent={SettingsStackScreenComponents.testNotification}
-              />
-              <SettingsNavigationListItem
-                title={'Errors'}
-                description={'Generate test error messages.'}
-                navComponent={SettingsStackScreenComponents.testError}
-              />
-              <SettingsNavigationListItem
-                title={'Notifications'}
-                description={'Generate a test notification for debugging.'}
-                navComponent={SettingsStackScreenComponents.testNotification}
-              />
-              <SettingsNavigationListItem
-                title={'Sockets'}
-                description={'Manage websocket internals.'}
-                navComponent={SettingsStackScreenComponents.socketSettings}
-              />
-              <SettingsNavigationListItem
-                title={'Out-of-box Experience'}
-                description={'Internal OOBE information.'}
-                navComponent={SettingsStackScreenComponents.oobeSettings}
-              />
-            </ListSection>
+            <>
+              <Divider bold={true} />
+              <ListSection>
+                <List.Subheader>Developers</List.Subheader>
+                <SettingsNavigationListItem
+                  title={'Network Info'}
+                  description={"View details about your device's current network environment."}
+                  navComponent={SettingsStackScreenComponents.networkInfoSettings}
+                />
+                <SettingsNavigationListItem
+                  title={'Notifications'}
+                  description={'Generate a test notification for debugging.'}
+                  navComponent={SettingsStackScreenComponents.testNotification}
+                />
+                <SettingsNavigationListItem
+                  title={'Errors'}
+                  description={'Generate test error messages.'}
+                  navComponent={SettingsStackScreenComponents.testError}
+                />
+                <SettingsNavigationListItem
+                  title={'Notifications'}
+                  description={'Generate a test notification for debugging.'}
+                  navComponent={SettingsStackScreenComponents.testNotification}
+                />
+                <SettingsNavigationListItem
+                  title={'Sockets'}
+                  description={'Manage websocket internals.'}
+                  navComponent={SettingsStackScreenComponents.socketSettings}
+                />
+                <SettingsNavigationListItem
+                  title={'Out-of-box Experience'}
+                  description={'Internal OOBE information.'}
+                  navComponent={SettingsStackScreenComponents.oobeSettings}
+                />
+              </ListSection>
+            </>
           )}
         </View>
       </ScrollingContentView>

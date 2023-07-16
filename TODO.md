@@ -8,7 +8,6 @@ Work Queue
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
 * Shared web socket state on socket internals page
-* Divider with no settings is showing.
 * Change username
 * Change password
 * Confirmation modal for logoutsMove background connection to developer
