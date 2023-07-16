@@ -41,11 +41,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
             <SettingsNavigationListItem
-              title={'Background Connection'}
-              description={'Manage the worker that maintains a connection to the server.'}
-              navComponent={SettingsStackScreenComponents.serverConnectionSettings}
-            />
-            <SettingsNavigationListItem
               title={'WiFi Network'}
               description={'Configure the known SSID of the ship WiFi. This influences notification checking behavior.'}
               navComponent={SettingsStackScreenComponents.configShipSSID}
@@ -98,6 +93,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Errors'}
                   description={'Generate test error messages.'}
                   navComponent={SettingsStackScreenComponents.testError}
+                />
+                <SettingsNavigationListItem
+                  title={'Background Connection'}
+                  description={'Manage the worker that maintains a connection to the server.'}
+                  navComponent={SettingsStackScreenComponents.serverConnectionSettings}
                 />
                 <SettingsNavigationListItem
                   title={'Notifications'}

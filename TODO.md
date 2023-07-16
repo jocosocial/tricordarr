@@ -7,11 +7,9 @@ Work Queue
 * timezone warnings
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
-* Shared web socket state on socket internals page
 * Change username
 * Change password
 * Confirmation modal for logouts
-* Move background connection to developer
 * Webview home button takes you to root of that sessions history not home home
 * Blocked and muted users
 * Move profiles to main stack. Keep locking myself out of chat
@@ -22,3 +20,4 @@ Work Queue
 * Announcements need markdown.
 * Add url prefixes, Twitarr Com beta and maybe current server url? Actually just do current sever url if possible
 * Header image needs refresh to update. On background?
+* notification socket control not working.
