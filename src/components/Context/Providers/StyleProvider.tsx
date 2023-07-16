@@ -34,7 +34,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     twitarrPositive: {
       backgroundColor: theme.colors.twitarrPositiveButton,
-      // color: theme.colors.onPrimary,
+    },
+    twitarrNeutral: {
+      backgroundColor: theme.colors.twitarrNeutralButton,
+    },
+    twitarrNegative: {
+      backgroundColor: theme.colors.twitarrNegativeButton,
     },
     background: {
       backgroundColor: theme.colors.background,
@@ -56,6 +61,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     errorContainer: {
       backgroundColor: theme.colors.errorContainer,
       color: theme.colors.onErrorContainer,
+    },
+    onTwitarrButton: {
+      color: AndroidColor.WHITE,
     },
   });
 
