@@ -8,7 +8,6 @@ Work Queue
 * Find a way to make tokenAuthQuery do the onError processing.
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
-* Confirmation modal for logouts
 * Blocked and muted users
 * Move profiles to main stack. Keep locking myself out of chat
 * Around 1am the theme went away

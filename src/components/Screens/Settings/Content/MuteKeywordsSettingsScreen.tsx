@@ -10,8 +10,11 @@ import {Text} from 'react-native-paper';
 import {KeywordForm} from '../../../Forms/KeywordForm';
 import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
+import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
+import {useAuth} from '../../../Context/Contexts/AuthContext';
 
 export const MuteKeywordsSettingsScreen = () => {
+  const {isLoggedIn} = useAuth();
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
@@ -60,6 +63,10 @@ export const MuteKeywordsSettingsScreen = () => {
       setKeywords(data.keywords);
     }
   }, [data]);
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   return (
     <AppView>

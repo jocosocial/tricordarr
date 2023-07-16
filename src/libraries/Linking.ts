@@ -22,6 +22,7 @@ const deepLinksConf = {
               screens: {
                 SettingsTab: 'settingstab',
                 ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
+                LoginScreen: 'login',
               },
             },
           },
