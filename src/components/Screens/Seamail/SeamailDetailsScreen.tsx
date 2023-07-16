@@ -121,11 +121,9 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
           <Text>{fez.fezType}</Text>
         </PaddedContentView>
         <PaddedContentView>
-          <TouchableOpacity onPress={() => console.log(fezSocket)}>
-            <TitleTag>Websocket</TitleTag>
-            {fezSocket && <Text>{WebSocketState[fezSocket.readyState as keyof typeof WebSocketState]}</Text>}
-            {!fezSocket && <Text>undefined</Text>}
-          </TouchableOpacity>
+          <TitleTag>Websocket</TitleTag>
+          {fezSocket && <Text>{WebSocketState[fezSocket.readyState as keyof typeof WebSocketState]}</Text>}
+          {!fezSocket && <Text>undefined</Text>}
         </PaddedContentView>
         <PaddedContentView padBottom={false}>
           <TitleTag style={[]}>Participants</TitleTag>

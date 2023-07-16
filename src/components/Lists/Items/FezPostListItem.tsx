@@ -46,7 +46,6 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
   const onPress = () => {
     navigation.push(SeamailStackScreenComponents.userProfileScreen, {
       userID: fezPost.author.userID,
-      username: fezPost.author.username,
     });
   };
 

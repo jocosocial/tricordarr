@@ -1,21 +1,11 @@
-import {Menu, Text, Tooltip} from 'react-native-paper';
-import {
-  GestureResponderEvent,
-  NativeUIEvent,
-  StyleProp,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
-import React, {useRef, useState} from 'react';
+import {Text} from 'react-native-paper';
+import {TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import ReactTimeAgo from 'react-time-ago';
 import {RelativeTimeTag} from '../Text/RelativeTimeTag';
 import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {FezPostData} from '../../libraries/Structs/ControllerStructs';
+import {ContentText} from '../Text/ContentText';
 
 interface MessageViewProps {
   fezPost: FezPostData;
@@ -59,7 +49,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
         <FezPostActionsMenu
           visible={menuVisible}
           closeMenu={closeMenu}
-          anchor={<Text style={styles.messageText}>{fezPost.text}</Text>}
+          anchor={<ContentText textStyle={styles.messageText} text={fezPost.text} />}
           fezPost={fezPost}
         />
         {fezPost.timestamp && (
