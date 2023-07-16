@@ -55,6 +55,16 @@ export const lfgChannel: AndroidChannel = {
 };
 
 /**
+ * Notification channel for announcements.
+ */
+export const announcementsChannel: AndroidChannel = {
+  id: 'announcements',
+  name: 'Announcements',
+  groupId: contentChannelGroup.id,
+  description: 'Announcements from the Twitarr server.',
+};
+
+/**
  * Setup function to ensure that the channels and their groups exist.
  */
 export async function setupChannels() {
@@ -63,4 +73,5 @@ export async function setupChannels() {
   await notifee.createChannel(serviceChannel);
   await notifee.createChannel(seamailChannel);
   await notifee.createChannel(lfgChannel);
+  await notifee.createChannel(announcementsChannel);
 }

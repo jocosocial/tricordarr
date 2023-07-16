@@ -1,5 +1,5 @@
 import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStructs';
-import {lfgChannel, seamailChannel, serviceChannel} from './Channels';
+import {announcementsChannel, lfgChannel, seamailChannel, serviceChannel} from './Channels';
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
 import {getAppConfig} from '../AppConfig';
@@ -29,6 +29,11 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = lfgChannel;
       url = `/fez/${notificationData.contentID}#newposts`;
       break;
+    case NotificationTypeData.announcement:
+      channel = announcementsChannel;
+      url = '/home';
+      pressActionID = PressAction.home;
+      title = 'Announcement';
   }
 
   generateContentNotification(

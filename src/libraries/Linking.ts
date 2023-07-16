@@ -14,6 +14,7 @@ const deepLinksConf = {
       screens: {
         HomeTab: {
           screens: {
+            MainScreen: 'home',
             AboutScreen: 'about',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
             MainSettingsScreen: {
