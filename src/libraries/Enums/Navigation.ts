@@ -20,7 +20,6 @@ export enum BottomTabComponents {
 export enum SettingsStackScreenComponents {
   settings = 'SettingsScreen',
   networkInfoSettings = 'NetworkInfoSettingsScreen',
-  accountSettings = 'AccountSettingsScreen',
   serverConnectionSettings = 'ServerConnectionSettingsScreen',
   testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
@@ -33,6 +32,8 @@ export enum SettingsStackScreenComponents {
   changeUsername = 'ChangeUsernameScreen',
   alertKeywords = 'AlertKeywordsSettingsScreen',
   muteKeywords = 'MuteKeywordsSettingsScreen',
+  login = 'LoginScreen',
+  accountManagement = 'AccountManagementScreen',
 }
 
 export enum SeamailStackScreenComponents {
