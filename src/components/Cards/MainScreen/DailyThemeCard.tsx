@@ -12,8 +12,7 @@ export const DailyThemeCard = () => {
   const {data: dailyThemeData} = useDailyThemeQuery();
   const {cruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
-
-  console.log(dailyThemeData);
+  const {commonStyles} = useStyles();
 
   useEffect(() => {
     if (dailyThemeData) {
@@ -37,7 +36,7 @@ export const DailyThemeCard = () => {
   }
 
   return (
-    <Card style={{backgroundColor: theme.colors.twitarrNeutralButton}}>
+    <Card style={[commonStyles.marginBottomSmall, {backgroundColor: theme.colors.twitarrNeutralButton}]}>
       <Card.Title title={"Today's theme:"} subtitle={dailyTheme.title} titleStyle={{color: AndroidColor.WHITE}} subtitleVariant={'bodyLarge'} subtitleStyle={{color: AndroidColor.WHITE}} />
       <Card.Content>
         <Text style={{color: AndroidColor.WHITE}}>{dailyTheme.info}</Text>

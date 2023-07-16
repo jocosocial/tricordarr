@@ -46,6 +46,13 @@ export const getUrlForEvent = (
         }
         return;
       }
+      case PressAction.home: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          // SocketNotifications.ts sets the URL for these to `/home`.
+          return `${notification.data.url}`;
+        }
+      }
     }
   }
 };

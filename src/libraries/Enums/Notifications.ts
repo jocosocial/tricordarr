@@ -8,4 +8,5 @@ export enum PressAction {
   twitarrTab = 'twitarrTab',
   worker = 'worker',
   seamail = 'seamail',
+  home = 'home',
 }

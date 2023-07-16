@@ -15,6 +15,7 @@ import {AndroidColor} from '@notifee/react-native';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {DailyThemeCard} from '../../Cards/MainScreen/DailyThemeCard';
 import {HeaderCard} from '../../Cards/MainScreen/HeaderCard';
+import {MainAnnouncementView} from '../MainAnnouncementView';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -41,6 +42,7 @@ export const MainView = ({navigation}: Props) => {
           {/*<Text>This app is an extremely experimental prototype and should be treated as such.</Text>*/}
           <HeaderCard />
           <DailyThemeCard />
+          <MainAnnouncementView />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
