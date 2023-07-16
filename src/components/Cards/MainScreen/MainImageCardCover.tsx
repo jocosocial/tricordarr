@@ -1,5 +1,5 @@
 import {Card} from 'react-native-paper';
-import React from 'react';
+import React, {useEffect} from 'react';
 // @ts-ignore
 import DayImage from '../../../../assets/mainview_day.jpg';
 // @ts-ignore
@@ -9,15 +9,17 @@ import SunsetImage from '../../../../assets/mainview_sunset.jpg';
 // @ts-ignore
 import HappyHourImage from '../../../../assets/mainview_happy.jpg';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import useDateTime from '../../../libraries/DateTime';
 
 /**
  * Display a pretty image in the app based on the time of day.
  */
 export const MainImageCardCover = () => {
-  const {userNotificationData} = useUserNotificationData();
+  const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
+  const updatingDate = useDateTime('hour');
 
   // Default to local, but override with the server offset.
-  let currentHour = new Date().getHours();
+  let currentHour = updatingDate.getHours();
   if (userNotificationData) {
     // Take the timestamp that the server gives us (should be UTC), then apply the offset in milliseconds.
     // This becomes a new relative date that should match what the user is really experiencing.
@@ -26,6 +28,10 @@ export const MainImageCardCover = () => {
     const relativeDate = new Date(relativeTimestamp);
     currentHour = relativeDate.getUTCHours();
   }
+
+  useEffect(() => {
+    refetchUserNotificationData();
+  }, [refetchUserNotificationData, updatingDate]);
 
   // 8PM-5AM Night
   // 6AM-3PM Day
