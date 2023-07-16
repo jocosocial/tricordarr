@@ -14,6 +14,7 @@ export const AccountListItem = () => {
   const description = 'Manage your Twitarr account.';
   const {profilePublicData} = useUserData();
   const {tokenData} = useAuth();
+  const [accountScreen, setAccountScreen] = useState(SettingsStackScreenComponents.login);
 
   useEffect(() => {
     if (tokenData) {
@@ -22,16 +23,12 @@ export const AccountListItem = () => {
       } else {
         setTitle('UNKNOWN');
       }
+      setAccountScreen(SettingsStackScreenComponents.accountManagement);
     } else {
       setTitle('Login');
+      setAccountScreen(SettingsStackScreenComponents.login);
     }
   }, [profilePublicData, tokenData]);
 
-  return (
-    <List.Item
-      title={title}
-      description={description}
-      onPress={() => navigation.push(SettingsStackScreenComponents.accountSettings, {title: title})}
-    />
-  );
+  return <List.Item title={title} description={description} onPress={() => navigation.push(accountScreen)} />;
 };

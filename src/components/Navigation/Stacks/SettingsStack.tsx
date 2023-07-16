@@ -1,7 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
-import {AccountSettingsScreen} from '../../Screens/Settings/Account/AccountSettingsScreen';
 import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
 import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
@@ -18,9 +17,10 @@ import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernam
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
 import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertKeywordsSettingsScreen';
 import {MuteKeywordsSettingsScreen} from '../../Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {AccountManagementScreen} from '../../Screens/Settings/Account/AccountManagementScreen';
+import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 
 export type SettingsStackParamList = {
-  AccountSettingsScreen: undefined;
   SettingsScreen: undefined;
   NetworkInfoSettingsScreen: undefined;
   ServerConnectionSettingsScreen: undefined;
@@ -35,6 +35,8 @@ export type SettingsStackParamList = {
   ChangeUsernameScreen: undefined;
   AlertKeywordsSettingsScreen: undefined;
   MuteKeywordsSettingsScreen: undefined;
+  AccountManagementScreen: undefined;
+  LoginScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -54,11 +56,6 @@ export const SettingsStack = () => {
         options={{title: 'Settings'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.accountSettings}
-        component={AccountSettingsScreen}
-        options={{title: 'Account'}}
-      />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
         component={ServerConnectionSettings}
@@ -118,6 +115,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.muteKeywords}
         component={MuteKeywordsSettingsScreen}
         options={{title: 'Mute Keywords'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.login}
+        component={LoginScreen}
+        options={{title: 'Login'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.accountManagement}
+        component={AccountManagementScreen}
+        options={{title: 'Account Management'}}
       />
     </Stack.Navigator>
   );
