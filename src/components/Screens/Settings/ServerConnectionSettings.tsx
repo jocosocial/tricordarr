@@ -84,7 +84,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Websocket</Text>
+          <Text variant={'titleMedium'}>Shared Websocket</Text>
           <DataTable>
             <SettingDataTableRow
               title={'Socket State'}
