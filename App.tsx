@@ -41,6 +41,7 @@ import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider'
 // JS runtime check, which we disable here.
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // https://reactnavigation.org/docs/drawer-layout/
@@ -64,6 +65,8 @@ import {registerFgsWorker} from './src/libraries/Service';
 import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
+import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
+
 registerFgsWorker();
 
 // https://callstack.github.io/react-native-paper/docs/guides/theming
@@ -90,32 +93,34 @@ function App(): JSX.Element {
         <StyleProvider>
           <HeaderButtonsProvider stackType={'native'}>
             <ConfigProvider>
-              <QueryClientProvider client={queryClient}>
-                <TwitarrProvider>
-                  <ErrorHandlerProvider>
-                    <ModalProvider>
-                      <AuthProvider>
-                        <UserDataProvider>
-                          <PrivilegeProvider>
-                            <SocketProvider>
-                              <UserRelationsProvider>
-                                <UserNotificationDataProvider>
-                                  <DrawerProvider>
-                                    <AppEventHandler />
-                                    <ForegroundService />
-                                    <NotificationDataListener />
-                                    <RootStackNavigator />
-                                  </DrawerProvider>
-                                </UserNotificationDataProvider>
-                              </UserRelationsProvider>
-                            </SocketProvider>
-                          </PrivilegeProvider>
-                        </UserDataProvider>
-                      </AuthProvider>
-                    </ModalProvider>
-                  </ErrorHandlerProvider>
-                </TwitarrProvider>
-              </QueryClientProvider>
+              <CruiseProvider>
+                <QueryClientProvider client={queryClient}>
+                  <TwitarrProvider>
+                    <ErrorHandlerProvider>
+                      <ModalProvider>
+                        <AuthProvider>
+                          <UserDataProvider>
+                            <PrivilegeProvider>
+                              <SocketProvider>
+                                <UserRelationsProvider>
+                                  <UserNotificationDataProvider>
+                                    <DrawerProvider>
+                                      <AppEventHandler/>
+                                      <ForegroundService/>
+                                      <NotificationDataListener/>
+                                      <RootStackNavigator/>
+                                    </DrawerProvider>
+                                  </UserNotificationDataProvider>
+                                </UserRelationsProvider>
+                              </SocketProvider>
+                            </PrivilegeProvider>
+                          </UserDataProvider>
+                        </AuthProvider>
+                      </ModalProvider>
+                    </ErrorHandlerProvider>
+                  </TwitarrProvider>
+                </QueryClientProvider>
+              </CruiseProvider>
             </ConfigProvider>
           </HeaderButtonsProvider>
         </StyleProvider>

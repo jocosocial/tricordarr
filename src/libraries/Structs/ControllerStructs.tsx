@@ -303,3 +303,33 @@ export interface KeywordData {
   /// The keywords.
   keywords: string[];
 }
+
+export interface AnnouncementData {
+  /// Only THO and admins need to send Announcement IDs back to the API (to modify or delete announcements, for example), but caching clients can still use the ID
+  /// to correlate announcements returned by the API with cached ones.
+  id: number;
+  /// The author of the announcement.
+  author: UserHeader;
+  /// The contents of the announcement.
+  text: string;
+  /// When the announcement was last modified.
+  updatedAt: Date;
+  /// Announcements are considered 'active' until this time. After this time, `GET /api/v3/notification/announcements` will no longer return the announcement,
+  /// and caching clients should stop showing it to users.
+  displayUntil: Date;
+  /// TRUE if the announcement has been deleted. Only THO/admins can fetch deleted announcements; will always be FALSE for other users.
+  isDeleted: boolean;
+}
+
+export interface DailyThemeData {
+  /// The theme's ID Probably only useful for admins in order to edit or delete themes.
+  themeID: string;
+  /// A short string describing the day's theme. e.g. "Cosplay Day", or "Pajamas Day", or "Science Day".
+  title: string;
+  /// A longer string describing the theme, possibly with a call to action for users to participate.
+  info: string;
+  /// An image that relates to the theme.
+  image?: string;
+  /// Day of cruise, counted from `Settings.shared.cruiseStartDate`. 0 is embarkation day. Values could be negative (e.g. Day -1 is "Anticipation Day")
+  cruiseDay: number;
+}
