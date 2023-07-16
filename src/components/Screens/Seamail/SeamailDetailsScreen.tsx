@@ -37,6 +37,7 @@ export type Props = NativeStackScreenProps<
 const helpContent = [
   'Seamail titles cannot be modified.',
   'With Open seamails, the creator can add or remove members at any time.',
+  'Closed seamails cannot be modified after they are created.',
 ];
 
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
