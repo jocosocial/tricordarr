@@ -1,19 +1,17 @@
-import React, {useState, PropsWithChildren, ReactNode} from 'react';
-import {ModalContext} from '../Contexts/ModalContext';
+import React, {PropsWithChildren} from 'react';
 import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
-  // const startDate = appConfig.cruiseStartDate;
-  const startDate = new Date(2023, 2, 5);
+  const startDate = appConfig.cruiseStartDate;
   const cruiseLength = appConfig.cruiseLength;
   // End Date
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength);
   // Day Index
-  const timeDiff = startDate.getTime() - new Date().getTime();
-  const cruiseDayIndex = Math.abs(Math.floor(timeDiff / (1000 * 3600 * 24))) - 1;
+  const timeDiff = new Date().getTime() - startDate.getTime();
+  const cruiseDayIndex = Math.floor(timeDiff / (1000 * 3600 * 24));
   // Days Since
   const daysSince = cruiseDayIndex - cruiseLength;
 

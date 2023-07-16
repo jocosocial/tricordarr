@@ -6,8 +6,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 
 export const HeaderCard = () => {
   const {commonStyles} = useStyles();
-  const {cruiseDayIndex} = useCruise();
-  const cruiseDayNumber = cruiseDayIndex + 1;
+  const {cruiseDayIndex, cruiseLength} = useCruise();
 
   const date = new Date();
   const options: Intl.DateTimeFormatOptions = {
@@ -16,13 +15,26 @@ export const HeaderCard = () => {
     day: 'numeric',
   };
   const formattedDate = date.toLocaleString('en-US', options);
-  const subtitleText = `${cruiseDayIndex}`;
-  // const subtitleText = cruiseDayIndex <= 0 ? `Day ${cruiseDayNumber}` : `${Math.abs(cruiseDayNumber)} day(s) until boat.`;
+
+  console.log(cruiseDayIndex);
+  let subtitleText = '';
+  if (cruiseDayIndex < 0) {
+    subtitleText = `${Math.abs(cruiseDayIndex)} day(s) until boat!`;
+  } else if (cruiseDayIndex < cruiseLength - 1) {
+    subtitleText = `Day ${cruiseDayIndex + 1}`;
+  } else {
+    subtitleText = `${cruiseDayIndex - cruiseLength + 1} days after boat.`;
+  }
 
   return (
     <Card style={[commonStyles.marginBottomSmall]}>
       <Card.Cover source={MainViewDayImage} />
-      <Card.Title titleVariant={'bodyLarge'} titleStyle={[commonStyles.bold]} title={formattedDate} subtitle={subtitleText} />
+      <Card.Title
+        titleVariant={'bodyLarge'}
+        titleStyle={[commonStyles.bold]}
+        title={formattedDate}
+        subtitle={subtitleText}
+      />
     </Card>
   );
 };
