@@ -2,6 +2,8 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
 import {useSocket} from '../../Context/Contexts/SocketContext';
+import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -12,13 +14,25 @@ export const NotificationDataListener = () => {
   const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
+  const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       console.log(`[message] Data received from server: ${event.data}`);
+      const notificationData = JSON.parse(event.data) as SocketNotificationData;
+      const notificationType = SocketNotificationData.getType(notificationData);
+      // Always refetch the UserNotificationData when we got a socket event.
       refetchUserNotificationData();
+
+      // Some kinds of socket events should update other areas of the state.
+      switch (notificationType) {
+        case NotificationTypeData.announcement: {
+          refetchAnnouncements();
+          break;
+        }
+      }
     },
-    [refetchUserNotificationData],
+    [refetchAnnouncements, refetchUserNotificationData],
   );
 
   const addHandler = useCallback(() => {

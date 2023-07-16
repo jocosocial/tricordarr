@@ -1,12 +1,9 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {SettingsStack, SettingsStackParamList} from '../Stacks/SettingsStack';
-import {MainView} from '../../Views/Static/MainView';
 import {AppIcon} from '../../Images/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
-// import {SiteUIStackStack} from '../Stacks/SiteUIStack';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -47,6 +44,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Home',
           tabBarIcon: () => getIcon('home-account'),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
         }}
       />
       <Tab.Screen

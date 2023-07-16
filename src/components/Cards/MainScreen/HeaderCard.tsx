@@ -1,8 +1,9 @@
 import {Card} from 'react-native-paper';
-import MainViewDayImage from '../../../../assets/mainview_day.jpg';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+// @ts-ignore
+import MainViewDayImage from '../../../../assets/mainview_day.jpg';
 
 export const HeaderCard = () => {
   const {commonStyles} = useStyles();
@@ -16,7 +17,6 @@ export const HeaderCard = () => {
   };
   const formattedDate = date.toLocaleString('en-US', options);
 
-  console.log(cruiseDayIndex);
   let subtitleText = '';
   if (cruiseDayIndex < 0) {
     subtitleText = `${Math.abs(cruiseDayIndex)} day(s) until boat!`;
