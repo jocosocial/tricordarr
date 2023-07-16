@@ -1,6 +1,7 @@
 import React from 'react';
-import {Snackbar, Text, useTheme} from 'react-native-paper';
+import {Snackbar, Text} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useAppTheme} from '../../styles/Theme';
 
 interface ErrorSnackbarProps {
   actionLabel: string;
@@ -11,7 +12,7 @@ interface ErrorSnackbarProps {
 export const ErrorSnackbar = ({actionLabel = 'Close'}: ErrorSnackbarProps) => {
   const {errorMessage, setErrorMessage} = useErrorHandler();
   const onDismissSnackBar = () => setErrorMessage('');
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   // Snackbar uses .onSurface color, so we need to invert
   // any custom text.
