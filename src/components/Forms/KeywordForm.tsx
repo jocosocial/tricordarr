@@ -28,7 +28,7 @@ export const KeywordForm = ({onSave}: KeywordFormProps) => {
     <Formik enableReinitialize initialValues={initialFormValues} onSubmit={onSave} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting}) => (
         <View>
-          <TextField name={'keyword'} />
+          <TextField autoCapitalize={'none'} name={'keyword'} />
           <PrimaryActionButton
             onPress={handleSubmit}
             buttonText={'Save'}
