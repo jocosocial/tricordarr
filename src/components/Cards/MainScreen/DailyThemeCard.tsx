@@ -37,7 +37,13 @@ export const DailyThemeCard = () => {
 
   return (
     <Card style={[commonStyles.marginBottomSmall, {backgroundColor: theme.colors.twitarrNeutralButton}]}>
-      <Card.Title title={"Today's theme:"} subtitle={dailyTheme.title} titleStyle={{color: AndroidColor.WHITE}} subtitleVariant={'bodyLarge'} subtitleStyle={{color: AndroidColor.WHITE}} />
+      <Card.Title
+        title={"Today's theme:"}
+        subtitle={dailyTheme.title}
+        titleStyle={{color: AndroidColor.WHITE}}
+        subtitleVariant={'bodyLarge'}
+        subtitleStyle={{color: AndroidColor.WHITE}}
+      />
       <Card.Content>
         <Text style={{color: AndroidColor.WHITE}}>{dailyTheme.info}</Text>
       </Card.Content>
