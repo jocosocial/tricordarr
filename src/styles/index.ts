@@ -176,4 +176,8 @@ export const commonStyles = StyleSheet.create({
   borderBottomZero: {
     borderBottomWidth: 0,
   },
+  emoji: {
+    width: 20, //styleDefaults.fontSize * 1.5,
+    height: 20, //styleDefaults.fontSize * 1.5,
+  },
 });
