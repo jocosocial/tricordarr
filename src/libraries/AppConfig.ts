@@ -21,6 +21,8 @@ export interface AppConfig {
   oobeExpectedVersion: number;
   oobeCompletedVersion: number;
   enableDeveloperOptions: boolean;
+  cruiseStartDate: Date;
+  cruiseLength: number;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -46,6 +48,8 @@ const defaultAppConfig: AppConfig = {
   oobeCompletedVersion: 0,
   oobeExpectedVersion: 0,
   enableDeveloperOptions: false,
+  cruiseStartDate: new Date(2023, 3, 5),
+  cruiseLength: 8,
 };
 
 /**
@@ -61,6 +65,14 @@ const getInitialAppConfig = () => {
   }
   if (Config.OOBE_VERSION) {
     config.oobeExpectedVersion = Number(Config.OOBE_VERSION);
+  }
+  if (Config.CRUISE_START_DATE) {
+    const [year, month, day] = Config.CRUISE_START_DATE.split('-').map(Number);
+    // Because Javascript, Fools!
+    config.cruiseStartDate = new Date(year, month - 1, day);
+  }
+  if (Config.CRUISE_LENGTH) {
+    config.cruiseLength = Number(Config.CRUISE_LENGTH);
   }
   return config;
 };
@@ -79,6 +91,14 @@ export const getAppConfig = async () => {
   // Certain keys should always be loaded from the app environment.
   if (Config.OOBE_VERSION) {
     appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
+  }
+  if (Config.CRUISE_START_DATE) {
+    const [year, month, day] = Config.CRUISE_START_DATE.split('-').map(Number);
+    // Because Javascript, Fools!
+    appConfig.cruiseStartDate = new Date(year, month - 1, day);
+  }
+  if (Config.CRUISE_LENGTH) {
+    appConfig.cruiseLength = Number(Config.CRUISE_LENGTH);
   }
   return appConfig;
 };
