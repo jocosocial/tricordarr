@@ -11,7 +11,7 @@ export const useLogoutMutation = (options = {}) => {
     },
     {
       onError: error => {
-        setErrorMessage(error.response?.data.reason);
+        setErrorMessage(error.response?.data.reason || error.message);
       },
       ...options,
     },

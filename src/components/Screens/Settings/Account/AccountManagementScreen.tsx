@@ -1,14 +1,9 @@
 import React from 'react';
 import {List} from 'react-native-paper';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useAuth} from '../../../Context/Contexts/AuthContext';
-import {useLogoutMutation} from '../../../Queries/Auth/LogoutQueries';
-import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
-import {useSocket} from '../../../Context/Contexts/SocketContext';
 import {ListSection} from '../../../Lists/ListSection';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem';
@@ -20,30 +15,18 @@ import {
 } from '../../../../libraries/Enums/Navigation';
 import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
 import {LoadingView} from '../../../Views/Static/LoadingView';
+import {useModal} from '../../../Context/Contexts/ModalContext';
+import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
 
 export const AccountManagementScreen = () => {
   const settingsNavigation = useSettingsStack();
   const bottomNav = useBottomTabNavigator();
-  const {profilePublicData, setProfilePublicData} = useUserData();
-  const {setEnableUserNotifications, dispatchUserNotificationData} = useUserNotificationData();
-  const {signOut} = useAuth();
-  const logoutMutation = useLogoutMutation({
-    onSuccess: () => {
-      onLogout();
-    },
-  });
-  const {closeNotificationSocket, closeFezSocket} = useSocket();
+  const {profilePublicData} = useUserData();
+  const {setModalContent, setModalVisible} = useModal();
 
-  const onLogout = () => {
-    setEnableUserNotifications(false);
-    setProfilePublicData(undefined);
-    dispatchUserNotificationData({
-      type: UserNotificationDataActions.clear,
-    });
-    closeNotificationSocket();
-    closeFezSocket();
-    signOut();
-    settingsNavigation.goBack();
+  const handleLogoutModal = (allDevices = false) => {
+    setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
+    setModalVisible(true);
   };
 
   if (!profilePublicData) {
@@ -79,11 +62,11 @@ export const AccountManagementScreen = () => {
               onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
             />
             <List.Subheader>Log Out</List.Subheader>
-            <MinorActionListItem title={'Logout this device'} icon={AppIcons.logout} onPress={onLogout} />
+            <MinorActionListItem title={'Logout this device'} icon={AppIcons.logout} onPress={() => handleLogoutModal()} />
             <MinorActionListItem
               title={'Logout all devices'}
               icon={AppIcons.error}
-              onPress={() => logoutMutation.mutate()}
+              onPress={() => handleLogoutModal(true)}
             />
           </ListSection>
         </PaddedContentView>
