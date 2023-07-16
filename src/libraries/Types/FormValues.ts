@@ -10,3 +10,9 @@ export interface LoginFormValues {
 export interface KeywordFormValues {
   keyword: string;
 }
+
+export interface ChangePasswordFormValues {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordVerify: string;
+}

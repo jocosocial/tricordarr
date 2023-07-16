@@ -1,4 +1,9 @@
-import {ErrorResponse, KeywordData, ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
+import {
+  ErrorResponse,
+  KeywordData,
+  ProfilePublicData,
+  UserPasswordData,
+} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useMutation} from '@tanstack/react-query';
@@ -40,6 +45,23 @@ const keywordQueryHandler = async ({
 export const useUserKeywordMutation = (options = {}) => {
   const {setErrorMessage} = useErrorHandler();
   return useMutation<AxiosResponse<KeywordData>, AxiosError<ErrorResponse>, KeywordMutationProps>(keywordQueryHandler, {
+    onError: error => {
+      setErrorMessage(error.response?.data.reason || error.message);
+    },
+    ...options,
+  });
+};
+
+interface UserPasswordMutationProps {
+  userPasswordData: UserPasswordData;
+}
+
+const userPasswordHandler = async ({userPasswordData}: UserPasswordMutationProps): Promise<AxiosResponse<void>> =>
+  await axios.post('/user/password', userPasswordData);
+
+export const useUserPasswordMutation = (options = {}) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserPasswordMutationProps>(userPasswordHandler, {
     onError: error => {
       setErrorMessage(error.response?.data.reason || error.message);
     },

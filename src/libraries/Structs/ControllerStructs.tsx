@@ -333,3 +333,10 @@ export interface DailyThemeData {
   /// Day of cruise, counted from `Settings.shared.cruiseStartDate`. 0 is embarkation day. Values could be negative (e.g. Day -1 is "Anticipation Day")
   cruiseDay: number;
 }
+
+export interface UserPasswordData {
+  /// The user's current password.
+  currentPassword: string;
+  /// The user's desired new password.
+  newPassword: string;
+}

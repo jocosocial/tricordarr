@@ -9,7 +9,6 @@ Work Queue
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
 * Change username
-* Change password
 * Confirmation modal for logouts
 * Webview home button takes you to root of that sessions history not home home
 * Blocked and muted users
