@@ -53,8 +53,14 @@ export const TwitarrView = ({route, navigation}: Props) => {
           <Item
             title={'Home'}
             iconName={AppIcons.home}
-            onPress={async () => {
-              setUrl(appConfig.serverUrl);
+            onPress={() => {
+              if (route.params) {
+                // This prevents the useEffect from resetting the state
+                // back to whatever route params we were given.
+                route.params.resource = undefined;
+                route.params.id = undefined;
+              }
+              setUrl(`${appConfig.serverUrl}/home`);
               setKey(String(Date.now()));
             }}
           />
@@ -62,7 +68,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [commonStyles],
+    [appConfig.serverUrl],
   );
 
   useEffect(() => {
@@ -81,7 +87,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
       setIsLoading(false);
     };
 
-    if (route?.params?.timestamp != key) {
+    if (route?.params?.timestamp !== key) {
       setKey(route?.params?.timestamp);
       setHandleGoBack(false);
     }
@@ -91,7 +97,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
     navigation.setOptions({
       headerRight: getNavBarIcons,
     });
-  }, [route.params?.timestamp, route.params?.resource, route.params?.id, isLoading, key, navigation, getNavBarIcons]);
+  }, [route.params?.timestamp, route.params.resource, route.params.id, isLoading, key, navigation, getNavBarIcons, appConfig.serverUrl]);
 
   return isLoading ? (
     <ActivityIndicator />
