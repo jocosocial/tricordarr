@@ -16,5 +16,4 @@ Work Queue
 * Around 1am the theme went away
 * Announcements need markdown.
 * Add url prefixes, Twitarr Com beta and maybe current server url? Actually just do current sever url if possible
-* Header image needs refresh to update. On background?
 * notification socket control not working.
