@@ -9,8 +9,7 @@ import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 
 export const DailyThemeCard = () => {
   const theme = useAppTheme();
-  const {commonStyles} = useStyles();
-  const {data: dailyThemeData, refetchDailyThemes} = useDailyThemeQuery();
+  const {data: dailyThemeData} = useDailyThemeQuery();
   const {cruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
 
@@ -39,9 +38,9 @@ export const DailyThemeCard = () => {
 
   return (
     <Card style={{backgroundColor: theme.colors.twitarrNeutralButton}}>
-      <Card.Title title={"Today's theme is:"} subtitle={'New Cruisers'} titleStyle={{color: AndroidColor.WHITE}} subtitleVariant={'bodyLarge'} subtitleStyle={{color: AndroidColor.WHITE}} />
+      <Card.Title title={"Today's theme:"} subtitle={dailyTheme.title} titleStyle={{color: AndroidColor.WHITE}} subtitleVariant={'bodyLarge'} subtitleStyle={{color: AndroidColor.WHITE}} />
       <Card.Content>
-        <Text style={{color: AndroidColor.WHITE}}>JoCo Cruise has ended. Hope you're enjoying being back in the real world.</Text>
+        <Text style={{color: AndroidColor.WHITE}}>{dailyTheme.info}</Text>
       </Card.Content>
     </Card>
   );
