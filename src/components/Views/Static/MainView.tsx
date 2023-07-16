@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {PaddedContentView} from '../Content/PaddedContentView';
@@ -9,11 +9,25 @@ import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {DailyThemeCard} from '../../Cards/MainScreen/DailyThemeCard';
 import {HeaderCard} from '../../Cards/MainScreen/HeaderCard';
 import {MainAnnouncementView} from '../MainAnnouncementView';
+import {RefreshControl} from 'react-native';
+import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
+import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
 export const MainView = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
+  const [refreshing, setRefreshing] = useState(false);
+  const {refetch: refetchThemes} = useDailyThemeQuery();
+  const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
+  const {refetchUserNotificationData} = useUserNotificationData();
+
+  const onRefresh = () => {
+    refetchUserNotificationData().then(() =>
+      refetchThemes().then(() => refetchAnnouncements().then(() => setRefreshing(false))),
+    );
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -23,7 +37,7 @@ export const MainView = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <HeaderCard />
           <DailyThemeCard />

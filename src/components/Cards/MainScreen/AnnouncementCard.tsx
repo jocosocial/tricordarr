@@ -3,12 +3,14 @@ import {AndroidColor} from '@notifee/react-native';
 import React from 'react';
 import {useAppTheme} from '../../../styles/Theme';
 import {AnnouncementData} from '../../../libraries/Structs/ControllerStructs';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData}) => {
   const theme = useAppTheme();
+  const {commonStyles} = useStyles();
 
   return (
-    <Card style={{backgroundColor: theme.colors.twitarrPositiveButton}}>
+    <Card style={[commonStyles.marginBottomSmall, {backgroundColor: theme.colors.twitarrPositiveButton}]}>
       <Card.Title
         title={`From @${announcement.author.username}:`}
         titleStyle={{color: AndroidColor.WHITE, fontWeight: 'bold'}}
