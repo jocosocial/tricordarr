@@ -2,8 +2,7 @@ import {Card} from 'react-native-paper';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-// @ts-ignore
-import MainViewDayImage from '../../../../assets/mainview_day.jpg';
+import {MainImageCardCover} from './MainImageCardCover';
 
 export const HeaderCard = () => {
   const {commonStyles} = useStyles();
@@ -28,7 +27,7 @@ export const HeaderCard = () => {
 
   return (
     <Card style={[commonStyles.marginBottomSmall]}>
-      <Card.Cover source={MainViewDayImage} />
+      <MainImageCardCover />
       <Card.Title
         titleVariant={'bodyLarge'}
         titleStyle={[commonStyles.bold]}
