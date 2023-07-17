@@ -10,7 +10,6 @@ Work Queue
 * blocks/mutes/favorites refetch doesnt update when the server changed
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
-* Blocked and muted and favorited users
 * Move profiles to main stack. Keep locking myself out of chat
 * Around 1am the theme went away
 * Announcements need markdown.

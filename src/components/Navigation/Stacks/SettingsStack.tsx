@@ -21,6 +21,7 @@ import {AccountManagementScreen} from '../../Screens/Settings/Account/AccountMan
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
+import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -136,6 +137,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.muteUsers}
         component={MuteUsersScreen}
         options={{title: 'Muted Users'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.favoriteUsers}
+        component={FavoriteUsersScreen}
+        options={{title: 'Favorite Users'}}
       />
     </Stack.Navigator>
   );
