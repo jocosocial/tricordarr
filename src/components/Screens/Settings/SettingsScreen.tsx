@@ -83,6 +83,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Users whose content you will not see.'}
               navComponent={SettingsStackScreenComponents.muteUsers}
             />
+            <SettingsNavigationListItem
+              title={'Favorite Users'}
+              description={'Quickly access friends profiles.'}
+              navComponent={SettingsStackScreenComponents.favoriteUsers}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

@@ -40,3 +40,12 @@ export const UserMuteText = () => {
     <Text style={[commonStyles.marginBottomSmall]}>Muting a user will hide all that user's content from you.</Text>
   );
 };
+
+export const UserFavoriteText = () => {
+  const {commonStyles} = useStyles();
+  return (
+    <Text style={[commonStyles.marginBottomSmall]}>
+      Favoriting a user is a quick way to find their profile. There is no additional functionality at this time.
+    </Text>
+  );
+};

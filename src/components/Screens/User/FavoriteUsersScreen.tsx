@@ -10,41 +10,41 @@ import {Linking, RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
+import {UserFavoriteText} from '../../Text/UserRelationsText';
+import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries';
 
-export const MuteUsersScreen = () => {
-  const {mutes, refetchMutes, setMutes} = useUserRelations();
+export const FavoriteUsersScreen = () => {
+  const {favorites, refetchFavorites, setFavorites} = useUserRelations();
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = () => {
-    refetchMutes().then(() => setRefreshing(false));
+    refetchFavorites().then(() => setRefreshing(false));
   };
   const {hasModerator} = usePrivilege();
-  const userMuteMutation = useUserMuteMutation();
+  const userFavoriteMutation = useUserFavoriteMutation();
 
-  const handleUnmuteUser = (userHeader: UserHeader) => {
-    userMuteMutation.mutate(
+  const handleUnfavoriteUser = (userHeader: UserHeader) => {
+    userFavoriteMutation.mutate(
       {
-        action: 'unmute',
+        action: 'unfavorite',
         userID: userHeader.userID,
       },
       {
         onSuccess: () => {
-          setMutes(mutes.filter(m => m.userID !== userHeader.userID));
+          setFavorites(favorites.filter(m => m.userID !== userHeader.userID));
         },
       },
     );
   };
 
-  const handleMuteUser = (userHeader: UserHeader) => {
-    userMuteMutation.mutate(
+  const handleFavoriteUser = (userHeader: UserHeader) => {
+    userFavoriteMutation.mutate(
       {
-        action: 'mute',
+        action: 'favorite',
         userID: userHeader.userID,
       },
       {
         onSuccess: () => {
-          setMutes(mutes.concat(userHeader));
+          setFavorites(favorites.concat(userHeader));
         },
       },
     );
@@ -54,21 +54,20 @@ export const MuteUsersScreen = () => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
-          <UserMuteText />
-          {hasModerator && <ModeratorMuteText />}
+          <UserFavoriteText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar userHeaders={mutes} onPress={handleMuteUser} />
+          <UserSearchBar userHeaders={favorites} onPress={handleFavoriteUser} />
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'labelMedium'}>Muted Users:</Text>
-          {mutes.map((relatedUserHeader, i) => (
+          <Text variant={'labelMedium'}>Favorite Users:</Text>
+          {favorites.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
               userHeader={relatedUserHeader}
-              buttonIcon={AppIcons.unmute}
+              buttonIcon={AppIcons.unfavorite}
               onPress={() => Linking.openURL(`tricordarr://user/${relatedUserHeader.userID}`)}
-              buttonOnPress={handleUnmuteUser}
+              buttonOnPress={handleUnfavoriteUser}
             />
           ))}
         </PaddedContentView>
