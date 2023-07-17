@@ -40,11 +40,6 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.group}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/directory`)}
               />
-              <PaperDrawer.Item
-                label={'Muted/Blocked Users'}
-                icon={AppIcons.block}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/blocks`)}
-              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               <PaperDrawer.Item
