@@ -15,3 +15,4 @@ Work Queue
 * Announcements need markdown.
 * Add url prefixes, Twitarr Com beta and maybe current server url? Actually just do current sever url if possible
 * notification socket control not working.
+* cover update on the hour didnt happen

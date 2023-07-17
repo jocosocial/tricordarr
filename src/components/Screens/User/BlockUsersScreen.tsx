@@ -12,6 +12,7 @@ import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
+import {ItalicText} from '../../Text/ItalicText';
 
 export const BlockUsersScreen = () => {
   const {blocks, refetchBlocks, setBlocks} = useUserRelations();
@@ -62,6 +63,7 @@ export const BlockUsersScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>
+          {blocks.length === 0 && <ItalicText>You have not muted any users.</ItalicText>}
           {blocks.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}

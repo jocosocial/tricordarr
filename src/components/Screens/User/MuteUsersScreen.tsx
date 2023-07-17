@@ -12,6 +12,7 @@ import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
+import {ItalicText} from '../../Text/ItalicText';
 
 export const MuteUsersScreen = () => {
   const {mutes, refetchMutes, setMutes} = useUserRelations();
@@ -62,6 +63,7 @@ export const MuteUsersScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Muted Users:</Text>
+          {mutes.length === 0 && <ItalicText>You have not muted any users.</ItalicText>}
           {mutes.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}

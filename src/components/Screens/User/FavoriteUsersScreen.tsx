@@ -12,6 +12,7 @@ import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {UserFavoriteText} from '../../Text/UserRelationsText';
 import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries';
+import {ItalicText} from '../../Text/ItalicText';
 
 export const FavoriteUsersScreen = () => {
   const {favorites, refetchFavorites, setFavorites} = useUserRelations();
@@ -61,6 +62,7 @@ export const FavoriteUsersScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>
+          {favorites.length === 0 && <ItalicText>You have not muted any users.</ItalicText>}
           {favorites.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
