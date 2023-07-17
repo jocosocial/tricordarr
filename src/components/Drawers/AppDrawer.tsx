@@ -92,7 +92,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Advanced'} showDivider={false}>
               <PaperDrawer.Item
-                label={'App Settings'}
+                label={'Settings'}
                 icon={AppIcons.settings}
                 onPress={() => handleDrawerNav('tricordarr://settingstab')}
               />
