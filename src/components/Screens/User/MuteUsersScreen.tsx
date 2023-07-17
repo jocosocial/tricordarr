@@ -10,41 +10,41 @@ import {Linking, RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
-import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
+import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
 
-export const BlockUsersScreen = () => {
-  const {blocks, refetchBlocks, setBlocks} = useUserRelations();
+export const MuteUsersScreen = () => {
+  const {mutes, refetchMutes, setMutes} = useUserRelations();
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = () => {
-    refetchBlocks().then(() => setRefreshing(false));
+    refetchMutes().then(() => setRefreshing(false));
   };
   const {hasModerator} = usePrivilege();
-  const userBlockMutation = useUserBlockMutation();
+  const userMuteMutation = useUserMuteMutation();
 
-  const handleUnblockUser = (userHeader: UserHeader) => {
-    userBlockMutation.mutate(
+  const handleUnmuteUser = (userHeader: UserHeader) => {
+    userMuteMutation.mutate(
       {
-        action: 'unblock',
+        action: 'unmute',
         userID: userHeader.userID,
       },
       {
         onSuccess: () => {
-          setBlocks(blocks.filter(m => m.userID !== userHeader.userID));
+          setMutes(mutes.filter(m => m.userID !== userHeader.userID));
         },
       },
     );
   };
 
-  const handleBlockUser = (userHeader: UserHeader) => {
-    userBlockMutation.mutate(
+  const handleMuteUser = (userHeader: UserHeader) => {
+    userMuteMutation.mutate(
       {
-        action: 'block',
+        action: 'mute',
         userID: userHeader.userID,
       },
       {
         onSuccess: () => {
-          setBlocks(blocks.concat(userHeader));
+          setMutes(mutes.concat(userHeader));
         },
       },
     );
@@ -54,21 +54,21 @@ export const BlockUsersScreen = () => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
-          <UserBlockText />
-          {hasModerator && <ModeratorBlockText />}
+          <UserMuteText />
+          {hasModerator && <ModeratorMuteText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar userHeaders={blocks} onPress={handleBlockUser} />
+          <UserSearchBar userHeaders={mutes} onPress={handleMuteUser} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>
-          {blocks.map((relatedUserHeader, i) => (
+          {mutes.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
               userHeader={relatedUserHeader}
-              buttonIcon={AppIcons.unblock}
+              buttonIcon={AppIcons.unmute}
               onPress={() => Linking.openURL(`tricordarr://user/${relatedUserHeader.userID}`)}
-              buttonOnPress={handleUnblockUser}
+              buttonOnPress={handleUnmuteUser}
             />
           ))}
         </PaddedContentView>

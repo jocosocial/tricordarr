@@ -78,6 +78,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Users that cannot see your content.'}
               navComponent={SettingsStackScreenComponents.blockUsers}
             />
+            <SettingsNavigationListItem
+              title={'Muted Users'}
+              description={'Users whose content you will not see.'}
+              navComponent={SettingsStackScreenComponents.muteUsers}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

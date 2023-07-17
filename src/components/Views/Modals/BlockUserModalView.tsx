@@ -13,21 +13,18 @@ import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {ModeratorUserBlockText} from '../../Text/ModeratorText';
+import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 
 interface BlockUserModalViewProps {
   user: UserHeader;
 }
 
 const BlockUserModalContent = () => {
-  const {commonStyles, styleDefaults} = useStyles();
   const {hasModerator} = usePrivilege();
   return (
     <>
-      <Text style={[commonStyles.marginBottomSmall]}>
-        Blocking a user will hide all that user's content from you, and also hide all your content from them.
-      </Text>
-      {hasModerator && <ModeratorUserBlockText />}
+      <UserBlockText />
+      {hasModerator && <ModeratorBlockText />}
     </>
   );
 };
