@@ -13,6 +13,7 @@ import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ModeratorUserBlockText} from '../../Text/ModeratorText';
 
 interface BlockUserModalViewProps {
   user: UserHeader;
@@ -26,15 +27,7 @@ const BlockUserModalContent = () => {
       <Text style={[commonStyles.marginBottomSmall]}>
         Blocking a user will hide all that user's content from you, and also hide all your content from them.
       </Text>
-      {hasModerator && (
-        <>
-          <Text style={[commonStyles.marginBottomSmall]}>
-            <AppIcon icon={AppIcons.moderator} size={styleDefaults.fontSize} />
-            &nbsp; You're a Moderator. You'll still see their content.
-            Blocking does hide your non-Mod alt accounts from this person, and vice-versa.
-          </Text>
-        </>
-      )}
+      {hasModerator && <ModeratorUserBlockText />}
     </>
   );
 };

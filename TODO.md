@@ -6,6 +6,7 @@ Work Queue
 * API is not decoding dates correctly
 * timezone warnings
 * Find a way to make tokenAuthQuery do the onError processing.
+* load blocks/mutes/favorites some other time
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
 * Blocked and muted users

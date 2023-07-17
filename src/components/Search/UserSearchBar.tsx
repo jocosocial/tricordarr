@@ -7,17 +7,24 @@ import {UserListItem} from '../Lists/Items/UserListItem';
 import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
 
 interface UserSearchBarProps {
-  userHeaders: UserHeader[];
+  userHeaders?: UserHeader[];
   onPress: (user: UserHeader) => void;
 }
 
-export const UserSearchBar = ({userHeaders, onPress}: UserSearchBarProps) => {
+/**
+ * Search widget to find a user and do something with them. Works on a partial search string. Displays
+ * users as List.Items below the search bar.
+ */
+export const UserSearchBar = ({userHeaders = [], onPress}: UserSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {data} = useUserMatchQuery(searchQuery);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
-  const handlePress = (user: UserHeader) => onPress(user);
+  const handlePress = (user: UserHeader) => {
+    onPress(user);
+    setSearchQuery('');
+  };
 
   // https://stackoverflow.com/questions/8668174/indexof-method-in-an-object-array
   return (
