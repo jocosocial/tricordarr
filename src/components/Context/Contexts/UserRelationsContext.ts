@@ -8,9 +8,9 @@ interface UserRelationsContextType {
   setMutes: Dispatch<SetStateAction<UserHeader[]>>;
   blocks: UserHeader[];
   setBlocks: Dispatch<SetStateAction<UserHeader[]>>;
-  refetchFavorites: () => void;
-  refetchMutes: () => void;
-  refetchBlocks: () => void;
+  refetchFavorites: Function;
+  refetchMutes: Function;
+  refetchBlocks: Function;
 }
 
 export const UserRelationsContext = createContext(<UserRelationsContextType>{});

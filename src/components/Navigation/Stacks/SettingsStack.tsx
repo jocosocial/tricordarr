@@ -19,6 +19,7 @@ import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertK
 import {MuteKeywordsSettingsScreen} from '../../Screens/Settings/Content/MuteKeywordsSettingsScreen';
 import {AccountManagementScreen} from '../../Screens/Settings/Account/AccountManagementScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
+import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -37,6 +38,9 @@ export type SettingsStackParamList = {
   MuteKeywordsSettingsScreen: undefined;
   AccountManagementScreen: undefined;
   LoginScreen: undefined;
+  BlockUsersScreen: undefined;
+  MuteUsersScreen: undefined;
+  FavoriteUsersScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -116,15 +120,16 @@ export const SettingsStack = () => {
         component={MuteKeywordsSettingsScreen}
         options={{title: 'Mute Keywords'}}
       />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.login}
-        component={LoginScreen}
-        options={{title: 'Login'}}
-      />
+      <Stack.Screen name={SettingsStackScreenComponents.login} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen
         name={SettingsStackScreenComponents.accountManagement}
         component={AccountManagementScreen}
         options={{title: 'Account Management'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.blockUsers}
+        component={BlockUsersScreen}
+        options={{title: 'Blocked Users'}}
       />
     </Stack.Navigator>
   );

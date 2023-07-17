@@ -73,6 +73,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Manage keywords that will mute content.'}
               navComponent={SettingsStackScreenComponents.muteKeywords}
             />
+            <SettingsNavigationListItem
+              title={'Blocked Users'}
+              description={'Users that cannot see your content.'}
+              navComponent={SettingsStackScreenComponents.blockUsers}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>
