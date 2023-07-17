@@ -7,9 +7,10 @@ Work Queue
 * timezone warnings
 * Find a way to make tokenAuthQuery do the onError processing.
 * load blocks/mutes/favorites some other time
+* blocks/mutes/favorites refetch doesnt update when the server changed
 
 * Automatically remove themes once they hit their display until. But gotta decode correctly first.
-* Blocked and muted users
+* Blocked and muted and favorited users
 * Move profiles to main stack. Keep locking myself out of chat
 * Around 1am the theme went away
 * Announcements need markdown.
