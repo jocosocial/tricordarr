@@ -5,6 +5,7 @@ import {CustomEmoji} from '../../libraries/Enums/Emoji';
 import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {styleDefaults} from '../../styles';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -17,7 +18,7 @@ interface ContentTextProps {
  * Right now it's just announcements.
  */
 export const ContentText = ({textStyle, text}: ContentTextProps) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
 
   const renderEmojiText = (line: string) => {
     const tokens = line.split(/(:[\w-]+:)/g);
@@ -44,6 +45,7 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
   const markdownStyle = StyleSheet.create({
     text: {
       ...commonStyles.onTwitarrButton,
+      fontSize: styleDefaults.fontSize,
     },
   });
 
