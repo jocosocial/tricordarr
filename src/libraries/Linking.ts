@@ -44,6 +44,10 @@ const deepLinksConf = {
 
 /**
  * This is the actual Linking object that we export and include in App.tsx.
+ * https://developer.android.com/training/app-links
+ * I've tried making App Links worked, but couldn't get it going. https://beta.twitarr.com
+ * kept sending me to the browser. Maybe I have to go through the asset generation/verification?
+ * idk...
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['tricordarr://', Config.SERVER_URL].filter(prefix => prefix !== undefined) as string[],
