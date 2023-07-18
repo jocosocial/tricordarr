@@ -3,7 +3,7 @@ import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navi
 import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {MainView} from '../../Views/Static/MainView';
+import {MainScreen} from '../../Screens/Main/MainScreen';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
@@ -27,7 +27,7 @@ export const MainStack = () => {
 
   return (
     <Stack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
-      <Stack.Screen name={MainStackComponents.mainScreen} component={MainView} options={{title: 'Twitarr Home'}} />
+      <Stack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Twitarr Home'}} />
       <Stack.Screen
         name={MainStackComponents.siteUIScreen}
         component={TwitarrView}

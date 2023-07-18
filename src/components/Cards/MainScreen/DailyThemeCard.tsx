@@ -10,10 +10,14 @@ import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
  * The site UI invents some themes for days that don't have them.
  */
 export const DailyThemeCard = () => {
-  const {data: dailyThemeData} = useDailyThemeQuery();
+  const {data: dailyThemeData, refetch} = useDailyThemeQuery();
   const {cruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
   const {commonStyles} = useStyles();
+
+  useEffect(() => {
+    refetch();
+  }, [cruiseDayIndex, refetch]);
 
   useEffect(() => {
     if (dailyThemeData) {

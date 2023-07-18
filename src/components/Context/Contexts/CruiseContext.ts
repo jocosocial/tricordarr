@@ -6,6 +6,7 @@ export interface CruiseContextType {
   cruiseLength: number;
   cruiseDayIndex: number;
   daysSince: number;
+  hourlyUpdatingDate: Date;
 }
 
 export const CruiseContext = createContext({} as CruiseContextType);
