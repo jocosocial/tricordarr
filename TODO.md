@@ -11,4 +11,3 @@ Work Queue
 * Figure out how to go back to an arbitrary screen
 * Move profiles to main stack. Keep locking myself out of chat
 * notification socket control not working.
-* cover update on the hour didnt happen
