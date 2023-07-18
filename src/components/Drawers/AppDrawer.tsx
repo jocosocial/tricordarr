@@ -38,7 +38,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Directory'}
                 icon={AppIcons.group}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/directory`)}
+                onPress={() => handleDrawerNav('tricordarr://users')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>

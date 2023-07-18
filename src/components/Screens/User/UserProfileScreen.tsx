@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents, NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList, useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
@@ -24,14 +24,15 @@ import {AppIcon} from '../../Images/AppIcon';
 import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 
 export type Props = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.userProfileScreen,
-  NavigatorIDs.userStack
+  SeamailStackParamList | MainStackParamList,
+  SeamailStackScreenComponents.userProfileScreen | MainStackComponents.userProfileScreen,
+  NavigatorIDs.seamailStack | NavigatorIDs.mainStack
 >;
 
-export const UserProfileScreen = ({route, navigation}: Props) => {
+export const UserProfileScreen = ({route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -39,6 +40,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
+  const navigation = useSeamailStack();
 
   const {data, refetch} = useUserProfileQuery(route.params.userID);
 

@@ -49,3 +49,12 @@ export const UserFavoriteText = () => {
     </Text>
   );
 };
+
+export const UserDirectoryText = () => {
+  const {commonStyles} = useStyles();
+  return (
+    <Text style={[commonStyles.marginBottomSmall]}>
+      Enter partial username above to find a user, then tap on a match to view their profile.
+    </Text>
+  );
+};

@@ -8,6 +8,7 @@ import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
+import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -17,6 +18,7 @@ export type MainStackParamList = {
   UserProfileScreen: {
     userID: string;
   };
+  UserDirectoryScreen: undefined;
 };
 
 export const MainStack = () => {
@@ -45,6 +47,11 @@ export const MainStack = () => {
         name={MainStackComponents.userProfileScreen}
         component={UserProfileScreen}
         options={{title: 'User Profile'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.userDirectoryScreen}
+        component={UserDirectoryScreen}
+        options={{title: 'Directory'}}
       />
     </Stack.Navigator>
   );
