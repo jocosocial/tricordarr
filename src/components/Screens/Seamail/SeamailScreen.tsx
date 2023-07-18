@@ -96,14 +96,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.
-        const socketFezPostData = socketMessage as SocketFezPostData;
+        // const socketFezPostData = socketMessage as SocketFezPostData;
         // Apparently Swiftarr sends back a garbage timestamp?
         // Replace it with now since it's probably now-ish anyway and we can fix it
         // on reload.
-        socketFezPostData.timestamp = new Date();
-        //   After all that, the server still considers the message unread until you do a GET containing it
-        //   So dynamically putting messages to the screen will help the local state but that's it.
-        //   And confuse any other client applications.
+        // socketFezPostData.timestamp = new Date();
+        //  After all that, the server still considers the message unread until you do a GET containing it
+        //  So dynamically putting messages to the screen will help the local state but that's it.
+        //  And confuse any other client applications.
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
         //   console.log('fezSocket appending', socketFezPostData);

@@ -10,7 +10,7 @@ export interface SocketFezPostData {
   /// The text of this post.
   text: string;
   /// When the post was made.
-  timestamp: Date;
+  timestamp: string;
   /// An optional image that may be attached to the post.
   image?: string;
   /// HTML fragment for the post, using the Swiftarr Web UI's front end. Fragment is built using the same semantic data available in the other fields in this struct.

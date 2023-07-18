@@ -6,8 +6,6 @@ Backlog
 
 Work Queue
 * Themes
-  * API is not decoding dates correctly
-  * Automatically remove themes once they hit their display until. But gotta decode correctly first.
   * Around 1am the theme went away
   * daily theme is wrong as of midnight. UI says 126 days after boat but app still thinks its 125
 * Figure out how to go back to an arbitrary screen
