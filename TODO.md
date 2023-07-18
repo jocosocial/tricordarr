@@ -8,6 +8,5 @@ Work Queue
 * Themes
   * Around 1am the theme went away
   * daily theme is wrong as of midnight. UI says 126 days after boat but app still thinks its 125
-* Figure out how to go back to an arbitrary screen
-* Move profiles to main stack. Keep locking myself out of chat
 * notification socket control not working.
+* first login not generating fgs?
