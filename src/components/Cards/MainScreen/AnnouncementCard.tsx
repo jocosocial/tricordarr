@@ -1,7 +1,8 @@
-import {Card, Text} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import React from 'react';
 import {AnnouncementData} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ContentText} from '../../Text/ContentText';
 
 export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData}) => {
   const {commonStyles} = useStyles();
@@ -15,7 +16,7 @@ export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData
         subtitleStyle={[commonStyles.onTwitarrButton]}
       />
       <Card.Content>
-        <Text style={[commonStyles.onTwitarrButton]}>{announcement.text}</Text>
+        <ContentText textStyle={[commonStyles.onTwitarrButton]} text={announcement.text} />
       </Card.Content>
     </Card>
   );

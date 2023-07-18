@@ -21,6 +21,7 @@
     "@react-navigation/material-bottom-tabs": "^6.2.14",
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",
+    "@ronradtke/react-native-markdown-display": "^8.0.0",
     "@tanstack/react-query": "^4.24.9",
     "axios": "^1.3.3",
     "base-64": "^1.0.0",
