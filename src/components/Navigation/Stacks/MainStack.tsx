@@ -7,13 +7,16 @@ import {MainView} from '../../Views/Static/MainView';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
-import {LighterScreen} from '../../Screens/Main/LighterScreen';
+import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
   SiteUIScreen: undefined;
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
   AboutScreen: undefined;
+  UserProfileScreen: {
+    userID: string;
+  };
 };
 
 export const MainStack = () => {
@@ -37,6 +40,11 @@ export const MainStack = () => {
         name={MainStackComponents.aboutScreen}
         component={AboutScreen}
         options={{title: 'About Tricordarr'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.userProfileScreen}
+        component={UserProfileScreen}
+        options={{title: 'User Profile'}}
       />
     </Stack.Navigator>
   );

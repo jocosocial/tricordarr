@@ -54,6 +54,7 @@ export enum MainStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mainSettingsScreen = 'MainSettingsScreen',
   aboutScreen = 'AboutScreen',
+  userProfileScreen = 'UserProfileScreen',
 }
 
 export enum RootStackComponents {

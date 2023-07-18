@@ -26,6 +26,7 @@ const deepLinksConf = {
                 LoginScreen: 'login',
               },
             },
+            UserProfileScreen: 'user/:userID',
           },
         },
         SeamailTab: {
@@ -33,7 +34,6 @@ const deepLinksConf = {
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',
-            UserProfileScreen: 'user/:userID',
           },
         },
       },
