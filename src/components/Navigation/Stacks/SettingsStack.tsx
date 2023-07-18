@@ -9,7 +9,6 @@ import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
-import {ConfigShipSSIDScreen} from '../../Screens/Settings/Config/ConfigShipSSIDScreen';
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
@@ -30,7 +29,6 @@ export type SettingsStackParamList = {
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
   ConfigServerUrlScreen: undefined;
-  ConfigShipSSIDScreen: undefined;
   SocketSettingsScreen: undefined;
   PushNotificationSettingsScreen: undefined;
   OobeSettingsScreen: undefined;
@@ -81,11 +79,6 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.configServerUrl}
         component={ConfigServerUrlScreen}
         options={{title: 'Server URL'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.configShipSSID}
-        component={ConfigShipSSIDScreen}
-        options={{title: 'WiFi Network'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.socketSettings}

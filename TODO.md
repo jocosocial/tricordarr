@@ -7,4 +7,4 @@ Backlog
 Work Queue
 * notification socket control not working.
 * first login not generating fgs?
-* move undrefetch out of the mainimagecardcover. it should be in the provider.
+* enableusernotificatoins is a bad pattern, what does it mean?

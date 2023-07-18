@@ -40,11 +40,6 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'URL of the Twitarr server.'}
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
-            <SettingsNavigationListItem
-              title={'WiFi Network'}
-              description={'Configure the known SSID of the ship WiFi. This influences notification checking behavior.'}
-              navComponent={SettingsStackScreenComponents.configShipSSID}
-            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>

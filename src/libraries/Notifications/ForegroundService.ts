@@ -41,7 +41,8 @@ export async function generateForegroundServiceNotification(
 }
 
 export async function generateFgsShutdownNotification() {
-  const body = 'Background worker has been shut down. Relaunch the app to try again. ' + Date.now().toLocaleString();
+  const currentTime = new Date();
+  const body = 'Relaunch the app to try again. Connection lost at ' + currentTime.toLocaleTimeString();
   await notifee.displayNotification({
     id: fgsWorkerNotificationIDs.shutdown,
     title: 'Twitarr Connection Lost',

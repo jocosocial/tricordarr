@@ -71,13 +71,6 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     return true;
   });
 
-  async function toggleOverride() {
-    updateAppConfig({
-      ...appConfig,
-      overrideWifiCheck: !appConfig.overrideWifiCheck,
-    });
-  }
-
   return (
     <AppView>
       <ScrollingContentView
@@ -118,17 +111,6 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
             onPress={() => stopForegroundServiceWorker().then(() => onRefresh())}
             style={[commonStyles.marginTopSmall]}
           />
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Override WiFi Check</Text>
-          <View>
-            <Text>
-              Attempt server connection even if you're not on configured WiFi network. Requires app restart. May consume
-              more battery.
-            </Text>
-            <SettingSwitch title={'Enable'} value={appConfig.overrideWifiCheck} onPress={toggleOverride} />
-          </View>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

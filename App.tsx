@@ -105,10 +105,10 @@ function App(): JSX.Element {
                                 <UserRelationsProvider>
                                   <UserNotificationDataProvider>
                                     <DrawerProvider>
-                                      <AppEventHandler/>
-                                      <ForegroundService/>
-                                      <NotificationDataListener/>
-                                      <RootStackNavigator/>
+                                      <AppEventHandler />
+                                      <ForegroundService />
+                                      <NotificationDataListener />
+                                      <RootStackNavigator />
                                     </DrawerProvider>
                                   </UserNotificationDataProvider>
                                 </UserRelationsProvider>
