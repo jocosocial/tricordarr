@@ -23,7 +23,6 @@ export enum SettingsStackScreenComponents {
   testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
   configServerUrl = 'ConfigServerUrlScreen',
-  configShipSSID = 'ConfigShipSSIDScreen',
   socketSettings = 'SocketSettingsScreen',
   pushNotificationSettings = 'PushNotificationSettingsScreen',
   oobeSettings = 'OobeSettingsScreen',

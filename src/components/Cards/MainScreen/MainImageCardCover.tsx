@@ -1,5 +1,5 @@
 import {Card} from 'react-native-paper';
-import React, {useEffect} from 'react';
+import React from 'react';
 // @ts-ignore
 import DayImage from '../../../../assets/mainview_day.jpg';
 // @ts-ignore
@@ -15,7 +15,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
  * Display a pretty image in the app based on the time of day.
  */
 export const MainImageCardCover = () => {
-  const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
+  const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
 
   // Default to local, but override with the server offset.
@@ -28,10 +28,6 @@ export const MainImageCardCover = () => {
     const relativeDate = new Date(relativeTimestamp);
     currentHour = relativeDate.getUTCHours();
   }
-
-  useEffect(() => {
-    refetchUserNotificationData();
-  }, [refetchUserNotificationData, hourlyUpdatingDate]);
 
   // 9PM-5AM Night
   // 6AM-3PM Day

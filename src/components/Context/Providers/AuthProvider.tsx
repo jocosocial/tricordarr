@@ -51,8 +51,6 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     [dispatchAuthState],
   );
 
-  console.log('Auth State', authState);
-
   return (
     <AuthContext.Provider
       value={{
