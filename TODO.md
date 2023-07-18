@@ -7,6 +7,5 @@ Backlog
 Work Queue
 * Themes
   * Around 1am the theme went away
-  * daily theme is wrong as of midnight. UI says 126 days after boat but app still thinks its 125
 * notification socket control not working.
 * first login not generating fgs?
