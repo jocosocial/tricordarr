@@ -17,6 +17,10 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   // Days Since
   const daysSince = cruiseDayIndex - cruiseLength;
 
+  console.log('Start Date', startDate.toISOString());
+  console.log('Current Date', hourlyUpdatingDate.toISOString());
+  console.log('Cruise Day Index', cruiseDayIndex);
+
   return (
     <CruiseContext.Provider value={{startDate, endDate, cruiseLength, cruiseDayIndex, daysSince, hourlyUpdatingDate}}>
       {children}
