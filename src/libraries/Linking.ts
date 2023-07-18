@@ -1,6 +1,7 @@
 import {LinkingOptions} from '@react-navigation/native';
 import {SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
+import Config from 'react-native-config';
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
@@ -45,6 +46,6 @@ const deepLinksConf = {
  * This is the actual Linking object that we export and include in App.tsx.
  */
 export const navigationLinking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['tricordarr://'],
+  prefixes: ['tricordarr://', Config.SERVER_URL].filter(prefix => prefix !== undefined) as string[],
   config: deepLinksConf,
 };
