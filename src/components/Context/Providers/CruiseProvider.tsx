@@ -2,6 +2,7 @@ import React, {PropsWithChildren} from 'react';
 import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 import useDateTime from '../../../libraries/DateTime';
+import {differenceInCalendarDays} from 'date-fns';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -12,8 +13,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength);
   // Day Index
-  const timeDiff = hourlyUpdatingDate.getTime() - startDate.getTime();
-  const cruiseDayIndex = Math.floor(timeDiff / (1000 * 3600 * 24));
+  const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
   // Days Since
   const daysSince = cruiseDayIndex - cruiseLength;
 
