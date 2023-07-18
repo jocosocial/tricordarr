@@ -6,6 +6,11 @@ Backlog
 
 Work Queue
 * Themes
-  * Around 1am the theme went away
+  * refresh of /dailythemes is not updating
+  * it likely thinks the cruiseDayIndex is wrong
+  * 1AM is the 1 hour difference between EST and EDT
+  * didnt even call the refresh when the cron fired?
+  * figure out what specifically rerenders on the hourly clock
 * notification socket control not working.
 * first login not generating fgs?
+* move undrefetch out of the mainimagecardcover. it should be in the provider.
