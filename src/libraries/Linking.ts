@@ -27,6 +27,7 @@ const deepLinksConf = {
               },
             },
             UserProfileScreen: 'user/:userID',
+            UserDirectoryScreen: 'users',
           },
         },
         SeamailTab: {

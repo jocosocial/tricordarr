@@ -5,7 +5,6 @@
 export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
   seamailStack = 'SeamailStackNavigator',
-  userStack = 'UserStack',
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
 }
@@ -55,6 +54,7 @@ export enum MainStackComponents {
   mainSettingsScreen = 'MainSettingsScreen',
   aboutScreen = 'AboutScreen',
   userProfileScreen = 'UserProfileScreen',
+  userDirectoryScreen = 'UserDirectoryScreen',
 }
 
 export enum RootStackComponents {
