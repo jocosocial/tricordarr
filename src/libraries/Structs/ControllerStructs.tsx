@@ -173,7 +173,7 @@ export interface FezPostData {
   /// The text content of the fez post.
   text: string;
   /// The time the post was submitted.
-  timestamp: Date;
+  timestamp: string;
   /// The image content of the fez post.
   image?: string;
 }
@@ -207,9 +207,9 @@ export interface FezData {
   /// A description of the fez.
   info: string;
   /// The starting time of the fez.
-  startTime?: Date;
+  startTime?: string;
   /// The ending time of the fez.
-  endTime?: Date;
+  endTime?: string;
   /// The 3 letter abbreviation for the active time zone at the time and place where the fez is happening.
   timeZone?: string;
   /// The location for the fez.
@@ -223,7 +223,7 @@ export interface FezData {
   /// TRUE if the fez has been cancelled by the owner. Cancelled fezzes should display CANCELLED so users know not to show up, but cancelled fezzes are not deleted.
   cancelled: boolean;
   /// The most recent of: Creation time for the fez, time of the last post (may not exactly match post time), user add/remove, or update to fezzes' fields.
-  lastModificationTime: Date;
+  lastModificationTime: string;
   /// Will be nil if user is not a member of the fez (in the participant or waiting lists).
   members?: MembersOnlyData;
 }
@@ -277,9 +277,9 @@ export interface FezContentData {
   /// A description of the fez.
   info: string;
   /// The starting time for the fez.
-  startTime?: Date;
+  startTime?: string;
   /// The ending time for the fez.
-  endTime?: Date;
+  endTime?: string;
   /// The location for the fez.
   location?: string;
   /// The minimum number of users needed for the fez.
@@ -313,10 +313,10 @@ export interface AnnouncementData {
   /// The contents of the announcement.
   text: string;
   /// When the announcement was last modified.
-  updatedAt: Date;
+  updatedAt: string;
   /// Announcements are considered 'active' until this time. After this time, `GET /api/v3/notification/announcements` will no longer return the announcement,
   /// and caching clients should stop showing it to users.
-  displayUntil: Date;
+  displayUntil: string;
   /// TRUE if the announcement has been deleted. Only THO/admins can fetch deleted announcements; will always be FALSE for other users.
   isDeleted: boolean;
 }

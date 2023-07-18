@@ -18,6 +18,9 @@ interface RelativeTimeTagProps {
  * Relies on:
  * https://catamphetamine.gitlab.io/react-time-ago/
  * https://gitlab.com/catamphetamine/react-time-ago
+ *
+ * Many moons later I learned that Axios decodes a struct with ISO8601 strings for dates rather than
+ * returning a Date object. This component and all consumer screens need to be updated for this reality.
  */
 export const RelativeTimeTag = ({date, style, variant, raw}: RelativeTimeTagProps) => {
   if (!date) {
@@ -38,7 +41,7 @@ export const RelativeTimeTag = ({date, style, variant, raw}: RelativeTimeTagProp
     return <StylizedText>{date?.toString()}</StylizedText>;
   }
 
-  // The Date.parse(date.toString()) is dumb but necessary.
   // https://github.com/catamphetamine/react-time-ago/issues/18
+  // No, no. He's right. We is buggy.
   return <ReactTimeAgo date={Date.parse(date.toString())} locale="en-US" component={StylizedText} />;
 };

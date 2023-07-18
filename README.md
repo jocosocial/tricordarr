@@ -21,6 +21,7 @@ Notes
 * Icon library: https://pictogrammers.com/library/mdi/
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * refetchPage can be passed to refetch to limit refetching
+* All dates from the API come in as ISO8601 strings
 
 Upgrading
 ---------
