@@ -1,7 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  MainStackComponents,
+  NavigatorIDs,
+  SeamailStackScreenComponents
+} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {SeamailStackParamList, useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
@@ -25,6 +30,7 @@ import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList | MainStackParamList,
@@ -40,7 +46,7 @@ export const UserProfileScreen = ({route}: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
-  const navigation = useSeamailStack();
+  const navigation = useBottomTabNavigator();
 
   const {data, refetch} = useUserProfileQuery(route.params.userID);
 
@@ -54,14 +60,20 @@ export const UserProfileScreen = ({route}: Props) => {
   }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
 
   const seamailCreateHandler = useCallback(() => {
-    navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
-      initialUserHeader: data?.header,
+    navigation.navigate(BottomTabComponents.seamailTab, {
+      screen: SeamailStackScreenComponents.seamailCreateScreen,
+      params: {
+        initialUserHeader: data?.header,
+      },
     });
   }, [data?.header, navigation]);
 
   const krakentalkCreateHandler = useCallback(() => {
-    navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen, {
-      initialUserHeader: data?.header,
+    navigation.navigate(BottomTabComponents.seamailTab, {
+      screen: SeamailStackScreenComponents.krakentalkCreateScreen,
+      params: {
+        initialUserHeader: data?.header,
+      },
     });
   }, [data?.header, navigation]);
 
