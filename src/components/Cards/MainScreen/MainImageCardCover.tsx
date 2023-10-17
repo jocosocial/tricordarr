@@ -29,10 +29,10 @@ export const MainImageCardCover = () => {
     currentHour = relativeDate.getUTCHours();
   }
 
-  // 9PM-5AM Night
-  // 6AM-3PM Day
-  // 4PM Happy Hour
-  // 5PM-7PM Sunset
+  // 9PM-5AM (21:00-05:00) Night
+  // 6AM-3PM (06:00-15:00) Day
+  // 4PM (16:00) Wang Wang Happy Hour
+  // 5PM-8PM (17:00-20:00) Sunset
   let sourceImage = NightImage;
   if (currentHour >= 6 && currentHour <= 15) {
     sourceImage = DayImage;
