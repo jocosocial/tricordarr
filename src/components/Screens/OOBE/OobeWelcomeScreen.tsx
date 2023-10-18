@@ -5,27 +5,23 @@ import {Text} from 'react-native-paper';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../Navigation/Stacks/RootStackNavigator';
-import {NavigatorIDs, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {NavigatorIDs, OobeStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 
-type Props = NativeStackScreenProps<RootStackParamList, RootStackComponents.oobeWelcomeScreen, NavigatorIDs.rootStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen, NavigatorIDs.oobeStack>;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const onFinish = async () => {
-    console.log('OOBE finished!');
-    updateAppConfig({
-      ...appConfig,
-      oobeCompletedVersion: appConfig.oobeExpectedVersion,
-    });
-    // Bop Bop Bop
-    navigation.replace(RootStackComponents.rootContentScreen);
-  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
         <Text>Welcome</Text>
-        <PrimaryActionButton buttonText={'Finish'} onPress={onFinish} />
+        {/*<PrimaryActionButton buttonText={'Finish'} onPress={onFinish} />*/}
+        <PrimaryActionButton
+          buttonText={'Next'}
+          onPress={() => navigation.push(OobeStackComponents.oobeServerScreen)}
+        />
       </ScrollingContentView>
     </AppView>
   );
