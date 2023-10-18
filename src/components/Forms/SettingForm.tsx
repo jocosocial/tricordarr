@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {SettingFormValues} from '../../libraries/Types/FormValues';
 import {TextField} from './Fields/TextField';
@@ -9,7 +9,7 @@ import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/Text
 
 interface SettingFormProps {
   value: string;
-  onSave: (values: SettingFormValues) => void;
+  onSave: (values: SettingFormValues, formikHelpers: FormikHelpers<SettingFormValues>) => void;
   validationSchema?: Object;
   inputMode?: InputModeOptions;
 }

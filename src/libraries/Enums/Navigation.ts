@@ -7,6 +7,7 @@ export enum NavigatorIDs {
   seamailStack = 'SeamailStackNavigator',
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
+  oobeStack = 'OobeStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -57,7 +58,17 @@ export enum MainStackComponents {
 }
 
 export enum RootStackComponents {
-  oobeWelcomeScreen = 'OobeWelcomeScreen',
+  oobeNavigator = 'OobeStackNavigator',
   rootContentScreen = 'RootContentScreen',
   lighterScreen = 'LighterScreen',
+}
+
+export enum OobeStackComponents {
+  oobeWelcomeScreen = 'OobeWelcomeScreen',
+  oobeServerScreen = 'OobeServerScreen',
+  oobeConductScreen = 'OobeConductScreen',
+  oobeRegisterScreen = 'OobeRegisterScreen',
+  oobeLoginScreen = 'OobeLoginScreen',
+  oobeHelpScreen = 'OobeHelpScreen',
+  oobeFinishScreen = 'OobeFinishScreen',
 }

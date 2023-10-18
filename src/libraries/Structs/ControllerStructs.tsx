@@ -3,6 +3,7 @@ import {UserAccessLevel} from '../Enums/UserAccessLevel';
 import {SwiftarrClientApp, SwiftarrFeature} from '../Enums/AppFeatures';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {StorageKeys} from '../Storage';
+import {HttpStatusCode} from 'axios';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -344,4 +345,10 @@ export interface UserPasswordData {
 export interface UserUsernameData {
   /// The user's desired new username.
   username: string;
+}
+
+export interface HealthResponse {
+  status: HttpStatusCode;
+  reason: string;
+  error: boolean;
 }
