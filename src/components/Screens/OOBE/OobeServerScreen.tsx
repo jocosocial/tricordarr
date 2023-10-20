@@ -10,12 +10,10 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SettingForm} from '../../Forms/SettingForm';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SettingFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries';
 import {HttpStatusCode} from 'axios';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
@@ -27,7 +25,6 @@ const validationSchema = Yup.object().shape({
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {setErrorMessage} = useErrorHandler();
-  const {commonStyles} = useStyles();
   const {data: serverHealthData, refetch} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
 
