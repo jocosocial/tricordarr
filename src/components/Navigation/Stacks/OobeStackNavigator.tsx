@@ -32,7 +32,7 @@ export const OobeStackNavigator = () => {
       <Stack.Screen
         name={OobeStackComponents.oobeWelcomeScreen}
         component={OobeWelcomeScreen}
-        options={{title: 'Welcome'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeServerScreen}

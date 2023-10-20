@@ -7,9 +7,11 @@ interface OobeButtonsViewProps {
   leftText?: string;
   leftOnPress?: () => void;
   leftMode?: 'contained' | 'text' | 'outlined' | 'elevated' | 'contained-tonal';
+  leftDisabled?: boolean;
   rightText?: string;
   rightOnPress?: () => void;
   rightMode?: 'contained' | 'text' | 'outlined' | 'elevated' | 'contained-tonal';
+  rightDisabled?: boolean;
 }
 
 export const OobeButtonsView = ({
@@ -19,6 +21,8 @@ export const OobeButtonsView = ({
   rightOnPress,
   leftMode = 'outlined',
   rightMode = 'contained',
+  leftDisabled = false,
+  rightDisabled = false,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
 
@@ -26,7 +30,6 @@ export const OobeButtonsView = ({
     buttonContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
-      // justifyContent: 'flex-end',
       ...commonStyles.paddingSides,
       ...commonStyles.paddingVertical,
       alignItems: 'center',
@@ -49,7 +52,13 @@ export const OobeButtonsView = ({
     <View style={styles.buttonContainer}>
       <View style={styles.leftButtonContainer}>
         {leftText && leftOnPress && (
-          <PrimaryActionButton buttonText={leftText} onPress={leftOnPress} style={styles.leftButton} mode={leftMode} />
+          <PrimaryActionButton
+            buttonText={leftText}
+            onPress={leftOnPress}
+            style={styles.leftButton}
+            mode={leftMode}
+            disabled={leftDisabled}
+          />
         )}
       </View>
       <View style={styles.rightButtonContainer}>
@@ -59,6 +68,7 @@ export const OobeButtonsView = ({
             onPress={rightOnPress}
             style={styles.rightButton}
             mode={rightMode}
+            disabled={rightDisabled}
           />
         )}
       </View>
