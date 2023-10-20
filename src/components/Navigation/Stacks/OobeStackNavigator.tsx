@@ -39,8 +39,16 @@ export const OobeStackNavigator = () => {
         component={OobeServerScreen}
         options={{title: 'Server URL'}}
       />
-      <Stack.Screen name={OobeStackComponents.oobeConductScreen} component={OobeConductScreen} options={{title: 'Code of Conduct'}} />
-      <Stack.Screen name={OobeStackComponents.oobeRegisterScreen} component={OobeRegisterScreen} />
+      <Stack.Screen
+        name={OobeStackComponents.oobeConductScreen}
+        component={OobeConductScreen}
+        options={{title: 'Code of Conduct'}}
+      />
+      <Stack.Screen
+        name={OobeStackComponents.oobeRegisterScreen}
+        component={OobeRegisterScreen}
+        options={{title: 'Account'}}
+      />
       <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={OobeLoginScreen} />
       <Stack.Screen name={OobeStackComponents.oobeHelpScreen} component={OobeHelpScreen} />
       <Stack.Screen name={OobeStackComponents.oobeFinishScreen} component={OobeFinishScreen} />
