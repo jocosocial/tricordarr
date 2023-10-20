@@ -16,6 +16,7 @@ import {FormikHelpers} from 'formik';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries';
 import {HttpStatusCode} from 'axios';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
+import {OobeButtonsView} from '../../Views/OobeButtonsView';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
 
@@ -73,18 +74,19 @@ export const OobeServerScreen = ({navigation}: Props) => {
           )}
           {!serverHealthPassed && (
             <Text>
-              Server check failed. Ensure your phone in on ship wifi, all VPNs and DNS interceptors are disabled, and
+              Server check failed. Ensure your phone is on ship wifi, all VPNs and DNS interceptors are disabled, and
               the server URL is correct. If the issue persists go to the Info Desk for assistance.
             </Text>
           )}
         </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonText={'Next'}
-            onPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
-          />
-        </PaddedContentView>
       </ScrollingContentView>
+      <OobeButtonsView
+        leftText={'Previous'}
+        leftOnPress={() => navigation.goBack()}
+        rightText={'Next'}
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
+        rightDisabled={!serverHealthPassed}
+      />
     </AppView>
   );
 };
