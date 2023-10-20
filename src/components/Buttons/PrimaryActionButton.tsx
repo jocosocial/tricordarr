@@ -33,7 +33,7 @@ export const PrimaryActionButton = ({
   const theme = useAppTheme();
 
   const buttonStyle = {
-    borderWidth: 0,
+    borderWidth: mode === 'contained' ? 0 : 1,
   };
 
   const getLoadingIcon = () => <ActivityIndicator />;
@@ -41,7 +41,7 @@ export const PrimaryActionButton = ({
   return (
     <View style={viewStyle}>
       <Button
-        buttonColor={buttonColor || theme.colors.twitarrPositiveButton}
+        buttonColor={mode === 'contained' ? buttonColor || theme.colors.twitarrPositiveButton : buttonColor}
         textColor={textColor || AndroidColor.WHITE}
         style={[buttonStyle, style]}
         mode={mode}
