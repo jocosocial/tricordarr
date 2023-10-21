@@ -78,9 +78,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
-        leftText={'Previous'}
         leftOnPress={() => navigation.goBack()}
-        rightText={'Next'}
         rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
         rightDisabled={!serverHealthPassed}
       />

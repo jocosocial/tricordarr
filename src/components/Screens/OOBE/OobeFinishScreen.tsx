@@ -8,6 +8,8 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {OobeButtonsView} from '../../Views/OobeButtonsView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen, NavigatorIDs.oobeStack>;
 
@@ -25,10 +27,19 @@ export const OobeFinishScreen = ({navigation}: Props) => {
   };
   return (
     <AppView>
-      <ScrollingContentView isStack={false}>
-        <Text>Finish!</Text>
-        <PrimaryActionButton buttonText={'Finish'} onPress={onFinish} />
+      <ScrollingContentView isStack={true}>
+        <PaddedContentView padTop={true}>
+          <Text>A note from the Twitarr development team:</Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>Thanks for using our app! We hope it enhances your vacation the way it does for us. Be excellent to each other and have a great cruise!</Text>
+        </PaddedContentView>
       </ScrollingContentView>
+      <OobeButtonsView
+        leftOnPress={() => navigation.goBack()}
+        rightText={'Finish'}
+        rightOnPress={onFinish}
+      />
     </AppView>
   );
 };

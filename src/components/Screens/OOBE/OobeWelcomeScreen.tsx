@@ -23,7 +23,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           <Text style={{textAlign: 'center'}}>The on-board bespoke communication platform of the JoCo Cruise.</Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView rightText={'Next'} rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)} />
+      <OobeButtonsView rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)} />
     </AppView>
   );
 };

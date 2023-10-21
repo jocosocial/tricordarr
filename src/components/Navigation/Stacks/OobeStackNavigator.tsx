@@ -7,18 +7,21 @@ import {OobeWelcomeScreen} from '../../Screens/OOBE/OobeWelcomeScreen';
 import {OobeServerScreen} from '../../Screens/OOBE/OobeServerScreen';
 import {OobeConductScreen} from '../../Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '../../Screens/OOBE/OobeFinishScreen';
-import {OobeRegisterScreen} from '../../Screens/OOBE/OobeRegisterScreen';
+import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen';
 import {OobeLoginScreen} from '../../Screens/OOBE/OobeLoginScreen';
 import {OobeHelpScreen} from '../../Screens/OOBE/OobeHelpScreen';
+import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
+import {OobeRegisterScreen} from '../../Screens/OOBE/OobeRegisterScreen';
 
 export type OobeStackParamList = {
   OobeWelcomeScreen: undefined;
   OobeServerScreen: undefined;
   OobeConductScreen: undefined;
-  OobeRegisterScreen: undefined;
-  OobeLoginScreen: undefined;
+  OobeAccountScreen: undefined;
+  LoginScreen: undefined;
   OobeHelpScreen: undefined;
   OobeFinishScreen: undefined;
+  OobeRegisterScreen: undefined;
 };
 
 export const OobeStackNavigator = () => {
@@ -45,13 +48,22 @@ export const OobeStackNavigator = () => {
         options={{title: 'Code of Conduct'}}
       />
       <Stack.Screen
-        name={OobeStackComponents.oobeRegisterScreen}
-        component={OobeRegisterScreen}
+        name={OobeStackComponents.oobeAccountScreen}
+        component={OobeAccountScreen}
         options={{title: 'Account'}}
       />
-      <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={OobeLoginScreen} />
+      <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{title: 'Login'}} />
+      <Stack.Screen
+        name={OobeStackComponents.oobeRegisterScreen}
+        component={OobeRegisterScreen}
+        options={{title: 'Register'}}
+      />
       <Stack.Screen name={OobeStackComponents.oobeHelpScreen} component={OobeHelpScreen} />
-      <Stack.Screen name={OobeStackComponents.oobeFinishScreen} component={OobeFinishScreen} />
+      <Stack.Screen
+        name={OobeStackComponents.oobeFinishScreen}
+        component={OobeFinishScreen}
+        options={{title: 'Finish'}}
+      />
     </Stack.Navigator>
   );
 };
