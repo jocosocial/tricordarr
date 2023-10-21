@@ -43,10 +43,9 @@ export const OobeConductScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <OobeButtonsView
-          leftText={'Previous'}
           leftOnPress={() => navigation.goBack()}
           rightText={'I Agree'}
-          rightOnPress={() => navigation.push(OobeStackComponents.oobeRegisterScreen)}
+          rightOnPress={() => navigation.push(OobeStackComponents.oobeAccountScreen)}
         />
       </ScrollingContentView>
     </AppView>

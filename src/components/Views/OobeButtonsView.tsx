@@ -15,9 +15,9 @@ interface OobeButtonsViewProps {
 }
 
 export const OobeButtonsView = ({
-  leftText,
+  leftText = 'Previous',
   leftOnPress,
-  rightText,
+  rightText = 'Next',
   rightOnPress,
   leftMode = 'outlined',
   rightMode = 'contained',
