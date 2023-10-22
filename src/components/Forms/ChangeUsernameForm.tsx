@@ -8,15 +8,14 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
+import {UsernameValidation} from '../../libraries/ValidationSchema';
 
 interface ChangeUsernameFormProps {
   onSubmit: (values: ChangeUsernameFormValues, helpers: FormikHelpers<ChangeUsernameFormValues>) => void;
 }
 
 const validationSchema = Yup.object().shape({
-  username: Yup.string()
-    .matches(/^[a-zA-Z0-9-.+_]+$/, 'Username can only contain alphanumeric characters plus "-.+_"')
-    .required('Username cannot be empty.'),
+  username: UsernameValidation,
 });
 
 const initialValues: ChangeUsernameFormValues = {

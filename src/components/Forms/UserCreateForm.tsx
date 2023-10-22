@@ -8,6 +8,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
+import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '../../libraries/ValidationSchema';
 
 interface UserCreateFormProps {
   onSubmit: (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => void;
@@ -15,9 +16,9 @@ interface UserCreateFormProps {
 
 const validationSchema = Yup.object().shape({
   // This is 7 for the space that often comes with a copy+paste from the emails.
-  verification: Yup.string().min(6).max(7).required('Six-character registration code is required.'),
-  username: Yup.string().required('Username cannot be empty.'),
-  password: Yup.string().min(6).max(50).required('Password cannot be empty.'),
+  verification: RecoveryKeyValidation,
+  username: UsernameValidation,
+  password: PasswordValidation,
   passwordVerify: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match.'),
 });
 
@@ -52,6 +53,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
             name={'username'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
+            autoCapitalize={'none'}
           />
           <TextField
             viewStyle={styles.inputContainer}

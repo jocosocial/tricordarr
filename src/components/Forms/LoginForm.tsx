@@ -8,14 +8,15 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
+import {PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
 }
 
 const validationSchema = Yup.object().shape({
-  username: Yup.string().required('Username cannot be empty.'),
-  password: Yup.string().required('Password cannot be empty.'),
+  username: UsernameValidation,
+  password: PasswordValidation,
 });
 
 const initialValues: LoginFormValues = {
