@@ -40,6 +40,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             name={'username'}
             label={'Username'}
             left={<TextInput.Icon icon={AppIcons.user} />}
+            autoCapitalize={'none'}
           />
           <TextField
             viewStyle={styles.inputContainer}
