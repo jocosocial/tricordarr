@@ -14,7 +14,8 @@ interface UserCreateFormProps {
 }
 
 const validationSchema = Yup.object().shape({
-  verification: Yup.string().min(6).max(6).required('Six-character registration code is required.'),
+  // This is 7 for the space that often comes with a copy+paste from the emails.
+  verification: Yup.string().min(6).max(7).required('Six-character registration code is required.'),
   username: Yup.string().required('Username cannot be empty.'),
   password: Yup.string().min(6).max(50).required('Password cannot be empty.'),
   passwordVerify: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match.'),
@@ -38,18 +39,13 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <Text>
-            Your Twitarr registration code was sent to you via e-mail. If you did not receive your registration code or
-            do not have access to your e-mail, go to the JoCo Cruise Info Desk for assistance. Your registration code
-            can only be used once. Do not share it with others. You will be held accountable for the actions of ANYONE
-            using your code. If you need an additional code to create an additional account, please request one at the
-            JoCo Cruise Info Desk.
-          </Text>
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
             label={'Registration Code'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
+            autoCapitalize={'characters'}
+            maxLength={7}
           />
           <TextField
             viewStyle={styles.inputContainer}

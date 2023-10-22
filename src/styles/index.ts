@@ -97,6 +97,9 @@ export const commonStyles = StyleSheet.create({
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,
   },
+  paddingVerticalSmall: {
+    paddingVertical: styleDefaults.marginSize / 2,
+  },
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
   },
@@ -179,5 +182,8 @@ export const commonStyles = StyleSheet.create({
   emoji: {
     width: 20, //styleDefaults.fontSize * 1.5,
     height: 20, //styleDefaults.fontSize * 1.5,
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });

@@ -15,6 +15,7 @@ interface TextFieldProps {
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: InputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  maxLength?: number;
 }
 
 export const TextField = ({
@@ -28,6 +29,7 @@ export const TextField = ({
   viewStyle,
   inputMode,
   autoCapitalize,
+  maxLength,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched, isSubmitting} = useFormikContext();
   return (
@@ -48,6 +50,7 @@ export const TextField = ({
             secureTextEntry={secureTextEntry}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
+            maxLength={maxLength}
           />
           <HelperText type={'error'} visible={!!errors[name] && touched[name]}>
             {errors[name]}
