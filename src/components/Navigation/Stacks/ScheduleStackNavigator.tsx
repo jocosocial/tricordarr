@@ -7,7 +7,9 @@ import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 
 export type ScheduleStackParamList = {
-  ScheduleDayScreen: undefined;
+  ScheduleDayScreen: {
+    cruiseDay?: number;
+  };
 };
 
 export const ScheduleStackNavigator = () => {
