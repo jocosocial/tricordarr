@@ -3,7 +3,7 @@ import {useQuery} from '@tanstack/react-query';
 import axios, {AxiosError} from 'axios';
 
 interface EventsQueryOptions {
-  cruiseDay?: number;
+  cruiseDay: number;
   day?: string;
   date?: Date;
   time?: Date;
@@ -12,9 +12,9 @@ interface EventsQueryOptions {
 }
 
 export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search}: EventsQueryOptions) => {
-  return useQuery<[EventData], AxiosError<ErrorResponse>>(['/events'], async () => {
+  return useQuery<[EventData], AxiosError<ErrorResponse>>([`/events?cruiseday=${cruiseDay}`], async () => {
     const queryParams = {
-      ...(cruiseDay && {cruiseday: cruiseDay}),
+      cruiseday: cruiseDay,
       ...(day && {day: day}),
       ...(date && {date: date.toISOString()}),
       ...(time && {time: time.toISOString()}),

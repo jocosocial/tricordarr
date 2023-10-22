@@ -48,8 +48,6 @@ export const OobeServerScreen = ({navigation}: Props) => {
     }
   }, [serverHealthData]);
 
-  console.log('Server Check?', serverHealthPassed);
-
   return (
     <AppView>
       <ScrollingContentView>

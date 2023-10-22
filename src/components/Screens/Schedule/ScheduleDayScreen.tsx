@@ -32,7 +32,6 @@ const getCruiseDay: () => number = () => {
   const today = new Date();
   // Map the day of the week to a number.
   const weekday = getDay(today);
-  console.log('weekday', weekday);
   // What day index does the cruise start on?
   const cruiseStartDayOfWeek = 0; // Sunday is 0 in JavaScript date-fns, 1 in Swift.
   // Do maths. We add an extra 1 to the weekday and cruiseStartDayOfWeek because Swift and JavaScript assign values differently.
@@ -61,10 +60,9 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  console.log('Cruise day is ', cruiseDay);
-  useEffect(() => {
-    refetch();
-  }, [cruiseDay, refetch]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [cruiseDay, refetch]);
 
   return (
     <AppView>
