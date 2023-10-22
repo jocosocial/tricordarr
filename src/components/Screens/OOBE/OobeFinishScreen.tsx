@@ -6,7 +6,6 @@ import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
