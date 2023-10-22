@@ -54,4 +54,5 @@ export enum AppIcons {
   alertword = 'alert-box-outline',
   time = 'clock-check',
   logout = 'logout',
+  registrationCode = 'barcode',
 }
