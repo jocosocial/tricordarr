@@ -60,7 +60,7 @@ export class AppPermissions {
 
     let permissionStatuses = await requestMultiple(perm);
 
-    if (permissionStatuses[perm[0]] !== RESULTS.GRANTED || permissionStatuses[perm[1]] !== RESULTS.GRANTED) {
+    if (permissionStatuses[perm[0]] !== RESULTS.GRANTED) {
       Alert.alert(
         'Insufficient permissions!',
         'This app requires Notification permissions. Please enable them in the app settings',
