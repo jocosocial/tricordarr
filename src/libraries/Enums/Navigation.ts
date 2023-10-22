@@ -8,6 +8,7 @@ export enum NavigatorIDs {
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
   oobeStack = 'OobeStackNavigator',
+  scheduleStack = 'ScheduleStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -71,4 +72,8 @@ export enum OobeStackComponents {
   oobeRegisterScreen = 'OobeRegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
+}
+
+export enum ScheduleStackComponents {
+  scheduleDayScreen = 'ScheduleDayScreen',
 }

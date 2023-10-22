@@ -9,6 +9,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
+import {ScheduleStackNavigator} from '../Stacks/ScheduleStackNavigator';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -66,7 +67,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.scheduleTab}
-        component={NotImplementedView}
+        component={ScheduleStackNavigator}
         options={{
           title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),
