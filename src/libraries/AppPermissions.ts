@@ -56,14 +56,14 @@ export class AppPermissions {
   }
 
   static requestRequiredPermissions = async () => {
-    let perm = [PERMISSIONS.ANDROID.POST_NOTIFICATIONS, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION];
+    let perm = [PERMISSIONS.ANDROID.POST_NOTIFICATIONS];
 
     let permissionStatuses = await requestMultiple(perm);
 
     if (permissionStatuses[perm[0]] !== RESULTS.GRANTED || permissionStatuses[perm[1]] !== RESULTS.GRANTED) {
       Alert.alert(
         'Insufficient permissions!',
-        'This app requires both Notifications and Precise Location permissions. Please enable them in the app settings',
+        'This app requires Notification permissions. Please enable them in the app settings',
         [
           {text: 'Open Settings', onPress: () => Linking.openSettings()},
           {text: 'Exit', onPress: () => BackHandler.exitApp()},
