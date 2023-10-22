@@ -6,12 +6,10 @@ import {KeywordFormValues} from '../../libraries/Types/FormValues';
 import {TextField} from './Fields/TextField';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
+import {KeywordValidation} from '../../libraries/ValidationSchema';
 
 const validationSchema = Yup.object().shape({
-  keyword: Yup.string()
-    .matches(/^[a-z]+$/, 'Keyword must be a lowercase word.')
-    .min(4)
-    .required('A word is required'),
+  keyword: KeywordValidation,
 });
 
 interface KeywordFormProps {

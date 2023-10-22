@@ -8,6 +8,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
+import {PasswordValidation} from '../../libraries/ValidationSchema';
 
 interface ChangePasswordFormProps {
   onSubmit: (values: ChangePasswordFormValues, helpers: FormikHelpers<ChangePasswordFormValues>) => void;
@@ -15,7 +16,7 @@ interface ChangePasswordFormProps {
 
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required('Must provide current password.'),
-  newPassword: Yup.string().min(6).max(50).required('Password cannot be empty.'),
+  newPassword: PasswordValidation,
   newPasswordVerify: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match.'),
 });
 

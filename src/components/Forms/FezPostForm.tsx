@@ -6,10 +6,8 @@ import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton, List} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
-import {ListSection} from '../Lists/ListSection';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 
 interface FezPostFormProps {
