@@ -1,13 +1,9 @@
 import React, {useCallback} from 'react';
-import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {OobeButtonsView} from '../../Views/OobeButtonsView';
-import {commonStyles} from '../../../styles';
-import {LoginForm} from '../../Forms/LoginForm';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {LoginFormValues, UserRegistrationFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
@@ -16,9 +12,9 @@ import {useUserCreateQuery} from '../../Queries/User/UserQueries';
 import {useLoginQuery} from '../../Queries/Auth/LoginQueries';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {UserCreateForm} from '../../Forms/UserCreateForm';
-import {UserCreateData} from '../../../libraries/Structs/ControllerStructs';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {UserRecoveryKeyModalView} from '../../Views/Modals/UserRecoveryKeyModalView';
+import {Text} from 'react-native-paper';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeRegisterScreen, NavigatorIDs.oobeStack>;
 
@@ -59,6 +55,24 @@ export const OobeRegisterScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
+          <Text>
+            Your Twitarr registration code was sent to you via e-mail. If you did not receive your registration code or
+            do not have access to your e-mail, go to the JoCo Cruise Info Desk for assistance.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            Your registration code can only be used once. Do not share it with others. You will be held accountable for
+            the actions of ANYONE using your code.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            If you need an additional code to create an additional account, please request one at the JoCo Cruise Info
+            Desk.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
           <UserCreateForm onSubmit={onSubmit} />
         </PaddedContentView>
       </ScrollingContentView>

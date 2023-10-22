@@ -19,10 +19,10 @@ export const OobeFinishScreen = ({navigation}: Props) => {
 
   const onFinish = async () => {
     console.log('OOBE finished!');
-    // updateAppConfig({
-    //   ...appConfig,
-    //   oobeCompletedVersion: appConfig.oobeExpectedVersion,
-    // });
+    updateAppConfig({
+      ...appConfig,
+      oobeCompletedVersion: appConfig.oobeExpectedVersion,
+    });
     rootNavigation.replace(RootStackComponents.rootContentScreen);
   };
   return (
@@ -32,14 +32,13 @@ export const OobeFinishScreen = ({navigation}: Props) => {
           <Text>A note from the Twitarr development team:</Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>Thanks for using our app! We hope it enhances your vacation the way it does for us. Be excellent to each other and have a great cruise!</Text>
+          <Text>
+            Thanks for using our app! We hope it enhances your vacation the way it does for us. Be excellent to each
+            other and have a great cruise!
+          </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView
-        leftOnPress={() => navigation.goBack()}
-        rightText={'Finish'}
-        rightOnPress={onFinish}
-      />
+      <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Finish'} rightOnPress={onFinish} />
     </AppView>
   );
 };

@@ -72,7 +72,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
           {!serverHealthPassed && (
             <Text>
               Server check failed. Ensure your phone is on ship wifi, all VPNs and DNS interceptors are disabled, and
-              the server URL is correct. If the issue persists go to the Info Desk for assistance.
+              the server URL is correct. If the issue persists go to the JoCo Cruise Info Desk for assistance.
             </Text>
           )}
         </PaddedContentView>
