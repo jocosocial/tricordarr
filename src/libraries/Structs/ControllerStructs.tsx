@@ -352,3 +352,22 @@ export interface HealthResponse {
   reason: string;
   error: boolean;
 }
+
+export interface CreatedUserData {
+  /// The newly created user's ID.
+  userID: string;
+  /// The newly created user's username.
+  username: string;
+  /// The newly created user's recoveryKey.
+  recoveryKey: string;
+}
+
+export interface UserCreateData {
+  /// The user's username.
+  username: string;
+  /// The user's password.
+  password: string;
+  /// Verification code, emailed to all cruisegoers by THO before embarkation. On success, user will be created with .verified access level, consuming this code.
+  /// Required for creating 'parent' accounts; must be nil when used to create a sub-account with `POST /api/v3/user/add`.
+  verification?: string;
+}

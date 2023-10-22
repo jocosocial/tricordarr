@@ -1,7 +1,10 @@
 import {
+  CreatedUserData,
   ErrorResponse,
   KeywordData,
   ProfilePublicData,
+  TokenStringData,
+  UserCreateData,
   UserPasswordData,
   UserUsernameData,
 } from '../../../libraries/Structs/ControllerStructs';
@@ -89,6 +92,23 @@ const userUsernameHandler = async ({
 export const useUserUsernameMutation = (options = {}) => {
   const {setErrorMessage} = useErrorHandler();
   return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserUsernameMutationProps>(userUsernameHandler, {
+    onError: error => {
+      setErrorMessage(error.response?.data.reason || error.message);
+    },
+    ...options,
+  });
+};
+
+const userCreateHandler = async ({
+  username,
+  password,
+  verification,
+}: UserCreateData): Promise<AxiosResponse<CreatedUserData>> =>
+  await axios.post('/user/create', {username, password, verification});
+
+export const useUserCreateQuery = (options = {}) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<CreatedUserData>, AxiosError<ErrorResponse>, UserCreateData>(userCreateHandler, {
     onError: error => {
       setErrorMessage(error.response?.data.reason || error.message);
     },

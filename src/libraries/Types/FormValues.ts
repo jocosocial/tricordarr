@@ -7,6 +7,13 @@ export interface LoginFormValues {
   password: string;
 }
 
+export interface UserRegistrationFormValues {
+  username: string;
+  password: string;
+  passwordVerify: string;
+  verification: string;
+}
+
 export interface KeywordFormValues {
   keyword: string;
 }
