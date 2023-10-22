@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';

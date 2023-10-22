@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {Text, TextInput} from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {UserRegistrationFormValues} from '../../libraries/Types/FormValues';
 import {AppIcons} from '../../libraries/Enums/Icons';
