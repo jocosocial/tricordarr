@@ -1,14 +1,15 @@
 import React from 'react';
-import {Card, Text} from 'react-native-paper';
+import {Card} from 'react-native-paper';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
 
-// interface UserAboutCardProps {
-//   user: ProfilePublicData;
-// }
+interface ScheduleEventCardProps {
+  event: EventData;
+}
 
-export const ScheduleEventCard = () => {
+export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
   return (
     <Card>
-      <Card.Title title={'Theme: Welcome, New Cruisers!'} />
+      <Card.Title title={event.title} />
       {/*<Card.Content>*/}
       {/*  <Text>*/}
       {/*    We'll be holding events specifically designed to make our first-time JoCo Cruisers feel welcome and to help*/}
