@@ -9,6 +9,7 @@ import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {LabelDivider} from '../Dividers/LabelDivider';
+import {format} from 'date-fns';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -16,20 +17,37 @@ interface SeamailFlatListProps {
 }
 
 export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps) => {
+  console.log(`There are ${eventList.length} events`);
   const renderItem = ({item, index, separators}) => {
-    return <ScheduleEventCard event={item} />;
+    return (
+      // <View onLayout={() => separators.updateProps('trailing', {leadingIndex: index})}>
+      <View>
+        <ScheduleEventCard event={item} />
+      </View>
+    );
   };
 
-  // const getSeparator = ({leadingItem, trailingItem}: {leadingItem: EventData; trailingItem: EventData}) => {
-  //   console.log('Lead:', leadingItem);
-  //   console.log('Trail', trailingItem);
-  //   return <LabelDivider label={'foo'} />;
-  // };
+  const renderSeparator = ({leadingItem}: {leadingItem: EventData}) => {
+    const leadingIndex = eventList.indexOf(leadingItem);
+    // return <LabelDivider label={leadingItem.title} />;
+    console.log('The leading index is ', leadingIndex);
+    if (leadingIndex === undefined) {
+      return <LabelDivider label={'Leading Unknown'} />;
+    }
+    const trailingIndex = leadingIndex + 1;
+    const leadingHour = new Date(eventList[leadingIndex].startTime).getHours();
+    const trailingHour = new Date(eventList[trailingIndex].startTime).getHours();
+    if (leadingHour === trailingHour) {
+      return <></>;
+    }
+    const trailingItem = eventList[trailingIndex];
+    return <LabelDivider label={format(new Date(trailingItem.startTime), 'hh:mm aa')} />;
+  };
 
   return (
     <FlatList
       refreshControl={refreshControl}
-      // ItemSeparatorComponent={getSeparator}
+      ItemSeparatorComponent={renderSeparator}
       data={eventList}
       renderItem={renderItem}
     />
