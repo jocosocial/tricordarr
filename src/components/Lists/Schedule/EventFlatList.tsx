@@ -1,12 +1,6 @@
-import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, View} from 'react-native';
-import {SeamailListItem} from '../Items/SeamailListItem';
 import React from 'react';
-import {Divider} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {format} from 'date-fns';
@@ -17,31 +11,44 @@ interface SeamailFlatListProps {
 }
 
 export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps) => {
-  console.log(`There are ${eventList.length} events`);
-  const renderItem = ({item, index, separators}) => {
+  console.log(`There are ${eventList.length} events today.`);
+  const renderItem = ({item}: {item: EventData}) => {
     return (
-      // <View onLayout={() => separators.updateProps('trailing', {leadingIndex: index})}>
       <View>
         <ScheduleEventCard event={item} />
       </View>
     );
   };
 
+  // @TODO this needs to adapt the date to the boat-time date.
   const renderSeparator = ({leadingItem}: {leadingItem: EventData}) => {
     const leadingIndex = eventList.indexOf(leadingItem);
-    // return <LabelDivider label={leadingItem.title} />;
-    console.log('The leading index is ', leadingIndex);
     if (leadingIndex === undefined) {
       return <LabelDivider label={'Leading Unknown'} />;
     }
     const trailingIndex = leadingIndex + 1;
-    const leadingHour = new Date(eventList[leadingIndex].startTime).getHours();
-    const trailingHour = new Date(eventList[trailingIndex].startTime).getHours();
-    if (leadingHour === trailingHour) {
+    const leadingDate = new Date(eventList[leadingIndex].startTime);
+    const trailingDate = new Date(eventList[trailingIndex].startTime);
+    const leadingTimeMarker = `${leadingDate.getHours()}:${leadingDate.getMinutes()}`;
+    const trailingTimeMarker = `${trailingDate.getHours()}:${trailingDate.getMinutes()}`;
+    if (leadingTimeMarker === trailingTimeMarker) {
       return <></>;
     }
     const trailingItem = eventList[trailingIndex];
     return <LabelDivider label={format(new Date(trailingItem.startTime), 'hh:mm aa')} />;
+  };
+
+  const getHeader = () => {
+    const date = new Date(eventList[0].startTime);
+    console.log('Time String: ', eventList[0].startTime);
+    const timeString = date.toLocaleTimeString(undefined, {
+      // timeZone: eventList[0].timeZone,
+      timeZone: 'America/Puerto_Rico',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+    return <LabelDivider label={'ZZZ ' + timeString} />;
   };
 
   return (
@@ -50,6 +57,7 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
       ItemSeparatorComponent={renderSeparator}
       data={eventList}
       renderItem={renderItem}
+      ListHeaderComponent={getHeader}
     />
   );
 };
