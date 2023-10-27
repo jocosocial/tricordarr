@@ -14,3 +14,8 @@ export type WebSocketOptions = {
 export type KeywordAction = 'add' | 'remove';
 
 export type KeywordType = 'alertwords' | 'mutewords';
+
+export type CruiseDayData = {
+  cruiseDay: number;
+  dayName: string;
+};

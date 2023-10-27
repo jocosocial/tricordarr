@@ -1,8 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
-import {Divider, Text} from 'react-native-paper';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -12,7 +9,6 @@ import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Na
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
-import {getCruiseDay} from '../../../libraries/DateTime';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 
@@ -22,7 +18,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.scheduleStack
 >;
 
-export const ScheduleDayScreen = ({navigation, route}: Props) => {
+export const ScheduleDayScreen = ({navigation}: Props) => {
   const {cruiseDay} = useCruise();
   const {data: eventData} = useEventsQuery({cruiseDay: cruiseDay});
   const getNavButtons = useCallback(() => {
@@ -44,18 +40,5 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return (
-    <AppView>
-      {/*<Divider bold={true} />*/}
-      {/*<Text variant={'titleLarge'}>09:00AM</Text>*/}
-      {/*<ScheduleEventCard />*/}
-      {/*<Divider bold={true} />*/}
-      {/*<Text variant={'titleLarge'}>10:00AM</Text>*/}
-      {/*<ScheduleEventCard />*/}
-      {/*<Divider bold={true} />*/}
-      {/*<Text variant={'titleLarge'}>11:00AM</Text>*/}
-      {/*<ScheduleEventCard />*/}
-      {eventData && <EventFlatList eventList={eventData} />}
-    </AppView>
-  );
+  return <AppView>{eventData && <EventFlatList eventList={eventData} />}</AppView>;
 };

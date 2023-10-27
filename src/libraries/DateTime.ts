@@ -10,6 +10,7 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
+import {CruiseDayData} from './Types';
 
 const thresholdMap = {
   second: {
@@ -91,3 +92,20 @@ export const getCruiseDay: (cruiseStartDayOfWeek: number) => number = (cruiseSta
  * An array of stylized day names that correspond to a Date.getDay() index (0 = Sunday, 6 = Saturday).
  */
 export const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
+  let cruiseDayNameIndex = startDate.getDay();
+  let cruiseDays: CruiseDayData[] = [];
+  for (let i = 0; i < cruiseLength; i++) {
+    if (cruiseDayNameIndex > 6) {
+      cruiseDayNameIndex -= 7;
+    }
+    cruiseDays.push({
+      cruiseDay: i + 1,
+      dayName: dayNames[cruiseDayNameIndex],
+    });
+    cruiseDayNameIndex += 1;
+  }
+
+  return cruiseDays;
+};
