@@ -13,6 +13,7 @@ Backlog
   * enableusernotificatoins is a bad pattern, what does it mean?
 * Oobe
   * add notification preferences to oobe flow
+  * button side padding
 * Setting for theme. Light, dark, use system.
 
 Work Queue
@@ -25,4 +26,4 @@ Work Queue
 * Remove kraken talk icon from user profile 
 * Simplify cruiseProvider cruiseday usage
 *  LOG  VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that follow React performance best practices like PureComponent, shouldComponentUpdate, etc. {"contentLength": 2988, "dt": 2690, "prevDt": 2552}
-
+* empty day needs bigger gesture

@@ -14,8 +14,8 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {Text} from 'react-native-paper';
 import {format} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {PanGestureHandler, State} from 'react-native-gesture-handler';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -24,7 +24,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation}: Props) => {
-  const {cruiseDay, cruiseDays, setCruiseDay, cruiseLength} = useCruise();
+  const {cruiseDay, cruiseDays, setCruiseDay, cruiseLength, cruiseDayToday} = useCruise();
   const {data: eventData, isLoading} = useEventsQuery({cruiseDay: cruiseDay});
   const {commonStyles} = useStyles();
 
@@ -55,31 +55,38 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
 
   console.log(cruiseDay);
 
-  const onSwipeLeft = () => {
-    console.log('LEFT');
-    if (cruiseDay < cruiseLength) {
-      setCruiseDay(cruiseDay + 1);
-    }
-  };
+  const onSwipe = (event: any) => {
+    if (event.nativeEvent.state === State.END) {
+      console.log('translationX: ', event.nativeEvent.translationX);
+      console.log('translationY: ', event.nativeEvent.translationY);
+      console.log('velocityX: ', event.nativeEvent.velocityY);
+      console.log('velocityY: ', event.nativeEvent.velocityY);
 
-  const onSwipeRight = () => {
-    console.log('RIGHT');
-    if (cruiseDay > 1) {
-      setCruiseDay(cruiseDay - 1);
+      if ((event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) && Math.abs(event.nativeEvent.translationY) < 80) {
+        if (cruiseDay > 1) {
+          setCruiseDay(cruiseDay - 1);
+        }
+      } else if ((event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) && Math.abs(event.nativeEvent.translationY) < 80) {
+        if (cruiseDay < cruiseLength) {
+          setCruiseDay(cruiseDay + 1);
+        }
+      }
     }
-  };
+  }
 
   return (
     <AppView>
-      <GestureRecognizer onSwipeLeft={onSwipeLeft} onSwipeRight={onSwipeRight}>
+      <PanGestureHandler onHandlerStateChange={onSwipe}>
         <View>
-          <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}</Text>
+          <View>
+            <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}{(cruiseDayToday === cruiseDay) ? ' (Today)' : ''}</Text>
+          </View>
+          <View>
+            {isLoading && <LoadingView />}
+            {!isLoading && eventData && <EventFlatList eventList={eventData} />}
+          </View>
         </View>
-        <View>
-          {isLoading && <LoadingView />}
-          {!isLoading && eventData && <EventFlatList eventList={eventData} />}
-        </View>
-      </GestureRecognizer>
+      </PanGestureHandler>
     </AppView>
   );
 };

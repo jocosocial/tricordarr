@@ -1,11 +1,12 @@
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, RefreshControlProps, View} from 'react-native';
+import {RefreshControlProps, View} from 'react-native';
 import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import moment from 'moment-timezone';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {FlatList} from 'react-native-gesture-handler'
 
 interface SeamailFlatListProps {
   eventList: EventData[];
