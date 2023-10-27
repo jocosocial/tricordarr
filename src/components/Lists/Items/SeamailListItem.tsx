@@ -22,7 +22,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
 
   const styles = {
     item: {
-      ...commonStyles.paddingSides,
+      ...commonStyles.paddingHorizontal,
     },
     title: badgeCount ? commonStyles.bold : undefined,
     description: badgeCount ? commonStyles.bold : undefined,

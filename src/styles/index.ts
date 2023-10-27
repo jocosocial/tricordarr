@@ -88,11 +88,12 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
   },
   paddingLeftSmall: {
-    paddingLeft: styleDefaults.marginSize / 2
+    paddingLeft: styleDefaults.marginSize / 2,
   },
-  paddingSides: {
+  paddingHorizontal: {
     paddingLeft: styleDefaults.marginSize,
     paddingRight: styleDefaults.marginSize,
+    paddingHorizontal: styleDefaults.marginSize,
   },
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,

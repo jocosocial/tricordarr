@@ -4,6 +4,10 @@ import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import moment from 'moment-timezone';
+import {TimeDivider} from '../Dividers/TimeDivider';
+import {SpaceDivider} from '../Dividers/SpaceDivider';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {Text} from 'react-native-paper';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -11,6 +15,7 @@ interface SeamailFlatListProps {
 }
 
 export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps) => {
+  const {commonStyles} = useStyles();
   console.log(`There are ${eventList.length} events today.`);
   const renderItem = ({item}: {item: EventData}) => {
     return (
@@ -29,7 +34,7 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
   const renderSeparator = ({leadingItem}: {leadingItem: EventData}) => {
     const leadingIndex = eventList.indexOf(leadingItem);
     if (leadingIndex === undefined) {
-      return <LabelDivider label={'Leading Unknown'} />;
+      return <TimeDivider label={'Leading Unknown'} />;
     }
     const trailingIndex = leadingIndex + 1;
     const leadingDate = new Date(eventList[leadingIndex].startTime);
@@ -37,21 +42,32 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
     const leadingTimeMarker = `${leadingDate.getHours()}:${leadingDate.getMinutes()}`;
     const trailingTimeMarker = `${trailingDate.getHours()}:${trailingDate.getMinutes()}`;
     if (leadingTimeMarker === trailingTimeMarker) {
-      return <></>;
+      return <SpaceDivider />;
     }
     const trailingItem = eventList[trailingIndex];
-    return <LabelDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
+    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
   const getHeader = () => {
-    if (!eventList[0]) {
-      return <LabelDivider label={'No events today'} />;
+    let firstTimeDivider = <TimeDivider label={'No events today'} />;
+    if (eventList[0]) {
+      firstTimeDivider = <TimeDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
     }
-    return <LabelDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
+    return (
+      <View>
+        <Text>
+          Schedule for Today:
+        </Text>
+        {firstTimeDivider}
+      </View>
+    );
   };
 
   return (
     <FlatList
+      style={{
+        ...commonStyles.paddingHorizontal,
+      }}
       refreshControl={refreshControl}
       ItemSeparatorComponent={renderSeparator}
       data={eventList}

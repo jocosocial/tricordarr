@@ -26,7 +26,7 @@ export const PaddedContentView = ({
     ...[style],
     commonStyles.flex,
     padTop ? commonStyles.paddingTop : undefined,
-    padSides ? commonStyles.paddingSides : undefined,
+    padSides ? commonStyles.paddingHorizontal : undefined,
     padBottom ? commonStyles.paddingBottom : undefined,
     // https://github.com/facebook/react-native/issues/30034
     invertVertical ? commonStyles.verticallyInverted : undefined,

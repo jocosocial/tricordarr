@@ -32,7 +32,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [cruiseDay]);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({

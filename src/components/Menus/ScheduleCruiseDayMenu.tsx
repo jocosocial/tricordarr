@@ -1,16 +1,10 @@
 import * as React from 'react';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
-import {dayNames} from '../../libraries/DateTime';
-
-interface ScheduleCruiseDayMenuProps {
-  cruiseDay: number;
-  setCruiseDay: Dispatch<SetStateAction<number>>;
-}
 
 interface CruiseDayMenuItemProps {
   handleSelection: (i: number) => void;
@@ -26,7 +20,6 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
   return <Menu.Item titleStyle={titleStyle} title={title} onPress={() => handleSelection(itemCruiseDay)} />;
 };
 
-// @TODO autogenerate the days based on the cruisestartdayofweek so we dont have to deal with Sunday vs Saturday.
 export const ScheduleCruiseDayMenu = () => {
   const [visible, setVisible] = useState(false);
   const {cruiseDay, setCruiseDay, cruiseDays} = useCruise();
@@ -38,8 +31,6 @@ export const ScheduleCruiseDayMenu = () => {
     setCruiseDay(newCruiseDay);
     closeMenu();
   };
-
-  console.log('RENDERRRRRRRRRRRRRRRRRRRR');
 
   return (
     <Menu
