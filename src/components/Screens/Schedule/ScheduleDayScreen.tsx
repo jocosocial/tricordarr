@@ -14,6 +14,8 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {Text} from 'react-native-paper';
 import {format} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -22,8 +24,8 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation}: Props) => {
-  const {cruiseDay, cruiseDays} = useCruise();
-  const {data: eventData} = useEventsQuery({cruiseDay: cruiseDay});
+  const {cruiseDay, cruiseDays, setCruiseDay, cruiseLength} = useCruise();
+  const {data: eventData, isLoading} = useEventsQuery({cruiseDay: cruiseDay});
   const {commonStyles} = useStyles();
 
   const getNavButtons = useCallback(() => {
@@ -51,10 +53,33 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     ...commonStyles.bold,
   };
 
+  console.log(cruiseDay);
+
+  const onSwipeLeft = () => {
+    console.log('LEFT');
+    if (cruiseDay < cruiseLength) {
+      setCruiseDay(cruiseDay + 1);
+    }
+  };
+
+  const onSwipeRight = () => {
+    console.log('RIGHT');
+    if (cruiseDay > 1) {
+      setCruiseDay(cruiseDay - 1);
+    }
+  };
+
   return (
     <AppView>
-      <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}</Text>
-      {eventData && <EventFlatList eventList={eventData} />}
+      <GestureRecognizer onSwipeLeft={onSwipeLeft} onSwipeRight={onSwipeRight}>
+        <View>
+          <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}</Text>
+        </View>
+        <View>
+          {isLoading && <LoadingView />}
+          {!isLoading && eventData && <EventFlatList eventList={eventData} />}
+        </View>
+      </GestureRecognizer>
     </AppView>
   );
 };

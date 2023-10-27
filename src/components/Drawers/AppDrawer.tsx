@@ -26,6 +26,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       open={drawerOpen}
       onOpen={() => setDrawerOpen(true)}
       onClose={() => setDrawerOpen(false)}
+      swipeEnabled={false}
       renderDrawerContent={() => {
         return (
           <ScrollView>

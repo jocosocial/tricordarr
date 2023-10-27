@@ -16,9 +16,7 @@ Backlog
 * Setting for theme. Light, dark, use system.
 
 Work Queue
-* Persistent header at top of events with date and day
 * Past events for that day darker text?
-* Swipe left right for day change
 * Bottom space divider
 * Add FAB
 * Event title multi line
