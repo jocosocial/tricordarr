@@ -32,6 +32,7 @@ import {navigationLinking} from './src/libraries/Linking';
 import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
 import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
+import moment from 'moment-timezone';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -48,6 +49,8 @@ ViewReactNativeStyleAttributes.scaleY = true;
 import 'react-native-gesture-handler';
 
 TimeAgo.addDefaultLocale(en);
+// @TODO this timezone is a hack, until we figure out what to do about the API.
+moment.tz.link('AST|America/Santo_Domingo');
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({

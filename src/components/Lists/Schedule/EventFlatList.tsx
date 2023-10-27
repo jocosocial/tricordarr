@@ -4,6 +4,7 @@ import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {format} from 'date-fns';
+import moment from 'moment-timezone';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -20,7 +21,12 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
     );
   };
 
-  // @TODO this needs to adapt the date to the boat-time date.
+  const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+    const date = moment(dateTimeStr);
+    const timeMarker = date.tz(timeZoneAbbrStr).format('hh:mm A');
+    return `${timeMarker} ${timeZoneAbbrStr}`;
+  };
+
   const renderSeparator = ({leadingItem}: {leadingItem: EventData}) => {
     const leadingIndex = eventList.indexOf(leadingItem);
     if (leadingIndex === undefined) {
@@ -35,20 +41,11 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
       return <></>;
     }
     const trailingItem = eventList[trailingIndex];
-    return <LabelDivider label={format(new Date(trailingItem.startTime), 'hh:mm aa')} />;
+    return <LabelDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
   const getHeader = () => {
-    const date = new Date(eventList[0].startTime);
-    console.log('Time String: ', eventList[0].startTime);
-    const timeString = date.toLocaleTimeString(undefined, {
-      // timeZone: eventList[0].timeZone,
-      timeZone: 'America/Puerto_Rico',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-    return <LabelDivider label={'ZZZ ' + timeString} />;
+    return <LabelDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
   };
 
   return (
