@@ -14,6 +14,7 @@ import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {getCruiseDay} from '../../../libraries/DateTime';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -22,13 +23,13 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const [cruiseDay, setCruiseDay] = useState(route.params?.cruiseDay || getCruiseDay());
+  const {cruiseDay} = useCruise();
   const {data: eventData} = useEventsQuery({cruiseDay: cruiseDay});
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu cruiseDay={cruiseDay} setCruiseDay={setCruiseDay} />
+          <ScheduleCruiseDayMenu />
           <Item title={'Search'} iconName={AppIcons.search} onPress={() => console.log('hi')} />
           <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />

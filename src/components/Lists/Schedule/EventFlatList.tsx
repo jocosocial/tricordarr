@@ -3,7 +3,6 @@ import {FlatList, RefreshControlProps, View} from 'react-native';
 import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {LabelDivider} from '../Dividers/LabelDivider';
-import {format} from 'date-fns';
 import moment from 'moment-timezone';
 
 interface SeamailFlatListProps {
@@ -45,6 +44,9 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
   };
 
   const getHeader = () => {
+    if (!eventList[0]) {
+      return <LabelDivider label={'No events today'} />;
+    }
     return <LabelDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
   };
 

@@ -1,11 +1,12 @@
-import React, {PropsWithChildren} from 'react';
+import React, {PropsWithChildren, useState} from 'react';
 import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
-import useDateTime from '../../../libraries/DateTime';
+import useDateTime, {getCruiseDay} from '../../../libraries/DateTime';
 import {differenceInCalendarDays} from 'date-fns';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
+  const [cruiseDay, setCruiseDay] = useState(getCruiseDay(appConfig.cruiseStartDate.getDay()))
   const startDate = appConfig.cruiseStartDate;
   const cruiseLength = appConfig.cruiseLength;
   const hourlyUpdatingDate = useDateTime('hour');
@@ -22,7 +23,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   console.log('Cruise Day Index', cruiseDayIndex);
 
   return (
-    <CruiseContext.Provider value={{startDate, endDate, cruiseLength, cruiseDayIndex, daysSince, hourlyUpdatingDate}}>
+    <CruiseContext.Provider value={{startDate, endDate, cruiseLength, cruiseDayIndex, daysSince, hourlyUpdatingDate, cruiseDay, setCruiseDay}}>
       {children}
     </CruiseContext.Provider>
   );

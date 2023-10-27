@@ -75,15 +75,14 @@ export default function useDateTime(threshold: keyof typeof thresholdMap) {
 /**
   Determine the "virtual day index of the cruise". For example: Let's say today is Sunday Oct 22 2023, long after
   the actual 2023 cruise. We want to simulate that today is actually the "1st day of the cruise" (cruiseday=1).
+  Sunday is 0 in JavaScript date-fns, 1 in Swift.
   https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Site/SiteEventsController.swift#L144-L149
  */
-export const getCruiseDay: () => number = () => {
+export const getCruiseDay: (cruiseStartDayOfWeek: number) => number = (cruiseStartDayOfWeek: number) => {
   // Get today's date.
   const today = new Date();
   // Map the day of the week to a number.
   const weekday = today.getDay();
-  // What day index does the cruise start on?
-  const cruiseStartDayOfWeek = 0; // Sunday is 0 in JavaScript date-fns, 1 in Swift.
   // Do maths. We add an extra 1 to the weekday and cruiseStartDayOfWeek because Swift and JavaScript assign values differently.
   return ((7 + (weekday + 1) - (cruiseStartDayOfWeek + 1)) % 7) + 1;
 };

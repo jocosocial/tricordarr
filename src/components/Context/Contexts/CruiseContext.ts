@@ -1,4 +1,4 @@
-import {createContext, useContext} from 'react';
+import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
 export interface CruiseContextType {
   startDate: Date;
@@ -7,6 +7,8 @@ export interface CruiseContextType {
   cruiseDayIndex: number;
   daysSince: number;
   hourlyUpdatingDate: Date;
+  cruiseDay: number;
+  setCruiseDay: Dispatch<SetStateAction<number>>
 }
 
 export const CruiseContext = createContext({} as CruiseContextType);

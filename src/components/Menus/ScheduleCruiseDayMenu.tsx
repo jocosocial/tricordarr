@@ -4,6 +4,7 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
+import {useCruise} from '../Context/Contexts/CruiseContext';
 
 interface ScheduleCruiseDayMenuProps {
   cruiseDay: number;
@@ -25,8 +26,9 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
 };
 
 // @TODO autogenerate the days based on the cruisestartdayofweek so we dont have to deal with Sunday vs Saturday.
-export const ScheduleCruiseDayMenu = ({cruiseDay, setCruiseDay}: ScheduleCruiseDayMenuProps) => {
+export const ScheduleCruiseDayMenu = () => {
   const [visible, setVisible] = useState(false);
+  const {cruiseDay, setCruiseDay} = useCruise();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
