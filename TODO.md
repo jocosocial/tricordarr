@@ -17,7 +17,6 @@ Backlog
 
 Work Queue
 * Past events for that day darker text?
-* Bottom space divider
 * Add FAB
 * Event title multi line
 * Remove kraken talk from seamail fab
