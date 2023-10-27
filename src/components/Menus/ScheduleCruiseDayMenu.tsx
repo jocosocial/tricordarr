@@ -22,7 +22,7 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
 
 export const ScheduleCruiseDayMenu = () => {
   const [visible, setVisible] = useState(false);
-  const {cruiseDay, setCruiseDay, cruiseDays} = useCruise();
+  const {cruiseDay, setCruiseDay, cruiseDays, cruiseDayToday} = useCruise();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -41,7 +41,7 @@ export const ScheduleCruiseDayMenu = () => {
         <CruiseDayMenuItem
           key={day.cruiseDay}
           handleSelection={handleCruiseDaySelection}
-          title={day.dayName}
+          title={`${day.dayName}${cruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
           currentCruiseDay={cruiseDay}
           itemCruiseDay={day.cruiseDay}
         />

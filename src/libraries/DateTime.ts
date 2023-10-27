@@ -79,9 +79,10 @@ export default function useDateTime(threshold: keyof typeof thresholdMap) {
   Sunday is 0 in JavaScript date-fns, 1 in Swift.
   https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Site/SiteEventsController.swift#L144-L149
  */
-export const getCruiseDay: (cruiseStartDayOfWeek: number) => number = (cruiseStartDayOfWeek: number) => {
-  // Get today's date.
-  const today = new Date();
+export const getCruiseDay: (today: Date, cruiseStartDayOfWeek: number) => number = (
+  today: Date,
+  cruiseStartDayOfWeek: number,
+) => {
   // Map the day of the week to a number.
   const weekday = today.getDay();
   // Do maths. We add an extra 1 to the weekday and cruiseStartDayOfWeek because Swift and JavaScript assign values differently.

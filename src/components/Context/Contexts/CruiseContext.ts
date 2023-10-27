@@ -11,6 +11,7 @@ export interface CruiseContextType {
   cruiseDay: number;
   setCruiseDay: Dispatch<SetStateAction<number>>;
   cruiseDays: CruiseDayData[];
+  cruiseDayToday: number;
 }
 
 export const CruiseContext = createContext({} as CruiseContextType);

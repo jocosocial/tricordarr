@@ -6,10 +6,11 @@ import {differenceInCalendarDays} from 'date-fns';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
-  const [cruiseDay, setCruiseDay] = useState(getCruiseDay(appConfig.cruiseStartDate.getDay()));
+  const hourlyUpdatingDate = useDateTime('hour');
+  const cruiseDayToday = getCruiseDay(hourlyUpdatingDate, appConfig.cruiseStartDate.getDay());
+  const [cruiseDay, setCruiseDay] = useState(cruiseDayToday);
   const startDate = appConfig.cruiseStartDate;
   const cruiseLength = appConfig.cruiseLength;
-  const hourlyUpdatingDate = useDateTime('hour');
   // End Date. New object to prevent copying/reference.
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength);
@@ -36,6 +37,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
         cruiseDay,
         setCruiseDay,
         cruiseDays,
+        cruiseDayToday,
       }}>
       {children}
     </CruiseContext.Provider>
