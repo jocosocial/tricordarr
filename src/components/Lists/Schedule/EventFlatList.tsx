@@ -2,12 +2,10 @@ import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, View} from 'react-native';
 import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
-import {LabelDivider} from '../Dividers/LabelDivider';
 import moment from 'moment-timezone';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {Text} from 'react-native-paper';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -16,6 +14,7 @@ interface SeamailFlatListProps {
 
 export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
+
   console.log(`There are ${eventList.length} events today.`);
   const renderItem = ({item}: {item: EventData}) => {
     return (
@@ -34,7 +33,7 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
   const renderSeparator = ({leadingItem}: {leadingItem: EventData}) => {
     const leadingIndex = eventList.indexOf(leadingItem);
     if (leadingIndex === undefined) {
-      return <TimeDivider label={'Leading Unknown'} />;
+      return <TimeDivider label={'Leading Unknown?'} />;
     }
     const trailingIndex = leadingIndex + 1;
     const leadingDate = new Date(eventList[leadingIndex].startTime);
@@ -49,18 +48,10 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
   };
 
   const getHeader = () => {
-    let firstTimeDivider = <TimeDivider label={'No events today'} />;
-    if (eventList[0]) {
-      firstTimeDivider = <TimeDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
+    if (!eventList[0]) {
+      return <TimeDivider label={'No events today'} />;
     }
-    return (
-      <View>
-        <Text>
-          Schedule for Today:
-        </Text>
-        {firstTimeDivider}
-      </View>
-    );
+    return <TimeDivider label={getTimeMarker(eventList[0].startTime, eventList[0].timeZone)} />;
   };
 
   return (

@@ -7,8 +7,25 @@ Backlog
 * Big red exclamation thing with server healthcheck failure
 * Note about username case sensitivity
 * private note feature missing
+* Notifications
+  * notification socket control not working.
+  * first login not generating fgs?
+  * enableusernotificatoins is a bad pattern, what does it mean?
+* Oobe
+  * add notification preferences to oobe flow
+* Setting for theme. Light, dark, use system.
 
 Work Queue
-* notification socket control not working.
-* first login not generating fgs?
-* enableusernotificatoins is a bad pattern, what does it mean?
+* Persistent header at top of events with date and day
+* Past events for that day darker text?
+* Swipe left right for day change
+* Bottom space divider
+* Add FAB
+* Event title multi line
+* Remove kraken talk from seamail fab
+* Your next event card on main screen
+* Add Chall lighter video credits
+* Remove kraken talk icon from user profile 
+* Simplify cruiseProvider cruiseday usage
+*  LOG  VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that follow React performance best practices like PureComponent, shouldComponentUpdate, etc. {"contentLength": 2988, "dt": 2690, "prevDt": 2552}
+

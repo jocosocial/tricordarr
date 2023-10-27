@@ -103,6 +103,7 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
     cruiseDays.push({
       cruiseDay: i + 1,
       dayName: dayNames[cruiseDayNameIndex],
+      date: addDays(startDate, i),
     });
     cruiseDayNameIndex += 1;
   }

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
-import {View} from 'react-native';
+import {TextStyle, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -11,6 +11,9 @@ import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {Text} from 'react-native-paper';
+import {format} from 'date-fns';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -19,8 +22,10 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation}: Props) => {
-  const {cruiseDay} = useCruise();
+  const {cruiseDay, cruiseDays} = useCruise();
   const {data: eventData} = useEventsQuery({cruiseDay: cruiseDay});
+  const {commonStyles} = useStyles();
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -40,5 +45,16 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <AppView>{eventData && <EventFlatList eventList={eventData} />}</AppView>;
+  const headerTextStyle: TextStyle = {
+    ...commonStyles.paddingVerticalSmall,
+    ...commonStyles.paddingHorizontal,
+    ...commonStyles.bold,
+  };
+
+  return (
+    <AppView>
+      <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}</Text>
+      {eventData && <EventFlatList eventList={eventData} />}
+    </AppView>
+  );
 };

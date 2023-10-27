@@ -16,6 +16,7 @@ export type KeywordAction = 'add' | 'remove';
 export type KeywordType = 'alertwords' | 'mutewords';
 
 export type CruiseDayData = {
+  date: Date;
   cruiseDay: number;
   dayName: string;
 };
