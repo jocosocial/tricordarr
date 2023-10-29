@@ -57,6 +57,6 @@ export enum AppIcons {
   logout = 'logout',
   registrationCode = 'barcode',
   filter = 'filter-menu',
-  cruiseDay = 'calendar',
+  cruiseDay = 'calendar-today',
   search = 'magnify',
 }

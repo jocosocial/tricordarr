@@ -47,7 +47,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-
   const styles = StyleSheet.create({
     headerText: {
       ...commonStyles.paddingHorizontalSmall,
@@ -95,8 +94,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <PanGestureHandler onHandlerStateChange={onSwipe}>
-        <View>
-          <View style={styles.headerView}>
+        <View style={commonStyles.flex}>
+          <View style={{...styles.headerView}}>
             <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>
@@ -110,11 +109,9 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
               disabled={route.params.cruiseDay === cruiseLength}
             />
           </View>
-          <View>
-            <View>
-              {isLoading && <LoadingView />}
-              {!isLoading && eventData && <EventFlatList eventList={eventData} />}
-            </View>
+          <View style={commonStyles.flex}>
+            {isLoading && <LoadingView />}
+            {!isLoading && eventData && <EventFlatList eventList={eventData} />}
           </View>
         </View>
       </PanGestureHandler>

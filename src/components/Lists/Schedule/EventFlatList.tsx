@@ -65,6 +65,7 @@ export const EventFlatList = ({eventList, refreshControl}: SeamailFlatListProps)
       data={eventList}
       renderItem={renderItem}
       ListHeaderComponent={getHeader}
+      ListFooterComponent={() => <TimeDivider label={'End of Schedule'} />}
     />
   );
 };
