@@ -5,6 +5,9 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
+import {format} from 'date-fns';
+import {useScheduleStack, useScheduleStackRoute} from '../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
 
 interface CruiseDayMenuItemProps {
   handleSelection: (i: number) => void;
@@ -22,27 +25,33 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
 
 export const ScheduleCruiseDayMenu = () => {
   const [visible, setVisible] = useState(false);
-  const {cruiseDay, setCruiseDay, cruiseDays, cruiseDayToday} = useCruise();
+  const {cruiseDays, cruiseDayToday} = useCruise();
+  const navigation = useScheduleStack();
+  const route = useScheduleStackRoute();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    setCruiseDay(newCruiseDay);
+    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
+  const navigateToday = () =>
+    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
+
+  const menuAnchor = (
+    <Item title={'Cruise Day'} iconName={AppIcons.cruiseDay} onPress={navigateToday} onLongPress={openMenu} />
+  );
+
   return (
-    <Menu
-      visible={visible}
-      onDismiss={closeMenu}
-      anchor={<Item title={'Cruise Day'} iconName={AppIcons.cruiseDay} onPress={openMenu} />}>
+    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {cruiseDays.map(day => (
         <CruiseDayMenuItem
           key={day.cruiseDay}
           handleSelection={handleCruiseDaySelection}
-          title={`${day.dayName}${cruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
-          currentCruiseDay={cruiseDay}
+          title={`${format(day.date, 'EEEE')}${cruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
+          currentCruiseDay={route.params.cruiseDay}
           itemCruiseDay={day.cruiseDay}
         />
       ))}

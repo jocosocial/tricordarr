@@ -65,6 +65,11 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     onTwitarrButton: {
       color: AndroidColor.WHITE,
     },
+    borderBottom: {
+      borderBottomStyle: 'solid',
+      borderBottomColor: theme.colors.onBackground,
+      borderBottomWidth: 1,
+    },
   });
 
   const screenOptions = {

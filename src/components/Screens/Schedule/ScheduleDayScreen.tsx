@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
-import {TextStyle, View} from 'react-native';
+import {StyleSheet, TextStyle, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -11,7 +11,7 @@ import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {Text} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {format} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -23,10 +23,10 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.scheduleStack
 >;
 
-export const ScheduleDayScreen = ({navigation}: Props) => {
-  const {cruiseDay, cruiseDays, setCruiseDay, cruiseLength, cruiseDayToday} = useCruise();
-  const {data: eventData, isLoading} = useEventsQuery({cruiseDay: cruiseDay});
+export const ScheduleDayScreen = ({navigation, route}: Props) => {
+  const {data: eventData, isLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
   const {commonStyles} = useStyles();
+  const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
 
   const getNavButtons = useCallback(() => {
     return (
@@ -47,43 +47,74 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  const headerTextStyle: TextStyle = {
-    ...commonStyles.paddingVerticalSmall,
-    ...commonStyles.paddingHorizontal,
-    ...commonStyles.bold,
-  };
 
-  console.log(cruiseDay);
+  const styles = StyleSheet.create({
+    headerText: {
+      ...commonStyles.paddingHorizontalSmall,
+      ...commonStyles.bold,
+    },
+    headerTextContainer: {
+      ...commonStyles.flexGrow,
+      ...commonStyles.justifyCenter,
+    },
+    headerView: {
+      ...commonStyles.flexRow,
+    },
+  });
+
+  const navigatePreviousDay = () =>
+    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay - 1});
+  const navigateNextDay = () =>
+    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
 
   const onSwipe = (event: any) => {
     if (event.nativeEvent.state === State.END) {
-      console.log('translationX: ', event.nativeEvent.translationX);
-      console.log('translationY: ', event.nativeEvent.translationY);
-      console.log('velocityX: ', event.nativeEvent.velocityY);
-      console.log('velocityY: ', event.nativeEvent.velocityY);
+      // console.log('translationX: ', event.nativeEvent.translationX);
+      // console.log('translationY: ', event.nativeEvent.translationY);
+      // console.log('velocityX: ', event.nativeEvent.velocityY);
+      // console.log('velocityY: ', event.nativeEvent.velocityY);
 
-      if ((event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) && Math.abs(event.nativeEvent.translationY) < 80) {
-        if (cruiseDay > 1) {
-          setCruiseDay(cruiseDay - 1);
+      if (
+        (event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) &&
+        Math.abs(event.nativeEvent.translationY) < 80
+      ) {
+        if (route.params.cruiseDay > 1) {
+          navigatePreviousDay();
         }
-      } else if ((event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) && Math.abs(event.nativeEvent.translationY) < 80) {
-        if (cruiseDay < cruiseLength) {
-          setCruiseDay(cruiseDay + 1);
+      } else if (
+        (event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) &&
+        Math.abs(event.nativeEvent.translationY) < 80
+      ) {
+        if (route.params.cruiseDay < cruiseLength) {
+          navigateNextDay();
         }
       }
     }
-  }
+  };
 
   return (
     <AppView>
       <PanGestureHandler onHandlerStateChange={onSwipe}>
         <View>
-          <View>
-            <Text style={headerTextStyle}>{format(cruiseDays[cruiseDay - 1].date, 'eeee LLLL do')}{(cruiseDayToday === cruiseDay) ? ' (Today)' : ''}</Text>
+          <View style={styles.headerView}>
+            <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerText}>
+                {format(cruiseDays[route.params.cruiseDay - 1].date, 'eeee LLLL do')}
+                {cruiseDayToday === route.params.cruiseDay ? ' (Today)' : ''}
+              </Text>
+            </View>
+            <IconButton
+              icon={AppIcons.forward}
+              onPress={navigateNextDay}
+              disabled={route.params.cruiseDay === cruiseLength}
+            />
           </View>
           <View>
-            {isLoading && <LoadingView />}
-            {!isLoading && eventData && <EventFlatList eventList={eventData} />}
+            <View>
+              {isLoading && <LoadingView />}
+              {!isLoading && eventData && <EventFlatList eventList={eventData} />}
+            </View>
           </View>
         </View>
       </PanGestureHandler>

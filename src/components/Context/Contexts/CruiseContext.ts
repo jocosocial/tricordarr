@@ -8,8 +8,6 @@ export interface CruiseContextType {
   cruiseDayIndex: number;
   daysSince: number;
   hourlyUpdatingDate: Date;
-  cruiseDay: number;
-  setCruiseDay: Dispatch<SetStateAction<number>>;
   cruiseDays: CruiseDayData[];
   cruiseDayToday: number;
 }

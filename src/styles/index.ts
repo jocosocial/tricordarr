@@ -95,6 +95,11 @@ export const commonStyles = StyleSheet.create({
     paddingRight: styleDefaults.marginSize,
     paddingHorizontal: styleDefaults.marginSize,
   },
+  paddingHorizontalSmall: {
+    paddingLeft: styleDefaults.marginSize / 2,
+    paddingRight: styleDefaults.marginSize / 2,
+    paddingHorizontal: styleDefaults.marginSize / 2,
+  },
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,
   },
@@ -186,5 +191,8 @@ export const commonStyles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center',
+  },
+  flexGrow: {
+    flexGrow: 1,
   },
 });

@@ -7,7 +7,7 @@ import {
   addSeconds,
   addMinutes,
   addHours,
-  addDays,
+  addDays, format,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData} from './Types';
@@ -89,11 +89,6 @@ export const getCruiseDay: (today: Date, cruiseStartDayOfWeek: number) => number
   return ((7 + (weekday + 1) - (cruiseStartDayOfWeek + 1)) % 7) + 1;
 };
 
-/**
- * An array of stylized day names that correspond to a Date.getDay() index (0 = Sunday, 6 = Saturday).
- */
-export const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
 export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
   let cruiseDayNameIndex = startDate.getDay();
   let cruiseDays: CruiseDayData[] = [];
@@ -103,7 +98,6 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
     }
     cruiseDays.push({
       cruiseDay: i + 1,
-      dayName: dayNames[cruiseDayNameIndex],
       date: addDays(startDate, i),
     });
     cruiseDayNameIndex += 1;
