@@ -11,7 +11,7 @@ import {
   format,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData} from './Types';
+import {CruiseDayData, CruiseDayTime} from './Types';
 
 const thresholdMap = {
   second: {
@@ -114,10 +114,32 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
  * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted forward three hours (02:00UTC, 21:00EST)
  * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
  * @param dateValue
+ * @param cruiseStartDate
+ * @param cruiseEndDate
  */
-export const calcCruiseDayTime = (dateValue: Date) => {
+export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => CruiseDayTime = (
+  dateValue: Date,
+  cruiseStartDate: Date,
+  cruiseEndDate: Date,
+) => {
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
-  // .getHours() and .getMinutes() return in local time.
-  return adjustedDate.getHours() * 60 + adjustedDate.getMinutes();
+
+  let cruiseStartDay = cruiseStartDate.getDay();
+  // Hackish. StartDate is midnight EST, which makes getDay return the day before in [PCM]ST.
+  if (cruiseStartDate.getHours() > 12) {
+    cruiseStartDay = (cruiseStartDay + 1) % 7;
+  }
+  let cruiseDay = (7 - cruiseStartDay + adjustedDate.getDay()) % 7;
+  if (adjustedDate >= cruiseStartDate && adjustedDate < cruiseEndDate) {
+    cruiseDay = Math.trunc((adjustedDate.getTime() - cruiseStartDate.getTime()) / (1000 * 60 * 60 * 24));
+  }
+  // To avoid confusion, the term "cruiseday" refers to "the nth day of the cruise" (1st, 2nd, 8th...).
+  cruiseDay += 1;
+
+  return {
+    // .getHours() and .getMinutes() return in local time.
+    dayMinutes: adjustedDate.getHours() * 60 + adjustedDate.getMinutes(),
+    cruiseDay: cruiseDay,
+  };
 };

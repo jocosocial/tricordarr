@@ -19,3 +19,8 @@ export type CruiseDayData = {
   date: Date;
   cruiseDay: number;
 };
+
+export type CruiseDayTime = {
+  dayMinutes: number;
+  cruiseDay: number;
+};

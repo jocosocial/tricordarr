@@ -63,36 +63,28 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
 
   const startTime = parseISO(event.startTime);
   const endTime = parseISO(event.endTime);
-  const eventStartMinutes = calcCruiseDayTime(startTime);
-  const eventEndMinutes = calcCruiseDayTime(endTime);
-  const nowMinutes = calcCruiseDayTime(minutelyUpdatingDate);
-
-  console.log(event.title, '::', event.startTime, '::', eventStartMinutes);
-  // console.log(
-  //   'Event: ',
-  //   event.title,
-  //   ' :: eventStartMinutes: ',
-  //   eventStartMinutes,
-  //   ' eventEndMinutes: ',
-  //   eventEndMinutes,
-  //   ' minutesSince3AM: ',
-  //   minutesSince3AM,
-  // );
+  const eventStartDayTime = calcCruiseDayTime(startTime, startDate, endDate);
+  const eventEndDayTime = calcCruiseDayTime(endTime, startDate, endDate);
+  const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
   return (
     <Card>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
-          {nowMinutes >= eventStartMinutes && nowMinutes < eventEndMinutes && (
-            <View style={[styles.markerView, styles.nowMarker]}>
-              <Text style={styles.markerText}>Now</Text>
-            </View>
-          )}
-          {nowMinutes >= eventStartMinutes - 30 && nowMinutes < eventStartMinutes && (
-            <View style={[styles.markerView, styles.soonMarker]}>
-              <Text style={styles.markerText}>Soon</Text>
-            </View>
-          )}
+          {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes &&
+            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes && (
+              <View style={[styles.markerView, styles.nowMarker]}>
+                <Text style={styles.markerText}>Now</Text>
+              </View>
+            )}
+          {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 &&
+            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes && (
+              <View style={[styles.markerView, styles.soonMarker]}>
+                <Text style={styles.markerText}>Soon</Text>
+              </View>
+            )}
           <View style={styles.contentBody}>
             <Text>{event.title}</Text>
           </View>

@@ -23,4 +23,3 @@ Work Queue
 * Your next event card on main screen
 * Add Chall lighter video credits
 * Remove kraken talk icon from user profile 
-* soon and now are off by an hour
