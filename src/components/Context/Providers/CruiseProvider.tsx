@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren} from 'react';
 import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 import useDateTime, {getCruiseDay, getCruiseDays} from '../../../libraries/DateTime';
@@ -16,7 +16,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const cruiseLength = appConfig.cruiseLength;
   // End Date. New object to prevent copying/reference.
   let endDate = new Date(startDate.getTime());
-  endDate.setDate(startDate.getDate() + cruiseLength);
+  endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
   const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
   // Days Since. @TODO has this been tested with pre-cruise?
@@ -25,6 +25,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
 
   console.log('Start Date', startDate.toISOString());
+  console.log('End Date', endDate.toISOString());
   console.log('Current Date', hourlyUpdatingDate.toISOString());
   console.log('Cruise Day Index', cruiseDayIndex);
 

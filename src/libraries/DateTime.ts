@@ -7,7 +7,8 @@ import {
   addSeconds,
   addMinutes,
   addHours,
-  addDays, format,
+  addDays,
+  format,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData} from './Types';
@@ -104,4 +105,20 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
   }
 
   return cruiseDays;
+};
+
+export const calcCruiseDayTime = (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => {
+  let cruiseStartDay = cruiseStartDate.getDay();
+  // Hackish. StartDate is midnight EST, which makes getDay return the day before in [PCM]ST.
+  if (cruiseStartDate.getHours() > 12) {
+    cruiseStartDay = (cruiseStartDay + 1) % 7;
+  }
+  // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
+  let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
+  let cruiseDay = (7 - cruiseStartDay + adjustedDate.getDay()) % 7;
+  if (adjustedDate >= cruiseStartDate && adjustedDate < cruiseEndDate) {
+    cruiseDay = (adjustedDate.getTime() - cruiseStartDate.getTime()) / (1000 * 60 * 60 * 24);
+  }
+  let minutesSince3AM = adjustedDate.getHours() * 60 + adjustedDate.getMinutes();
+  return [minutesSince3AM, cruiseDay];
 };
