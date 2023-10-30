@@ -27,6 +27,17 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
     markerView: {
       borderTopStartRadius: 12,
       borderBottomStartRadius: 12,
+      height: '100%',
+      // alignItems: 'center',
+      // minWidth: 60,
+      // justifyContent: 'center',
+      flexDirection: 'row',
+      // justifyContent: 'space-between',
+      minWidth: 40,
+    },
+    markerContainer: {
+      // backgroundColor: 'pink',
+      justifyContent: 'center',
     },
     markerText: {
       writingDirection: 'rtl',
@@ -75,14 +86,18 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes &&
             nowDayTime.dayMinutes < eventEndDayTime.dayMinutes && (
               <View style={[styles.markerView, styles.nowMarker]}>
-                <Text style={styles.markerText}>Now</Text>
+                <View style={styles.markerContainer}>
+                  <Text style={styles.markerText}>Now</Text>
+                </View>
               </View>
             )}
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 &&
             nowDayTime.dayMinutes < eventStartDayTime.dayMinutes && (
               <View style={[styles.markerView, styles.soonMarker]}>
-                <Text style={styles.markerText}>Soon</Text>
+                <View style={styles.markerContainer}>
+                  <Text style={styles.markerText}>Soon</Text>
+                </View>
               </View>
             )}
           <View style={styles.contentBody}>
