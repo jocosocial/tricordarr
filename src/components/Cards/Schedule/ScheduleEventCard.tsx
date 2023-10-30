@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
-import {parseISO} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
@@ -44,6 +44,8 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
       transform: [{rotate: '90deg'}],
       paddingVertical: 20,
       // backgroundColor: 'red',
+      width: 40,
+      fontWeight: 'bold',
     },
     contentView: {
       // backgroundColor: 'pink',
@@ -78,6 +80,8 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
   const eventEndDayTime = calcCruiseDayTime(endTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
+  const timeString = `${format(parseISO(event.startTime), 'p')} - ${format(parseISO(event.endTime), 'p')}`;
+
   return (
     <Card>
       <Card.Content style={styles.cardContent}>
@@ -101,7 +105,9 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
               </View>
             )}
           <View style={styles.contentBody}>
-            <Text>{event.title}</Text>
+            <Text variant={'titleMedium'}>{event.title}</Text>
+            <Text variant={'bodyMedium'}>{timeString}</Text>
+            <Text variant={'bodyMedium'}>{event.location}</Text>
           </View>
         </View>
       </Card.Content>
