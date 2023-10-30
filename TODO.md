@@ -19,11 +19,8 @@ Backlog
 Work Queue
 * Past events for that day darker text?
 * Add FAB
-* Event title multi line
 * Remove kraken talk from seamail fab
 * Your next event card on main screen
 * Add Chall lighter video credits
 * Remove kraken talk icon from user profile 
-* Simplify cruiseProvider cruiseday usage
-*  LOG  VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that follow React performance best practices like PureComponent, shouldComponentUpdate, etc. {"contentLength": 2988, "dt": 2690, "prevDt": 2552}
-* empty day needs bigger gesture
+* soon and now are off by an hour

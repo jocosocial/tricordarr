@@ -2,11 +2,11 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
-import {addMinutes, parseISO} from 'date-fns';
+import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {calcCruiseDayTime} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
 
 interface ScheduleEventCardProps {
   event: EventData;
@@ -15,7 +15,8 @@ interface ScheduleEventCardProps {
 export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
-  const {cruiseDateNow, startDate, endDate, hourlyUpdatingDate} = useCruise();
+  const {startDate, endDate} = useCruise();
+  const minutelyUpdatingDate = useDateTime('minute');
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -65,10 +66,12 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
   // console.log('Event: ', event.title, ' Start Time: ', startTime);
   const eventStartMinutes = calcCruiseDayTime(startTime, startDate, endDate)[0];
   const eventEndMinutes = calcCruiseDayTime(endTime, startDate, endDate)[0];
-  const minutesSince3AM = calcCruiseDayTime(hourlyUpdatingDate, startDate, endDate)[0];
+  const minutesSince3AM = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate)[0];
 
   console.log(
-    'eventStartMinutes: ',
+    'Event: ',
+    event.title,
+    ' :: eventStartMinutes: ',
     eventStartMinutes,
     ' eventEndMinutes: ',
     eventEndMinutes,
