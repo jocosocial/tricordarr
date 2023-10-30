@@ -97,3 +97,41 @@ export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
     },
   );
 };
+
+interface LfgListQueryOptions {
+  cruiseDay?: number;
+  fezType?: keyof typeof FezType;
+  // start?: number;
+  // limit?: number;
+  pageSize?: number;
+  hidePast?: boolean;
+}
+
+export const useLfgListQuery = ({cruiseDay, fezType, hidePast = false, pageSize = 50}: LfgListQueryOptions) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
+    ['/fez/open', {cruiseDay, fezType, hidePast, pageSize}],
+    async ({pageParam = {limit: pageSize}}) => {
+      const {start, limit} = pageParam as PaginationParams;
+      const queryParams = {
+        // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
+        ...(cruiseDay && {cruiseday: cruiseDay}),
+        ...(fezType && {type: fezType}),
+        ...(start !== undefined && {start: start}),
+        ...(limit !== undefined && {limit: limit}),
+        ...(hidePast !== undefined && {hidePast: hidePast}),
+      };
+      const {data: responseData} = await axios.get<FezListData>('/fez/open', {
+        params: queryParams,
+      });
+      return responseData;
+    },
+    {
+      getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
+      getPreviousPageParam: lastPage => getPreviousPageParam(lastPage.paginator),
+      onError: error => {
+        setErrorMessage(error?.response?.data.reason);
+      },
+    },
+  );
+};

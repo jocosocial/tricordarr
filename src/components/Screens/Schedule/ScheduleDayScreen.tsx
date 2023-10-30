@@ -16,6 +16,7 @@ import {format} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
+import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -25,6 +26,7 @@ export type Props = NativeStackScreenProps<
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {data: eventData, isLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  const {data: lfgData} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
 
@@ -90,6 +92,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       }
     }
   };
+  console.log('ELLE EFF GHEE!', route.params.cruiseDay);
+  console.log(lfgData?.pages[0]);
 
   return (
     <AppView>

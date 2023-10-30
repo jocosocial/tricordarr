@@ -7,6 +7,8 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
+import {EventType} from '../../../libraries/Enums/EventType';
+import {AndroidColor} from '@notifee/react-native';
 
 interface ScheduleEventCardProps {
   event: EventData;
@@ -59,6 +61,7 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
       paddingBottom: 0,
       // minHeight: 40,
       justifyContent: 'center',
+      // backgroundColor: 'pink',
     },
     contentBody: {
       flex: 1,
@@ -70,7 +73,30 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
       backgroundColor: theme.colors.twitarrPositiveButton,
     },
     soonMarker: {
+      // backgroundColor: theme.colors.twitarrNeutralButton,
+      backgroundColor: '#FFD04D',
+    },
+    soonText: {
+      color: AndroidColor.BLACK,
+    },
+    nowText: {
+      color: AndroidColor.WHITE,
+    },
+    officialCard: {
       backgroundColor: theme.colors.twitarrNeutralButton,
+      // backgroundColor: 'rgb(25, 135, 84)',
+      // backgroundColor: '#833400',
+      // backgroundColor: 'rgba(25, 18, 210, 0.2)',
+      // backgroundColor: 'rgba(73, 205, 140, 0.2)',
+    },
+    shadowCard: {
+      // backgroundColor: 'rgba(114, 85, 184, 0.2)',
+      // backgroundColor: theme.colors.twitarrLfgColor,
+      backgroundColor: 'rgb(46, 49, 51)',
+    },
+    bodyText: {
+      // backgroundColor: 'rgba(25, 18, 210, 0.2)',
+      color: AndroidColor.WHITE,
     },
   });
 
@@ -83,7 +109,7 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
   const timeString = `${format(parseISO(event.startTime), 'p')} - ${format(parseISO(event.endTime), 'p')}`;
 
   return (
-    <Card>
+    <Card mode={'contained'} style={event.eventType === EventType.shadow ? styles.shadowCard : styles.officialCard}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
@@ -91,7 +117,7 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
             nowDayTime.dayMinutes < eventEndDayTime.dayMinutes && (
               <View style={[styles.markerView, styles.nowMarker]}>
                 <View style={styles.markerContainer}>
-                  <Text style={styles.markerText}>Now</Text>
+                  <Text style={[styles.markerText, styles.nowText]}>Now</Text>
                 </View>
               </View>
             )}
@@ -100,14 +126,14 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
             nowDayTime.dayMinutes < eventStartDayTime.dayMinutes && (
               <View style={[styles.markerView, styles.soonMarker]}>
                 <View style={styles.markerContainer}>
-                  <Text style={styles.markerText}>Soon</Text>
+                  <Text style={[styles.markerText, styles.soonText]}>Soon</Text>
                 </View>
               </View>
             )}
           <View style={styles.contentBody}>
-            <Text variant={'titleMedium'}>{event.title}</Text>
-            <Text variant={'bodyMedium'}>{timeString}</Text>
-            <Text variant={'bodyMedium'}>{event.location}</Text>
+            <Text style={styles.bodyText} variant={'titleMedium'}>{event.title}</Text>
+            <Text style={styles.bodyText} variant={'bodyMedium'}>{timeString}</Text>
+            <Text style={styles.bodyText} variant={'bodyMedium'}>{event.location}</Text>
           </View>
         </View>
       </Card.Content>

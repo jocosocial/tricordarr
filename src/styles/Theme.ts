@@ -73,6 +73,9 @@ export const twitarrTheme = {
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
+    twitarrOfficialColor: 'rgb(73, 205, 140)',
+    twitarrShadowColor: 'rgb(28, 110, 255)',
+    twitarrLfgColor: 'rgb(112, 60, 190)',
   },
 };
 
@@ -123,6 +126,9 @@ export const twitarrThemeDark = {
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
+    twitarrOfficialColor: 'rgb(73, 205, 140)',
+    twitarrShadowColor: 'rgb(28, 110, 255)',
+    twitarrLfgColor: 'rgb(112, 60, 190)',
   },
 };
 

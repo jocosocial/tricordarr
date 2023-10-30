@@ -23,3 +23,5 @@ Work Queue
 * Your next event card on main screen
 * Add Chall lighter video credits
 * Remove kraken talk icon from user profile 
+* time range shown for events is wrong in other timezones. needs cast
+* 
