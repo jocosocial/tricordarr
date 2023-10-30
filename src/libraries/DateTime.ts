@@ -107,18 +107,17 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
   return cruiseDays;
 };
 
-export const calcCruiseDayTime = (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => {
-  // let cruiseStartDay = cruiseStartDate.getDay();
-  // Hackish. StartDate is midnight EST, which makes getDay return the day before in [PCM]ST.
-  // if (cruiseStartDate.getHours() > 12) {
-  //   cruiseStartDay = (cruiseStartDay + 1) % 7;
-  // }
+/**
+ * Lifted from https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Resources/Assets/js/swiftarr.js#L470
+ * We somewhat arbitrarily pick 3:00AM boat time as the breaker for when days roll over. But really it just serves as a
+ * point in time that we can do maths again.
+ * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted forward three hours (02:00UTC, 21:00EST)
+ * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
+ * @param dateValue
+ */
+export const calcCruiseDayTime = (dateValue: Date) => {
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
-  // let cruiseDay = (7 - cruiseStartDay + adjustedDate.getDay()) % 7;
-  // if (adjustedDate >= cruiseStartDate && adjustedDate < cruiseEndDate) {
-  //   cruiseDay = (adjustedDate.getTime() - cruiseStartDate.getTime()) / (1000 * 60 * 60 * 24);
-  // }
-  let minutesSince3AM = adjustedDate.getHours() * 60 + adjustedDate.getMinutes();
-  return [minutesSince3AM];
+  // .getHours() and .getMinutes() return in local time.
+  return adjustedDate.getHours() * 60 + adjustedDate.getMinutes();
 };

@@ -63,32 +63,32 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
 
   const startTime = parseISO(event.startTime);
   const endTime = parseISO(event.endTime);
-  // console.log('Event: ', event.title, ' Start Time: ', startTime);
-  const eventStartMinutes = calcCruiseDayTime(startTime, startDate, endDate)[0];
-  const eventEndMinutes = calcCruiseDayTime(endTime, startDate, endDate)[0];
-  const minutesSince3AM = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate)[0];
+  const eventStartMinutes = calcCruiseDayTime(startTime);
+  const eventEndMinutes = calcCruiseDayTime(endTime);
+  const nowMinutes = calcCruiseDayTime(minutelyUpdatingDate);
 
-  console.log(
-    'Event: ',
-    event.title,
-    ' :: eventStartMinutes: ',
-    eventStartMinutes,
-    ' eventEndMinutes: ',
-    eventEndMinutes,
-    ' minutesSince3AM: ',
-    minutesSince3AM,
-  );
+  console.log(event.title, '::', event.startTime, '::', eventStartMinutes);
+  // console.log(
+  //   'Event: ',
+  //   event.title,
+  //   ' :: eventStartMinutes: ',
+  //   eventStartMinutes,
+  //   ' eventEndMinutes: ',
+  //   eventEndMinutes,
+  //   ' minutesSince3AM: ',
+  //   minutesSince3AM,
+  // );
 
   return (
     <Card>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
-          {minutesSince3AM >= eventStartMinutes && minutesSince3AM < eventEndMinutes && (
+          {nowMinutes >= eventStartMinutes && nowMinutes < eventEndMinutes && (
             <View style={[styles.markerView, styles.nowMarker]}>
               <Text style={styles.markerText}>Now</Text>
             </View>
           )}
-          {(minutesSince3AM >= eventStartMinutes - 30) && minutesSince3AM < eventStartMinutes && (
+          {nowMinutes >= eventStartMinutes - 30 && nowMinutes < eventStartMinutes && (
             <View style={[styles.markerView, styles.soonMarker]}>
               <Text style={styles.markerText}>Soon</Text>
             </View>
