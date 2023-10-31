@@ -9,6 +9,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FlatList} from 'react-native-gesture-handler'
 import {ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
+import {getTimeMarker} from '../../../libraries/DateTime';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -51,12 +52,6 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
         <ScheduleEventCard item={item} />
       </View>
     );
-  };
-
-  const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
-    const date = moment(dateTimeStr);
-    const timeMarker = date.tz(timeZoneAbbrStr).format('hh:mm A');
-    return `${timeMarker} ${timeZoneAbbrStr}`;
   };
 
   const renderSeparator = ({leadingItem}: {leadingItem: ScheduleItem}) => {

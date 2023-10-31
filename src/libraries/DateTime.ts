@@ -12,6 +12,7 @@ import {
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData, CruiseDayTime} from './Types';
+import moment from 'moment-timezone';
 
 const thresholdMap = {
   second: {
@@ -142,4 +143,29 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
     dayMinutes: adjustedDate.getHours() * 60 + adjustedDate.getMinutes(),
     cruiseDay: cruiseDay,
   };
+};
+
+/**
+ * Returns a formatted string with the time and time zone.
+ * @param dateTimeStr ISO time string.
+ * @param timeZoneAbbrStr 3-letter abbreviation of the timezone. @TODO there is a hack in place for AST in App.ts.
+ */
+export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  const date = moment(dateTimeStr);
+  const timeMarker = date.tz(timeZoneAbbrStr).format('hh:mm A');
+  return `${timeMarker} ${timeZoneAbbrStr}`;
+};
+
+/**
+ * Returns a formatted string of the start and end times of an event, factoring in the apparent time zone.
+ * @param startTimeStr Start ISO string.
+ * @param endTimeStr End ISO string.
+ * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
+ */
+export const getDurationString = (startTimeStr: string, endTimeStr: string, timeZoneAbbrStr: string) => {
+  const startDate = moment(startTimeStr);
+  const endDate = moment(endTimeStr);
+  const startText = startDate.tz(timeZoneAbbrStr).format('hh:mm A');
+  const endText = endDate.tz(timeZoneAbbrStr).format('hh:mm A');
+  return `${startText} - ${endText}`;
 };

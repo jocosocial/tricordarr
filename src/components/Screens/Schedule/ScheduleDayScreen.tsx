@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
-import {StyleSheet, TextStyle, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';

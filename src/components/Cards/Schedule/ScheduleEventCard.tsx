@@ -2,11 +2,11 @@ import React from 'react';
 import {Card, Text} from 'react-native-paper';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
-import {format, parseISO} from 'date-fns';
+import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime, getDurationString} from '../../../libraries/DateTime';
 import {AndroidColor} from '@notifee/react-native';
 import {ScheduleItem} from '../../../libraries/Types';
 
@@ -109,8 +109,6 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const eventEndDayTime = calcCruiseDayTime(endTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
-  const timeString = `${format(parseISO(item.startTime), 'p')} - ${format(parseISO(item.endTime), 'p')}`;
-
   const cardStyle = {
     ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
     ...(item.itemType === 'official' ? styles.officialCard : undefined),
@@ -144,7 +142,7 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
               {item.title}
             </Text>
             <Text style={styles.bodyText} variant={'bodyMedium'}>
-              {timeString}
+              {getDurationString(item.startTime, item.endTime, item.timeZone)}
             </Text>
             <Text style={styles.bodyText} variant={'bodyMedium'}>
               {item.location}
