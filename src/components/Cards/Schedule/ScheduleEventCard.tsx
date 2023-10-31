@@ -7,14 +7,14 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
-import {EventType} from '../../../libraries/Enums/EventType';
 import {AndroidColor} from '@notifee/react-native';
+import {ScheduleItem} from '../../../libraries/Types';
 
 interface ScheduleEventCardProps {
-  event: EventData;
+  item: ScheduleItem;
 }
 
-export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
+export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
@@ -98,18 +98,27 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
       // backgroundColor: 'rgba(25, 18, 210, 0.2)',
       color: AndroidColor.WHITE,
     },
+    lfgCard: {
+      backgroundColor: theme.colors.twitarrLfgColor,
+    },
   });
 
-  const startTime = parseISO(event.startTime);
-  const endTime = parseISO(event.endTime);
+  const startTime = parseISO(item.startTime);
+  const endTime = parseISO(item.endTime);
   const eventStartDayTime = calcCruiseDayTime(startTime, startDate, endDate);
   const eventEndDayTime = calcCruiseDayTime(endTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
-  const timeString = `${format(parseISO(event.startTime), 'p')} - ${format(parseISO(event.endTime), 'p')}`;
+  const timeString = `${format(parseISO(item.startTime), 'p')} - ${format(parseISO(item.endTime), 'p')}`;
+
+  const cardStyle = {
+    ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
+    ...(item.itemType === 'official' ? styles.officialCard : undefined),
+    ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
+  };
 
   return (
-    <Card mode={'contained'} style={event.eventType === EventType.shadow ? styles.shadowCard : styles.officialCard}>
+    <Card mode={'contained'} style={cardStyle}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
@@ -131,9 +140,15 @@ export const ScheduleEventCard = ({event}: ScheduleEventCardProps) => {
               </View>
             )}
           <View style={styles.contentBody}>
-            <Text style={styles.bodyText} variant={'titleMedium'}>{event.title}</Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'}>{timeString}</Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'}>{event.location}</Text>
+            <Text style={styles.bodyText} variant={'titleMedium'}>
+              {item.title}
+            </Text>
+            <Text style={styles.bodyText} variant={'bodyMedium'}>
+              {timeString}
+            </Text>
+            <Text style={styles.bodyText} variant={'bodyMedium'}>
+              {item.location}
+            </Text>
           </View>
         </View>
       </Card.Content>

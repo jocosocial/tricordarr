@@ -24,3 +24,12 @@ export type CruiseDayTime = {
   dayMinutes: number;
   cruiseDay: number;
 };
+
+export type ScheduleItem = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+  location: string;
+  itemType: 'official' | 'shadow' | 'lfg';
+};

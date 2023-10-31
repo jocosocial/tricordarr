@@ -17,6 +17,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -25,8 +26,8 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const {data: eventData, isLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
-  const {data: lfgData} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
+  const {data: eventData, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
 
@@ -70,11 +71,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
 
   const onSwipe = (event: any) => {
     if (event.nativeEvent.state === State.END) {
-      // console.log('translationX: ', event.nativeEvent.translationX);
-      // console.log('translationY: ', event.nativeEvent.translationY);
-      // console.log('velocityX: ', event.nativeEvent.velocityY);
-      // console.log('velocityY: ', event.nativeEvent.velocityY);
-
       if (
         (event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) &&
         Math.abs(event.nativeEvent.translationY) < 80
@@ -92,8 +88,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       }
     }
   };
-  console.log('ELLE EFF GHEE!', route.params.cruiseDay);
-  console.log(lfgData?.pages[0]);
+
+  let lfgList: FezData[] = [];
+  lfgData?.pages.map(page => {
+    lfgList = lfgList.concat(page.fezzes);
+  });
+
+  if (isLfgLoading || isEventLoading || !eventData || !lfgData) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>
@@ -114,8 +117,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            {isLoading && <LoadingView />}
-            {!isLoading && eventData && <EventFlatList eventList={eventData} />}
+            <EventFlatList eventList={eventData} lfgList={lfgList} />
           </View>
         </View>
       </PanGestureHandler>
