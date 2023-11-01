@@ -115,8 +115,9 @@ export const useLfgListQuery = ({cruiseDay, fezType, hidePast = false, pageSize 
       const {start, limit} = pageParam as PaginationParams;
       const queryParams = {
         // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
-        ...(cruiseDay && {cruiseday: cruiseDay}),
-        ...(fezType && {type: fezType}),
+        // The !== undefined is necessary because 0 is false-y.
+        ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
+        ...(fezType !== undefined && {type: fezType}),
         ...(start !== undefined && {start: start}),
         ...(limit !== undefined && {limit: limit}),
         ...(hidePast !== undefined && {hidePast: hidePast}),
