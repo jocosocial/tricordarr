@@ -23,3 +23,4 @@ Work Queue
 * Your next event card on main screen
 * Add Chall lighter video credits
 * Remove kraken talk icon from user profile 
+* Make a new base FAB

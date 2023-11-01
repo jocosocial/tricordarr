@@ -18,6 +18,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -65,9 +66,9 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   });
 
   const navigatePreviousDay = () =>
-    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay - 1});
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay - 1});
   const navigateNextDay = () =>
-    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
 
   const onSwipe = (event: any) => {
     if (event.nativeEvent.state === State.END) {
@@ -121,6 +122,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           </View>
         </View>
       </PanGestureHandler>
+      <ScheduleFAB />
     </AppView>
   );
 };

@@ -59,4 +59,9 @@ export enum AppIcons {
   filter = 'filter-menu',
   cruiseDay = 'calendar-today',
   search = 'magnify',
+  // LFG
+  lfg = 'account-multiple',
+  lfgCreate = 'account-multiple-plus',
+  lfgJoined = 'account-multiple',
+  lfgOwned = 'account-multiple-check-outline',
 }
