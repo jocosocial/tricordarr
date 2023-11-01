@@ -92,7 +92,6 @@ export const UserProfileScreen = ({route}: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           {data && <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
-          {data && <Item title={'Create KrakenTalk'} iconName={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
           {data && (
             <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
           )}

@@ -15,8 +15,8 @@ export const AboutScreen = () => {
             Credits:
           </Text>
           <Text>
-            Grant Cohoe (@grant) built this app with contributions from Dustin Hendrickson (@hendu) and support from the
-            rest of the Twitarr team and viewers like you. Thank you!
+            Grant Cohoe (@grant) built this app with contributions from Dustin Hendrickson (@hendu), Chall Fry (@cfry),
+            and support from the rest of the Twitarr team and viewers like you. Thank you!
           </Text>
         </PaddedContentView>
       </ScrollingContentView>

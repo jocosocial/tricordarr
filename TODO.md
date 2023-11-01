@@ -17,12 +17,11 @@ Backlog
 * Setting for theme. Light, dark, use system.
 * Make a new base FAB
 * slide nav transition
+* Your next event card on main screen
 
 Work Queue
 * Past events for that day darker text?
-* Add FAB
-* Remove kraken talk from seamail fab
-* Your next event card on main screen
-* Add Chall lighter video credits
-* Remove kraken talk icon from user profile 
 * fab default colors to the grey?
+* Tapping today needs to jump to initial scroll indexLayout function neeeda to calculate based on line length for title and location
+* That or I'm missing a time zone offset in the calculation. I think the offset is landing in the middle of a void
+* Flatlist scrolltoindex

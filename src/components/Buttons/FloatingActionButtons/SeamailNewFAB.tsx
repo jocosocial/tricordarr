@@ -44,11 +44,11 @@ export const SeamailNewFAB = () => {
                 initialAsTwitarrTeam: asTwitarrTeam,
               }),
           }),
-          FabGroupAction({
-            icon: AppIcons.krakentalkCreate,
-            label: 'KrakenTalk',
-            onPress: () => navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen),
-          }),
+          // FabGroupAction({
+          //   icon: AppIcons.krakentalkCreate,
+          //   label: 'KrakenTalk',
+          //   onPress: () => navigation.push(SeamailStackScreenComponents.krakentalkCreateScreen),
+          // }),
         ]}
         onStateChange={onStateChange}
       />
