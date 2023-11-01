@@ -6,9 +6,11 @@ import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import useDateTime, {calcCruiseDayTime, getDurationString} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime, getDurationString, getLocalDate} from '../../../libraries/DateTime';
 import {AndroidColor} from '@notifee/react-native';
 import {ScheduleItem} from '../../../libraries/Types';
+import moment from 'moment-timezone';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 interface ScheduleEventCardProps {
   item: ScheduleItem;
@@ -19,6 +21,7 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
+  const {userNotificationData} = useUserNotificationData();
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -103,11 +106,34 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
     },
   });
 
-  const startTime = parseISO(item.startTime);
-  const endTime = parseISO(item.endTime);
-  const eventStartDayTime = calcCruiseDayTime(startTime, startDate, endDate);
-  const eventEndDayTime = calcCruiseDayTime(endTime, startDate, endDate);
+  const itemStartTime = parseISO(item.startTime);
+  const itemEndTime = parseISO(item.endTime);
+  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
+  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+
+  let utcOffset = 0;
+
+  // @TODO this is a hack until we can reveal the time zones via the API.
+  const portTimeZoneID = 'America/New_York';
+  let itemTimeZoneID = '';
+  switch (item.timeZone) {
+    case 'AST':
+      itemTimeZoneID = 'America/Santo_Domingo';
+      break;
+    case 'EST':
+      itemTimeZoneID = 'America/New_York';
+      break;
+  }
+
+  // Get the item time in both time zones
+  const portTime = moment(item.startTime).tz(portTimeZoneID);
+  const itemTime = moment(item.startTime).tz(itemTimeZoneID);
+
+  // Calculate the minute offset. Positive means towards UTC (going into the future),
+  // negative means away from UTC (going into the past).
+  utcOffset = itemTime.utcOffset() - portTime.utcOffset();
+  console.log('UTC Offset: ', utcOffset);
 
   const cardStyle = {
     ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
@@ -120,8 +146,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes &&
-            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes && (
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes + utcOffset &&
+            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + utcOffset && (
               <View style={[styles.markerView, styles.nowMarker]}>
                 <View style={styles.markerContainer}>
                   <Text style={[styles.markerText, styles.nowText]}>Now</Text>
@@ -129,8 +155,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
               </View>
             )}
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 &&
-            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes && (
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 + utcOffset &&
+            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + utcOffset && (
               <View style={[styles.markerView, styles.soonMarker]}>
                 <View style={styles.markerContainer}>
                   <Text style={[styles.markerText, styles.soonText]}>Soon</Text>
