@@ -133,7 +133,6 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   // Calculate the minute offset. Positive means towards UTC (going into the future),
   // negative means away from UTC (going into the past).
   utcOffset = itemTime.utcOffset() - portTime.utcOffset();
-  console.log('UTC Offset: ', utcOffset);
 
   const cardStyle = {
     ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),

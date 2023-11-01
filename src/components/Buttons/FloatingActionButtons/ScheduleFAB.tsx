@@ -34,7 +34,7 @@ export const ScheduleFAB = () => {
             onPress: () => console.log('Create LFG'),
           }),
           FabGroupAction({
-            icon: AppIcons.search,
+            icon: AppIcons.lfgFind,
             label: 'Find',
             onPress: () => console.log('Find LFG'),
           }),
