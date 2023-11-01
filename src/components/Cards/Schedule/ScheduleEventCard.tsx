@@ -10,7 +10,6 @@ import useDateTime, {calcCruiseDayTime, getDurationString, getLocalDate} from '.
 import {AndroidColor} from '@notifee/react-native';
 import {ScheduleItem} from '../../../libraries/Types';
 import moment from 'moment-timezone';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 interface ScheduleEventCardProps {
   item: ScheduleItem;
@@ -21,7 +20,6 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
-  const {userNotificationData} = useUserNotificationData();
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -95,14 +93,14 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
     shadowCard: {
       // backgroundColor: 'rgba(114, 85, 184, 0.2)',
       // backgroundColor: theme.colors.twitarrLfgColor,
-      backgroundColor: 'rgb(46, 49, 51)',
+      backgroundColor: theme.colors.twitarrLfgColor,
     },
     bodyText: {
       // backgroundColor: 'rgba(25, 18, 210, 0.2)',
       color: AndroidColor.WHITE,
     },
     lfgCard: {
-      backgroundColor: theme.colors.twitarrLfgColor,
+      backgroundColor: 'rgb(46, 49, 51)',
     },
   });
 

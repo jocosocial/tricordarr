@@ -6,10 +6,13 @@ import moment from 'moment-timezone';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {FlatList} from 'react-native-gesture-handler'
+import {FlatList} from 'react-native-gesture-handler';
 import {ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
-import {getTimeMarker} from '../../../libraries/DateTime';
+import {calcCruiseDayTime, getTimeMarker} from '../../../libraries/DateTime';
+import {parseISO} from 'date-fns';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {useScheduleStackRoute} from '../../Navigation/Stacks/ScheduleStackNavigator';
 
 interface SeamailFlatListProps {
   eventList: EventData[];
@@ -19,6 +22,8 @@ interface SeamailFlatListProps {
 
 export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
+  const {startDate, endDate, cruiseDayToday} = useCruise();
+  const route = useScheduleStackRoute();
 
   let itemList: ScheduleItem[] = [];
   eventList.map(event => {
@@ -78,6 +83,39 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
     return <TimeDivider label={getTimeMarker(itemList[0].startTime, itemList[0].timeZone)} />;
   };
 
+  const getInitialScrollindex = () => {
+    if (route.params.cruiseDay !== cruiseDayToday) {
+      return 0;
+    }
+    for (let i = 0; i < itemList.length; i++) {
+      const eventStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+      const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
+      if (
+        eventStartDayTime.dayMinutes >= nowDayTime.dayMinutes &&
+        eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
+      ) {
+        return i - 1;
+      }
+    }
+    return 0;
+  };
+
+  /**
+   * Optimizing function necessary for the initialScrollIndex to function. The heights were
+   * statically calculated. I don't see a good way to do this.
+   * @param data The same data array passed to the FlatList.
+   * @param index Number of the array index of the data.
+   */
+  const getItemLayout = (data: ScheduleItem[] | null | undefined, index: number) => {
+    const itemHeight = 104;
+    const separatorHeight = 44;
+    return {
+      length: itemHeight + separatorHeight,
+      offset: (itemHeight + separatorHeight) * index - separatorHeight,
+      index,
+    };
+  };
+
   return (
     <FlatList
       style={{
@@ -89,6 +127,9 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
       renderItem={renderItem}
       ListHeaderComponent={getHeader}
       ListFooterComponent={() => <TimeDivider label={'End of Schedule'} />}
+      initialScrollIndex={getInitialScrollindex()}
+      // initialScrollIndex={5}
+      getItemLayout={getItemLayout}
     />
   );
 };
