@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {Ref, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {TextStyle} from 'react-native';
+import {FlatList, TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
 import {useScheduleStack, useScheduleStackRoute} from '../Navigation/Stacks/ScheduleStackNavigator';
@@ -23,7 +23,7 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
   return <Menu.Item titleStyle={titleStyle} title={title} onPress={() => handleSelection(itemCruiseDay)} />;
 };
 
-export const ScheduleCruiseDayMenu = () => {
+export const ScheduleCruiseDayMenu = ({listRef}: {listRef: React.Ref<FlatList>}) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, cruiseDayToday} = useCruise();
   const navigation = useScheduleStack();
@@ -33,12 +33,21 @@ export const ScheduleCruiseDayMenu = () => {
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
-  const navigateToday = () =>
-    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
+  const navigateToday = () => {
+    // if (route.params.cruiseDay === cruiseDayToday) {
+    //   console.log('Navigating to same day.');
+    //   if (listRef?.current) {
+    //     // listRef.current.scrollToIndex(2);
+    //     console.log(listRef);
+    //   }
+    // } else {
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
+    // }
+  };
 
   const menuAnchor = (
     <Item title={'Cruise Day'} iconName={AppIcons.cruiseDay} onPress={navigateToday} onLongPress={openMenu} />

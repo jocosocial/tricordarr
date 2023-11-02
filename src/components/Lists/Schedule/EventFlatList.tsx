@@ -1,6 +1,6 @@
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControlProps, View} from 'react-native';
-import React from 'react';
+import React, {Ref, useRef} from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import moment from 'moment-timezone';
 import {TimeDivider} from '../Dividers/TimeDivider';
@@ -18,12 +18,14 @@ interface SeamailFlatListProps {
   eventList: EventData[];
   lfgList: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
+  listRef: React.RefObject<FlatList<ScheduleItem>>;
 }
 
-export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatListProps) => {
+export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
   const {startDate, endDate, cruiseDayToday} = useCruise();
   const route = useScheduleStackRoute();
+  // const listRef = useRef<FlatList<ScheduleItem>>(null);
 
   let itemList: ScheduleItem[] = [];
   eventList.map(event => {
@@ -91,7 +93,7 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
       const eventStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
       const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
       const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
-      console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
+      // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
       if (
         eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
         eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
@@ -143,6 +145,7 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
       initialScrollIndex={getInitialScrollindex()}
       // initialScrollIndex={5}
       getItemLayout={getItemLayout}
+      ref={listRef}
     />
   );
 };

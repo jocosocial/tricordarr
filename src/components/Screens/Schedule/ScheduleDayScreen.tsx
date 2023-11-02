@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {Ref, useCallback, useEffect, useRef} from 'react';
 import {AppView} from '../../Views/AppView';
-import {StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -19,6 +19,7 @@ import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
+import {ScheduleItem} from '../../../libraries/Types';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -31,13 +32,23 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
+  const listRef = useRef<FlatList<ScheduleItem>>(null);
+
+  const foo = () => {
+    console.log('FOO BAR LOLZ');
+    if (listRef.current) {
+      listRef.current.scrollToIndex({
+        index: 2,
+      });
+    }
+  };
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu />
-          <Item title={'Search'} iconName={AppIcons.search} onPress={() => console.log('hi')} />
+          <ScheduleCruiseDayMenu listRef={listRef} />
+          <Item title={'Search'} iconName={AppIcons.search} onPress={foo} />
           <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
         </HeaderButtons>
@@ -118,7 +129,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            <EventFlatList eventList={eventData} lfgList={lfgList} />
+            <EventFlatList listRef={listRef} eventList={eventData} lfgList={lfgList} />
           </View>
         </View>
       </PanGestureHandler>

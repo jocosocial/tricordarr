@@ -18,9 +18,9 @@ Backlog
 * Make a new base FAB
 * slide nav transition
 * Your next event card on main screen
+* Bug if phone is in a time zone ahead of EST (Santo Domingo) - event time markers are an hour off.
 
 Work Queue
 * Past events for that day darker text?
 * fab default colors to the grey?
 * Tapping today needs to jump to initial scroll indexLayout function neeeda to calculate based on line length for title and location
-* Flatlist scrolltoindex
