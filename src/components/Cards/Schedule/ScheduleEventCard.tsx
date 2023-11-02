@@ -6,7 +6,12 @@ import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import useDateTime, {calcCruiseDayTime, getDurationString, getLocalDate} from '../../../libraries/DateTime';
+import useDateTime, {
+  calcCruiseDayTime,
+  getDurationString,
+  getLocalDate,
+  getTimeZoneOffset
+} from '../../../libraries/DateTime';
 import {AndroidColor} from '@notifee/react-native';
 import {ScheduleItem} from '../../../libraries/Types';
 import moment from 'moment-timezone';
@@ -110,32 +115,16 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
-  let utcOffset = 0;
-
-  // @TODO this is a hack until we can reveal the time zones via the API.
-  const portTimeZoneID = 'America/New_York';
-  let itemTimeZoneID = '';
-  switch (item.timeZone) {
-    case 'AST':
-      itemTimeZoneID = 'America/Santo_Domingo';
-      break;
-    case 'EST':
-      itemTimeZoneID = 'America/New_York';
-      break;
-  }
-
-  // Get the item time in both time zones
-  const portTime = moment(item.startTime).tz(portTimeZoneID);
-  const itemTime = moment(item.startTime).tz(itemTimeZoneID);
-
   // Calculate the minute offset. Positive means towards UTC (going into the future),
   // negative means away from UTC (going into the past).
-  utcOffset = itemTime.utcOffset() - portTime.utcOffset();
+  const tzOffset = getTimeZoneOffset('America/New_York', item.timeZone, item.startTime);
+  // console.log(item.title, eventStartDayTime, eventEndDayTime, nowDayTime, tzOffset);
 
   const cardStyle = {
     ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
     ...(item.itemType === 'official' ? styles.officialCard : undefined),
     ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
+    minHeight: 106,
   };
 
   return (
@@ -143,8 +132,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes + utcOffset &&
-            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + utcOffset && (
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes + tzOffset &&
+            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + tzOffset && (
               <View style={[styles.markerView, styles.nowMarker]}>
                 <View style={styles.markerContainer}>
                   <Text style={[styles.markerText, styles.nowText]}>Now</Text>
@@ -152,8 +141,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
               </View>
             )}
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 + utcOffset &&
-            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + utcOffset && (
+            nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 + tzOffset &&
+            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + tzOffset && (
               <View style={[styles.markerView, styles.soonMarker]}>
                 <View style={styles.markerContainer}>
                   <Text style={[styles.markerText, styles.soonText]}>Soon</Text>
@@ -161,13 +150,13 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
               </View>
             )}
           <View style={styles.contentBody}>
-            <Text style={styles.bodyText} variant={'titleMedium'}>
+            <Text style={styles.bodyText} variant={'titleMedium'} numberOfLines={1}>
               {item.title}
             </Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'}>
+            <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
               {getDurationString(item.startTime, item.endTime, item.timeZone)}
             </Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'}>
+            <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
               {item.location}
             </Text>
           </View>

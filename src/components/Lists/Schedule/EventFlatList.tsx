@@ -9,7 +9,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FlatList} from 'react-native-gesture-handler';
 import {ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
-import {calcCruiseDayTime, getTimeMarker} from '../../../libraries/DateTime';
+import {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useScheduleStackRoute} from '../../Navigation/Stacks/ScheduleStackNavigator';
@@ -90,8 +90,10 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
     for (let i = 0; i < itemList.length; i++) {
       const eventStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
       const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
+      const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
+      console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
       if (
-        eventStartDayTime.dayMinutes >= nowDayTime.dayMinutes &&
+        eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
         eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
       ) {
         return i - 1;
@@ -107,14 +109,25 @@ export const EventFlatList = ({eventList, lfgList, refreshControl}: SeamailFlatL
    * @param index Number of the array index of the data.
    */
   const getItemLayout = (data: ScheduleItem[] | null | undefined, index: number) => {
-    const itemHeight = 104;
+    const itemHeight = 106;
     const separatorHeight = 44;
+    let separator = separatorHeight;
+    if (
+      data &&
+      index >= 1 &&
+      parseISO(data[index - 1].startTime).getHours() === parseISO(data[index].startTime).getHours()
+    ) {
+      separator = separatorHeight / 2;
+    }
     return {
-      length: itemHeight + separatorHeight,
-      offset: (itemHeight + separatorHeight) * index - separatorHeight,
+      length: itemHeight + separator,
+      offset: (itemHeight + separator) * index,
       index,
     };
   };
+
+  const initialIndex = getInitialScrollindex();
+  console.log('Initial scroll index is ', initialIndex, itemList[initialIndex].title);
 
   return (
     <FlatList
