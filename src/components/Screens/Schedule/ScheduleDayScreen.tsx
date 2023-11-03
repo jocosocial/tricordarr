@@ -22,7 +22,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
-import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -78,12 +78,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
     for (let i = 0; i < itemList.length; i++) {
       const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
-      const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
 
-      if (
-        nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
-        nowDayTime.dayMinutes <= itemStartDayTime.dayMinutes + tzOffset
-      ) {
+      if (nowDayTime.cruiseDay === itemStartDayTime.cruiseDay && nowDayTime.dayMinutes <= itemStartDayTime.dayMinutes) {
         setScrollNowIndex(i - 1);
         break;
       }
