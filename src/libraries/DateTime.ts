@@ -10,8 +10,10 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData, CruiseDayTime} from './Types';
+import {CruiseDayData, CruiseDayTime, ScheduleItem} from './Types';
 import moment from 'moment-timezone';
+import {EventData} from './Structs/ControllerStructs';
+import {EventType} from './Enums/EventType';
 
 const thresholdMap = {
   second: {
@@ -199,4 +201,15 @@ export const getDurationString = (startTimeStr: string, endTimeStr: string, time
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
   const date = moment(dateTimeStr);
   return date.tz(timeZoneAbbrStr);
+};
+
+export const eventToItem = (event: EventData) => {
+  return {
+    title: event.title,
+    startTime: event.startTime,
+    endTime: event.endTime,
+    timeZone: event.timeZone,
+    location: event.location,
+    itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
+  };
 };

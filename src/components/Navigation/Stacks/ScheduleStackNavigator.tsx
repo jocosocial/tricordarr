@@ -6,11 +6,13 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSearchScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
     cruiseDay: number;
   };
+  ScheduleEventSearchScreen: undefined;
 };
 
 export const ScheduleStackNavigator = () => {
@@ -33,6 +35,11 @@ export const ScheduleStackNavigator = () => {
         initialParams={{
           cruiseDay: cruiseDayToday,
         }}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.scheduleEventSearchScreen}
+        component={ScheduleEventSearchScreen}
+        options={{title: 'Search Events'}}
       />
     </Stack.Navigator>
   );

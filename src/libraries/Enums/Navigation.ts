@@ -76,4 +76,5 @@ export enum OobeStackComponents {
 
 export enum ScheduleStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleEventSearchScreen = 'ScheduleEventSearchScreen',
 }

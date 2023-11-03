@@ -16,7 +16,7 @@ import {IconButton, Text} from 'react-native-paper';
 import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {PanGestureHandler, State} from 'react-native-gesture-handler';
+// import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
@@ -111,14 +111,18 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu listRef={listRef} scrollToNow={scrollToNow} />
-          <Item title={'Search'} iconName={AppIcons.search} onPress={scrollToNow} />
+          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} />
+          <Item
+            title={'Search'}
+            iconName={AppIcons.search}
+            onPress={() => navigation.push(ScheduleStackComponents.scheduleEventSearchScreen)}
+          />
           <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
         </HeaderButtons>
       </View>
     );
-  }, [scrollToNow]);
+  }, [navigation, scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -149,25 +153,25 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const navigateNextDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
 
-  const onSwipe = (event: any) => {
-    if (event.nativeEvent.state === State.END) {
-      if (
-        (event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) &&
-        Math.abs(event.nativeEvent.translationY) < 80
-      ) {
-        if (route.params.cruiseDay > 1) {
-          navigatePreviousDay();
-        }
-      } else if (
-        (event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) &&
-        Math.abs(event.nativeEvent.translationY) < 80
-      ) {
-        if (route.params.cruiseDay < cruiseLength) {
-          navigateNextDay();
-        }
-      }
-    }
-  };
+  // const onSwipe = (event: any) => {
+  //   if (event.nativeEvent.state === State.END) {
+  //     if (
+  //       (event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) &&
+  //       Math.abs(event.nativeEvent.translationY) < 80
+  //     ) {
+  //       if (route.params.cruiseDay > 1) {
+  //         navigatePreviousDay();
+  //       }
+  //     } else if (
+  //       (event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) &&
+  //       Math.abs(event.nativeEvent.translationY) < 80
+  //     ) {
+  //       if (route.params.cruiseDay < cruiseLength) {
+  //         navigateNextDay();
+  //       }
+  //     }
+  //   }
+  // };
 
   console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
 

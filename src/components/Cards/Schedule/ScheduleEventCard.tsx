@@ -38,7 +38,7 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
       backgroundColor: theme.colors.twitarrNeutralButton,
     },
     shadowCard: {
-      backgroundColor: theme.colors.jocoBlue,
+      backgroundColor: theme.colors.jocoPurple,
     },
     lfgCard: {
       backgroundColor: theme.colors.twitarrGrey,
@@ -52,8 +52,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
 
   const cardStyle = {
-    ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
     ...(item.itemType === 'official' ? styles.officialCard : undefined),
+    ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
     ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
   };
 
