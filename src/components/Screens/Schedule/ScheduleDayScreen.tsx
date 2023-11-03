@@ -58,7 +58,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       });
     });
     lfgList.map(lfg => {
-      if (lft.startTime && lfg.endTime && lft.timeZone && lfg.location) {
+      if (lfg.startTime && lfg.endTime && lfg.timeZone && lfg.location) {
         itemList.push({
           title: lfg.title,
           startTime: lfg.startTime,
@@ -92,6 +92,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         'length',
         scheduleItems.length,
         scheduleItems[scrollNowIndex]?.title,
+        'at',
+        scheduleItems[scrollNowIndex]?.startTime,
       );
       listRef.current.scrollToIndex({
         index: scrollNowIndex,
@@ -188,7 +190,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            <EventFlatList listRef={listRef} scheduleItems={scheduleItems} />
+            <EventFlatList listRef={listRef} scheduleItems={scheduleItems} scrollNowIndex={scrollNowIndex} />
           </View>
         </View>
       </PanGestureHandler>

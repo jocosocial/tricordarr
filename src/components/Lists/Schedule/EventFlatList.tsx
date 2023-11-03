@@ -15,6 +15,7 @@ interface SeamailFlatListProps {
   scheduleItems: ScheduleItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<ScheduleItem>>;
+  scrollNowIndex: number;
 }
 
 export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
@@ -22,7 +23,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   const {startDate, endDate, cruiseDayToday} = useCruise();
   const route = useScheduleStackRoute();
 
-  const renderItem = ({item}: {item: ScheduleItem}) => {
+  const renderListItem = ({item}: {item: ScheduleItem}) => {
     return (
       <View>
         <ScheduleEventCard item={item} />
@@ -30,7 +31,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
     );
   };
 
-  const renderSeparator = ({leadingItem}: {leadingItem: ScheduleItem}) => {
+  const renderListSeparator = ({leadingItem}: {leadingItem: ScheduleItem}) => {
     const leadingIndex = scheduleItems.indexOf(leadingItem);
     if (leadingIndex === undefined) {
       return <TimeDivider label={'Leading Unknown?'} />;
@@ -47,31 +48,50 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
     return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
-  const getHeader = () => {
+  const renderListHeader = () => {
     if (!scheduleItems[0]) {
       return <TimeDivider label={'No events today'} />;
     }
     return <TimeDivider label={getTimeMarker(scheduleItems[0].startTime, scheduleItems[0].timeZone)} />;
   };
 
-  const getInitialScrollindex = () => {
+  const renderListFooter = () => <TimeDivider label={'End of Schedule'} />;
+
+  const getInitialScrollIndex = () => {
+    let initialScrollIndex = 0;
     if (route.params.cruiseDay !== cruiseDayToday) {
-      return 0;
-    }
-    for (let i = 0; i < scheduleItems.length; i++) {
-      const eventStartDayTime = calcCruiseDayTime(parseISO(scheduleItems[i].startTime), startDate, endDate);
-      const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
-      const tzOffset = getTimeZoneOffset('America/New_York', scheduleItems[i].timeZone, scheduleItems[i].startTime);
-      // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
-      if (
-        eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
-        eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
-      ) {
-        // @TODO Consider i - 1 again?
-        return i;
+      initialScrollIndex = 0;
+    } else {
+      for (let i = 0; i < scheduleItems.length; i++) {
+        const eventStartDayTime = calcCruiseDayTime(parseISO(scheduleItems[i].startTime), startDate, endDate);
+        const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
+        const tzOffset = getTimeZoneOffset('America/New_York', scheduleItems[i].timeZone, scheduleItems[i].startTime);
+        // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
+        if (
+          eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
+          eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
+        ) {
+          // @TODO Consider i - 1 again?
+          initialScrollIndex = i;
+          break;
+        }
       }
     }
-    return 0;
+    console.log('EventFlatList getInitialScrollIndex', initialScrollIndex);
+    return initialScrollIndex;
+  };
+
+  const onScrollToIndexFailed = (info: {
+    index: number;
+    highestMeasuredFrameIndex: number;
+    averageItemLength: number;
+  }) => {
+    console.info('Scroll Error Occurred', info);
+    const itemHeight = 106;
+    const separatorHeight = 44;
+    listRef.current?.scrollToOffset({
+      offset: (itemHeight + separatorHeight) * info.index,
+    });
   };
 
   /**
@@ -84,13 +104,13 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
     const itemHeight = 106;
     const separatorHeight = 44;
     let separator = separatorHeight;
-    if (
-      data &&
-      index >= 1 &&
-      parseISO(data[index - 1].startTime).getHours() === parseISO(data[index].startTime).getHours()
-    ) {
-      separator = separatorHeight / 2;
-    }
+    // if (
+    //   data &&
+    //   index >= 1 &&
+    //   parseISO(data[index - 1].startTime).getHours() === parseISO(data[index].startTime).getHours()
+    // ) {
+    //   separator = separatorHeight / 2;
+    // }
     return {
       length: itemHeight + separator,
       offset: (itemHeight + separator) * index,
@@ -98,8 +118,12 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
     };
   };
 
-  const initialIndex = getInitialScrollindex();
-  console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
+  const keyExtractor = (item: ScheduleItem, index: number) => item.title;
+
+  // const initialIndex = getInitialScrollindex();
+  // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
+
+  console.log('EventFlatList has item count', scheduleItems.length);
 
   return (
     <FlatList
@@ -107,15 +131,18 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
         ...commonStyles.paddingHorizontal,
       }}
       refreshControl={refreshControl}
-      ItemSeparatorComponent={renderSeparator}
+      ItemSeparatorComponent={renderListSeparator}
       data={scheduleItems}
-      renderItem={renderItem}
-      ListHeaderComponent={getHeader}
-      ListFooterComponent={() => <TimeDivider label={'End of Schedule'} />}
-      // initialScrollIndex={getInitialScrollindex()}
+      renderItem={renderListItem}
+      ListHeaderComponent={renderListHeader}
+      ListFooterComponent={renderListFooter}
+      // initialScrollIndex={getInitialScrollIndex()}
+      // initialScrollIndex={10}
       // initialScrollIndex={5}
       // getItemLayout={getItemLayout}
       ref={listRef}
+      onScrollToIndexFailed={onScrollToIndexFailed}
+      keyExtractor={keyExtractor}
     />
   );
 };
