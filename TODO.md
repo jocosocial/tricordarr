@@ -25,4 +25,4 @@ Work Queue
 * fab default colors to the grey?
 * Tapping today needs to jump to initial scroll indexLayout function neeeda to calculate based on line length for title and location
 * replace note color with banner soon?
-* 
+* pull to refresh schedule

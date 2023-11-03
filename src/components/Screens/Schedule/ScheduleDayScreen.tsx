@@ -20,6 +20,8 @@ import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleItem} from '../../../libraries/Types';
+import {ScheduleSectionList} from '../../Lists/Schedule/ScheduleSectionList';
+import {EventType} from '../../../libraries/Enums/EventType';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -28,7 +30,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const {data: eventData, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  const {data: eventList, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
   const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
@@ -106,7 +108,32 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     lfgList = lfgList.concat(page.fezzes);
   });
 
-  if (isLfgLoading || isEventLoading || !eventData || !lfgData) {
+  let itemList: ScheduleItem[] = [];
+  eventList?.map(event => {
+    itemList.push({
+      title: event.title,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      timeZone: event.timeZone,
+      location: event.location,
+      itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
+    });
+  });
+  lfgList.map(lfg => {
+    itemList.push({
+      title: lfg.title,
+      startTime: lfg.startTime,
+      endTime: lfg.endTime,
+      timeZone: lfg.timeZone,
+      location: lfg.location,
+      itemType: 'lfg',
+    });
+  });
+
+  // ChatGPT for the win
+  itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+  if (isLfgLoading || isEventLoading) {
     return <LoadingView />;
   }
 
@@ -129,7 +156,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            <EventFlatList listRef={listRef} eventList={eventData} lfgList={lfgList} />
+            {/*<EventFlatList listRef={listRef} eventList={eventData} lfgList={lfgList} />*/}
+            <ScheduleSectionList items={itemList} />
           </View>
         </View>
       </PanGestureHandler>
