@@ -1,9 +1,8 @@
-import * as React from 'react';
-import {Ref, useState} from 'react';
+import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {FlatList, TextStyle} from 'react-native';
+import {TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
 import {useScheduleStack, useScheduleStackRoute} from '../Navigation/Stacks/ScheduleStackNavigator';
@@ -23,7 +22,11 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
   return <Menu.Item titleStyle={titleStyle} title={title} onPress={() => handleSelection(itemCruiseDay)} />;
 };
 
-export const ScheduleCruiseDayMenu = ({listRef, scrollToNow}: {listRef: React.Ref<FlatList>, scrollToNow: () => void}) => {
+interface ScheduleCruiseDayMenuProps {
+  scrollToNow: () => void;
+}
+
+export const ScheduleCruiseDayMenu = ({scrollToNow}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, cruiseDayToday} = useCruise();
   const navigation = useScheduleStack();

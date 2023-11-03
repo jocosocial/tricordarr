@@ -118,8 +118,6 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   // const initialIndex = getInitialScrollindex();
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
 
-  console.log('EventFlatList has item count', scheduleItems.length);
-
   return (
     <FlatList
       style={{
