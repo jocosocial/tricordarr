@@ -1,7 +1,8 @@
-import React, {Ref, useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -20,7 +21,6 @@ import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleItem} from '../../../libraries/Types';
-import {ScheduleSectionList} from '../../Lists/Schedule/ScheduleSectionList';
 import {EventType} from '../../../libraries/Enums/EventType';
 
 export type Props = NativeStackScreenProps<
@@ -30,12 +30,76 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const {data: eventList, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  const {data: eventData, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
   const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
   const listRef = useRef<FlatList<ScheduleItem>>(null);
-  // const [nowScrollIndex, setNowScrollIndex] = useState(0);
+  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
+  const [scrollNowIndex, setScrollNowIndex] = useState(0);
+
+  const buildListData = useCallback(() => {
+    console.log('### Building Schedule Item List');
+    let itemList: ScheduleItem[] = [];
+
+    let lfgList: FezData[] = [];
+    lfgData?.pages.map(page => {
+      lfgList = lfgList.concat(page.fezzes);
+    });
+
+    eventData?.map(event => {
+      itemList.push({
+        title: event.title,
+        startTime: event.startTime,
+        endTime: event.endTime,
+        timeZone: event.timeZone,
+        location: event.location,
+        itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
+      });
+    });
+    lfgList.map(lfg => {
+      if (lft.startTime && lfg.endTime && lft.timeZone && lfg.location) {
+        itemList.push({
+          title: lfg.title,
+          startTime: lfg.startTime,
+          endTime: lfg.endTime,
+          timeZone: lfg.timeZone,
+          location: lfg.location,
+          itemType: 'lfg',
+        });
+      }
+    });
+
+    // ChatGPT for the win
+    itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+    // @TODO I don't think this is fully accurate
+    for (let i = 0; i < itemList.length; i++) {
+      if (parseISO(itemList[i].startTime).getHours() >= new Date().getHours()) {
+        setScrollNowIndex(i);
+        break;
+      }
+    }
+
+    return itemList;
+  }, [eventData, lfgData]);
+
+  const scrollToNow = useCallback(() => {
+    if (listRef.current) {
+      console.log(
+        'Scrolling to index',
+        scrollNowIndex,
+        'length',
+        scheduleItems.length,
+        scheduleItems[scrollNowIndex]?.title,
+      );
+      listRef.current.scrollToIndex({
+        index: scrollNowIndex,
+      });
+    } else {
+      console.warn('ListRef is undefined, not scrolling.');
+    }
+  }, [scheduleItems, scrollNowIndex]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -48,13 +112,17 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
+
+  useEffect(() => {
+    setScheduleItems(buildListData());
+  }, [buildListData]);
 
   const styles = StyleSheet.create({
     headerText: {
@@ -95,57 +163,9 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     }
   };
 
-  let lfgList: FezData[] = [];
-  lfgData?.pages.map(page => {
-    lfgList = lfgList.concat(page.fezzes);
-  });
+  console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
 
-  let itemList: ScheduleItem[] = [];
-  eventList?.map(event => {
-    itemList.push({
-      title: event.title,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      timeZone: event.timeZone,
-      location: event.location,
-      itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
-    });
-  });
-  lfgList.map(lfg => {
-    itemList.push({
-      title: lfg.title,
-      startTime: lfg.startTime,
-      endTime: lfg.endTime,
-      timeZone: lfg.timeZone,
-      location: lfg.location,
-      itemType: 'lfg',
-    });
-  });
-
-  // ChatGPT for the win
-  itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-
-  let nowScrollIndex = 0;
-  // @TODO I don't think this is fully accurate
-  for (let i = 0; i < itemList.length; i++) {
-    if (parseISO(itemList[i].startTime).getHours() >= new Date().getHours()) {
-      nowScrollIndex = i;
-      break;
-    }
-  }
-
-  const scrollToNow = () => {
-    if (listRef.current) {
-      console.log('Scrolling to index', nowScrollIndex, itemList[nowScrollIndex]?.title);
-      listRef.current.scrollToIndex({
-        index: nowScrollIndex,
-      });
-    } else {
-      console.warn('ListRef is undefined, not scrolling.');
-    }
-  };
-
-  if (isLfgLoading || isEventLoading || eventList === undefined) {
+  if (isLfgLoading || isEventLoading) {
     return <LoadingView />;
   }
 
@@ -168,8 +188,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            <EventFlatList listRef={listRef} eventList={eventList} lfgList={lfgList} />
-            {/*<ScheduleSectionList items={itemList} />*/}
+            <EventFlatList listRef={listRef} scheduleItems={scheduleItems} />
           </View>
         </View>
       </PanGestureHandler>

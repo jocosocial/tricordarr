@@ -1,58 +1,27 @@
-import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControlProps, View} from 'react-native';
-import React, {Ref, useRef} from 'react';
+import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
-import moment from 'moment-timezone';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FlatList} from 'react-native-gesture-handler';
 import {ScheduleItem} from '../../../libraries/Types';
-import {EventType} from '../../../libraries/Enums/EventType';
 import {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useScheduleStackRoute} from '../../Navigation/Stacks/ScheduleStackNavigator';
 
 interface SeamailFlatListProps {
-  eventList: EventData[];
-  lfgList: FezData[];
+  scheduleItems: ScheduleItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<ScheduleItem>>;
 }
 
-export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: SeamailFlatListProps) => {
+export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
   const {startDate, endDate, cruiseDayToday} = useCruise();
   const route = useScheduleStackRoute();
-  // const listRef = useRef<FlatList<ScheduleItem>>(null);
 
-  let itemList: ScheduleItem[] = [];
-  eventList.map(event => {
-    itemList.push({
-      title: event.title,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      timeZone: event.timeZone,
-      location: event.location,
-      itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
-    });
-  });
-  lfgList.map(lfg => {
-    itemList.push({
-      title: lfg.title,
-      startTime: lfg.startTime,
-      endTime: lfg.endTime,
-      timeZone: lfg.timeZone,
-      location: lfg.location,
-      itemType: 'lfg',
-    });
-  });
-
-  // ChatGPT for the win
-  itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-
-  console.log(`There are ${itemList.length} events today.`);
   const renderItem = ({item}: {item: ScheduleItem}) => {
     return (
       <View>
@@ -62,37 +31,37 @@ export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: Sea
   };
 
   const renderSeparator = ({leadingItem}: {leadingItem: ScheduleItem}) => {
-    const leadingIndex = itemList.indexOf(leadingItem);
+    const leadingIndex = scheduleItems.indexOf(leadingItem);
     if (leadingIndex === undefined) {
       return <TimeDivider label={'Leading Unknown?'} />;
     }
     const trailingIndex = leadingIndex + 1;
-    const leadingDate = new Date(itemList[leadingIndex].startTime);
-    const trailingDate = new Date(itemList[trailingIndex].startTime);
+    const leadingDate = new Date(scheduleItems[leadingIndex].startTime);
+    const trailingDate = new Date(scheduleItems[trailingIndex].startTime);
     const leadingTimeMarker = `${leadingDate.getHours()}:${leadingDate.getMinutes()}`;
     const trailingTimeMarker = `${trailingDate.getHours()}:${trailingDate.getMinutes()}`;
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    const trailingItem = itemList[trailingIndex];
+    const trailingItem = scheduleItems[trailingIndex];
     return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
   const getHeader = () => {
-    if (!itemList[0]) {
+    if (!scheduleItems[0]) {
       return <TimeDivider label={'No events today'} />;
     }
-    return <TimeDivider label={getTimeMarker(itemList[0].startTime, itemList[0].timeZone)} />;
+    return <TimeDivider label={getTimeMarker(scheduleItems[0].startTime, scheduleItems[0].timeZone)} />;
   };
 
   const getInitialScrollindex = () => {
     if (route.params.cruiseDay !== cruiseDayToday) {
       return 0;
     }
-    for (let i = 0; i < itemList.length; i++) {
-      const eventStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+    for (let i = 0; i < scheduleItems.length; i++) {
+      const eventStartDayTime = calcCruiseDayTime(parseISO(scheduleItems[i].startTime), startDate, endDate);
       const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
-      const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
+      const tzOffset = getTimeZoneOffset('America/New_York', scheduleItems[i].timeZone, scheduleItems[i].startTime);
       // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
       if (
         eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
@@ -130,7 +99,7 @@ export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: Sea
   };
 
   const initialIndex = getInitialScrollindex();
-  console.log('Initial scroll index is ', initialIndex, itemList[initialIndex].title);
+  console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
 
   return (
     <FlatList
@@ -139,7 +108,7 @@ export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: Sea
       }}
       refreshControl={refreshControl}
       ItemSeparatorComponent={renderSeparator}
-      data={itemList}
+      data={scheduleItems}
       renderItem={renderItem}
       ListHeaderComponent={getHeader}
       ListFooterComponent={() => <TimeDivider label={'End of Schedule'} />}
