@@ -57,29 +57,29 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
 
   const renderListFooter = () => <TimeDivider label={'End of Schedule'} />;
 
-  const getInitialScrollIndex = () => {
-    let initialScrollIndex = 0;
-    if (route.params.cruiseDay !== cruiseDayToday) {
-      initialScrollIndex = 0;
-    } else {
-      for (let i = 0; i < scheduleItems.length; i++) {
-        const eventStartDayTime = calcCruiseDayTime(parseISO(scheduleItems[i].startTime), startDate, endDate);
-        const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
-        const tzOffset = getTimeZoneOffset('America/New_York', scheduleItems[i].timeZone, scheduleItems[i].startTime);
-        // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
-        if (
-          eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
-          eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
-        ) {
-          // @TODO Consider i - 1 again?
-          initialScrollIndex = i;
-          break;
-        }
-      }
-    }
-    console.log('EventFlatList getInitialScrollIndex', initialScrollIndex);
-    return initialScrollIndex;
-  };
+  // const getInitialScrollIndex = () => {
+  //   let initialScrollIndex = 0;
+  //   if (route.params.cruiseDay !== cruiseDayToday) {
+  //     initialScrollIndex = 0;
+  //   } else {
+  //     for (let i = 0; i < scheduleItems.length; i++) {
+  //       const eventStartDayTime = calcCruiseDayTime(parseISO(scheduleItems[i].startTime), startDate, endDate);
+  //       const nowDayTime = calcCruiseDayTime(new Date(), startDate, endDate);
+  //       const tzOffset = getTimeZoneOffset('America/New_York', scheduleItems[i].timeZone, scheduleItems[i].startTime);
+  //       // console.log(itemList[i].title, eventStartDayTime, nowDayTime, tzOffset);
+  //       if (
+  //         eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
+  //         eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
+  //       ) {
+  //         // @TODO Consider i - 1 again?
+  //         initialScrollIndex = i;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   console.log('EventFlatList getInitialScrollIndex', initialScrollIndex);
+  //   return initialScrollIndex;
+  // };
 
   const onScrollToIndexFailed = (info: {
     index: number;
@@ -94,29 +94,29 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
     });
   };
 
-  /**
-   * Optimizing function necessary for the initialScrollIndex to function. The heights were
-   * statically calculated. I don't see a good way to do this.
-   * @param data The same data array passed to the FlatList.
-   * @param index Number of the array index of the data.
-   */
-  const getItemLayout = (data: ScheduleItem[] | null | undefined, index: number) => {
-    const itemHeight = 106;
-    const separatorHeight = 44;
-    let separator = separatorHeight;
-    // if (
-    //   data &&
-    //   index >= 1 &&
-    //   parseISO(data[index - 1].startTime).getHours() === parseISO(data[index].startTime).getHours()
-    // ) {
-    //   separator = separatorHeight / 2;
-    // }
-    return {
-      length: itemHeight + separator,
-      offset: (itemHeight + separator) * index,
-      index,
-    };
-  };
+  // /**
+  //  * Optimizing function necessary for the initialScrollIndex to function. The heights were
+  //  * statically calculated. I don't see a good way to do this.
+  //  * @param data The same data array passed to the FlatList.
+  //  * @param index Number of the array index of the data.
+  //  */
+  // const getItemLayout = (data: ScheduleItem[] | null | undefined, index: number) => {
+  //   const itemHeight = 106;
+  //   const separatorHeight = 44;
+  //   let separator = separatorHeight;
+  //   // if (
+  //   //   data &&
+  //   //   index >= 1 &&
+  //   //   parseISO(data[index - 1].startTime).getHours() === parseISO(data[index].startTime).getHours()
+  //   // ) {
+  //   //   separator = separatorHeight / 2;
+  //   // }
+  //   return {
+  //     length: itemHeight + separator,
+  //     offset: (itemHeight + separator) * index,
+  //     index,
+  //   };
+  // };
 
   const keyExtractor = (item: ScheduleItem, index: number) => item.title;
 
@@ -136,6 +136,8 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
       renderItem={renderListItem}
       ListHeaderComponent={renderListHeader}
       ListFooterComponent={renderListFooter}
+      // @TODO for some reason enabling initialScrollIndex and the function cause the list to be 1 element
+      // and show no more. I don't particularly care anymore.
       // initialScrollIndex={getInitialScrollIndex()}
       // initialScrollIndex={10}
       // initialScrollIndex={5}
@@ -143,6 +145,8 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
       ref={listRef}
       onScrollToIndexFailed={onScrollToIndexFailed}
       keyExtractor={keyExtractor}
+      // This is likely to murder performance. But again, I don't particularly care anymore.
+      initialNumToRender={100}
     />
   );
 };
