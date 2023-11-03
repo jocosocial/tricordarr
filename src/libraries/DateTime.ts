@@ -151,9 +151,8 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
  * @param timeZoneAbbrStr 3-letter abbreviation of the timezone. @TODO there is a hack in place for AST in App.ts.
  */
 export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
-  const date = moment(dateTimeStr);
-  const timeMarker = date.tz(timeZoneAbbrStr).format('hh:mm A');
-  return `${timeMarker} ${timeZoneAbbrStr}`;
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('hh:mm A');
+  return `${formattedTime} ${timeZoneAbbrStr}`;
 };
 
 /**
@@ -191,5 +190,13 @@ export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr:
   // Calculate the minute offset. Positive means towards UTC (going into the future),
   // negative means away from UTC (going into the past).
   offset = compareTime.utcOffset() - originTime.utcOffset();
+  // if (offset !== 0) {
+  //   console.log('Time zone offset is', offset);
+  // }
   return offset;
+};
+
+export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  const date = moment(dateTimeStr);
+  return date.tz(timeZoneAbbrStr);
 };

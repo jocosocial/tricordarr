@@ -6,10 +6,7 @@ import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FlatList} from 'react-native-gesture-handler';
 import {ScheduleItem} from '../../../libraries/Types';
-import {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '../../../libraries/DateTime';
-import {parseISO} from 'date-fns';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {useScheduleStackRoute} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {getTimeMarker} from '../../../libraries/DateTime';
 
 interface SeamailFlatListProps {
   scheduleItems: ScheduleItem[];
@@ -20,8 +17,6 @@ interface SeamailFlatListProps {
 
 export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
-  const {startDate, endDate, cruiseDayToday} = useCruise();
-  const route = useScheduleStackRoute();
 
   const renderListItem = ({item}: {item: ScheduleItem}) => {
     return (
@@ -118,7 +113,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   //   };
   // };
 
-  const keyExtractor = (item: ScheduleItem, index: number) => item.title;
+  const keyExtractor = (item: ScheduleItem) => item.title;
 
   // const initialIndex = getInitialScrollindex();
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
