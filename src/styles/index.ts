@@ -148,6 +148,12 @@ export const commonStyles = StyleSheet.create({
   paddingVerticalZero: {
     paddingVertical: 0,
   },
+  paddingLeftZero: {
+    paddingLeft: 0,
+  },
+  paddingRightZero: {
+    paddingRight: 0,
+  },
   spacerWidth: {
     width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
   },

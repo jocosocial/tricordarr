@@ -1,22 +1,15 @@
 import React from 'react';
-import {Card, Text} from 'react-native-paper';
-import {EventData} from '../../../libraries/Structs/ControllerStructs';
+import {Card} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import useDateTime, {
-  calcCruiseDayTime,
-  getDurationString,
-  getLocalDate,
-  getTimeZoneOffset
-} from '../../../libraries/DateTime';
-import {AndroidColor} from '@notifee/react-native';
+import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {ScheduleItem} from '../../../libraries/Types';
-import moment from 'moment-timezone';
 import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
+import {EventCardBody} from '../../Views/Schedule/EventCardBody';
 
 interface ScheduleEventCardProps {
   item: ScheduleItem;
@@ -30,34 +23,25 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
 
   const styles = StyleSheet.create({
     cardTitle: {
-      paddingLeft: 0,
+      ...commonStyles.paddingLeftZero,
     },
     contentView: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
     },
     cardContent: {
-      paddingLeft: 0,
-      paddingTop: 0,
-      paddingBottom: 0,
-      justifyContent: 'center',
-    },
-    contentBody: {
-      flex: 1,
-      marginLeft: 20,
-      paddingVertical: 20,
+      ...commonStyles.paddingVerticalZero,
+      ...commonStyles.paddingLeftZero,
+      ...commonStyles.justifyCenter,
     },
     officialCard: {
       backgroundColor: theme.colors.twitarrNeutralButton,
     },
     shadowCard: {
-      backgroundColor: theme.colors.twitarrLfgColor,
-    },
-    bodyText: {
-      color: AndroidColor.WHITE,
+      backgroundColor: theme.colors.jocoBlue,
     },
     lfgCard: {
-      backgroundColor: 'rgb(46, 49, 51)',
+      backgroundColor: theme.colors.twitarrGrey,
     },
   });
 
@@ -84,25 +68,11 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes + tzOffset &&
-            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + tzOffset && (
-              <EventCardNowView />
-            )}
+            nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + tzOffset && <EventCardNowView />}
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 + tzOffset &&
-            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + tzOffset && (
-              <EventCardSoonView />
-            )}
-          <View style={styles.contentBody}>
-            <Text style={styles.bodyText} variant={'titleMedium'} numberOfLines={1}>
-              {item.title}
-            </Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
-              {getDurationString(item.startTime, item.endTime, item.timeZone)}
-            </Text>
-            <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
-              {item.location}
-            </Text>
-          </View>
+            nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + tzOffset && <EventCardSoonView />}
+          <EventCardBody scheduleItem={item} />
         </View>
       </Card.Content>
     </Card>
