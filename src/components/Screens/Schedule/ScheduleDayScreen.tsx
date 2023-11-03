@@ -1,4 +1,4 @@
-import React, {Ref, useCallback, useEffect, useRef} from 'react';
+import React, {Ref, useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -12,7 +12,7 @@ import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {IconButton, Text} from 'react-native-paper';
-import {format} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
@@ -35,22 +35,14 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
   const listRef = useRef<FlatList<ScheduleItem>>(null);
-
-  const foo = () => {
-    console.log('FOO BAR LOLZ');
-    if (listRef.current) {
-      listRef.current.scrollToIndex({
-        index: 2,
-      });
-    }
-  };
+  // const [nowScrollIndex, setNowScrollIndex] = useState(0);
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu listRef={listRef} />
-          <Item title={'Search'} iconName={AppIcons.search} onPress={foo} />
+          <ScheduleCruiseDayMenu listRef={listRef} scrollToNow={scrollToNow} />
+          <Item title={'Search'} iconName={AppIcons.search} onPress={scrollToNow} />
           <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
         </HeaderButtons>
@@ -133,13 +125,33 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   // ChatGPT for the win
   itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
-  if (isLfgLoading || isEventLoading) {
+  let nowScrollIndex = 0;
+  // @TODO I don't think this is fully accurate
+  for (let i = 0; i < itemList.length; i++) {
+    if (parseISO(itemList[i].startTime).getHours() >= new Date().getHours()) {
+      nowScrollIndex = i;
+      break;
+    }
+  }
+
+  const scrollToNow = () => {
+    if (listRef.current) {
+      console.log('Scrolling to index', nowScrollIndex, itemList[nowScrollIndex]?.title);
+      listRef.current.scrollToIndex({
+        index: nowScrollIndex,
+      });
+    } else {
+      console.warn('ListRef is undefined, not scrolling.');
+    }
+  };
+
+  if (isLfgLoading || isEventLoading || eventList === undefined) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
-      {/*<PanGestureHandler onHandlerStateChange={onSwipe}>*/}
+      <PanGestureHandler onHandlerStateChange={onSwipe}>
         <View style={commonStyles.flex}>
           <View style={{...styles.headerView}}>
             <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
@@ -156,11 +168,11 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             />
           </View>
           <View style={commonStyles.flex}>
-            {/*<EventFlatList listRef={listRef} eventList={eventData} lfgList={lfgList} />*/}
-            <ScheduleSectionList items={itemList} />
+            <EventFlatList listRef={listRef} eventList={eventList} lfgList={lfgList} />
+            {/*<ScheduleSectionList items={itemList} />*/}
           </View>
         </View>
-      {/*</PanGestureHandler>*/}
+      </PanGestureHandler>
       <ScheduleFAB />
     </AppView>
   );

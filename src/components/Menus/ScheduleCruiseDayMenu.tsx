@@ -23,7 +23,7 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
   return <Menu.Item titleStyle={titleStyle} title={title} onPress={() => handleSelection(itemCruiseDay)} />;
 };
 
-export const ScheduleCruiseDayMenu = ({listRef}: {listRef: React.Ref<FlatList>}) => {
+export const ScheduleCruiseDayMenu = ({listRef, scrollToNow}: {listRef: React.Ref<FlatList>, scrollToNow: () => void}) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, cruiseDayToday} = useCruise();
   const navigation = useScheduleStack();
@@ -38,15 +38,12 @@ export const ScheduleCruiseDayMenu = ({listRef}: {listRef: React.Ref<FlatList>})
   };
 
   const navigateToday = () => {
-    // if (route.params.cruiseDay === cruiseDayToday) {
-    //   console.log('Navigating to same day.');
-    //   if (listRef?.current) {
-    //     // listRef.current.scrollToIndex(2);
-    //     console.log(listRef);
-    //   }
-    // } else {
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
-    // }
+    if (route.params.cruiseDay === cruiseDayToday) {
+      console.log('Navigating to same day.');
+      scrollToNow();
+      return;
+    }
+    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
   };
 
   const menuAnchor = (

@@ -98,7 +98,8 @@ export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: Sea
         eventStartDayTime.dayMinutes + tzOffset >= nowDayTime.dayMinutes &&
         eventStartDayTime.cruiseDay === nowDayTime.cruiseDay
       ) {
-        return i - 1;
+        // @TODO Consider i - 1 again?
+        return i;
       }
     }
     return 0;
@@ -142,9 +143,9 @@ export const EventFlatList = ({eventList, lfgList, refreshControl, listRef}: Sea
       renderItem={renderItem}
       ListHeaderComponent={getHeader}
       ListFooterComponent={() => <TimeDivider label={'End of Schedule'} />}
-      initialScrollIndex={getInitialScrollindex()}
+      // initialScrollIndex={getInitialScrollindex()}
       // initialScrollIndex={5}
-      getItemLayout={getItemLayout}
+      // getItemLayout={getItemLayout}
       ref={listRef}
     />
   );
