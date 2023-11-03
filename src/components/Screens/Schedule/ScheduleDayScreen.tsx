@@ -22,6 +22,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
+import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -33,10 +34,11 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {data: eventData, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
   const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
-  const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
+  const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<ScheduleItem>>(null);
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
+  const minutelyUpdatingDate = useDateTime('minute');
 
   const buildListData = useCallback(() => {
     console.log('### Building Schedule Item List');
@@ -73,16 +75,22 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     // ChatGPT for the win
     itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
-    // @TODO I don't think this is fully accurate
+    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
     for (let i = 0; i < itemList.length; i++) {
-      if (parseISO(itemList[i].startTime).getHours() >= new Date().getHours()) {
-        setScrollNowIndex(i);
+      const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+      const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
+
+      if (
+        nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
+        nowDayTime.dayMinutes <= itemStartDayTime.dayMinutes + tzOffset
+      ) {
+        setScrollNowIndex(i - 1);
         break;
       }
     }
 
     return itemList;
-  }, [eventData, lfgData]);
+  }, [endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate]);
 
   const scrollToNow = useCallback(() => {
     if (listRef.current) {
