@@ -20,6 +20,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       borderTopLeftRadius: theme.roundness,
       borderTopRightRadius: theme.roundness,
     },
+    roundedBorderCardLeft: {
+      borderTopStartRadius: theme.roundness * 3,
+      borderBottomStartRadius: theme.roundness * 3,
+    },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
       color: theme.colors.onPrimaryContainer,
@@ -41,6 +45,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     twitarrNegative: {
       backgroundColor: theme.colors.twitarrNegativeButton,
     },
+    twitarrBanner: {
+      backgroundColor: theme.colors.twitarrBannerColor,
+    },
     background: {
       backgroundColor: theme.colors.background,
       color: theme.colors.onBackground,
@@ -56,6 +63,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       backgroundColor: twitarrNoteColor,
     },
     onNoteContainer: {
+      color: AndroidColor.BLACK,
+    },
+    onTwitarrBanner: {
       color: AndroidColor.BLACK,
     },
     errorContainer: {

@@ -195,4 +195,11 @@ export const commonStyles = StyleSheet.create({
   flexGrow: {
     flexGrow: 1,
   },
+  heightFull: {
+    height: '100%',
+  },
+  cardBannerWidth: {
+    minWidth: styleDefaults.marginSize * 2,
+    width: styleDefaults.marginSize * 2,
+  },
 });

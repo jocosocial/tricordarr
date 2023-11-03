@@ -76,6 +76,9 @@ export const twitarrTheme = {
     twitarrOfficialColor: 'rgb(73, 205, 140)',
     twitarrShadowColor: 'rgb(28, 110, 255)',
     twitarrLfgColor: 'rgb(112, 60, 190)',
+    twitarrBannerColor: '#FFD04D',
+    onTwitarrPositiveButton: 'rgb(255, 255, 255)',
+    onTwitarrBannerColor: 'rgb(0, 0, 0)',
   },
 };
 
@@ -129,6 +132,9 @@ export const twitarrThemeDark = {
     twitarrOfficialColor: 'rgb(73, 205, 140)',
     twitarrShadowColor: 'rgb(28, 110, 255)',
     twitarrLfgColor: 'rgb(112, 60, 190)',
+    twitarrBannerColor: '#FFD04D',
+    onTwitarrPositiveButton: 'rgb(255, 255, 255)',
+    onTwitarrBannerColor: 'rgb(0, 0, 0)',
   },
 };
 

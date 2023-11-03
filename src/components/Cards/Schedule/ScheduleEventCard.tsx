@@ -15,6 +15,8 @@ import useDateTime, {
 import {AndroidColor} from '@notifee/react-native';
 import {ScheduleItem} from '../../../libraries/Types';
 import moment from 'moment-timezone';
+import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
+import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
 
 interface ScheduleEventCardProps {
   item: ScheduleItem;
@@ -29,35 +31,8 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
   const styles = StyleSheet.create({
     cardTitle: {
       paddingLeft: 0,
-      // justifyContent: 'flex-start',
-      // backgroundColor: 'green',
-    },
-    markerView: {
-      borderTopStartRadius: 12,
-      borderBottomStartRadius: 12,
-      height: '100%',
-      // alignItems: 'center',
-      // minWidth: 60,
-      // justifyContent: 'center',
-      flexDirection: 'row',
-      // justifyContent: 'space-between',
-      minWidth: 40,
-    },
-    markerContainer: {
-      // backgroundColor: 'pink',
-      justifyContent: 'center',
-    },
-    markerText: {
-      writingDirection: 'rtl',
-      transform: [{rotate: '90deg'}],
-      paddingVertical: 20,
-      // backgroundColor: 'red',
-      width: 40,
-      fontWeight: 'bold',
     },
     contentView: {
-      // backgroundColor: 'pink',
-      // minHeight: 30,
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -65,43 +40,20 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
       paddingLeft: 0,
       paddingTop: 0,
       paddingBottom: 0,
-      // minHeight: 40,
       justifyContent: 'center',
-      // backgroundColor: 'pink',
     },
     contentBody: {
       flex: 1,
-      // backgroundColor: 'orange',
       marginLeft: 20,
       paddingVertical: 20,
     },
-    nowMarker: {
-      backgroundColor: theme.colors.twitarrPositiveButton,
-    },
-    soonMarker: {
-      // backgroundColor: theme.colors.twitarrNeutralButton,
-      backgroundColor: '#FFD04D',
-    },
-    soonText: {
-      color: AndroidColor.BLACK,
-    },
-    nowText: {
-      color: AndroidColor.WHITE,
-    },
     officialCard: {
       backgroundColor: theme.colors.twitarrNeutralButton,
-      // backgroundColor: 'rgb(25, 135, 84)',
-      // backgroundColor: '#833400',
-      // backgroundColor: 'rgba(25, 18, 210, 0.2)',
-      // backgroundColor: 'rgba(73, 205, 140, 0.2)',
     },
     shadowCard: {
-      // backgroundColor: 'rgba(114, 85, 184, 0.2)',
-      // backgroundColor: theme.colors.twitarrLfgColor,
       backgroundColor: theme.colors.twitarrLfgColor,
     },
     bodyText: {
-      // backgroundColor: 'rgba(25, 18, 210, 0.2)',
       color: AndroidColor.WHITE,
     },
     lfgCard: {
@@ -124,7 +76,6 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
     ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
     ...(item.itemType === 'official' ? styles.officialCard : undefined),
     ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
-    minHeight: 106,
   };
 
   return (
@@ -134,20 +85,12 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes + tzOffset &&
             nowDayTime.dayMinutes < eventEndDayTime.dayMinutes + tzOffset && (
-              <View style={[styles.markerView, styles.nowMarker]}>
-                <View style={styles.markerContainer}>
-                  <Text style={[styles.markerText, styles.nowText]}>Now</Text>
-                </View>
-              </View>
+              <EventCardNowView />
             )}
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 + tzOffset &&
             nowDayTime.dayMinutes < eventStartDayTime.dayMinutes + tzOffset && (
-              <View style={[styles.markerView, styles.soonMarker]}>
-                <View style={styles.markerContainer}>
-                  <Text style={[styles.markerText, styles.soonText]}>Soon</Text>
-                </View>
-              </View>
+              <EventCardSoonView />
             )}
           <View style={styles.contentBody}>
             <Text style={styles.bodyText} variant={'titleMedium'} numberOfLines={1}>
