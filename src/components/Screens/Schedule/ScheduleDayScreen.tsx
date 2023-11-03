@@ -181,27 +181,27 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <PanGestureHandler onHandlerStateChange={onSwipe}>
-        <View style={commonStyles.flex}>
-          <View style={{...styles.headerView}}>
-            <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.headerText}>
-                {format(cruiseDays[route.params.cruiseDay - 1].date, 'eeee LLLL do')}
-                {cruiseDayToday === route.params.cruiseDay ? ' (Today)' : ''}
-              </Text>
-            </View>
-            <IconButton
-              icon={AppIcons.forward}
-              onPress={navigateNextDay}
-              disabled={route.params.cruiseDay === cruiseLength}
-            />
+      {/*<PanGestureHandler onHandlerStateChange={onSwipe}>*/}
+      <View style={commonStyles.flex}>
+        <View style={{...styles.headerView}}>
+          <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>
+              {format(cruiseDays[route.params.cruiseDay - 1].date, 'eeee LLLL do')}
+              {cruiseDayToday === route.params.cruiseDay ? ' (Today)' : ''}
+            </Text>
           </View>
-          <View style={commonStyles.flex}>
-            <EventFlatList listRef={listRef} scheduleItems={scheduleItems} scrollNowIndex={scrollNowIndex} />
-          </View>
+          <IconButton
+            icon={AppIcons.forward}
+            onPress={navigateNextDay}
+            disabled={route.params.cruiseDay === cruiseLength}
+          />
         </View>
-      </PanGestureHandler>
+        <View style={commonStyles.flex}>
+          <EventFlatList listRef={listRef} scheduleItems={scheduleItems} scrollNowIndex={scrollNowIndex} />
+        </View>
+      </View>
+      {/*</PanGestureHandler>*/}
       <ScheduleFAB />
     </AppView>
   );
