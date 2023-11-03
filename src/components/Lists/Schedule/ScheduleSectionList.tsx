@@ -17,6 +17,7 @@ export const ScheduleSectionList = ({items}: {items: ScheduleItem[]}) => {
 
   const buildListData = useCallback((scheduleItems: ScheduleItem[]) => {
     let sectionData: SectionData[] = [];
+    console.log(`There are ${scheduleItems.length} schedule items to process.`);
     scheduleItems.map((scheduleItem, i) => {
       // For the first element, just shove a new section into the list.
       if (i === 0) {
@@ -25,7 +26,29 @@ export const ScheduleSectionList = ({items}: {items: ScheduleItem[]}) => {
           data: [scheduleItem],
         };
         sectionData.push(section);
+        return;
       }
+      // For the rest, we'll be comparing the times.
+      const itemTimeMarker = getTimeMarker(scheduleItem.startTime, scheduleItem.timeZone);
+      const previousItem = scheduleItems[i - 1];
+
+      // Deserves a new section
+      if (itemTimeMarker !== getTimeMarker(previousItem.startTime, previousItem.timeZone)) {
+        const section: SectionData = {
+          title: itemTimeMarker,
+          data: [scheduleItem],
+        };
+        sectionData.push(section);
+        return;
+      }
+
+      // Append to the previous section.
+      const previousSection = sectionData[sectionData.length - 1];
+      sectionData[sectionData.length - 1] = {
+        title: previousSection.title,
+        data: [previousSection.data, scheduleItem].flat(),
+      };
+      return;
     });
     return sectionData;
   }, []);
@@ -51,6 +74,8 @@ export const ScheduleSectionList = ({items}: {items: ScheduleItem[]}) => {
     return <TimeDivider label={title} />;
   };
 
+  const keyExtractor = (item: ScheduleItem, index: number) => item.title;
+
   useEffect(() => {
     setListData(buildListData(items));
   }, [items, buildListData]);
@@ -65,6 +90,7 @@ export const ScheduleSectionList = ({items}: {items: ScheduleItem[]}) => {
       ListFooterComponent={renderListFooter}
       renderItem={renderListItem}
       renderSectionHeader={renderListSectionHeader}
+      keyExtractor={keyExtractor}
     />
   );
 };

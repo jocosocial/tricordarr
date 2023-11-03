@@ -139,7 +139,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <PanGestureHandler onHandlerStateChange={onSwipe}>
+      {/*<PanGestureHandler onHandlerStateChange={onSwipe}>*/}
         <View style={commonStyles.flex}>
           <View style={{...styles.headerView}}>
             <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
@@ -160,7 +160,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             <ScheduleSectionList items={itemList} />
           </View>
         </View>
-      </PanGestureHandler>
+      {/*</PanGestureHandler>*/}
       <ScheduleFAB />
     </AppView>
   );
