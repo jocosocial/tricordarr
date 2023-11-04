@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -31,14 +31,23 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const {data: eventData, isLoading: isEventLoading} = useEventsQuery({cruiseDay: route.params.cruiseDay});
-  const {data: lfgData, isLoading: isLfgLoading} = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
+  const {
+    data: eventData,
+    isLoading: isEventLoading,
+    refetch: refetchEvents,
+  } = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  const {
+    data: lfgData,
+    isLoading: isLfgLoading,
+    refetch: refetchLfgs,
+  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<ScheduleItem>>(null);
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
+  const [refreshing, setRefreshing] = useState(false);
 
   const buildListData = useCallback(() => {
     console.log('### Building Schedule Item List');
@@ -148,6 +157,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     },
   });
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetchEvents().then(() => {
+      refetchLfgs().then(() => {
+        setRefreshing(false);
+      });
+    });
+  };
+
   const navigatePreviousDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay - 1});
   const navigateNextDay = () =>
@@ -198,7 +216,12 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           />
         </View>
         <View style={commonStyles.flex}>
-          <EventFlatList listRef={listRef} scheduleItems={scheduleItems} scrollNowIndex={scrollNowIndex} />
+          <EventFlatList
+            listRef={listRef}
+            scheduleItems={scheduleItems}
+            scrollNowIndex={scrollNowIndex}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          />
         </View>
       </View>
       {/*</PanGestureHandler>*/}

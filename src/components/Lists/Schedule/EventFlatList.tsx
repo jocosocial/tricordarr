@@ -1,10 +1,9 @@
-import {RefreshControlProps, View} from 'react-native';
+import {FlatList, RefreshControl, RefreshControlProps, View} from 'react-native';
 import React from 'react';
 import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {FlatList} from 'react-native-gesture-handler';
 import {ScheduleItem} from '../../../libraries/Types';
 import {getTimeMarker} from '../../../libraries/DateTime';
 
@@ -123,6 +122,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
       style={{
         ...commonStyles.paddingHorizontal,
       }}
+      // refreshControl={}
       refreshControl={refreshControl}
       ItemSeparatorComponent={renderListSeparator}
       data={scheduleItems}
