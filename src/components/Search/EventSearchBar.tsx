@@ -24,12 +24,11 @@ export const EventSearchBar = () => {
   const {commonStyles} = useStyles();
   const [eventList, setEventList] = useState<ScheduleItem[]>([]);
 
-  const onChangeSearch = (query: string) => {
-    console.log('Evnet search', query);
-    setSearchQuery(query);
-  };
+  const onChangeSearch = (query: string) => setSearchQuery(query);
 
-  const handleSearch = () => {
+  const onClear = () => setEventList([]);
+
+  const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
     } else {
@@ -37,13 +36,7 @@ export const EventSearchBar = () => {
     }
   };
 
-  const onClear = () => {
-    console.log('### OnClear');
-    setEventList([]);
-  };
-
   useEffect(() => {
-    console.log('Regenerating logs');
     let itemList: ScheduleItem[] = [];
     if (data) {
       data.map(event => itemList.push(eventToItem(event)));
@@ -55,16 +48,16 @@ export const EventSearchBar = () => {
     <View>
       <Searchbar
         placeholder={'Search for events'}
-        onIconPress={handleSearch}
+        onIconPress={onSearch}
         onChangeText={onChangeSearch}
         value={searchQuery}
-        onSubmitEditing={handleSearch}
+        onSubmitEditing={onSearch}
         onClearIconPress={onClear}
       />
       <ListSection>
         {eventList.map((item, i) => (
           <View key={i} style={[commonStyles.paddingVerticalSmall]}>
-            <ScheduleEventCard item={item} />
+            <ScheduleEventCard item={item} includeDay={true} />
           </View>
         ))}
       </ListSection>

@@ -162,12 +162,14 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
  * @param startTimeStr Start ISO string.
  * @param endTimeStr End ISO string.
  * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
+ * @param includeDay Include the day in the formatted string.
  */
-export const getDurationString = (startTimeStr: string, endTimeStr: string, timeZoneAbbrStr: string) => {
+export const getDurationString = (startTimeStr: string, endTimeStr: string, timeZoneAbbrStr: string, includeDay: boolean) => {
+  const format = includeDay ? 'ddd MMM D hh:mm A' : 'hh:mm A';
   const startDate = moment(startTimeStr);
   const endDate = moment(endTimeStr);
-  const startText = startDate.tz(timeZoneAbbrStr).format('hh:mm A');
-  const endText = endDate.tz(timeZoneAbbrStr).format('hh:mm A');
+  const startText = startDate.tz(timeZoneAbbrStr).format(format);
+  const endText = endDate.tz(timeZoneAbbrStr).format(format);
   return `${startText} - ${endText}`;
 };
 
@@ -203,13 +205,13 @@ export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) 
   return date.tz(timeZoneAbbrStr);
 };
 
-export const eventToItem = (event: EventData) => {
+export const eventToItem = (event: EventData): ScheduleItem => {
   return {
     title: event.title,
     startTime: event.startTime,
     endTime: event.endTime,
     timeZone: event.timeZone,
     location: event.location,
-    itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
+    itemType: (event.eventType === EventType.shadow ? 'shadow' : 'official'),
   };
 };

@@ -13,9 +13,10 @@ import {EventCardBody} from '../../Views/Schedule/EventCardBody';
 
 interface ScheduleEventCardProps {
   item: ScheduleItem;
+  includeDay?: boolean;
 }
 
-export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
+export const ScheduleEventCard = ({item, includeDay = false}: ScheduleEventCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
@@ -67,7 +68,7 @@ export const ScheduleEventCard = ({item}: ScheduleEventCardProps) => {
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
             nowDayTime.dayMinutes >= eventStartDayTime.dayMinutes - 30 &&
             nowDayTime.dayMinutes < eventStartDayTime.dayMinutes && <EventCardSoonView />}
-          <EventCardBody scheduleItem={item} />
+          <EventCardBody scheduleItem={item} includeDay={includeDay} />
         </View>
       </Card.Content>
     </Card>
