@@ -6,8 +6,8 @@ export const EventCardSoonView = () => {
   const theme = useAppTheme();
   return (
     <EventCardMarkerView
-      backgroundColor={theme.colors.twitarrBannerColor}
-      color={theme.colors.onTwitarrBannerColor}
+      backgroundColor={theme.colors.twitarrYellow}
+      color={theme.colors.onTwitarrYellow}
       label={'Soon'}
     />
   );

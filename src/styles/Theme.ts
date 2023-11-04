@@ -7,8 +7,6 @@ import {configureFonts, DefaultTheme, useTheme} from 'react-native-paper';
 export const twitarrPrimaryColor = '#063953';
 // Error color for things that have gone wrong.
 export const twitarrErrorColor = '#BA1A1A';
-// Note color, for notes. Based on sticky notes.
-export const twitarrNoteColor = 'rgb(254, 255, 156)';
 
 /**
  * This may need some additional love and care. I don't enjoy that we are
@@ -76,10 +74,10 @@ export const twitarrTheme = {
     jocoGreen: 'rgb(73, 205, 140)',
     jocoBlue: 'rgb(28, 110, 255)',
     jocoPurple: 'rgb(112, 60, 190)',
-    twitarrBannerColor: '#FFD04D',
+    twitarrYellow: '#FFD04D',
     twitarrGrey: 'rgb(46, 49, 51)',
     onTwitarrPositiveButton: 'rgb(255, 255, 255)',
-    onTwitarrBannerColor: 'rgb(0, 0, 0)',
+    onTwitarrYellow: 'rgb(0, 0, 0)',
   },
 };
 
@@ -133,7 +131,7 @@ export const twitarrThemeDark = {
     jocoGreen: 'rgb(73, 205, 140)',
     jocoBlue: 'rgb(28, 110, 255)',
     jocoPurple: 'rgb(112, 60, 190)',
-    twitarrBannerColor: '#FFD04D',
+    twitarrYellow: '#FFD04D',
     twitarrGrey: 'rgb(46, 49, 51)',
     onTwitarrPositiveButton: 'rgb(255, 255, 255)',
     onTwitarrBannerColor: 'rgb(0, 0, 0)',

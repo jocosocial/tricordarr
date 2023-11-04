@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleContext} from '../Contexts/StyleContext';
-import {twitarrNoteColor, useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../styles/Theme';
 import {commonStyles, styleDefaults} from '../../../styles';
 import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
@@ -46,7 +46,7 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       backgroundColor: theme.colors.twitarrNegativeButton,
     },
     twitarrBanner: {
-      backgroundColor: theme.colors.twitarrBannerColor,
+      backgroundColor: theme.colors.twitarrYellow,
     },
     background: {
       backgroundColor: theme.colors.background,
@@ -60,10 +60,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: theme.colors.onTertiaryContainer,
     },
     noteContainer: {
-      backgroundColor: twitarrNoteColor,
+      backgroundColor: theme.colors.twitarrYellow,
     },
     onNoteContainer: {
-      color: AndroidColor.BLACK,
+      color: theme.colors.onTwitarrYellow,
     },
     onTwitarrBanner: {
       color: AndroidColor.BLACK,
