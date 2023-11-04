@@ -20,4 +20,5 @@ Backlog
 * Your next event card on main screen
 
 Work Queue
-* Past events for that day darker text?
+* Event Filtering
+* LFG features
