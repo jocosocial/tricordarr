@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {EventData, UserHeader} from '../../libraries/Structs/ControllerStructs';
@@ -10,6 +10,7 @@ import {ScheduleEventCard} from '../Cards/Schedule/ScheduleEventCard';
 import {eventToItem} from '../../libraries/DateTime';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {ScheduleItem} from '../../libraries/Types';
 
 export const EventSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -21,6 +22,7 @@ export const EventSearchBar = () => {
     },
   });
   const {commonStyles} = useStyles();
+  const [eventList, setEventList] = useState<ScheduleItem[]>([]);
 
   const onChangeSearch = (query: string) => {
     console.log('Evnet search', query);
@@ -35,6 +37,20 @@ export const EventSearchBar = () => {
     }
   };
 
+  const onClear = () => {
+    console.log('### OnClear');
+    setEventList([]);
+  };
+
+  useEffect(() => {
+    console.log('Regenerating logs');
+    let itemList: ScheduleItem[] = [];
+    if (data) {
+      data.map(event => itemList.push(eventToItem(event)));
+    }
+    setEventList(itemList);
+  }, [data]);
+
   return (
     <View>
       <Searchbar
@@ -43,14 +59,14 @@ export const EventSearchBar = () => {
         onChangeText={onChangeSearch}
         value={searchQuery}
         onSubmitEditing={handleSearch}
+        onClearIconPress={onClear}
       />
       <ListSection>
-        {data &&
-          data.flatMap(event => (
-            <View key={event.eventID} style={[commonStyles.paddingVerticalSmall]}>
-              <ScheduleEventCard item={eventToItem(event)} />
-            </View>
-          ))}
+        {eventList.map((item, i) => (
+          <View key={i} style={[commonStyles.paddingVerticalSmall]}>
+            <ScheduleEventCard item={item} />
+          </View>
+        ))}
       </ListSection>
     </View>
   );
