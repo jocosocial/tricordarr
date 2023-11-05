@@ -34,7 +34,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const {eventTypeFilter} = useScheduleFilter();
+  const {eventTypeFilter, eventFavoriteFilter} = useScheduleFilter();
   const {
     data: eventData,
     isLoading: isEventLoading,
@@ -68,9 +68,11 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
 
       eventData?.map(event => {
         if (
-          !filterSettings.eventTypeFilter ||
-          (filterSettings.eventTypeFilter && event.eventType === EventType[filterSettings.eventTypeFilter])
+          (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
+          (filterSettings.eventFavoriteFilter && !event.isFavorite)
         ) {
+          return;
+        } else {
           itemList.push({
             title: event.title,
             startTime: event.startTime,
@@ -149,7 +151,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [navigation, route, scrollToNow]);
+  }, [route, scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -160,10 +162,12 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   useEffect(() => {
     const filterSettings: ScheduleFilterSettings = {
       eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
+      eventFavoriteFilter: eventFavoriteFilter,
       showLfgs: appConfig.unifiedSchedule,
     };
+    console.log('Schedule Filter', filterSettings);
     setScheduleItems(buildListData(filterSettings));
-  }, [appConfig.unifiedSchedule, buildListData, eventTypeFilter]);
+  }, [appConfig.unifiedSchedule, buildListData, eventFavoriteFilter, eventTypeFilter]);
 
   const styles = StyleSheet.create({
     headerText: {

@@ -42,6 +42,7 @@ export type ScheduleItem = {
 
 export type ScheduleFilterSettings = {
   eventTypeFilter?: keyof typeof EventType;
+  eventFavoriteFilter?: boolean;
   lfgTypeFilter?: keyof typeof FezType;
   showLfgs?: boolean;
 };
