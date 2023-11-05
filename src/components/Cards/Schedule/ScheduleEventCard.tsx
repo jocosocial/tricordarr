@@ -42,7 +42,7 @@ export const ScheduleEventCard = ({item, includeDay = false}: ScheduleEventCardP
       backgroundColor: theme.colors.jocoPurple,
     },
     lfgCard: {
-      backgroundColor: theme.colors.twitarrGrey,
+      backgroundColor: theme.colors.outline,
     },
   });
 

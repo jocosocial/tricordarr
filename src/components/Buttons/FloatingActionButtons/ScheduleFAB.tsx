@@ -13,8 +13,8 @@ export const ScheduleFAB = () => {
 
   const {open} = state;
 
-  const color = theme.colors.onPrimary;
-  const backgroundColor = theme.colors.primary;
+  const color = theme.colors.inverseOnSurface;
+  const backgroundColor = theme.colors.inverseSurface;
 
   return (
     <Portal>
@@ -32,21 +32,29 @@ export const ScheduleFAB = () => {
             icon: AppIcons.new,
             label: 'New LFG',
             onPress: () => console.log('Create LFG'),
+            backgroundColor: backgroundColor,
+            color: color,
           }),
           FabGroupAction({
             icon: AppIcons.lfgFind,
             label: 'Find',
             onPress: () => console.log('Find LFG'),
+            backgroundColor: backgroundColor,
+            color: color,
           }),
           FabGroupAction({
             icon: AppIcons.lfgJoined,
             label: 'Joined',
             onPress: () => console.log('Joined LFG'),
+            backgroundColor: backgroundColor,
+            color: color,
           }),
           FabGroupAction({
             icon: AppIcons.lfgOwned,
             label: 'Owned',
             onPress: () => console.log('Your LFG'),
+            backgroundColor: backgroundColor,
+            color: color,
           }),
         ]}
         onStateChange={onStateChange}

@@ -21,4 +21,3 @@ Backlog
 Work Queue
 * LFG features
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
-* definitely need to change FAB colors. light mode primary on white+neutral sucks
