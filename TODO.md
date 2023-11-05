@@ -22,5 +22,4 @@ Backlog
 Work Queue
 * LFG features
   Broke jump to now
-  If the scroll now index is zero just go all the way to the top
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead

@@ -149,9 +149,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       'at',
       scheduleItems[scrollNowIndex]?.startTime,
     );
-    listRef.current.scrollToIndex({
-      index: scrollNowIndex,
-    });
+    if (scrollNowIndex === 0) {
+      listRef.current.scrollToOffset({offset: 0});
+    } else if (scrollNowIndex === scheduleItems.length - 1) {
+      listRef.current.scrollToEnd();
+    } else {
+      listRef.current.scrollToIndex({
+        index: scrollNowIndex,
+      });
+    }
   }, [scheduleItems, scrollNowIndex]);
 
   const getNavButtons = useCallback(() => {
