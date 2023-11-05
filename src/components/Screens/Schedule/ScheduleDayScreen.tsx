@@ -24,6 +24,7 @@ import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -50,6 +51,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
+  const {appConfig} = useConfig();
 
   const buildListData = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
@@ -166,10 +168,10 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   useEffect(() => {
     const filterSettings: ScheduleFilterSettings = {
       eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
-      showLfgs: true,
+      showLfgs: appConfig.unifiedSchedule,
     };
     setScheduleItems(buildListData(filterSettings));
-  }, [buildListData, eventTypeFilter]);
+  }, [appConfig.unifiedSchedule, buildListData, eventTypeFilter]);
 
   const styles = StyleSheet.create({
     headerText: {

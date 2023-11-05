@@ -20,7 +20,6 @@ Backlog
 * Your next event card on main screen
 
 Work Queue
-* Event Filtering
 * LFG features
   Broke jump to now
   Search no results 
