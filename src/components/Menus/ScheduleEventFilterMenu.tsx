@@ -10,7 +10,8 @@ import {ViewStyle} from 'react-native';
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
-  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} = useScheduleFilter();
+  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} =
+    useScheduleFilter();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -29,12 +30,12 @@ export const ScheduleEventFilterMenu = () => {
     closeMenu();
   };
 
-  const anyFilterApplied = eventTypeFilter || eventFavoriteFilter;
+  const anyActiveFilter = eventFavoriteFilter || eventTypeFilter;
 
   const menuAnchor = (
     <Item
       title={'Filter'}
-      color={anyFilterApplied ? theme.colors.twitarrNeutralButton : undefined}
+      color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.filter}
       onPress={openMenu}
     />

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {RefreshControl, StyleSheet, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -123,22 +123,22 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   );
 
   const scrollToNow = useCallback(() => {
-    if (listRef.current) {
-      console.log(
-        'Scrolling to index',
-        scrollNowIndex,
-        'length',
-        scheduleItems.length,
-        scheduleItems[scrollNowIndex]?.title,
-        'at',
-        scheduleItems[scrollNowIndex]?.startTime,
-      );
-      listRef.current.scrollToIndex({
-        index: scrollNowIndex,
-      });
-    } else {
-      console.warn('ListRef is undefined, not scrolling.');
+    if (scheduleItems.length === 0 || !listRef.current) {
+      console.warn('ListRef is undefined or no items, not scrolling.');
+      return;
     }
+    console.log(
+      'Scrolling to index',
+      scrollNowIndex,
+      'length',
+      scheduleItems.length,
+      scheduleItems[scrollNowIndex]?.title,
+      'at',
+      scheduleItems[scrollNowIndex]?.startTime,
+    );
+    listRef.current.scrollToIndex({
+      index: scrollNowIndex,
+    });
   }, [scheduleItems, scrollNowIndex]);
 
   const getNavButtons = useCallback(() => {
