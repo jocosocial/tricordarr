@@ -97,7 +97,16 @@ export const TwitarrView = ({route, navigation}: Props) => {
     navigation.setOptions({
       headerRight: getNavBarIcons,
     });
-  }, [route.params?.timestamp, route.params.resource, route.params.id, isLoading, key, navigation, getNavBarIcons, appConfig.serverUrl]);
+  }, [
+    route.params?.timestamp,
+    route.params.resource,
+    route.params.id,
+    isLoading,
+    key,
+    navigation,
+    getNavBarIcons,
+    appConfig.serverUrl,
+  ]);
 
   return isLoading ? (
     <ActivityIndicator />

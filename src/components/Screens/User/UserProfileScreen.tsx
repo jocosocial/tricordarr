@@ -5,7 +5,7 @@ import {
   BottomTabComponents,
   MainStackComponents,
   NavigatorIDs,
-  SeamailStackScreenComponents
+  SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {SeamailStackParamList, useSeamailStack} from '../../Navigation/Stacks/SeamailStack';

@@ -28,8 +28,18 @@ export const SocketControlView = ({title, onOpen, onClose, disabled}: SocketCont
           ...commonStyles.flexRow,
           ...commonStyles.gapSmall,
         }}>
-        <PrimaryActionButton disabled={disabled} buttonColor={theme.colors.twitarrPositiveButton} buttonText={'Open'} onPress={onOpen} />
-        <PrimaryActionButton disabled={disabled} buttonColor={theme.colors.twitarrNegativeButton} buttonText={'Close'} onPress={onClose} />
+        <PrimaryActionButton
+          disabled={disabled}
+          buttonColor={theme.colors.twitarrPositiveButton}
+          buttonText={'Open'}
+          onPress={onOpen}
+        />
+        <PrimaryActionButton
+          disabled={disabled}
+          buttonColor={theme.colors.twitarrNegativeButton}
+          buttonText={'Close'}
+          onPress={onClose}
+        />
       </View>
     </View>
   );

@@ -164,7 +164,12 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
  * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
  * @param includeDay Include the day in the formatted string.
  */
-export const getDurationString = (startTimeStr: string, endTimeStr: string, timeZoneAbbrStr: string, includeDay: boolean) => {
+export const getDurationString = (
+  startTimeStr: string,
+  endTimeStr: string,
+  timeZoneAbbrStr: string,
+  includeDay: boolean,
+) => {
   const format = includeDay ? 'ddd MMM D hh:mm A' : 'hh:mm A';
   const startDate = moment(startTimeStr);
   const endDate = moment(endTimeStr);
@@ -212,7 +217,7 @@ export const eventToItem = (event: EventData): ScheduleItem => {
     endTime: event.endTime,
     timeZone: event.timeZone,
     location: event.location,
-    itemType: (event.eventType === EventType.shadow ? 'shadow' : 'official'),
+    itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
   };
 };
 

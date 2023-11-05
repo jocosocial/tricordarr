@@ -108,7 +108,13 @@ interface LfgListQueryOptions {
   endpoint?: 'open' | 'joined' | 'owner';
 }
 
-export const useLfgListQuery = ({cruiseDay, fezType, hidePast = false, pageSize = 50, endpoint = 'open'}: LfgListQueryOptions) => {
+export const useLfgListQuery = ({
+  cruiseDay,
+  fezType,
+  hidePast = false,
+  pageSize = 50,
+  endpoint = 'open',
+}: LfgListQueryOptions) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     [`/fez/${endpoint}`, {cruiseDay, fezType, hidePast, pageSize}],

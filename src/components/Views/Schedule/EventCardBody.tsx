@@ -9,7 +9,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
  * Main content body of a Schedule Event card. Just text with some fancy time string rendering.
  * @param scheduleItem ScheduleItem object.
  */
-export const EventCardBody = ({scheduleItem, includeDay}: {scheduleItem: ScheduleItem, includeDay: boolean}) => {
+export const EventCardBody = ({scheduleItem, includeDay}: {scheduleItem: ScheduleItem; includeDay: boolean}) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     contentBody: {

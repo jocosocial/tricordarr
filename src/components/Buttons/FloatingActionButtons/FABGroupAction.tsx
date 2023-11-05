@@ -17,7 +17,11 @@ export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: P
   const {asPrivilegedUser} = usePrivilege();
 
   const actionColor = asPrivilegedUser ? AndroidColor.WHITE : color ? color : theme.colors.onPrimary;
-  const actionBackgroundColor = asPrivilegedUser ? theme.colors.twitarrNegativeButton : backgroundColor ? backgroundColor : theme.colors.primary;
+  const actionBackgroundColor = asPrivilegedUser
+    ? theme.colors.twitarrNegativeButton
+    : backgroundColor
+    ? backgroundColor
+    : theme.colors.primary;
 
   return {
     icon: icon,

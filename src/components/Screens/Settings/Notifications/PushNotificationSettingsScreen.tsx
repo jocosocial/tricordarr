@@ -53,9 +53,8 @@ export const PushNotificationSettingsScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text variant={'bodyMedium'}>
-            Pick the types of events you want to receive as push notifications.
-            This only controls what generates a notification on your device, not what
-            to get notified for within Twitarr.
+            Pick the types of events you want to receive as push notifications. This only controls what generates a
+            notification on your device, not what to get notified for within Twitarr.
           </Text>
           {pushNotificationCategories.flatMap(c => (
             <SettingSwitch

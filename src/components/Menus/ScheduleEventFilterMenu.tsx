@@ -10,8 +10,7 @@ import {ViewStyle} from 'react-native';
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
-  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} =
-    useScheduleFilter();
+  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} = useScheduleFilter();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
