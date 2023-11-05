@@ -112,7 +112,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   //   };
   // };
 
-  const keyExtractor = (item: ScheduleItem) => item.title;
+  const keyExtractor = (item: ScheduleItem) => item.id;
 
   // const initialIndex = getInitialScrollindex();
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);

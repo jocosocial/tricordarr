@@ -1,4 +1,7 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
+import {EventType} from '../Enums/EventType';
+import {FezType} from '../Enums/FezType';
+
 export interface KvObject {
   [key: string]: string | null;
 }
@@ -32,4 +35,13 @@ export type ScheduleItem = {
   timeZone: string;
   location: string;
   itemType: 'official' | 'shadow' | 'lfg';
+  eventType?: keyof typeof EventType;
+  lfgType?: keyof typeof FezType;
+  id: string;
+};
+
+export type ScheduleFilterSettings = {
+  eventTypeFilter?: keyof typeof EventType;
+  lfgTypeFilter?: keyof typeof FezType;
+  showLfgs?: boolean;
 };

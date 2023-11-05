@@ -7,14 +7,14 @@ interface EventsQueryOptions {
   day?: string;
   date?: Date;
   time?: Date;
-  eventType?: string;
+  eventType?: 'official' | 'shadow';
   search?: string;
   options?: {};
 }
 
 export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options = {}}: EventsQueryOptions) => {
   return useQuery<[EventData], AxiosError<ErrorResponse>>(
-    [`/events?cruiseday=${cruiseDay}`],
+    ['/events', {cruiseDay: cruiseDay, eventType: eventType}],
     async () => {
       const queryParams = {
         ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),

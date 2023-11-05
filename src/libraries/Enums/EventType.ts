@@ -1,7 +1,6 @@
 /**
  * Event Types
  * https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Enumerations/EventType.swift
- * @TODO I'm not sure this is useful yet.
  */
 export const EventType = {
   /// A gaming event.

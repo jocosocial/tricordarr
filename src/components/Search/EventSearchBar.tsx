@@ -53,6 +53,7 @@ export const EventSearchBar = () => {
         value={searchQuery}
         onSubmitEditing={onSearch}
         onClearIconPress={onClear}
+        style={[commonStyles.marginBottomSmall]}
       />
       <ListSection>
         {eventList.map((item, i) => (

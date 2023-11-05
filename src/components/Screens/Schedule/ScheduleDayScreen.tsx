@@ -16,13 +16,13 @@ import {IconButton, Text} from 'react-native-paper';
 import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-// import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
-import {ScheduleItem} from '../../../libraries/Types';
+import {ScheduleFilterSettings, ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
+import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -31,6 +31,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
+  const [eventTypeFilter, setEventTypeFilter] = useState('');
   const {
     data: eventData,
     isLoading: isEventLoading,
@@ -49,53 +50,71 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
 
-  const buildListData = useCallback(() => {
-    console.log('### Building Schedule Item List');
-    let itemList: ScheduleItem[] = [];
+  const buildListData = useCallback(
+    (filterSettings: ScheduleFilterSettings) => {
+      console.log('### Building Schedule Item List');
+      let itemList: ScheduleItem[] = [];
 
-    let lfgList: FezData[] = [];
-    lfgData?.pages.map(page => {
-      lfgList = lfgList.concat(page.fezzes);
-    });
-
-    eventData?.map(event => {
-      itemList.push({
-        title: event.title,
-        startTime: event.startTime,
-        endTime: event.endTime,
-        timeZone: event.timeZone,
-        location: event.location,
-        itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
-      });
-    });
-    lfgList.map(lfg => {
-      if (lfg.startTime && lfg.endTime && lfg.timeZone && lfg.location) {
-        itemList.push({
-          title: lfg.title,
-          startTime: lfg.startTime,
-          endTime: lfg.endTime,
-          timeZone: lfg.timeZone,
-          location: lfg.location,
-          itemType: 'lfg',
+      let lfgList: FezData[] = [];
+      if (filterSettings.showLfgs) {
+        lfgData?.pages.map(page => {
+          lfgList = lfgList.concat(page.fezzes);
         });
       }
-    });
 
-    // ChatGPT for the win
-    itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+      eventData?.map(event => {
+        if (
+          !filterSettings.eventTypeFilter ||
+          (filterSettings.eventTypeFilter && event.eventType === EventType[filterSettings.eventTypeFilter])
+        ) {
+          itemList.push({
+            title: event.title,
+            startTime: event.startTime,
+            endTime: event.endTime,
+            timeZone: event.timeZone,
+            location: event.location,
+            itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
+            // I hope this doesn't come back to bite me.
+            eventType: event.eventType as keyof typeof EventType,
+            id: event.eventID,
+          });
+        }
+      });
+      lfgList.map(lfg => {
+        if (lfg.startTime && lfg.endTime && lfg.timeZone && lfg.location) {
+          itemList.push({
+            title: lfg.title,
+            startTime: lfg.startTime,
+            endTime: lfg.endTime,
+            timeZone: lfg.timeZone,
+            location: lfg.location,
+            itemType: 'lfg',
+            lfgType: lfg.fezType,
+            id: lfg.fezID,
+          });
+        }
+      });
 
-    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-    for (let i = 0; i < itemList.length; i++) {
-      const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+      // ChatGPT for the win
+      itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
-      if (nowDayTime.cruiseDay === itemStartDayTime.cruiseDay && nowDayTime.dayMinutes <= itemStartDayTime.dayMinutes) {
-        setScrollNowIndex(i - 1);
-        break;
+      const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+      for (let i = 0; i < itemList.length; i++) {
+        const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+
+        if (
+          nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
+          nowDayTime.dayMinutes <= itemStartDayTime.dayMinutes
+        ) {
+          setScrollNowIndex(i - 1);
+          break;
+        }
       }
-    }
 
-    return itemList;
-  }, [endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate]);
+      return itemList;
+    },
+    [endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate],
+  );
 
   const scrollToNow = useCallback(() => {
     if (listRef.current) {
@@ -120,18 +139,19 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} />
+          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
           <Item
             title={'Search'}
             iconName={AppIcons.search}
             onPress={() => navigation.push(ScheduleStackComponents.scheduleEventSearchScreen)}
           />
-          <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />
+          <ScheduleEventFilterMenu eventTypeFilter={eventTypeFilter} setEventTypeFilter={setEventTypeFilter} />
+          {/*<Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />*/}
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
         </HeaderButtons>
       </View>
     );
-  }, [navigation, scrollToNow]);
+  }, [eventTypeFilter, navigation, route, scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -140,8 +160,12 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    setScheduleItems(buildListData());
-  }, [buildListData]);
+    const filterSettings: ScheduleFilterSettings = {
+      eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
+      showLfgs: true,
+    };
+    setScheduleItems(buildListData(filterSettings));
+  }, [buildListData, eventTypeFilter]);
 
   const styles = StyleSheet.create({
     headerText: {
@@ -171,26 +195,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const navigateNextDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
 
-  // const onSwipe = (event: any) => {
-  //   if (event.nativeEvent.state === State.END) {
-  //     if (
-  //       (event.nativeEvent.translationX > 50 || event.nativeEvent.velocityX > 500) &&
-  //       Math.abs(event.nativeEvent.translationY) < 80
-  //     ) {
-  //       if (route.params.cruiseDay > 1) {
-  //         navigatePreviousDay();
-  //       }
-  //     } else if (
-  //       (event.nativeEvent.translationX < -50 || event.nativeEvent.velocityX < -500) &&
-  //       Math.abs(event.nativeEvent.translationY) < 80
-  //     ) {
-  //       if (route.params.cruiseDay < cruiseLength) {
-  //         navigateNextDay();
-  //       }
-  //     }
-  //   }
-  // };
-
   console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
 
   if (isLfgLoading || isEventLoading) {
@@ -199,7 +203,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      {/*<PanGestureHandler onHandlerStateChange={onSwipe}>*/}
       <View style={commonStyles.flex}>
         <View style={{...styles.headerView}}>
           <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
@@ -224,7 +227,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           />
         </View>
       </View>
-      {/*</PanGestureHandler>*/}
       <ScheduleFAB />
     </AppView>
   );
