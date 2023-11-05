@@ -22,3 +22,5 @@ Backlog
 Work Queue
 * Event Filtering
 * LFG features
+  Broke jump to now
+  Search no results 

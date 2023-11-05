@@ -1,18 +1,15 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {EventType} from '../../libraries/Enums/EventType';
 import {useAppTheme} from '../../styles/Theme';
+import {useScheduleFilter} from '../Context/Contexts/ScheduleFilterContext';
 
-interface ScheduleEventFilterMenuProps {
-  eventTypeFilter: string;
-  setEventTypeFilter: Dispatch<SetStateAction<string>>;
-}
-
-export const ScheduleEventFilterMenu = ({eventTypeFilter, setEventTypeFilter}: ScheduleEventFilterMenuProps) => {
+export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
+  const {eventTypeFilter, setEventTypeFilter} = useScheduleFilter();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

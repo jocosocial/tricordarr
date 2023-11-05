@@ -23,6 +23,7 @@ import {ScheduleFilterSettings, ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
+import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -31,7 +32,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const [eventTypeFilter, setEventTypeFilter] = useState(route.params.eventTypeFilter);
+  const {eventTypeFilter} = useScheduleFilter();
   const {
     data: eventData,
     isLoading: isEventLoading,
@@ -145,8 +146,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             iconName={AppIcons.search}
             onPress={() => navigation.push(ScheduleStackComponents.scheduleEventSearchScreen)}
           />
-          <ScheduleEventFilterMenu eventTypeFilter={eventTypeFilter} setEventTypeFilter={setEventTypeFilter} />
-          {/*<Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('hi')} />*/}
+          <ScheduleEventFilterMenu />
           <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
         </HeaderButtons>
       </View>
@@ -193,12 +193,10 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const navigatePreviousDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {
       cruiseDay: route.params.cruiseDay - 1,
-      eventTypeFilter: eventTypeFilter,
     });
   const navigateNextDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {
       cruiseDay: route.params.cruiseDay + 1,
-      eventTypeFilter: eventTypeFilter,
     });
 
   console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);

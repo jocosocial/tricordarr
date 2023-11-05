@@ -11,7 +11,6 @@ import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSea
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
     cruiseDay: number;
-    eventTypeFilter?: string;
   };
   ScheduleEventSearchScreen: undefined;
 };

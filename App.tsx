@@ -69,6 +69,7 @@ import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNa
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
+import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
 
 registerFgsWorker();
 
@@ -108,10 +109,12 @@ function App(): JSX.Element {
                                 <UserRelationsProvider>
                                   <UserNotificationDataProvider>
                                     <DrawerProvider>
-                                      <AppEventHandler />
-                                      <ForegroundService />
-                                      <NotificationDataListener />
-                                      <RootStackNavigator />
+                                      <ScheduleFilterProvider>
+                                        <AppEventHandler />
+                                        <ForegroundService />
+                                        <NotificationDataListener />
+                                        <RootStackNavigator />
+                                      </ScheduleFilterProvider>
                                     </DrawerProvider>
                                   </UserNotificationDataProvider>
                                 </UserRelationsProvider>
