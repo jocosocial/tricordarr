@@ -8,6 +8,7 @@ import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSearchScreen';
 import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
+import {LfgOwnedScreen} from '../../Screens/Schedule/LfgOwnedScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
@@ -15,6 +16,7 @@ export type ScheduleStackParamList = {
   };
   ScheduleEventSearchScreen: undefined;
   ScheduleSettingsScreen: undefined;
+  LfgOwnedScreen: undefined;
 };
 
 export const ScheduleStackNavigator = () => {
@@ -47,6 +49,11 @@ export const ScheduleStackNavigator = () => {
         name={ScheduleStackComponents.scheduleSettingsScreen}
         component={ScheduleSettingsScreen}
         options={{title: 'Schedule Settings'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.lfgOwnedScreen}
+        component={LfgOwnedScreen}
+        options={{title: 'Owned LFGs'}}
       />
     </Stack.Navigator>
   );

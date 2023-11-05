@@ -4,10 +4,13 @@ import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useState} from 'react';
+import {useScheduleStack} from "../../Navigation/Stacks/ScheduleStackNavigator";
+import {ScheduleStackComponents} from "../../../libraries/Enums/Navigation";
 
 export const ScheduleFAB = () => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
+  const navigation = useScheduleStack();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -52,7 +55,7 @@ export const ScheduleFAB = () => {
           FabGroupAction({
             icon: AppIcons.lfgOwned,
             label: 'Owned',
-            onPress: () => console.log('Your LFG'),
+            onPress: () => navigation.push(ScheduleStackComponents.lfgOwnedScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),

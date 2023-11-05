@@ -8,6 +8,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 /**
  * Main content body of a Schedule Event card. Just text with some fancy time string rendering.
  * @param scheduleItem ScheduleItem object.
+ * @param includeDay Whether to include the month and day in the display string.
  */
 export const EventCardBody = ({scheduleItem, includeDay}: {scheduleItem: ScheduleItem; includeDay: boolean}) => {
   const {commonStyles} = useStyles();

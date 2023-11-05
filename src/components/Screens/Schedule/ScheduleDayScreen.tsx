@@ -21,7 +21,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleFilterSettings, ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
-import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime, eventToItem, getTimeZoneOffset, lfgToItem} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
@@ -73,31 +73,13 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         ) {
           return;
         } else {
-          itemList.push({
-            title: event.title,
-            startTime: event.startTime,
-            endTime: event.endTime,
-            timeZone: event.timeZone,
-            location: event.location,
-            itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
-            // I hope this doesn't come back to bite me.
-            eventType: event.eventType as keyof typeof EventType,
-            id: event.eventID,
-          });
+          itemList.push(eventToItem(event));
         }
       });
       lfgList.map(lfg => {
-        if (lfg.startTime && lfg.endTime && lfg.timeZone && lfg.location) {
-          itemList.push({
-            title: lfg.title,
-            startTime: lfg.startTime,
-            endTime: lfg.endTime,
-            timeZone: lfg.timeZone,
-            location: lfg.location,
-            itemType: 'lfg',
-            lfgType: lfg.fezType,
-            id: lfg.fezID,
-          });
+        const item = lfgToItem(lfg);
+        if (item) {
+          itemList.push(item);
         }
       });
 
