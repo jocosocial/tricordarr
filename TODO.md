@@ -23,6 +23,3 @@ Work Queue
 * LFG features
   Broke jump to now
   Search no results 
-* following events
-* help
-* menu
