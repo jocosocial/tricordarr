@@ -108,7 +108,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       for (let i = 0; i < itemList.length; i++) {
         const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
         const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
-        console.log('Now', minutelyUpdatingDate, nowDayTime, 'Event', itemStartDayTime, itemList[i].startTime, 'Offset', tzOffset);
+        // console.log('Now', minutelyUpdatingDate, nowDayTime, 'Event', itemStartDayTime, itemList[i].startTime, 'Offset', tzOffset);
 
         if (
           nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
@@ -118,18 +118,27 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           break;
         }
       }
-      // FOO
+      // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
       if (itemList.length > 0) {
-        console.log('Last Item', itemList[itemList.length - 1].title);
-        const lastItemStartDayTime = calcCruiseDayTime(parseISO(itemList[itemList.length - 1].startTime), startDate, endDate);
-        const lastItemTzOffset = getTimeZoneOffset('America/New_York', itemList[itemList.length - 1].timeZone, itemList[itemList.length - 1].startTime);
-        console.log('Now', nowDayTime, 'Last', lastItemStartDayTime, 'Offset', lastItemTzOffset);
-        if (nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay && nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes) {
-          console.log('We have exceeded the day');
+        const lastItemStartDayTime = calcCruiseDayTime(
+          parseISO(itemList[itemList.length - 1].startTime),
+          startDate,
+          endDate,
+        );
+        const lastItemTzOffset = getTimeZoneOffset(
+          'America/New_York',
+          itemList[itemList.length - 1].timeZone,
+          itemList[itemList.length - 1].startTime,
+        );
+        if (
+          nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
+          nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
+        ) {
           setScrollNowIndex(itemList.length - 1);
         }
       }
-      // BAR
+
+      // Return the array of parsed ScheduleItems.
       return itemList;
     },
     [endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate],
