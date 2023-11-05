@@ -1,10 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {EventData, UserHeader} from '../../libraries/Structs/ControllerStructs';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {View} from 'react-native';
+import {Searchbar, Text} from 'react-native-paper';
 import {ListSection} from '../Lists/ListSection';
-import {UserListItem} from '../Lists/Items/UserListItem';
-import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
 import {ScheduleEventCard} from '../Cards/Schedule/ScheduleEventCard';
 import {eventToItem} from '../../libraries/DateTime';
@@ -12,10 +9,14 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ScheduleItem} from '../../libraries/Types';
 
-export const EventSearchBar = () => {
+interface EventSearchBarProps {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+}
+
+export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
-  const {data, refetch} = useEventsQuery({
+  const {data, refetch, isFetching, isFetched} = useEventsQuery({
     search: searchQuery,
     options: {
       enabled: false,
@@ -44,6 +45,10 @@ export const EventSearchBar = () => {
     setEventList(itemList);
   }, [data]);
 
+  useEffect(() => {
+    setIsLoading(isFetching);
+  }, [isFetching, setIsLoading]);
+
   return (
     <View>
       <Searchbar
@@ -56,6 +61,11 @@ export const EventSearchBar = () => {
         style={[commonStyles.marginBottomSmall]}
       />
       <ListSection>
+        {isFetched && eventList.length === 0 && (
+          <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
+            <Text>No Results</Text>
+          </View>
+        )}
         {eventList.map((item, i) => (
           <View key={i} style={[commonStyles.paddingVerticalSmall]}>
             <ScheduleEventCard item={item} includeDay={true} />

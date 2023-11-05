@@ -22,4 +22,3 @@ Backlog
 Work Queue
 * LFG features
   Broke jump to now
-  Search no results 
