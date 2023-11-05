@@ -31,7 +31,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
-  const [eventTypeFilter, setEventTypeFilter] = useState('');
+  const [eventTypeFilter, setEventTypeFilter] = useState(route.params.eventTypeFilter);
   const {
     data: eventData,
     isLoading: isEventLoading,
@@ -191,9 +191,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   };
 
   const navigatePreviousDay = () =>
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay - 1});
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {
+      cruiseDay: route.params.cruiseDay - 1,
+      eventTypeFilter: eventTypeFilter,
+    });
   const navigateNextDay = () =>
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: route.params.cruiseDay + 1});
+    navigation.push(ScheduleStackComponents.scheduleDayScreen, {
+      cruiseDay: route.params.cruiseDay + 1,
+      eventTypeFilter: eventTypeFilter,
+    });
 
   console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
 
