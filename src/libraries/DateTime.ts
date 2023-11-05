@@ -233,8 +233,6 @@ export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr:
   // Get the time in both time zones
   const originTime = moment(compareDateStr).tz(originTimeZoneID);
   const compareTime = moment(compareDateStr).tz(compareTimeZoneID);
-  console.log(originTimeZoneID, originTime.utcOffset());
-  console.log(compareTimeZoneID, compareTime.utcOffset());
 
   // Calculate the minute offset. Positive means towards UTC (going into the future),
   // negative means away from UTC (going into the past).
