@@ -25,6 +25,7 @@ import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {ScheduleMenu} from '../../Menus/ScheduleMenu';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -143,17 +144,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
-          <Item
-            title={'Search'}
-            iconName={AppIcons.search}
-            onPress={() => navigation.push(ScheduleStackComponents.scheduleEventSearchScreen)}
-          />
           <ScheduleEventFilterMenu />
-          <Item
-            title={'Schedule Settings'}
-            iconName={AppIcons.settings}
-            onPress={() => navigation.push(ScheduleStackComponents.scheduleSettingsScreen)}
-          />
+          <ScheduleMenu />
         </HeaderButtons>
       </View>
     );
