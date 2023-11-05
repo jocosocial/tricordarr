@@ -215,3 +215,29 @@ export const eventToItem = (event: EventData): ScheduleItem => {
     itemType: (event.eventType === EventType.shadow ? 'shadow' : 'official'),
   };
 };
+
+export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr: string, compareDateStr: string) => {
+  let offset = 0;
+
+  // @TODO this is a hack until we can reveal the time zones via the API.
+  let compareTimeZoneID = 'America/New_York';
+  switch (compareTimeZoneAbbr) {
+    case 'AST':
+      compareTimeZoneID = 'America/Santo_Domingo';
+      break;
+    case 'EST':
+      compareTimeZoneID = 'America/New_York';
+      break;
+  }
+
+  // Get the time in both time zones
+  const originTime = moment(compareDateStr).tz(originTimeZoneID);
+  const compareTime = moment(compareDateStr).tz(compareTimeZoneID);
+  console.log(originTimeZoneID, originTime.utcOffset());
+  console.log(compareTimeZoneID, compareTime.utcOffset());
+
+  // Calculate the minute offset. Positive means towards UTC (going into the future),
+  // negative means away from UTC (going into the past).
+  offset = compareTime.utcOffset() - originTime.utcOffset();
+  return offset;
+};
