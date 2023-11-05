@@ -13,7 +13,6 @@ Backlog
   * enableusernotificatoins is a bad pattern, what does it mean?
 * Oobe
   * add notification preferences to oobe flow
-  * button side padding
 * Setting for theme. Light, dark, use system.
 * Make a new base FAB
 * slide nav transition

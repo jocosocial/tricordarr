@@ -32,7 +32,7 @@ export const OobeButtonsView = ({
     buttonContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
-      ...commonStyles.paddingSides,
+      ...commonStyles.paddingHorizontal,
       ...commonStyles.paddingVertical,
       alignItems: 'center',
     },
