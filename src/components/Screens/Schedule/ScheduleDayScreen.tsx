@@ -147,11 +147,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             onPress={() => navigation.push(ScheduleStackComponents.scheduleEventSearchScreen)}
           />
           <ScheduleEventFilterMenu />
-          <Item title={'Menu'} iconName={AppIcons.menu} onPress={() => console.log('hi')} />
+          <Item
+            title={'Schedule Settings'}
+            iconName={AppIcons.settings}
+            onPress={() => navigation.push(ScheduleStackComponents.scheduleSettingsScreen)}
+          />
         </HeaderButtons>
       </View>
     );
-  }, [eventTypeFilter, navigation, route, scrollToNow]);
+  }, [navigation, route, scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({

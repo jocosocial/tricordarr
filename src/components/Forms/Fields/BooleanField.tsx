@@ -15,6 +15,7 @@ interface BooleanFieldProps {
   icon?: string;
 }
 
+// @TODO unify this with SettingsBooleanListItem
 export const BooleanField = ({name, label, helperText, icon, onPress, value}: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();

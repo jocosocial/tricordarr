@@ -1,3 +1,5 @@
+import {ScheduleSettingsScreen} from '../../components/Screens/Schedule/ScheduleSettingsScreen';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -77,4 +79,5 @@ export enum OobeStackComponents {
 export enum ScheduleStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleEventSearchScreen = 'ScheduleEventSearchScreen',
+  scheduleSettingsScreen = 'ScheduleSettingsScreen',
 }

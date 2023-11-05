@@ -21,6 +21,7 @@ export interface AppConfig {
   enableDeveloperOptions: boolean;
   cruiseStartDate: Date;
   cruiseLength: number;
+  unifiedSchedule: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -46,6 +47,7 @@ const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
+  unifiedSchedule: true,
 };
 
 /**
