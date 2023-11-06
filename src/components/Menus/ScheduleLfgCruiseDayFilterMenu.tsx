@@ -26,12 +26,17 @@ export const ScheduleLfgCruiseDayFilterMenu = () => {
     closeMenu();
   };
 
+  const clearFilters = () => {
+    setLfgCruiseDayFilter(undefined);
+  };
+
   const menuAnchor = (
     <Item
       title={'Cruise Day'}
       color={lfgCruiseDayFilter !== undefined ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.cruiseDay}
       onPress={openMenu}
+      onLongPress={clearFilters}
     />
   );
 

@@ -6,11 +6,13 @@ import {useAppTheme} from '../../styles/Theme';
 import {useScheduleFilter} from '../Context/Contexts/ScheduleFilterContext';
 import {ViewStyle} from 'react-native';
 import {FezType} from '../../libraries/Enums/FezType';
+import {useConfig} from '../Context/Contexts/ConfigContext';
 
 export const ScheduleLfgFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useScheduleFilter();
+  const {appConfig} = useConfig();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -29,6 +31,11 @@ export const ScheduleLfgFilterMenu = () => {
     closeMenu();
   };
 
+  const clearFilters = () => {
+    setLfgTypeFilter(undefined);
+    setLfgHidePastFilter(appConfig.hidePastLfgs);
+  };
+
   const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter;
 
   const menuAnchor = (
@@ -37,6 +44,7 @@ export const ScheduleLfgFilterMenu = () => {
       color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.filter}
       onPress={openMenu}
+      onLongPress={clearFilters}
     />
   );
 

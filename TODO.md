@@ -24,7 +24,6 @@ Work Queue
   * Find
   * Create
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
-* long press filter to clear
 * Nightly
   * My lfg for Saturday noon is missing from day view
   * Provider cruise day today should do the 3AM offset

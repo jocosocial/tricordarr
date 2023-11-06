@@ -29,6 +29,11 @@ export const ScheduleEventFilterMenu = () => {
     closeMenu();
   };
 
+  const clearFilters = () => {
+    setEventTypeFilter('');
+    setEventFavoriteFilter(false);
+  };
+
   const anyActiveFilter = eventFavoriteFilter || eventTypeFilter;
 
   const menuAnchor = (
@@ -37,6 +42,7 @@ export const ScheduleEventFilterMenu = () => {
       color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.filter}
       onPress={openMenu}
+      onLongPress={clearFilters}
     />
   );
 
