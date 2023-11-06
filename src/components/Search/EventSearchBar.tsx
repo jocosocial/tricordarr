@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Searchbar, Text} from 'react-native-paper';
 import {ListSection} from '../Lists/ListSection';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
-import {ScheduleEventCard} from '../Cards/Schedule/ScheduleEventCard';
+import {ScheduleItemCard} from '../Cards/Schedule/ScheduleItemCard';
 import {eventToItem} from '../../libraries/DateTime';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -68,7 +68,7 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
         )}
         {eventList.map((item, i) => (
           <View key={i} style={[commonStyles.paddingVerticalSmall]}>
-            <ScheduleEventCard item={item} includeDay={true} />
+            <ScheduleItemCard item={item} includeDay={true} />
           </View>
         ))}
       </ListSection>

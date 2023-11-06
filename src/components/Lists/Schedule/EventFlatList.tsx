@@ -1,6 +1,6 @@
 import {FlatList, RefreshControl, RefreshControlProps, View} from 'react-native';
 import React from 'react';
-import {ScheduleEventCard} from '../../Cards/Schedule/ScheduleEventCard';
+import {ScheduleItemCard} from '../../Cards/Schedule/ScheduleItemCard';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -20,7 +20,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   const renderListItem = ({item}: {item: ScheduleItem}) => {
     return (
       <View>
-        <ScheduleEventCard item={item} />
+        <ScheduleItemCard item={item} />
       </View>
     );
   };

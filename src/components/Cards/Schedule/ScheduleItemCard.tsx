@@ -11,12 +11,12 @@ import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
 import {EventCardBody} from '../../Views/Schedule/EventCardBody';
 
-interface ScheduleEventCardProps {
+interface ScheduleItemCardProps {
   item: ScheduleItem;
   includeDay?: boolean;
 }
 
-export const ScheduleEventCard = ({item, includeDay = false}: ScheduleEventCardProps) => {
+export const ScheduleItemCard = ({item, includeDay = false}: ScheduleItemCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
