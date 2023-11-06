@@ -20,6 +20,8 @@ import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavig
 import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/ScheduleLfgCruiseDayFilterMenu';
+import {LfgMenu} from '../../Menus/LfgMenu';
+import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -52,6 +54,7 @@ export const LfgOwnedScreen = ({navigation}: Props) => {
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <ScheduleLfgCruiseDayFilterMenu />
           <ScheduleLfgFilterMenu />
+          <LfgMenu />
         </HeaderButtons>
       </View>
     );
@@ -81,6 +84,7 @@ export const LfgOwnedScreen = ({navigation}: Props) => {
           ))}
         </PaddedContentView>
       </ScrollingContentView>
+      <ScheduleFAB />
     </AppView>
   );
 };

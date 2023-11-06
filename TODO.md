@@ -17,10 +17,10 @@ Backlog
 * Make a new base FAB
 * Your next event card on main screen
 * pressing a bottomtab button again shoudl take you to the root of that stack.
+* The menu system could use some deduplication
 
 Work Queue
 * LFG features
-  * Filter
   * Find
   * Joined
   * Create
