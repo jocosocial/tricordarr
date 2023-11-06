@@ -9,6 +9,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSearchScreen';
 import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
 import {LfgOwnedScreen} from '../../Screens/Schedule/LfgOwnedScreen';
+import {LfgHelpScreen} from '../../Screens/Schedule/LfgHelpScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
@@ -17,6 +18,7 @@ export type ScheduleStackParamList = {
   ScheduleEventSearchScreen: undefined;
   ScheduleSettingsScreen: undefined;
   LfgOwnedScreen: undefined;
+  LfgHelpScreen: undefined;
 };
 
 export const ScheduleStackNavigator = () => {
@@ -54,6 +56,11 @@ export const ScheduleStackNavigator = () => {
         name={ScheduleStackComponents.lfgOwnedScreen}
         component={LfgOwnedScreen}
         options={{title: 'Owned LFGs'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.lfgHelpScreen}
+        component={LfgHelpScreen}
+        options={{title: 'Looking For Group FAQ'}}
       />
     </Stack.Navigator>
   );

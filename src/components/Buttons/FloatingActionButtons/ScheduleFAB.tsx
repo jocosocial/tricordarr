@@ -59,6 +59,13 @@ export const ScheduleFAB = () => {
             backgroundColor: backgroundColor,
             color: color,
           }),
+          FabGroupAction({
+            icon: AppIcons.help,
+            label: 'Help',
+            onPress: () => navigation.push(ScheduleStackComponents.lfgHelpScreen),
+            backgroundColor: backgroundColor,
+            color: color,
+          }),
         ]}
         onStateChange={onStateChange}
       />
