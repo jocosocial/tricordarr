@@ -15,11 +15,14 @@ Backlog
   * add notification preferences to oobe flow
 * Setting for theme. Light, dark, use system.
 * Make a new base FAB
-* slide nav transition
 * Your next event card on main screen
+* pressing a bottomtab button again shoudl take you to the root of that stack.
 
 Work Queue
 * LFG features
+  * Filter
+  * Find
+  * Joined
+  * Create
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * undo text oneline
-* 
