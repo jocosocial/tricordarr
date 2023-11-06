@@ -61,6 +61,14 @@ export const LfgHelpScreen = () => {
             People of all ages read Twitt-Arr and LFGs are a public forum like the rest of Twitt-Arr, please use the
             usual discretion and keep the Code of Conduct in mind.
           </Text>
+          <Text variant={'titleLarge'} style={styles.title}>
+            There are too many. How can I filter LFGs?
+          </Text>
+          <Text style={styles.paragraph}>
+            You can filter LFGs by using the filter menus at the top of the screen. A filter is active if the menu icon
+            is blue and the item in the list is slightly highlighted. Long press the menu button to clear all active
+            filters.
+          </Text>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

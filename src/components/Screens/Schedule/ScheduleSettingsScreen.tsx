@@ -51,7 +51,7 @@ export const ScheduleSettingsScreen = () => {
               <SettingsBooleanListItem
                 label={'Hide Past LFGs by Default'}
                 helperText={
-                  'Default to not showing LFGs that have already happened. You can still use the filters to view them.'
+                  'Default to not showing LFGs that have already happened. You can still use the filters to view them. Past LFGs will always show in the main schedule view if Show LFGs in Schedule above is enabled.'
                 }
                 onPress={handleHidePastLfgs}
                 value={hidePastLfgs}

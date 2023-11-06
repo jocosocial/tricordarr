@@ -28,4 +28,3 @@ Work Queue
   * My lfg for Saturday noon is missing from day view
   * Provider cruise day today should do the 3AM offset
   * Fezpost iskeyboardactove show character and line limits
-  * Add longpress cruiseday to help, along with filters
