@@ -25,3 +25,8 @@ Work Queue
   * Create
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * long press filter to clear
+* Nightly
+  * Zero max means unlimited, write thatMy lfg for Saturday noon is missing from day view
+  * Provider cruise day today should do the 3AM offset
+  * Fezpost iskeyboardactove show character and line limits
+  * Add longpress cruiseday to help, along with filters

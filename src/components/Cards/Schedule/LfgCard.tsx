@@ -5,6 +5,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import pluralize from 'pluralize';
 
 interface LfgCardProps {
   lfg: FezData;
@@ -79,7 +80,9 @@ export const LfgCard = ({lfg, showAuthor = true}: LfgCardProps) => {
                 </Text>
               </View>
               <View style={commonStyles.badgeContainer}>
-                {!!unreadCount && <Badge style={styles.badge}>{`${unreadCount} new posts`}</Badge>}
+                {!!unreadCount && (
+                  <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
+                )}
               </View>
             </View>
             <Text style={styles.bodyText} variant={'bodyMedium'}>
