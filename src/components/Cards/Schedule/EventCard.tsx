@@ -5,11 +5,17 @@ import {getDurationString} from '../../../libraries/DateTime';
 import {useAppTheme} from '../../../styles/Theme';
 import {EventType} from '../../../libraries/Enums/EventType';
 
-export const EventCard = ({eventData}: {eventData: EventData}) => {
+interface EventCardProps {
+  eventData: EventData;
+  onPress?: () => void;
+}
+
+export const EventCard = ({eventData, onPress}: EventCardProps) => {
   const theme = useAppTheme();
 
   return (
     <ScheduleItemCardBase
+      onPress={onPress}
       cardStyle={{
         backgroundColor:
           eventData.eventType === EventType.shadow ? theme.colors.jocoPurple : theme.colors.twitarrNeutralButton,

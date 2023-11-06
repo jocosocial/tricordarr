@@ -13,6 +13,7 @@ import {LfgHelpScreen} from '../../Screens/Schedule/LfgHelpScreen';
 import {LfgJoinedScreen} from '../../Screens/Schedule/LfgJoinedScreen';
 import {LfgFindScreen} from '../../Screens/Schedule/LfgFindScreen';
 import {ScheduleEventScreen} from '../../Screens/Schedule/ScheduleEventScreen';
+import {LfgScreen} from '../../Screens/Schedule/LfgScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
@@ -20,12 +21,15 @@ export type ScheduleStackParamList = {
   };
   ScheduleEventSearchScreen: undefined;
   ScheduleSettingsScreen: undefined;
+  ScheduleEventScreen: {
+    eventID: string;
+  };
   LfgOwnedScreen: undefined;
   LfgHelpScreen: undefined;
   LfgJoinedScreen: undefined;
   LfgFindScreen: undefined;
-  ScheduleEventScreen: {
-    eventID: string;
+  LfgScreen: {
+    fezID: string;
   };
 };
 
@@ -81,6 +85,7 @@ export const ScheduleStackNavigator = () => {
         options={{title: 'Find Groups'}}
       />
       <Stack.Screen name={ScheduleStackComponents.scheduleEventScreen} component={ScheduleEventScreen} />
+      <Stack.Screen name={ScheduleStackComponents.lfgScreen} component={LfgScreen} />
     </Stack.Navigator>
   );
 };

@@ -24,8 +24,10 @@ Work Queue
 * LFG features
   * Create
   * View
+    * context, actions, chat
 * Event features
   * View
+    * needs body and actions
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * Nightly
   * My lfg for Saturday noon is missing from day view

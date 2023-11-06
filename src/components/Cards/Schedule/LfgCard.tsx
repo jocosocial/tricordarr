@@ -5,12 +5,18 @@ import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs'
 import {getDurationString} from '../../../libraries/DateTime';
 import {useAppTheme} from '../../../styles/Theme';
 
-export const LfgCard = ({lfg}: {lfg: FezData}) => {
+interface LfgCardProps {
+  lfg: FezData;
+  onPress?: () => void;
+}
+
+export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
 
   return (
     <ScheduleItemCardBase
+      onPress={onPress}
       cardStyle={{
         backgroundColor: theme.colors.outline,
       }}
@@ -22,6 +28,7 @@ export const LfgCard = ({lfg}: {lfg: FezData}) => {
       participation={
         lfg.members ? FezData.getParticipantLabel(lfg.members.participants.length, lfg.maxParticipants) : undefined
       }
+      location={lfg.location}
     />
   );
 };

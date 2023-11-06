@@ -10,6 +10,8 @@ interface ScheduleItemCardBaseProps {
   duration?: string;
   author?: string;
   participation?: string;
+  location?: string;
+  onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
 }
 
@@ -20,6 +22,8 @@ export const ScheduleItemCardBase = ({
   badgeValue,
   participation,
   cardStyle,
+  location,
+  onPress,
   showBadge = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
@@ -64,7 +68,7 @@ export const ScheduleItemCardBase = ({
   });
 
   return (
-    <Card mode={'contained'} style={cardStyle}>
+    <Card mode={'contained'} style={cardStyle} onPress={onPress}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           <View style={styles.contentBody}>
@@ -81,6 +85,11 @@ export const ScheduleItemCardBase = ({
             {duration && (
               <Text style={styles.bodyText} variant={'bodyMedium'}>
                 {duration}
+              </Text>
+            )}
+            {location && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {location}
               </Text>
             )}
             {author && (
