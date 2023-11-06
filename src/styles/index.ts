@@ -22,6 +22,9 @@ export const commonStyles = StyleSheet.create({
   displayFlex: {
     display: 'flex',
   },
+  flex0: {
+    flex: 0,
+  },
   flex: {
     flex: 1,
   },
@@ -207,5 +210,8 @@ export const commonStyles = StyleSheet.create({
   cardBannerWidth: {
     minWidth: styleDefaults.marginSize * 2,
     width: styleDefaults.marginSize * 2,
+  },
+  fontSizeDefault: {
+    fontSize: styleDefaults.fontSize,
   },
 });

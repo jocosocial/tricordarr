@@ -1,26 +1,20 @@
 import React from 'react';
-import {Card} from 'react-native-paper';
+import {Badge, Card, Text} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
-import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
-import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
-import {ScheduleItem} from '../../../libraries/Types';
-import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
-import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
-import {EventCardBody} from '../../Views/Schedule/EventCardBody';
-import {FezData} from "../../../libraries/Structs/ControllerStructs";
+import {getDurationString} from '../../../libraries/DateTime';
+import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {commonStyles} from '../../../styles';
 
 interface LfgCardProps {
   fez: FezData;
+  showAuthor?: boolean;
 }
 
-export const LfgCard = ({fez}: LfgCardProps) => {
+export const LfgCard = ({fez, showAuthor = true}: LfgCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
-  const {startDate, endDate} = useCruise();
-  const minutelyUpdatingDate = useDateTime('minute');
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -44,32 +38,59 @@ export const LfgCard = ({fez}: LfgCardProps) => {
     lfgCard: {
       backgroundColor: theme.colors.outline,
     },
+    contentBody: {
+      ...commonStyles.flex,
+      ...commonStyles.marginLeft,
+      ...commonStyles.paddingVertical,
+    },
+    bodyText: {
+      ...commonStyles.onTwitarrButton,
+    },
+    badge: {
+      // ...commonStyles.marginLeftSmall,
+      // ...commonStyles.fontSizeDefault,
+      ...commonStyles.bold,
+      // fontSize: 14,
+      ...commonStyles.paddingHorizontalSmall,
+    },
+    titleText: {
+      ...commonStyles.bold,
+    },
   });
 
-  const itemStartTime = parseISO(item.startTime);
-  const itemEndTime = parseISO(item.endTime);
-  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
-  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
-  const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-  const tzOffset = getTimeZoneOffset('America/New_York', item.timeZone, item.startTime);
-
-  const cardStyle = {
-    ...(item.itemType === 'official' ? styles.officialCard : undefined),
-    ...(item.itemType === 'shadow' ? styles.shadowCard : undefined),
-    ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
-  };
+  const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
 
   return (
-    <Card mode={'contained'} style={cardStyle}>
+    <Card mode={'contained'}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
-          {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
-            nowDayTime.dayMinutes - tzOffset < eventEndDayTime.dayMinutes && <EventCardNowView />}
-          {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-            nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes - 30 &&
-            nowDayTime.dayMinutes - tzOffset < eventStartDayTime.dayMinutes && <EventCardSoonView />}
-          <EventCardBody scheduleItem={item} includeDay={includeDay} />
+          <View style={styles.contentBody}>
+            <View style={{
+              ...commonStyles.flexRow,
+              ...commonStyles.justifySpaceBetween,
+              ...commonStyles.alignItemsCenter,
+            }}>
+              <View style={{alignSelf: 'flex-start'}}>
+                <Text style={styles.titleText} variant={'titleMedium'}>
+                  {fez.title}
+                </Text>
+              </View>
+              <View style={{alignSelf: 'flex-end'}}>
+                {!!unreadCount && <Badge style={styles.badge}>{`${unreadCount} new posts`}</Badge>}
+              </View>
+            </View>
+            <Text style={styles.bodyText} variant={'bodyMedium'}>
+              {getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
+            </Text>
+            {showAuthor && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                Hosted by: {UserHeader.getByline(fez.owner)}
+              </Text>
+            )}
+            <Text style={styles.bodyText} variant={'bodyMedium'}>
+              {fez.members?.participants.length}/{fez.maxParticipants} attendees
+            </Text>
+          </View>
         </View>
       </Card.Content>
     </Card>

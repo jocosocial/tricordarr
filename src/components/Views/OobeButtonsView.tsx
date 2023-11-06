@@ -34,16 +34,16 @@ export const OobeButtonsView = ({
       ...commonStyles.justifySpaceBetween,
       ...commonStyles.paddingHorizontal,
       ...commonStyles.paddingVertical,
-      alignItems: 'center',
+      ...commonStyles.alignItemsCenter,
     },
     leftButtonContainer: {
-      flex: 0,
+      ...commonStyles.flex0,
     },
     leftButton: {
       ...commonStyles.flexStart,
     },
     rightButtonContainer: {
-      flex: 0,
+      ...commonStyles.flex0,
     },
     rightButton: {
       ...commonStyles.flexEnd,

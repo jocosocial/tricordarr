@@ -106,18 +106,20 @@ interface LfgListQueryOptions {
   pageSize?: number;
   hidePast?: boolean;
   endpoint?: 'open' | 'joined' | 'owner';
+  excludeFezType?: FezType[];
 }
 
 export const useLfgListQuery = ({
   cruiseDay,
   fezType,
+  excludeFezType,
   hidePast = false,
   pageSize = 50,
   endpoint = 'open',
 }: LfgListQueryOptions) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
-    [`/fez/${endpoint}`, {cruiseDay, fezType, hidePast, pageSize}],
+    [`/fez/${endpoint}`, {cruiseDay, fezType, hidePast, pageSize, excludeFezType}],
     async ({pageParam = {limit: pageSize}}) => {
       const {start, limit} = pageParam as PaginationParams;
       const queryParams = {
@@ -128,6 +130,7 @@ export const useLfgListQuery = ({
         ...(start !== undefined && {start: start}),
         ...(limit !== undefined && {limit: limit}),
         ...(hidePast !== undefined && {hidePast: hidePast}),
+        ...(excludeFezType && {excludetype: excludeFezType}),
       };
       const {data: responseData} = await axios.get<FezListData>(`/fez/${endpoint}`, {
         params: queryParams,

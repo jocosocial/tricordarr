@@ -37,8 +37,10 @@ export const MainScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <PaddedContentView padTop={true}>
           <HeaderCard />
           <DailyThemeCard />
           <MainAnnouncementView />
