@@ -21,5 +21,5 @@ export const FezParticipantAddItem = ({fez}: FezParticipantAddItemProps) => {
     navigation.push(SeamailStackScreenComponents.seamailAddParticipantScreen, {fez: fez});
   };
 
-  return <List.Item style={[commonStyles.paddingSides]} title={'Add participant'} onPress={onPress} left={getAvatar} />;
+  return <List.Item style={[commonStyles.paddingHorizontal]} title={'Add participant'} onPress={onPress} left={getAvatar} />;
 };

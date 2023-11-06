@@ -112,6 +112,9 @@ export const commonStyles = StyleSheet.create({
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
   },
+  paddingBottomSmall: {
+    paddingBottom: styleDefaults.marginSize / 2,
+  },
   paddingTop: {
     paddingTop: styleDefaults.marginSize,
   },

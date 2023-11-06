@@ -22,7 +22,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: U
   // This has to account for some Paper bullshit where there is a secret View added when you define
   // a Right, and it has things that we can't override.
   const styles = {
-    item: [commonStyles.paddingSides, {paddingVertical: 2}],
+    item: [commonStyles.paddingHorizontal, {paddingVertical: 2}],
   };
 
   const getAvatar = () => (

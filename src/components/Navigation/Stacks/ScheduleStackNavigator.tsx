@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
@@ -74,3 +74,5 @@ export const ScheduleStackNavigator = () => {
 };
 
 export const useScheduleStack = () => useNavigation<NativeStackNavigationProp<ScheduleStackParamList>>();
+
+export const useScheduleStackRoute = () => useRoute<RouteProp<ScheduleStackParamList>>();
