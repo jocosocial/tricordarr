@@ -25,13 +25,13 @@ export const EventCardBody = ({scheduleItem, includeDay}: {scheduleItem: Schedul
 
   return (
     <View style={styles.contentBody}>
-      <Text style={styles.bodyText} variant={'titleMedium'} numberOfLines={1}>
+      <Text style={styles.bodyText} variant={'titleMedium'}>
         {scheduleItem.title}
       </Text>
-      <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
+      <Text style={styles.bodyText} variant={'bodyMedium'}>
         {getDurationString(scheduleItem.startTime, scheduleItem.endTime, scheduleItem.timeZone, includeDay)}
       </Text>
-      <Text style={styles.bodyText} variant={'bodyMedium'} numberOfLines={1}>
+      <Text style={styles.bodyText} variant={'bodyMedium'}>
         {scheduleItem.location}
       </Text>
     </View>
