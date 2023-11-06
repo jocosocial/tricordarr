@@ -8,8 +8,10 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
   const hourlyUpdatingDate = useDateTime('hour');
+  // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
+  let adjustedDate = new Date(hourlyUpdatingDate.getTime() - 3 * 60 * 60 * 1000);
   // Day of the cruise. Starts at 1 and goes up to the appConfig.cruiseLength (usually 8 for a week-long Sat->Sat cruise).
-  const cruiseDayToday = getCruiseDay(hourlyUpdatingDate, appConfig.cruiseStartDate.getDay());
+  const cruiseDayToday = getCruiseDay(adjustedDate, appConfig.cruiseStartDate.getDay());
   // Start date of the cruise.
   const startDate = appConfig.cruiseStartDate;
   // Number of days in the cruise (including Embarkation/Debarkation days).
@@ -18,7 +20,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
-  const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
+  const cruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
   // Days Since. @TODO has this been tested with pre-cruise?
   const daysSince = cruiseDayIndex - cruiseLength;
   // Array of cruise day names and configs.

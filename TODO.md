@@ -20,11 +20,14 @@ Backlog
 * The menu system could use some deduplication
 
 Work Queue
+* Forum via Webview with deep linking
 * LFG features
   * Find
   * Create
+  * View
+* Event features
+  * View
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * Nightly
   * My lfg for Saturday noon is missing from day view
-  * Provider cruise day today should do the 3AM offset
   * Fezpost iskeyboardactove show character and line limits
