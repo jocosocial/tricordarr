@@ -134,7 +134,7 @@ export const twitarrThemeDark = {
     twitarrYellow: '#FFD04D',
     twitarrGrey: 'rgb(46, 49, 51)',
     onTwitarrPositiveButton: 'rgb(255, 255, 255)',
-    onTwitarrBannerColor: 'rgb(0, 0, 0)',
+    onTwitarrYellow: 'rgb(0, 0, 0)',
   },
 };
 
