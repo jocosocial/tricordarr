@@ -22,7 +22,6 @@ Backlog
 Work Queue
 * LFG features
   * Find
-  * Joined
   * Create
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * long press filter to clear

@@ -4,8 +4,8 @@ import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useState} from 'react';
-import {useScheduleStack} from "../../Navigation/Stacks/ScheduleStackNavigator";
-import {ScheduleStackComponents} from "../../../libraries/Enums/Navigation";
+import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 
 export const ScheduleFAB = () => {
   const [state, setState] = useState({open: false});
@@ -48,7 +48,7 @@ export const ScheduleFAB = () => {
           FabGroupAction({
             icon: AppIcons.lfgJoined,
             label: 'Joined',
-            onPress: () => console.log('Joined LFG'),
+            onPress: () => navigation.push(ScheduleStackComponents.lfgJoinedScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),

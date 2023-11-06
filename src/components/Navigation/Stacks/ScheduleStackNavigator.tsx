@@ -10,6 +10,7 @@ import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSea
 import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
 import {LfgOwnedScreen} from '../../Screens/Schedule/LfgOwnedScreen';
 import {LfgHelpScreen} from '../../Screens/Schedule/LfgHelpScreen';
+import {LfgJoinedScreen} from '../../Screens/Schedule/LfgJoinedScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
@@ -19,6 +20,7 @@ export type ScheduleStackParamList = {
   ScheduleSettingsScreen: undefined;
   LfgOwnedScreen: undefined;
   LfgHelpScreen: undefined;
+  LfgJoinedScreen: undefined;
 };
 
 export const ScheduleStackNavigator = () => {
@@ -61,6 +63,11 @@ export const ScheduleStackNavigator = () => {
         name={ScheduleStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
         options={{title: 'Looking For Group FAQ'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.lfgJoinedScreen}
+        component={LfgJoinedScreen}
+        options={{title: 'Joined LFGs'}}
       />
     </Stack.Navigator>
   );

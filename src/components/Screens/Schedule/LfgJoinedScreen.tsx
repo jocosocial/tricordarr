@@ -22,14 +22,14 @@ import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
-  ScheduleStackComponents.lfgOwnedScreen,
+  ScheduleStackComponents.lfgJoinedScreen,
   NavigatorIDs.scheduleStack
 >;
 
-export const LfgOwnedScreen = ({navigation}: Props) => {
+export const LfgJoinedScreen = ({navigation}: Props) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
   const {data, isFetched, isFetching, refetch} = useLfgListQuery({
-    endpoint: 'owner',
+    endpoint: 'joined',
     excludeFezType: [FezType.open, FezType.closed],
     fezType: lfgTypeFilter,
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
