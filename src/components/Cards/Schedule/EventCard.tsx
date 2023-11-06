@@ -22,6 +22,7 @@ export const EventCard = ({eventData, onPress}: EventCardProps) => {
       }}
       title={eventData.title}
       duration={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
+      location={eventData.location}
     />
   );
 };
