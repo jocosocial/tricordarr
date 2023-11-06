@@ -22,7 +22,6 @@ Backlog
 Work Queue
 * Forum via Webview with deep linking
 * LFG features
-  * Find
   * Create
   * View
 * Event features

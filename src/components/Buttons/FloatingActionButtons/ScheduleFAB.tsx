@@ -49,7 +49,7 @@ export const ScheduleFAB = () => {
           FabGroupAction({
             icon: AppIcons.lfgFind,
             label: 'Find',
-            onPress: () => console.log('Find LFG'),
+            onPress: () => handleNavigation(ScheduleStackComponents.lfgFindScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
