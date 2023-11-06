@@ -229,6 +229,24 @@ export interface FezData {
   members?: MembersOnlyData;
 }
 
+/**
+ * Bonus helper functions for FezData.
+ */
+export namespace FezData {
+  /**
+   * Get a label for the number of attendees of this Fez. If the count is 0 that means
+   * it is unlimited and we don't need to tell users how many are remaining.
+   * @param count Number of current participants.
+   * @param max Maximum number of participants.
+   */
+  export const getParticipantLabel = (count: number, max: number) => {
+    if (max === 0) {
+      return `${count} attendees`;
+    }
+    return `${count}/${max} attendees`;
+  };
+}
+
 export interface FezListData {
   /// Pagination into the results set.
   paginator: Paginator;

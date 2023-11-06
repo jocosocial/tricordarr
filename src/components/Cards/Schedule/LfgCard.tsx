@@ -93,9 +93,11 @@ export const LfgCard = ({lfg, showAuthor = true}: LfgCardProps) => {
                 Hosted by: {UserHeader.getByline(lfg.owner)}
               </Text>
             )}
-            <Text style={styles.bodyText} variant={'bodyMedium'}>
-              {lfg.members?.participants.length}/{lfg.maxParticipants} attendees
-            </Text>
+            {lfg.members && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {FezData.getParticipantLabel(lfg.members.participants.length, lfg.maxParticipants)}
+              </Text>
+            )}
           </View>
         </View>
       </Card.Content>
