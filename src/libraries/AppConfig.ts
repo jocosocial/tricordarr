@@ -22,6 +22,7 @@ export interface AppConfig {
   cruiseStartDate: Date;
   cruiseLength: number;
   unifiedSchedule: boolean;
+  hidePastLfgs: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -48,6 +49,7 @@ const defaultAppConfig: AppConfig = {
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
   unifiedSchedule: true,
+  hidePastLfgs: true,
 };
 
 /**

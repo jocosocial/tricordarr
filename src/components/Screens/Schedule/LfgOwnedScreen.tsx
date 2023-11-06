@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
@@ -9,11 +9,31 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {FezType} from '../../../libraries/Enums/FezType';
+import {HeaderButtons} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
+import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
+import {ScheduleMenu} from '../../Menus/ScheduleMenu';
+import {ScheduleLfgFilterMenu} from '../../Menus/ScheduleLfgFilterMenu';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
+import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
-export const LfgOwnedScreen = () => {
+export type Props = NativeStackScreenProps<
+  ScheduleStackParamList,
+  ScheduleStackComponents.lfgOwnedScreen,
+  NavigatorIDs.scheduleStack
+>;
+
+export const LfgOwnedScreen = ({navigation}: Props) => {
+  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
   const {data, isFetched, isFetching, refetch} = useLfgListQuery({
     endpoint: 'owner',
     excludeFezType: [FezType.open, FezType.closed],
+    fezType: lfgTypeFilter,
+    cruiseDay: lfgCruiseDayFilter,
+    hidePast: lfgHidePastFilter,
   });
   const {commonStyles} = useStyles();
 
@@ -23,6 +43,22 @@ export const LfgOwnedScreen = () => {
       lfgList.push(lfg);
     });
   });
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ScheduleLfgFilterMenu />
+        </HeaderButtons>
+      </View>
+    );
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>
