@@ -5,7 +5,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 
 interface ScheduleItemCardBaseProps {
   badgeValue?: string;
-  showBadge: boolean;
+  showBadge?: boolean;
   title: string;
   duration?: string;
   author?: string;

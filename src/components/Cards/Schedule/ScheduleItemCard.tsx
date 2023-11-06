@@ -10,6 +10,8 @@ import {ScheduleItem} from '../../../libraries/Types';
 import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
 import {EventCardBody} from '../../Views/Schedule/EventCardBody';
+import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 
 interface ScheduleItemCardProps {
   item: ScheduleItem;
@@ -21,6 +23,7 @@ export const ScheduleItemCard = ({item, includeDay = false}: ScheduleItemCardPro
   const theme = useAppTheme();
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
+  const navigation = useScheduleStack();
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -59,8 +62,10 @@ export const ScheduleItemCard = ({item, includeDay = false}: ScheduleItemCardPro
     ...(item.itemType === 'lfg' ? styles.lfgCard : undefined),
   };
 
+  const handlePress = () => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.id});
+
   return (
-    <Card mode={'contained'} style={cardStyle}>
+    <Card mode={'contained'} style={cardStyle} onPress={handlePress}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
