@@ -19,6 +19,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/ScheduleLfgCruiseDayFilterMenu';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -32,7 +33,8 @@ export const LfgOwnedScreen = ({navigation}: Props) => {
     endpoint: 'owner',
     excludeFezType: [FezType.open, FezType.closed],
     fezType: lfgTypeFilter,
-    cruiseDay: lfgCruiseDayFilter,
+    // @TODO we intend to fix this some day. Upstream Swiftarr issue.
+    cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
   });
   const {commonStyles} = useStyles();
@@ -48,6 +50,7 @@ export const LfgOwnedScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ScheduleLfgCruiseDayFilterMenu />
           <ScheduleLfgFilterMenu />
         </HeaderButtons>
       </View>
