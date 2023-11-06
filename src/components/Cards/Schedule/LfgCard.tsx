@@ -5,14 +5,13 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {commonStyles} from '../../../styles';
 
 interface LfgCardProps {
-  fez: FezData;
+  lfg: FezData;
   showAuthor?: boolean;
 }
 
-export const LfgCard = ({fez, showAuthor = true}: LfgCardProps) => {
+export const LfgCard = ({lfg, showAuthor = true}: LfgCardProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
@@ -46,49 +45,53 @@ export const LfgCard = ({fez, showAuthor = true}: LfgCardProps) => {
     bodyText: {
       ...commonStyles.onTwitarrButton,
     },
+    badgeContainer: {
+      ...commonStyles.flexEnd,
+    },
     badge: {
-      // ...commonStyles.marginLeftSmall,
-      // ...commonStyles.fontSizeDefault,
       ...commonStyles.bold,
-      // fontSize: 14,
       ...commonStyles.paddingHorizontalSmall,
+    },
+    titleTextContainer: {
+      ...commonStyles.flexStart,
     },
     titleText: {
       ...commonStyles.bold,
     },
+    titleContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.justifySpaceBetween,
+      ...commonStyles.alignItemsCenter,
+    },
   });
 
-  const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
+  const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
 
   return (
     <Card mode={'contained'}>
       <Card.Content style={styles.cardContent}>
         <View style={styles.contentView}>
           <View style={styles.contentBody}>
-            <View style={{
-              ...commonStyles.flexRow,
-              ...commonStyles.justifySpaceBetween,
-              ...commonStyles.alignItemsCenter,
-            }}>
-              <View style={{alignSelf: 'flex-start'}}>
+            <View style={styles.titleContainer}>
+              <View style={styles.titleTextContainer}>
                 <Text style={styles.titleText} variant={'titleMedium'}>
-                  {fez.title}
+                  {lfg.title}
                 </Text>
               </View>
-              <View style={{alignSelf: 'flex-end'}}>
+              <View style={commonStyles.badgeContainer}>
                 {!!unreadCount && <Badge style={styles.badge}>{`${unreadCount} new posts`}</Badge>}
               </View>
             </View>
             <Text style={styles.bodyText} variant={'bodyMedium'}>
-              {getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
+              {getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
             </Text>
             {showAuthor && (
               <Text style={styles.bodyText} variant={'bodyMedium'}>
-                Hosted by: {UserHeader.getByline(fez.owner)}
+                Hosted by: {UserHeader.getByline(lfg.owner)}
               </Text>
             )}
             <Text style={styles.bodyText} variant={'bodyMedium'}>
-              {fez.members?.participants.length}/{fez.maxParticipants} attendees
+              {lfg.members?.participants.length}/{lfg.maxParticipants} attendees
             </Text>
           </View>
         </View>

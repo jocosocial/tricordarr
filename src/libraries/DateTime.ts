@@ -165,11 +165,14 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
  * @param includeDay Include the day in the formatted string.
  */
 export const getDurationString = (
-  startTimeStr: string,
-  endTimeStr: string,
-  timeZoneAbbrStr: string,
-  includeDay: boolean,
+  startTimeStr?: string,
+  endTimeStr?: string,
+  timeZoneAbbrStr?: string,
+  includeDay: boolean = false,
 ) => {
+  if (!startTimeStr || !endTimeStr || !timeZoneAbbrStr) {
+    return '';
+  }
   const endFormat = 'hh:mm A';
   const startFormat = includeDay ? 'ddd MMM D hh:mm A' : endFormat;
   const startDate = moment(startTimeStr);

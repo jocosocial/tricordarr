@@ -37,7 +37,7 @@ export const LfgOwnedScreen = () => {
           )}
           {lfgList.map((lfg, i) => (
             <View key={i} style={[commonStyles.marginBottom]}>
-              <LfgCard fez={lfg} />
+              <LfgCard lfg={lfg} />
             </View>
           ))}
         </PaddedContentView>
