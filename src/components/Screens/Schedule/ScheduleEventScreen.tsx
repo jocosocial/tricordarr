@@ -16,6 +16,10 @@ import {ListSection} from '../../Lists/ListSection';
 import {AppIcon} from '../../Images/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
+import {useAppTheme} from '../../../styles/Theme';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
+import {useQueryClient} from '@tanstack/react-query';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -32,18 +36,52 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
     eventID: route.params.eventID,
   });
   const {commonStyles} = useStyles();
+  const eventFavoriteMutation = useEventFavoriteMutation();
+  const theme = useAppTheme();
+  const queryClient = useQueryClient();
+
+  const handleFavorite = useCallback(
+    (event: EventData) => {
+      eventFavoriteMutation.mutate(
+        {
+          eventID: event.eventID,
+          action: event.isFavorite ? 'unfavorite' : 'favorite',
+        },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData([`/events/${event.eventID}`], () => {
+              return {
+                ...event,
+                isFavorite: !event.isFavorite,
+              };
+            });
+          },
+        },
+      );
+    },
+    [eventFavoriteMutation, queryClient],
+  );
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Favorite'} iconName={AppIcons.favorite} onPress={() => console.log('favorite')} />
-          <Item title={'Forum'} iconName={AppIcons.forum} onPress={() => console.log('forum')} />
+          {eventData && (
+            <>
+              <Item
+                title={'Favorite'}
+                color={eventData.isFavorite ? theme.colors.twitarrYellow : undefined}
+                iconName={AppIcons.favorite}
+                onPress={() => handleFavorite(eventData)}
+              />
+              <Item title={'Forum'} iconName={AppIcons.forum} onPress={() => console.log('forum')} />
+            </>
+          )}
           <ScheduleEventMenu />
         </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [eventData, handleFavorite, theme]);
 
   useEffect(() => {
     navigation.setOptions({

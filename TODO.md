@@ -34,4 +34,5 @@ Work Queue
   * Favorite, forum, menu - download, help 
   * Once again the header image stopped working
   * Entire card touchable ripple
-  * Maybe ditch the expanded card and use the entire screen a la seamail details 
+  * show favorite star in badge position of event card
+* Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
