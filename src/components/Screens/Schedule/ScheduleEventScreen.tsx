@@ -129,6 +129,7 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.map)}
                 description={eventData.location}
                 title={'Location'}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
@@ -136,12 +137,14 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
                 description={eventData.eventType}
                 title={'Type'}
               />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.description)}
-                description={eventData.description}
-                title={'Description'}
-              />
+              {eventData.description && (
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.description)}
+                  description={eventData.description}
+                  title={'Description'}
+                />
+              )}
             </ListSection>
           </PaddedContentView>
         )}
