@@ -18,6 +18,7 @@ Backlog
 * Your next event card on main screen
 * pressing a bottomtab button again shoudl take you to the root of that stack.
 * The menu system could use some deduplication
+* scrollToNow() should go to the first index of any other events at that time, rather than $next-1
 
 Work Queue
 * Forum via Webview with deep linking
@@ -25,9 +26,6 @@ Work Queue
   * Create
   * View
     * context, actions, chat
-* Event features
-  * View
-    * download
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead

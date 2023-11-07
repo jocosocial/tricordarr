@@ -10,7 +10,6 @@ import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Na
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ScheduleEventMenu} from '../../Menus/ScheduleEventMenu';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {ListSection} from '../../Lists/ListSection';
 import {AppIcon} from '../../Images/AppIcon';
@@ -20,6 +19,14 @@ import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQuerie
 import {useAppTheme} from '../../../styles/Theme';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useModal} from '../../Context/Contexts/ModalContext';
+
+const helpContent = [
+  'Always check the official daily printed schedule to confirm event times/locations.',
+  'Favoriting an event adds it to your schedule and gives you reminder notifications.',
+  'All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.',
+];
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -39,6 +46,7 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
   const eventFavoriteMutation = useEventFavoriteMutation();
   const theme = useAppTheme();
   const queryClient = useQueryClient();
+  const {setModalContent, setModalVisible} = useModal();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
@@ -83,11 +91,18 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
               )}
             </>
           )}
-          <ScheduleEventMenu />
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              setModalContent(<HelpModalView text={helpContent} />);
+              setModalVisible(true);
+            }}
+          />
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, theme]);
+  }, [eventData, handleFavorite, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
 
   useEffect(() => {
     navigation.setOptions({
