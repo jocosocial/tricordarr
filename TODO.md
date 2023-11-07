@@ -31,3 +31,5 @@ Work Queue
 * Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * Nightly
   * My lfg for Saturday noon is missing from day view
+  * Favorite, forum, menu - download, help 
+  * Once again the header image stopped working

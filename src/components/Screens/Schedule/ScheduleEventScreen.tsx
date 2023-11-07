@@ -24,14 +24,6 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
     eventID: route.params.eventID,
   });
 
-  useEffect(() => {
-    if (eventData) {
-      navigation.setOptions({
-        headerTitle: eventData.title,
-      });
-    }
-  }, [eventData, navigation]);
-
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>

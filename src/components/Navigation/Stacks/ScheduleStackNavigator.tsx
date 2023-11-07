@@ -84,8 +84,16 @@ export const ScheduleStackNavigator = () => {
         component={LfgFindScreen}
         options={{title: 'Find Groups'}}
       />
-      <Stack.Screen name={ScheduleStackComponents.scheduleEventScreen} component={ScheduleEventScreen} />
-      <Stack.Screen name={ScheduleStackComponents.lfgScreen} component={LfgScreen} />
+      <Stack.Screen
+        name={ScheduleStackComponents.scheduleEventScreen}
+        component={ScheduleEventScreen}
+        options={{title: 'Event'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.lfgScreen}
+        component={LfgScreen}
+        options={{title: 'Looking For Group'}}
+      />
     </Stack.Navigator>
   );
 };

@@ -21,14 +21,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
     fezID: route.params.fezID,
   });
 
-  useEffect(() => {
-    if (data) {
-      navigation.setOptions({
-        headerTitle: data.pages[0].title,
-      });
-    }
-  }, [data, navigation]);
-
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
