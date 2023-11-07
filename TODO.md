@@ -27,12 +27,12 @@ Work Queue
     * context, actions, chat
 * Event features
   * View
-    * needs body and actions
-* Checking unchecking favorite is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
+    * download
+* Schedule
+  * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
+  * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
+  * show favorite star in badge position of event card
 * Nightly
   * My lfg for Saturday noon is missing from day view
-  * Favorite, forum, menu - download, help 
   * Once again the header image stopped working
   * Entire card touchable ripple
-  * show favorite star in badge position of event card
-* Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.

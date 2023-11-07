@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
@@ -74,7 +74,13 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
                 iconName={AppIcons.favorite}
                 onPress={() => handleFavorite(eventData)}
               />
-              <Item title={'Forum'} iconName={AppIcons.forum} onPress={() => console.log('forum')} />
+              {eventData.forum && (
+                <Item
+                  title={'Forum'}
+                  iconName={AppIcons.forum}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/forum/${eventData.forum}`)}
+                />
+              )}
             </>
           )}
           <ScheduleEventMenu />
