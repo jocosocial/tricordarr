@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {List} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -11,6 +11,7 @@ interface DataFieldListItemProps {
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
   itemStyle?: ViewStyle;
+  left?: () => ReactNode;
 }
 
 /**
@@ -23,6 +24,7 @@ export const DataFieldListItem = ({
   titleStyle,
   descriptionStyle,
   itemStyle,
+  left,
 }: DataFieldListItemProps) => {
   const {commonStyles} = useStyles();
   const styles = {
@@ -38,6 +40,7 @@ export const DataFieldListItem = ({
 
   return (
     <List.Item
+      left={left}
       style={itemStyle}
       titleStyle={styles.title}
       descriptionStyle={styles.description}

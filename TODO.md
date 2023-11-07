@@ -33,3 +33,5 @@ Work Queue
   * My lfg for Saturday noon is missing from day view
   * Favorite, forum, menu - download, help 
   * Once again the header image stopped working
+  * Entire card touchable ripple
+  * Maybe ditch the expanded card and use the entire screen a la seamail details 

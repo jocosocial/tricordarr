@@ -65,4 +65,6 @@ export enum AppIcons {
   lfgOwned = 'account-multiple-check-outline',
   lfgFind = 'human-greeting-variant',
   download = 'download',
+  description = 'text-box',
+  type = 'shape',
 }
