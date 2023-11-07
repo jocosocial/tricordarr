@@ -115,6 +115,9 @@ export const commonStyles = StyleSheet.create({
   paddingBottomSmall: {
     paddingBottom: styleDefaults.marginSize / 2,
   },
+  paddingBottomZero: {
+    paddingBottom: 0,
+  },
   paddingTop: {
     paddingTop: styleDefaults.marginSize,
   },
@@ -216,5 +219,8 @@ export const commonStyles = StyleSheet.create({
   },
   fontSizeDefault: {
     fontSize: styleDefaults.fontSize,
+  },
+  fontSizeLabel: {
+    fontSize: styleDefaults.fontSize * 0.75,
   },
 });

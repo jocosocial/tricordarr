@@ -24,7 +24,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView>{data && <LfgCard lfg={data.pages[0]} />}</PaddedContentView>
+        <PaddedContentView>{data && <LfgCard lfg={data.pages[0]} expandedView={true} />}</PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
