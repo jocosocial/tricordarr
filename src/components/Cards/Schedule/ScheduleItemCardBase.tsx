@@ -1,9 +1,7 @@
 import React from 'react';
 import {Badge, Card, Text} from 'react-native-paper';
-import {Linking, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
-import {ListSection} from '../../Lists/ListSection';
 
 interface ScheduleItemCardBaseProps {
   badgeValue?: string;
@@ -11,26 +9,32 @@ interface ScheduleItemCardBaseProps {
   title: string;
   duration?: string;
   author?: string;
-  authorID?: string;
   participation?: string;
   location?: string;
   onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
-  expandedView?: boolean;
-  description?: string;
 }
 
-const SimpleBody = ({
+export const ScheduleItemCardBase = ({
   title,
   duration,
   author,
   badgeValue,
   participation,
+  cardStyle,
   location,
+  onPress,
   showBadge = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
+
   const styles = StyleSheet.create({
+    cardContent: {
+      ...commonStyles.paddingVerticalZero,
+      ...commonStyles.paddingLeftZero,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.paddingBottomZero,
+    },
     contentView: {
       ...commonStyles.flexRow,
       ...commonStyles.alignItemsCenter,
@@ -63,177 +67,44 @@ const SimpleBody = ({
       ...commonStyles.paddingHorizontalSmall,
     },
   });
-  return (
-    <View style={styles.contentView}>
-      <View style={styles.contentBody}>
-        <View style={styles.titleContainer}>
-          <View style={styles.titleTextContainer}>
-            <Text style={styles.titleText} variant={'titleMedium'}>
-              {title}
-            </Text>
-          </View>
-          <View style={commonStyles.badgeContainer}>
-            {showBadge && <Badge style={styles.badge}>{badgeValue}</Badge>}
-          </View>
-        </View>
-        {duration && (
-          <Text style={styles.bodyText} variant={'bodyMedium'}>
-            {duration}
-          </Text>
-        )}
-        {location && (
-          <Text style={styles.bodyText} variant={'bodyMedium'}>
-            {location}
-          </Text>
-        )}
-        {author && (
-          <Text style={styles.bodyText} variant={'bodyMedium'}>
-            {author}
-          </Text>
-        )}
-        {participation && (
-          <Text style={styles.bodyText} variant={'bodyMedium'}>
-            {participation}
-          </Text>
-        )}
-      </View>
-    </View>
-  );
-};
-
-const ExpandedBody = ({
-  title,
-  duration,
-  author,
-  authorID,
-  badgeValue,
-  participation,
-  location,
-  description,
-  showBadge = false,
-}: ScheduleItemCardBaseProps) => {
-  const {commonStyles} = useStyles();
-  const styles = StyleSheet.create({
-    container: {
-      ...commonStyles.paddingBottomSmall,
-    },
-    titleStyle: {
-      ...commonStyles.onTwitarrButton,
-    },
-    descriptionStyle: {
-      ...commonStyles.onTwitarrButton,
-    },
-    itemStyle: {
-      ...commonStyles.paddingVerticalZero,
-    },
-  });
-  return (
-    <View style={styles.container}>
-      <ListSection>
-        <DataFieldListItem
-          title={'Title'}
-          description={title}
-          titleStyle={styles.titleStyle}
-          descriptionStyle={styles.descriptionStyle}
-          itemStyle={styles.itemStyle}
-        />
-        <DataFieldListItem
-          title={'Time'}
-          description={duration}
-          titleStyle={styles.titleStyle}
-          descriptionStyle={styles.descriptionStyle}
-          itemStyle={styles.itemStyle}
-        />
-        <DataFieldListItem
-          title={'Location'}
-          description={location}
-          titleStyle={styles.titleStyle}
-          descriptionStyle={styles.descriptionStyle}
-          itemStyle={styles.itemStyle}
-        />
-        {author && (
-          <DataFieldListItem
-            title={'Owner'}
-            description={author}
-            titleStyle={styles.titleStyle}
-            descriptionStyle={styles.descriptionStyle}
-            itemStyle={styles.itemStyle}
-            onPress={authorID ? () => Linking.openURL(`tricordarr://user/${authorID}`) : undefined}
-          />
-        )}
-        {description && (
-          <DataFieldListItem
-            title={'Description'}
-            description={description}
-            titleStyle={styles.titleStyle}
-            descriptionStyle={styles.descriptionStyle}
-            itemStyle={styles.itemStyle}
-          />
-        )}
-      </ListSection>
-    </View>
-  );
-};
-
-export const ScheduleItemCardBase = ({
-  title,
-  duration,
-  author,
-  authorID,
-  badgeValue,
-  participation,
-  cardStyle,
-  location,
-  onPress,
-  description,
-  showBadge = false,
-  expandedView = false,
-}: ScheduleItemCardBaseProps) => {
-  const {commonStyles} = useStyles();
-
-  const styles = StyleSheet.create({
-    cardContent: {
-      ...commonStyles.paddingVerticalZero,
-      ...commonStyles.paddingLeftZero,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.paddingBottomZero,
-    },
-    cardTitle: {
-      ...commonStyles.bold,
-      ...commonStyles.onTwitarrButton,
-    },
-  });
 
   return (
     <Card mode={'contained'} style={cardStyle} onPress={onPress}>
-      {expandedView && <Card.Title title={'Details'} titleStyle={styles.cardTitle} />}
       <Card.Content style={styles.cardContent}>
-        {!expandedView && (
-          <SimpleBody
-            title={title}
-            onPress={onPress}
-            duration={duration}
-            author={author}
-            badgeValue={badgeValue}
-            participation={participation}
-            location={location}
-            showBadge={showBadge}
-          />
-        )}
-        {expandedView && (
-          <ExpandedBody
-            title={title}
-            onPress={onPress}
-            duration={duration}
-            author={author}
-            authorID={authorID}
-            badgeValue={badgeValue}
-            participation={participation}
-            location={location}
-            showBadge={showBadge}
-            description={description}
-          />
-        )}
+        <View style={styles.contentView}>
+          <View style={styles.contentBody}>
+            <View style={styles.titleContainer}>
+              <View style={styles.titleTextContainer}>
+                <Text style={styles.titleText} variant={'titleMedium'}>
+                  {title}
+                </Text>
+              </View>
+              <View style={commonStyles.badgeContainer}>
+                {showBadge && <Badge style={styles.badge}>{badgeValue}</Badge>}
+              </View>
+            </View>
+            {duration && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {duration}
+              </Text>
+            )}
+            {location && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {location}
+              </Text>
+            )}
+            {author && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {author}
+              </Text>
+            )}
+            {participation && (
+              <Text style={styles.bodyText} variant={'bodyMedium'}>
+                {participation}
+              </Text>
+            )}
+          </View>
+        </View>
       </Card.Content>
     </Card>
   );
