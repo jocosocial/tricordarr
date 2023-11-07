@@ -123,7 +123,9 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         {eventData && (
           <PaddedContentView padSides={false}>
             <ListSection>
@@ -137,7 +139,7 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.time)}
                 description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
-                title={'Time'}
+                title={'Date'}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
