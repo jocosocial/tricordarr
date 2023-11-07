@@ -27,7 +27,7 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView>{eventData && <EventCard eventData={eventData} />}</PaddedContentView>
+        <PaddedContentView>{eventData && <EventCard eventData={eventData} expandedView={true} />}</PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

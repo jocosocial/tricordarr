@@ -3,7 +3,6 @@ import {Badge, Card, Text} from 'react-native-paper';
 import {Linking, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
-import {useAppTheme} from '../../../styles/Theme';
 import {ListSection} from '../../Lists/ListSection';
 
 interface ScheduleItemCardBaseProps {
@@ -18,6 +17,7 @@ interface ScheduleItemCardBaseProps {
   onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
   expandedView?: boolean;
+  description?: string;
 }
 
 const SimpleBody = ({
@@ -109,10 +109,14 @@ const ExpandedBody = ({
   badgeValue,
   participation,
   location,
+  description,
   showBadge = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
+    container: {
+      ...commonStyles.paddingBottomSmall,
+    },
     titleStyle: {
       ...commonStyles.onTwitarrButton,
     },
@@ -124,7 +128,7 @@ const ExpandedBody = ({
     },
   });
   return (
-    <View>
+    <View style={styles.container}>
       <ListSection>
         <DataFieldListItem
           title={'Title'}
@@ -147,14 +151,25 @@ const ExpandedBody = ({
           descriptionStyle={styles.descriptionStyle}
           itemStyle={styles.itemStyle}
         />
-        <DataFieldListItem
-          title={'Owner'}
-          description={author}
-          titleStyle={styles.titleStyle}
-          descriptionStyle={styles.descriptionStyle}
-          itemStyle={styles.itemStyle}
-          onPress={authorID ? () => Linking.openURL(`tricordarr://user/${authorID}`) : undefined}
-        />
+        {author && (
+          <DataFieldListItem
+            title={'Owner'}
+            description={author}
+            titleStyle={styles.titleStyle}
+            descriptionStyle={styles.descriptionStyle}
+            itemStyle={styles.itemStyle}
+            onPress={authorID ? () => Linking.openURL(`tricordarr://user/${authorID}`) : undefined}
+          />
+        )}
+        {description && (
+          <DataFieldListItem
+            title={'Description'}
+            description={description}
+            titleStyle={styles.titleStyle}
+            descriptionStyle={styles.descriptionStyle}
+            itemStyle={styles.itemStyle}
+          />
+        )}
       </ListSection>
     </View>
   );
@@ -170,6 +185,7 @@ export const ScheduleItemCardBase = ({
   cardStyle,
   location,
   onPress,
+  description,
   showBadge = false,
   expandedView = false,
 }: ScheduleItemCardBaseProps) => {
@@ -215,6 +231,7 @@ export const ScheduleItemCardBase = ({
             participation={participation}
             location={location}
             showBadge={showBadge}
+            description={description}
           />
         )}
       </Card.Content>

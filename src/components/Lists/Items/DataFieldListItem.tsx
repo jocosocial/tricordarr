@@ -42,6 +42,7 @@ export const DataFieldListItem = ({
       titleStyle={styles.title}
       descriptionStyle={styles.description}
       description={description}
+      descriptionNumberOfLines={0}
       title={title}
       onPress={onPress}
       onLongPress={() => (description ? Clipboard.setString(description) : undefined)}
