@@ -19,6 +19,7 @@ Backlog
 * pressing a bottomtab button again shoudl take you to the root of that stack.
 * The menu system could use some deduplication
 * scrollToNow() should go to the first index of any other events at that time, rather than $next-1
+* Linking - Fez chat to Seamail screen, back goes to seamail list not to Fez
 
 Work Queue
 * Forum via Webview with deep linking
@@ -30,8 +31,6 @@ Work Queue
     * Canceled
     * Manage Members
     * Update
-    * Join
-    * Leave
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead

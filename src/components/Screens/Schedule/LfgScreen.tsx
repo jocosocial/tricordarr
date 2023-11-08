@@ -7,7 +7,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -17,8 +16,13 @@ import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {ScheduleLfgMenu} from '../../Menus/ScheduleLfgMenu';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -26,12 +30,16 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.scheduleStack
 >;
 
-// @TODO twitarrcontext, setfez, figure out what to do with chat.
 export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useSeamailQuery({
     fezID: route.params.fezID,
   });
   const {commonStyles} = useStyles();
+  const {profilePublicData} = useUserData();
+  const {setModalVisible, setModalContent} = useModal();
+  const {fez, setFez} = useTwitarr();
+  const membershipMutation = useFezMembershipMutation();
+  const {setErrorMessage} = useErrorHandler();
 
   const styles = StyleSheet.create({
     item: {
@@ -43,31 +51,56 @@ export const LfgScreen = ({navigation, route}: Props) => {
   });
 
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
-  const fezData = data?.pages[0];
+
+  const handleMembershipPress = useCallback(() => {
+    if (!fez || !profilePublicData) {
+      return;
+    }
+    if (FezData.isParticipant(fez, profilePublicData.header)) {
+      setModalContent(<LfgLeaveModal fezData={fez} />);
+      setModalVisible(true);
+    } else {
+      membershipMutation.mutate(
+        {
+          fezID: fez.fezID,
+          action: 'join',
+        },
+        {
+          onSuccess: response => {
+            setFez(response.data);
+            setErrorMessage('Successfully joined LFG!');
+          },
+          onError: error => {
+            setErrorMessage(error.response?.data.reason);
+          },
+        },
+      );
+    }
+  }, [fez, membershipMutation, profilePublicData, setErrorMessage, setFez, setModalContent, setModalVisible]);
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          {fezData && (
+          {fez && profilePublicData && (
             <>
               <Item
                 title={'Membership'}
-                iconName={AppIcons.join}
-                onPress={() => console.log('hi')}
+                iconName={FezData.isParticipant(fez, profilePublicData.header) ? AppIcons.leave : AppIcons.join}
+                onPress={handleMembershipPress}
               />
               <Item
-                title={'Favorite'}
-                iconName={AppIcons.leave}
-                onPress={() => console.log('hi')}
+                title={'Chat'}
+                iconName={AppIcons.seamail}
+                onPress={() => Linking.openURL(`tricordarr://seamail/${fez.fezID}`)}
               />
             </>
           )}
-          {fezData && <ScheduleLfgMenu fezData={fezData} />}
+          {fez && <ScheduleLfgMenu fezData={fez} />}
         </HeaderButtons>
       </View>
     );
-  }, [fezData, navigation]);
+  }, [fez, handleMembershipPress, profilePublicData]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -75,61 +108,64 @@ export const LfgScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
+  useEffect(() => {
+    if (data) {
+      setFez(data.pages[0]);
+    }
+  }, [data, setFez]);
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        {fezData && (
+        {fez && (
           <PaddedContentView padSides={false}>
             <ListSection>
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.events)}
-                description={fezData.title}
+                description={fez.title}
                 title={'Title'}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.time)}
-                description={getDurationString(fezData.startTime, fezData.endTime, fezData.timeZone, true)}
+                description={getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
                 title={'Date'}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.map)}
-                description={fezData.location}
+                description={fez.location}
                 title={'Location'}
                 onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.type)}
-                description={fezData.fezType}
+                description={fez.fezType}
                 title={'Type'}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.user)}
-                description={UserHeader.getByline(fezData.owner)}
+                description={UserHeader.getByline(fez.owner)}
                 title={'Owner'}
-                onPress={() => Linking.openURL(`tricordarr://user/${fezData.owner.userID}`)}
+                onPress={() => Linking.openURL(`tricordarr://user/${fez.owner.userID}`)}
               />
-              {fezData.members && (
+              {fez.members && (
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.group)}
-                  description={FezData.getParticipantLabel(
-                    fezData.members.participants.length,
-                    fezData.maxParticipants,
-                  )}
+                  description={FezData.getParticipantLabel(fez.members.participants.length, fez.maxParticipants)}
                   title={'Participation'}
                 />
               )}
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.description)}
-                description={fezData.info}
+                description={fez.info}
                 title={'Description'}
               />
             </ListSection>

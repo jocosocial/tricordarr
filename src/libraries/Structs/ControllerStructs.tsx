@@ -245,6 +245,18 @@ export namespace FezData {
     }
     return `${count}/${max} attendees`;
   };
+
+  export const isParticipant = (fezData: FezData, user: UserHeader) => {
+    if (!fezData.members) {
+      return false;
+    }
+    for (let i = 0; i < fezData.members.participants.length; i++) {
+      if (fezData.members.participants[i].userID === user.userID) {
+        return true;
+      }
+    }
+    return false;
+  };
 }
 
 export interface FezListData {
