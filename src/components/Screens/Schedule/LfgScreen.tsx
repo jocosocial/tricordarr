@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Linking, RefreshControl, StyleSheet} from 'react-native';
+import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
@@ -15,6 +15,10 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {AppIcon} from '../../Images/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {ScheduleLfgMenu} from '../../Menus/ScheduleLfgMenu';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -40,6 +44,36 @@ export const LfgScreen = ({navigation, route}: Props) => {
 
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
   const fezData = data?.pages[0];
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          {fezData && (
+            <>
+              <Item
+                title={'Membership'}
+                iconName={AppIcons.join}
+                onPress={() => console.log('hi')}
+              />
+              <Item
+                title={'Favorite'}
+                iconName={AppIcons.leave}
+                onPress={() => console.log('hi')}
+              />
+            </>
+          )}
+          {fezData && <ScheduleLfgMenu fezData={fezData} />}
+        </HeaderButtons>
+      </View>
+    );
+  }, [fezData, navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>

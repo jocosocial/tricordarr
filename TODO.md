@@ -26,6 +26,12 @@ Work Queue
   * Create
   * View
     * context, actions, chat
+  * Actions
+    * Canceled
+    * Manage Members
+    * Update
+    * Join
+    * Leave
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead

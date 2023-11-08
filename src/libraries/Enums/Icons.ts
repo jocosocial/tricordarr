@@ -64,7 +64,8 @@ export enum AppIcons {
   lfgJoined = 'account-multiple',
   lfgOwned = 'account-multiple-check-outline',
   lfgFind = 'human-greeting-variant',
-  download = 'download',
   description = 'text-box',
   type = 'shape',
+  join = 'account-plus',
+  leave = 'account-minus',
 }

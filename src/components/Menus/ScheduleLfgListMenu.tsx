@@ -5,7 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
 import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
 
-export const LfgMenu = () => {
+export const ScheduleLfgListMenu = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useScheduleStack();
 
