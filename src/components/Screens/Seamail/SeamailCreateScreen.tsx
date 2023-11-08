@@ -64,8 +64,9 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
             seamailPostFormRef.current?.submitForm();
           },
           onError: error => {
-            setErrorMessage(error);
+            setErrorMessage(error.response?.request.reason || error);
             setSubmitting(false);
+            seamailCreateFormRef.current?.setSubmitting(false);
           },
         },
       );
