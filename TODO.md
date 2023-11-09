@@ -20,6 +20,7 @@ Backlog
 * The menu system could use some deduplication
 * scrollToNow() should go to the first index of any other events at that time, rather than $next-1
 * Linking - Fez chat to Seamail screen, back goes to seamail list not to Fez
+* move user profiles out of seamail stack and into the main home whatever
 
 Work Queue
 * Forum via Webview with deep linking

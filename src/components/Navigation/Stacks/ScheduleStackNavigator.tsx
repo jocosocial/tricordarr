@@ -15,6 +15,7 @@ import {LfgFindScreen} from '../../Screens/Schedule/LfgFindScreen';
 import {ScheduleEventScreen} from '../../Screens/Schedule/ScheduleEventScreen';
 import {LfgScreen} from '../../Screens/Schedule/LfgScreen';
 import {LfgParticipationScreen} from '../../Screens/Schedule/LfgParticipationScreen';
+import {LfgAddParticipantScreen} from '../../Screens/Schedule/LfgAddParticipantScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {
@@ -33,6 +34,9 @@ export type ScheduleStackParamList = {
     fezID: string;
   };
   LfgParticipationScreen: {
+    fezID: string;
+  };
+  LfgAddParticipantScreen: {
     fezID: string;
   };
 };
@@ -102,6 +106,11 @@ export const ScheduleStackNavigator = () => {
         name={ScheduleStackComponents.lfgParticipationScreen}
         component={LfgParticipationScreen}
         options={{title: 'Participation'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.lfgAddParticipantScreen}
+        component={LfgAddParticipantScreen}
+        options={{title: 'Add Participant'}}
       />
     </Stack.Navigator>
   );

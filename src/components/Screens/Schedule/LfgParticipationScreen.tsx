@@ -116,7 +116,11 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
-            {manageUsers && !isFull && <FezParticipantAddItem fez={fez} />}
+            {manageUsers && !isFull && (
+              <FezParticipantAddItem
+                onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+              />
+            )}
             {fez.members.participants.map(u => (
               <FezParticipantListItem
                 onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
@@ -134,7 +138,9 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
             </PaddedContentView>
             <PaddedContentView padSides={false}>
               <ListSection>
-                <FezParticipantAddItem fez={fez} />
+                <FezParticipantAddItem
+                  onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                />
                 {fez.members.waitingList.map(u => (
                   <FezParticipantListItem key={u.userID} user={u} fez={fez} />
                 ))}
