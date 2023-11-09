@@ -62,7 +62,7 @@ export const FavoriteUsersScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>
-          {favorites.length === 0 && <ItalicText>You have not muted any users.</ItalicText>}
+          {favorites.length === 0 && <ItalicText>You have not favorited any users.</ItalicText>}
           {favorites.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
