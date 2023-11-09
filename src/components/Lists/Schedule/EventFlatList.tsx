@@ -1,31 +1,33 @@
-import {FlatList, RefreshControl, RefreshControlProps, View} from 'react-native';
+import {FlatList, RefreshControlProps, View} from 'react-native';
 import React from 'react';
-import {ScheduleItemCard} from '../../Cards/Schedule/ScheduleItemCard';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {ScheduleItem} from '../../../libraries/Types';
 import {getTimeMarker} from '../../../libraries/DateTime';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {LfgCard} from '../../Cards/Schedule/LfgCard';
+import {EventCard} from '../../Cards/Schedule/EventCard';
 
 interface SeamailFlatListProps {
-  scheduleItems: ScheduleItem[];
+  scheduleItems: (EventData | FezData)[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlatList<ScheduleItem>>;
+  listRef: React.RefObject<FlatList<EventData | FezData>>;
   scrollNowIndex: number;
 }
 
 export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
 
-  const renderListItem = ({item}: {item: ScheduleItem}) => {
+  const renderListItem = ({item}: {item: EventData | FezData}) => {
     return (
       <View>
-        <ScheduleItemCard item={item} />
+        {'fezID' in item && <LfgCard lfg={item} />}
+        {'eventID' in item && <EventCard eventData={item} />}
       </View>
     );
   };
 
-  const renderListSeparator = ({leadingItem}: {leadingItem: ScheduleItem}) => {
+  const renderListSeparator = ({leadingItem}: {leadingItem: EventData | FezData}) => {
     const leadingIndex = scheduleItems.indexOf(leadingItem);
     if (leadingIndex === undefined) {
       return <TimeDivider label={'Leading Unknown?'} />;
@@ -112,7 +114,13 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   //   };
   // };
 
-  const keyExtractor = (item: ScheduleItem) => item.id;
+  const keyExtractor = (item: EventData | FezData) => {
+    if ('eventID' in item) {
+      return item.eventID;
+    } else if ('fezID' in item) {
+      return item.fezID;
+    }
+  };
 
   // const initialIndex = getInitialScrollindex();
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);

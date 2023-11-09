@@ -17,7 +17,7 @@ import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {ScheduleFilterSettings, ScheduleItem} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
@@ -48,7 +48,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<ScheduleItem>>(null);
-  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
+  const [scheduleItems, setScheduleItems] = useState<(EventData | FezData)[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
@@ -57,13 +57,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const buildListData = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
       console.log('### Building Schedule Item List');
-      let itemList: ScheduleItem[] = [];
+      let itemList: (EventData | FezData)[] = [];
 
-      let lfgList: FezData[] = [];
       if (filterSettings.showLfgs) {
         lfgData?.pages.map(page => {
           // The API already filters out cancelled LFGs so we don't need to process those here too.
-          lfgList = lfgList.concat(page.fezzes);
+          // lfgList = lfgList.concat(page.fezzes);
+          page.fezzes.map(fez => {
+            itemList.push(fez);
+          });
         });
       }
 
@@ -74,15 +76,15 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         ) {
           return;
         } else {
-          itemList.push(eventToItem(event));
+          itemList.push(event);
         }
       });
-      lfgList.map(lfg => {
-        const item = lfgToItem(lfg);
-        if (item) {
-          itemList.push(item);
-        }
-      });
+      // lfgList.map(lfg => {
+      //   const item = lfgToItem(lfg);
+      //   if (item) {
+      //     itemList.push(item);
+      //   }
+      // });
 
       // ChatGPT for the win
       itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
@@ -91,7 +93,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       for (let i = 0; i < itemList.length; i++) {
         const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
         const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
-        // console.log('Now', minutelyUpdatingDate, nowDayTime, 'Event', itemStartDayTime, itemList[i].startTime, 'Offset', tzOffset);
 
         if (
           nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
