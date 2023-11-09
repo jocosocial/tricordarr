@@ -3,13 +3,18 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
-import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  MainStackComponents,
+  NavigatorIDs,
+  ScheduleStackComponents,
+} from '../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {TitleTag} from '../../Text/TitleTag';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {Linking, RefreshControl, TouchableOpacity, View} from 'react-native';
+import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
@@ -23,6 +28,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
+import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -45,6 +51,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const {setErrorMessage} = useErrorHandler();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
+  const bottomNav = useBottomTabNavigator();
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -127,7 +134,12 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                 key={u.userID}
                 user={u}
                 fez={fez}
-                onPress={() => Linking.openURL(`tricordarr://user/${u.userID}`)}
+                onPress={() =>
+                  bottomNav.navigate(BottomTabComponents.homeTab, {
+                    screen: MainStackComponents.userProfileScreen,
+                    params: {userID: u.userID},
+                  })
+                }
               />
             ))}
           </ListSection>
@@ -148,7 +160,12 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                     key={u.userID}
                     user={u}
                     fez={fez}
-                    onPress={() => Linking.openURL(`tricordarr://user/${u.userID}`)}
+                    onPress={() =>
+                      bottomNav.navigate(BottomTabComponents.homeTab, {
+                        screen: MainStackComponents.userProfileScreen,
+                        params: {userID: u.userID},
+                      })
+                    }
                   />
                 ))}
               </ListSection>

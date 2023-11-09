@@ -38,7 +38,7 @@ export const BottomTabNavigator = () => {
   }
 
   return (
-    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab}>
+    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
         component={MainStack}
