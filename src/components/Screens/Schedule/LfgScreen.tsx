@@ -158,7 +158,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.group)}
-                  description={FezData.getParticipantLabel(fez.members.participants.length, fez.maxParticipants)}
+                  description={FezData.getParticipantLabel(fez)}
                   title={'Participation'}
                 />
               )}

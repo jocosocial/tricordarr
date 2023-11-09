@@ -25,9 +25,7 @@ export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
       badgeValue={`${unreadCount} new ${pluralize('post', unreadCount)}`}
       duration={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
       author={`Hosted by: ${UserHeader.getByline(lfg.owner)}`}
-      participation={
-        lfg.members ? FezData.getParticipantLabel(lfg.members.participants.length, lfg.maxParticipants) : undefined
-      }
+      participation={lfg.members ? FezData.getParticipantLabel(lfg) : undefined}
       location={lfg.location}
     />
   );

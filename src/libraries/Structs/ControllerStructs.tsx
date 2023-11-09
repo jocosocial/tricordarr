@@ -236,26 +236,38 @@ export namespace FezData {
   /**
    * Get a label for the number of attendees of this Fez. If the count is 0 that means
    * it is unlimited and we don't need to tell users how many are remaining.
-   * @param count Number of current participants.
-   * @param max Maximum number of participants.
+   * @param fez This particular chat.
    */
-  export const getParticipantLabel = (count: number, max: number) => {
-    if (max === 0) {
-      return `${count} attendees`;
+  export const getParticipantLabel = (fez: FezData) => {
+    if (fez.maxParticipants === 0) {
+      return `${fez.participantCount} attendees`;
     }
-    return `${count}/${max} attendees`;
+    const waitlistCount: number = fez.members?.waitingList.length || 0;
+    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} participants`;
+    if (fez.participantCount >= fez.maxParticipants) {
+      attendeeCountString = 'Full';
+    }
+    return `${attendeeCountString}, ${waitlistCount} waitlisted`;
   };
 
-  export const isParticipant = (fezData: FezData, user: UserHeader) => {
-    if (!fezData.members) {
+  const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
+    if (!members) {
       return false;
     }
-    for (let i = 0; i < fezData.members.participants.length; i++) {
-      if (fezData.members.participants[i].userID === user.userID) {
+    for (let i = 0; i < members.length; i++) {
+      if (members[i].userID === user.userID) {
         return true;
       }
     }
     return false;
+  };
+
+  export const isParticipant = (fezData: FezData, user: UserHeader) => {
+    return isMember(fezData.members?.participants, user);
+  };
+
+  export const isWaitlist = (fezData: FezData, user: UserHeader) => {
+    return isMember(fezData.members?.waitingList, user);
   };
 }
 

@@ -30,6 +30,8 @@ Work Queue
   * Actions
     * Canceled
     * Manage Members
+      * Waitlist
+      * Waitlist auto promote
     * Update
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
@@ -39,3 +41,7 @@ Work Queue
   * My lfg for Saturday noon is missing from day view
   * Once again the header image stopped working
   * Entire card touchable ripple
+  * Tap participation to open the manage screen, with participation management add/remove/waitlist
+  * Add chat datafield to lfg with post count
+  * Account remove instead of minus
+  * Different frotnend routes for lfg/fez and seamail
