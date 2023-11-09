@@ -29,9 +29,6 @@ Work Queue
     * context, actions, chat
   * Actions
     * Canceled
-    * Manage Members
-      * Waitlist
-      * Waitlist auto promote
     * Update
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.

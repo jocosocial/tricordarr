@@ -92,7 +92,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
               <Item
                 title={'Chat'}
                 iconName={AppIcons.seamail}
-                onPress={() => Linking.openURL(`tricordarr://seamail/${fez.fezID}`)}
+                onPress={() => Linking.openURL(`tricordarr://lfg/${fez.fezID}`)}
               />
             </>
           )}
@@ -143,12 +143,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
               />
               <DataFieldListItem
                 itemStyle={styles.item}
-                left={() => getIcon(AppIcons.type)}
-                description={fez.fezType}
-                title={'Type'}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
                 left={() => getIcon(AppIcons.user)}
                 description={UserHeader.getByline(fez.owner)}
                 title={'Owner'}
@@ -163,6 +157,12 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   onPress={() => navigation.push(ScheduleStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
                 />
               )}
+              <DataFieldListItem
+                itemStyle={styles.item}
+                left={() => getIcon(AppIcons.type)}
+                description={fez.fezType}
+                title={'Type'}
+              />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.description)}

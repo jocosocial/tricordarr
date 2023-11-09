@@ -67,5 +67,5 @@ export enum AppIcons {
   description = 'text-box',
   type = 'shape',
   join = 'account-plus',
-  leave = 'account-minus',
+  leave = 'account-remove',
 }
