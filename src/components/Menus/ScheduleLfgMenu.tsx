@@ -39,6 +39,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
         leadingIcon={AppIcons.cancel}
         title={'Cancel'}
         onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
+        disabled={fezData.cancelled}
       />
       <Menu.Item
         leadingIcon={AppIcons.report}

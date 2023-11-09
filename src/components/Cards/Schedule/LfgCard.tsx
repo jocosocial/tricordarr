@@ -20,9 +20,9 @@ export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
       cardStyle={{
         backgroundColor: theme.colors.outline,
       }}
-      showBadge={!!unreadCount}
+      showBadge={!!unreadCount || lfg.cancelled}
       title={lfg.title}
-      badgeValue={`${unreadCount} new ${pluralize('post', unreadCount)}`}
+      badgeValue={lfg.cancelled ? 'Cancelled' : `${unreadCount} new ${pluralize('post', unreadCount)}`}
       duration={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
       author={`Hosted by: ${UserHeader.getByline(lfg.owner)}`}
       participation={lfg.members ? FezData.getParticipantLabel(lfg) : undefined}

@@ -62,7 +62,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       let lfgList: FezData[] = [];
       if (filterSettings.showLfgs) {
         lfgData?.pages.map(page => {
-          lfgList = lfgList.concat(page.fezzes);
+          lfgList = lfgList.concat(page.fezzes.filter(fez => !fez.cancelled));
         });
       }
 
