@@ -9,7 +9,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {TitleTag} from '../../Text/TitleTag';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {RefreshControl, TouchableOpacity, View} from 'react-native';
+import {Linking, RefreshControl, TouchableOpacity, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
@@ -127,6 +127,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                 key={u.userID}
                 user={u}
                 fez={fez}
+                onPress={() => Linking.openURL(`tricordarr://user/${u.userID}`)}
               />
             ))}
           </ListSection>
@@ -142,7 +143,13 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                   onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
                 />
                 {fez.members.waitingList.map(u => (
-                  <FezParticipantListItem key={u.userID} user={u} fez={fez} />
+                  <FezParticipantListItem
+                    onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
+                    key={u.userID}
+                    user={u}
+                    fez={fez}
+                    onPress={() => Linking.openURL(`tricordarr://user/${u.userID}`)}
+                  />
                 ))}
               </ListSection>
             </PaddedContentView>
