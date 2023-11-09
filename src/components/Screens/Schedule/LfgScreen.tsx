@@ -23,6 +23,9 @@ import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {Badge, Text} from 'react-native-paper';
+import {LoadingView} from '../../Views/Static/LoadingView';
+import pluralize from 'pluralize';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -47,6 +50,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
     },
     icon: {
       ...commonStyles.paddingTopSmall,
+    },
+    badge: {
+      ...commonStyles.bold,
+      ...commonStyles.paddingHorizontalSmall,
+      ...commonStyles.marginLeftSmall,
+    },
+    chatCountContainer: {
+      ...commonStyles.flexRow,
     },
   });
 
@@ -91,7 +102,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
               />
               <Item
                 title={'Chat'}
-                iconName={AppIcons.seamail}
+                iconName={AppIcons.chat}
                 onPress={() => Linking.openURL(`tricordarr://lfg/${fez.fezID}`)}
               />
             </>
@@ -113,6 +124,25 @@ export const LfgScreen = ({navigation, route}: Props) => {
       setFez(data.pages[0]);
     }
   }, [data, setFez]);
+
+  if (!fez) {
+    return <LoadingView />;
+  }
+
+  const getChatDescription = () => {
+    if (!fez.members) {
+      return;
+    }
+    const unreadCount = fez.members.postCount - fez.members.readCount;
+    return (
+      <View style={styles.chatCountContainer}>
+        <Text>
+          {fez.members.postCount} {pluralize('post', fez.members.postCount)}
+        </Text>
+        {unreadCount !== 0 && <Badge style={styles.badge}>{`${unreadCount} new`}</Badge>}
+      </View>
+    );
+  };
 
   return (
     <AppView>
@@ -159,15 +189,21 @@ export const LfgScreen = ({navigation, route}: Props) => {
               )}
               <DataFieldListItem
                 itemStyle={styles.item}
-                left={() => getIcon(AppIcons.type)}
-                description={fez.fezType}
-                title={'Type'}
+                left={() => getIcon(AppIcons.chat)}
+                description={getChatDescription}
+                title={'Chat'}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.description)}
                 description={fez.info}
                 title={'Description'}
+              />
+              <DataFieldListItem
+                itemStyle={styles.item}
+                left={() => getIcon(AppIcons.type)}
+                description={fez.fezType}
+                title={'Type'}
               />
             </ListSection>
           </PaddedContentView>

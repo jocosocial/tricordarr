@@ -6,7 +6,7 @@ import {TextStyle, ViewStyle} from 'react-native';
 
 interface DataFieldListItemProps {
   title?: string;
-  description?: string;
+  description?: string | (() => ReactNode);
   onPress?: () => void;
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
@@ -48,7 +48,9 @@ export const DataFieldListItem = ({
       descriptionNumberOfLines={0}
       title={title}
       onPress={onPress}
-      onLongPress={() => (description ? Clipboard.setString(description) : undefined)}
+      onLongPress={() =>
+        description && typeof description === 'string' ? Clipboard.setString(description) : undefined
+      }
     />
   );
 };
