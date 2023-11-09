@@ -8,10 +8,9 @@ import {EventType} from '../../../libraries/Enums/EventType';
 interface EventCardProps {
   eventData: EventData;
   onPress?: () => void;
-  expandedView?: boolean;
 }
 
-export const EventCard = ({eventData, onPress, expandedView}: EventCardProps) => {
+export const EventCard = ({eventData, onPress}: EventCardProps) => {
   const theme = useAppTheme();
 
   return (
@@ -24,8 +23,6 @@ export const EventCard = ({eventData, onPress, expandedView}: EventCardProps) =>
       title={eventData.title}
       duration={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
       location={eventData.location}
-      expandedView={expandedView}
-      description={eventData.description}
     />
   );
 };
