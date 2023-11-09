@@ -103,7 +103,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
               <Item
                 title={'Chat'}
                 iconName={AppIcons.chat}
-                onPress={() => Linking.openURL(`tricordarr://lfg/${fez.fezID}`)}
+                onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
               />
             </>
           )}
@@ -111,7 +111,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [fez, handleMembershipPress, profilePublicData]);
+  }, [fez, handleMembershipPress, navigation, profilePublicData]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -192,6 +192,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.chat)}
                 description={getChatDescription}
                 title={'Chat'}
+                onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
               />
               <DataFieldListItem
                 itemStyle={styles.item}

@@ -88,4 +88,5 @@ export enum ScheduleStackComponents {
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
+  lfgChatScreen = 'LfgChatScreen',
 }
