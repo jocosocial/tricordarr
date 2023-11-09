@@ -38,4 +38,3 @@ Work Queue
   * My lfg for Saturday noon is missing from day view
   * Once again the header image stopped working
   * Entire card touchable ripple
-  * Add chat datafield to lfg with post count
