@@ -10,7 +10,7 @@ import {UserListItem} from './UserListItem';
 interface FezParticipantListItemProps {
   user: UserHeader;
   fez: FezData;
-  onRemove: () => void;
+  onRemove?: () => void;
 }
 
 export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantListItemProps) => {

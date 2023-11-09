@@ -160,6 +160,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.group)}
                   description={FezData.getParticipantLabel(fez)}
                   title={'Participation'}
+                  onPress={() => navigation.push(ScheduleStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
                 />
               )}
               <DataFieldListItem
