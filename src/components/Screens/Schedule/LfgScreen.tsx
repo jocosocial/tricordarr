@@ -97,11 +97,13 @@ export const LfgScreen = ({navigation, route}: Props) => {
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
           {fez && profilePublicData && (
             <>
-              <Item
-                title={'Membership'}
-                iconName={FezData.isParticipant(fez, profilePublicData.header) ? AppIcons.leave : AppIcons.join}
-                onPress={handleMembershipPress}
-              />
+              {fez.owner.userID !== profilePublicData.header.userID && (
+                <Item
+                  title={'Membership'}
+                  iconName={FezData.isParticipant(fez, profilePublicData.header) ? AppIcons.leave : AppIcons.join}
+                  onPress={handleMembershipPress}
+                />
+              )}
               <Item
                 title={'Chat'}
                 iconName={AppIcons.chat}
