@@ -68,4 +68,5 @@ export enum AppIcons {
   type = 'shape',
   join = 'account-plus',
   leave = 'account-remove',
+  cancel = 'cancel',
 }

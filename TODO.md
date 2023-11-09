@@ -28,7 +28,6 @@ Work Queue
   * View
     * context, actions, chat
   * Actions
-    * Canceled
     * Update
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
@@ -38,3 +37,5 @@ Work Queue
   * My lfg for Saturday noon is missing from day view
   * Once again the header image stopped working
   * Entire card touchable ripple
+  * chat is leaking requests - each time it adds an extra GET
+  * filter out canceled LFGs

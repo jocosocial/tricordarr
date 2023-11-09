@@ -80,6 +80,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       borderBottomColor: theme.colors.onBackground,
       borderBottomWidth: 1,
     },
+    error: {
+      backgroundColor: theme.colors.error,
+    },
+    onError: {
+      color: theme.colors.onError,
+    },
   });
 
   const screenOptions = {

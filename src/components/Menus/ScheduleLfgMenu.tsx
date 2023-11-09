@@ -9,6 +9,7 @@ import {Linking} from 'react-native';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
+import {LfgCancelModal} from '../Views/Modals/LfgCancelModal';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
@@ -34,6 +35,11 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      <Menu.Item
+        leadingIcon={AppIcons.cancel}
+        title={'Cancel'}
+        onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
+      />
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}

@@ -146,3 +146,21 @@ export const useLfgListQuery = ({
     },
   );
 };
+
+interface FezCancelMutationProps {
+  fezID: string;
+}
+
+const cancelQueryHandler = async ({fezID}: FezCancelMutationProps): Promise<AxiosResponse<FezData>> => {
+  return await axios.post(`/fez/${fezID}/cancel`);
+};
+
+export const useFezCancelMutation = (retry = 0) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezCancelMutationProps>(cancelQueryHandler, {
+    retry: retry,
+    onError: error => {
+      setErrorMessage(error.response?.data.reason || error.message);
+    },
+  });
+};

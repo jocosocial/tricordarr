@@ -26,6 +26,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {Badge, Text} from 'react-native-paper';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import pluralize from 'pluralize';
+import {LfgCanceledView} from '../../Views/LfgCanceledView';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -43,6 +44,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {fez, setFez} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
   const {setErrorMessage} = useErrorHandler();
+  const {setErrorBanner} = useErrorHandler();
 
   const styles = StyleSheet.create({
     item: {
@@ -134,6 +136,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
       return;
     }
     const unreadCount = fez.members.postCount - fez.members.readCount;
+    console.log('### Unread', unreadCount);
     return (
       <View style={styles.chatCountContainer}>
         <Text>
@@ -150,64 +153,67 @@ export const LfgScreen = ({navigation, route}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         {fez && (
-          <PaddedContentView padSides={false}>
-            <ListSection>
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.events)}
-                description={fez.title}
-                title={'Title'}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.time)}
-                description={getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
-                title={'Date'}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.map)}
-                description={fez.location}
-                title={'Location'}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.user)}
-                description={UserHeader.getByline(fez.owner)}
-                title={'Owner'}
-                onPress={() => Linking.openURL(`tricordarr://user/${fez.owner.userID}`)}
-              />
-              {fez.members && (
+          <>
+            {fez.cancelled && <LfgCanceledView />}
+            <PaddedContentView padSides={false}>
+              <ListSection>
                 <DataFieldListItem
                   itemStyle={styles.item}
-                  left={() => getIcon(AppIcons.group)}
-                  description={FezData.getParticipantLabel(fez)}
-                  title={'Participation'}
-                  onPress={() => navigation.push(ScheduleStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
+                  left={() => getIcon(AppIcons.events)}
+                  description={fez.title}
+                  title={'Title'}
                 />
-              )}
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.chat)}
-                description={getChatDescription}
-                title={'Chat'}
-                onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.description)}
-                description={fez.info}
-                title={'Description'}
-              />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.type)}
-                description={fez.fezType}
-                title={'Type'}
-              />
-            </ListSection>
-          </PaddedContentView>
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.time)}
+                  description={getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
+                  title={'Date'}
+                />
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.map)}
+                  description={fez.location}
+                  title={'Location'}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
+                />
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.user)}
+                  description={UserHeader.getByline(fez.owner)}
+                  title={'Owner'}
+                  onPress={() => Linking.openURL(`tricordarr://user/${fez.owner.userID}`)}
+                />
+                {fez.members && (
+                  <DataFieldListItem
+                    itemStyle={styles.item}
+                    left={() => getIcon(AppIcons.group)}
+                    description={FezData.getParticipantLabel(fez)}
+                    title={'Participation'}
+                    onPress={() => navigation.push(ScheduleStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
+                  />
+                )}
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.chat)}
+                  description={getChatDescription}
+                  title={'Chat'}
+                  onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+                />
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.description)}
+                  description={fez.info}
+                  title={'Description'}
+                />
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.type)}
+                  description={fez.fezType}
+                  title={'Type'}
+                />
+              </ListSection>
+            </PaddedContentView>
+          </>
         )}
       </ScrollingContentView>
     </AppView>
