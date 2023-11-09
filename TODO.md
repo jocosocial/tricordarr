@@ -35,7 +35,10 @@ Work Queue
   * show favorite star in badge position of event card
 * Nightly
   * My lfg for Saturday noon is missing from day view
+    * Missing from the site UI too. WTF
+    * The API call filters Fez's that you are a part of. So either we need a URL param to include those or two calls
+    * to load the schedule, joined and open.
   * Once again the header image stopped working
   * Entire card touchable ripple
   * chat is leaking requests - each time it adds an extra GET
-  * filter out canceled LFGs
+  * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)

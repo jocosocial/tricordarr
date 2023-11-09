@@ -62,7 +62,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       let lfgList: FezData[] = [];
       if (filterSettings.showLfgs) {
         lfgData?.pages.map(page => {
-          lfgList = lfgList.concat(page.fezzes.filter(fez => !fez.cancelled));
+          // The API already filters out cancelled LFGs so we don't need to process those here too.
+          lfgList = lfgList.concat(page.fezzes);
         });
       }
 
