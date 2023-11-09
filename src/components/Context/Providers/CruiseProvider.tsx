@@ -9,7 +9,11 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
   const hourlyUpdatingDate = useDateTime('hour');
   // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
-  let adjustedDate = new Date(hourlyUpdatingDate.getTime() - 3 * 60 * 60 * 1000);
+  let lateNightOffset = 0;
+  if (appConfig.enableLateDayFlip) {
+    lateNightOffset = 3 * 60 * 60 * 1000;
+  }
+  let adjustedDate = new Date(hourlyUpdatingDate.getTime() - lateNightOffset);
   // Day of the cruise. Starts at 1 and goes up to the appConfig.cruiseLength (usually 8 for a week-long Sat->Sat cruise).
   const cruiseDayToday = getCruiseDay(adjustedDate, appConfig.cruiseStartDate.getDay());
   // Start date of the cruise.

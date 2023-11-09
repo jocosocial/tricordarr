@@ -83,6 +83,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Quickly access friends profiles.'}
               navComponent={SettingsStackScreenComponents.favoriteUsers}
             />
+            <SettingsNavigationListItem
+              title={'Schedule Settings'}
+              description={'Settings for the schedule (events and LFGs).'}
+              navComponent={SettingsStackScreenComponents.scheduleSettings}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

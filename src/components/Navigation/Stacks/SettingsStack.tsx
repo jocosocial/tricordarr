@@ -21,6 +21,7 @@ import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
+import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -41,6 +42,7 @@ export type SettingsStackParamList = {
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
+  ScheduleSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -135,6 +137,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.favoriteUsers}
         component={FavoriteUsersScreen}
         options={{title: 'Favorite Users'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.scheduleSettings}
+        component={ScheduleSettingsScreen}
+        options={{title: 'Schedule Settings'}}
       />
     </Stack.Navigator>
   );

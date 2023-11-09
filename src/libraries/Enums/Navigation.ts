@@ -39,6 +39,7 @@ export enum SettingsStackScreenComponents {
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
+  scheduleSettings = 'ScheduleSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {

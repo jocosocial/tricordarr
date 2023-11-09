@@ -13,6 +13,7 @@ export const ScheduleSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [unified, setUnified] = useState(appConfig.unifiedSchedule);
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.hidePastLfgs);
+  const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.enableLateDayFlip);
   const {setLfgHidePastFilter} = useScheduleFilter();
   const {commonStyles} = useStyles();
 
@@ -31,6 +32,14 @@ export const ScheduleSettingsScreen = () => {
     });
     setHidePastLfgs(!appConfig.hidePastLfgs);
     setLfgHidePastFilter(!appConfig.hidePastLfgs);
+  };
+
+  const handleEnableLateDayFlip = () => {
+    updateAppConfig({
+      ...appConfig,
+      enableLateDayFlip: !appConfig.enableLateDayFlip,
+    });
+    setEnableLateDayFlip(!appConfig.enableLateDayFlip);
   };
 
   return (
@@ -55,6 +64,15 @@ export const ScheduleSettingsScreen = () => {
                 }
                 onPress={handleHidePastLfgs}
                 value={hidePastLfgs}
+                style={commonStyles.paddingHorizontal}
+              />
+              <SettingsBooleanListItem
+                label={'Enable Late-Night Day Flip'}
+                helperText={
+                  'Show the next days schedule after 3:00AM rather than after Midnight. For example: With this setting enabled (default), opening the schedule at 2:00AM on Thursday will show you Wednesdays schedule by default. If this setting is disabled, at 2:00AM on Thursday you would see Thursdays schedule by default.'
+                }
+                onPress={handleEnableLateDayFlip}
+                value={enableLateDayFlip}
                 style={commonStyles.paddingHorizontal}
               />
             </View>

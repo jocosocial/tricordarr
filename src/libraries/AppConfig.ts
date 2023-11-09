@@ -23,6 +23,7 @@ export interface AppConfig {
   cruiseLength: number;
   unifiedSchedule: boolean;
   hidePastLfgs: boolean;
+  enableLateDayFlip: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -50,6 +51,7 @@ const defaultAppConfig: AppConfig = {
   cruiseLength: 8,
   unifiedSchedule: true,
   hidePastLfgs: true,
+  enableLateDayFlip: true,
 };
 
 /**
