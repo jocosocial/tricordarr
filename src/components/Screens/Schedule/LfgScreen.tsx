@@ -129,7 +129,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
     }
   }, [data, setFez]);
 
-  if (!fez) {
+  if (!fez || isFetching) {
     return <LoadingView />;
   }
 
