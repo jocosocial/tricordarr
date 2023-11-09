@@ -6,17 +6,17 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {ScheduleEventSearchScreen} from '../../Screens/Schedule/ScheduleEventSearchScreen';
+import {ScheduleEventSearchScreen} from '../../Screens/Schedule/Event/ScheduleEventSearchScreen';
 import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
-import {LfgOwnedScreen} from '../../Screens/Schedule/LfgOwnedScreen';
-import {LfgHelpScreen} from '../../Screens/Schedule/LfgHelpScreen';
-import {LfgJoinedScreen} from '../../Screens/Schedule/LfgJoinedScreen';
-import {LfgFindScreen} from '../../Screens/Schedule/LfgFindScreen';
-import {ScheduleEventScreen} from '../../Screens/Schedule/ScheduleEventScreen';
-import {LfgScreen} from '../../Screens/Schedule/LfgScreen';
-import {LfgParticipationScreen} from '../../Screens/Schedule/LfgParticipationScreen';
-import {LfgAddParticipantScreen} from '../../Screens/Schedule/LfgAddParticipantScreen';
-import {LfgChatScreen} from '../../Screens/Schedule/LfgChatScreen';
+import {LfgOwnedScreen} from '../../Screens/Schedule/LFG/LfgOwnedScreen';
+import {LfgHelpScreen} from '../../Screens/Schedule/LFG/LfgHelpScreen';
+import {LfgJoinedScreen} from '../../Screens/Schedule/LFG/LfgJoinedScreen';
+import {LfgFindScreen} from '../../Screens/Schedule/LFG/LfgFindScreen';
+import {ScheduleEventScreen} from '../../Screens/Schedule/Event/ScheduleEventScreen';
+import {LfgScreen} from '../../Screens/Schedule/LFG/LfgScreen';
+import {LfgParticipationScreen} from '../../Screens/Schedule/LFG/LfgParticipationScreen';
+import {LfgAddParticipantScreen} from '../../Screens/Schedule/LFG/LfgAddParticipantScreen';
+import {LfgChatScreen} from '../../Screens/Schedule/LFG/LfgChatScreen';
 
 export type ScheduleStackParamList = {
   ScheduleDayScreen: {

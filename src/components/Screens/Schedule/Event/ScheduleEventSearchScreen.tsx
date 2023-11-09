@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {AppView} from '../../Views/AppView';
-import {EventSearchBar} from '../../Search/EventSearchBar';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {AppView} from '../../../Views/AppView';
+import {EventSearchBar} from '../../../Search/EventSearchBar';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
 
 export const ScheduleEventSearchScreen = () => {

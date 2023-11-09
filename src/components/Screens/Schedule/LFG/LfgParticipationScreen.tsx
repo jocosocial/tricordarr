@@ -1,34 +1,34 @@
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackParamList} from '../../../Navigation/Stacks/ScheduleStackNavigator';
 import {
   BottomTabComponents,
   MainStackComponents,
   NavigatorIDs,
   ScheduleStackComponents,
-} from '../../../libraries/Enums/Navigation';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+} from '../../../../libraries/Enums/Navigation';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
-import {TitleTag} from '../../Text/TitleTag';
+import {TitleTag} from '../../../Text/TitleTag';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView';
-import {ListSection} from '../../Lists/ListSection';
-import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
+import {LoadingView} from '../../../Views/Static/LoadingView';
+import {ListSection} from '../../../Lists/ListSection';
+import {FezParticipantListItem} from '../../../Lists/Items/FezParticipantListItem';
+import {useSeamailQuery} from '../../../Queries/Fez/FezQueries';
+import {useFezParticipantMutation} from '../../../Queries/Fez/Management/UserQueries';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {FezParticipantAddItem} from '../../../Lists/Items/FezParticipantAddItem';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
+import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
+import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {HelpModalView} from '../../../Views/Modals/HelpModalView';
+import {useModal} from '../../../Context/Contexts/ModalContext';
+import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
