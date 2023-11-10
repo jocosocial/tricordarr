@@ -2,29 +2,42 @@ import React, {ReactNode} from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import useDateTime, {calcCruiseDayTime, getDurationString, getTimeZoneOffset} from '../../../libraries/DateTime';
+import {parseISO} from 'date-fns';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
+import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
 
 interface ScheduleItemCardBaseProps {
   title: string;
-  duration?: string;
   author?: string;
   participation?: string;
   location?: string;
   onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
   titleRight?: () => ReactNode;
+  startTime?: string;
+  endTime?: string;
+  timeZone?: string;
+  showDay?: boolean;
 }
 
 export const ScheduleItemCardBase = ({
   title,
-  duration,
   author,
   participation,
   cardStyle,
   location,
   onPress,
   titleRight,
+  startTime,
+  endTime,
+  timeZone,
+  showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
+  const {startDate, endDate} = useCruise();
+  const minutelyUpdatingDate = useDateTime('minute');
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -62,11 +75,26 @@ export const ScheduleItemCardBase = ({
     },
   });
 
+  const duration = getDurationString(startTime, endTime, timeZone, showDay);
+
+  const itemStartTime = parseISO(startTime);
+  const itemEndTime = parseISO(endTime);
+  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
+  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
+  const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+  const tzOffset = getTimeZoneOffset('America/New_York', timeZone, startTime);
+
   return (
     <Card mode={'contained'} style={cardStyle}>
       <TouchableRipple onPress={onPress}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
+            {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+              nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
+              nowDayTime.dayMinutes - tzOffset < eventEndDayTime.dayMinutes && <EventCardNowView />}
+            {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+              nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes - 30 &&
+              nowDayTime.dayMinutes - tzOffset < eventStartDayTime.dayMinutes && <EventCardSoonView />}
             <View style={styles.contentBody}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainer}>

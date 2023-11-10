@@ -34,7 +34,6 @@ Work Queue
   * Actions
     * Update
 * Schedule
-  * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * Nightly
   * My lfg for Saturday noon is missing from day view
@@ -45,3 +44,7 @@ Work Queue
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Participant changes need to trigger loading
   * What does minimum do?
+  * deduplicate minutelyupdatingdate
+  * scheduleitemcardbase typing with optional fez junk
+  * portTime to app config from env
+  * getduration take undefined and just return UNKNOWN

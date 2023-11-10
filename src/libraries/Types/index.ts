@@ -28,18 +28,6 @@ export type CruiseDayTime = {
   cruiseDay: number;
 };
 
-export type ScheduleItem = {
-  title: string;
-  startTime: string;
-  endTime: string;
-  timeZone: string;
-  location: string;
-  itemType: 'official' | 'shadow' | 'lfg';
-  eventType?: keyof typeof EventType;
-  lfgType?: keyof typeof FezType;
-  id: string;
-};
-
 export type ScheduleFilterSettings = {
   eventTypeFilter?: keyof typeof EventType;
   eventFavoriteFilter?: boolean;

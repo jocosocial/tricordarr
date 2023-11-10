@@ -3,11 +3,12 @@ import {View} from 'react-native';
 import {Searchbar, Text} from 'react-native-paper';
 import {ListSection} from '../Lists/ListSection';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
-import {ScheduleItemCard} from '../Cards/Schedule/ScheduleItemCard';
-import {eventToItem} from '../../libraries/DateTime';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {ScheduleItem} from '../../libraries/Types';
+import {EventData} from '../../libraries/Structs/ControllerStructs';
+import {EventCard} from '../Cards/Schedule/EventCard';
+import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
 
 interface EventSearchBarProps {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
@@ -23,7 +24,8 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
     },
   });
   const {commonStyles} = useStyles();
-  const [eventList, setEventList] = useState<ScheduleItem[]>([]);
+  const [eventList, setEventList] = useState<EventData[]>([]);
+  const navigation = useScheduleStack();
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
@@ -38,11 +40,9 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
   };
 
   useEffect(() => {
-    let itemList: ScheduleItem[] = [];
     if (data) {
-      data.map(event => itemList.push(eventToItem(event)));
+      setEventList(data);
     }
-    setEventList(itemList);
   }, [data]);
 
   useEffect(() => {
@@ -68,7 +68,11 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
         )}
         {eventList.map((item, i) => (
           <View key={i} style={[commonStyles.paddingVerticalSmall]}>
-            <ScheduleItemCard item={item} includeDay={true} />
+            <EventCard
+              eventData={item}
+              showDay={true}
+              onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+            />
           </View>
         ))}
       </ListSection>

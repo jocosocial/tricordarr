@@ -10,10 +10,8 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData, CruiseDayTime, ScheduleItem} from './Types';
+import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
-import {EventData, FezData} from './Structs/ControllerStructs';
-import {EventType} from './Enums/EventType';
 
 const thresholdMap = {
   second: {
@@ -212,35 +210,6 @@ export const getDurationString = (
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
   const date = moment(dateTimeStr);
   return date.tz(timeZoneAbbrStr);
-};
-
-export const eventToItem = (event: EventData): ScheduleItem => {
-  return {
-    id: event.eventID,
-    title: event.title,
-    startTime: event.startTime,
-    endTime: event.endTime,
-    timeZone: event.timeZone,
-    location: event.location,
-    itemType: event.eventType === EventType.shadow ? 'shadow' : 'official',
-    // I hope this doesn't come back to bite me.
-    eventType: event.eventType as keyof typeof EventType,
-  };
-};
-
-export const lfgToItem = (lfg: FezData): ScheduleItem | undefined => {
-  if (lfg.startTime && lfg.endTime && lfg.timeZone && lfg.location) {
-    return {
-      title: lfg.title,
-      startTime: lfg.startTime,
-      endTime: lfg.endTime,
-      timeZone: lfg.timeZone,
-      location: lfg.location,
-      itemType: 'lfg',
-      lfgType: lfg.fezType,
-      id: lfg.fezID,
-    };
-  }
 };
 
 export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr: string, compareDateStr: string) => {
