@@ -35,6 +35,7 @@ Work Queue
     * Update
 * Schedule
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
+  * Reducer for events. Dispatch event for favorite/unfavorite
 * Nightly
   * My lfg for Saturday noon is missing from day view
     * Missing from the site UI too. WTF
@@ -48,3 +49,9 @@ Work Queue
   * scheduleitemcardbase typing with optional fez junk
   * portTime to app config from env
   * getduration take undefined and just return UNKNOWN
+  * Near 1am on Friday with late disabled, now went to 1pm on Friday.
+  * Participant screen showing 0 not unlimited. Add part button on wait list section for unlimited
+  * Hide add button if not owner
+  * Male a join button on participant screen. Correct section
+  * Hide cancel button if not owner
+  * Moderate link to webview

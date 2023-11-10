@@ -20,6 +20,7 @@ interface ScheduleItemCardBaseProps {
   endTime?: string;
   timeZone?: string;
   showDay?: boolean;
+  onLongPress?: () => void;
 }
 
 export const ScheduleItemCardBase = ({
@@ -33,6 +34,7 @@ export const ScheduleItemCardBase = ({
   startTime,
   endTime,
   timeZone,
+  onLongPress,
   showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
@@ -86,7 +88,7 @@ export const ScheduleItemCardBase = ({
 
   return (
     <Card mode={'contained'} style={cardStyle}>
-      <TouchableRipple onPress={onPress}>
+      <TouchableRipple onPress={onPress} onLongPress={onLongPress}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
             {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
