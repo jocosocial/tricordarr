@@ -269,7 +269,10 @@ export namespace FezData {
     return isMember(fezData.members?.participants, user);
   };
 
-  export const isWaitlist = (fezData: FezData, user: UserHeader) => {
+  export const isWaitlist = (fezData: FezData, user?: UserHeader) => {
+    if (!user) {
+      return false;
+    }
     return isMember(fezData.members?.waitingList, user);
   };
 

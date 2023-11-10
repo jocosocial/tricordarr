@@ -144,6 +144,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const isFull = FezData.isFull(fez);
   const isUnlimited = fez.maxParticipants === 0;
   const isMember = FezData.isParticipant(fez, profilePublicData?.header);
+  const isWaitlist = FezData.isWaitlist(fez, profilePublicData?.header);
   const participantsString = isUnlimited
     ? `${fez.members.participants.length}`
     : `${fez.members.participants.length}/${fez.maxParticipants}`;
@@ -198,7 +199,9 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                     onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
                   />
                 )}
-                {!isMember && isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
+                {!isMember && !isWaitlist && isFull && (
+                  <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
+                )}
                 {fez.members.waitingList.map(u => (
                   <FezParticipantListItem
                     onRemove={() => onParticipantRemove(fez, u.userID)}
