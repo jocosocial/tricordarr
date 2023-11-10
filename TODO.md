@@ -50,5 +50,4 @@ Work Queue
   * portTime to app config from env
   * getduration take undefined and just return UNKNOWN
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
-  * Participant screen showing 0 not unlimited. Add part button on wait list section for unlimited
   * Male a join button on participant screen. Correct section
