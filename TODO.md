@@ -43,6 +43,5 @@ Work Queue
     * to load the schedule, joined and open.
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
-  * Participant changes need to trigger loading
   * deduplicate minutelyupdatingdate
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.

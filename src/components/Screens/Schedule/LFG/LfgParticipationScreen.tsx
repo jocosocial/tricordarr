@@ -70,6 +70,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
       return;
     }
     // Call the add/remove if you are working on others.
+    setRefreshing(true);
     participantMutation.mutate(
       {
         action: 'remove',
@@ -83,6 +84,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         onError: error => {
           setErrorMessage(error.response?.data.reason || error);
         },
+        onSettled: () => setRefreshing(false),
       },
     );
   };
@@ -113,6 +115,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
       setModalContent(<LfgLeaveModal fezData={fez} />);
       setModalVisible(true);
     } else {
+      setRefreshing(true);
       membershipMutation.mutate(
         {
           fezID: fez.fezID,
@@ -125,6 +128,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           onError: error => {
             setErrorMessage(error.response?.data.reason || error);
           },
+          onSettled: () => setRefreshing(false),
         },
       );
     }
