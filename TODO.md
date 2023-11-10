@@ -50,4 +50,3 @@ Work Queue
   * portTime to app config from env
   * getduration take undefined and just return UNKNOWN
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
-  * Male a join button on participant screen. Correct section

@@ -15,10 +15,18 @@ export const FezParticipantListItem = ({user, fez, onRemove, onPress}: FezPartic
   let enableDelete = true;
   const {profilePublicData} = useUserData();
 
-  // Cannot delete participant if any condition is true:
-  // * Participant is yourself.
-  // * You are not the owner.
-  if (fez.owner.userID === user.userID || profilePublicData?.header.userID !== fez.owner.userID) {
+  // Cannot delete participant if:
+  // * They (or you) are the owner.
+  // * You aren't the owner.
+  // But can if you are you.
+  if (user.userID === fez.owner.userID) {
+    enableDelete = false;
+  } else if (user.userID === profilePublicData?.header.userID && user.userID === fez.owner.userID) {
+    enableDelete = false;
+  } else if (
+    profilePublicData?.header.userID !== fez.owner.userID &&
+    profilePublicData?.header.userID !== user.userID
+  ) {
     enableDelete = false;
   }
 

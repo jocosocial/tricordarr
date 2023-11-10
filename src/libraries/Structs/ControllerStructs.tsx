@@ -262,12 +262,22 @@ export namespace FezData {
     return false;
   };
 
-  export const isParticipant = (fezData: FezData, user: UserHeader) => {
+  export const isParticipant = (fezData: FezData, user?: UserHeader) => {
+    if (!user) {
+      return false;
+    }
     return isMember(fezData.members?.participants, user);
   };
 
   export const isWaitlist = (fezData: FezData, user: UserHeader) => {
     return isMember(fezData.members?.waitingList, user);
+  };
+
+  export const isFull = (fezData: FezData) => {
+    if (fezData.maxParticipants === 0 || !fezData.members) {
+      return false;
+    }
+    return fezData.members.participants.length >= fezData.maxParticipants;
   };
 }
 

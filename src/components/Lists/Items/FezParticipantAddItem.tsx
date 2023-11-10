@@ -6,14 +6,13 @@ import {Avatar} from 'react-native-paper';
 
 interface FezParticipantAddItemProps {
   onPress?: () => void;
+  title?: string;
 }
 
-export const FezParticipantAddItem = ({onPress}: FezParticipantAddItemProps) => {
+export const FezParticipantAddItem = ({onPress, title = 'Add participant'}: FezParticipantAddItemProps) => {
   const {commonStyles, styleDefaults} = useStyles();
 
   const getAvatar = () => <Avatar.Icon icon={AppIcons.new} size={styleDefaults.avatarSize} />;
 
-  return (
-    <List.Item style={[commonStyles.paddingHorizontal]} title={'Add participant'} onPress={onPress} left={getAvatar} />
-  );
+  return <List.Item style={[commonStyles.paddingHorizontal]} title={title} onPress={onPress} left={getAvatar} />;
 };

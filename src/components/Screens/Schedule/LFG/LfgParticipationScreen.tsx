@@ -29,6 +29,9 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
+import {FezData} from '../../../../libraries/Structs/ControllerStructs';
+import {LfgLeaveModal} from '../../../Views/Modals/LfgLeaveModal';
+import {useFezMembershipMutation} from '../../../Queries/Fez/FezMembershipQueries';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -52,17 +55,25 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
   const bottomNav = useBottomTabNavigator();
+  const membershipMutation = useFezMembershipMutation();
 
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));
   };
 
-  const onParticipantRemove = (fezID: string, userID: string) => {
+  const onParticipantRemove = (fezData: FezData, userID: string) => {
+    // Call the join/unjoin if you are working on yourself.
+    if (userID === profilePublicData?.header.userID) {
+      setModalContent(<LfgLeaveModal fezData={fezData} />);
+      setModalVisible(true);
+      return;
+    }
+    // Call the add/remove if you are working on others.
     participantMutation.mutate(
       {
         action: 'remove',
-        fezID: fezID,
+        fezID: fezData.fezID,
         userID: userID,
       },
       {
@@ -70,7 +81,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           setFez(response.data);
         },
         onError: error => {
-          setErrorMessage(error.response?.data.reason);
+          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );
@@ -94,6 +105,31 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
     [setModalContent, setModalVisible],
   );
 
+  const handleJoin = useCallback(() => {
+    if (!fez || !profilePublicData) {
+      return;
+    }
+    if (FezData.isParticipant(fez, profilePublicData.header)) {
+      setModalContent(<LfgLeaveModal fezData={fez} />);
+      setModalVisible(true);
+    } else {
+      membershipMutation.mutate(
+        {
+          fezID: fez.fezID,
+          action: 'join',
+        },
+        {
+          onSuccess: response => {
+            setFez(response.data);
+          },
+          onError: error => {
+            setErrorMessage(error.response?.data.reason || error);
+          },
+        },
+      );
+    }
+  }, [fez, membershipMutation, profilePublicData, setErrorMessage, setFez, setModalContent, setModalVisible]);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
@@ -105,11 +141,14 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   }
 
   const manageUsers = fez.owner.userID === profilePublicData?.header.userID;
-  const isFull = fez.members.waitingList.length > 0 || fez.members.participants.length >= fez.maxParticipants;
+  const isFull = FezData.isFull(fez);
   const isUnlimited = fez.maxParticipants === 0;
+  const isMember = FezData.isParticipant(fez, profilePublicData?.header);
   const participantsString = isUnlimited
     ? `${fez.members.participants.length}`
     : `${fez.members.participants.length}/${fez.maxParticipants}`;
+
+  console.log('Am I member', isMember, 'Is full', isFull);
 
   return (
     <AppView>
@@ -130,9 +169,10 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                 onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
               />
             )}
+            {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
             {fez.members.participants.map(u => (
               <FezParticipantListItem
-                onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
+                onRemove={() => onParticipantRemove(fez, u.userID)}
                 key={u.userID}
                 user={u}
                 fez={fez}
@@ -158,9 +198,10 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                     onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
                   />
                 )}
+                {!isMember && isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
                 {fez.members.waitingList.map(u => (
                   <FezParticipantListItem
-                    onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
+                    onRemove={() => onParticipantRemove(fez, u.userID)}
                     key={u.userID}
                     user={u}
                     fez={fez}
