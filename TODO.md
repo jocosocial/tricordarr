@@ -41,7 +41,6 @@ Work Queue
     * Missing from the site UI too. WTF
     * The API call filters Fez's that you are a part of. So either we need a URL param to include those or two calls
     * to load the schedule, joined and open.
-  * Entire card touchable ripple
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Participant changes need to trigger loading

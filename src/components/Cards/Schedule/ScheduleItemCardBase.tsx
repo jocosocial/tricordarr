@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {Card, Text} from 'react-native-paper';
+import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 
@@ -63,41 +63,43 @@ export const ScheduleItemCardBase = ({
   });
 
   return (
-    <Card mode={'contained'} style={cardStyle} onPress={onPress}>
-      <Card.Content style={styles.cardContent}>
-        <View style={styles.contentView}>
-          <View style={styles.contentBody}>
-            <View style={styles.titleContainer}>
-              <View style={styles.titleTextContainer}>
-                <Text style={styles.titleText} variant={'titleMedium'}>
-                  {title}
-                </Text>
+    <Card mode={'contained'} style={cardStyle}>
+      <TouchableRipple onPress={onPress}>
+        <Card.Content style={styles.cardContent}>
+          <View style={styles.contentView}>
+            <View style={styles.contentBody}>
+              <View style={styles.titleContainer}>
+                <View style={styles.titleTextContainer}>
+                  <Text style={styles.titleText} variant={'titleMedium'}>
+                    {title}
+                  </Text>
+                </View>
+                <View style={commonStyles.badgeContainer}>{titleRight && titleRight()}</View>
               </View>
-              <View style={commonStyles.badgeContainer}>{titleRight && titleRight()}</View>
+              {duration && (
+                <Text style={styles.bodyText} variant={'bodyMedium'}>
+                  {duration}
+                </Text>
+              )}
+              {location && (
+                <Text style={styles.bodyText} variant={'bodyMedium'}>
+                  {location}
+                </Text>
+              )}
+              {author && (
+                <Text style={styles.bodyText} variant={'bodyMedium'}>
+                  {author}
+                </Text>
+              )}
+              {participation && (
+                <Text style={styles.bodyText} variant={'bodyMedium'}>
+                  {participation}
+                </Text>
+              )}
             </View>
-            {duration && (
-              <Text style={styles.bodyText} variant={'bodyMedium'}>
-                {duration}
-              </Text>
-            )}
-            {location && (
-              <Text style={styles.bodyText} variant={'bodyMedium'}>
-                {location}
-              </Text>
-            )}
-            {author && (
-              <Text style={styles.bodyText} variant={'bodyMedium'}>
-                {author}
-              </Text>
-            )}
-            {participation && (
-              <Text style={styles.bodyText} variant={'bodyMedium'}>
-                {participation}
-              </Text>
-            )}
           </View>
-        </View>
-      </Card.Content>
+        </Card.Content>
+      </TouchableRipple>
     </Card>
   );
 };

@@ -24,6 +24,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       borderTopStartRadius: theme.roundness * 3,
       borderBottomStartRadius: theme.roundness * 3,
     },
+    roundedBorderCard: {
+      borderRadius: theme.roundness * 3,
+    },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
       color: theme.colors.onPrimaryContainer,

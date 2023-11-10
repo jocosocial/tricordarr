@@ -21,6 +21,7 @@ import {EventData} from '../../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
 import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 import {useModal} from '../../../Context/Contexts/ModalContext';
+import {LoadingView} from '../../../Views/Static/LoadingView';
 
 const helpContent = [
   'Always check the official daily printed schedule to confirm event times/locations.',
@@ -120,6 +121,10 @@ export const ScheduleEventScreen = ({navigation, route}: Props) => {
   });
 
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
+
+  if (!eventData) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>

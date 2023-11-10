@@ -7,6 +7,9 @@ import {getTimeMarker} from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
+import {TouchableRipple} from 'react-native-paper';
+import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 
 interface SeamailFlatListProps {
   scheduleItems: (EventData | FezData)[];
@@ -17,12 +20,20 @@ interface SeamailFlatListProps {
 
 export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
+  const navigation = useScheduleStack();
 
   const renderListItem = ({item}: {item: EventData | FezData}) => {
     return (
       <View>
-        {'fezID' in item && <LfgCard lfg={item} />}
-        {'eventID' in item && <EventCard eventData={item} />}
+        {'fezID' in item && (
+          <LfgCard lfg={item} onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})} />
+        )}
+        {'eventID' in item && (
+          <EventCard
+            eventData={item}
+            onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+          />
+        )}
       </View>
     );
   };
