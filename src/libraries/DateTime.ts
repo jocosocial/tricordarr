@@ -169,7 +169,7 @@ export const getDurationString = (
   includeDay: boolean = false,
 ) => {
   if (!startTimeStr || !endTimeStr || !timeZoneAbbrStr) {
-    return '';
+    return 'Unknown Time';
   }
   const endFormat = 'hh:mm A';
   const startFormat = includeDay ? 'ddd MMM D hh:mm A' : endFormat;
