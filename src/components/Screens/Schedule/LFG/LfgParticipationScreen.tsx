@@ -151,9 +151,11 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
             </PaddedContentView>
             <PaddedContentView padSides={false}>
               <ListSection>
-                <FezParticipantAddItem
-                  onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
-                />
+                {manageUsers && (
+                  <FezParticipantAddItem
+                    onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                  />
+                )}
                 {fez.members.waitingList.map(u => (
                   <FezParticipantListItem
                     onRemove={() => onParticipantRemove(fez.fezID, u.userID)}
