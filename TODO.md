@@ -45,5 +45,4 @@ Work Queue
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Participant changes need to trigger loading
   * deduplicate minutelyupdatingdate
-  * scheduleitemcardbase typing with optional fez junk
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.

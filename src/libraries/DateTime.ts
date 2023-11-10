@@ -157,6 +157,8 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
 
 /**
  * Returns a formatted string of the start and end times of an event, factoring in the apparent time zone.
+ * In the event we cannot form a formatted string then we return empty string so that clients can
+ * do a False-y check on whether to render something or not.
  * @param startTimeStr Start ISO string.
  * @param endTimeStr End ISO string.
  * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
@@ -169,7 +171,7 @@ export const getDurationString = (
   includeDay: boolean = false,
 ) => {
   if (!startTimeStr || !endTimeStr || !timeZoneAbbrStr) {
-    return 'Unknown Time';
+    return '';
   }
   const endFormat = 'hh:mm A';
   const startFormat = includeDay ? 'ddd MMM D hh:mm A' : endFormat;

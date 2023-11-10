@@ -2,12 +2,8 @@ import React, {ReactNode} from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import useDateTime, {calcCruiseDayTime, getDurationString, getTimeZoneOffset} from '../../../libraries/DateTime';
-import {parseISO} from 'date-fns';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
-import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {getDurationString} from '../../../libraries/DateTime';
+import {TimeMarker} from '../../Views/Schedule/TimeMarker';
 
 interface ScheduleItemCardBaseProps {
   title: string;
@@ -39,9 +35,6 @@ export const ScheduleItemCardBase = ({
   showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
-  const {startDate, endDate} = useCruise();
-  const minutelyUpdatingDate = useDateTime('minute');
-  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -81,24 +74,14 @@ export const ScheduleItemCardBase = ({
 
   const duration = getDurationString(startTime, endTime, timeZone, showDay);
 
-  const itemStartTime = parseISO(startTime);
-  const itemEndTime = parseISO(endTime);
-  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
-  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
-  const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-  const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, timeZone, startTime);
-
   return (
     <Card mode={'contained'} style={cardStyle}>
       <TouchableRipple onPress={onPress} onLongPress={onLongPress}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
-            {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-              nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
-              nowDayTime.dayMinutes - tzOffset < eventEndDayTime.dayMinutes && <EventCardNowView />}
-            {nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
-              nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes - 30 &&
-              nowDayTime.dayMinutes - tzOffset < eventStartDayTime.dayMinutes && <EventCardSoonView />}
+            {startTime && endTime && timeZone && (
+              <TimeMarker startTime={startTime} endTime={endTime} timeZone={timeZone} />
+            )}
             <View style={styles.contentBody}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainer}>
