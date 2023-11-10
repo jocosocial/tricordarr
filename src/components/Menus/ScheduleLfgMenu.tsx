@@ -10,12 +10,14 @@ import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {LfgCancelModal} from '../Views/Modals/LfgCancelModal';
+import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useScheduleStack();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
+  const {profilePublicData} = useUserData();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -35,12 +37,14 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
-        leadingIcon={AppIcons.cancel}
-        title={'Cancel'}
-        onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
-        disabled={fezData.cancelled}
-      />
+      {fezData.owner.userID === profilePublicData?.header.userID && (
+        <Menu.Item
+          leadingIcon={AppIcons.cancel}
+          title={'Cancel'}
+          onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
+          disabled={fezData.cancelled}
+        />
+      )}
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}

@@ -53,5 +53,3 @@ Work Queue
   * Participant screen showing 0 not unlimited. Add part button on wait list section for unlimited
   * Hide add button if not owner
   * Male a join button on participant screen. Correct section
-  * Hide cancel button if not owner
-  * Moderate link to webview
