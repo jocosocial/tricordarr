@@ -24,6 +24,7 @@ export interface AppConfig {
   unifiedSchedule: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
+  portTimeZoneID: string;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -52,6 +53,7 @@ const defaultAppConfig: AppConfig = {
   unifiedSchedule: true,
   hidePastLfgs: true,
   enableLateDayFlip: true,
+  portTimeZoneID: 'America/New_York',
 };
 
 /**
@@ -72,6 +74,9 @@ const getInitialAppConfig = () => {
   }
   if (Config.CRUISE_LENGTH) {
     config.cruiseLength = Number(Config.CRUISE_LENGTH);
+  }
+  if (Config.PORT_TIME_ZONE_ID) {
+    config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
   }
   return config;
 };

@@ -7,6 +7,7 @@ import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 interface ScheduleItemCardBaseProps {
   title: string;
@@ -40,6 +41,7 @@ export const ScheduleItemCardBase = ({
   const {commonStyles} = useStyles();
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     cardContent: {
@@ -84,7 +86,7 @@ export const ScheduleItemCardBase = ({
   const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
   const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-  const tzOffset = getTimeZoneOffset('America/New_York', timeZone, startTime);
+  const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, timeZone, startTime);
 
   return (
     <Card mode={'contained'} style={cardStyle}>

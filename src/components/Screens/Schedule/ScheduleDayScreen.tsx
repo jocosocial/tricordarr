@@ -92,7 +92,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
       for (let i = 0; i < itemList.length; i++) {
         const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
-        const tzOffset = getTimeZoneOffset('America/New_York', itemList[i].timeZone, itemList[i].startTime);
+        const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
 
         if (
           nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
@@ -110,7 +110,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           endDate,
         );
         const lastItemTzOffset = getTimeZoneOffset(
-          'America/New_York',
+          appConfig.portTimeZoneID,
           itemList[itemList.length - 1].timeZone,
           itemList[itemList.length - 1].startTime,
         );
@@ -125,7 +125,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       // Return the array of parsed ScheduleItems.
       return itemList;
     },
-    [endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate],
+    [appConfig.portTimeZoneID, endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate],
   );
 
   const scrollToNow = useCallback(() => {

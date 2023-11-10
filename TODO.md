@@ -46,6 +46,5 @@ Work Queue
   * Participant changes need to trigger loading
   * deduplicate minutelyupdatingdate
   * scheduleitemcardbase typing with optional fez junk
-  * portTime to app config from env
   * getduration take undefined and just return UNKNOWN
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
