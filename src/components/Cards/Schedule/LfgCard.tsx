@@ -4,6 +4,9 @@ import {ScheduleItemCardBase} from './ScheduleItemCardBase';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {getDurationString} from '../../../libraries/DateTime';
 import {useAppTheme} from '../../../styles/Theme';
+import {Badge} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 interface LfgCardProps {
   lfg: FezData;
@@ -13,6 +16,24 @@ interface LfgCardProps {
 export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
+  const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    badge: {
+      ...commonStyles.bold,
+      ...commonStyles.paddingHorizontalSmall,
+    },
+  });
+
+  const getBadge = () => {
+    if (!!unreadCount || lfg.cancelled) {
+      return (
+        <Badge style={styles.badge}>
+          {lfg.cancelled ? 'Cancelled' : `${unreadCount} new ${pluralize('post', unreadCount)}`}
+        </Badge>
+      );
+    }
+  };
 
   return (
     <ScheduleItemCardBase
@@ -20,13 +41,12 @@ export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
       cardStyle={{
         backgroundColor: theme.colors.outline,
       }}
-      showBadge={!!unreadCount || lfg.cancelled}
       title={lfg.title}
-      badgeValue={lfg.cancelled ? 'Cancelled' : `${unreadCount} new ${pluralize('post', unreadCount)}`}
       duration={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
       author={`Hosted by: ${UserHeader.getByline(lfg.owner)}`}
       participation={lfg.members ? FezData.getParticipantLabel(lfg) : undefined}
       location={lfg.location}
+      titleRight={getBadge}
     />
   );
 };

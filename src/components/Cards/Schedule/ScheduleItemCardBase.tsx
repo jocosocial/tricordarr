@@ -1,11 +1,9 @@
-import React from 'react';
-import {Badge, Card, Text} from 'react-native-paper';
+import React, {ReactNode} from 'react';
+import {Card, Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 
 interface ScheduleItemCardBaseProps {
-  badgeValue?: string;
-  showBadge?: boolean;
   title: string;
   duration?: string;
   author?: string;
@@ -13,18 +11,18 @@ interface ScheduleItemCardBaseProps {
   location?: string;
   onPress?: () => void;
   cardStyle?: StyleProp<ViewStyle>;
+  titleRight?: () => ReactNode;
 }
 
 export const ScheduleItemCardBase = ({
   title,
   duration,
   author,
-  badgeValue,
   participation,
   cardStyle,
   location,
   onPress,
-  showBadge = false,
+  titleRight,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
 
@@ -47,12 +45,6 @@ export const ScheduleItemCardBase = ({
     bodyText: {
       ...commonStyles.onTwitarrButton,
     },
-    badgeContainer: {
-      ...commonStyles.flexEnd,
-    },
-    titleTextContainer: {
-      ...commonStyles.flexStart,
-    },
     titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
@@ -60,11 +52,13 @@ export const ScheduleItemCardBase = ({
     titleContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
-      ...commonStyles.alignItemsCenter,
     },
-    badge: {
-      ...commonStyles.bold,
-      ...commonStyles.paddingHorizontalSmall,
+    titleTextContainer: {
+      ...commonStyles.flexStart,
+      ...commonStyles.flex,
+    },
+    badgeContainer: {
+      ...commonStyles.flexEnd,
     },
   });
 
@@ -79,9 +73,7 @@ export const ScheduleItemCardBase = ({
                   {title}
                 </Text>
               </View>
-              <View style={commonStyles.badgeContainer}>
-                {showBadge && <Badge style={styles.badge}>{badgeValue}</Badge>}
-              </View>
+              <View style={commonStyles.badgeContainer}>{titleRight && titleRight()}</View>
             </View>
             {duration && (
               <Text style={styles.bodyText} variant={'bodyMedium'}>

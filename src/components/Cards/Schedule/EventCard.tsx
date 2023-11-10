@@ -4,6 +4,8 @@ import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {getDurationString} from '../../../libraries/DateTime';
 import {useAppTheme} from '../../../styles/Theme';
 import {EventType} from '../../../libraries/Enums/EventType';
+import {AppIcon} from '../../Images/AppIcon';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 interface EventCardProps {
   eventData: EventData;
@@ -12,6 +14,12 @@ interface EventCardProps {
 
 export const EventCard = ({eventData, onPress}: EventCardProps) => {
   const theme = useAppTheme();
+
+  const getFavorite = () => {
+    if (eventData.isFavorite) {
+      return <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />;
+    }
+  };
 
   return (
     <ScheduleItemCardBase
@@ -23,6 +31,7 @@ export const EventCard = ({eventData, onPress}: EventCardProps) => {
       title={eventData.title}
       duration={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
       location={eventData.location}
+      titleRight={getFavorite}
     />
   );
 };

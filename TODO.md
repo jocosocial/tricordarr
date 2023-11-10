@@ -36,7 +36,6 @@ Work Queue
 * Schedule
   * Ok yeah kill the ScheduleItem concept. Need badge for LFGs in card.
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
-  * show favorite star in badge position of event card
 * Nightly
   * My lfg for Saturday noon is missing from day view
     * Missing from the site UI too. WTF
