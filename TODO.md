@@ -44,7 +44,6 @@ Work Queue
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Participant changes need to trigger loading
-  * What does minimum do?
   * deduplicate minutelyupdatingdate
   * scheduleitemcardbase typing with optional fez junk
   * portTime to app config from env

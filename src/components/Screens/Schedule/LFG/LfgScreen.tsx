@@ -44,7 +44,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {fez, setFez} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
   const {setErrorMessage} = useErrorHandler();
-  const {setErrorBanner} = useErrorHandler();
 
   const styles = StyleSheet.create({
     item: {

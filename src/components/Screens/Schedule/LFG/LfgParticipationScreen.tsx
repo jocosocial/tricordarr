@@ -145,11 +145,6 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const isUnlimited = fez.maxParticipants === 0;
   const isMember = FezData.isParticipant(fez, profilePublicData?.header);
   const isWaitlist = FezData.isWaitlist(fez, profilePublicData?.header);
-  const participantsString = isUnlimited
-    ? `${fez.members.participants.length}`
-    : `${fez.members.participants.length}/${fez.maxParticipants}`;
-
-  console.log('Am I member', isMember, 'Is full', isFull);
 
   return (
     <AppView>
@@ -160,8 +155,16 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
             <Text>{fez.title}</Text>
           </TouchableOpacity>
         </PaddedContentView>
+        <PaddedContentView>
+          <TitleTag>Minimum Needed</TitleTag>
+          <Text>{fez.minParticipants}</Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <TitleTag>Maximum Allowed</TitleTag>
+          <Text>{fez.maxParticipants === 0 ? 'Unlimited' : fez.maxParticipants}</Text>
+        </PaddedContentView>
         <PaddedContentView padBottom={false}>
-          <TitleTag>Participants ({participantsString})</TitleTag>
+          <TitleTag>Participants ({fez.participantCount})</TitleTag>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>

@@ -240,14 +240,14 @@ export namespace FezData {
    */
   export const getParticipantLabel = (fez: FezData) => {
     if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} attendees`;
+      return `${fez.participantCount} attendees, ${fez.minParticipants} minimum`;
     }
     const waitlistCount: number = fez.members?.waitingList.length || 0;
     let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} participants`;
     if (fez.participantCount >= fez.maxParticipants) {
       attendeeCountString = 'Full';
     }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted`;
+    return `${attendeeCountString}, ${waitlistCount} waitlisted, ${fez.minParticipants} minimum`;
   };
 
   const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
