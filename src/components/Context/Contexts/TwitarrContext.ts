@@ -1,7 +1,8 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
+import {EventListActionsType} from '../../Reducers/Event/EventListReducer';
 
 interface TwitarrContextType {
   fez?: FezData;
@@ -12,6 +13,8 @@ interface TwitarrContextType {
   dispatchFezPostsData: Dispatch<FezPostsActionsType>;
   searchString: string;
   setSearchString: Dispatch<SetStateAction<string>>;
+  eventList: EventData[];
+  dispatchEventList: Dispatch<EventListActionsType>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

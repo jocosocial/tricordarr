@@ -38,7 +38,7 @@ const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData
       return fezList.flatMap(f => {
         if (f.fezID === action.fezID && f.members) {
           f.members.postCount = f.members.postCount + 1;
-          f.lastModificationTime = new Date();
+          f.lastModificationTime = new Date().toISOString();
         }
         return f;
       });
@@ -69,7 +69,7 @@ const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData
         if (f.fezID === action.fezID && f.members) {
           f.members.postCount = f.members.postCount + 1;
           f.members.readCount = f.members.readCount + 1;
-          f.lastModificationTime = new Date();
+          f.lastModificationTime = new Date().toISOString();
         }
         return f;
       });
