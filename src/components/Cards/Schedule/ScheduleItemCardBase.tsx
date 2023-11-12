@@ -3,7 +3,9 @@ import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {getDurationString} from '../../../libraries/DateTime';
-import {TimeMarker} from '../../Views/Schedule/TimeMarker';
+import {ScheduleCardMarkerType} from '../../../libraries/Types';
+import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
+import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
 
 interface ScheduleItemCardBaseProps {
   title: string;
@@ -18,6 +20,7 @@ interface ScheduleItemCardBaseProps {
   timeZone?: string;
   showDay?: boolean;
   onLongPress?: () => void;
+  marker?: ScheduleCardMarkerType;
 }
 
 export const ScheduleItemCardBase = ({
@@ -32,6 +35,7 @@ export const ScheduleItemCardBase = ({
   endTime,
   timeZone,
   onLongPress,
+  marker,
   showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
@@ -79,9 +83,8 @@ export const ScheduleItemCardBase = ({
       <TouchableRipple onPress={onPress} onLongPress={onLongPress}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.contentView}>
-            {startTime && endTime && timeZone && (
-              <TimeMarker startTime={startTime} endTime={endTime} timeZone={timeZone} />
-            )}
+            {marker === 'now' && <EventCardNowView />}
+            {marker === 'soon' && <EventCardSoonView />}
             <View style={styles.contentBody}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainer}>

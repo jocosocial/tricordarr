@@ -185,6 +185,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   // }, [appConfig.unifiedSchedule, buildListData, dispatchEventList, eventData, eventFavoriteFilter, eventTypeFilter]);
 
   useEffect(() => {
+    console.log('ScheduleDayScreen::useEffect::dispatchEventList');
     if (eventData) {
       dispatchEventList({
         type: EventListActions.setList,
@@ -255,6 +256,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
             scheduleItems={eventList}
             scrollNowIndex={scrollNowIndex}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            setRefreshing={setRefreshing}
           />
         </View>
       </View>

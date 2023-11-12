@@ -34,3 +34,5 @@ export type ScheduleFilterSettings = {
   lfgTypeFilter?: keyof typeof FezType;
   showLfgs?: boolean;
 };
+
+export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;

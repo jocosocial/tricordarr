@@ -1,39 +1,85 @@
 import {FlatList, RefreshControlProps, View} from 'react-native';
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {getTimeMarker} from '../../../libraries/DateTime';
+import useDateTime, {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
+import {parseISO} from 'date-fns';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {ScheduleCardMarkerType} from '../../../libraries/Types';
 
 interface SeamailFlatListProps {
   scheduleItems: (EventData | FezData)[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<EventData | FezData>>;
   scrollNowIndex: number;
+  setRefreshing: Dispatch<SetStateAction<boolean>>;
 }
 
-export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailFlatListProps) => {
+const getItemMarker = (
+  item: EventData | FezData,
+  portTimeZoneID: string,
+  nowDate: Date,
+  startDate: Date,
+  endDate: Date,
+): ScheduleCardMarkerType => {
+  if (!item.startTime || !item.endTime || !item.timeZone) {
+    return;
+  }
+  const itemStartTime = parseISO(item.startTime);
+  const itemEndTime = parseISO(item.endTime);
+  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
+  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
+  const nowDayTime = calcCruiseDayTime(nowDate, startDate, endDate);
+  const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZone, item.startTime);
+  if (
+    nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+    nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
+    nowDayTime.dayMinutes - tzOffset < eventEndDayTime.dayMinutes
+  ) {
+    return 'now';
+  } else if (
+    nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+    nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes - 30 &&
+    nowDayTime.dayMinutes - tzOffset < eventStartDayTime.dayMinutes
+  ) {
+    return 'soon';
+  }
+};
+
+export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefreshing}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
   const navigation = useScheduleStack();
+  const {startDate, endDate} = useCruise();
+  const minutelyUpdatingDate = useDateTime('minute');
+  const {appConfig} = useConfig();
 
   const renderListItem = ({item}: {item: EventData | FezData}) => {
+    const marker = getItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
     return (
-      <View>
+      <>
         {'fezID' in item && (
-          <LfgCard lfg={item} onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})} />
+          <LfgCard
+            lfg={item}
+            onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})}
+            marker={marker}
+          />
         )}
         {'eventID' in item && (
           <EventCard
             eventData={item}
             onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+            marker={marker}
+            setRefreshing={setRefreshing}
           />
         )}
-      </View>
+      </>
     );
   };
 
@@ -125,10 +171,10 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
   // };
 
   const keyExtractor = (item: EventData | FezData) => {
-    if ('eventID' in item) {
-      return item.eventID;
-    } else if ('fezID' in item) {
+    if ('fezID' in item) {
       return item.fezID;
+    } else {
+      return item.eventID;
     }
   };
 

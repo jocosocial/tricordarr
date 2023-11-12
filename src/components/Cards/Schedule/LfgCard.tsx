@@ -6,13 +6,15 @@ import {useAppTheme} from '../../../styles/Theme';
 import {Badge} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ScheduleCardMarkerType} from '../../../libraries/Types';
 
 interface LfgCardProps {
   lfg: FezData;
   onPress?: () => void;
+  marker?: ScheduleCardMarkerType;
 }
 
-export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
+export const LfgCard = ({lfg, onPress, marker}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
   const {commonStyles} = useStyles();
@@ -49,6 +51,7 @@ export const LfgCard = ({lfg, onPress}: LfgCardProps) => {
       endTime={lfg.endTime}
       timeZone={lfg.timeZone}
       showDay={false}
+      marker={marker}
     />
   );
 };

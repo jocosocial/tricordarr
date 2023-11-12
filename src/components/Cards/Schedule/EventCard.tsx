@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
@@ -9,14 +9,17 @@ import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQuerie
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {EventListActions} from '../../Reducers/Event/EventListReducer';
+import {ScheduleCardMarkerType} from '../../../libraries/Types';
 
 interface EventCardProps {
   eventData: EventData;
   onPress?: () => void;
   showDay?: boolean;
+  marker?: ScheduleCardMarkerType;
+  setRefreshing?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps) => {
+export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = false}: EventCardProps) => {
   const theme = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const {setErrorMessage} = useErrorHandler();
@@ -29,6 +32,9 @@ export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps)
   };
 
   const handleToggleFavorite = () => {
+    if (setRefreshing) {
+      setRefreshing(true);
+    }
     eventFavoriteMutation.mutate(
       {
         eventID: eventData.eventID,
@@ -44,6 +50,9 @@ export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps)
               isFavorite: !eventData.isFavorite,
             },
           });
+          if (setRefreshing) {
+            setRefreshing(false);
+          }
         },
       },
     );
@@ -64,6 +73,7 @@ export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps)
       timeZone={eventData.timeZone}
       showDay={showDay}
       onLongPress={handleToggleFavorite}
+      marker={marker}
     />
   );
 };
