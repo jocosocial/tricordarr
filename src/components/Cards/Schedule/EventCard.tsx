@@ -8,8 +8,9 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {EventListActions} from '../../Reducers/Event/EventListReducer';
+import {EventListActions} from '../../Reducers/Schedule/EventListReducer';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
+import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 
 interface EventCardProps {
   eventData: EventData;
@@ -23,7 +24,7 @@ export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = 
   const theme = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const {setErrorMessage} = useErrorHandler();
-  const {dispatchEventList} = useTwitarr();
+  const {dispatchScheduleList} = useTwitarr();
 
   const getFavorite = () => {
     if (eventData.isFavorite) {
@@ -43,8 +44,8 @@ export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = 
       {
         onSuccess: () => {
           setErrorMessage(`${eventData.isFavorite ? 'Unfollowed' : 'Followed'} event ${eventData.title}`);
-          dispatchEventList({
-            type: EventListActions.updateEvent,
+          dispatchScheduleList({
+            type: ScheduleListActions.updateEvent,
             newEvent: {
               ...eventData,
               isFavorite: !eventData.isFavorite,

@@ -1,5 +1,5 @@
 import {FlatList, RefreshControlProps, View} from 'react-native';
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -60,28 +60,32 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
   const minutelyUpdatingDate = useDateTime('minute');
   const {appConfig} = useConfig();
 
-  const renderListItem = ({item}: {item: EventData | FezData}) => {
-    const marker = getItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
-    return (
-      <>
-        {'fezID' in item && (
-          <LfgCard
-            lfg={item}
-            onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})}
-            marker={marker}
-          />
-        )}
-        {'eventID' in item && (
-          <EventCard
-            eventData={item}
-            onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
-            marker={marker}
-            setRefreshing={setRefreshing}
-          />
-        )}
-      </>
-    );
-  };
+  // https://reactnative.dev/docs/optimizing-flatlist-configuration
+  const renderListItem = useCallback(
+    ({item}: {item: EventData | FezData}) => {
+      const marker = getItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
+      return (
+        <>
+          {'fezID' in item && (
+            <LfgCard
+              lfg={item}
+              onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})}
+              marker={marker}
+            />
+          )}
+          {'eventID' in item && (
+            <EventCard
+              eventData={item}
+              onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+              marker={marker}
+              setRefreshing={setRefreshing}
+            />
+          )}
+        </>
+      );
+    },
+    [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, navigation, setRefreshing, startDate],
+  );
 
   const renderListSeparator = ({leadingItem}: {leadingItem: EventData | FezData}) => {
     const leadingIndex = scheduleItems.indexOf(leadingItem);
@@ -186,7 +190,6 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
       style={{
         ...commonStyles.paddingHorizontal,
       }}
-      // refreshControl={}
       refreshControl={refreshControl}
       ItemSeparatorComponent={renderListSeparator}
       data={scheduleItems}

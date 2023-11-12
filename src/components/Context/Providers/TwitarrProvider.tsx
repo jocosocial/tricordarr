@@ -3,7 +3,8 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
-import {useEventListReducer} from '../../Reducers/Event/EventListReducer';
+import {useEventListReducer} from '../../Reducers/Schedule/EventListReducer';
+import {useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
@@ -11,6 +12,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer();
   const [searchString, setSearchString] = useState('');
   const [eventList, dispatchEventList] = useEventListReducer([]);
+  const [scheduleList, dispatchScheduleList] = useScheduleListReducer([]);
 
   return (
     <TwitarrContext.Provider
@@ -25,6 +27,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         setSearchString,
         eventList,
         dispatchEventList,
+        scheduleList,
+        dispatchScheduleList,
       }}>
       {children}
     </TwitarrContext.Provider>

@@ -45,3 +45,9 @@ Work Queue
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * deduplicate minutelyupdatingdate
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
+  * Lfg screen refresh don't render is loading on refresh
+  * Hitting add button says seamail not lfg
+  * Default find screen shows all
+  * Settings for each type of fez in unified schedule - joined, owne, find
+  * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
+  * Big buttons for chat, join?

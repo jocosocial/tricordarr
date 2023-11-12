@@ -27,7 +27,8 @@ import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleMenu} from '../../Menus/ScheduleMenu';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {EventListActions} from '../../Reducers/Event/EventListReducer';
+import {EventListActions} from '../../Reducers/Schedule/EventListReducer';
+import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -43,19 +44,24 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     refetch: refetchEvents,
   } = useEventsQuery({cruiseDay: route.params.cruiseDay});
   const {
-    data: lfgData,
-    isLoading: isLfgLoading,
-    refetch: refetchLfgs,
-  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1});
+    data: lfgOpenData,
+    isLoading: isLfgOpenLoading,
+    refetch: refetchLfgOpen,
+  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'open'});
+  const {
+    data: lfgJoinedData,
+    isLoading: isLfgJoinedLoading,
+    refetch: refetchLfgJoined,
+  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'joined'});
+
   const {commonStyles} = useStyles();
-  const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
+  const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
   // const [scheduleItems, setScheduleItems] = useState<(EventData | FezData)[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   // const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
-  const {appConfig} = useConfig();
-  const {eventList, dispatchEventList} = useTwitarr();
+  const {eventList, dispatchEventList, scheduleList, dispatchScheduleList} = useTwitarr();
 
   // const buildListData = useCallback(
   //   (filterSettings: ScheduleFilterSettings) => {
@@ -125,48 +131,48 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   //   [appConfig.portTimeZoneID, endDate, eventList, lfgData?.pages, minutelyUpdatingDate, startDate],
   // );
 
-  // const scrollToNow = useCallback(() => {
-  //   if (scheduleItems.length === 0 || !listRef.current) {
-  //     console.warn('ListRef is undefined or no items, not scrolling.');
-  //     return;
-  //   }
-  //   console.log(
-  //     'Scrolling to index',
-  //     scrollNowIndex,
-  //     'length',
-  //     scheduleItems.length,
-  //     scheduleItems[scrollNowIndex]?.title,
-  //     'at',
-  //     scheduleItems[scrollNowIndex]?.startTime,
-  //   );
-  //   if (scrollNowIndex === 0) {
-  //     listRef.current.scrollToOffset({offset: 0});
-  //   } else if (scrollNowIndex === scheduleItems.length - 1) {
-  //     listRef.current.scrollToEnd();
-  //   } else {
-  //     listRef.current.scrollToIndex({
-  //       index: scrollNowIndex,
-  //     });
-  //   }
-  // }, [scheduleItems, scrollNowIndex]);
+  const scrollToNow = useCallback(() => {
+    if (scheduleList.length === 0 || !listRef.current) {
+      console.warn('ListRef is undefined or no items, not scrolling.');
+      return;
+    }
+    console.log(
+      'Scrolling to index',
+      scrollNowIndex,
+      'length',
+      scheduleList.length,
+      scheduleList[scrollNowIndex]?.title,
+      'at',
+      scheduleList[scrollNowIndex]?.startTime,
+    );
+    if (scrollNowIndex === 0) {
+      listRef.current.scrollToOffset({offset: 0});
+    } else if (scrollNowIndex === scheduleList.length - 1) {
+      listRef.current.scrollToEnd();
+    } else {
+      listRef.current.scrollToIndex({
+        index: scrollNowIndex,
+      });
+    }
+  }, [scheduleList, scrollNowIndex]);
 
-  // const getNavButtons = useCallback(() => {
-  //   return (
-  //     <View>
-  //       <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-  //         <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
-  //         <ScheduleEventFilterMenu />
-  //         <ScheduleMenu />
-  //       </HeaderButtons>
-  //     </View>
-  //   );
-  // }, [route, scrollToNow]);
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
+          <ScheduleEventFilterMenu />
+          <ScheduleMenu />
+        </HeaderButtons>
+      </View>
+    );
+  }, [route, scrollToNow]);
 
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: getNavButtons,
-  //   });
-  // }, [getNavButtons, navigation]);
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   // useEffect(() => {
   //   const filterSettings: ScheduleFilterSettings = {
@@ -185,14 +191,19 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   // }, [appConfig.unifiedSchedule, buildListData, dispatchEventList, eventData, eventFavoriteFilter, eventTypeFilter]);
 
   useEffect(() => {
-    console.log('ScheduleDayScreen::useEffect::dispatchEventList');
-    if (eventData) {
-      dispatchEventList({
-        type: EventListActions.setList,
+    console.log('ScheduleDayScreen::useEffect::dispatchScheduleList');
+    if (eventData && lfgJoinedData && lfgOpenData) {
+      let lfgList: FezData[] = [];
+      lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      console.log('Dispatching', eventData.length, 'events', lfgList.length, 'LFGs');
+      dispatchScheduleList({
+        type: ScheduleListActions.setList,
         eventList: eventData,
+        fezList: lfgList,
       });
     }
-  }, [dispatchEventList, eventData]);
+  }, [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData]);
 
   const styles = StyleSheet.create({
     headerText: {
@@ -211,8 +222,10 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const onRefresh = () => {
     setRefreshing(true);
     refetchEvents().then(() => {
-      refetchLfgs().then(() => {
-        setRefreshing(false);
+      refetchLfgJoined().then(() => {
+        refetchLfgOpen().then(() => {
+          setRefreshing(false);
+        });
       });
     });
   };
@@ -226,10 +239,9 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       cruiseDay: route.params.cruiseDay + 1,
     });
 
-  // console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
-  console.log('Item count', eventList.length, 'Now index', scrollNowIndex);
+  console.log('Item count', scheduleList.length, 'Now index', scrollNowIndex);
 
-  if (isLfgLoading || isEventLoading) {
+  if (isLfgJoinedLoading || isLfgOpenLoading || isEventLoading) {
     return <LoadingView />;
   }
 
@@ -253,7 +265,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         <View style={commonStyles.flex}>
           <EventFlatList
             listRef={listRef}
-            scheduleItems={eventList}
+            scheduleItems={scheduleList}
             scrollNowIndex={scrollNowIndex}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             setRefreshing={setRefreshing}
