@@ -7,7 +7,6 @@ import {getTimeMarker} from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
-import {TouchableRipple} from 'react-native-paper';
 import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
 import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
 
@@ -158,7 +157,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef}: SeamailF
       onScrollToIndexFailed={onScrollToIndexFailed}
       keyExtractor={keyExtractor}
       // This is likely to murder performance. But again, I don't particularly care anymore.
-      initialNumToRender={100}
+      // initialNumToRender={100}
     />
   );
 };

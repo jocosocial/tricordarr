@@ -26,6 +26,8 @@ import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleMenu} from '../../Menus/ScheduleMenu';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {EventListActions} from '../../Reducers/Event/EventListReducer';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -48,138 +50,148 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
-  const [scheduleItems, setScheduleItems] = useState<(EventData | FezData)[]>([]);
+  // const [scheduleItems, setScheduleItems] = useState<(EventData | FezData)[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
-  const minutelyUpdatingDate = useDateTime('minute');
+  // const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
   const {appConfig} = useConfig();
+  const {eventList, dispatchEventList} = useTwitarr();
 
-  const buildListData = useCallback(
-    (filterSettings: ScheduleFilterSettings) => {
-      console.log('### Building Schedule Item List');
-      let itemList: (EventData | FezData)[] = [];
+  // const buildListData = useCallback(
+  //   (filterSettings: ScheduleFilterSettings) => {
+  //     console.log('### Building Schedule Item List');
+  //     let itemList: (EventData | FezData)[] = [];
+  //
+  //     if (filterSettings.showLfgs) {
+  //       lfgData?.pages.map(page => {
+  //         // The API already filters out cancelled LFGs so we don't need to process those here too.
+  //         // lfgList = lfgList.concat(page.fezzes);
+  //         page.fezzes.map(fez => {
+  //           itemList.push(fez);
+  //         });
+  //       });
+  //     }
+  //
+  //     eventList.map(event => {
+  //       if (
+  //         (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
+  //         (filterSettings.eventFavoriteFilter && !event.isFavorite)
+  //       ) {
+  //         return;
+  //       } else {
+  //         itemList.push(event);
+  //       }
+  //     });
+  //
+  //     // ChatGPT for the win
+  //     itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  //
+  //     const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+  //     for (let i = 0; i < itemList.length; i++) {
+  //       const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+  //       const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
+  //
+  //       if (
+  //         nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
+  //         nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
+  //       ) {
+  //         setScrollNowIndex(i - 1);
+  //         break;
+  //       }
+  //     }
+  //     // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
+  //     if (itemList.length > 0) {
+  //       const lastItemStartDayTime = calcCruiseDayTime(
+  //         parseISO(itemList[itemList.length - 1].startTime),
+  //         startDate,
+  //         endDate,
+  //       );
+  //       const lastItemTzOffset = getTimeZoneOffset(
+  //         appConfig.portTimeZoneID,
+  //         itemList[itemList.length - 1].timeZone,
+  //         itemList[itemList.length - 1].startTime,
+  //       );
+  //       if (
+  //         nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
+  //         nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
+  //       ) {
+  //         setScrollNowIndex(itemList.length - 1);
+  //       }
+  //     }
+  //
+  //     // Return the array of parsed ScheduleItems.
+  //     return itemList;
+  //   },
+  //   [appConfig.portTimeZoneID, endDate, eventList, lfgData?.pages, minutelyUpdatingDate, startDate],
+  // );
 
-      if (filterSettings.showLfgs) {
-        lfgData?.pages.map(page => {
-          // The API already filters out cancelled LFGs so we don't need to process those here too.
-          // lfgList = lfgList.concat(page.fezzes);
-          page.fezzes.map(fez => {
-            itemList.push(fez);
-          });
-        });
-      }
+  // const scrollToNow = useCallback(() => {
+  //   if (scheduleItems.length === 0 || !listRef.current) {
+  //     console.warn('ListRef is undefined or no items, not scrolling.');
+  //     return;
+  //   }
+  //   console.log(
+  //     'Scrolling to index',
+  //     scrollNowIndex,
+  //     'length',
+  //     scheduleItems.length,
+  //     scheduleItems[scrollNowIndex]?.title,
+  //     'at',
+  //     scheduleItems[scrollNowIndex]?.startTime,
+  //   );
+  //   if (scrollNowIndex === 0) {
+  //     listRef.current.scrollToOffset({offset: 0});
+  //   } else if (scrollNowIndex === scheduleItems.length - 1) {
+  //     listRef.current.scrollToEnd();
+  //   } else {
+  //     listRef.current.scrollToIndex({
+  //       index: scrollNowIndex,
+  //     });
+  //   }
+  // }, [scheduleItems, scrollNowIndex]);
 
-      eventData?.map(event => {
-        if (
-          (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
-          (filterSettings.eventFavoriteFilter && !event.isFavorite)
-        ) {
-          return;
-        } else {
-          itemList.push(event);
-        }
-      });
-      // lfgList.map(lfg => {
-      //   const item = lfgToItem(lfg);
-      //   if (item) {
-      //     itemList.push(item);
-      //   }
-      // });
+  // const getNavButtons = useCallback(() => {
+  //   return (
+  //     <View>
+  //       <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+  //         <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
+  //         <ScheduleEventFilterMenu />
+  //         <ScheduleMenu />
+  //       </HeaderButtons>
+  //     </View>
+  //   );
+  // }, [route, scrollToNow]);
 
-      // ChatGPT for the win
-      itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: getNavButtons,
+  //   });
+  // }, [getNavButtons, navigation]);
 
-      const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-      for (let i = 0; i < itemList.length; i++) {
-        const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
-        const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
-
-        if (
-          nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
-          nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
-        ) {
-          setScrollNowIndex(i - 1);
-          break;
-        }
-      }
-      // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
-      if (itemList.length > 0) {
-        const lastItemStartDayTime = calcCruiseDayTime(
-          parseISO(itemList[itemList.length - 1].startTime),
-          startDate,
-          endDate,
-        );
-        const lastItemTzOffset = getTimeZoneOffset(
-          appConfig.portTimeZoneID,
-          itemList[itemList.length - 1].timeZone,
-          itemList[itemList.length - 1].startTime,
-        );
-        if (
-          nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
-          nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
-        ) {
-          setScrollNowIndex(itemList.length - 1);
-        }
-      }
-
-      // Return the array of parsed ScheduleItems.
-      return itemList;
-    },
-    [appConfig.portTimeZoneID, endDate, eventData, lfgData?.pages, minutelyUpdatingDate, startDate],
-  );
-
-  const scrollToNow = useCallback(() => {
-    if (scheduleItems.length === 0 || !listRef.current) {
-      console.warn('ListRef is undefined or no items, not scrolling.');
-      return;
-    }
-    console.log(
-      'Scrolling to index',
-      scrollNowIndex,
-      'length',
-      scheduleItems.length,
-      scheduleItems[scrollNowIndex]?.title,
-      'at',
-      scheduleItems[scrollNowIndex]?.startTime,
-    );
-    if (scrollNowIndex === 0) {
-      listRef.current.scrollToOffset({offset: 0});
-    } else if (scrollNowIndex === scheduleItems.length - 1) {
-      listRef.current.scrollToEnd();
-    } else {
-      listRef.current.scrollToIndex({
-        index: scrollNowIndex,
-      });
-    }
-  }, [scheduleItems, scrollNowIndex]);
-
-  const getNavButtons = useCallback(() => {
-    return (
-      <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
-          <ScheduleEventFilterMenu />
-          <ScheduleMenu />
-        </HeaderButtons>
-      </View>
-    );
-  }, [route, scrollToNow]);
+  // useEffect(() => {
+  //   const filterSettings: ScheduleFilterSettings = {
+  //     eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
+  //     eventFavoriteFilter: eventFavoriteFilter,
+  //     showLfgs: appConfig.unifiedSchedule,
+  //   };
+  //   if (eventData) {
+  //     dispatchEventList({
+  //       type: EventListActions.setList,
+  //       eventList: eventData,
+  //     });
+  //   }
+  //   console.log('Schedule Filter', filterSettings);
+  //   // setScheduleItems(buildListData(filterSettings));
+  // }, [appConfig.unifiedSchedule, buildListData, dispatchEventList, eventData, eventFavoriteFilter, eventTypeFilter]);
 
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
-
-  useEffect(() => {
-    const filterSettings: ScheduleFilterSettings = {
-      eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
-      eventFavoriteFilter: eventFavoriteFilter,
-      showLfgs: appConfig.unifiedSchedule,
-    };
-    console.log('Schedule Filter', filterSettings);
-    setScheduleItems(buildListData(filterSettings));
-  }, [appConfig.unifiedSchedule, buildListData, eventFavoriteFilter, eventTypeFilter]);
+    if (eventData) {
+      dispatchEventList({
+        type: EventListActions.setList,
+        eventList: eventData,
+      });
+    }
+  }, [dispatchEventList, eventData]);
 
   const styles = StyleSheet.create({
     headerText: {
@@ -213,7 +225,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       cruiseDay: route.params.cruiseDay + 1,
     });
 
-  console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
+  // console.log('Item count', scheduleItems.length, 'Now index', scrollNowIndex);
+  console.log('Item count', eventList.length, 'Now index', scrollNowIndex);
 
   if (isLfgLoading || isEventLoading) {
     return <LoadingView />;
@@ -239,7 +252,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         <View style={commonStyles.flex}>
           <EventFlatList
             listRef={listRef}
-            scheduleItems={scheduleItems}
+            scheduleItems={eventList}
             scrollNowIndex={scrollNowIndex}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           />

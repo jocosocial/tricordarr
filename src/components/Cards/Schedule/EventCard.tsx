@@ -7,6 +7,8 @@ import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {EventListActions} from '../../Reducers/Event/EventListReducer';
 
 interface EventCardProps {
   eventData: EventData;
@@ -18,6 +20,7 @@ export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps)
   const theme = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const {setErrorMessage} = useErrorHandler();
+  const {dispatchEventList} = useTwitarr();
 
   const getFavorite = () => {
     if (eventData.isFavorite) {
@@ -34,7 +37,13 @@ export const EventCard = ({eventData, onPress, showDay = false}: EventCardProps)
       {
         onSuccess: () => {
           setErrorMessage(`${eventData.isFavorite ? 'Unfollowed' : 'Followed'} event ${eventData.title}`);
-          console.log('@TODO update the local data');
+          dispatchEventList({
+            type: EventListActions.updateEvent,
+            newEvent: {
+              ...eventData,
+              isFavorite: !eventData.isFavorite,
+            },
+          });
         },
       },
     );

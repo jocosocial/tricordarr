@@ -13,6 +13,7 @@ export type EventListActionsType =
   // | {type: EventListActions.toggleFollow; eventID: string};
 
 const eventListReducer = (eventList: EventData[], action: EventListActionsType): EventData[] => {
+  console.log('eventListReducer got action', action.type);
   switch (action.type) {
     case EventListActions.setList: {
       return action.eventList;
@@ -20,6 +21,7 @@ const eventListReducer = (eventList: EventData[], action: EventListActionsType):
     case EventListActions.updateEvent: {
       return eventList.flatMap(e => {
         if (e.eventID === action.newEvent.eventID) {
+          console.log('Updating event', e.eventID, e.title);
           return action.newEvent;
         }
         return e;
