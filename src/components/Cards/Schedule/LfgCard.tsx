@@ -15,9 +15,10 @@ interface LfgCardProps {
   lfg: FezData;
   onPress?: () => void;
   marker?: ScheduleCardMarkerType;
+  showLfgIcon?: boolean;
 }
 
-export const LfgCard = ({lfg, onPress, marker}: LfgCardProps) => {
+export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
   const {commonStyles} = useStyles();
@@ -37,7 +38,9 @@ export const LfgCard = ({lfg, onPress, marker}: LfgCardProps) => {
         </Badge>
       );
     }
-    return <AppIcon color={AndroidColor.WHITE} icon={AppIcons.lfg} />;
+    if (showLfgIcon) {
+      return <AppIcon color={AndroidColor.WHITE} icon={AppIcons.lfg} />;
+    }
   };
 
   return (

@@ -71,6 +71,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
               lfg={item}
               onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})}
               marker={marker}
+              showLfgIcon={true}
             />
           )}
           {'eventID' in item && (
