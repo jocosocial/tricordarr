@@ -35,7 +35,6 @@ Work Queue
     * Update
 * Schedule
   * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
-  * Reducer for events. Dispatch event for favorite/unfavorite
 * Nightly
   * My lfg for Saturday noon is missing from day view
     * Missing from the site UI too. WTF
@@ -43,11 +42,8 @@ Work Queue
     * to load the schedule, joined and open.
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
-  * deduplicate minutelyupdatingdate
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
-  * Lfg screen refresh don't render is loading on refresh
   * Hitting add button says seamail not lfg
   * Default find screen shows all
-  * Settings for each type of fez in unified schedule - joined, owne, find
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
   * Big buttons for chat, join?

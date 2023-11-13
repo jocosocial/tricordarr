@@ -7,6 +7,9 @@ import {Badge} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
+import {AppIcon} from '../../Images/AppIcon';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AndroidColor} from '@notifee/react-native';
 
 interface LfgCardProps {
   lfg: FezData;
@@ -34,6 +37,7 @@ export const LfgCard = ({lfg, onPress, marker}: LfgCardProps) => {
         </Badge>
       );
     }
+    return <AppIcon color={AndroidColor.WHITE} icon={AppIcons.lfg} />;
   };
 
   return (

@@ -27,6 +27,7 @@ import {Badge, Text} from 'react-native-paper';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import pluralize from 'pluralize';
 import {LfgCanceledView} from '../../../Views/LfgCanceledView';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 
 export type Props = NativeStackScreenProps<
   ScheduleStackParamList,
@@ -44,6 +45,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {fez, setFez} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
   const {setErrorMessage} = useErrorHandler();
+  const {refetchUserNotificationData} = useUserNotificationData();
 
   const styles = StyleSheet.create({
     item: {
@@ -128,7 +130,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
     }
   }, [data, setFez]);
 
-  if (!fez || isFetching) {
+  // Mark as Read
+  useEffect(() => {
+    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+      refetchUserNotificationData();
+    }
+  }, [fez, refetchUserNotificationData]);
+
+  if (!fez) {
     return <LoadingView />;
   }
 
