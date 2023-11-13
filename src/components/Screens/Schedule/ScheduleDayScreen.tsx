@@ -61,7 +61,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   // const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
-  const {eventList, dispatchEventList, scheduleList, dispatchScheduleList} = useTwitarr();
+  const {scheduleList, dispatchScheduleList} = useTwitarr();
+  const {appConfig} = useConfig();
 
   // const buildListData = useCallback(
   //   (filterSettings: ScheduleFilterSettings) => {
@@ -174,36 +175,88 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  // useEffect(() => {
-  //   const filterSettings: ScheduleFilterSettings = {
-  //     eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
-  //     eventFavoriteFilter: eventFavoriteFilter,
-  //     showLfgs: appConfig.unifiedSchedule,
-  //   };
-  //   if (eventData) {
-  //     dispatchEventList({
-  //       type: EventListActions.setList,
-  //       eventList: eventData,
-  //     });
-  //   }
-  //   console.log('Schedule Filter', filterSettings);
-  //   // setScheduleItems(buildListData(filterSettings));
-  // }, [appConfig.unifiedSchedule, buildListData, dispatchEventList, eventData, eventFavoriteFilter, eventTypeFilter]);
+  const buildScheduleList = useCallback(
+    (filterSettings: ScheduleFilterSettings) => {
+      let lfgList: FezData[] = [];
+      if (filterSettings.showLfgs && lfgJoinedData) {
+        lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      }
+      if (filterSettings.showLfgs && lfgOpenData) {
+        lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      }
+      let eventList: EventData[] = [];
+      eventData?.map(event => {
+        if (
+          (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
+          (filterSettings.eventFavoriteFilter && !event.isFavorite)
+        ) {
+          return;
+        } else {
+          eventList.push(event);
+        }
+      });
+      console.log('Dispatching', eventData?.length, 'events', lfgList.length, 'LFGs');
+      dispatchScheduleList({
+        type: ScheduleListActions.setList,
+        eventList: eventList,
+        fezList: lfgList,
+      });
+    },
+    [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData],
+  );
 
   useEffect(() => {
     console.log('ScheduleDayScreen::useEffect::dispatchScheduleList');
-    if (eventData && lfgJoinedData && lfgOpenData) {
-      let lfgList: FezData[] = [];
-      lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-      lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-      console.log('Dispatching', eventData.length, 'events', lfgList.length, 'LFGs');
-      dispatchScheduleList({
-        type: ScheduleListActions.setList,
-        eventList: eventData,
-        fezList: lfgList,
-      });
-    }
-  }, [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData]);
+    const filterSettings: ScheduleFilterSettings = {
+      eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
+      eventFavoriteFilter: eventFavoriteFilter,
+      showLfgs: appConfig.unifiedSchedule,
+    };
+    buildScheduleList(filterSettings);
+  }, [
+    appConfig.unifiedSchedule,
+    buildScheduleList,
+    dispatchScheduleList,
+    eventData,
+    eventFavoriteFilter,
+    eventTypeFilter,
+    lfgJoinedData,
+    lfgOpenData,
+  ]);
+
+  // useEffect(() => {
+  //   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+  //   for (let i = 0; i < itemList.length; i++) {
+  //     const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
+  //     const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
+  //
+  //     if (
+  //       nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
+  //       nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
+  //     ) {
+  //       setScrollNowIndex(i - 1);
+  //       break;
+  //     }
+  //   }
+  //   // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
+  //   if (itemList.length > 0) {
+  //     const lastItemStartDayTime = calcCruiseDayTime(
+  //       parseISO(itemList[itemList.length - 1].startTime),
+  //       startDate,
+  //       endDate,
+  //     );
+  //     const lastItemTzOffset = getTimeZoneOffset(
+  //       appConfig.portTimeZoneID,
+  //       itemList[itemList.length - 1].timeZone,
+  //       itemList[itemList.length - 1].startTime,
+  //     );
+  //     if (
+  //       nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
+  //       nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
+  //     ) {
+  //       setScrollNowIndex(itemList.length - 1);
+  //     }
+  // }, [])
 
   const styles = StyleSheet.create({
     headerText: {
