@@ -19,7 +19,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
-import {ScheduleFilterSettings} from '../../../libraries/Types';
+import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
@@ -27,7 +27,6 @@ import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleMenu} from '../../Menus/ScheduleMenu';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {EventListActions} from '../../Reducers/Schedule/EventListReducer';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 
 export type Props = NativeStackScreenProps<
@@ -55,82 +54,57 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'joined'});
 
   const {commonStyles} = useStyles();
-  const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
+  const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
-  // const [scheduleItems, setScheduleItems] = useState<(EventData | FezData)[]>([]);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
-  // const minutelyUpdatingDate = useDateTime('minute');
+  const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
   const {scheduleList, dispatchScheduleList} = useTwitarr();
   const {appConfig} = useConfig();
 
-  // const buildListData = useCallback(
-  //   (filterSettings: ScheduleFilterSettings) => {
-  //     console.log('### Building Schedule Item List');
-  //     let itemList: (EventData | FezData)[] = [];
-  //
-  //     if (filterSettings.showLfgs) {
-  //       lfgData?.pages.map(page => {
-  //         // The API already filters out cancelled LFGs so we don't need to process those here too.
-  //         // lfgList = lfgList.concat(page.fezzes);
-  //         page.fezzes.map(fez => {
-  //           itemList.push(fez);
-  //         });
-  //       });
-  //     }
-  //
-  //     eventList.map(event => {
-  //       if (
-  //         (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
-  //         (filterSettings.eventFavoriteFilter && !event.isFavorite)
-  //       ) {
-  //         return;
-  //       } else {
-  //         itemList.push(event);
-  //       }
-  //     });
-  //
-  //     // ChatGPT for the win
-  //     itemList.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  //
-  //     const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-  //     for (let i = 0; i < itemList.length; i++) {
-  //       const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
-  //       const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
-  //
-  //       if (
-  //         nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
-  //         nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
-  //       ) {
-  //         setScrollNowIndex(i - 1);
-  //         break;
-  //       }
-  //     }
-  //     // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
-  //     if (itemList.length > 0) {
-  //       const lastItemStartDayTime = calcCruiseDayTime(
-  //         parseISO(itemList[itemList.length - 1].startTime),
-  //         startDate,
-  //         endDate,
-  //       );
-  //       const lastItemTzOffset = getTimeZoneOffset(
-  //         appConfig.portTimeZoneID,
-  //         itemList[itemList.length - 1].timeZone,
-  //         itemList[itemList.length - 1].startTime,
-  //       );
-  //       if (
-  //         nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
-  //         nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
-  //       ) {
-  //         setScrollNowIndex(itemList.length - 1);
-  //       }
-  //     }
-  //
-  //     // Return the array of parsed ScheduleItems.
-  //     return itemList;
-  //   },
-  //   [appConfig.portTimeZoneID, endDate, eventList, lfgData?.pages, minutelyUpdatingDate, startDate],
-  // );
+  const getScrollIndex = useCallback(
+    (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {
+      for (let i = 0; i < itemList.length; i++) {
+        // Creating a dedicated variable makes the parser happier.
+        const scheduleItem = itemList[i];
+        if (!scheduleItem.startTime || !scheduleItem.timeZone) {
+          break;
+        }
+        const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), startDate, endDate);
+        const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, scheduleItem.timeZone, scheduleItem.startTime);
+
+        if (
+          nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
+          nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
+        ) {
+          return i - 1;
+        }
+      }
+      // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
+      if (itemList.length > 0) {
+        // Creating a dedicated variable makes the parser happier.
+        const scheduleItem = itemList[itemList.length - 1];
+        if (!scheduleItem.startTime || !scheduleItem.timeZone) {
+          return itemList.length - 1;
+        }
+        const lastItemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), startDate, endDate);
+        const lastItemTzOffset = getTimeZoneOffset(
+          appConfig.portTimeZoneID,
+          scheduleItem.timeZone,
+          scheduleItem.startTime,
+        );
+        if (
+          nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
+          nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
+        ) {
+          return itemList.length - 1;
+        }
+      }
+      // List of zero or any other situation, just return 0 (start of list);
+      return 0;
+    },
+    [appConfig.portTimeZoneID, endDate, startDate],
+  );
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
@@ -169,12 +143,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     );
   }, [route, scrollToNow]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
-
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
       let lfgList: FezData[] = [];
@@ -205,6 +173,23 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData],
   );
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetchEvents().then(() => {
+      refetchLfgJoined().then(() => {
+        refetchLfgOpen().then(() => {
+          setRefreshing(false);
+        });
+      });
+    });
+  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
   useEffect(() => {
     console.log('ScheduleDayScreen::useEffect::dispatchScheduleList');
     const filterSettings: ScheduleFilterSettings = {
@@ -224,39 +209,10 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     lfgOpenData,
   ]);
 
-  // useEffect(() => {
-  //   const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-  //   for (let i = 0; i < itemList.length; i++) {
-  //     const itemStartDayTime = calcCruiseDayTime(parseISO(itemList[i].startTime), startDate, endDate);
-  //     const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, itemList[i].timeZone, itemList[i].startTime);
-  //
-  //     if (
-  //       nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
-  //       nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
-  //     ) {
-  //       setScrollNowIndex(i - 1);
-  //       break;
-  //     }
-  //   }
-  //   // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
-  //   if (itemList.length > 0) {
-  //     const lastItemStartDayTime = calcCruiseDayTime(
-  //       parseISO(itemList[itemList.length - 1].startTime),
-  //       startDate,
-  //       endDate,
-  //     );
-  //     const lastItemTzOffset = getTimeZoneOffset(
-  //       appConfig.portTimeZoneID,
-  //       itemList[itemList.length - 1].timeZone,
-  //       itemList[itemList.length - 1].startTime,
-  //     );
-  //     if (
-  //       nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
-  //       nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
-  //     ) {
-  //       setScrollNowIndex(itemList.length - 1);
-  //     }
-  // }, [])
+  useEffect(() => {
+    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+    setScrollNowIndex(getScrollIndex(nowDayTime, scheduleList));
+  }, [endDate, getScrollIndex, minutelyUpdatingDate, scheduleList, startDate]);
 
   const styles = StyleSheet.create({
     headerText: {
@@ -271,17 +227,6 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
       ...commonStyles.flexRow,
     },
   });
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetchEvents().then(() => {
-      refetchLfgJoined().then(() => {
-        refetchLfgOpen().then(() => {
-          setRefreshing(false);
-        });
-      });
-    });
-  };
 
   const navigatePreviousDay = () =>
     navigation.push(ScheduleStackComponents.scheduleDayScreen, {

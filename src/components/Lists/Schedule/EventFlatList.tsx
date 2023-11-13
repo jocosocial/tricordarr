@@ -184,6 +184,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
 
   // const initialIndex = getInitialScrollindex();
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
+  console.log('EventFlatList is rendering');
 
   return (
     <FlatList
@@ -206,7 +207,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
       onScrollToIndexFailed={onScrollToIndexFailed}
       keyExtractor={keyExtractor}
       // This is likely to murder performance. But again, I don't particularly care anymore.
-      // initialNumToRender={100}
+      initialNumToRender={100}
     />
   );
 };
