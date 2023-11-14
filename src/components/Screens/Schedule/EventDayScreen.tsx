@@ -1,10 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {RefreshControl, StyleSheet, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {RefreshControl, View} from 'react-native';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
@@ -12,8 +11,7 @@ import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {IconButton, Menu, Text} from 'react-native-paper';
-import {format, parseISO} from 'date-fns';
+import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
@@ -27,6 +25,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
+import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -53,7 +52,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'joined'});
 
   const {commonStyles} = useStyles();
-  const {cruiseDays, cruiseDayToday, cruiseLength, startDate, endDate} = useCruise();
+  const {startDate, endDate} = useCruise();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
@@ -214,20 +213,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     setScrollNowIndex(getScrollIndex(nowDayTime, scheduleList));
   }, [endDate, getScrollIndex, minutelyUpdatingDate, scheduleList, startDate]);
 
-  const styles = StyleSheet.create({
-    headerText: {
-      ...commonStyles.paddingHorizontalSmall,
-      ...commonStyles.bold,
-    },
-    headerTextContainer: {
-      ...commonStyles.flexGrow,
-      ...commonStyles.justifyCenter,
-    },
-    headerView: {
-      ...commonStyles.flexRow,
-    },
-  });
-
   // Trying .navigate() to avoid some performance issues with keeping past pages around.
   const navigatePreviousDay = () =>
     navigation.navigate(EventStackComponents.eventDayScreen, {
@@ -247,20 +232,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <View style={commonStyles.flex}>
-        <View style={{...styles.headerView}}>
-          <IconButton icon={AppIcons.back} onPress={navigatePreviousDay} disabled={route.params.cruiseDay === 1} />
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>
-              {format(cruiseDays[route.params.cruiseDay - 1].date, 'eeee LLLL do')}
-              {cruiseDayToday === route.params.cruiseDay ? ' (Today)' : ''}
-            </Text>
-          </View>
-          <IconButton
-            icon={AppIcons.forward}
-            onPress={navigateNextDay}
-            disabled={route.params.cruiseDay === cruiseLength}
-          />
-        </View>
+        <ScheduleDayHeaderView
+          navigateNextDay={navigateNextDay}
+          navigatePreviousDay={navigatePreviousDay}
+          selectedCruiseDay={route.params.cruiseDay}
+        />
         <View style={commonStyles.flex}>
           <EventFlatList
             listRef={listRef}

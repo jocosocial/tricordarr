@@ -4,14 +4,20 @@ import {FAB, Portal} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
+import {
+  EventStackParamList,
+  useEventStackNavigation,
+  useEventStackRoute,
+} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
 
 export const EventFAB = () => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
+  const {cruiseDayToday} = useCruise();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -25,6 +31,14 @@ export const EventFAB = () => {
       return;
     }
     navigation.push(component);
+  };
+
+  const handleFavoriteNav = () => {
+    let cruiseDay = cruiseDayToday;
+    if (route.params && 'cruiseDay' in route.params) {
+      cruiseDay = route.params.cruiseDay;
+    }
+    navigation.push(EventStackComponents.eventFavoritesScreen, {cruiseDay: cruiseDay});
   };
 
   return (
@@ -42,7 +56,7 @@ export const EventFAB = () => {
           FabGroupAction({
             icon: AppIcons.favorite,
             label: 'Favorites',
-            onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
+            onPress: handleFavoriteNav,
             backgroundColor: backgroundColor,
             color: color,
           }),
