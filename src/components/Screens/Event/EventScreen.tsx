@@ -1,27 +1,27 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '../../../Views/AppView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useEventQuery} from '../../../Queries/Events/EventQueries';
+import {AppView} from '../../Views/AppView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {useEventQuery} from '../../Queries/Events/EventQueries';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
-import {NavigatorIDs, EventStackComponents} from '../../../../libraries/Enums/Navigation';
+import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
+import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {DataFieldListItem} from '../../../Lists/Items/DataFieldListItem';
-import {ListSection} from '../../../Lists/ListSection';
-import {AppIcon} from '../../../Images/AppIcon';
-import {getDurationString} from '../../../../libraries/DateTime';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {useEventFavoriteMutation} from '../../../Queries/Events/EventFavoriteQueries';
-import {useAppTheme} from '../../../../styles/Theme';
-import {EventData} from '../../../../libraries/Structs/ControllerStructs';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
+import {ListSection} from '../../Lists/ListSection';
+import {AppIcon} from '../../Images/AppIcon';
+import {getDurationString} from '../../../libraries/DateTime';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
+import {useAppTheme} from '../../../styles/Theme';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {HelpModalView} from '../../../Views/Modals/HelpModalView';
-import {useModal} from '../../../Context/Contexts/ModalContext';
-import {LoadingView} from '../../../Views/Static/LoadingView';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 const helpContent = [
   'Always check the official daily printed schedule to confirm event times/locations.',

@@ -1,14 +1,14 @@
-import {AppView} from '../../../Views/AppView';
+import {AppView} from '../../Views/AppView';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 import {RefreshControl, View} from 'react-native';
-import {useEventFavoriteQuery} from '../../../Queries/Events/EventQueries';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {EventCard} from '../../../Cards/Schedule/EventCard';
-import {LoadingView} from '../../../Views/Static/LoadingView';
+import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {EventCard} from '../../Cards/Schedule/EventCard';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,

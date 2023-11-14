@@ -2,16 +2,16 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {LfgOwnedScreen} from '../../Screens/Schedule/LFG/LfgOwnedScreen';
-import {LfgHelpScreen} from '../../Screens/Schedule/LFG/LfgHelpScreen';
-import {LfgJoinedScreen} from '../../Screens/Schedule/LFG/LfgJoinedScreen';
-import {LfgFindScreen} from '../../Screens/Schedule/LFG/LfgFindScreen';
-import {LfgScreen} from '../../Screens/Schedule/LFG/LfgScreen';
-import {LfgParticipationScreen} from '../../Screens/Schedule/LFG/LfgParticipationScreen';
-import {LfgAddParticipantScreen} from '../../Screens/Schedule/LFG/LfgAddParticipantScreen';
-import {LfgChatScreen} from '../../Screens/Schedule/LFG/LfgChatScreen';
+import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
+import {LfgHelpScreen} from '../../Screens/LFG/LfgHelpScreen';
+import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen';
+import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen';
+import {LfgScreen} from '../../Screens/LFG/LfgScreen';
+import {LfgParticipationScreen} from '../../Screens/LFG/LfgParticipationScreen';
+import {LfgAddParticipantScreen} from '../../Screens/LFG/LfgAddParticipantScreen';
+import {LfgChatScreen} from '../../Screens/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
-import {LfgSettingsScreen} from '../../Screens/Schedule/LfgSettingsScreen';
+import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;

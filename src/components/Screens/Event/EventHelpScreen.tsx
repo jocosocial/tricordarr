@@ -1,8 +1,8 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {AppView} from '../../../Views/AppView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {AppView} from '../../Views/AppView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 export const EventHelpScreen = () => {
   return (

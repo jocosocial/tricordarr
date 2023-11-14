@@ -21,8 +21,8 @@ import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
-import {EventSettingsScreen} from '../../Screens/Schedule/EventSettingsScreen';
-import {LfgSettingsScreen} from '../../Screens/Schedule/LfgSettingsScreen';
+import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
+import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;

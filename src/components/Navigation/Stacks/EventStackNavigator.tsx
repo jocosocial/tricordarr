@@ -3,14 +3,14 @@ import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navi
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {EventDayScreen} from '../../Screens/Schedule/EventDayScreen';
+import {EventDayScreen} from '../../Screens/Event/EventDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {EventSearchScreen} from '../../Screens/Schedule/Event/EventSearchScreen';
-import {EventSettingsScreen} from '../../Screens/Schedule/EventSettingsScreen';
-import {EventScreen} from '../../Screens/Schedule/Event/EventScreen';
-import {EventHelpScreen} from '../../Screens/Schedule/Event/EventHelpScreen';
-import {EventFavoritesScreen} from '../../Screens/Schedule/Event/EventFavoritesScreen';
+import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
+import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
+import {EventScreen} from '../../Screens/Event/EventScreen';
+import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
+import {EventFavoritesScreen} from '../../Screens/Event/EventFavoritesScreen';
 
 export type EventStackParamList = {
   EventDayScreen: {

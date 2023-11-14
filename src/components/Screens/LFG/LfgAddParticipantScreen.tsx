@@ -1,17 +1,17 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
-import {AppView} from '../../../Views/AppView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {UserHeader} from '../../../../libraries/Structs/ControllerStructs';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {UserSearchBar} from '../../../Search/UserSearchBar';
-import {useFezParticipantMutation} from '../../../Queries/Fez/Management/UserQueries';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
-import {LoadingView} from '../../../Views/Static/LoadingView';
+import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {AppView} from '../../Views/AppView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {UserSearchBar} from '../../Search/UserSearchBar';
+import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
-import {LfgStackParamList} from '../../../Navigation/Stacks/LFGStackNavigator';
+import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
