@@ -15,6 +15,7 @@ export const ScheduleEventFilterMenu = () => {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+  // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
     setEventFavoriteFilter(!eventFavoriteFilter);
     closeMenu();
@@ -51,7 +52,7 @@ export const ScheduleEventFilterMenu = () => {
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <Menu.Item
-        title={'Your Favorites'}
+        title={'Your Events'}
         onPress={handleFavoriteSelection}
         style={eventFavoriteFilter ? activeStyle : undefined}
       />

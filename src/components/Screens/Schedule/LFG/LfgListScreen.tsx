@@ -84,7 +84,11 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
           )}
           {lfgList.map((lfg, i) => (
             <View key={i} style={[commonStyles.marginBottom]}>
-              <LfgCard lfg={lfg} onPress={() => navigation.push(LfgStackComponents.lfgScreen, {fezID: lfg.fezID})} />
+              <LfgCard
+                showDay={true}
+                lfg={lfg}
+                onPress={() => navigation.push(LfgStackComponents.lfgScreen, {fezID: lfg.fezID})}
+              />
             </View>
           ))}
         </PaddedContentView>

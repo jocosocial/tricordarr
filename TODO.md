@@ -16,10 +16,8 @@ Backlog
 * Setting for theme. Light, dark, use system.
 * Make a new base FAB
 * Your next event card on main screen
-* pressing a bottomtab button again shoudl take you to the root of that stack.
 * The menu system could use some deduplication
 * scrollToNow() should go to the first index of any other events at that time, rather than $next-1
-* Linking - Fez chat to Seamail screen, back goes to seamail list not to Fez
 * Forum via Webview with deep linking
 
 Work Queue
@@ -33,5 +31,5 @@ Work Queue
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
-  * Default find screen shows all
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
+  * Generic FlatList for LFGs / Events broken by day instead of hour
