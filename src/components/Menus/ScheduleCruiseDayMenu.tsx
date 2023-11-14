@@ -5,8 +5,8 @@ import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
-import {ScheduleStackParamList, useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
+import {EventStackParamList, useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../libraries/Enums/Navigation';
 import {RouteProp} from '@react-navigation/native';
 
 interface CruiseDayMenuItemProps {
@@ -25,7 +25,7 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
 
 interface ScheduleCruiseDayMenuProps {
   scrollToNow: () => void;
-  route: RouteProp<ScheduleStackParamList, ScheduleStackComponents.scheduleDayScreen>;
+  route: RouteProp<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 }
 
 export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
@@ -37,7 +37,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
+    navigation.push(EventStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
@@ -47,7 +47,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
       scrollToNow();
       return;
     }
-    navigation.navigate(ScheduleStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
+    navigation.navigate(EventStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
   };
 
   const menuAnchor = (

@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {RefreshControl, StyleSheet, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
-import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator';
+import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton, Menu, Text} from 'react-native-paper';
 import {format, parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -28,11 +28,14 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleMenu} from '../../Menus/ScheduleMenu';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
+import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useModal} from '../../Context/Contexts/ModalContext';
 
 export type Props = NativeStackScreenProps<
-  ScheduleStackParamList,
-  ScheduleStackComponents.scheduleDayScreen,
-  NavigatorIDs.scheduleStack
+  EventStackParamList,
+  EventStackComponents.scheduleDayScreen,
+  NavigatorIDs.eventStack
 >;
 
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
@@ -135,9 +138,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
           <ScheduleEventFilterMenu />
-          <ScheduleMenu />
+          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
         </HeaderButtons>
       </View>
     );
@@ -231,11 +233,11 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   });
 
   const navigatePreviousDay = () =>
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {
+    navigation.push(EventStackComponents.scheduleDayScreen, {
       cruiseDay: route.params.cruiseDay - 1,
     });
   const navigateNextDay = () =>
-    navigation.push(ScheduleStackComponents.scheduleDayScreen, {
+    navigation.push(EventStackComponents.scheduleDayScreen, {
       cruiseDay: route.params.cruiseDay + 1,
     });
 
@@ -272,7 +274,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           />
         </View>
       </View>
-      <ScheduleFAB />
+      <EventFAB />
     </AppView>
   );
 };

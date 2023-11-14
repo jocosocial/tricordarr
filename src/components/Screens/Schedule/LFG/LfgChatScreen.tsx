@@ -3,8 +3,7 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackParamList} from '../../../Navigation/Stacks/ScheduleStackNavigator';
-import {NavigatorIDs, ScheduleStackComponents} from '../../../../libraries/Enums/Navigation';
+import {LfgStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
@@ -22,7 +21,6 @@ import {FezPostData, PostContentData} from '../../../../libraries/Structs/Contro
 import {FormikHelpers} from 'formik';
 import {FezPostsActions} from '../../../Reducers/Fez/FezPostsReducers';
 import {FezListActions} from '../../../Reducers/Fez/FezListReducers';
-import {getSeamailHeaderTitle} from '../../../Navigation/Components/SeamailHeaderTitle';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {FezPostAsUserBanner} from '../../../Banners/FezPostAsUserBanner';
 import {SpaceDivider} from '../../../Lists/Dividers/SpaceDivider';
@@ -30,12 +28,9 @@ import {LabelDivider} from '../../../Lists/Dividers/LabelDivider';
 import {FezPostListItem} from '../../../Lists/Items/FezPostListItem';
 import {FloatingScrollButton} from '../../../Buttons/FloatingScrollButton';
 import {FezPostForm} from '../../../Forms/FezPostForm';
+import {LfgStackParamList} from '../../../Navigation/Stacks/LFGStackNavigator';
 
-export type Props = NativeStackScreenProps<
-  ScheduleStackParamList,
-  ScheduleStackComponents.lfgChatScreen,
-  NavigatorIDs.scheduleStack
->;
+export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
 
 export const LfgChatScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);

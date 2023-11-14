@@ -12,8 +12,8 @@ import {FezType} from '../../../../libraries/Enums/FezType';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../../Menus/ScheduleLfgFilterMenu';
-import {useScheduleStack} from '../../../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../../../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useScheduleFilter} from '../../../Context/Contexts/ScheduleFilterContext';
 import {ScheduleLfgCruiseDayFilterMenu} from '../../../Menus/ScheduleLfgCruiseDayFilterMenu';
 import {ScheduleLfgListMenu} from '../../../Menus/ScheduleLfgListMenu';
@@ -86,7 +86,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
             <View key={i} style={[commonStyles.marginBottom]}>
               <LfgCard
                 lfg={lfg}
-                onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: lfg.fezID})}
+                onPress={() => navigation.push(EventStackComponents.lfgScreen, {fezID: lfg.fezID})}
               />
             </View>
           ))}

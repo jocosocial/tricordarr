@@ -7,8 +7,8 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {EventData} from '../../libraries/Structs/ControllerStructs';
 import {EventCard} from '../Cards/Schedule/EventCard';
-import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../libraries/Enums/Navigation';
 
 interface EventSearchBarProps {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
@@ -71,7 +71,7 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
             <EventCard
               eventData={item}
               showDay={true}
-              onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+              onPress={() => navigation.push(EventStackComponents.scheduleEventScreen, {eventID: item.eventID})}
             />
           </View>
         ))}

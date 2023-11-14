@@ -5,8 +5,8 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../../Queries/Events/EventQueries';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackParamList} from '../../../Navigation/Stacks/ScheduleStackNavigator';
-import {NavigatorIDs, ScheduleStackComponents} from '../../../../libraries/Enums/Navigation';
+import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
+import {NavigatorIDs, EventStackComponents} from '../../../../libraries/Enums/Navigation';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
@@ -30,9 +30,9 @@ const helpContent = [
 ];
 
 export type Props = NativeStackScreenProps<
-  ScheduleStackParamList,
-  ScheduleStackComponents.scheduleEventScreen,
-  NavigatorIDs.scheduleStack
+  EventStackParamList,
+  EventStackComponents.scheduleEventScreen,
+  NavigatorIDs.eventStack
 >;
 
 export const ScheduleEventScreen = ({navigation, route}: Props) => {

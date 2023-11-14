@@ -2,8 +2,8 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../libraries/Enums/Navigation';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Linking} from 'react-native';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
@@ -24,7 +24,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (screen: ScheduleStackComponents) => {
+  const handleNavigation = (screen: EventStackComponents) => {
     navigation.push(screen);
     closeMenu();
   };
@@ -64,7 +64,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
-        onPress={() => handleNavigation(ScheduleStackComponents.lfgHelpScreen)}
+        onPress={() => handleNavigation(EventStackComponents.lfgHelpScreen)}
       />
     </Menu>
   );

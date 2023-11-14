@@ -2,12 +2,12 @@ import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackParamList} from '../../../Navigation/Stacks/ScheduleStackNavigator';
+import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
 import {
-  BottomTabComponents,
+  BottomTabComponents, LfgStackComponents,
   MainStackComponents,
   NavigatorIDs,
-  ScheduleStackComponents,
+  EventStackComponents,
 } from '../../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -32,11 +32,12 @@ import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator
 import {FezData} from '../../../../libraries/Structs/ControllerStructs';
 import {LfgLeaveModal} from '../../../Views/Modals/LfgLeaveModal';
 import {useFezMembershipMutation} from '../../../Queries/Fez/FezMembershipQueries';
+import {LfgStackParamList} from '../../../Navigation/Stacks/LFGStackNavigator';
 
 export type Props = NativeStackScreenProps<
-  ScheduleStackParamList,
-  ScheduleStackComponents.lfgParticipationScreen,
-  NavigatorIDs.scheduleStack
+  LfgStackParamList,
+  LfgStackComponents.lfgParticipationScreen,
+  NavigatorIDs.lfgStack
 >;
 
 const helpContent = [
@@ -174,7 +175,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           <ListSection>
             {manageUsers && !isFull && (
               <FezParticipantAddItem
-                onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                onPress={() => navigation.push(EventStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
               />
             )}
             {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
@@ -203,7 +204,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
               <ListSection>
                 {manageUsers && (
                   <FezParticipantAddItem
-                    onPress={() => navigation.push(ScheduleStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                    onPress={() => navigation.push(EventStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
                   />
                 )}
                 {!isMember && !isWaitlist && isFull && (

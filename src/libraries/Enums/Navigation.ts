@@ -1,5 +1,3 @@
-import {ScheduleSettingsScreen} from '../../components/Screens/Schedule/ScheduleSettingsScreen';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -10,7 +8,8 @@ export enum NavigatorIDs {
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
   oobeStack = 'OobeStackNavigator',
-  scheduleStack = 'ScheduleStackNavigator',
+  eventStack = 'EventStackNavigator',
+  lfgStack = 'LfgStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -18,6 +17,7 @@ export enum BottomTabComponents {
   seamailTab = 'SeamailTab',
   forumsTab = 'ForumsTab',
   scheduleTab = 'ScheduleTab',
+  lfgTab = 'LfgTab',
 }
 
 export enum SettingsStackScreenComponents {
@@ -77,15 +77,19 @@ export enum OobeStackComponents {
   oobeLoginScreen = 'LoginScreen',
 }
 
-export enum ScheduleStackComponents {
+export enum EventStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleEventSearchScreen = 'ScheduleEventSearchScreen',
   scheduleSettingsScreen = 'ScheduleSettingsScreen',
+  scheduleEventScreen = 'ScheduleEventScreen',
+  eventHelpScreen = 'EventHelpScreen',
+}
+
+export enum LfgStackComponents {
   lfgOwnedScreen = 'LfgOwnedScreen',
   lfgHelpScreen = 'LfgHelpScreen',
   lfgJoinedScreen = 'LfgJoinedScreen',
   lfgFindScreen = 'LfgFindScreen',
-  scheduleEventScreen = 'ScheduleEventScreen',
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',

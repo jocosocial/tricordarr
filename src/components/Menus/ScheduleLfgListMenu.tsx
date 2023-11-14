@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../libraries/Enums/Navigation';
 
 export const ScheduleLfgListMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -14,7 +14,7 @@ export const ScheduleLfgListMenu = () => {
 
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (screen: ScheduleStackComponents) => {
+  const handleNavigation = (screen: EventStackComponents) => {
     navigation.push(screen);
     closeMenu();
   };
@@ -24,12 +24,12 @@ export const ScheduleLfgListMenu = () => {
       <Menu.Item
         leadingIcon={AppIcons.settings}
         title={'Settings'}
-        onPress={() => handleNavigation(ScheduleStackComponents.scheduleSettingsScreen)}
+        onPress={() => handleNavigation(EventStackComponents.scheduleSettingsScreen)}
       />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
-        onPress={() => handleNavigation(ScheduleStackComponents.lfgHelpScreen)}
+        onPress={() => handleNavigation(EventStackComponents.lfgHelpScreen)}
       />
     </Menu>
   );

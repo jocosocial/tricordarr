@@ -9,7 +9,8 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
-import {ScheduleStackNavigator} from '../Stacks/ScheduleStackNavigator';
+import {EventStackNavigator} from '../Stacks/EventStackNavigator';
+import {LfgStackNavigator} from '../Stacks/LFGStackNavigator';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -27,6 +28,7 @@ export type BottomTabParamList = {
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
   ScheduleTab: undefined;
   ForumsTab: undefined;
+  LfgTab: undefined;
 };
 
 export const BottomTabNavigator = () => {
@@ -66,10 +68,15 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
+        name={BottomTabComponents.lfgTab}
+        component={LfgStackNavigator}
+        options={{title: 'LFG', tabBarIcon: () => getIcon(AppIcons.lfg)}}
+      />
+      <Tab.Screen
         name={BottomTabComponents.scheduleTab}
-        component={ScheduleStackNavigator}
+        component={EventStackNavigator}
         options={{
-          title: 'Schedule',
+          title: 'Events',
           tabBarIcon: () => getIcon(AppIcons.events),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}

@@ -4,8 +4,8 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackParamList} from '../../../Navigation/Stacks/ScheduleStackNavigator';
-import {NavigatorIDs, ScheduleStackComponents} from '../../../../libraries/Enums/Navigation';
+import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
+import {LfgStackComponents, NavigatorIDs, EventStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../../Queries/Fez/FezQueries';
 import {ListSection} from '../../../Lists/ListSection';
 import {DataFieldListItem} from '../../../Lists/Items/DataFieldListItem';
@@ -30,12 +30,9 @@ import {LfgCanceledView} from '../../../Views/LfgCanceledView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
+import {LfgStackParamList} from '../../../Navigation/Stacks/LFGStackNavigator';
 
-export type Props = NativeStackScreenProps<
-  ScheduleStackParamList,
-  ScheduleStackComponents.lfgScreen,
-  NavigatorIDs.scheduleStack
->;
+export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
 export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useSeamailQuery({
@@ -107,7 +104,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+              onPress={() => navigation.push(EventStackComponents.lfgChatScreen, {fezID: fez.fezID})}
             />
           )}
           {fez && <ScheduleLfgMenu fezData={fez} />}
@@ -196,7 +193,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     left={() => getIcon(AppIcons.group)}
                     description={FezData.getParticipantLabel(fez)}
                     title={'Participation'}
-                    onPress={() => navigation.push(ScheduleStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
+                    onPress={() => navigation.push(EventStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
                   />
                 )}
                 <DataFieldListItem
@@ -204,7 +201,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.chat)}
                   description={getChatDescription}
                   title={'Chat'}
-                  onPress={() => navigation.push(ScheduleStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+                  onPress={() => navigation.push(EventStackComponents.lfgChatScreen, {fezID: fez.fezID})}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}

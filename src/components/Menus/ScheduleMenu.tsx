@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useScheduleStack} from '../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../libraries/Enums/Navigation';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 
@@ -25,23 +25,13 @@ export const ScheduleMenu = () => {
 
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (screen: ScheduleStackComponents) => {
+  const handleNavigation = (screen: EventStackComponents) => {
     navigation.push(screen);
     closeMenu();
   };
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
-        leadingIcon={AppIcons.search}
-        title={'Search'}
-        onPress={() => handleNavigation(ScheduleStackComponents.scheduleEventSearchScreen)}
-      />
-      <Menu.Item
-        leadingIcon={AppIcons.settings}
-        title={'Settings'}
-        onPress={() => handleNavigation(ScheduleStackComponents.scheduleSettingsScreen)}
-      />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}

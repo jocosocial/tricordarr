@@ -38,3 +38,4 @@ Work Queue
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
   * Default find screen shows all
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
+  * It's still taking way too long to switch schedule pages

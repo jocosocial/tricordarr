@@ -7,8 +7,8 @@ import useDateTime, {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
-import {useScheduleStack} from '../../Navigation/Stacks/ScheduleStackNavigator';
-import {ScheduleStackComponents} from '../../../libraries/Enums/Navigation';
+import {useScheduleStack} from '../../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
@@ -69,7 +69,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
           {'fezID' in item && (
             <LfgCard
               lfg={item}
-              onPress={() => navigation.push(ScheduleStackComponents.lfgScreen, {fezID: item.fezID})}
+              onPress={() => navigation.push(EventStackComponents.lfgScreen, {fezID: item.fezID})}
               marker={marker}
               showLfgIcon={true}
             />
@@ -77,7 +77,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
           {'eventID' in item && (
             <EventCard
               eventData={item}
-              onPress={() => navigation.push(ScheduleStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+              onPress={() => navigation.push(EventStackComponents.scheduleEventScreen, {eventID: item.eventID})}
               marker={marker}
               setRefreshing={setRefreshing}
             />
