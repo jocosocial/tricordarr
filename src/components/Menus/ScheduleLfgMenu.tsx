@@ -3,18 +3,18 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../libraries/Enums/Navigation';
+import {EventStackComponents, LfgStackComponents} from '../../libraries/Enums/Navigation';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {Linking} from 'react-native';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {LfgCancelModal} from '../Views/Modals/LfgCancelModal';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {useLFGStackNavigation} from '../Navigation/Stacks/LFGStackNavigator';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
-  const navigation = useEventStackNavigation();
+  const navigation = useLFGStackNavigation();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {profilePublicData} = useUserData();
@@ -24,7 +24,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (screen: EventStackComponents) => {
+  const handleNavigation = (screen: LfgStackComponents) => {
     navigation.push(screen);
     closeMenu();
   };
@@ -64,7 +64,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
-        onPress={() => handleNavigation(EventStackComponents.lfgHelpScreen)}
+        onPress={() => handleNavigation(LfgStackComponents.lfgHelpScreen)}
       />
     </Menu>
   );

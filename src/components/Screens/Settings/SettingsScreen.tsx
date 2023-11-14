@@ -84,9 +84,14 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.favoriteUsers}
             />
             <SettingsNavigationListItem
-              title={'Schedule Settings'}
-              description={'Settings for the schedule (events and LFGs).'}
-              navComponent={SettingsStackScreenComponents.scheduleSettings}
+              title={'Event Settings'}
+              description={'Settings for events (sanctioned by THO).'}
+              navComponent={SettingsStackScreenComponents.eventSettings}
+            />
+            <SettingsNavigationListItem
+              title={'LFG Settings'}
+              description={'Settings for community organized events.'}
+              navComponent={SettingsStackScreenComponents.lfgSettings}
             />
           </ListSection>
           {appConfig.enableDeveloperOptions && (

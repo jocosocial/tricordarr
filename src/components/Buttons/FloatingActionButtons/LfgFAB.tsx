@@ -67,13 +67,13 @@ export const LfgFAB = () => {
             backgroundColor: backgroundColor,
             color: color,
           }),
-          FabGroupAction({
-            icon: AppIcons.help,
-            label: 'Help',
-            onPress: () => handleNavigation(LfgStackComponents.lfgHelpScreen),
-            backgroundColor: backgroundColor,
-            color: color,
-          }),
+          // FabGroupAction({
+          //   icon: AppIcons.help,
+          //   label: 'Help',
+          //   onPress: () => handleNavigation(LfgStackComponents.lfgHelpScreen),
+          //   backgroundColor: backgroundColor,
+          //   color: color,
+          // }),
         ]}
         onStateChange={onStateChange}
       />

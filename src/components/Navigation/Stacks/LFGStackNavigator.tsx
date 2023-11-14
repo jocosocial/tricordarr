@@ -11,6 +11,7 @@ import {LfgParticipationScreen} from '../../Screens/Schedule/LFG/LfgParticipatio
 import {LfgAddParticipantScreen} from '../../Screens/Schedule/LFG/LfgAddParticipantScreen';
 import {LfgChatScreen} from '../../Screens/Schedule/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
+import {LfgSettingsScreen} from '../../Screens/Schedule/LfgSettingsScreen';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;
@@ -29,6 +30,7 @@ export type LfgStackParamList = {
   LfgChatScreen: {
     fezID: string;
   };
+  LfgSettingsScreen: undefined;
 };
 
 export const LfgStackNavigator = () => {
@@ -37,7 +39,7 @@ export const LfgStackNavigator = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={LfgStackComponents.lfgJoinedScreen}
+      initialRouteName={LfgStackComponents.lfgFindScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={LfgStackComponents.lfgOwnedScreen}
@@ -71,6 +73,11 @@ export const LfgStackNavigator = () => {
         options={{title: 'Add Participant'}}
       />
       <Stack.Screen name={LfgStackComponents.lfgChatScreen} component={LfgChatScreen} options={{title: 'LFG Chat'}} />
+      <Stack.Screen
+        name={LfgStackComponents.lfgSettingsScreen}
+        component={LfgSettingsScreen}
+        options={{title: 'LFG Settings'}}
+      />
     </Stack.Navigator>
   );
 };

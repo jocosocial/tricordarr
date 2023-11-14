@@ -7,14 +7,11 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SettingsBooleanListItem} from '../../Lists/Items/SettingsBooleanListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [unified, setUnified] = useState(appConfig.unifiedSchedule);
-  const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.hidePastLfgs);
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.enableLateDayFlip);
-  const {setLfgHidePastFilter} = useScheduleFilter();
   const {commonStyles} = useStyles();
 
   const handleShowLfgs = () => {
@@ -23,15 +20,6 @@ export const EventSettingsScreen = () => {
       unifiedSchedule: !appConfig.unifiedSchedule,
     });
     setUnified(!appConfig.unifiedSchedule);
-  };
-
-  const handleHidePastLfgs = () => {
-    updateAppConfig({
-      ...appConfig,
-      hidePastLfgs: !appConfig.hidePastLfgs,
-    });
-    setHidePastLfgs(!appConfig.hidePastLfgs);
-    setLfgHidePastFilter(!appConfig.hidePastLfgs);
   };
 
   const handleEnableLateDayFlip = () => {
@@ -51,19 +39,10 @@ export const EventSettingsScreen = () => {
               <SettingsBooleanListItem
                 label={'Show LFGs in Schedule'}
                 helperText={
-                  'Display community-created Looking For Group events in the main schedule along with Official and Shadow Cruise events.'
+                  "Display community-created Looking For Group events in the main schedule along with Official and Shadow Cruise events. Shows LFGs that are open or you've joined or created."
                 }
                 onPress={handleShowLfgs}
                 value={unified}
-                style={commonStyles.paddingHorizontal}
-              />
-              <SettingsBooleanListItem
-                label={'Hide Past LFGs by Default'}
-                helperText={
-                  'Default to not showing LFGs that have already happened. You can still use the filters to view them. Past LFGs will always show in the main schedule view if Show LFGs in Schedule above is enabled.'
-                }
-                onPress={handleHidePastLfgs}
-                value={hidePastLfgs}
                 style={commonStyles.paddingHorizontal}
               />
               <SettingsBooleanListItem

@@ -39,7 +39,8 @@ export enum SettingsStackScreenComponents {
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
-  scheduleSettings = 'ScheduleSettingsScreen',
+  eventSettings = 'EventSettingsScreen',
+  lfgSettings = 'LfgSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -95,4 +96,5 @@ export enum LfgStackComponents {
   lfgParticipationScreen = 'LfgParticipationScreen',
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
   lfgChatScreen = 'LfgChatScreen',
+  lfgSettingsScreen = 'LfgSettingsScreen',
 }
