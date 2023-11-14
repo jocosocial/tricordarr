@@ -24,7 +24,6 @@ Backlog
 
 Work Queue
 * Event
-  * No way to view entire week of your favorite only events. <-- further case for moving LFGs out.
   * Changes in the ScheduleProvider LFGs likely cause rerendering of events <-- further case 
 * LFG features
   * Create

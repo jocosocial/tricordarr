@@ -71,7 +71,7 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
             <EventCard
               eventData={item}
               showDay={true}
-              onPress={() => navigation.push(EventStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+              onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: item.eventID})}
             />
           </View>
         ))}

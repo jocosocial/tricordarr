@@ -8,11 +8,12 @@ import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {BottomTabComponents, EventStackComponents, LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
+import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 
 interface SeamailFlatListProps {
   scheduleItems: (EventData | FezData)[];
@@ -59,6 +60,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
   const {appConfig} = useConfig();
+  const bottomNavigation = useBottomTabNavigator();
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderListItem = useCallback(
@@ -69,7 +71,12 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
           {'fezID' in item && (
             <LfgCard
               lfg={item}
-              onPress={() => navigation.push(EventStackComponents.lfgScreen, {fezID: item.fezID})}
+              onPress={() =>
+                bottomNavigation.navigate(BottomTabComponents.lfgTab, {
+                  screen: LfgStackComponents.lfgScreen,
+                  params: {fezID: item.fezID},
+                })
+              }
               marker={marker}
               showLfgIcon={true}
             />
@@ -77,7 +84,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
           {'eventID' in item && (
             <EventCard
               eventData={item}
-              onPress={() => navigation.push(EventStackComponents.scheduleEventScreen, {eventID: item.eventID})}
+              onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: item.eventID})}
               marker={marker}
               setRefreshing={setRefreshing}
             />

@@ -22,9 +22,7 @@ export type EventStackParamList = {
     eventID: string;
   };
   EventHelpScreen: undefined;
-  EventFavoritesScreen: {
-    cruiseDay: number;
-  };
+  EventFavoritesScreen: undefined;
 };
 
 export const EventStackNavigator = () => {

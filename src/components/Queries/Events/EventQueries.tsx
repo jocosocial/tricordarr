@@ -36,3 +36,7 @@ export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, o
 export const useEventQuery = ({eventID}: {eventID: string}) => {
   return useQuery<EventData>([`/events/${eventID}`]);
 };
+
+export const useEventFavoriteQuery = () => {
+  return useQuery<EventData[]>(['/events/favorites']);
+};

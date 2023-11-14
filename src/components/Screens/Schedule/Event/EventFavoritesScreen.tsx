@@ -4,8 +4,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {View} from 'react-native';
-import {ScheduleDayHeaderView} from '../../../Views/Schedule/ScheduleDayHeaderView';
+import {RefreshControl, View} from 'react-native';
+import {useEventFavoriteQuery} from '../../../Queries/Events/EventQueries';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {EventCard} from '../../../Cards/Schedule/EventCard';
+import {LoadingView} from '../../../Views/Static/LoadingView';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -13,28 +16,29 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.eventStack
 >;
 
-export const EventFavoritesScreen = ({navigation, route}: Props) => {
+export const EventFavoritesScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
+  const {data, isFetching, refetch} = useEventFavoriteQuery();
 
-  // Trying .navigate() to avoid some performance issues with keeping past pages around.
-  const navigatePreviousDay = () =>
-    navigation.navigate(EventStackComponents.eventFavoritesScreen, {
-      cruiseDay: route.params.cruiseDay - 1,
-    });
-  const navigateNextDay = () =>
-    navigation.navigate(EventStackComponents.eventFavoritesScreen, {
-      cruiseDay: route.params.cruiseDay + 1,
-    });
+  if (!data) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>
-      <View style={commonStyles.flex}>
-        <ScheduleDayHeaderView
-          selectedCruiseDay={route.params.cruiseDay}
-          navigatePreviousDay={navigatePreviousDay}
-          navigateNextDay={navigateNextDay}
-        />
-      </View>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        {data.map((eventData, i) => {
+          return (
+            <View key={i} style={[commonStyles.paddingVerticalSmall, commonStyles.paddingHorizontal]}>
+              <EventCard
+                eventData={eventData}
+                showDay={true}
+                onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: eventData.eventID})}
+              />
+            </View>
+          );
+        })}
+      </ScrollingContentView>
     </AppView>
   );
 };
