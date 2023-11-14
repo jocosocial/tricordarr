@@ -144,7 +144,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
       return;
     }
     const unreadCount = fez.members.postCount - fez.members.readCount;
-    console.log('### Unread', unreadCount);
     return (
       <View style={styles.chatCountContainer}>
         <Text>

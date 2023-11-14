@@ -20,6 +20,7 @@ import {ScheduleLfgListMenu} from '../../../Menus/ScheduleLfgListMenu';
 import {ScheduleFAB} from '../../../Buttons/FloatingActionButtons/ScheduleFAB';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {useSocket} from '../../../Context/Contexts/SocketContext';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -39,6 +40,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const navigation = useScheduleStack();
   const isFocused = useIsFocused();
   const {setFez} = useTwitarr();
+  const {closeFezSocket} = useSocket();
 
   let lfgList: FezData[] = [];
   data?.pages.map(page => {
@@ -64,9 +66,10 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
       headerRight: getNavButtons,
     });
     if (isFocused) {
+      closeFezSocket();
       setFez(undefined);
     }
-  }, [getNavButtons, isFocused, navigation, setFez]);
+  }, [closeFezSocket, getNavButtons, isFocused, navigation, setFez]);
 
   return (
     <AppView>

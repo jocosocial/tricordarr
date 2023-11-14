@@ -33,10 +33,6 @@ Work Queue
   * Actions
     * Update
 * Nightly
-  * My lfg for Saturday noon is missing from day view
-    * Missing from the site UI too. WTF
-    * The API call filters Fez's that you are a part of. So either we need a URL param to include those or two calls
-    * to load the schedule, joined and open.
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
