@@ -1,4 +1,4 @@
-import {FlatList, RefreshControlProps, View} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 import React, {Dispatch, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';

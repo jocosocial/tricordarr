@@ -9,8 +9,8 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
-import {EventStackNavigator} from '../Stacks/EventStackNavigator';
-import {LfgStackNavigator} from '../Stacks/LFGStackNavigator';
+import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
+import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -26,9 +26,9 @@ function getBadgeDisplayValue(input: number | undefined) {
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
-  ScheduleTab: undefined;
+  ScheduleTab: NavigatorScreenParams<EventStackParamList>;
   ForumsTab: undefined;
-  LfgTab: undefined;
+  LfgTab: NavigatorScreenParams<LfgStackParamList>;
 };
 
 export const BottomTabNavigator = () => {
