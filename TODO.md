@@ -46,4 +46,3 @@ Work Queue
   * Hitting add button says seamail not lfg
   * Default find screen shows all
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
-  * Big buttons for chat, join?

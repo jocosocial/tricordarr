@@ -35,7 +35,6 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
-          setErrorMessage('Successfully left LFG!');
           setFez(response.data);
           setModalVisible(false);
         },
