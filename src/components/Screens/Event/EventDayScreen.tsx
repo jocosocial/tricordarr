@@ -26,6 +26,8 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -59,6 +61,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {scheduleList, dispatchScheduleList} = useTwitarr();
   const {appConfig} = useConfig();
+  const {isLoggedIn} = useAuth();
 
   const getScrollIndex = useCallback(
     (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {
@@ -130,6 +133,9 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   }, [scheduleList, scrollNowIndex]);
 
   const getNavButtons = useCallback(() => {
+    if (!isLoggedIn) {
+      return <></>;
+    }
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
@@ -138,7 +144,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [route, scrollToNow]);
+  }, [isLoggedIn, route, scrollToNow]);
 
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
@@ -226,6 +232,10 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     });
 
   console.log('Item count', scheduleList.length, 'Now index', scrollNowIndex);
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   if (isLfgJoinedLoading || isLfgOpenLoading || isEventLoading) {
     return <LoadingView />;

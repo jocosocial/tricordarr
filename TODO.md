@@ -33,3 +33,4 @@ Work Queue
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
   * Generic FlatList for LFGs / Events broken by day instead of hour
+  * show schedule but disable lfg queries if not logged in

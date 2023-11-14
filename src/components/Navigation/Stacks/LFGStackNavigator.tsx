@@ -12,6 +12,7 @@ import {LfgAddParticipantScreen} from '../../Screens/LFG/LfgAddParticipantScreen
 import {LfgChatScreen} from '../../Screens/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
+import {useDrawer} from '../../Context/Contexts/DrawerContext';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;
@@ -36,6 +37,7 @@ export type LfgStackParamList = {
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<LfgStackParamList>();
+  const {getLeftMainHeaderButtons} = useDrawer();
 
   return (
     <Stack.Navigator
@@ -59,7 +61,10 @@ export const LfgStackNavigator = () => {
       <Stack.Screen
         name={LfgStackComponents.lfgFindScreen}
         component={LfgFindScreen}
-        options={{title: 'Find Groups'}}
+        options={{
+          title: 'Find Groups',
+          headerLeft: getLeftMainHeaderButtons,
+        }}
       />
       <Stack.Screen name={LfgStackComponents.lfgScreen} component={LfgScreen} options={{title: 'Looking For Group'}} />
       <Stack.Screen

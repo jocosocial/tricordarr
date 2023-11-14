@@ -21,6 +21,8 @@ import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -41,6 +43,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const isFocused = useIsFocused();
   const {setFez} = useTwitarr();
   const {closeFezSocket} = useSocket();
+  const {isLoggedIn} = useAuth();
 
   let lfgList: FezData[] = [];
   data?.pages.map(page => {
@@ -50,6 +53,9 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   });
 
   const getNavButtons = useCallback(() => {
+    if (!isLoggedIn) {
+      return <></>;
+    }
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
@@ -59,7 +65,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
         </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -70,6 +76,10 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
       setFez(undefined);
     }
   }, [closeFezSocket, getNavButtons, isFocused, navigation, setFez]);
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   return (
     <AppView>
