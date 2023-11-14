@@ -143,7 +143,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
       let lfgList: FezData[] = [];
-      if (!filterSettings.eventTypeFilter) {
+      if (!filterSettings.eventTypeFilter && !filterSettings.eventFavoriteFilter) {
         if (filterSettings.showLfgs && lfgJoinedData) {
           lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
         }
