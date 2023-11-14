@@ -54,7 +54,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
         />
         {fezPost.timestamp && (
           <RelativeTimeTag
-            date={fezPost.timestamp}
+            date={new Date(fezPost.timestamp)}
             style={styles.messageDateText}
             variant={'labelSmall'}
             raw={rawTime}

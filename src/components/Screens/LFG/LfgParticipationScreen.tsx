@@ -2,12 +2,11 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {
-  BottomTabComponents, LfgStackComponents,
+  BottomTabComponents,
+  LfgStackComponents,
   MainStackComponents,
   NavigatorIDs,
-  EventStackComponents,
 } from '../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -175,7 +174,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           <ListSection>
             {manageUsers && !isFull && (
               <FezParticipantAddItem
-                onPress={() => navigation.push(EventStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
               />
             )}
             {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
@@ -204,7 +203,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
               <ListSection>
                 {manageUsers && (
                   <FezParticipantAddItem
-                    onPress={() => navigation.push(EventStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                    onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
                   />
                 )}
                 {!isMember && !isWaitlist && isFull && (

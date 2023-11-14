@@ -42,7 +42,10 @@ const defaultAppConfig: AppConfig = {
     alertwordPost: true,
     twarrtMention: false,
     forumMention: true,
-    nextFollowedEventTime: true,
+    followedEventStarting: true,
+    incomingPhoneCall: false,
+    phoneCallAnswered: false,
+    phoneCallEnded: false,
   },
   fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
   oobeCompletedVersion: 0,

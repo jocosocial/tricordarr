@@ -21,10 +21,10 @@ export const PushNotificationSettingsScreen = () => {
   const pushNotificationCategories: NotificationCategory[] = [
     {configKey: 'announcement', title: 'Announcements'},
     {configKey: 'seamailUnreadMsg', title: 'Seamails'},
-    {configKey: 'fezUnreadMsg', title: 'LFG posts'},
+    {configKey: 'fezUnreadMsg', title: 'LFG Posts'},
     {configKey: 'alertwordPost', title: 'Forum Alert Words'},
     {configKey: 'forumMention', title: 'Forum Mentions'},
-    {configKey: 'nextFollowedEventTime', title: 'Events'},
+    {configKey: 'followedEventStarting', title: 'Event Reminders'},
   ];
 
   const toggleValue = (configKey: keyof PushNotificationConfig) => {
@@ -53,7 +53,7 @@ export const PushNotificationSettingsScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text variant={'bodyMedium'}>
-            Pick the types of events you want to receive as push notifications. This only controls what generates a
+            Pick the types of actions you want to receive as push notifications. This only controls what generates a
             notification on your device, not what to get notified for within Twitarr.
           </Text>
           {pushNotificationCategories.flatMap(c => (
