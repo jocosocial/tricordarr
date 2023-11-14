@@ -25,7 +25,6 @@ Backlog
 Work Queue
 * Event
   * No way to view entire week of your favorite only events. <-- further case for moving LFGs out.
-  * favoriting an event doesnt regenerate the list with fresh data
   * Changes in the ScheduleProvider LFGs likely cause rerendering of events <-- further case 
 * LFG features
   * Create
@@ -33,8 +32,6 @@ Work Queue
     * context, actions, chat
   * Actions
     * Update
-* Schedule
-  * Checking unchecking filters is super slow. Perhaps rerendering the entire list isn't so good. Make it conditional instead
 * Nightly
   * My lfg for Saturday noon is missing from day view
     * Missing from the site UI too. WTF

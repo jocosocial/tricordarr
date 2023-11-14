@@ -146,11 +146,13 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
       let lfgList: FezData[] = [];
-      if (filterSettings.showLfgs && lfgJoinedData) {
-        lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
-      }
-      if (filterSettings.showLfgs && lfgOpenData) {
-        lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+      if (!filterSettings.eventTypeFilter) {
+        if (filterSettings.showLfgs && lfgJoinedData) {
+          lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+        }
+        if (filterSettings.showLfgs && lfgOpenData) {
+          lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+        }
       }
       let eventList: EventData[] = [];
       eventData?.map(event => {
