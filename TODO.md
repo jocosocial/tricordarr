@@ -43,6 +43,5 @@ Work Queue
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
-  * Hitting add button says seamail not lfg
   * Default find screen shows all
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
