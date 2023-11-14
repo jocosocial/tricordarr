@@ -4,14 +4,14 @@ import {FAB, Portal} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useScheduleStack, useScheduleStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
+import {useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
 
-export const ScheduleFAB = () => {
+export const LfgFAB = () => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
-  const navigation = useScheduleStack();
-  const route = useScheduleStackRoute();
+  const navigation = useLFGStackNavigation();
+  const route = useLFGStackRoute();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -20,7 +20,7 @@ export const ScheduleFAB = () => {
   const color = theme.colors.inverseOnSurface;
   const backgroundColor = theme.colors.inverseSurface;
 
-  const handleNavigation = (component: EventStackComponents) => {
+  const handleNavigation = (component: LfgStackComponents) => {
     if (route.name === component) {
       return;
     }
@@ -49,28 +49,28 @@ export const ScheduleFAB = () => {
           FabGroupAction({
             icon: AppIcons.lfgFind,
             label: 'Find',
-            onPress: () => handleNavigation(EventStackComponents.lfgFindScreen),
+            onPress: () => handleNavigation(LfgStackComponents.lfgFindScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
           FabGroupAction({
             icon: AppIcons.lfgJoined,
             label: 'Joined',
-            onPress: () => handleNavigation(EventStackComponents.lfgJoinedScreen),
+            onPress: () => handleNavigation(LfgStackComponents.lfgJoinedScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
           FabGroupAction({
             icon: AppIcons.lfgOwned,
             label: 'Owned',
-            onPress: () => handleNavigation(EventStackComponents.lfgOwnedScreen),
+            onPress: () => handleNavigation(LfgStackComponents.lfgOwnedScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
           FabGroupAction({
             icon: AppIcons.help,
             label: 'Help',
-            onPress: () => handleNavigation(EventStackComponents.lfgHelpScreen),
+            onPress: () => handleNavigation(LfgStackComponents.lfgHelpScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),

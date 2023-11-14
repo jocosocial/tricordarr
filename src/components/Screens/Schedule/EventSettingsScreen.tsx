@@ -9,7 +9,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
-export const ScheduleSettingsScreen = () => {
+export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [unified, setUnified] = useState(appConfig.unifiedSchedule);
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.hidePastLfgs);

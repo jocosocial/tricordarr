@@ -5,7 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
-import {EventStackParamList, useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {EventStackParamList, useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../libraries/Enums/Navigation';
 import {RouteProp} from '@react-navigation/native';
 
@@ -31,7 +31,7 @@ interface ScheduleCruiseDayMenuProps {
 export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, cruiseDayToday} = useCruise();
-  const navigation = useScheduleStack();
+  const navigation = useEventStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

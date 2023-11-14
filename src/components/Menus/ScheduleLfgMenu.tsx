@@ -2,7 +2,7 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../libraries/Enums/Navigation';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Linking} from 'react-native';
@@ -14,7 +14,7 @@ import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
-  const navigation = useScheduleStack();
+  const navigation = useEventStackNavigation();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {profilePublicData} = useUserData();

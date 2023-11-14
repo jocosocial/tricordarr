@@ -4,8 +4,7 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackParamList} from '../../../Navigation/Stacks/EventStackNavigator';
-import {LfgStackComponents, NavigatorIDs, EventStackComponents} from '../../../../libraries/Enums/Navigation';
+import {LfgStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../../Queries/Fez/FezQueries';
 import {ListSection} from '../../../Lists/ListSection';
 import {DataFieldListItem} from '../../../Lists/Items/DataFieldListItem';
@@ -104,14 +103,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() => navigation.push(EventStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+              onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: fez.fezID})}
             />
           )}
           {fez && <ScheduleLfgMenu fezData={fez} />}
         </HeaderButtons>
       </View>
     );
-  }, [fez, handleMembershipPress, navigation, profilePublicData]);
+  }, [fez, navigation, profilePublicData]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -193,7 +192,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     left={() => getIcon(AppIcons.group)}
                     description={FezData.getParticipantLabel(fez)}
                     title={'Participation'}
-                    onPress={() => navigation.push(EventStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
+                    onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
                   />
                 )}
                 <DataFieldListItem
@@ -201,7 +200,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.chat)}
                   description={getChatDescription}
                   title={'Chat'}
-                  onPress={() => navigation.push(EventStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+                  onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: fez.fezID})}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}

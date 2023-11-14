@@ -3,21 +3,21 @@ import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navi
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen';
+import {EventDayScreen} from '../../Screens/Schedule/EventDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {ScheduleEventSearchScreen} from '../../Screens/Schedule/Event/ScheduleEventSearchScreen';
-import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
-import {ScheduleEventScreen} from '../../Screens/Schedule/Event/ScheduleEventScreen';
+import {EventSearchScreen} from '../../Screens/Schedule/Event/EventSearchScreen';
+import {EventSettingsScreen} from '../../Screens/Schedule/EventSettingsScreen';
+import {EventScreen} from '../../Screens/Schedule/Event/EventScreen';
 import {EventHelpScreen} from '../../Screens/Schedule/Event/EventHelpScreen';
 
 export type EventStackParamList = {
-  ScheduleDayScreen: {
+  EventDayScreen: {
     cruiseDay: number;
   };
-  ScheduleEventSearchScreen: undefined;
-  ScheduleSettingsScreen: undefined;
-  ScheduleEventScreen: {
+  EventSearchScreen: undefined;
+  EventSettingsScreen: undefined;
+  EventScreen: {
     eventID: string;
   };
   EventHelpScreen: undefined;
@@ -31,11 +31,11 @@ export const EventStackNavigator = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={EventStackComponents.scheduleDayScreen}
+      initialRouteName={EventStackComponents.eventDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
-        name={EventStackComponents.scheduleDayScreen}
-        component={ScheduleDayScreen}
+        name={EventStackComponents.eventDayScreen}
+        component={EventDayScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Schedule',
@@ -45,20 +45,16 @@ export const EventStackNavigator = () => {
         }}
       />
       <Stack.Screen
-        name={EventStackComponents.scheduleEventSearchScreen}
-        component={ScheduleEventSearchScreen}
+        name={EventStackComponents.eventSearchScreen}
+        component={EventSearchScreen}
         options={{title: 'Search Events'}}
       />
       <Stack.Screen
-        name={EventStackComponents.scheduleSettingsScreen}
-        component={ScheduleSettingsScreen}
+        name={EventStackComponents.eventSettingsScreen}
+        component={EventSettingsScreen}
         options={{title: 'Schedule Settings'}}
       />
-      <Stack.Screen
-        name={EventStackComponents.scheduleEventScreen}
-        component={ScheduleEventScreen}
-        options={{title: 'Event'}}
-      />
+      <Stack.Screen name={EventStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
       <Stack.Screen
         name={EventStackComponents.eventHelpScreen}
         component={EventHelpScreen}
@@ -68,6 +64,6 @@ export const EventStackNavigator = () => {
   );
 };
 
-export const useScheduleStack = () => useNavigation<NativeStackNavigationProp<EventStackParamList>>();
+export const useEventStackNavigation = () => useNavigation<NativeStackNavigationProp<EventStackParamList>>();
 
-export const useScheduleStackRoute = () => useRoute<RouteProp<EventStackParamList>>();
+export const useEventStackRoute = () => useRoute<RouteProp<EventStackParamList>>();

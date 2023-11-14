@@ -7,7 +7,7 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {EventData} from '../../libraries/Structs/ControllerStructs';
 import {EventCard} from '../Cards/Schedule/EventCard';
-import {useScheduleStack} from '../Navigation/Stacks/EventStackNavigator';
+import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../libraries/Enums/Navigation';
 
 interface EventSearchBarProps {
@@ -25,7 +25,7 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
   });
   const {commonStyles} = useStyles();
   const [eventList, setEventList] = useState<EventData[]>([]);
-  const navigation = useScheduleStack();
+  const navigation = useEventStackNavigation();
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 

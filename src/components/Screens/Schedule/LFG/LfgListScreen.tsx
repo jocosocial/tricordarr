@@ -12,15 +12,15 @@ import {FezType} from '../../../../libraries/Enums/FezType';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../../Menus/ScheduleLfgFilterMenu';
-import {useScheduleStack} from '../../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useScheduleFilter} from '../../../Context/Contexts/ScheduleFilterContext';
 import {ScheduleLfgCruiseDayFilterMenu} from '../../../Menus/ScheduleLfgCruiseDayFilterMenu';
 import {ScheduleLfgListMenu} from '../../../Menus/ScheduleLfgListMenu';
-import {ScheduleFAB} from '../../../Buttons/FloatingActionButtons/ScheduleFAB';
+import {LfgFAB} from '../../../Buttons/FloatingActionButtons/LfgFAB';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {useSocket} from '../../../Context/Contexts/SocketContext';
+import {useLFGStackNavigation} from '../../../Navigation/Stacks/LFGStackNavigator';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -37,7 +37,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     hidePast: lfgHidePastFilter,
   });
   const {commonStyles} = useStyles();
-  const navigation = useScheduleStack();
+  const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {setFez} = useTwitarr();
   const {closeFezSocket} = useSocket();
@@ -84,15 +84,12 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
           )}
           {lfgList.map((lfg, i) => (
             <View key={i} style={[commonStyles.marginBottom]}>
-              <LfgCard
-                lfg={lfg}
-                onPress={() => navigation.push(EventStackComponents.lfgScreen, {fezID: lfg.fezID})}
-              />
+              <LfgCard lfg={lfg} onPress={() => navigation.push(LfgStackComponents.lfgScreen, {fezID: lfg.fezID})} />
             </View>
           ))}
         </PaddedContentView>
       </ScrollingContentView>
-      <ScheduleFAB />
+      <LfgFAB />
     </AppView>
   );
 };

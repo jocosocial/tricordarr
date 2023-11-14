@@ -7,7 +7,7 @@ import useDateTime, {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
-import {useScheduleStack} from '../../Navigation/Stacks/EventStackNavigator';
+import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
@@ -55,7 +55,7 @@ const getItemMarker = (
 
 export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefreshing}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
-  const navigation = useScheduleStack();
+  const navigation = useEventStackNavigation();
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
   const {appConfig} = useConfig();

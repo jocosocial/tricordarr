@@ -21,7 +21,7 @@ import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
-import {ScheduleSettingsScreen} from '../../Screens/Schedule/ScheduleSettingsScreen';
+import {EventSettingsScreen} from '../../Screens/Schedule/EventSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -140,7 +140,7 @@ export const SettingsStack = () => {
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.scheduleSettings}
-        component={ScheduleSettingsScreen}
+        component={EventSettingsScreen}
         options={{title: 'Schedule Settings'}}
       />
     </Stack.Navigator>

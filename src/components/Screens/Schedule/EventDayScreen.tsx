@@ -18,7 +18,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
-import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB';
+import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
@@ -38,7 +38,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.eventStack
 >;
 
-export const ScheduleDayScreen = ({navigation, route}: Props) => {
+export const EventDayScreen = ({navigation, route}: Props) => {
   const {eventTypeFilter, eventFavoriteFilter} = useScheduleFilter();
   const {
     data: eventData,

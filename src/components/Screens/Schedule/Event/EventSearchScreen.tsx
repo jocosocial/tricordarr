@@ -5,7 +5,7 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
 
-export const ScheduleEventSearchScreen = () => {
+export const EventSearchScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   return (
     <AppView>

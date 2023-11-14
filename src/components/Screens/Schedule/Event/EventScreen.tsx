@@ -31,11 +31,11 @@ const helpContent = [
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
-  EventStackComponents.scheduleEventScreen,
+  EventStackComponents.eventScreen,
   NavigatorIDs.eventStack
 >;
 
-export const ScheduleEventScreen = ({navigation, route}: Props) => {
+export const EventScreen = ({navigation, route}: Props) => {
   const {
     data: eventData,
     refetch,

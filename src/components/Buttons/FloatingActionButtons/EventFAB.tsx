@@ -4,14 +4,14 @@ import {FAB, Portal} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useScheduleStack, useScheduleStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
+import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 
 export const EventFAB = () => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
-  const navigation = useScheduleStack();
-  const route = useScheduleStackRoute();
+  const navigation = useEventStackNavigation();
+  const route = useEventStackRoute();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -49,14 +49,14 @@ export const EventFAB = () => {
           FabGroupAction({
             icon: AppIcons.search,
             label: 'Search',
-            onPress: () => handleNavigation(EventStackComponents.scheduleEventSearchScreen),
+            onPress: () => handleNavigation(EventStackComponents.eventSearchScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
           FabGroupAction({
             icon: AppIcons.settings,
             label: 'Settings',
-            onPress: () => handleNavigation(EventStackComponents.scheduleSettingsScreen),
+            onPress: () => handleNavigation(EventStackComponents.eventSettingsScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),
