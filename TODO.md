@@ -5,11 +5,9 @@ Backlog
 * timezone warnings
 * Pressing PrimaryActionButton dismisses keyboard but doesnt actually press - highlight unsaved work
 * Big red exclamation thing with server healthcheck failure
-* Note about username case sensitivity
 * private note feature missing
 * Notifications
   * notification socket control not working.
-  * first login not generating fgs?
   * enableusernotificatoins is a bad pattern, what does it mean?
 * Oobe
   * add notification preferences to oobe flow

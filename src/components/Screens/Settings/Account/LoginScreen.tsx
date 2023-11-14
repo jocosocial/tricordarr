@@ -41,6 +41,8 @@ export const LoginScreen = () => {
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottom}>Logging in to {appConfig.serverUrl}.</Text>
+          <Text style={commonStyles.marginBottom}>Usernames are case-insensitive.</Text>
+
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>
       </ScrollingContentView>

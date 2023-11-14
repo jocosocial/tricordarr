@@ -53,6 +53,8 @@ export const OobeServerScreen = ({navigation}: Props) => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
+        </PaddedContentView>
+        <PaddedContentView>
           <SettingForm
             value={appConfig.serverUrl}
             onSave={onSave}
