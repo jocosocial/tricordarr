@@ -42,7 +42,7 @@ export const EventFAB = () => {
           FabGroupAction({
             icon: AppIcons.favorite,
             label: 'Favorites',
-            onPress: () => console.log('Favorite Events!!!!'),
+            onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
             backgroundColor: backgroundColor,
             color: color,
           }),

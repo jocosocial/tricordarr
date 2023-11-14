@@ -18,23 +18,19 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
-import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {ScheduleMenu} from '../../Menus/ScheduleMenu';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
-import {useModal} from '../../Context/Contexts/ModalContext';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
-  EventStackComponents.scheduleDayScreen,
+  EventStackComponents.eventDayScreen,
   NavigatorIDs.eventStack
 >;
 
@@ -232,12 +228,13 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     },
   });
 
+  // Trying .navigate() to avoid some performance issues with keeping past pages around.
   const navigatePreviousDay = () =>
-    navigation.push(EventStackComponents.scheduleDayScreen, {
+    navigation.navigate(EventStackComponents.eventDayScreen, {
       cruiseDay: route.params.cruiseDay - 1,
     });
   const navigateNextDay = () =>
-    navigation.push(EventStackComponents.scheduleDayScreen, {
+    navigation.navigate(EventStackComponents.eventDayScreen, {
       cruiseDay: route.params.cruiseDay + 1,
     });
 

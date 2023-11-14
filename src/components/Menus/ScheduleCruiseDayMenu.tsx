@@ -25,7 +25,7 @@ const CruiseDayMenuItem = ({handleSelection, title, currentCruiseDay, itemCruise
 
 interface ScheduleCruiseDayMenuProps {
   scrollToNow: () => void;
-  route: RouteProp<EventStackParamList, EventStackComponents.scheduleDayScreen>;
+  route: RouteProp<EventStackParamList, EventStackComponents.eventDayScreen>;
 }
 
 export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
@@ -37,7 +37,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    navigation.push(EventStackComponents.scheduleDayScreen, {cruiseDay: newCruiseDay});
+    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
@@ -47,7 +47,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
       scrollToNow();
       return;
     }
-    navigation.navigate(EventStackComponents.scheduleDayScreen, {cruiseDay: cruiseDayToday});
+    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: cruiseDayToday});
   };
 
   const menuAnchor = (

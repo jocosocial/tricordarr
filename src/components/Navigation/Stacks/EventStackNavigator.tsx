@@ -10,6 +10,7 @@ import {EventSearchScreen} from '../../Screens/Schedule/Event/EventSearchScreen'
 import {EventSettingsScreen} from '../../Screens/Schedule/EventSettingsScreen';
 import {EventScreen} from '../../Screens/Schedule/Event/EventScreen';
 import {EventHelpScreen} from '../../Screens/Schedule/Event/EventHelpScreen';
+import {EventFavoritesScreen} from '../../Screens/Schedule/Event/EventFavoritesScreen';
 
 export type EventStackParamList = {
   EventDayScreen: {
@@ -21,6 +22,7 @@ export type EventStackParamList = {
     eventID: string;
   };
   EventHelpScreen: undefined;
+  EventFavoritesScreen: undefined;
 };
 
 export const EventStackNavigator = () => {
@@ -59,6 +61,11 @@ export const EventStackNavigator = () => {
         name={EventStackComponents.eventHelpScreen}
         component={EventHelpScreen}
         options={{title: 'Event Help'}}
+      />
+      <Stack.Screen
+        name={EventStackComponents.eventFavoritesScreen}
+        component={EventFavoritesScreen}
+        options={{title: 'Favorite Events'}}
       />
     </Stack.Navigator>
   );

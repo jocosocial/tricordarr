@@ -1,5 +1,10 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {EventStackComponents, SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
+import {
+  EventStackComponents,
+  LfgStackComponents,
+  SeamailStackScreenComponents,
+  SettingsStackScreenComponents
+} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
 
@@ -38,7 +43,7 @@ const deepLinksConf = {
           },
         },
         ScheduleTab: {
-          initialRouteName: EventStackComponents.scheduleDayScreen,
+          initialRouteName: LfgStackComponents.lfgJoinedScreen,
           screens: {
             LfgScreen: 'lfg/:fezID',
           },

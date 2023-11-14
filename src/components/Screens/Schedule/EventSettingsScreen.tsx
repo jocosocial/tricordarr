@@ -51,7 +51,7 @@ export const EventSettingsScreen = () => {
               <SettingsBooleanListItem
                 label={'Show LFGs in Schedule'}
                 helperText={
-                  'Display community-created Looking For Group objects in the main schedule along with Official and Shadow Cruise events.'
+                  'Display community-created Looking For Group events in the main schedule along with Official and Shadow Cruise events.'
                 }
                 onPress={handleShowLfgs}
                 value={unified}
