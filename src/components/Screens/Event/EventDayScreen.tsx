@@ -28,6 +28,7 @@ import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {EventActionsMenu} from '../../Menus/EventActionsMenu';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -139,8 +140,9 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleEventFilterMenu />
           <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
+          <ScheduleEventFilterMenu />
+          <EventActionsMenu />
         </HeaderButtons>
       </View>
     );

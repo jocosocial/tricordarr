@@ -53,20 +53,6 @@ export const EventFAB = () => {
             backgroundColor: backgroundColor,
             color: color,
           }),
-          FabGroupAction({
-            icon: AppIcons.settings,
-            label: 'Settings',
-            onPress: () => handleNavigation(EventStackComponents.eventSettingsScreen),
-            backgroundColor: backgroundColor,
-            color: color,
-          }),
-          FabGroupAction({
-            icon: AppIcons.help,
-            label: 'Help',
-            onPress: () => handleNavigation(EventStackComponents.eventHelpScreen),
-            backgroundColor: backgroundColor,
-            color: color,
-          }),
         ]}
         onStateChange={onStateChange}
       />

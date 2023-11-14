@@ -30,5 +30,11 @@ Work Queue
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
   * Near 1am on Friday with late disabled, now went to 1pm on Friday.
   * Something definitely wrong with the main title header picture. Stopped rendering late night st one point. Maybe I have a math problem?
+    * Might be a React Development thing - if the app is disconnected from the debugger?
   * Generic FlatList for LFGs / Events broken by day instead of hour
   * show schedule but disable lfg queries if not logged in
+  * Add an oobe bypass secret switchFilter now and soon events
+  * Filter menu design for smaller screens
+  * Event Help - use as example of detailed help contentEvent day screen
+  * Lfg navigator stuck after tapping an lfg in the schedule view if nav is not initialized first
+  * User has joined this seamail socket message on join lfgCommon open query function to hook into disable or not logged in

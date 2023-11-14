@@ -40,7 +40,7 @@ export const EventStackNavigator = () => {
         component={EventDayScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
-          title: 'Schedule',
+          title: 'Events',
         }}
         initialParams={{
           cruiseDay: cruiseDayToday,
@@ -54,7 +54,7 @@ export const EventStackNavigator = () => {
       <Stack.Screen
         name={EventStackComponents.eventSettingsScreen}
         component={EventSettingsScreen}
-        options={{title: 'Schedule Settings'}}
+        options={{title: 'Event Settings'}}
       />
       <Stack.Screen name={EventStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
       <Stack.Screen
