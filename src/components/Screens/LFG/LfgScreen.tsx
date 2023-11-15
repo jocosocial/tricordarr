@@ -30,6 +30,8 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
+import {useSocket} from '../../Context/Contexts/SocketContext';
+import {useIsFocused} from '@react-navigation/native';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -46,6 +48,8 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const {closeFezSocket} = useSocket();
+  const isFocused = useIsFocused();
 
   const styles = StyleSheet.create({
     item: {
@@ -122,14 +126,18 @@ export const LfgScreen = ({navigation, route}: Props) => {
     if (data) {
       setFez(data.pages[0]);
     }
-  }, [data, setFez]);
+  }, [closeFezSocket, data, setFez]);
 
   // Mark as Read
   useEffect(() => {
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
       refetchUserNotificationData();
     }
-  }, [fez, refetchUserNotificationData]);
+    // @TODO this is still leaking
+    if (isFocused) {
+      closeFezSocket();
+    }
+  }, [closeFezSocket, fez, isFocused, refetchUserNotificationData]);
 
   if (!fez) {
     return <LoadingView />;
@@ -221,15 +229,15 @@ export const LfgScreen = ({navigation, route}: Props) => {
       </ScrollingContentView>
       {profilePublicData && fez.owner.userID !== profilePublicData.header.userID && (
         <PaddedContentView>
-          {FezData.isParticipant(fez, profilePublicData?.header) ||
-            (FezData.isWaitlist(fez, profilePublicData?.header) && (
-              <PrimaryActionButton
-                buttonText={FezData.isWaitlist(fez, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
-                onPress={handleMembershipPress}
-                buttonColor={theme.colors.twitarrNegativeButton}
-                isLoading={refreshing}
-              />
-            ))}
+          {(FezData.isParticipant(fez, profilePublicData?.header) ||
+            FezData.isWaitlist(fez, profilePublicData?.header)) && (
+            <PrimaryActionButton
+              buttonText={FezData.isWaitlist(fez, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
+              onPress={handleMembershipPress}
+              buttonColor={theme.colors.twitarrNegativeButton}
+              isLoading={refreshing}
+            />
+          )}
           {!FezData.isParticipant(fez, profilePublicData?.header) &&
             !FezData.isWaitlist(fez, profilePublicData?.header) && (
               <PrimaryActionButton

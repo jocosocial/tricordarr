@@ -17,6 +17,8 @@ Backlog
 * The menu system could use some deduplication
 * scrollToNow() should go to the first index of any other events at that time, rather than $next-1
 * Forum via Webview with deep linking
+* leaking lfg fez socket if chat screen is opened then closed.
+
 
 Work Queue
 * LFG features
@@ -36,5 +38,4 @@ Work Queue
   * Add an oobe bypass secret switchFilter now and soon events
   * Filter menu design for smaller screens
   * Lfg navigator stuck after tapping an lfg in the schedule view if nav is not initialized first
-  * User has joined this seamail socket message on join lfg
   * Common open query function to hook into disable or not logged in

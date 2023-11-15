@@ -3,6 +3,7 @@ import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {MainImageCardCover} from './MainImageCardCover';
+import pluralize from 'pluralize';
 
 export const HeaderCard = () => {
   const {commonStyles} = useStyles();
@@ -18,7 +19,7 @@ export const HeaderCard = () => {
 
   let subtitleText = '';
   if (cruiseDayIndex < 0) {
-    subtitleText = `${Math.abs(cruiseDayIndex)} day(s) until boat!`;
+    subtitleText = `${Math.abs(cruiseDayIndex)} ${pluralize('day', Math.abs(cruiseDayIndex))} until boat!`;
   } else if (cruiseDayIndex < cruiseLength - 1) {
     subtitleText = `Day ${cruiseDayIndex + 1}`;
   } else {

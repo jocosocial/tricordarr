@@ -32,6 +32,7 @@ import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
 
+// @TODO this could really use some dedup with the SeamailScreen.
 export const LfgChatScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -85,7 +86,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this seamail.`;
+        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this LFG.`;
         setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.
