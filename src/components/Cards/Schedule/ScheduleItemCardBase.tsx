@@ -19,6 +19,7 @@ interface ScheduleItemCardBaseProps {
   endTime?: string;
   timeZone?: string;
   showDay?: boolean;
+  description?: string;
   onLongPress?: () => void;
   marker?: ScheduleCardMarkerType;
 }
@@ -36,6 +37,7 @@ export const ScheduleItemCardBase = ({
   timeZone,
   onLongPress,
   marker,
+  description,
   showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
@@ -112,6 +114,11 @@ export const ScheduleItemCardBase = ({
               {participation && (
                 <Text style={styles.bodyText} variant={'bodyMedium'}>
                   {participation}
+                </Text>
+              )}
+              {description && (
+                <Text style={styles.bodyText} variant={'bodyMedium'}>
+                  {description}
                 </Text>
               )}
             </View>

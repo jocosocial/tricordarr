@@ -35,6 +35,6 @@ Work Queue
   * show schedule but disable lfg queries if not logged in
   * Add an oobe bypass secret switchFilter now and soon events
   * Filter menu design for smaller screens
-  * Event Help - use as example of detailed help contentEvent day screen
   * Lfg navigator stuck after tapping an lfg in the schedule view if nav is not initialized first
-  * User has joined this seamail socket message on join lfgCommon open query function to hook into disable or not logged in
+  * User has joined this seamail socket message on join lfg
+  * Common open query function to hook into disable or not logged in
