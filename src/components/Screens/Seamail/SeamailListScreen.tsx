@@ -3,7 +3,7 @@ import {RefreshControl} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
+import {SeamailFAB} from '../../Buttons/FloatingActionButtons/SeamailFAB';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
@@ -124,7 +124,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
-      <SeamailNewFAB />
+      <SeamailFAB />
     </AppView>
   );
 };

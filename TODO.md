@@ -1,18 +1,4 @@
 Backlog
-* Find a way to make tokenAuthQuery do the onError processing.
-* timezone warnings
-* Pressing PrimaryActionButton dismisses keyboard but doesnt actually press - highlight unsaved work
-* Big red exclamation thing with server healthcheck failure
-* private note feature missing
-* Notifications
-  * notification socket control not working.
-  * enableusernotificatoins is a bad pattern, what does it mean?
-* Oobe
-  * add notification preferences to oobe flow
-* Make a new base FAB
-* The menu system could use some deduplication
-* scrollToNow() should go to the first index of any other events at that time, rather than $next-1
-* leaking lfg fez socket if chat screen is opened then closed.
 
 
 Work Queue
