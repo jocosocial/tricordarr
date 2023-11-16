@@ -12,6 +12,7 @@ import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs'
 import {SeamailAddParticipantScreen} from '../../Screens/Seamail/SeamailAddParticipantScreen';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
+import {SeamailSearchScreen} from '../../Screens/Seamail/SeamailSearchScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -37,6 +38,7 @@ export type SeamailStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
+  SeamailSearchScreen: undefined;
 };
 
 export const SeamailStack = () => {
@@ -89,6 +91,11 @@ export const SeamailStack = () => {
         name={SeamailStackScreenComponents.seamailAddParticipantScreen}
         component={SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.seamailSearchScreen}
+        component={SeamailSearchScreen}
+        options={{title: 'Search Seamail'}}
       />
     </Stack.Navigator>
   );

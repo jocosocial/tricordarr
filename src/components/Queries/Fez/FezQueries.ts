@@ -36,12 +36,13 @@ interface SeamailListQueryOptions {
   pageSize?: number;
   forUser?: keyof typeof PrivilegedUserAccounts;
   search?: string;
+  options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQueryOptions = {pageSize: 50}) => {
+export const useSeamailListQuery = ({pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50}) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
-    ['/fez/joined?type=closed&type=open'],
+    ['/fez/joined', {type: ['closed', 'open'], search: search}],
     async ({pageParam = {limit: pageSize}}) => {
       const {start, limit} = pageParam as PaginationParams;
       const queryParams = {
@@ -63,6 +64,7 @@ export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQuer
       onError: error => {
         setErrorMessage(error?.response?.data.reason);
       },
+      ...options,
     },
   );
 };

@@ -25,6 +25,11 @@ export const SeamailFAB = () => {
           initialAsTwitarrTeam: asTwitarrTeam,
         }),
     }),
+    FabGroupAction({
+      icon: AppIcons.search,
+      label: 'Search',
+      onPress: () => navigation.push(SeamailStackScreenComponents.seamailSearchScreen),
+    }),
   ];
 
   return (
