@@ -18,7 +18,6 @@ Work Queue
   * show schedule but disable lfg queries if not logged in
   * Add an oobe bypass secret switchFilter now and soon events
   * Filter menu design for smaller screens
-  * Lfg navigator stuck after tapping an lfg in the schedule view if nav is not initialized first
   * Common open query function to hook into disable or not logged in
   * Show soon/now in favorites view and search results
   * Long press favorites should remove from favorites list

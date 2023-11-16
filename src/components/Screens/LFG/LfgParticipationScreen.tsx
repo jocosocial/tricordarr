@@ -188,6 +188,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                   bottomNav.navigate(BottomTabComponents.homeTab, {
                     screen: MainStackComponents.userProfileScreen,
                     params: {userID: u.userID},
+                    initial: false,
                   })
                 }
               />
@@ -219,6 +220,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                       bottomNav.navigate(BottomTabComponents.homeTab, {
                         screen: MainStackComponents.userProfileScreen,
                         params: {userID: u.userID},
+                        initial: false,
                       })
                     }
                   />

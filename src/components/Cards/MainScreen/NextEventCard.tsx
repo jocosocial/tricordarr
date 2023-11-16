@@ -18,6 +18,8 @@ export const NextEventCard = ({eventID}: {eventID: string}) => {
           showDay={true}
           onPress={() =>
             bottomNav.navigate(BottomTabComponents.scheduleTab, {
+              // https://github.com/react-navigation/react-navigation/issues/7698
+              initial: false,
               screen: EventStackComponents.eventScreen,
               params: {
                 eventID: eventID,

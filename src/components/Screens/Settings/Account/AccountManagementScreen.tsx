@@ -47,6 +47,7 @@ export const AccountManagementScreen = () => {
                   params: {
                     userID: profilePublicData.header.userID,
                   },
+                  initial: false,
                 })
               }
             />

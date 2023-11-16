@@ -75,6 +75,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
                 bottomNavigation.navigate(BottomTabComponents.lfgTab, {
                   screen: LfgStackComponents.lfgScreen,
                   params: {fezID: item.fezID},
+                  initial: false,
                 })
               }
               marker={marker}
