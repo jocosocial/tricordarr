@@ -1,6 +1,5 @@
 import {PickerField} from './PickerField';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {formatMinutesToHumanReadable} from '../../../libraries/DateTime';
 import React from 'react';
 import {FezType} from '../../../libraries/Enums/FezType';
 
@@ -10,7 +9,18 @@ interface DurationFieldProps {
   value: number;
 }
 
-const choices = Object.keys(FezType);
+const choices = [
+  FezType.activity,
+  FezType.dining,
+  FezType.gaming,
+  FezType.meetup,
+  FezType.music,
+  FezType.shore,
+  FezType.other,
+  FezType.open,
+  FezType.closed,
+  FezType.announcement,
+];
 
 const getTitle = (choice: number | string) => String(choice);
 
