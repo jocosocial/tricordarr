@@ -26,7 +26,7 @@ export const SeamailFAB = () => {
         }),
     }),
     FabGroupAction({
-      icon: AppIcons.search,
+      icon: AppIcons.seamailSearch,
       label: 'Search',
       onPress: () => navigation.push(SeamailStackScreenComponents.seamailSearchScreen),
     }),
@@ -38,7 +38,7 @@ export const SeamailFAB = () => {
       backgroundColor={backgroundColor}
       actions={actions}
       openLabel={'Seamail'}
-      icon={AppIcons.chat}
+      icon={AppIcons.seamail}
     />
   );
 };

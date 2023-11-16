@@ -69,4 +69,6 @@ export enum AppIcons {
   join = 'account-plus',
   leave = 'account-remove',
   cancel = 'cancel',
+  seamailSearch = 'email-search',
+  eventSearch = 'calendar-search',
 }

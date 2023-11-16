@@ -23,7 +23,7 @@ export const EventFAB = () => {
       onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
     }),
     FabGroupAction({
-      icon: AppIcons.search,
+      icon: AppIcons.eventSearch,
       label: 'Search',
       onPress: () => handleNavigation(EventStackComponents.eventSearchScreen),
     }),

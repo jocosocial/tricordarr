@@ -22,3 +22,4 @@ Work Queue
   * Show soon/now in favorites view and search results
   * Long press favorites should remove from favorites list
   * Long press in favorites toggle star
+  * find groups long press not clearing filters
