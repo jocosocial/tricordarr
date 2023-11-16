@@ -1,3 +1,5 @@
+import {FezType} from '../Enums/FezType';
+
 export interface SettingFormValues {
   settingValue: string;
 }
@@ -26,4 +28,15 @@ export interface ChangePasswordFormValues {
 
 export interface ChangeUsernameFormValues {
   username: string;
+}
+
+export interface FezFormValues {
+  title: string;
+  location: string;
+  fezType: FezType;
+  startTime: string;
+  duration: number;
+  minCapacity: number;
+  maxCapacity: number;
+  info: string;
 }

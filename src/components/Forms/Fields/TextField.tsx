@@ -11,6 +11,7 @@ interface TextFieldProps {
   numberOfLines?: number;
   label?: string;
   left?: ReactNode;
+  right?: ReactNode;
   secureTextEntry?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
   inputMode?: InputModeOptions;
@@ -26,6 +27,7 @@ export const TextField = ({
   secureTextEntry = false,
   label,
   left,
+  right,
   viewStyle,
   inputMode,
   autoCapitalize,
@@ -47,6 +49,7 @@ export const TextField = ({
             numberOfLines={numberOfLines}
             disabled={isSubmitting}
             left={left}
+            right={right}
             secureTextEntry={secureTextEntry}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}

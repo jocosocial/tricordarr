@@ -71,4 +71,5 @@ export enum AppIcons {
   cancel = 'cancel',
   seamailSearch = 'email-search',
   eventSearch = 'calendar-search',
+  info = 'information-outline',
 }
