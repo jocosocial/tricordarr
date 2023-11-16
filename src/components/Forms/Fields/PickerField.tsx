@@ -2,21 +2,20 @@ import {Button, Divider, Menu} from 'react-native-paper';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {formatMinutesToHumanReadable} from '../../../libraries/DateTime';
 import {useAppTheme} from '../../../styles/Theme';
 import {AppIcon} from '../../Images/AppIcon';
 import {useFormikContext} from 'formik';
 
-const durations = [30, 60, 90, 120, 180, 240];
-
 interface PickerFieldProps {
   name: string;
   label: string;
-  value: number;
+  value: number | string;
+  choices: (number | string)[];
+  icon: string;
+  getTitle: (value: number | string) => string;
 }
 
-export const PickerField = ({name, label, value}: PickerFieldProps) => {
+export const PickerField = ({name, label, value, choices, icon, getTitle}: PickerFieldProps) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
@@ -25,9 +24,8 @@ export const PickerField = ({name, label, value}: PickerFieldProps) => {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const handleSelect = (newValue: number) => {
+  const handleSelect = (newValue: number | string) => {
     setFieldValue(name, newValue);
-    console.log(newValue);
     closeMenu();
   };
 
@@ -50,7 +48,7 @@ export const PickerField = ({name, label, value}: PickerFieldProps) => {
     },
   });
 
-  const getIcon = () => <AppIcon icon={AppIcons.time} />;
+  const getIcon = () => <AppIcon icon={icon} />;
 
   return (
     <Menu
@@ -66,14 +64,14 @@ export const PickerField = ({name, label, value}: PickerFieldProps) => {
           style={styles.button}
           onPress={openMenu}
           mode={'outlined'}>
-          {label} ({formatMinutesToHumanReadable(value)})
+          {label} ({getTitle(value)})
         </Button>
       }>
-      {durations.map((duration, index) => {
+      {choices.map((item, index) => {
         return (
           <React.Fragment key={index}>
             {index !== 0 && <Divider />}
-            <Menu.Item onPress={() => handleSelect(duration)} title={formatMinutesToHumanReadable(duration)} />
+            <Menu.Item onPress={() => handleSelect(item)} title={getTitle(item)} />
           </React.Fragment>
         );
       })}
