@@ -249,6 +249,15 @@ export const LfgScreen = ({navigation, route}: Props) => {
             )}
         </PaddedContentView>
       )}
+      {profilePublicData && fez.owner.userID === profilePublicData.header.userID && (
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'Edit'}
+            onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: fez})}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+      )}
     </AppView>
   );
 };

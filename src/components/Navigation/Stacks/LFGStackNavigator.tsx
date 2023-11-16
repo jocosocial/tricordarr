@@ -13,6 +13,9 @@ import {LfgChatScreen} from '../../Screens/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {LfgEditScreen} from '../../Screens/LFG/LfgEditScreen';
+import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;
@@ -32,6 +35,10 @@ export type LfgStackParamList = {
     fezID: string;
   };
   LfgSettingsScreen: undefined;
+  LfgCreateScreen: undefined;
+  LfgEditScreen: {
+    fez: FezData;
+  };
 };
 
 export const LfgStackNavigator = () => {
@@ -82,6 +89,12 @@ export const LfgStackNavigator = () => {
         name={LfgStackComponents.lfgSettingsScreen}
         component={LfgSettingsScreen}
         options={{title: 'LFG Settings'}}
+      />
+      <Stack.Screen name={LfgStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
+      <Stack.Screen
+        name={LfgStackComponents.lfgCreateScreen}
+        component={LfgCreateScreen}
+        options={{title: 'New LFG'}}
       />
     </Stack.Navigator>
   );

@@ -98,4 +98,6 @@ export enum LfgStackComponents {
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
   lfgChatScreen = 'LfgChatScreen',
   lfgSettingsScreen = 'LfgSettingsScreen',
+  lfgCreateScreen = 'LfgCreateScreen',
+  lfgEditScreen = 'LfgEditScreen',
 }

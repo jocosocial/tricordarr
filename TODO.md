@@ -4,8 +4,6 @@ Backlog
 Work Queue
 * LFG features
   * Create
-  * View
-    * context, actions, chat
   * Actions
     * Update
 * Nightly

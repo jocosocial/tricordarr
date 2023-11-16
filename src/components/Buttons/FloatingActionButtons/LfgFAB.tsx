@@ -20,7 +20,7 @@ export const LfgFAB = () => {
     FabGroupAction({
       icon: AppIcons.new,
       label: 'New LFG',
-      onPress: () => console.log('Create LFG'),
+      onPress: () => handleNavigation(LfgStackComponents.lfgCreateScreen),
     }),
     FabGroupAction({
       icon: AppIcons.lfgFind,
