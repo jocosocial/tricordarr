@@ -13,6 +13,7 @@ import {RefreshControl} from 'react-native';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {NextEventCard} from '../../Cards/MainScreen/NextEventCard';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -21,7 +22,7 @@ export const MainScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {refetch: refetchThemes} = useDailyThemeQuery();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetchUserNotificationData, userNotificationData} = useUserNotificationData();
 
   const onRefresh = () => {
     refetchUserNotificationData().then(() =>
@@ -44,6 +45,9 @@ export const MainScreen = ({navigation}: Props) => {
           <HeaderCard />
           <DailyThemeCard />
           <MainAnnouncementView />
+          {userNotificationData?.nextFollowedEventID && (
+            <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
+          )}
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

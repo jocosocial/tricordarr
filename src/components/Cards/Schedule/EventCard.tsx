@@ -8,9 +8,9 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {EventListActions} from '../../Reducers/Schedule/EventListReducer';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 interface EventCardProps {
   eventData: EventData;
@@ -18,16 +18,29 @@ interface EventCardProps {
   showDay?: boolean;
   marker?: ScheduleCardMarkerType;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  hideFavorite?: boolean;
+  onLongPress?: () => void;
+  titleHeader?: string;
 }
 
-export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = false}: EventCardProps) => {
+export const EventCard = ({
+  eventData,
+  onPress,
+  marker,
+  setRefreshing,
+  onLongPress,
+  titleHeader,
+  showDay = false,
+  hideFavorite = false,
+}: EventCardProps) => {
   const theme = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const {setErrorMessage} = useErrorHandler();
   const {dispatchScheduleList} = useTwitarr();
+  const {refetchUserNotificationData} = useUserNotificationData();
 
   const getFavorite = () => {
-    if (eventData.isFavorite) {
+    if (eventData.isFavorite && !hideFavorite) {
       return <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />;
     }
   };
@@ -54,6 +67,8 @@ export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = 
           if (setRefreshing) {
             setRefreshing(false);
           }
+          // Update the user notification data in case this was/is a favorite.
+          refetchUserNotificationData();
         },
       },
     );
@@ -73,8 +88,9 @@ export const EventCard = ({eventData, onPress, marker, setRefreshing, showDay = 
       endTime={eventData.endTime}
       timeZone={eventData.timeZone}
       showDay={showDay}
-      onLongPress={handleToggleFavorite}
+      onLongPress={onLongPress || handleToggleFavorite}
       marker={marker}
+      titleHeader={titleHeader}
     />
   );
 };

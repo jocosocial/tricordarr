@@ -8,8 +8,6 @@ Work Queue
     * context, actions, chat
   * Actions
     * Update
-* Events
-  * Your next event card on main screen
 * Nightly
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)

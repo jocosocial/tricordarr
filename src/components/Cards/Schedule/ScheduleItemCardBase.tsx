@@ -22,6 +22,7 @@ interface ScheduleItemCardBaseProps {
   description?: string;
   onLongPress?: () => void;
   marker?: ScheduleCardMarkerType;
+  titleHeader?: string;
 }
 
 export const ScheduleItemCardBase = ({
@@ -38,6 +39,7 @@ export const ScheduleItemCardBase = ({
   onLongPress,
   marker,
   description,
+  titleHeader,
   showDay = false,
 }: ScheduleItemCardBaseProps) => {
   const {commonStyles} = useStyles();
@@ -90,6 +92,11 @@ export const ScheduleItemCardBase = ({
             <View style={styles.contentBody}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainer}>
+                  {titleHeader && (
+                    <Text style={styles.titleText} variant={'titleMedium'}>
+                      {titleHeader}
+                    </Text>
+                  )}
                   <Text style={styles.titleText} variant={'titleMedium'}>
                     {title}
                   </Text>
