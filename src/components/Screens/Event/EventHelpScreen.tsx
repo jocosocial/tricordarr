@@ -78,6 +78,18 @@ export const EventHelpScreen = () => {
             today. Pressing again will scroll down to "now".
           </Text>
         </PaddedContentView>
+        <PaddedContentView>
+          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+            Favorite/Follow
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
+            the <AppIcon icon={AppIcons.favorite} /> icon at the top of the event details screen. You can see all of
+            your favorite events with a filter or with the floating action button.
+          </Text>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
