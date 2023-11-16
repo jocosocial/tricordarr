@@ -17,6 +17,7 @@ import {FezType} from '../../libraries/Enums/FezType';
 import {FezFormValues} from '../../libraries/Types/FormValues';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
+import {PickerField} from './Fields/PickerField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -83,6 +84,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
             autoCapitalize={'words'}
           />
+          <PickerField name={'duration'} label={'Duration'} value={values.duration} />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}

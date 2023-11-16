@@ -223,4 +223,7 @@ export const commonStyles = StyleSheet.create({
   fontSizeLabel: {
     fontSize: styleDefaults.fontSize * 0.75,
   },
+  fontFamilyNormal: {
+    fontFamily: 'sans-serif',
+  },
 });

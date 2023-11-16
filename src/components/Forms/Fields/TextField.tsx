@@ -3,6 +3,7 @@ import {StyleProp, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 import {FastField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
+import {useAppTheme} from '../../../styles/Theme';
 
 interface TextFieldProps {
   name: string;
@@ -34,11 +35,14 @@ export const TextField = ({
   maxLength,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched, isSubmitting} = useFormikContext();
+  const theme = useAppTheme();
+
   return (
     <FastField name={name}>
       {() => (
         <View style={viewStyle}>
           <TextInput
+            textColor={theme.colors.onBackground} // @TODO this isnt working
             label={label}
             mode={mode}
             multiline={multiline}

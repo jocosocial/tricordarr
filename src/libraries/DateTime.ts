@@ -12,6 +12,7 @@ import {
 import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
+import pluralize from 'pluralize';
 
 const thresholdMap = {
   second: {
@@ -209,4 +210,28 @@ export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr:
   // negative means away from UTC (going into the past).
   offset = compareTime.utcOffset() - originTime.utcOffset();
   return offset;
+};
+
+/**
+ * Takes a number of minutes as input and returns a human-compatible string of that duration.
+ * For example: 30 -> 30 Minutes, 90 -> 1 hour 30 minutes.
+ * ChatGPT wrote the base, I made some modifications.
+ * @param minutes Number of minutes
+ */
+export const formatMinutesToHumanReadable = (minutes: number) => {
+  const duration = moment.duration(minutes, 'minutes');
+  const hours = duration.hours();
+  const minutesRemainder = duration.minutes();
+
+  let formattedString = '';
+
+  if (hours > 0) {
+    formattedString += `${hours} ${pluralize('hour', hours)}`;
+  }
+
+  if (minutesRemainder > 0) {
+    formattedString += ` ${minutesRemainder} ${pluralize('minute', minutesRemainder)}`;
+  }
+
+  return formattedString.trim();
 };
