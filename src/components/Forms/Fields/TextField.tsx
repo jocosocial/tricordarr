@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {StyleProp, View, ViewStyle} from 'react-native';
+import {KeyboardTypeOptions, StyleProp, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 import {FastField, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
@@ -20,6 +20,7 @@ export interface TextFieldProps {
   maxLength?: number;
   onFocus?: () => void;
   // value?: string;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 export const TextField = ({
@@ -36,23 +37,33 @@ export const TextField = ({
   autoCapitalize,
   maxLength,
   onFocus,
+  keyboardType,
 }: TextFieldProps) => {
-  const {handleChange, handleBlur, isSubmitting} = useFormikContext();
+  const {handleChange, handleBlur, isSubmitting, setFieldValue} = useFormikContext();
   const theme = useAppTheme();
   const [field, meta, helpers] = useField<string>(name);
+
+  const handleValueChange = (value: string) => {
+    if (keyboardType === 'numeric') {
+      setFieldValue(name, parseInt(value, 10));
+      return;
+    }
+    handleChange(name)(value);
+  };
 
   return (
     <FastField name={name}>
       {() => (
         <View style={viewStyle}>
           <TextInput
+            keyboardType={keyboardType}
             textColor={theme.colors.onBackground} // @TODO this isnt working
             label={label}
             mode={mode}
             multiline={multiline}
-            onChangeText={handleChange(name)}
+            onChangeText={handleValueChange}
             onBlur={handleBlur(name)}
-            value={field.value}
+            value={field.value.toString()}
             error={!!meta.error && meta.touched}
             numberOfLines={numberOfLines}
             disabled={isSubmitting}

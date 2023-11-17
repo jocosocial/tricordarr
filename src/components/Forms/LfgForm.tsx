@@ -17,7 +17,6 @@ import {FezType} from '../../libraries/Enums/FezType';
 import {FezFormValues} from '../../libraries/Types/FormValues';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {PickerField} from './Fields/PickerField';
 import {DurationPickerField} from './Fields/DurationPickerField';
 import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
@@ -54,9 +53,7 @@ const locationHelpContent = [
   '4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard, and that bar\'s full at the appointed time, you can message the LFG members to relocate.',
 ];
 
-const maximumHelpContent = [
-  'Use 0 for unlimited',
-];
+const maximumHelpContent = ['Use 0 for unlimited'];
 
 const locationSuggestions = [
   'Atrium, Deck 1, Midship',
@@ -116,7 +113,6 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             left={<TextInput.Icon icon={AppIcons.map} />}
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
             autoCapitalize={'words'}
-            value={values.location}
             suggestions={locationSuggestions}
           />
           <View style={[commonStyles.paddingBottom]}>
@@ -130,6 +126,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             name={'minCapacity'}
             label={'Minimum Attendees Needed'}
             left={<TextInput.Icon icon={AppIcons.group} />}
+            keyboardType={'numeric'}
           />
           <TextField
             viewStyle={styles.inputContainer}
@@ -137,6 +134,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             label={'Maximum Attendees Desired'}
             left={<TextInput.Icon icon={AppIcons.group} />}
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
+            keyboardType={'numeric'}
           />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
