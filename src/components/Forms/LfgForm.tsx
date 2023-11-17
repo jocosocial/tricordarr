@@ -20,6 +20,8 @@ import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {DurationPickerField} from './Fields/DurationPickerField';
 import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
+import {DateTimePickerField} from './Fields/DateTimePickerField';
+import {useCruise} from '../Context/Contexts/CruiseContext';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -34,17 +36,6 @@ const validationSchema = Yup.object().shape({
   fezType: FezTypeValidation,
   // startTime: DateValidation,
 });
-
-const initialValues: FezFormValues = {
-  title: '',
-  location: '',
-  fezType: FezType.activity,
-  startTime: '',
-  duration: 30,
-  minCapacity: 2,
-  maxCapacity: 2,
-  info: '',
-};
 
 const locationHelpContent = [
   "1. LFGs are not a reservation system. You can't claim a room or even a table by scheduling an LFG there.",
@@ -83,6 +74,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
     buttonContainer: [commonStyles.marginTopSmall],
   };
   const {setModalVisible, setModalContent} = useModal();
+  const {startDate, cruiseDayToday} = useCruise();
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();
@@ -94,6 +86,20 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
     Keyboard.dismiss();
     setModalContent(<HelpModalView title={'About Participation'} text={maximumHelpContent} />);
     setModalVisible(true);
+  };
+
+  const apparentCruiseDate = new Date(startDate);
+  apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
+
+  const initialValues: FezFormValues = {
+    title: '',
+    location: '',
+    fezType: FezType.activity,
+    startTime: apparentCruiseDate.toISOString(),
+    duration: 30,
+    minCapacity: 2,
+    maxCapacity: 2,
+    info: '',
   };
 
   return (
@@ -137,6 +143,9 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
             keyboardType={'numeric'}
           />
+          <View style={[commonStyles.paddingBottom]}>
+            <DateTimePickerField name={'startTime'} />
+          </View>
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}

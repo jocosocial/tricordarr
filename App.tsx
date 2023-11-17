@@ -52,6 +52,8 @@ TimeAgo.addDefaultLocale(en);
 // @TODO this timezone is a hack, until we figure out what to do about the API.
 moment.tz.link('AST|America/Santo_Domingo');
 
+registerTranslation('en', paperEn);
+
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +72,7 @@ import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider'
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
 import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
+import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
 
 registerFgsWorker();
 
