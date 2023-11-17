@@ -94,15 +94,15 @@ function App(): JSX.Element {
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
-        <StyleProvider>
-          <Portal.Host>
-            <HeaderButtonsProvider stackType={'native'}>
-              <ConfigProvider>
-                <CruiseProvider>
-                  <QueryClientProvider client={queryClient}>
-                    <TwitarrProvider>
-                      <ErrorHandlerProvider>
-                        <ModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <StyleProvider>
+            <TwitarrProvider>
+              <ModalProvider>
+                <Portal.Host>
+                  <HeaderButtonsProvider stackType={'native'}>
+                    <ConfigProvider>
+                      <CruiseProvider>
+                        <ErrorHandlerProvider>
                           <AuthProvider>
                             <UserDataProvider>
                               <PrivilegeProvider>
@@ -123,15 +123,15 @@ function App(): JSX.Element {
                               </PrivilegeProvider>
                             </UserDataProvider>
                           </AuthProvider>
-                        </ModalProvider>
-                      </ErrorHandlerProvider>
-                    </TwitarrProvider>
-                  </QueryClientProvider>
-                </CruiseProvider>
-              </ConfigProvider>
-            </HeaderButtonsProvider>
-          </Portal.Host>
-        </StyleProvider>
+                        </ErrorHandlerProvider>
+                      </CruiseProvider>
+                    </ConfigProvider>
+                  </HeaderButtonsProvider>
+                </Portal.Host>
+              </ModalProvider>
+            </TwitarrProvider>
+          </StyleProvider>
+        </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>
   );
