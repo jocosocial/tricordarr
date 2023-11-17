@@ -20,6 +20,7 @@ import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {PickerField} from './Fields/PickerField';
 import {DurationPickerField} from './Fields/DurationPickerField';
 import {FezTypePickerField} from './Fields/FezTypePickerField';
+import {SuggestedTextField} from './Fields/SuggestedTextField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -53,6 +54,26 @@ const locationHelpContent = [
   '4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard, and that bar\'s full at the appointed time, you can message the LFG members to relocate.',
 ];
 
+const locationSuggestions = [
+  'Atrium, Deck 1, Midship',
+  "B.B. King's, Deck 2, Midship",
+  'Billboard Onboard, Deck 2, Forward',
+  'Pinnacle Bar, Deck 2, Midship',
+  "Explorer's Lounge, Deck 2, Aft",
+  'Lower Main Dining Room, Deck 2, Aft',
+  'Ocean Bar, Deck 3, Midship',
+  'Upper Main Dining Room, Deck 3, Aft',
+  'Lido Bar (Midship), Deck 9, Midship',
+  'Sea View Bar, Deck 9, Midship',
+  'Lido Pool Area, Deck 9, Midship',
+  'Lido Market, Deck 9, Aft',
+  'Sea View Pool Area, Deck 9, Aft',
+  "Crow's Nest (Ten Forward), Deck 10, Forward",
+  'Shuffleboard Court, Deck 10, Midship',
+  'EXC, Deck 10, Forward',
+  'Sports Deck, Deck 11, Forward',
+];
+
 export const LfgForm = ({onSubmit}: LfgFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
@@ -78,13 +99,15 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             left={<TextInput.Icon icon={AppIcons.events} />}
             autoCapitalize={'words'}
           />
-          <TextField
+          <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
             label={'Location'}
             left={<TextInput.Icon icon={AppIcons.map} />}
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
             autoCapitalize={'words'}
+            value={values.location}
+            suggestions={locationSuggestions}
           />
           <View style={[commonStyles.paddingBottom]}>
             <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />

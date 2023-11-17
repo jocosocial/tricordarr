@@ -5,7 +5,7 @@ import {FastField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 import {useAppTheme} from '../../../styles/Theme';
 
-interface TextFieldProps {
+export interface TextFieldProps {
   name: string;
   mode?: 'flat' | 'outlined' | undefined;
   multiline?: boolean;
@@ -18,6 +18,7 @@ interface TextFieldProps {
   inputMode?: InputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   maxLength?: number;
+  onFocus?: () => void;
 }
 
 export const TextField = ({
@@ -33,6 +34,7 @@ export const TextField = ({
   inputMode,
   autoCapitalize,
   maxLength,
+  onFocus,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, values, errors, touched, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -58,6 +60,7 @@ export const TextField = ({
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
             maxLength={maxLength}
+            onFocus={onFocus}
           />
           <HelperText type={'error'} visible={!!errors[name] && touched[name]}>
             {errors[name]}
