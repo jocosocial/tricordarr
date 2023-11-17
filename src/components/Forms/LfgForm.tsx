@@ -51,6 +51,7 @@ const locationHelpContent = [
   "2. Don't set up an LFG in a room used for Official or Shadow Events.",
   "3. Don't try to get around Item 2 by scheduling your LFG in an Event room at a time when the Official Schedule doesn't list anything happening there. Event rooms are often used for official things even when not running a listed event.",
   '4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard, and that bar\'s full at the appointed time, you can message the LFG members to relocate.',
+  '5. The locations in the menu are suggestions. You can enter any location you want (subject to the rules above).',
 ];
 
 const maximumHelpContent = ['Use 0 for unlimited'];

@@ -19,8 +19,8 @@ export interface TextFieldProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   maxLength?: number;
   onFocus?: () => void;
-  // value?: string;
   keyboardType?: KeyboardTypeOptions;
+  onChangeText?: (value: string) => void;
 }
 
 export const TextField = ({
@@ -38,6 +38,7 @@ export const TextField = ({
   maxLength,
   onFocus,
   keyboardType,
+  onChangeText,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting, setFieldValue} = useFormikContext();
   const theme = useAppTheme();
@@ -61,7 +62,7 @@ export const TextField = ({
             label={label}
             mode={mode}
             multiline={multiline}
-            onChangeText={handleValueChange}
+            onChangeText={onChangeText || handleValueChange}
             onBlur={handleBlur(name)}
             value={field.value.toString()}
             error={!!meta.error && meta.touched}

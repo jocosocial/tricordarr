@@ -59,6 +59,7 @@ export const SuggestedTextField = ({
           autoCapitalize={autoCapitalize}
           maxLength={maxLength}
           onFocus={handleOpen}
+          onChangeText={handleSelect}
         />
       }>
       {suggestions.map((suggestion, index) => {
