@@ -7,7 +7,7 @@
 
 import React, {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
-import {adaptNavigationTheme, Provider as PaperProvider} from 'react-native-paper';
+import {adaptNavigationTheme, Portal, Provider as PaperProvider} from 'react-native-paper';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
@@ -95,40 +95,42 @@ function App(): JSX.Element {
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
-          <HeaderButtonsProvider stackType={'native'}>
-            <ConfigProvider>
-              <CruiseProvider>
-                <QueryClientProvider client={queryClient}>
-                  <TwitarrProvider>
-                    <ErrorHandlerProvider>
-                      <ModalProvider>
-                        <AuthProvider>
-                          <UserDataProvider>
-                            <PrivilegeProvider>
-                              <SocketProvider>
-                                <UserRelationsProvider>
-                                  <UserNotificationDataProvider>
-                                    <DrawerProvider>
-                                      <ScheduleFilterProvider>
-                                        <AppEventHandler />
-                                        <ForegroundService />
-                                        <NotificationDataListener />
-                                        <RootStackNavigator />
-                                      </ScheduleFilterProvider>
-                                    </DrawerProvider>
-                                  </UserNotificationDataProvider>
-                                </UserRelationsProvider>
-                              </SocketProvider>
-                            </PrivilegeProvider>
-                          </UserDataProvider>
-                        </AuthProvider>
-                      </ModalProvider>
-                    </ErrorHandlerProvider>
-                  </TwitarrProvider>
-                </QueryClientProvider>
-              </CruiseProvider>
-            </ConfigProvider>
-          </HeaderButtonsProvider>
+          <Portal.Host>
+            <HeaderButtonsProvider stackType={'native'}>
+              <ConfigProvider>
+                <CruiseProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <TwitarrProvider>
+                      <ErrorHandlerProvider>
+                        <ModalProvider>
+                          <AuthProvider>
+                            <UserDataProvider>
+                              <PrivilegeProvider>
+                                <SocketProvider>
+                                  <UserRelationsProvider>
+                                    <UserNotificationDataProvider>
+                                      <DrawerProvider>
+                                        <ScheduleFilterProvider>
+                                          <AppEventHandler />
+                                          <ForegroundService />
+                                          <NotificationDataListener />
+                                          <RootStackNavigator />
+                                        </ScheduleFilterProvider>
+                                      </DrawerProvider>
+                                    </UserNotificationDataProvider>
+                                  </UserRelationsProvider>
+                                </SocketProvider>
+                              </PrivilegeProvider>
+                            </UserDataProvider>
+                          </AuthProvider>
+                        </ModalProvider>
+                      </ErrorHandlerProvider>
+                    </TwitarrProvider>
+                  </QueryClientProvider>
+                </CruiseProvider>
+              </ConfigProvider>
+            </HeaderButtonsProvider>
+          </Portal.Host>
         </StyleProvider>
       </PaperProvider>
     </NavigationContainer>

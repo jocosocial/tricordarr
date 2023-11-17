@@ -4,7 +4,7 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useAppTheme} from '../../styles/Theme';
 
 interface ErrorSnackbarProps {
-  actionLabel: string;
+  actionLabel?: string;
 }
 
 // Lifted right from the source.

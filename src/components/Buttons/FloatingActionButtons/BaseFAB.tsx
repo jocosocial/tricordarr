@@ -44,17 +44,15 @@ export const BaseFAB = ({color, backgroundColor, openLabel, icon, actions = []}:
   });
 
   return (
-    <Portal>
-      <FAB.Group
-        open={open}
-        visible={true}
-        icon={icon ? icon : AppIcons.menu}
-        color={color ? color : theme.colors.inverseOnSurface}
-        fabStyle={styles.fabGroup}
-        label={open ? (openLabel ? openLabel : undefined) : undefined}
-        actions={actions}
-        onStateChange={onStateChange}
-      />
-    </Portal>
+    <FAB.Group
+      open={open}
+      visible={true}
+      icon={icon ? icon : AppIcons.menu}
+      color={color ? color : theme.colors.inverseOnSurface}
+      fabStyle={styles.fabGroup}
+      label={open ? (openLabel ? openLabel : undefined) : undefined}
+      actions={actions}
+      onStateChange={onStateChange}
+    />
   );
 };
