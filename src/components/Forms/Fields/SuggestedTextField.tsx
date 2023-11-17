@@ -1,11 +1,10 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {TextField, TextFieldProps} from './TextField';
-import {useFormikContext} from 'formik';
+import {useField, useFormikContext} from 'formik';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
-  value?: string;
 }
 
 export const SuggestedTextField = ({
@@ -22,12 +21,12 @@ export const SuggestedTextField = ({
   autoCapitalize,
   maxLength,
   suggestions = [],
-  value,
 }: SuggestedTextFieldProps) => {
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
   const {setFieldValue} = useFormikContext();
+  const [field, meta, helpers] = useField<string>(name);
 
   const handleSelect = (newValue: string) => {
     setFieldValue(name, newValue);
@@ -35,7 +34,7 @@ export const SuggestedTextField = ({
   };
 
   const handleOpen = () => {
-    if (value) {
+    if (field.value) {
       return;
     }
     openMenu();

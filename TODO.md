@@ -4,6 +4,7 @@ Backlog
 Work Queue
 * LFG features
   * Create
+    * date picker
   * Actions
     * Update
 * Nightly
@@ -15,9 +16,9 @@ Work Queue
   * Generic FlatList for LFGs / Events broken by day instead of hour
   * show schedule but disable lfg queries if not logged in
   * Add an oobe bypass secret switchFilter now and soon events
-  * Filter menu design for smaller screens
   * Common open query function to hook into disable or not logged in
   * Show soon/now in favorites view and search results
   * Long press favorites should remove from favorites list
   * Long press in favorites toggle star
   * find groups long press not clearing filters
+  * join an LFG should remove from find list

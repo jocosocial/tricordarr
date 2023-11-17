@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
-import {FastField, useFormikContext} from 'formik';
+import {FastField, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 import {useAppTheme} from '../../../styles/Theme';
 
@@ -19,6 +19,7 @@ export interface TextFieldProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   maxLength?: number;
   onFocus?: () => void;
+  // value?: string;
 }
 
 export const TextField = ({
@@ -36,8 +37,9 @@ export const TextField = ({
   maxLength,
   onFocus,
 }: TextFieldProps) => {
-  const {handleChange, handleBlur, values, errors, touched, isSubmitting} = useFormikContext();
+  const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
+  const [field, meta, helpers] = useField<string>(name);
 
   return (
     <FastField name={name}>
@@ -50,8 +52,8 @@ export const TextField = ({
             multiline={multiline}
             onChangeText={handleChange(name)}
             onBlur={handleBlur(name)}
-            value={values[name]}
-            error={!!errors[name] && touched[name]}
+            value={field.value}
+            error={!!meta.error && meta.touched}
             numberOfLines={numberOfLines}
             disabled={isSubmitting}
             left={left}
@@ -62,8 +64,8 @@ export const TextField = ({
             maxLength={maxLength}
             onFocus={onFocus}
           />
-          <HelperText type={'error'} visible={!!errors[name] && touched[name]}>
-            {errors[name]}
+          <HelperText type={'error'} visible={!!meta.error && meta.touched}>
+            {meta.error}
           </HelperText>
         </View>
       )}
