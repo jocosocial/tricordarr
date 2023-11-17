@@ -30,9 +30,9 @@ const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   location: InfoStringValidation,
   // info: InfoStringValidation,
-  // minCapacity: NumberValidation,
-  // maxCapacity: NumberValidation,
-  // fezType: FezTypeValidation,
+  minCapacity: NumberValidation,
+  maxCapacity: NumberValidation,
+  fezType: FezTypeValidation,
   // startTime: DateValidation,
 });
 
@@ -52,6 +52,10 @@ const locationHelpContent = [
   "2. Don't set up an LFG in a room used for Official or Shadow Events.",
   "3. Don't try to get around Item 2 by scheduling your LFG in an Event room at a time when the Official Schedule doesn't list anything happening there. Event rooms are often used for official things even when not running a listed event.",
   '4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard, and that bar\'s full at the appointed time, you can message the LFG members to relocate.',
+];
+
+const maximumHelpContent = [
+  'Use 0 for unlimited',
 ];
 
 const locationSuggestions = [
@@ -88,6 +92,12 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
     setModalVisible(true);
   };
 
+  const handleMaxInfo = () => {
+    Keyboard.dismiss();
+    setModalContent(<HelpModalView title={'About Participation'} text={maximumHelpContent} />);
+    setModalVisible(true);
+  };
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
@@ -115,6 +125,19 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
           <View style={[commonStyles.paddingBottom]}>
             <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
           </View>
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'minCapacity'}
+            label={'Minimum Attendees Needed'}
+            left={<TextInput.Icon icon={AppIcons.group} />}
+          />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'maxCapacity'}
+            label={'Maximum Attendees Desired'}
+            left={<TextInput.Icon icon={AppIcons.group} />}
+            right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
+          />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}
