@@ -9,6 +9,7 @@ import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {addMinutes} from 'date-fns';
+import {useFezMutation} from '../../Queries/Fez/FezQueries';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
@@ -16,16 +17,44 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.lfgStack
 >;
 
-export const LfgCreateScreen = () => {
+export const LfgCreateScreen = ({navigation}: Props) => {
+  const fezMutation = useFezMutation();
+
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     console.log(values);
-    helpers.setSubmitting(false);
+    helpers.setSubmitting(true);
     let fezStartTime = new Date(values.startDate);
     fezStartTime.setHours(values.startTime.hours);
     fezStartTime.setMinutes(values.startTime.minutes);
 
     let fezEndTime = addMinutes(fezStartTime, Number(values.duration));
     console.log('Start: ', fezStartTime, 'End: ', fezEndTime);
+
+    fezMutation.mutate(
+      {
+        fezContentData: {
+          fezType: values.fezType,
+          title: values.title,
+          info: values.info,
+          startTime: fezStartTime.toISOString(),
+          endTime: fezEndTime.toISOString(),
+          location: values.location,
+          minCapacity: Number(values.minCapacity),
+          maxCapacity: Number(values.maxCapacity),
+          initialUsers: [],
+        },
+      },
+      {
+        onSuccess: response => {
+          navigation.replace(LfgStackComponents.lfgScreen, {
+            fezID: response.data.fezID,
+          });
+        },
+        onSettled: () => {
+          helpers.setSubmitting(false);
+        },
+      },
+    );
   };
 
   return (

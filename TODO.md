@@ -3,7 +3,6 @@ Backlog
 
 Work Queue
 * LFG features
-  * Create
   * Actions
     * Update
 * Nightly
