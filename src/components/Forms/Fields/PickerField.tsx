@@ -37,18 +37,17 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
       ...commonStyles.alignItemsCenter,
     },
     text: {
-      paddingLeft: 8,
+      // paddingLeft: 8,
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
+      marginHorizontal: 14,
     },
     content: {
       ...commonStyles.flexRow,
       ...commonStyles.flex,
     },
   });
-
-  const getIcon = () => <AppIcon icon={icon} />;
 
   return (
     <Menu
@@ -60,7 +59,6 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
           textColor={theme.colors.onBackground}
           labelStyle={styles.text}
           contentStyle={styles.content}
-          icon={getIcon}
           style={styles.button}
           onPress={openMenu}
           mode={'outlined'}>

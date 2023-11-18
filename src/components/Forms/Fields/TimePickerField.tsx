@@ -25,16 +25,14 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
     setVisible(false);
   }, [setVisible]);
 
-  const onConfirm = React.useCallback(
-    ({hours, minutes}: {hours: number; minutes: number}) => {
-      setVisible(false);
-      let eventStartDate = new Date(field.value);
-      eventStartDate.setHours(hours);
-      eventStartDate.setMinutes(minutes);
-      setFieldValue(name, eventStartDate.toISOString());
-    },
-    [field.value, name, setFieldValue],
-  );
+  const onConfirm = ({hours, minutes}: {hours: number; minutes: number}) => {
+    setVisible(false);
+    let eventStartDate = new Date(field.value);
+    eventStartDate.setHours(hours);
+    eventStartDate.setMinutes(minutes);
+    console.log('New start date is', eventStartDate);
+    setFieldValue(name, eventStartDate.toISOString());
+  };
 
   const styles = StyleSheet.create({
     button: {
@@ -48,6 +46,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
+      marginHorizontal: 14,
     },
     content: {
       ...commonStyles.flexRow,
@@ -57,7 +56,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
 
   const getTimeLabel = () => {
     let eventStartDate = new Date(field.value);
-    return format(eventStartDate, 'HH:mm a');
+    return format(eventStartDate, 'hh:mm a');
   };
 
   return (
@@ -72,7 +71,13 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
         mode={'outlined'}>
         Time ({getTimeLabel()})
       </Button>
-      <TimePickerModal visible={visible} onDismiss={onDismiss} onConfirm={onConfirm} hours={12} minutes={14} />
+      <TimePickerModal
+        visible={visible}
+        onDismiss={onDismiss}
+        onConfirm={onConfirm}
+        hours={new Date().getHours() + 1}
+        minutes={0}
+      />
     </View>
   );
 };

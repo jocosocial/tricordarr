@@ -91,6 +91,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
 
   const apparentCruiseDate = new Date(startDate);
   apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
+  apparentCruiseDate.setHours(new Date().getHours() + 1);
 
   const initialValues: FezFormValues = {
     title: '',
@@ -111,14 +112,12 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             viewStyle={styles.inputContainer}
             name={'title'}
             label={'Title'}
-            left={<TextInput.Icon icon={AppIcons.events} />}
             autoCapitalize={'words'}
           />
           <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
             label={'Location'}
-            left={<TextInput.Icon icon={AppIcons.map} />}
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
             autoCapitalize={'words'}
             suggestions={locationSuggestions}
@@ -139,14 +138,12 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             viewStyle={styles.inputContainer}
             name={'minCapacity'}
             label={'Minimum Attendees Needed'}
-            left={<TextInput.Icon icon={AppIcons.group} />}
             keyboardType={'numeric'}
           />
           <TextField
             viewStyle={styles.inputContainer}
             name={'maxCapacity'}
             label={'Maximum Attendees Desired'}
-            left={<TextInput.Icon icon={AppIcons.group} />}
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
             keyboardType={'numeric'}
           />
@@ -154,7 +151,6 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             viewStyle={styles.inputContainer}
             name={'info'}
             label={'Event Info'}
-            left={<TextInput.Icon icon={AppIcons.info} />}
             multiline={true}
           />
           <PrimaryActionButton
