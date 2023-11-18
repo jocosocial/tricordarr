@@ -1,6 +1,6 @@
 import React from 'react';
-import {DatePickerInput, DatePickerModal} from 'react-native-paper-dates';
-import {Button, HelperText} from 'react-native-paper';
+import {DatePickerInput} from 'react-native-paper-dates';
+import {HelperText} from 'react-native-paper';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {FastField, useField, useFormikContext} from 'formik';
 import {View} from 'react-native';
@@ -20,6 +20,8 @@ export const DateTimePickerField = ({name}: DateTimePickerFieldProps) => {
     }
   };
 
+  // If the user removes the text, it doesn't change the value. onChangeText can be used for that but it freaks
+  // out if the value is invalid (which is probably is).
   return (
     <FastField name={name}>
       {() => (

@@ -20,13 +20,11 @@ export const KeywordValidation = Yup.string()
   .required('A word is required');
 
 // This is a blend of Title/Location/Info from LFGs.
-export const InfoStringValidation = Yup.string().min(3).required('Cannot be empty.');
+export const InfoStringValidation = Yup.string().min(3).max(2000).required('Cannot be empty.');
 
-export const NumberValidation = Yup.number()
-  .integer()
-  .min(0)
-  .required('Integer required')
-  .typeError('Must be an integer');
+export const NumberValidation = Yup.string()
+  .matches(/^[0-9]+$/, 'Must be an integer.')
+  .required('Integer required');
 
 export const FezTypeValidation = Yup.string().oneOf(Object.values(FezType), 'Invalid type selected');
 

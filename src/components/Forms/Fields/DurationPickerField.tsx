@@ -6,10 +6,10 @@ import React from 'react';
 interface DurationFieldProps {
   name: string;
   label: string;
-  value: number;
+  value: string;
 }
 
-const choices = [30, 60, 90, 120, 180, 240];
+const choices = ['30', '60', '90', '120', '180', '240'];
 
 const getTitle = (choice: number | string) => formatMinutesToHumanReadable(Number(choice));
 

@@ -40,15 +40,11 @@ export const TextField = ({
   keyboardType,
   onChangeText,
 }: TextFieldProps) => {
-  const {handleChange, handleBlur, isSubmitting, setFieldValue} = useFormikContext();
+  const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
   const [field, meta, helpers] = useField<string>(name);
 
   const handleValueChange = (value: string) => {
-    if (keyboardType === 'numeric') {
-      setFieldValue(name, parseInt(value, 10));
-      return;
-    }
     handleChange(name)(value);
   };
 
@@ -64,7 +60,7 @@ export const TextField = ({
             multiline={multiline}
             onChangeText={onChangeText || handleValueChange}
             onBlur={handleBlur(name)}
-            value={field.value.toString()}
+            value={field.value}
             error={!!meta.error && meta.touched}
             numberOfLines={numberOfLines}
             disabled={isSubmitting}

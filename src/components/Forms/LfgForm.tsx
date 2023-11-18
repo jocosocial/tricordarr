@@ -30,11 +30,11 @@ interface LfgFormProps {
 const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   location: InfoStringValidation,
-  // info: InfoStringValidation,
+  info: InfoStringValidation,
   minCapacity: NumberValidation,
   maxCapacity: NumberValidation,
   fezType: FezTypeValidation,
-  // startTime: DateValidation,
+  startTime: DateValidation,
 });
 
 const locationHelpContent = [
@@ -96,9 +96,9 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
     location: '',
     fezType: FezType.activity,
     startTime: apparentCruiseDate.toISOString(),
-    duration: 30,
-    minCapacity: 2,
-    maxCapacity: 2,
+    duration: '30',
+    minCapacity: '2',
+    maxCapacity: '2',
     info: '',
   };
 
@@ -123,10 +123,13 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             suggestions={locationSuggestions}
           />
           <View style={[commonStyles.paddingBottom]}>
-            <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
+            <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
+            <DateTimePickerField name={'startTime'} />
+          </View>
+          <View style={[commonStyles.paddingBottom]}>
+            <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
           </View>
           <TextField
             viewStyle={styles.inputContainer}
@@ -143,9 +146,13 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
             keyboardType={'numeric'}
           />
-          <View style={[commonStyles.paddingBottom]}>
-            <DateTimePickerField name={'startTime'} />
-          </View>
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'info'}
+            label={'Event Info'}
+            left={<TextInput.Icon icon={AppIcons.info} />}
+            multiline={true}
+          />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}
