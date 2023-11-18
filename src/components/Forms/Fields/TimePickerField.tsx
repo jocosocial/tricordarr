@@ -3,19 +3,21 @@ import {TimePickerModal} from 'react-native-paper-dates';
 import {Button} from 'react-native-paper';
 import {useField, useFormikContext} from 'formik';
 import {StyleSheet, View} from 'react-native';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {AppIcon} from '../../Images/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {format} from 'date-fns';
 
 interface TimePickerFieldProps {
   name: string;
 }
 
+interface TimePick {
+  hours: number;
+  minutes: number;
+}
+
 export const TimePickerField = ({name}: TimePickerFieldProps) => {
-  const [field, meta, helpers] = useField<string>(name);
+  const [field, meta, helpers] = useField<TimePick>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -25,13 +27,12 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
     setVisible(false);
   }, [setVisible]);
 
-  const onConfirm = ({hours, minutes}: {hours: number; minutes: number}) => {
+  const onConfirm = ({hours, minutes}: TimePick) => {
     setVisible(false);
-    let eventStartDate = new Date(field.value);
-    eventStartDate.setHours(hours);
-    eventStartDate.setMinutes(minutes);
-    console.log('New start date is', eventStartDate);
-    setFieldValue(name, eventStartDate.toISOString());
+    setFieldValue(name, {
+      hours: hours,
+      minutes: minutes,
+    });
   };
 
   const styles = StyleSheet.create({
@@ -55,7 +56,9 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
   });
 
   const getTimeLabel = () => {
-    let eventStartDate = new Date(field.value);
+    let eventStartDate = new Date(0);
+    eventStartDate.setHours(field.value.hours);
+    eventStartDate.setMinutes(field.value.minutes);
     return format(eventStartDate, 'hh:mm a');
   };
 
@@ -75,8 +78,8 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
         visible={visible}
         onDismiss={onDismiss}
         onConfirm={onConfirm}
-        hours={new Date().getHours() + 1}
-        minutes={0}
+        hours={field.value.hours}
+        minutes={field.value.minutes}
       />
     </View>
   );

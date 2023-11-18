@@ -34,9 +34,13 @@ export interface FezFormValues {
   title: string;
   location: string;
   fezType: FezType;
-  startTime: string;
+  startDate: string;
   duration: string;
   minCapacity: string;
   maxCapacity: string;
   info: string;
+  startTime: {
+    hours: number;
+    minutes: number;
+  };
 }

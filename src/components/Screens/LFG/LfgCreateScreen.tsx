@@ -8,6 +8,7 @@ import {LfgForm} from '../../Forms/LfgForm';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {addMinutes} from 'date-fns';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
@@ -19,6 +20,12 @@ export const LfgCreateScreen = () => {
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     console.log(values);
     helpers.setSubmitting(false);
+    let fezStartTime = new Date(values.startDate);
+    fezStartTime.setHours(values.startTime.hours);
+    fezStartTime.setMinutes(values.startTime.minutes);
+
+    let fezEndTime = addMinutes(fezStartTime, Number(values.duration));
+    console.log('Start: ', fezStartTime, 'End: ', fezEndTime);
   };
 
   return (

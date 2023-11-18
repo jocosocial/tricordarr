@@ -4,7 +4,6 @@ Backlog
 Work Queue
 * LFG features
   * Create
-    * date picker
   * Actions
     * Update
 * Nightly

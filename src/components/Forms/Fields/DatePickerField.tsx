@@ -1,6 +1,5 @@
 import React from 'react';
 import {DatePickerInput} from 'react-native-paper-dates';
-import {HelperText} from 'react-native-paper';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {FastField, useField, useFormikContext} from 'formik';
 import {View} from 'react-native';

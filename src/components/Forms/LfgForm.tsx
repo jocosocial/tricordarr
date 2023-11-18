@@ -35,7 +35,7 @@ const validationSchema = Yup.object().shape({
   minCapacity: NumberValidation,
   maxCapacity: NumberValidation,
   fezType: FezTypeValidation,
-  startTime: DateValidation,
+  startDate: DateValidation,
 });
 
 const locationHelpContent = [
@@ -91,29 +91,27 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
 
   const apparentCruiseDate = new Date(startDate);
   apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
-  apparentCruiseDate.setHours(new Date().getHours() + 1);
 
   const initialValues: FezFormValues = {
     title: '',
     location: '',
     fezType: FezType.activity,
-    startTime: apparentCruiseDate.toISOString(),
+    startDate: apparentCruiseDate.toISOString(),
     duration: '30',
     minCapacity: '2',
     maxCapacity: '2',
     info: '',
+    startTime: {
+      hours: new Date().getHours() + 1,
+      minutes: 0,
+    },
   };
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'title'}
-            label={'Title'}
-            autoCapitalize={'words'}
-          />
+          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
           <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
@@ -126,7 +124,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DatePickerField name={'startTime'} />
+            <DatePickerField name={'startDate'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
             <TimePickerField name={'startTime'} />
@@ -147,12 +145,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
             keyboardType={'numeric'}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'info'}
-            label={'Event Info'}
-            multiline={true}
-          />
+          <TextField viewStyle={styles.inputContainer} name={'info'} label={'Event Info'} multiline={true} />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}
