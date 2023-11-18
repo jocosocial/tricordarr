@@ -20,8 +20,9 @@ import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {DurationPickerField} from './Fields/DurationPickerField';
 import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
-import {DateTimePickerField} from './Fields/DateTimePickerField';
+import {DatePickerField} from './Fields/DatePickerField';
 import {useCruise} from '../Context/Contexts/CruiseContext';
+import {TimePickerField} from './Fields/TimePickerField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -126,7 +127,10 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
-            <DateTimePickerField name={'startTime'} />
+            <DatePickerField name={'startTime'} />
+          </View>
+          <View style={[commonStyles.paddingBottom]}>
+            <TimePickerField name={'startTime'} />
           </View>
           <View style={[commonStyles.paddingBottom]}>
             <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />

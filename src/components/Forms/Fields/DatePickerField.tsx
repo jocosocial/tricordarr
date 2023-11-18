@@ -5,11 +5,11 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {FastField, useField, useFormikContext} from 'formik';
 import {View} from 'react-native';
 
-interface DateTimePickerFieldProps {
+interface DatePickerFieldProps {
   name: string;
 }
 
-export const DateTimePickerField = ({name}: DateTimePickerFieldProps) => {
+export const DatePickerField = ({name}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
   const [field, meta, helpers] = useField<string>(name);
   const {setFieldValue} = useFormikContext();
@@ -40,9 +40,6 @@ export const DateTimePickerField = ({name}: DateTimePickerFieldProps) => {
             presentationStyle={'pageSheet'}
             animationType={'none'}
           />
-          <HelperText type={'error'} visible={!!meta.error && meta.touched}>
-            {meta.error}
-          </HelperText>
         </View>
       )}
     </FastField>
