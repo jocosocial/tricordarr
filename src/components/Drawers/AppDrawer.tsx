@@ -12,7 +12,7 @@ import {useUserData} from '../Context/Contexts/UserDataContext';
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const theme = useAppTheme();
-  const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {profilePublicData} = useUserData();
 
   const handleDrawerNav = (url: string) => {
@@ -26,21 +26,24 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       open={drawerOpen}
       onOpen={() => setDrawerOpen(true)}
       onClose={() => setDrawerOpen(false)}
+      swipeEnabled={false}
       renderDrawerContent={() => {
         return (
           <ScrollView>
-            <PaperDrawer.Section title={'User'} showDivider={false}>
-              <PaperDrawer.Item
-                label={'Your Profile'}
-                icon={AppIcons.user}
-                onPress={() => handleDrawerNav(`tricordarr://user/${profilePublicData?.header.userID}`)}
-              />
-              <PaperDrawer.Item
-                label={'Directory'}
-                icon={AppIcons.group}
-                onPress={() => handleDrawerNav('tricordarr://users')}
-              />
-            </PaperDrawer.Section>
+            {hasVerified && (
+              <PaperDrawer.Section title={'User'} showDivider={false}>
+                <PaperDrawer.Item
+                  label={'Your Profile'}
+                  icon={AppIcons.user}
+                  onPress={() => handleDrawerNav(`tricordarr://user/${profilePublicData?.header.userID}`)}
+                />
+                <PaperDrawer.Item
+                  label={'Directory'}
+                  icon={AppIcons.group}
+                  onPress={() => handleDrawerNav('tricordarr://users')}
+                />
+              </PaperDrawer.Section>
+            )}
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Karaoke'}

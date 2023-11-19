@@ -229,6 +229,61 @@ export interface FezData {
   members?: MembersOnlyData;
 }
 
+/**
+ * Bonus helper functions for FezData.
+ */
+export namespace FezData {
+  /**
+   * Get a label for the number of attendees of this Fez. If the count is 0 that means
+   * it is unlimited and we don't need to tell users how many are remaining.
+   * @param fez This particular chat.
+   */
+  export const getParticipantLabel = (fez: FezData) => {
+    if (fez.maxParticipants === 0) {
+      return `${fez.participantCount} attendees, ${fez.minParticipants} minimum`;
+    }
+    const waitlistCount: number = fez.members?.waitingList.length || 0;
+    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} participants`;
+    if (fez.participantCount >= fez.maxParticipants) {
+      attendeeCountString = 'Full';
+    }
+    return `${attendeeCountString}, ${waitlistCount} waitlisted, ${fez.minParticipants} minimum`;
+  };
+
+  const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
+    if (!members) {
+      return false;
+    }
+    for (let i = 0; i < members.length; i++) {
+      if (members[i].userID === user.userID) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  export const isParticipant = (fezData: FezData, user?: UserHeader) => {
+    if (!user) {
+      return false;
+    }
+    return isMember(fezData.members?.participants, user);
+  };
+
+  export const isWaitlist = (fezData: FezData, user?: UserHeader) => {
+    if (!user) {
+      return false;
+    }
+    return isMember(fezData.members?.waitingList, user);
+  };
+
+  export const isFull = (fezData: FezData) => {
+    if (fezData.maxParticipants === 0 || !fezData.members) {
+      return false;
+    }
+    return fezData.members.participants.length >= fezData.maxParticipants;
+  };
+}
+
 export interface FezListData {
   /// Pagination into the results set.
   paginator: Paginator;
@@ -297,7 +352,7 @@ export interface FezContentData {
 
 export interface ReportData {
   /// An optional message from the submitting user.
-  message: String;
+  message: string;
 }
 
 export interface KeywordData {
@@ -370,4 +425,52 @@ export interface UserCreateData {
   /// Verification code, emailed to all cruisegoers by THO before embarkation. On success, user will be created with .verified access level, consuming this code.
   /// Required for creating 'parent' accounts; must be nil when used to create a sub-account with `POST /api/v3/user/add`.
   verification?: string;
+}
+
+export interface EventData {
+  /// The event's ID. This is the Swiftarr database record for this event.
+  eventID: string;
+  /// The event's UID. This is the VCALENDAR/ICS File/sched.com identifier for this event--what calendar software uses to correllate whether 2 events are the same event.
+  uid: string;
+  /// The event's title.
+  title: string;
+  /// A description of the event.
+  description: string;
+  /// Starting time of the event
+  startTime: string;
+  /// Ending time of the event.
+  endTime: string;
+  /// The timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
+  timeZone: string;
+  /// The location of the event.
+  location: string;
+  /// The event category.
+  eventType: string;
+  /// The last time data for this event was modified. Used for change management.
+  lastUpdateTime: string;
+  /// The event's associated `Forum`.
+  forum?: string;
+  /// Whether user has favorited event.
+  isFavorite: boolean;
+}
+
+export interface UserProfileUploadData {
+  /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
+  header?: UserHeader;
+  /// The displayName, again. Will be equal to header.displayName in results. When POSTing, set this field to update displayName.
+  displayName: string;
+  /// An optional real name of the user.
+  realName: string;
+  /// An optional preferred form of address.
+  preferredPronoun: string;
+  /// An optional home location (e.g. city).
+  homeLocation: string;
+  /// An optional ship cabin number.
+  roomNumber: string;
+  /// An optional email address.
+  email: string;
+  /// An optional short greeting/message to visitors of the profile.
+  message: string;
+  /// An optional blurb about the user.
+  about: string;
 }

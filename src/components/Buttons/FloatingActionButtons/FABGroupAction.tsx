@@ -8,21 +8,27 @@ interface Props {
   icon: IconSource;
   label?: string;
   onPress: (e: GestureResponderEvent) => void;
+  color?: string;
+  backgroundColor?: string;
 }
 
-export const FabGroupAction = ({icon, label, onPress}: Props) => {
+export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: Props) => {
   const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
 
-  const color = asPrivilegedUser ? AndroidColor.WHITE : theme.colors.onPrimary;
-  const backgroundColor = asPrivilegedUser ? theme.colors.twitarrNegativeButton : theme.colors.primary;
+  const actionColor = asPrivilegedUser ? AndroidColor.WHITE : color ? color : theme.colors.inverseOnSurface;
+  const actionBackgroundColor = asPrivilegedUser
+    ? theme.colors.twitarrNegativeButton
+    : backgroundColor
+    ? backgroundColor
+    : theme.colors.inverseSurface;
 
   return {
     icon: icon,
     label: label,
-    color: color,
+    color: actionColor,
     style: {
-      backgroundColor: backgroundColor,
+      backgroundColor: actionBackgroundColor,
     },
     onPress: onPress,
   };

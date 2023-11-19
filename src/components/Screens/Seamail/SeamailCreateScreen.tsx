@@ -5,7 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {FezPostForm} from '../../Forms/FezPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useFezMutation} from '../../Queries/Fez/FezQueries';
+import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
@@ -25,7 +25,7 @@ export type Props = NativeStackScreenProps<
 export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const seamailCreateFormRef = useRef<FormikProps<FezContentData>>(null);
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
-  const fezMutation = useFezMutation();
+  const fezMutation = useFezCreateMutation();
   const fezPostMutation = useFezPostMutation();
   const [newSeamail, setNewSeamail] = useState<FezData>();
   const [submitting, setSubmitting] = useState(false);
@@ -64,8 +64,9 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
             seamailPostFormRef.current?.submitForm();
           },
           onError: error => {
-            setErrorMessage(error);
+            setErrorMessage(error.response?.request.reason || error);
             setSubmitting(false);
+            seamailCreateFormRef.current?.setSubmitting(false);
           },
         },
       );

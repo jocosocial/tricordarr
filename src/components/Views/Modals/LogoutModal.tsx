@@ -13,6 +13,7 @@ import {useLogoutMutation} from '../../Queries/Auth/LogoutQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSettingsStack} from '../../Navigation/Stacks/SettingsStack';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface LogoutModalContentProps {
   allDevices: boolean;
@@ -43,6 +44,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   });
   const {closeNotificationSocket, closeFezSocket} = useSocket();
   const [loading, setLoading] = useState(false);
+  const {clearPrivileges} = usePrivilege();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -52,10 +54,12 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
     });
     closeNotificationSocket();
     closeFezSocket();
-    signOut();
-    setModalVisible(false);
-    setLoading(false);
-    settingsNavigation.goBack();
+    signOut().then(() => {
+      clearPrivileges();
+      setModalVisible(false);
+      setLoading(false);
+      settingsNavigation.goBack();
+    });
   };
 
   const logoutDevice = () => {

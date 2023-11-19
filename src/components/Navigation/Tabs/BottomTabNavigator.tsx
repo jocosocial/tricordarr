@@ -9,6 +9,8 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
+import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
+import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -24,8 +26,9 @@ function getBadgeDisplayValue(input: number | undefined) {
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
-  ScheduleTab: undefined;
+  ScheduleTab: NavigatorScreenParams<EventStackParamList>;
   ForumsTab: undefined;
+  LfgTab: NavigatorScreenParams<LfgStackParamList>;
 };
 
 export const BottomTabNavigator = () => {
@@ -37,7 +40,7 @@ export const BottomTabNavigator = () => {
   }
 
   return (
-    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab}>
+    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
         component={MainStack}
@@ -65,10 +68,19 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={BottomTabComponents.scheduleTab}
-        component={NotImplementedView}
+        name={BottomTabComponents.lfgTab}
+        component={LfgStackNavigator}
         options={{
-          title: 'Schedule',
+          title: 'LFG',
+          tabBarIcon: () => getIcon(AppIcons.lfg),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
+        }}
+      />
+      <Tab.Screen
+        name={BottomTabComponents.scheduleTab}
+        component={EventStackNavigator}
+        options={{
+          title: 'Events',
           tabBarIcon: () => getIcon(AppIcons.events),
         }}
       />

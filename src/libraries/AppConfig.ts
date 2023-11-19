@@ -21,6 +21,10 @@ export interface AppConfig {
   enableDeveloperOptions: boolean;
   cruiseStartDate: Date;
   cruiseLength: number;
+  unifiedSchedule: boolean;
+  hidePastLfgs: boolean;
+  enableLateDayFlip: boolean;
+  portTimeZoneID: string;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -38,7 +42,10 @@ const defaultAppConfig: AppConfig = {
     alertwordPost: true,
     twarrtMention: false,
     forumMention: true,
-    nextFollowedEventTime: true,
+    followedEventStarting: true,
+    incomingPhoneCall: false,
+    phoneCallAnswered: false,
+    phoneCallEnded: false,
   },
   fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
   oobeCompletedVersion: 0,
@@ -46,6 +53,10 @@ const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
+  unifiedSchedule: true,
+  hidePastLfgs: true,
+  enableLateDayFlip: true,
+  portTimeZoneID: 'America/New_York',
 };
 
 /**
@@ -66,6 +77,9 @@ const getInitialAppConfig = () => {
   }
   if (Config.CRUISE_LENGTH) {
     config.cruiseLength = Number(Config.CRUISE_LENGTH);
+  }
+  if (Config.PORT_TIME_ZONE_ID) {
+    config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
   }
   return config;
 };

@@ -15,10 +15,13 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [hasModerator, setHasModerator] = useState(false);
   const [hasTwitarrTeam, setHasTwitarrTeam] = useState(false);
   const [hasTHO, setHasTHO] = useState(false);
+  const [hasVerified, setHasVerified] = useState(false);
+  const [hasAdmin, setHasAdmin] = useState(false);
   const {tokenData} = useAuth();
   const accessLevel = tokenData?.accessLevel || UserAccessLevel.unverified;
 
   useEffect(() => {
+    clearLevels();
     if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.twitarrteam)) {
       setHasTwitarrTeam(true);
     }
@@ -28,7 +31,13 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
     if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.tho)) {
       setHasTHO(true);
     }
-  }, [accessLevel]);
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.verified)) {
+      setHasVerified(true);
+    }
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.admin)) {
+      setHasAdmin(true);
+    }
+  }, [accessLevel, tokenData]);
 
   useEffect(() => {
     setAsPrivilegedUser(undefined);
@@ -52,6 +61,15 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
     setAsTwitarrTeam(false);
     setAsTHO(false);
     setAsAdmin(false);
+  };
+
+  const clearLevels = () => {
+    console.info('Clearing levels');
+    setHasModerator(false);
+    setHasTwitarrTeam(false);
+    setHasTHO(false);
+    setHasVerified(false);
+    setHasAdmin(false);
   };
 
   const becomeUser = (user: keyof typeof PrivilegedUserAccounts) => {
@@ -93,6 +111,8 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         hasModerator,
         hasTHO,
         hasTwitarrTeam,
+        hasVerified,
+        hasAdmin,
       }}>
       {children}
     </PrivilegeContext.Provider>

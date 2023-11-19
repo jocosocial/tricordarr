@@ -1,3 +1,5 @@
+import {FezType} from '../Enums/FezType';
+
 export interface SettingFormValues {
   settingValue: string;
 }
@@ -14,6 +16,17 @@ export interface UserRegistrationFormValues {
   verification: string;
 }
 
+export interface UserProfileFormValues {
+  displayName: string;
+  realName: string;
+  preferredPronoun: string;
+  homeLocation: string;
+  roomNumber: string;
+  email: string;
+  message: string;
+  about: string;
+}
+
 export interface KeywordFormValues {
   keyword: string;
 }
@@ -26,4 +39,19 @@ export interface ChangePasswordFormValues {
 
 export interface ChangeUsernameFormValues {
   username: string;
+}
+
+export interface FezFormValues {
+  title: string;
+  location: string;
+  fezType: FezType;
+  startDate: string;
+  duration: string;
+  minCapacity: string;
+  maxCapacity: string;
+  info: string;
+  startTime: {
+    hours: number;
+    minutes: number;
+  };
 }

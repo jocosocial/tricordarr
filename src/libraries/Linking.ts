@@ -1,5 +1,10 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {SeamailStackScreenComponents, SettingsStackScreenComponents} from './Enums/Navigation';
+import {
+  EventStackComponents,
+  LfgStackComponents,
+  SeamailStackScreenComponents,
+  SettingsStackScreenComponents
+} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
 
@@ -35,6 +40,14 @@ const deepLinksConf = {
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',
+          },
+        },
+        LfgTab: {
+          initialRouteName: LfgStackComponents.lfgJoinedScreen,
+          screens: {
+            LfgTab: 'lfg',
+            LfgScreen: 'lfg/:fezID',
+            LfgChatScreen: 'lfg/:fezID/chat',
           },
         },
       },

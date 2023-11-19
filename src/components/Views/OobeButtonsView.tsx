@@ -2,6 +2,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import React from 'react';
 import {View} from 'react-native';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
+import {useAppTheme} from '../../styles/Theme';
 
 interface OobeButtonsViewProps {
   leftText?: string;
@@ -25,23 +26,24 @@ export const OobeButtonsView = ({
   rightDisabled = false,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
+  const theme = useAppTheme();
 
   const styles = {
     buttonContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
-      ...commonStyles.paddingSides,
+      ...commonStyles.paddingHorizontal,
       ...commonStyles.paddingVertical,
-      alignItems: 'center',
+      ...commonStyles.alignItemsCenter,
     },
     leftButtonContainer: {
-      flex: 0,
+      ...commonStyles.flex0,
     },
     leftButton: {
       ...commonStyles.flexStart,
     },
     rightButtonContainer: {
-      flex: 0,
+      ...commonStyles.flex0,
     },
     rightButton: {
       ...commonStyles.flexEnd,
@@ -58,6 +60,7 @@ export const OobeButtonsView = ({
             style={styles.leftButton}
             mode={leftMode}
             disabled={leftDisabled}
+            textColor={theme.colors.onBackground}
           />
         )}
       </View>

@@ -9,4 +9,5 @@ export enum PressAction {
   worker = 'worker',
   seamail = 'seamail',
   home = 'home',
+  lfg = 'lfg',
 }

@@ -1,42 +1,34 @@
 import React from 'react';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {FezType} from '../../../libraries/Enums/FezType';
 import {UserListItem} from './UserListItem';
 
 interface FezParticipantListItemProps {
   user: UserHeader;
   fez: FezData;
-  onRemove: () => void;
+  onRemove?: () => void;
+  onPress?: () => void;
 }
 
-export const FezParticipantListItem = ({user, fez, onRemove}: FezParticipantListItemProps) => {
-  const navigation = useSeamailStack();
+export const FezParticipantListItem = ({user, fez, onRemove, onPress}: FezParticipantListItemProps) => {
   let enableDelete = true;
   const {profilePublicData} = useUserData();
 
-  // Cannot delete participant if any condition is true:
-  // * Fez is not "Open".
-  // * Participant is yourself.
-  // * Would leave less than 2 participants (the API currently allows this but I disagree with it).
-  // * You are not the owner.
-  if (
-    fez.fezType !== FezType.open ||
-    fez.owner.userID === user.userID ||
-    (fez.members && fez.members.participants.length <= 2) ||
-    profilePublicData?.header.userID !== fez.owner.userID
+  // Cannot delete participant if:
+  // * They (or you) are the owner.
+  // * You aren't the owner.
+  // But can if you are you.
+  if (user.userID === fez.owner.userID) {
+    enableDelete = false;
+  } else if (user.userID === profilePublicData?.header.userID && user.userID === fez.owner.userID) {
+    enableDelete = false;
+  } else if (
+    profilePublicData?.header.userID !== fez.owner.userID &&
+    profilePublicData?.header.userID !== user.userID
   ) {
     enableDelete = false;
   }
-
-  const onPress = () => {
-    navigation.push(SeamailStackScreenComponents.userProfileScreen, {
-      userID: user.userID,
-    });
-  };
 
   return (
     <UserListItem

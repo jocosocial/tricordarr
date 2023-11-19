@@ -63,7 +63,7 @@ export const BlockUsersScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>
-          {blocks.length === 0 && <ItalicText>You have not muted any users.</ItalicText>}
+          {blocks.length === 0 && <ItalicText>You have not blocked any users.</ItalicText>}
           {blocks.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}

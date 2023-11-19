@@ -1,28 +1,79 @@
-import React, {useEffect} from 'react';
-import {Searchbar} from 'react-native-paper';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Searchbar, Text} from 'react-native-paper';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useStyles} from '../Context/Contexts/StyleContext';
+import {FezData} from '../../libraries/Structs/ControllerStructs';
+import {useSeamailListQuery} from '../Queries/Fez/FezQueries';
+import {View} from 'react-native';
+import {ListSection} from '../Lists/ListSection';
+import {SeamailListItem} from '../Lists/Items/SeamailListItem';
 
-export const SeamailSearchBar = () => {
-  const {searchString, setSearchString} = useTwitarr();
-  const [localQuery, setLocalQuery] = React.useState(searchString);
+interface SeamailSearchBarProps {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+}
 
-  const onChangeSearch = (query: string) => setLocalQuery(query);
-  const onExecuteSearch = () => setSearchString(localQuery);
+export const SeamailSearchBar = ({setIsLoading}: SeamailSearchBarProps) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const {setErrorMessage} = useErrorHandler();
+  const {data, refetch, isFetching, isFetched} = useSeamailListQuery({
+    search: searchQuery,
+    options: {
+      enabled: false,
+    },
+  });
+  const {commonStyles} = useStyles();
+  const [fezList, setFezList] = useState<FezData[]>([]);
+  // const navigation = useSeamailStack();
 
-  // This resets the global query string since onClearIconPress isnt a thing
-  // for the Searchbar anymore.
-  useEffect(() => {
-    if (!localQuery) {
-      setSearchString(localQuery);
+  const onChangeSearch = (query: string) => setSearchQuery(query);
+
+  const onClear = () => setFezList([]);
+
+  const onSearch = () => {
+    if (!searchQuery || searchQuery.length < 3) {
+      setErrorMessage('Search string must be >2 characters');
+    } else {
+      refetch();
     }
-  }, [localQuery, setSearchString]);
+  };
+
+  useEffect(() => {
+    if (data) {
+      let fezDataList: FezData[] = [];
+      data.pages.map(page => {
+        fezDataList = fezDataList.concat(page.fezzes);
+      });
+      setFezList(fezDataList);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setIsLoading(isFetching);
+  }, [isFetching, setIsLoading]);
 
   return (
-    <Searchbar
-      placeholder={'Search messages'}
-      onChangeText={onChangeSearch}
-      value={localQuery}
-      onIconPress={onExecuteSearch}
-    />
+    <View>
+      <Searchbar
+        placeholder={'Search seamail messages'}
+        onIconPress={onSearch}
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onSubmitEditing={onSearch}
+        onClearIconPress={onClear}
+        style={[commonStyles.marginBottomSmall, commonStyles.marginHorizontal]}
+      />
+      <ListSection>
+        {isFetched && fezList.length === 0 && (
+          <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
+            <Text>No Results</Text>
+          </View>
+        )}
+        {fezList.map((item, i) => (
+          <View key={i} style={[commonStyles.paddingVerticalSmall]}>
+            <SeamailListItem fez={item} />
+          </View>
+        ))}
+      </ListSection>
+    </View>
   );
 };

@@ -9,6 +9,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {startForegroundServiceWorker} from '../../../libraries/Service';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen, NavigatorIDs.oobeStack>;
 
@@ -22,6 +23,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
       ...appConfig,
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
+    startForegroundServiceWorker();
     rootNavigation.replace(RootStackComponents.rootContentScreen);
   };
   return (

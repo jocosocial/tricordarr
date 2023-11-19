@@ -1,14 +1,16 @@
 import React from 'react';
-import {View, TextInput} from 'react-native';
+import {View, TextInput, StyleSheet} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
+import {PostLengthView} from '../Views/PostLengthView';
+import * as Yup from 'yup';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -16,6 +18,16 @@ interface FezPostFormProps {
   onPress?: () => void;
   overrideSubmitting?: boolean;
 }
+
+const validationSchema = Yup.object().shape({
+  text: Yup.string()
+    .required('Post is required.')
+    .min(1, 'Post cannot be empty.')
+    .max(500, 'Post must be less than 500 characters.')
+    .test('maxLines', 'Post must be less than 25 lines', value => {
+      return value.split(/\r\n|\r|\n/).length <= 25;
+    }),
+});
 
 // https://formik.org/docs/guides/react-native
 export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
@@ -30,11 +42,28 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
     text: '',
   };
 
-  const styles = {
-    formView: [commonStyles.flexRow, commonStyles.marginVerticalSmall],
-    inputWrapperView: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.flexColumn],
-    input: [commonStyles.roundedBorderLarge, commonStyles.paddingSides, commonStyles.secondaryContainer],
-  };
+  const styles = StyleSheet.create({
+    formContainer: {
+      ...commonStyles.flexColumn,
+    },
+    formView: {
+      ...commonStyles.flexRow,
+      ...commonStyles.marginVerticalSmall,
+    },
+    inputWrapperView: {
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.flexColumn,
+    },
+    input: {
+      ...commonStyles.roundedBorderLarge,
+      ...commonStyles.paddingHorizontal,
+      ...commonStyles.secondaryContainer,
+    },
+    lengthHintContainer: {
+      ...commonStyles.flexRow,
+    },
+  });
 
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
@@ -43,9 +72,14 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
   // This uses the native TextInput rather than Paper since Paper's was way more
   // annoying to try and stylize for this use.
   return (
-    <Formik innerRef={formRef} enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik
+      innerRef={formRef}
+      enableReinitialize={true}
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-        <View>
+        <View style={styles.formContainer}>
           <View style={styles.formView}>
             <IconButton icon={AppIcons.insert} onPress={() => setInsertMenuVisible(!insertMenuVisible)} />
             <View style={styles.inputWrapperView}>
@@ -64,6 +98,9 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
               onPress={onPress || handleSubmit}
             />
           </View>
+          {/*<View style={styles.lengthHintContainer}>*/}
+          {/*  <PostLengthView content={values.text} />*/}
+          {/*</View>*/}
           <ContentInsertMenuView visible={insertMenuVisible} setVisible={setInsertMenuVisible} />
         </View>
       )}

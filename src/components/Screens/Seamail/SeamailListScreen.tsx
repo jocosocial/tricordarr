@@ -3,7 +3,7 @@ import {RefreshControl} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {SeamailNewFAB} from '../../Buttons/FloatingActionButtons/SeamailNewFAB';
+import {SeamailFAB} from '../../Buttons/FloatingActionButtons/SeamailFAB';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
@@ -27,10 +27,9 @@ type SeamailListScreenProps = NativeStackScreenProps<
 export const SeamailListScreen = ({}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {asPrivilegedUser} = usePrivilege();
-  const {fezList, dispatchFezList, setFez, searchString} = useTwitarr();
+  const {fezList, dispatchFezList, setFez} = useTwitarr();
   const {data, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = useSeamailListQuery({
     forUser: asPrivilegedUser,
-    search: searchString,
   });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
@@ -65,7 +64,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
     if (isLoggedIn) {
       onRefresh();
     }
-  }, [asPrivilegedUser, searchString, onRefresh, isLoggedIn]);
+  }, [asPrivilegedUser, onRefresh, isLoggedIn]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -124,7 +123,7 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
-      <SeamailNewFAB />
+      <SeamailFAB />
     </AppView>
   );
 };

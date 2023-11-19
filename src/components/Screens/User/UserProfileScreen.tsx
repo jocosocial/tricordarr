@@ -5,10 +5,10 @@ import {
   BottomTabComponents,
   MainStackComponents,
   NavigatorIDs,
-  SeamailStackScreenComponents
+  SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
-import {SeamailStackParamList, useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
@@ -31,6 +31,8 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
+import {useAuth} from '../../Context/Contexts/AuthContext';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList | MainStackParamList,
@@ -47,6 +49,7 @@ export const UserProfileScreen = ({route}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
   const navigation = useBottomTabNavigator();
+  const {isLoggedIn} = useAuth();
 
   const {data, refetch} = useUserProfileQuery(route.params.userID);
 
@@ -68,22 +71,27 @@ export const UserProfileScreen = ({route}: Props) => {
     });
   }, [data?.header, navigation]);
 
-  const krakentalkCreateHandler = useCallback(() => {
-    navigation.navigate(BottomTabComponents.seamailTab, {
-      screen: SeamailStackScreenComponents.krakentalkCreateScreen,
-      params: {
-        initialUserHeader: data?.header,
-      },
-    });
-  }, [data?.header, navigation]);
-
   const getNavButtons = useCallback(() => {
-    if (data?.header.userID === profilePublicData?.header.userID) {
+    if (!isLoggedIn) {
+      return <></>;
+    }
+    if (data && data?.header.userID === profilePublicData?.header.userID) {
       // Maybe have an edit button?
       return (
         <View>
           <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+            <Item
+              title={'Edit'}
+              iconName={AppIcons.edituser}
+              onPress={() =>
+                navigation.navigate(BottomTabComponents.homeTab, {
+                  screen: MainStackComponents.editUserProfileScreen,
+                  params: {
+                    user: data,
+                  },
+                })
+              }
+            />
           </HeaderButtons>
         </View>
       );
@@ -92,14 +100,13 @@ export const UserProfileScreen = ({route}: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           {data && <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
-          {data && <Item title={'Create KrakenTalk'} iconName={AppIcons.krakentalkCreate} onPress={krakentalkCreateHandler} />}
           {data && (
             <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
           )}
         </HeaderButtons>
       </View>
     );
-  }, [data, isBlocked, isFavorite, isMuted, krakentalkCreateHandler, profilePublicData, seamailCreateHandler]);
+  }, [data, isBlocked, isFavorite, isLoggedIn, isMuted, profilePublicData?.header.userID, seamailCreateHandler]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -132,6 +139,10 @@ export const UserProfileScreen = ({route}: Props) => {
     listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],
     button: [commonStyles.marginHorizontalSmall],
   };
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   if (!data) {
     return <LoadingView />;

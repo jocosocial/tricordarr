@@ -79,7 +79,7 @@ export function getAuthHeaders(
   const authHeaders = {
     authorization: `${authScheme} ${encodedCredentials}`,
   };
-  console.log('Authentication Headers:', authHeaders);
+  // console.log('Authentication Headers:', authHeaders);
   return authHeaders;
 }
 

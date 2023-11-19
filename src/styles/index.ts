@@ -22,6 +22,9 @@ export const commonStyles = StyleSheet.create({
   displayFlex: {
     display: 'flex',
   },
+  flex0: {
+    flex: 0,
+  },
   flex: {
     flex: 1,
   },
@@ -88,11 +91,17 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
   },
   paddingLeftSmall: {
-    paddingLeft: styleDefaults.marginSize / 2
+    paddingLeft: styleDefaults.marginSize / 2,
   },
-  paddingSides: {
+  paddingHorizontal: {
     paddingLeft: styleDefaults.marginSize,
     paddingRight: styleDefaults.marginSize,
+    paddingHorizontal: styleDefaults.marginSize,
+  },
+  paddingHorizontalSmall: {
+    paddingLeft: styleDefaults.marginSize / 2,
+    paddingRight: styleDefaults.marginSize / 2,
+    paddingHorizontal: styleDefaults.marginSize / 2,
   },
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,
@@ -102,6 +111,12 @@ export const commonStyles = StyleSheet.create({
   },
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
+  },
+  paddingBottomSmall: {
+    paddingBottom: styleDefaults.marginSize / 2,
+  },
+  paddingBottomZero: {
+    paddingBottom: 0,
   },
   paddingTop: {
     paddingTop: styleDefaults.marginSize,
@@ -141,6 +156,12 @@ export const commonStyles = StyleSheet.create({
   },
   paddingVerticalZero: {
     paddingVertical: 0,
+  },
+  paddingLeftZero: {
+    paddingLeft: 0,
+  },
+  paddingRightZero: {
+    paddingRight: 0,
   },
   spacerWidth: {
     width: styleDefaults.avatarSizeSmall * 2 + styleDefaults.marginSize,
@@ -185,5 +206,24 @@ export const commonStyles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center',
+  },
+  flexGrow: {
+    flexGrow: 1,
+  },
+  heightFull: {
+    height: '100%',
+  },
+  cardBannerWidth: {
+    minWidth: styleDefaults.marginSize * 2,
+    width: styleDefaults.marginSize * 2,
+  },
+  fontSizeDefault: {
+    fontSize: styleDefaults.fontSize,
+  },
+  fontSizeLabel: {
+    fontSize: styleDefaults.fontSize * 0.75,
+  },
+  fontFamilyNormal: {
+    fontFamily: 'sans-serif',
   },
 });

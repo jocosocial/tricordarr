@@ -6,7 +6,7 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {
   BottomTabComponents,
   MainStackComponents,
-  SettingsStackScreenComponents
+  SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {useStyles} from '../../Context/Contexts/StyleContext';

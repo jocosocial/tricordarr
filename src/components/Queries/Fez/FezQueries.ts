@@ -9,17 +9,38 @@ import {useTokenAuthInfiniteQuery} from '../TokenAuthQuery';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
-interface FezMutationProps {
+interface FezCreateMutationProps {
   fezContentData: FezContentData;
 }
 
-const queryHandler = async ({fezContentData}: FezMutationProps): Promise<AxiosResponse<FezData>> => {
+const fezCreateQueryHandler = async ({fezContentData}: FezCreateMutationProps): Promise<AxiosResponse<FezData>> => {
   return await axios.post('/fez/create', fezContentData);
 };
 
-export const useFezMutation = (retry = 0) => {
+export const useFezCreateMutation = (retry = 0) => {
   const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezMutationProps>(queryHandler, {
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezCreateMutationProps>(fezCreateQueryHandler, {
+    retry: retry,
+    onError: error => {
+      setErrorMessage(error.response?.data.reason);
+    },
+  });
+};
+
+interface FezUpdateMutationProps extends FezCreateMutationProps {
+  fezID: string;
+}
+
+const fezUpdateQueryHandler = async ({
+  fezID,
+  fezContentData,
+}: FezUpdateMutationProps): Promise<AxiosResponse<FezData>> => {
+  return await axios.post(`/fez/${fezID}/update`, fezContentData);
+};
+
+export const useFezUpdateMutation = (retry = 0) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezUpdateMutationProps>(fezUpdateQueryHandler, {
     retry: retry,
     onError: error => {
       setErrorMessage(error.response?.data.reason);
@@ -36,12 +57,13 @@ interface SeamailListQueryOptions {
   pageSize?: number;
   forUser?: keyof typeof PrivilegedUserAccounts;
   search?: string;
+  options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQueryOptions = {pageSize: 50}) => {
+export const useSeamailListQuery = ({pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50}) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
-    ['/fez/joined?type=closed&type=open'],
+    ['/fez/joined', {type: ['closed', 'open'], search: search}],
     async ({pageParam = {limit: pageSize}}) => {
       const {start, limit} = pageParam as PaginationParams;
       const queryParams = {
@@ -63,6 +85,7 @@ export const useSeamailListQuery = ({pageSize, forUser, search}: SeamailListQuer
       onError: error => {
         setErrorMessage(error?.response?.data.reason);
       },
+      ...options,
     },
   );
 };
@@ -96,4 +119,74 @@ export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
       },
     },
   );
+};
+
+interface LfgListQueryOptions {
+  cruiseDay?: number;
+  fezType?: keyof typeof FezType;
+  // start?: number;
+  // limit?: number;
+  pageSize?: number;
+  hidePast?: boolean;
+  endpoint?: 'open' | 'joined' | 'owner';
+  excludeFezType?: FezType[];
+  options?: {};
+}
+
+export const useLfgListQuery = ({
+  cruiseDay,
+  fezType,
+  excludeFezType,
+  hidePast = false,
+  pageSize = 50,
+  endpoint = 'open',
+  options = {},
+}: LfgListQueryOptions) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
+    [`/fez/${endpoint}`, {cruiseDay, fezType, hidePast, pageSize, excludeFezType}],
+    async ({pageParam = {limit: pageSize}}) => {
+      const {start, limit} = pageParam as PaginationParams;
+      const queryParams = {
+        // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
+        // The !== undefined is necessary because 0 is false-y.
+        ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
+        ...(fezType !== undefined && {type: fezType}),
+        ...(start !== undefined && {start: start}),
+        ...(limit !== undefined && {limit: limit}),
+        ...(hidePast !== undefined && {hidePast: hidePast}),
+        ...(excludeFezType && {excludetype: excludeFezType}),
+      };
+      const {data: responseData} = await axios.get<FezListData>(`/fez/${endpoint}`, {
+        params: queryParams,
+      });
+      return responseData;
+    },
+    {
+      getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
+      getPreviousPageParam: lastPage => getPreviousPageParam(lastPage.paginator),
+      onError: error => {
+        setErrorMessage(error?.response?.data.reason);
+      },
+      ...options,
+    },
+  );
+};
+
+interface FezCancelMutationProps {
+  fezID: string;
+}
+
+const cancelQueryHandler = async ({fezID}: FezCancelMutationProps): Promise<AxiosResponse<FezData>> => {
+  return await axios.post(`/fez/${fezID}/cancel`);
+};
+
+export const useFezCancelMutation = (retry = 0) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezCancelMutationProps>(cancelQueryHandler, {
+    retry: retry,
+    onError: error => {
+      setErrorMessage(error.response?.data.reason || error.message);
+    },
+  });
 };

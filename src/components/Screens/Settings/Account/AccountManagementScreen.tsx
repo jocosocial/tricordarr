@@ -47,6 +47,7 @@ export const AccountManagementScreen = () => {
                   params: {
                     userID: profilePublicData.header.userID,
                   },
+                  initial: false,
                 })
               }
             />
@@ -62,7 +63,11 @@ export const AccountManagementScreen = () => {
               onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
             />
             <List.Subheader>Log Out</List.Subheader>
-            <MinorActionListItem title={'Logout this device'} icon={AppIcons.logout} onPress={() => handleLogoutModal()} />
+            <MinorActionListItem
+              title={'Logout this device'}
+              icon={AppIcons.logout}
+              onPress={() => handleLogoutModal()}
+            />
             <MinorActionListItem
               title={'Logout all devices'}
               icon={AppIcons.error}

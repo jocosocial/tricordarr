@@ -8,6 +8,8 @@ export enum NavigatorIDs {
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
   oobeStack = 'OobeStackNavigator',
+  eventStack = 'EventStackNavigator',
+  lfgStack = 'LfgStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -15,6 +17,7 @@ export enum BottomTabComponents {
   seamailTab = 'SeamailTab',
   forumsTab = 'ForumsTab',
   scheduleTab = 'ScheduleTab',
+  lfgTab = 'LfgTab',
 }
 
 export enum SettingsStackScreenComponents {
@@ -36,6 +39,8 @@ export enum SettingsStackScreenComponents {
   blockUsers = 'BlockUsersScreen',
   muteUsers = 'MuteUsersScreen',
   favoriteUsers = 'FavoriteUsersScreen',
+  eventSettings = 'EventSettingsScreen',
+  lfgSettings = 'LfgSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -46,6 +51,7 @@ export enum SeamailStackScreenComponents {
   seamailCreateScreen = 'SeamailCreateScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
+  seamailSearchScreen = 'SeamailSearchScreen',
 }
 
 export enum MainStackComponents {
@@ -55,6 +61,7 @@ export enum MainStackComponents {
   aboutScreen = 'AboutScreen',
   userProfileScreen = 'UserProfileScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
+  editUserProfileScreen = 'EditUserProfileScreen',
 }
 
 export enum RootStackComponents {
@@ -71,4 +78,27 @@ export enum OobeStackComponents {
   oobeRegisterScreen = 'OobeRegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
+}
+
+export enum EventStackComponents {
+  eventDayScreen = 'EventDayScreen',
+  eventSearchScreen = 'EventSearchScreen',
+  eventSettingsScreen = 'EventSettingsScreen',
+  eventScreen = 'EventScreen',
+  eventHelpScreen = 'EventHelpScreen',
+  eventFavoritesScreen = 'EventFavoritesScreen',
+}
+
+export enum LfgStackComponents {
+  lfgOwnedScreen = 'LfgOwnedScreen',
+  lfgHelpScreen = 'LfgHelpScreen',
+  lfgJoinedScreen = 'LfgJoinedScreen',
+  lfgFindScreen = 'LfgFindScreen',
+  lfgScreen = 'LfgScreen',
+  lfgParticipationScreen = 'LfgParticipationScreen',
+  lfgAddParticipantScreen = 'LfgAddParticipantScreen',
+  lfgChatScreen = 'LfgChatScreen',
+  lfgSettingsScreen = 'LfgSettingsScreen',
+  lfgCreateScreen = 'LfgCreateScreen',
+  lfgEditScreen = 'LfgEditScreen',
 }

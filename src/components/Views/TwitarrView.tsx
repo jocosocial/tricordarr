@@ -75,6 +75,10 @@ export const TwitarrView = ({route, navigation}: Props) => {
     const loadSettings = async () => {
       let newUrl = appConfig.serverUrl;
 
+      if (route.params.moderate) {
+        newUrl += '/moderate';
+      }
+
       if (route?.params?.resource) {
         newUrl += `/${route.params.resource}`;
 
@@ -97,7 +101,16 @@ export const TwitarrView = ({route, navigation}: Props) => {
     navigation.setOptions({
       headerRight: getNavBarIcons,
     });
-  }, [route.params?.timestamp, route.params.resource, route.params.id, isLoading, key, navigation, getNavBarIcons, appConfig.serverUrl]);
+  }, [
+    route.params?.timestamp,
+    route.params.resource,
+    route.params.id,
+    isLoading,
+    key,
+    navigation,
+    getNavBarIcons,
+    appConfig.serverUrl,
+  ]);
 
   return isLoading ? (
     <ActivityIndicator />

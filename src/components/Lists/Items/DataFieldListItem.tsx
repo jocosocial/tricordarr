@@ -1,36 +1,56 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {List} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {TextStyle, ViewStyle} from 'react-native';
 
 interface DataFieldListItemProps {
   title?: string;
-  description?: string;
+  description?: string | (() => ReactNode);
   onPress?: () => void;
+  titleStyle?: TextStyle;
+  descriptionStyle?: TextStyle;
+  itemStyle?: ViewStyle;
+  left?: () => ReactNode;
 }
 
 /**
  * Item for user profile content.
  */
-export const DataFieldListItem = ({title, description, onPress}: DataFieldListItemProps) => {
+export const DataFieldListItem = ({
+  title,
+  description,
+  onPress,
+  titleStyle,
+  descriptionStyle,
+  itemStyle,
+  left,
+}: DataFieldListItemProps) => {
+  const {commonStyles} = useStyles();
   const styles = {
     title: {
-      fontSize: 12,
+      ...commonStyles.fontSizeLabel,
+      ...titleStyle,
     },
     description: {
-      fontSize: 16,
+      ...commonStyles.fontSizeDefault,
+      ...descriptionStyle,
     },
   };
 
-  const defaultOnPress = () => console.log('booo');
-
   return (
     <List.Item
+      left={left}
+      style={itemStyle}
       titleStyle={styles.title}
       descriptionStyle={styles.description}
       description={description}
+      descriptionNumberOfLines={0}
       title={title}
-      onPress={onPress || defaultOnPress}
-      onLongPress={() => (description ? Clipboard.setString(description) : undefined)}
+      onPress={onPress}
+      onLongPress={() =>
+        description && typeof description === 'string' ? Clipboard.setString(description) : undefined
+      }
     />
   );
 };

@@ -130,7 +130,13 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
-            {manageUsers && <FezParticipantAddItem fez={fez} />}
+            {manageUsers && (
+              <FezParticipantAddItem
+                onPress={() => {
+                  navigation.push(SeamailStackScreenComponents.seamailAddParticipantScreen, {fez: fez});
+                }}
+              />
+            )}
             {fez.members &&
               fez.members.participants.map(u => (
                 <FezParticipantListItem
@@ -138,6 +144,11 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
                   key={u.userID}
                   user={u}
                   fez={fez}
+                  onPress={() =>
+                    navigation.push(SeamailStackScreenComponents.userProfileScreen, {
+                      userID: u.userID,
+                    })
+                  }
                 />
               ))}
           </ListSection>

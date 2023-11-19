@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import {FezType} from './Enums/FezType';
 
 export const UsernameValidation = Yup.string()
   .matches(/^[a-zA-Z0-9-.+_]+$/, 'Username can only contain alphanumeric characters plus "-.+_"')
@@ -17,3 +18,18 @@ export const KeywordValidation = Yup.string()
   .matches(/^[a-z]+$/, 'Keyword must be a lowercase word.')
   .min(4)
   .required('A word is required');
+
+// This is a blend of Title/Location/Info from LFGs.
+export const InfoStringValidation = Yup.string().min(3).max(2000).required('Cannot be empty.');
+
+export const NumberValidation = Yup.string()
+  .matches(/^[0-9]+$/, 'Must be an integer.')
+  .required('Integer required');
+
+export const FezTypeValidation = Yup.string().oneOf(Object.values(FezType), 'Invalid type selected');
+
+export const DateValidation = Yup.date().required('Date is required');
+
+export const EmailValidation = Yup.string().email();
+
+export const RoomNumberValidation = Yup.string().optional().min(4, 'If specified, must be minimum 4 characters');

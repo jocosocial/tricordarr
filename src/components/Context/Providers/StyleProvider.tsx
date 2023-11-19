@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleContext} from '../Contexts/StyleContext';
-import {twitarrNoteColor, useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../styles/Theme';
 import {commonStyles, styleDefaults} from '../../../styles';
 import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
@@ -19,6 +19,13 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       borderRadius: theme.roundness,
       borderTopLeftRadius: theme.roundness,
       borderTopRightRadius: theme.roundness,
+    },
+    roundedBorderCardLeft: {
+      borderTopStartRadius: theme.roundness * 3,
+      borderBottomStartRadius: theme.roundness * 3,
+    },
+    roundedBorderCard: {
+      borderRadius: theme.roundness * 3,
     },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
@@ -41,6 +48,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     twitarrNegative: {
       backgroundColor: theme.colors.twitarrNegativeButton,
     },
+    twitarrBanner: {
+      backgroundColor: theme.colors.twitarrYellow,
+    },
     background: {
       backgroundColor: theme.colors.background,
       color: theme.colors.onBackground,
@@ -53,9 +63,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: theme.colors.onTertiaryContainer,
     },
     noteContainer: {
-      backgroundColor: twitarrNoteColor,
+      backgroundColor: theme.colors.twitarrYellow,
     },
     onNoteContainer: {
+      color: theme.colors.onTwitarrYellow,
+    },
+    onTwitarrBanner: {
       color: AndroidColor.BLACK,
     },
     errorContainer: {
@@ -64,6 +77,17 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     onTwitarrButton: {
       color: AndroidColor.WHITE,
+    },
+    borderBottom: {
+      borderBottomStyle: 'solid',
+      borderBottomColor: theme.colors.onBackground,
+      borderBottomWidth: 1,
+    },
+    error: {
+      backgroundColor: theme.colors.error,
+    },
+    onError: {
+      color: theme.colors.onError,
     },
   });
 

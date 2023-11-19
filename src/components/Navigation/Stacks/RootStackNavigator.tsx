@@ -1,16 +1,16 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackComponents} from '../../../libraries/Enums/Navigation';
-import {useNavigation} from '@react-navigation/native';
+import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {BottomTabNavigator} from '../Tabs/BottomTabNavigator';
+import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {OobeStackNavigator} from './OobeStackNavigator';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
-  RootContentScreen: undefined;
+  RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
   LighterScreen: undefined;
 };
 

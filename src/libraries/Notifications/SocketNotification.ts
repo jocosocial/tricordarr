@@ -27,7 +27,9 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       break;
     case NotificationTypeData.fezUnreadMsg:
       channel = lfgChannel;
-      url = `/fez/${notificationData.contentID}#newposts`;
+      url = `/lfg/${notificationData.contentID}/chat`;
+      pressActionID = PressAction.lfg;
+      title = 'New LFG Message';
       break;
     case NotificationTypeData.announcement:
       channel = announcementsChannel;

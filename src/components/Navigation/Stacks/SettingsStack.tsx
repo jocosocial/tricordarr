@@ -21,6 +21,8 @@ import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
 import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
+import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
+import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -41,6 +43,8 @@ export type SettingsStackParamList = {
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
+  EventSettingsScreen: undefined;
+  LfgSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -135,6 +139,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.favoriteUsers}
         component={FavoriteUsersScreen}
         options={{title: 'Favorite Users'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.eventSettings}
+        component={EventSettingsScreen}
+        options={{title: 'Event Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.lfgSettings}
+        component={LfgSettingsScreen}
+        options={{title: 'LFG Settings'}}
       />
     </Stack.Navigator>
   );

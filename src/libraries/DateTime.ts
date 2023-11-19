@@ -10,6 +10,10 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
+import {CruiseDayData, CruiseDayTime} from './Types';
+import moment from 'moment-timezone';
+import pluralize from 'pluralize';
+import {FezData} from './Structs/ControllerStructs';
 
 const thresholdMap = {
   second: {
@@ -71,3 +75,175 @@ export default function useDateTime(threshold: keyof typeof thresholdMap) {
 
   return date;
 }
+
+/**
+  Determine the "virtual day index of the cruise". For example: Let's say today is Sunday Oct 22 2023, long after
+  the actual 2023 cruise. We want to simulate that today is actually the "1st day of the cruise" (cruiseday=1).
+  Sunday is 0 in JavaScript date-fns, 1 in Swift.
+  https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Site/SiteEventsController.swift#L144-L149
+ */
+export const getCruiseDay: (today: Date, cruiseStartDayOfWeek: number) => number = (
+  today: Date,
+  cruiseStartDayOfWeek: number,
+) => {
+  // Map the day of the week to a number.
+  const weekday = today.getDay();
+  // Do maths. We add an extra 1 to the weekday and cruiseStartDayOfWeek because Swift and JavaScript assign values differently.
+  return ((7 + (weekday + 1) - (cruiseStartDayOfWeek + 1)) % 7) + 1;
+};
+
+export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
+  let cruiseDayNameIndex = startDate.getDay();
+  let cruiseDays: CruiseDayData[] = [];
+  for (let i = 0; i < cruiseLength; i++) {
+    if (cruiseDayNameIndex > 6) {
+      cruiseDayNameIndex -= 7;
+    }
+    cruiseDays.push({
+      cruiseDay: i + 1,
+      date: addDays(startDate, i),
+    });
+    cruiseDayNameIndex += 1;
+  }
+
+  return cruiseDays;
+};
+
+/**
+ * Lifted from https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Resources/Assets/js/swiftarr.js#L470
+ * We somewhat arbitrarily pick 3:00AM boat time as the breaker for when days roll over. But really it just serves as a
+ * point in time that we can do maths again.
+ * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted forward three hours (02:00UTC, 21:00EST)
+ * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
+ * @param dateValue
+ * @param cruiseStartDate
+ * @param cruiseEndDate
+ */
+export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseEndDate: Date) => CruiseDayTime = (
+  dateValue: Date,
+  cruiseStartDate: Date,
+  cruiseEndDate: Date,
+) => {
+  // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
+  let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
+
+  let cruiseStartDay = cruiseStartDate.getDay();
+  // Hackish. StartDate is midnight EST, which makes getDay return the day before in [PCM]ST.
+  if (cruiseStartDate.getHours() > 12) {
+    cruiseStartDay = (cruiseStartDay + 1) % 7;
+  }
+  let cruiseDay = (7 - cruiseStartDay + adjustedDate.getDay()) % 7;
+  if (adjustedDate >= cruiseStartDate && adjustedDate < cruiseEndDate) {
+    cruiseDay = Math.trunc((adjustedDate.getTime() - cruiseStartDate.getTime()) / (1000 * 60 * 60 * 24));
+  }
+  // To avoid confusion, the term "cruiseday" refers to "the nth day of the cruise" (1st, 2nd, 8th...).
+  cruiseDay += 1;
+  // console.log(new Date().getHours() - 3, adjustedDate.getHours());
+
+  return {
+    // .getHours() and .getMinutes() return in local time.
+    dayMinutes: adjustedDate.getHours() * 60 + adjustedDate.getMinutes(),
+    cruiseDay: cruiseDay,
+  };
+};
+
+/**
+ * Returns a formatted string with the time and time zone.
+ * @param dateTimeStr ISO time string.
+ * @param timeZoneAbbrStr 3-letter abbreviation of the timezone. @TODO there is a hack in place for AST in App.ts.
+ */
+export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('hh:mm A');
+  return `${formattedTime} ${timeZoneAbbrStr}`;
+};
+
+export const getDayMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  return getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('dddd MMM Do');
+};
+
+/**
+ * Returns a formatted string of the start and end times of an event, factoring in the apparent time zone.
+ * In the event we cannot form a formatted string then we return empty string so that clients can
+ * do a False-y check on whether to render something or not.
+ * @param startTimeStr Start ISO string.
+ * @param endTimeStr End ISO string.
+ * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
+ * @param includeDay Include the day in the formatted string.
+ */
+export const getDurationString = (
+  startTimeStr?: string,
+  endTimeStr?: string,
+  timeZoneAbbrStr?: string,
+  includeDay: boolean = false,
+) => {
+  if (!startTimeStr || !endTimeStr || !timeZoneAbbrStr) {
+    return '';
+  }
+  const endFormat = 'hh:mm A';
+  const startFormat = includeDay ? 'ddd MMM D hh:mm A' : endFormat;
+  const startDate = moment(startTimeStr);
+  const endDate = moment(endTimeStr);
+  const startText = startDate.tz(timeZoneAbbrStr).format(startFormat);
+  const endText = endDate.tz(timeZoneAbbrStr).format(endFormat);
+  return `${startText} - ${endText} ${timeZoneAbbrStr}`;
+};
+
+export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  const date = moment(dateTimeStr);
+  return date.tz(timeZoneAbbrStr);
+};
+
+export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr: string, compareDateStr: string) => {
+  let offset = 0;
+
+  // @TODO this is a hack until we can reveal the time zones via the API.
+  let compareTimeZoneID = 'America/New_York';
+  switch (compareTimeZoneAbbr) {
+    case 'AST':
+      compareTimeZoneID = 'America/Santo_Domingo';
+      break;
+    case 'EST':
+      compareTimeZoneID = 'America/New_York';
+      break;
+  }
+
+  // Get the time in both time zones
+  const originTime = moment(compareDateStr).tz(originTimeZoneID);
+  const compareTime = moment(compareDateStr).tz(compareTimeZoneID);
+
+  // Calculate the minute offset. Positive means towards UTC (going into the future),
+  // negative means away from UTC (going into the past).
+  offset = compareTime.utcOffset() - originTime.utcOffset();
+  return offset;
+};
+
+/**
+ * Takes a number of minutes as input and returns a human-compatible string of that duration.
+ * For example: 30 -> 30 Minutes, 90 -> 1 hour 30 minutes.
+ * ChatGPT wrote the base, I made some modifications.
+ * @param minutes Number of minutes
+ */
+export const formatMinutesToHumanReadable = (minutes: number) => {
+  const duration = moment.duration(minutes, 'minutes');
+  const hours = duration.hours();
+  const minutesRemainder = duration.minutes();
+
+  let formattedString = '';
+
+  if (hours > 0) {
+    formattedString += `${hours} ${pluralize('hour', hours)}`;
+  }
+
+  if (minutesRemainder > 0) {
+    formattedString += ` ${minutesRemainder} ${pluralize('minute', minutesRemainder)}`;
+  }
+
+  return formattedString.trim();
+};
+
+export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => {
+  if (fez.timeZone && fez.startTime) {
+    return getTimeZoneOffset(originTimeZoneID, fez.timeZone, fez.startTime);
+  }
+  return 0;
+};

@@ -20,11 +20,8 @@ const SeamailListHeader = () => {
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   return (
     <View>
-      <PaddedContentView padTop={true}>
-        <SeamailSearchBar />
-      </PaddedContentView>
       {(hasTwitarrTeam || hasModerator) && (
-        <PaddedContentView>
+        <PaddedContentView padTop={true}>
           <SeamailAccountButtons />
         </PaddedContentView>
       )}

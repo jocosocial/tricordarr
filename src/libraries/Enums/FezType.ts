@@ -1,5 +1,6 @@
 /**
  * Lifted from https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Enumerations/FezType.swift
+ * These have to stay lower-case in the values since those are what get POST'd to the server.
  */
 export enum FezType {
   announcement = 'announcement',

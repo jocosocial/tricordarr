@@ -17,8 +17,16 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
       <Card.Title title={`Content by @${user.header.username}`} />
       <Card.Content style={[commonStyles.paddingHorizontalZero]}>
         <ListSection>
-          <List.Item title={'Forums'} left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.forum} />} onPress={() => console.log('forums', user.header.userID)} />
-          <List.Item title={'LFGs'} left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.group} />} onPress={() => console.log('LFGs', user.header.userID)} />
+          <List.Item
+            title={'Forums'}
+            left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.forum} />}
+            onPress={() => console.log('forums', user.header.userID)}
+          />
+          <List.Item
+            title={'LFGs'}
+            left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.group} />}
+            onPress={() => console.log('LFGs', user.header.userID)}
+          />
         </ListSection>
       </Card.Content>
     </Card>

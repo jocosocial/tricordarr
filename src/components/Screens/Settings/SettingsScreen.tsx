@@ -83,6 +83,16 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Quickly access friends profiles.'}
               navComponent={SettingsStackScreenComponents.favoriteUsers}
             />
+            <SettingsNavigationListItem
+              title={'Event Settings'}
+              description={'Settings for events (sanctioned by THO).'}
+              navComponent={SettingsStackScreenComponents.eventSettings}
+            />
+            <SettingsNavigationListItem
+              title={'LFG Settings'}
+              description={'Settings for community organized events.'}
+              navComponent={SettingsStackScreenComponents.lfgSettings}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

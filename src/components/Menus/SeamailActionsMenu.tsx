@@ -12,6 +12,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
+  enableDetails?: boolean;
 }
 
 const helpContent = [
@@ -19,9 +20,9 @@ const helpContent = [
   'Press the title to easily access details.',
 ];
 
-export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
+export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
-  const navigation = useSeamailStack();
+  const seamailNavigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam, setAsModerator, setAsTwitarrTeam, asModerator, asTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
@@ -48,7 +49,7 @@ export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
   };
 
   const detailsAction = () => {
-    navigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {fezID: fez.fezID});
+    seamailNavigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {fezID: fez.fezID});
     closeMenu();
   };
 
@@ -57,7 +58,7 @@ export const SeamailActionsMenu = ({fez}: SeamailActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />
+      {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />

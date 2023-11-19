@@ -7,7 +7,7 @@
 
 import React, {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
-import {adaptNavigationTheme, Provider as PaperProvider} from 'react-native-paper';
+import {adaptNavigationTheme, Portal, Provider as PaperProvider} from 'react-native-paper';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
@@ -32,6 +32,7 @@ import {navigationLinking} from './src/libraries/Linking';
 import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
 import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
+import moment from 'moment-timezone';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -48,6 +49,10 @@ ViewReactNativeStyleAttributes.scaleY = true;
 import 'react-native-gesture-handler';
 
 TimeAgo.addDefaultLocale(en);
+// @TODO this timezone is a hack, until we figure out what to do about the API.
+moment.tz.link('AST|America/Santo_Domingo');
+
+registerTranslation('en', paperEn);
 
 // https://tanstack.com/query/latest/docs/react/overview
 const queryClient = new QueryClient({
@@ -66,6 +71,8 @@ import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNa
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
+import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
+import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
 
 registerFgsWorker();
 
@@ -90,40 +97,44 @@ function App(): JSX.Element {
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
-        <StyleProvider>
-          <HeaderButtonsProvider stackType={'native'}>
-            <ConfigProvider>
-              <CruiseProvider>
-                <QueryClientProvider client={queryClient}>
-                  <TwitarrProvider>
-                    <ErrorHandlerProvider>
-                      <ModalProvider>
-                        <AuthProvider>
-                          <UserDataProvider>
-                            <PrivilegeProvider>
-                              <SocketProvider>
-                                <UserRelationsProvider>
-                                  <UserNotificationDataProvider>
-                                    <DrawerProvider>
-                                      <AppEventHandler />
-                                      <ForegroundService />
-                                      <NotificationDataListener />
-                                      <RootStackNavigator />
-                                    </DrawerProvider>
-                                  </UserNotificationDataProvider>
-                                </UserRelationsProvider>
-                              </SocketProvider>
-                            </PrivilegeProvider>
-                          </UserDataProvider>
-                        </AuthProvider>
-                      </ModalProvider>
-                    </ErrorHandlerProvider>
-                  </TwitarrProvider>
-                </QueryClientProvider>
-              </CruiseProvider>
-            </ConfigProvider>
-          </HeaderButtonsProvider>
-        </StyleProvider>
+        <QueryClientProvider client={queryClient}>
+          <StyleProvider>
+            <ErrorHandlerProvider>
+              <ConfigProvider>
+                <AuthProvider>
+                  <UserDataProvider>
+                    <PrivilegeProvider>
+                      <SocketProvider>
+                        <TwitarrProvider>
+                          <UserNotificationDataProvider>
+                            <ModalProvider>
+                              <Portal.Host>
+                                <HeaderButtonsProvider stackType={'native'}>
+                                  <CruiseProvider>
+                                    <UserRelationsProvider>
+                                      <DrawerProvider>
+                                        <ScheduleFilterProvider>
+                                          <AppEventHandler />
+                                          <ForegroundService />
+                                          <NotificationDataListener />
+                                          <RootStackNavigator />
+                                        </ScheduleFilterProvider>
+                                      </DrawerProvider>
+                                    </UserRelationsProvider>
+                                  </CruiseProvider>
+                                </HeaderButtonsProvider>
+                              </Portal.Host>
+                            </ModalProvider>
+                          </UserNotificationDataProvider>
+                        </TwitarrProvider>
+                      </SocketProvider>
+                    </PrivilegeProvider>
+                  </UserDataProvider>
+                </AuthProvider>
+              </ConfigProvider>
+            </ErrorHandlerProvider>
+          </StyleProvider>
+        </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>
   );
