@@ -42,10 +42,12 @@ const deepLinksConf = {
             SeamailScreen: 'seamail/:fezID',
           },
         },
-        ScheduleTab: {
+        LfgTab: {
           initialRouteName: LfgStackComponents.lfgJoinedScreen,
           screens: {
+            LfgTab: 'lfg',
             LfgScreen: 'lfg/:fezID',
+            LfgChatScreen: 'lfg/:fezID/chat',
           },
         },
       },

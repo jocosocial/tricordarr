@@ -73,7 +73,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
-          <SeamailActionsMenu fez={fez} />
+          <SeamailActionsMenu fez={fez} enableDetails={false} />
         </HeaderButtons>
       </View>
     );

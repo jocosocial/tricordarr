@@ -46,6 +46,13 @@ export const getUrlForEvent = (
         }
         return;
       }
+      case PressAction.lfg: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
       case PressAction.home: {
         if (notification.id && notification.data) {
           notifee.cancelNotification(notification.id);
