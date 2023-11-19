@@ -13,17 +13,12 @@ import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
-import {
-  BottomTabComponents,
-  EventStackComponents,
-  LfgStackComponents,
-  RootStackComponents,
-} from '../../../libraries/Enums/Navigation';
+import {BottomTabComponents, EventStackComponents, LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 
 interface SeamailFlatListProps {
   scheduleItems: (EventData | FezData)[];
@@ -81,7 +76,7 @@ export const EventFlatList = ({
   const {startDate, endDate} = useCruise();
   const minutelyUpdatingDate = useDateTime('minute');
   const {appConfig} = useConfig();
-  const rootStackNavigation = useRootStack();
+  const bottomNavigation = useBottomTabNavigator();
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderListItem = useCallback(
@@ -93,15 +88,10 @@ export const EventFlatList = ({
             <LfgCard
               lfg={item}
               onPress={() =>
-                rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.lfgTab,
-                  params: {
-                    screen: LfgStackComponents.lfgScreen,
-                    params: {
-                      fezID: item.fezID,
-                      initial: false,
-                    },
-                  },
+                bottomNavigation.navigate(BottomTabComponents.lfgTab, {
+                  screen: LfgStackComponents.lfgScreen,
+                  params: {fezID: item.fezID},
+                  initial: false,
                 })
               }
               marker={marker}
@@ -119,15 +109,7 @@ export const EventFlatList = ({
         </>
       );
     },
-    [
-      appConfig.portTimeZoneID,
-      endDate,
-      minutelyUpdatingDate,
-      navigation,
-      rootStackNavigation,
-      setRefreshing,
-      startDate,
-    ],
+    [appConfig.portTimeZoneID, bottomNavigation, endDate, minutelyUpdatingDate, navigation, setRefreshing, startDate],
   );
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: EventData | FezData}) => {

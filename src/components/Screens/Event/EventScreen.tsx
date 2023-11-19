@@ -6,7 +6,13 @@ import {useEventQuery} from '../../Queries/Events/EventQueries';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
-import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  NavigatorIDs,
+  EventStackComponents,
+  RootStackComponents,
+  BottomTabComponents,
+  MainStackComponents,
+} from '../../../libraries/Enums/Navigation';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -22,6 +28,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 const helpContent = [
   'Always check the official daily printed schedule to confirm event times/locations.',
@@ -48,6 +55,7 @@ export const EventScreen = ({navigation, route}: Props) => {
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const {setModalContent, setModalVisible} = useModal();
+  const rootStackNavigation = useRootStack();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
@@ -151,7 +159,17 @@ export const EventScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.map)}
                 description={eventData.location}
                 title={'Location'}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
+                onPress={() =>
+                  rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+                    screen: BottomTabComponents.homeTab,
+                    params: {
+                      screen: MainStackComponents.siteUIScreen,
+                      params: {
+                        resource: 'map',
+                      },
+                    },
+                  })
+                }
               />
               <DataFieldListItem
                 itemStyle={styles.item}
