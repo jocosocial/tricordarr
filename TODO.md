@@ -1,8 +1,7 @@
 Backlog
-
+* favorite trigger refresh or update search results
 
 Work Queue
-* Events
 * Nightly
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)

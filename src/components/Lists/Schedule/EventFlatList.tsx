@@ -27,8 +27,8 @@ interface SeamailFlatListProps {
   scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   separator: 'day' | 'time' | 'none';
-  listHeader?: () => ReactElement;
-  listFooter?: () => ReactElement;
+  listHeader?: ReactElement;
+  listFooter?: ReactElement;
 }
 
 const getItemMarker = (
