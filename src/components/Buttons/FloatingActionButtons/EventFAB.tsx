@@ -4,10 +4,14 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFAB} from './BaseFAB';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
 export const EventFAB = () => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
+  const {cruiseDayToday} = useCruise();
+  const {setEventFavoriteFilter} = useScheduleFilter();
 
   const handleNavigation = (component: EventStackComponents) => {
     if (route.name === component) {
@@ -16,7 +20,17 @@ export const EventFAB = () => {
     navigation.push(component);
   };
 
+  const handleYourDay = () => {
+    setEventFavoriteFilter(true);
+    navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: cruiseDayToday});
+  };
+
   const actions = [
+    FabGroupAction({
+      icon: AppIcons.user,
+      label: 'Your Day Today',
+      onPress: handleYourDay,
+    }),
     FabGroupAction({
       icon: AppIcons.favorite,
       label: 'Favorites',
