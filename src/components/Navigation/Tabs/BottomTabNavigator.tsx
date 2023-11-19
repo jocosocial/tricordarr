@@ -70,7 +70,11 @@ export const BottomTabNavigator = () => {
       <Tab.Screen
         name={BottomTabComponents.lfgTab}
         component={LfgStackNavigator}
-        options={{title: 'LFG', tabBarIcon: () => getIcon(AppIcons.lfg)}}
+        options={{
+          title: 'LFG',
+          tabBarIcon: () => getIcon(AppIcons.lfg),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
+        }}
       />
       <Tab.Screen
         name={BottomTabComponents.scheduleTab}
@@ -78,7 +82,6 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Events',
           tabBarIcon: () => getIcon(AppIcons.events),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}
       />
     </Tab.Navigator>
