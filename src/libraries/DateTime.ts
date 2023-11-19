@@ -13,6 +13,7 @@ import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
+import {FezData} from './Structs/ControllerStructs';
 
 const thresholdMap = {
   second: {
@@ -234,4 +235,11 @@ export const formatMinutesToHumanReadable = (minutes: number) => {
   }
 
   return formattedString.trim();
+};
+
+export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => {
+  if (fez.timeZone && fez.startTime) {
+    return getTimeZoneOffset(originTimeZoneID, fez.timeZone, fez.startTime);
+  }
+  return 0;
 };

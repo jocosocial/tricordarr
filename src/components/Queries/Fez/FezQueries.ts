@@ -9,17 +9,38 @@ import {useTokenAuthInfiniteQuery} from '../TokenAuthQuery';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
-interface FezMutationProps {
+interface FezCreateMutationProps {
   fezContentData: FezContentData;
 }
 
-const queryHandler = async ({fezContentData}: FezMutationProps): Promise<AxiosResponse<FezData>> => {
+const fezCreateQueryHandler = async ({fezContentData}: FezCreateMutationProps): Promise<AxiosResponse<FezData>> => {
   return await axios.post('/fez/create', fezContentData);
 };
 
-export const useFezMutation = (retry = 0) => {
+export const useFezCreateMutation = (retry = 0) => {
   const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezMutationProps>(queryHandler, {
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezCreateMutationProps>(fezCreateQueryHandler, {
+    retry: retry,
+    onError: error => {
+      setErrorMessage(error.response?.data.reason);
+    },
+  });
+};
+
+interface FezUpdateMutationProps extends FezCreateMutationProps {
+  fezID: string;
+}
+
+const fezUpdateQueryHandler = async ({
+  fezID,
+  fezContentData,
+}: FezUpdateMutationProps): Promise<AxiosResponse<FezData>> => {
+  return await axios.post(`/fez/${fezID}/update`, fezContentData);
+};
+
+export const useFezUpdateMutation = (retry = 0) => {
+  const {setErrorMessage} = useErrorHandler();
+  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezUpdateMutationProps>(fezUpdateQueryHandler, {
     retry: retry,
     onError: error => {
       setErrorMessage(error.response?.data.reason);

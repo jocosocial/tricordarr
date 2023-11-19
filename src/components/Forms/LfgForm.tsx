@@ -26,6 +26,8 @@ import {TimePickerField} from './Fields/TimePickerField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
+  initialValues: FezFormValues;
+  buttonText?: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -68,14 +70,13 @@ const locationSuggestions = [
   'Sports Deck, Deck 11, Forward',
 ];
 
-export const LfgForm = ({onSubmit}: LfgFormProps) => {
+export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     inputContainer: [],
     buttonContainer: [commonStyles.marginTopSmall],
   };
   const {setModalVisible, setModalContent} = useModal();
-  const {startDate, cruiseDayToday} = useCruise();
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();
@@ -87,24 +88,6 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
     Keyboard.dismiss();
     setModalContent(<HelpModalView title={'About Participation'} text={maximumHelpContent} />);
     setModalVisible(true);
-  };
-
-  const apparentCruiseDate = new Date(startDate);
-  apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
-
-  const initialValues: FezFormValues = {
-    title: '',
-    location: '',
-    fezType: FezType.activity,
-    startDate: apparentCruiseDate.toISOString(),
-    duration: '30',
-    minCapacity: '2',
-    maxCapacity: '2',
-    info: '',
-    startTime: {
-      hours: new Date().getHours() + 1,
-      minutes: 0,
-    },
   };
 
   return (
@@ -151,7 +134,7 @@ export const LfgForm = ({onSubmit}: LfgFormProps) => {
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
-            buttonText={'Create'}
+            buttonText={buttonText}
           />
         </View>
       )}

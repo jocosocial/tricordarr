@@ -9,7 +9,9 @@ import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {addMinutes} from 'date-fns';
-import {useFezMutation} from '../../Queries/Fez/FezQueries';
+import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
+import {FezType} from '../../../libraries/Enums/FezType';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
@@ -18,7 +20,8 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const LfgCreateScreen = ({navigation}: Props) => {
-  const fezMutation = useFezMutation();
+  const fezMutation = useFezCreateMutation();
+  const {startDate, cruiseDayToday} = useCruise();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     console.log(values);
@@ -57,11 +60,29 @@ export const LfgCreateScreen = ({navigation}: Props) => {
     );
   };
 
+  const apparentCruiseDate = new Date(startDate);
+  apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
+
+  const initialValues: FezFormValues = {
+    title: '',
+    location: '',
+    fezType: FezType.activity,
+    startDate: apparentCruiseDate.toISOString(),
+    duration: '30',
+    minCapacity: '2',
+    maxCapacity: '2',
+    info: '',
+    startTime: {
+      hours: new Date().getHours() + 1,
+      minutes: 0,
+    },
+  };
+
   return (
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <LfgForm onSubmit={onSubmit} />
+          <LfgForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

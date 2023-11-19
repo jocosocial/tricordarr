@@ -2,14 +2,12 @@ Backlog
 
 
 Work Queue
-* LFG
-  * Actions
-    * Update
 * Events
   * Favorites List
     * Break up by day
   * One-touch "your day" view - event list with filter applied
     * Accessible from the main screen? event FAB?
+  * Add now/soon filters?
 * Nightly
   * chat is leaking requests - each time it adds an extra GET
   * Might need some shared state of lfglist (like the fezlist context in the TwitarrProvider)
