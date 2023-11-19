@@ -157,6 +157,10 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
   return `${formattedTime} ${timeZoneAbbrStr}`;
 };
 
+export const getDayMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+  return getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('dddd MMM Do');
+};
+
 /**
  * Returns a formatted string of the start and end times of an event, factoring in the apparent time zone.
  * In the event we cannot form a formatted string then we return empty string so that clients can

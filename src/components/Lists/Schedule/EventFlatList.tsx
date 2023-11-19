@@ -3,7 +3,12 @@ import React, {Dispatch, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import useDateTime, {calcCruiseDayTime, getTimeMarker, getTimeZoneOffset} from '../../../libraries/DateTime';
+import useDateTime, {
+  calcCruiseDayTime,
+  getDayMarker,
+  getTimeMarker,
+  getTimeZoneOffset
+} from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {EventCard} from '../../Cards/Schedule/EventCard';
@@ -20,7 +25,8 @@ interface SeamailFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<EventData | FezData>>;
   scrollNowIndex: number;
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
+  setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  separateByDay?: boolean;
 }
 
 const getItemMarker = (
@@ -54,7 +60,13 @@ const getItemMarker = (
   }
 };
 
-export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefreshing}: SeamailFlatListProps) => {
+export const EventFlatList = ({
+  scheduleItems,
+  refreshControl,
+  listRef,
+  setRefreshing,
+  separateByDay = false,
+}: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
   const navigation = useEventStackNavigation();
   const {startDate, endDate} = useCruise();
@@ -93,31 +105,63 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
         </>
       );
     },
-    [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, navigation, setRefreshing, startDate],
+    [appConfig.portTimeZoneID, bottomNavigation, endDate, minutelyUpdatingDate, navigation, setRefreshing, startDate],
   );
 
-  const renderListSeparator = ({leadingItem}: {leadingItem: EventData | FezData}) => {
+  const renderSeparatorTime = ({leadingItem}: {leadingItem: EventData | FezData}) => {
     const leadingIndex = scheduleItems.indexOf(leadingItem);
     if (leadingIndex === undefined) {
       return <TimeDivider label={'Leading Unknown?'} />;
     }
     const trailingIndex = leadingIndex + 1;
-    const leadingDate = new Date(scheduleItems[leadingIndex].startTime);
-    const trailingDate = new Date(scheduleItems[trailingIndex].startTime);
+    const trailingItem = scheduleItems[trailingIndex];
+    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZone) {
+      return <SpaceDivider />;
+    }
+    const leadingDate = new Date(leadingItem.startTime);
+    const trailingDate = new Date(trailingItem.startTime);
     const leadingTimeMarker = `${leadingDate.getHours()}:${leadingDate.getMinutes()}`;
     const trailingTimeMarker = `${trailingDate.getHours()}:${trailingDate.getMinutes()}`;
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    const trailingItem = scheduleItems[trailingIndex];
     return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
+  };
+
+  const renderSeparatorDay = ({leadingItem}: {leadingItem: EventData | FezData}) => {
+    const leadingIndex = scheduleItems.indexOf(leadingItem);
+    if (leadingIndex === undefined) {
+      return <TimeDivider label={'Leading Unknown?'} />;
+    }
+    const trailingIndex = leadingIndex + 1;
+    const trailingItem = scheduleItems[trailingIndex];
+    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZone) {
+      return <SpaceDivider />;
+    }
+    const leadingDate = new Date(leadingItem.startTime);
+    const trailingDate = new Date(trailingItem.startTime);
+    const leadingTimeMarker = leadingDate.getDay();
+    const trailingTimeMarker = trailingDate.getDay();
+    if (leadingTimeMarker === trailingTimeMarker) {
+      return <SpaceDivider />;
+    }
+    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
   const renderListHeader = () => {
     if (!scheduleItems[0]) {
       return <TimeDivider label={'No events today'} />;
     }
-    return <TimeDivider label={getTimeMarker(scheduleItems[0].startTime, scheduleItems[0].timeZone)} />;
+    const firstItem = scheduleItems[0];
+    if (!firstItem.startTime || !firstItem.timeZone) {
+      return <SpaceDivider />;
+    }
+
+    let label = getTimeMarker(firstItem.startTime, firstItem.timeZone);
+    if (separateByDay) {
+      label = getDayMarker(firstItem.startTime, firstItem.timeZone);
+    }
+    return <TimeDivider label={label} />;
   };
 
   const renderListFooter = () => <TimeDivider label={'End of Schedule'} />;
@@ -201,7 +245,7 @@ export const EventFlatList = ({scheduleItems, refreshControl, listRef, setRefres
         ...commonStyles.paddingHorizontal,
       }}
       refreshControl={refreshControl}
-      ItemSeparatorComponent={renderListSeparator}
+      ItemSeparatorComponent={separateByDay ? renderSeparatorDay : renderSeparatorTime}
       data={scheduleItems}
       renderItem={renderListItem}
       ListHeaderComponent={renderListHeader}

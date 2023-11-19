@@ -1,5 +1,5 @@
 import {AppView} from '../../Views/AppView';
-import React from 'react';
+import React, {useRef} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
@@ -9,6 +9,9 @@ import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {EventCard} from '../../Cards/Schedule/EventCard';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
+import {FlatList} from 'react-native-gesture-handler';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -19,6 +22,7 @@ export type Props = NativeStackScreenProps<
 export const EventFavoritesScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {data, isFetching, refetch} = useEventFavoriteQuery();
+  const listRef = useRef<FlatList<EventData | FezData>>(null);
 
   if (!data) {
     return <LoadingView />;
@@ -26,19 +30,13 @@ export const EventFavoritesScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        {data.map((eventData, i) => {
-          return (
-            <View key={i} style={[commonStyles.paddingVerticalSmall, commonStyles.paddingHorizontal]}>
-              <EventCard
-                eventData={eventData}
-                showDay={true}
-                onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: eventData.eventID})}
-              />
-            </View>
-          );
-        })}
-      </ScrollingContentView>
+      <EventFlatList
+        scheduleItems={data}
+        listRef={listRef}
+        scrollNowIndex={0}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        separateByDay={true}
+      />
     </AppView>
   );
 };
