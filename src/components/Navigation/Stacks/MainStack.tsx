@@ -12,7 +12,11 @@ import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
-  SiteUIScreen: undefined;
+  SiteUIScreen: {
+    resource?: string;
+    id?: string;
+    timestamp?: string;
+  };
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
   AboutScreen: undefined;
   UserProfileScreen: {

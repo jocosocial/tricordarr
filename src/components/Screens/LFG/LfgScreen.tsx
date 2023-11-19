@@ -4,7 +4,13 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  LfgStackComponents,
+  MainStackComponents,
+  NavigatorIDs,
+  RootStackComponents,
+} from '../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
@@ -32,6 +38,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -50,6 +57,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
+  const rootStackNavigation = useRootStack();
 
   const styles = StyleSheet.create({
     item: {
@@ -185,14 +193,34 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.map)}
                   description={fez.location}
                   title={'Location'}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/map`)}
+                  onPress={() =>
+                    rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+                      screen: BottomTabComponents.homeTab,
+                      params: {
+                        screen: MainStackComponents.siteUIScreen,
+                        params: {
+                          resource: 'map',
+                        },
+                      },
+                    })
+                  }
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.user)}
                   description={UserHeader.getByline(fez.owner)}
                   title={'Owner'}
-                  onPress={() => Linking.openURL(`tricordarr://user/${fez.owner.userID}`)}
+                  onPress={() =>
+                    rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+                      screen: BottomTabComponents.homeTab,
+                      params: {
+                        screen: MainStackComponents.userProfileScreen,
+                        params: {
+                          userID: fez.owner.userID,
+                        },
+                      },
+                    })
+                  }
                 />
                 {fez.members && (
                   <DataFieldListItem
