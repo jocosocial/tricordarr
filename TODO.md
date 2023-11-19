@@ -9,3 +9,5 @@ Work Queue
 * User Profile
   * Private Note
   * Picture
+  * moderate user profile via siteUI
+  * maybe find a pattern for doing navigation in modals

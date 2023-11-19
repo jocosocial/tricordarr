@@ -13,6 +13,7 @@ import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
+import {UserRegCodeModalView} from '../Views/Modals/UserRegCodeModalView';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -63,10 +64,14 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       );
     }
   };
-  const handleRegCode = () => console.log('Navigating to reg code');
   const handleModal = (content: ReactNode) => {
     closeMenu();
     setModalContent(content);
+    setModalVisible(true);
+  };
+  const handleRegCode = () => {
+    closeMenu();
+    setModalContent(<UserRegCodeModalView userID={profile.header.userID} />);
     setModalVisible(true);
   };
 

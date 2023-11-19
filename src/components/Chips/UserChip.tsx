@@ -8,16 +8,17 @@ type UserChipProps = {
   onClose?: () => void;
   disabled?: boolean;
   userHeader: UserHeader;
+  onPress?: () => void;
 };
 
-export const UserChip = ({userHeader, onClose, disabled}: UserChipProps) => {
+export const UserChip = ({userHeader, onClose, disabled, onPress}: UserChipProps) => {
   const {commonStyles} = useStyles();
   const styles = [commonStyles.marginRightSmall, commonStyles.marginBottomSmall];
 
   const getAvatar = () => <UserAvatarImage userID={userHeader.userID} />;
 
   return (
-    <Chip style={styles} icon={getAvatar} disabled={disabled} onClose={onClose}>
+    <Chip style={styles} icon={getAvatar} disabled={disabled} onClose={onClose} onPress={onPress}>
       {userHeader.username}
     </Chip>
   );
