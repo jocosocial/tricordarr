@@ -54,11 +54,12 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
     });
     closeNotificationSocket();
     closeFezSocket();
-    signOut();
-    clearPrivileges();
-    setModalVisible(false);
-    setLoading(false);
-    settingsNavigation.goBack();
+    signOut().then(() => {
+      clearPrivileges();
+      setModalVisible(false);
+      setLoading(false);
+      settingsNavigation.goBack();
+    });
   };
 
   const logoutDevice = () => {

@@ -8,7 +8,7 @@ import {
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
-import {SeamailStackParamList, useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
@@ -65,15 +65,6 @@ export const UserProfileScreen = ({route}: Props) => {
   const seamailCreateHandler = useCallback(() => {
     navigation.navigate(BottomTabComponents.seamailTab, {
       screen: SeamailStackScreenComponents.seamailCreateScreen,
-      params: {
-        initialUserHeader: data?.header,
-      },
-    });
-  }, [data?.header, navigation]);
-
-  const krakentalkCreateHandler = useCallback(() => {
-    navigation.navigate(BottomTabComponents.seamailTab, {
-      screen: SeamailStackScreenComponents.krakentalkCreateScreen,
       params: {
         initialUserHeader: data?.header,
       },

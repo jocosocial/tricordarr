@@ -13,4 +13,3 @@ Work Queue
   * Add an oobe bypass secret switchFilter now and soon events
   * Common open query function to hook into disable or not logged in
   * your next lfg card on main screen - consider combining this with the next event card?
-  * drawer menu on your user profile and directory
