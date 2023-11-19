@@ -40,23 +40,26 @@ export const EventSearchBar = () => {
     }
   }, [data]);
 
+  const getFooter = () => <TimeDivider label={eventList.length === 0 ? 'No results' : 'End of Results'} />;
+  const getHeader = () => (
+    <>
+      <Searchbar
+        placeholder={'Search for events'}
+        onIconPress={onSearch}
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onSubmitEditing={onSearch}
+        onClearIconPress={onClear}
+        style={[commonStyles.marginVerticalSmall]}
+      />
+      {eventList.length > 0 && <TimeDivider label={getDayMarker(eventList[0].startTime, eventList[0].timeZone)} />}
+    </>
+  );
+
   return (
     <EventFlatList
-      listFooter={<TimeDivider label={'End of Results'} />}
-      listHeader={
-        <>
-          <Searchbar
-            placeholder={'Search for events'}
-            onIconPress={onSearch}
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            onSubmitEditing={onSearch}
-            onClearIconPress={onClear}
-            style={[commonStyles.marginVerticalSmall]}
-          />
-          {eventList.length > 0 && <TimeDivider label={getDayMarker(eventList[0].startTime, eventList[0].timeZone)} />}
-        </>
-      }
+      listFooter={getFooter}
+      listHeader={getHeader}
       scheduleItems={eventList}
       listRef={listRef}
       scrollNowIndex={0}

@@ -1,5 +1,5 @@
 import {FlatList, RefreshControlProps} from 'react-native';
-import React, {Dispatch, ReactNode, SetStateAction, useCallback} from 'react';
+import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -27,8 +27,8 @@ interface SeamailFlatListProps {
   scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   separator: 'day' | 'time' | 'none';
-  listHeader?: ReactNode;
-  listFooter?: ReactNode;
+  listHeader?: () => ReactElement;
+  listFooter?: () => ReactElement;
 }
 
 const getItemMarker = (
