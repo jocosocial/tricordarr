@@ -49,18 +49,21 @@ export const ScheduleLfgFilterMenu = () => {
   );
 
   const activeStyle: ViewStyle = {backgroundColor: theme.colors.surfaceVariant};
+  const filterableFezTypes = [
+    FezType.activity,
+    FezType.dining,
+    FezType.gaming,
+    FezType.meetup,
+    FezType.music,
+    FezType.other,
+    FezType.shore,
+  ];
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <Menu.Item title={'Hide Past'} onPress={handleHidePast} style={lfgHidePastFilter ? activeStyle : undefined} />
       <Divider bold={true} />
-      {Object.keys(FezType).map(fezType => {
-        if (
-          FezType[fezType as keyof typeof FezType] === FezType.open ||
-          FezType[fezType as keyof typeof FezType] === FezType.closed
-        ) {
-          return;
-        }
+      {filterableFezTypes.map(fezType => {
         const itemStyle = lfgTypeFilter === fezType ? activeStyle : undefined;
         return (
           <Menu.Item
