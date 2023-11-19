@@ -1,23 +1,19 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {View} from 'react-native';
-import {Searchbar, Text} from 'react-native-paper';
-import {ListSection} from '../Lists/ListSection';
+import React, {useEffect, useRef, useState} from 'react';
+import {RefreshControl} from 'react-native';
+import {Searchbar} from 'react-native-paper';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {EventData} from '../../libraries/Structs/ControllerStructs';
-import {EventCard} from '../Cards/Schedule/EventCard';
-import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../libraries/Enums/Navigation';
+import {EventData, FezData} from '../../libraries/Structs/ControllerStructs';
+import {EventFlatList} from '../Lists/Schedule/EventFlatList';
+import {FlatList} from 'react-native-gesture-handler';
+import {TimeDivider} from '../Lists/Dividers/TimeDivider';
+import {getDayMarker} from '../../libraries/DateTime';
 
-interface EventSearchBarProps {
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-}
-
-export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
+export const EventSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
-  const {data, refetch, isFetching, isFetched} = useEventsQuery({
+  const {data, refetch, isFetching} = useEventsQuery({
     search: searchQuery,
     options: {
       enabled: false,
@@ -25,10 +21,9 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
   });
   const {commonStyles} = useStyles();
   const [eventList, setEventList] = useState<EventData[]>([]);
-  const navigation = useEventStackNavigation();
+  const listRef = useRef<FlatList<EventData | FezData>>(null);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
-
   const onClear = () => setEventList([]);
 
   const onSearch = () => {
@@ -45,37 +40,28 @@ export const EventSearchBar = ({setIsLoading}: EventSearchBarProps) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    setIsLoading(isFetching);
-  }, [isFetching, setIsLoading]);
-
   return (
-    <View>
-      <Searchbar
-        placeholder={'Search for events'}
-        onIconPress={onSearch}
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        onSubmitEditing={onSearch}
-        onClearIconPress={onClear}
-        style={[commonStyles.marginBottomSmall]}
-      />
-      <ListSection>
-        {isFetched && eventList.length === 0 && (
-          <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
-            <Text>No Results</Text>
-          </View>
-        )}
-        {eventList.map((item, i) => (
-          <View key={i} style={[commonStyles.paddingVerticalSmall]}>
-            <EventCard
-              eventData={item}
-              showDay={true}
-              onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: item.eventID})}
-            />
-          </View>
-        ))}
-      </ListSection>
-    </View>
+    <EventFlatList
+      listFooter={<TimeDivider label={'End of Results'} />}
+      listHeader={
+        <>
+          <Searchbar
+            placeholder={'Search for events'}
+            onIconPress={onSearch}
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            onSubmitEditing={onSearch}
+            onClearIconPress={onClear}
+            style={[commonStyles.marginVerticalSmall]}
+          />
+          {eventList.length > 0 && <TimeDivider label={getDayMarker(eventList[0].startTime, eventList[0].timeZone)} />}
+        </>
+      }
+      scheduleItems={eventList}
+      listRef={listRef}
+      scrollNowIndex={0}
+      refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
+      separator={'day'}
+    />
   );
 };

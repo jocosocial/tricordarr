@@ -31,7 +31,7 @@ export const EventFavoritesScreen = () => {
         listRef={listRef}
         scrollNowIndex={0}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-        separateByDay={true}
+        separator={'day'}
       />
     </AppView>
   );

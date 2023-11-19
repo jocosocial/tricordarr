@@ -1,5 +1,5 @@
 import {FlatList, RefreshControlProps} from 'react-native';
-import React, {Dispatch, SetStateAction, useCallback} from 'react';
+import React, {Dispatch, ReactNode, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -26,7 +26,9 @@ interface SeamailFlatListProps {
   listRef: React.RefObject<FlatList<EventData | FezData>>;
   scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
-  separateByDay?: boolean;
+  separator: 'day' | 'time' | 'none';
+  listHeader?: ReactNode;
+  listFooter?: ReactNode;
 }
 
 const getItemMarker = (
@@ -65,7 +67,9 @@ export const EventFlatList = ({
   refreshControl,
   listRef,
   setRefreshing,
-  separateByDay = false,
+  listHeader,
+  listFooter,
+  separator = 'time',
 }: SeamailFlatListProps) => {
   const {commonStyles} = useStyles();
   const navigation = useEventStackNavigation();
@@ -148,6 +152,8 @@ export const EventFlatList = ({
     return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZone)} />;
   };
 
+  const renderSeparatorNone = () => <SpaceDivider />;
+
   const renderListHeader = () => {
     if (!scheduleItems[0]) {
       return <TimeDivider label={'No events today'} />;
@@ -158,7 +164,7 @@ export const EventFlatList = ({
     }
 
     let label = getTimeMarker(firstItem.startTime, firstItem.timeZone);
-    if (separateByDay) {
+    if (separator === 'day') {
       label = getDayMarker(firstItem.startTime, firstItem.timeZone);
     }
     return <TimeDivider label={label} />;
@@ -239,17 +245,26 @@ export const EventFlatList = ({
   // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
   console.log('EventFlatList is rendering');
 
+  let ItemSeparatorComponent = renderSeparatorTime;
+  switch (separator) {
+    case 'day':
+      ItemSeparatorComponent = renderSeparatorDay;
+      break;
+    case 'none':
+      ItemSeparatorComponent = renderSeparatorNone;
+  }
+
   return (
     <FlatList
       style={{
         ...commonStyles.paddingHorizontal,
       }}
       refreshControl={refreshControl}
-      ItemSeparatorComponent={separateByDay ? renderSeparatorDay : renderSeparatorTime}
+      ItemSeparatorComponent={ItemSeparatorComponent}
       data={scheduleItems}
       renderItem={renderListItem}
-      ListHeaderComponent={renderListHeader}
-      ListFooterComponent={renderListFooter}
+      ListHeaderComponent={listHeader || renderListHeader}
+      ListFooterComponent={listFooter || renderListFooter}
       // @TODO for some reason enabling initialScrollIndex and the function cause the list to be 1 element
       // and show no more. I don't particularly care anymore.
       // initialScrollIndex={getInitialScrollIndex()}
