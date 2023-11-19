@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
@@ -15,6 +15,7 @@ import {FormikHelpers} from 'formik';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries';
 import {HttpStatusCode} from 'axios';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
+import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeaderTitle';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
 
@@ -27,6 +28,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const {setErrorMessage} = useErrorHandler();
   const {data: serverHealthData, refetch} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
+  const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
 
   const onSave = (values: SettingFormValues, formikHelpers: FormikHelpers<SettingFormValues>) => {
     try {
@@ -47,6 +49,12 @@ export const OobeServerScreen = ({navigation}: Props) => {
       setServerHealthPassed(false);
     }
   }, [serverHealthData]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: getHeaderTitle,
+    });
+  }, [getHeaderTitle, navigation]);
 
   return (
     <AppView>
