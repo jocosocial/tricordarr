@@ -16,6 +16,7 @@ export type MainStackParamList = {
     resource?: string;
     id?: string;
     timestamp?: string;
+    moderate?: boolean;
   };
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
   AboutScreen: undefined;

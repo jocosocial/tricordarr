@@ -75,6 +75,10 @@ export const TwitarrView = ({route, navigation}: Props) => {
     const loadSettings = async () => {
       let newUrl = appConfig.serverUrl;
 
+      if (route.params.moderate) {
+        newUrl += '/moderate';
+      }
+
       if (route?.params?.resource) {
         newUrl += `/${route.params.resource}`;
 

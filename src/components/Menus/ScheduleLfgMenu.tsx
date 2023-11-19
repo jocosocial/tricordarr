@@ -3,7 +3,12 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents, LfgStackComponents} from '../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  EventStackComponents,
+  LfgStackComponents, MainStackComponents,
+  RootStackComponents
+} from '../../libraries/Enums/Navigation';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
@@ -11,6 +16,7 @@ import {useModal} from '../Context/Contexts/ModalContext';
 import {LfgCancelModal} from '../Views/Modals/LfgCancelModal';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useLFGStackNavigation} from '../Navigation/Stacks/LFGStackNavigator';
+import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
@@ -18,6 +24,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {profilePublicData} = useUserData();
+  const rootStackNavigation = useRootStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -55,8 +62,17 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
           leadingIcon={AppIcons.moderator}
           title={'Moderate'}
           onPress={() => {
-            console.warn('@TODO');
-            // Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderate/fez/${fezData.fezID}`);
+            rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+              screen: BottomTabComponents.homeTab,
+              params: {
+                screen: MainStackComponents.siteUIScreen,
+                params: {
+                  resource: 'fez',
+                  id: fezData.fezID,
+                  moderate: true,
+                },
+              },
+            });
             closeMenu();
           }}
         />
