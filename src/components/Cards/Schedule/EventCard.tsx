@@ -11,6 +11,7 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
 
 interface EventCardProps {
   eventData: EventData;
@@ -38,6 +39,7 @@ export const EventCard = ({
   const {setErrorMessage} = useErrorHandler();
   const {dispatchScheduleList} = useTwitarr();
   const {refetchUserNotificationData} = useUserNotificationData();
+  const {data: favoritesData, refetch: refetchFavorites} = useEventFavoriteQuery({enabled: false});
 
   const getFavorite = () => {
     if (eventData.isFavorite && !hideFavorite) {
@@ -69,6 +71,10 @@ export const EventCard = ({
           }
           // Update the user notification data in case this was/is a favorite.
           refetchUserNotificationData();
+          // Update favorites
+          if (favoritesData !== undefined) {
+            refetchFavorites();
+          }
         },
       },
     );

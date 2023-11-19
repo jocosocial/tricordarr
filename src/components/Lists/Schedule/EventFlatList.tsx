@@ -7,7 +7,7 @@ import useDateTime, {
   calcCruiseDayTime,
   getDayMarker,
   getTimeMarker,
-  getTimeZoneOffset
+  getTimeZoneOffset,
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';

@@ -3,11 +3,8 @@ import React, {useRef} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {EventCard} from '../../Cards/Schedule/EventCard';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {FlatList} from 'react-native-gesture-handler';
@@ -19,8 +16,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.eventStack
 >;
 
-export const EventFavoritesScreen = ({navigation}: Props) => {
-  const {commonStyles} = useStyles();
+export const EventFavoritesScreen = () => {
   const {data, isFetching, refetch} = useEventFavoriteQuery();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
 

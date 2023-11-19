@@ -37,6 +37,10 @@ export const useEventQuery = ({eventID}: {eventID: string}) => {
   return useQuery<EventData>([`/events/${eventID}`]);
 };
 
-export const useEventFavoriteQuery = () => {
-  return useQuery<EventData[]>(['/events/favorites']);
+interface EventFavoriteQueryProps {
+  enabled?: boolean;
+}
+
+export const useEventFavoriteQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
+  return useQuery<EventData[]>(['/events/favorites'], {enabled: enabled});
 };
