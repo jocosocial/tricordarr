@@ -16,6 +16,7 @@ export interface PrivilegeContextType {
   hasModerator: boolean;
   hasTwitarrTeam: boolean;
   hasTHO: boolean;
+  hasVerified: boolean;
 }
 
 export const PrivilegeContext = createContext(<PrivilegeContextType>{});

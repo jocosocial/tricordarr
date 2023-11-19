@@ -12,6 +12,7 @@ import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
 import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
+import {startForegroundServiceWorker} from '../../../../libraries/Service';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
@@ -24,9 +25,7 @@ export const LoginScreen = () => {
       loginMutation.mutate(formValues, {
         onSuccess: response => {
           signIn(response.data).then(() => {
-            // Triggering NetInfo here can tell the other providers
-            // that we may need to start the Foreground Service Worker.
-            NetInfo.refresh();
+            startForegroundServiceWorker();
             navigation.goBack();
           });
         },

@@ -38,21 +38,39 @@ export type Props = NativeStackScreenProps<
 
 export const EventDayScreen = ({navigation, route}: Props) => {
   const {eventTypeFilter, eventFavoriteFilter} = useScheduleFilter();
+  const {isLoggedIn} = useAuth();
   const {
     data: eventData,
     isLoading: isEventLoading,
     refetch: refetchEvents,
-  } = useEventsQuery({cruiseDay: route.params.cruiseDay});
+  } = useEventsQuery({
+    cruiseDay: route.params.cruiseDay,
+    options: {
+      enabled: isLoggedIn,
+    },
+  });
   const {
     data: lfgOpenData,
     isLoading: isLfgOpenLoading,
     refetch: refetchLfgOpen,
-  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'open'});
+  } = useLfgListQuery({
+    cruiseDay: route.params.cruiseDay - 1,
+    endpoint: 'open',
+    options: {
+      enabled: isLoggedIn,
+    },
+  });
   const {
     data: lfgJoinedData,
     isLoading: isLfgJoinedLoading,
     refetch: refetchLfgJoined,
-  } = useLfgListQuery({cruiseDay: route.params.cruiseDay - 1, endpoint: 'joined'});
+  } = useLfgListQuery({
+    cruiseDay: route.params.cruiseDay - 1,
+    endpoint: 'joined',
+    options: {
+      enabled: isLoggedIn,
+    },
+  });
 
   const {commonStyles} = useStyles();
   const {startDate, endDate} = useCruise();
@@ -62,7 +80,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {scheduleList, dispatchScheduleList} = useTwitarr();
   const {appConfig} = useConfig();
-  const {isLoggedIn} = useAuth();
 
   const getScrollIndex = useCallback(
     (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {

@@ -31,6 +31,8 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
+import {useAuth} from '../../Context/Contexts/AuthContext';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList | MainStackParamList,
@@ -47,6 +49,7 @@ export const UserProfileScreen = ({route}: Props) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
   const navigation = useBottomTabNavigator();
+  const {isLoggedIn} = useAuth();
 
   const {data, refetch} = useUserProfileQuery(route.params.userID);
 
@@ -78,6 +81,9 @@ export const UserProfileScreen = ({route}: Props) => {
   }, [data?.header, navigation]);
 
   const getNavButtons = useCallback(() => {
+    if (!isLoggedIn) {
+      return <></>;
+    }
     if (data?.header.userID === profilePublicData?.header.userID) {
       // Maybe have an edit button?
       return (
@@ -98,7 +104,7 @@ export const UserProfileScreen = ({route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [data, isBlocked, isFavorite, isMuted, krakentalkCreateHandler, profilePublicData, seamailCreateHandler]);
+  }, [data, isBlocked, isFavorite, isLoggedIn, isMuted, profilePublicData?.header.userID, seamailCreateHandler]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -131,6 +137,10 @@ export const UserProfileScreen = ({route}: Props) => {
     listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],
     button: [commonStyles.marginHorizontalSmall],
   };
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   if (!data) {
     return <LoadingView />;

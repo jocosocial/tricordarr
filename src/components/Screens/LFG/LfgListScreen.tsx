@@ -30,6 +30,7 @@ interface LfgJoinedScreenProps {
 
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
+  const {isLoggedIn} = useAuth();
   const {data, isFetched, isFetching, refetch} = useLfgListQuery({
     endpoint: endpoint,
     excludeFezType: [FezType.open, FezType.closed],
@@ -37,13 +38,15 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
+    options: {
+      enabled: isLoggedIn,
+    },
   });
   const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {setFez} = useTwitarr();
   const {closeFezSocket} = useSocket();
-  const {isLoggedIn} = useAuth();
 
   let lfgList: FezData[] = [];
   data?.pages.map(page => {

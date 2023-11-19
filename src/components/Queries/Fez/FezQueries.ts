@@ -130,6 +130,7 @@ interface LfgListQueryOptions {
   hidePast?: boolean;
   endpoint?: 'open' | 'joined' | 'owner';
   excludeFezType?: FezType[];
+  options?: {};
 }
 
 export const useLfgListQuery = ({
@@ -139,6 +140,7 @@ export const useLfgListQuery = ({
   hidePast = false,
   pageSize = 50,
   endpoint = 'open',
+  options = {},
 }: LfgListQueryOptions) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
@@ -166,6 +168,7 @@ export const useLfgListQuery = ({
       onError: error => {
         setErrorMessage(error?.response?.data.reason);
       },
+      ...options,
     },
   );
 };

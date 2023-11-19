@@ -99,19 +99,19 @@ function App(): JSX.Element {
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <QueryClientProvider client={queryClient}>
           <StyleProvider>
-            <TwitarrProvider>
-              <ModalProvider>
-                <Portal.Host>
-                  <HeaderButtonsProvider stackType={'native'}>
-                    <ConfigProvider>
-                      <CruiseProvider>
-                        <ErrorHandlerProvider>
-                          <AuthProvider>
-                            <UserDataProvider>
-                              <PrivilegeProvider>
-                                <SocketProvider>
-                                  <UserRelationsProvider>
-                                    <UserNotificationDataProvider>
+            <ErrorHandlerProvider>
+              <ConfigProvider>
+                <AuthProvider>
+                  <UserDataProvider>
+                    <PrivilegeProvider>
+                      <SocketProvider>
+                        <TwitarrProvider>
+                          <UserNotificationDataProvider>
+                            <ModalProvider>
+                              <Portal.Host>
+                                <HeaderButtonsProvider stackType={'native'}>
+                                  <CruiseProvider>
+                                    <UserRelationsProvider>
                                       <DrawerProvider>
                                         <ScheduleFilterProvider>
                                           <AppEventHandler />
@@ -120,19 +120,19 @@ function App(): JSX.Element {
                                           <RootStackNavigator />
                                         </ScheduleFilterProvider>
                                       </DrawerProvider>
-                                    </UserNotificationDataProvider>
-                                  </UserRelationsProvider>
-                                </SocketProvider>
-                              </PrivilegeProvider>
-                            </UserDataProvider>
-                          </AuthProvider>
-                        </ErrorHandlerProvider>
-                      </CruiseProvider>
-                    </ConfigProvider>
-                  </HeaderButtonsProvider>
-                </Portal.Host>
-              </ModalProvider>
-            </TwitarrProvider>
+                                    </UserRelationsProvider>
+                                  </CruiseProvider>
+                                </HeaderButtonsProvider>
+                              </Portal.Host>
+                            </ModalProvider>
+                          </UserNotificationDataProvider>
+                        </TwitarrProvider>
+                      </SocketProvider>
+                    </PrivilegeProvider>
+                  </UserDataProvider>
+                </AuthProvider>
+              </ConfigProvider>
+            </ErrorHandlerProvider>
           </StyleProvider>
         </QueryClientProvider>
       </PaperProvider>

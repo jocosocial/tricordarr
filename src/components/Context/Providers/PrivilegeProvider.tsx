@@ -15,6 +15,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [hasModerator, setHasModerator] = useState(false);
   const [hasTwitarrTeam, setHasTwitarrTeam] = useState(false);
   const [hasTHO, setHasTHO] = useState(false);
+  const [hasVerified, setHasVerified] = useState(false);
   const {tokenData} = useAuth();
   const accessLevel = tokenData?.accessLevel || UserAccessLevel.unverified;
 
@@ -27,6 +28,9 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
     }
     if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.tho)) {
       setHasTHO(true);
+    }
+    if (UserAccessLevel.hasAccess(accessLevel, UserAccessLevel.verified)) {
+      setHasVerified(true);
     }
   }, [accessLevel]);
 
@@ -93,6 +97,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         hasModerator,
         hasTHO,
         hasTwitarrTeam,
+        hasVerified,
       }}>
       {children}
     </PrivilegeContext.Provider>

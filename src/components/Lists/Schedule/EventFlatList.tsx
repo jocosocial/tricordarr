@@ -26,7 +26,7 @@ interface SeamailFlatListProps {
   listRef: React.RefObject<FlatList<EventData | FezData>>;
   scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
-  separator: 'day' | 'time' | 'none';
+  separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
   listFooter?: ReactElement;
 }
