@@ -453,3 +453,24 @@ export interface EventData {
   /// Whether user has favorited event.
   isFavorite: boolean;
 }
+
+export interface UserProfileUploadData {
+  /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
+  header?: UserHeader;
+  /// The displayName, again. Will be equal to header.displayName in results. When POSTing, set this field to update displayName.
+  displayName: string;
+  /// An optional real name of the user.
+  realName: string;
+  /// An optional preferred form of address.
+  preferredPronoun: string;
+  /// An optional home location (e.g. city).
+  homeLocation: string;
+  /// An optional ship cabin number.
+  roomNumber: string;
+  /// An optional email address.
+  email: string;
+  /// An optional short greeting/message to visitors of the profile.
+  message: string;
+  /// An optional blurb about the user.
+  about: string;
+}

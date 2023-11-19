@@ -9,6 +9,8 @@ import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
+import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
+import {EditUserProfileScreen} from '../../Screens/User/EditUserProfileScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -24,6 +26,9 @@ export type MainStackParamList = {
     userID: string;
   };
   UserDirectoryScreen: undefined;
+  EditUserProfileScreen: {
+    user: ProfilePublicData;
+  };
 };
 
 export const MainStack = () => {
@@ -49,14 +54,19 @@ export const MainStack = () => {
         options={{title: 'About Tricordarr'}}
       />
       <Stack.Screen
+        name={MainStackComponents.userDirectoryScreen}
+        component={UserDirectoryScreen}
+        options={{title: 'Directory'}}
+      />
+      <Stack.Screen
         name={MainStackComponents.userProfileScreen}
         component={UserProfileScreen}
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
-        name={MainStackComponents.userDirectoryScreen}
-        component={UserDirectoryScreen}
-        options={{title: 'Directory'}}
+        name={MainStackComponents.editUserProfileScreen}
+        component={EditUserProfileScreen}
+        options={{title: 'Edit Profile'}}
       />
     </Stack.Navigator>
   );

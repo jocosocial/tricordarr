@@ -75,12 +75,23 @@ export const UserProfileScreen = ({route}: Props) => {
     if (!isLoggedIn) {
       return <></>;
     }
-    if (data?.header.userID === profilePublicData?.header.userID) {
+    if (data && data?.header.userID === profilePublicData?.header.userID) {
       // Maybe have an edit button?
       return (
         <View>
           <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit profile!')} />
+            <Item
+              title={'Edit'}
+              iconName={AppIcons.edituser}
+              onPress={() =>
+                navigation.navigate(BottomTabComponents.homeTab, {
+                  screen: MainStackComponents.editUserProfileScreen,
+                  params: {
+                    user: data,
+                  },
+                })
+              }
+            />
           </HeaderButtons>
         </View>
       );

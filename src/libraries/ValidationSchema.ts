@@ -29,3 +29,7 @@ export const NumberValidation = Yup.string()
 export const FezTypeValidation = Yup.string().oneOf(Object.values(FezType), 'Invalid type selected');
 
 export const DateValidation = Yup.date().required('Date is required');
+
+export const EmailValidation = Yup.string().email();
+
+export const RoomNumberValidation = Yup.string().optional().min(4, 'If specified, must be minimum 4 characters');

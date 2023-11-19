@@ -16,6 +16,17 @@ export interface UserRegistrationFormValues {
   verification: string;
 }
 
+export interface UserProfileFormValues {
+  displayName: string;
+  realName: string;
+  preferredPronoun: string;
+  homeLocation: string;
+  roomNumber: string;
+  email: string;
+  message: string;
+  about: string;
+}
+
 export interface KeywordFormValues {
   keyword: string;
 }
