@@ -17,6 +17,10 @@
     But just to be safe I'm doing it here too.
     -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <!--
+    Camera permission for taking pictures to upload to the service. Is non-essential.
+    -->
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:usesCleartextTraffic="true"

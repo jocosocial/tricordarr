@@ -6,5 +6,4 @@ Work Queue
 * Nightly
 * User Profile
   * Picture
-  * take picture
-  * camera permission
+    * View

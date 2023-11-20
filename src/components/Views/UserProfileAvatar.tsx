@@ -11,6 +11,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -49,6 +50,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const takeImage = async () => {
+    const permissionStatus = await requestPermission(PERMISSIONS.ANDROID.CAMERA);
+    console.log(permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,
