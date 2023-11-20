@@ -5,11 +5,11 @@ import {useQuery} from '@tanstack/react-query';
 /**
  * Handler for retrieving images.
  */
-export const useImageQuery = (path: string) => {
+export const useImageQuery = (path: string, enabled: boolean = true) => {
   const {isLoggedIn} = useAuth();
   return useQuery({
     queryKey: [path],
-    enabled: isLoggedIn && !!path,
+    enabled: enabled && isLoggedIn && !!path,
     queryFn: apiQueryImageUri,
   });
 };

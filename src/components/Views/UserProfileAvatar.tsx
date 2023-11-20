@@ -95,10 +95,6 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     );
   };
 
-  const onTouch = () => {
-    avatarQuery.refetch();
-  };
-
   useEffect(() => {
     setRefreshing(avatarMutation.isLoading || avatarQuery.isRefetching || userProfileQuery.isRefetching);
   }, [avatarMutation.isLoading, avatarQuery.isRefetching, setRefreshing, userProfileQuery.isRefetching]);
@@ -107,9 +103,11 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   return (
     <View>
-      <TouchableOpacity onPress={onTouch}>
-        <AppImage style={styles.image} path={`/image/user/thumb/${user.header.userID}`} />
-      </TouchableOpacity>
+      <AppImage
+        style={styles.image}
+        path={`/image/user/thumb/${user.header.userID}`}
+        fullPath={`/image/user/full/${user.header.userID}`}
+      />
       {isSelf && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
           <IconButton icon={AppIcons.newImage} onPress={pickImage} />
