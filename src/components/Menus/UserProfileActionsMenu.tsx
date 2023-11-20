@@ -14,6 +14,8 @@ import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
 import {UserRegCodeModalView} from '../Views/Modals/UserRegCodeModalView';
+import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -30,11 +32,24 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const favoriteMutation = useUserFavoriteMutation();
   const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const rootNavigation = useRootStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const handleModerate = () => console.log('Navigating to moderate user', profile.header.username);
+  const handleModerate = () => {
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.siteUIScreen,
+        params: {
+          resource: 'userprofile',
+          id: profile.header.userID,
+          moderate: true,
+        },
+      },
+    });
+  };
   const handleFavorite = () => {
     if (isFavorite) {
       favoriteMutation.mutate(
