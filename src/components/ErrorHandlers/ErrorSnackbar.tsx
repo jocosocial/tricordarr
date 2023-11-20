@@ -23,6 +23,7 @@ export const ErrorSnackbar = ({actionLabel = 'Close'}: ErrorSnackbarProps) => {
 
   return (
     <Snackbar
+      style={{marginBottom: 100}}
       visible={!!errorMessage}
       onDismiss={onDismissSnackBar}
       action={{

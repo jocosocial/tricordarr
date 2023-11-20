@@ -4,7 +4,5 @@ Backlog
 
 Work Queue
 * Nightly
-  * Common open query function to hook into disable or not logged in
-  * Snackbar now renders over bottomtabs - less ideal
 * User Profile
   * Picture
