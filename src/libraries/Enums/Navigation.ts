@@ -1,3 +1,5 @@
+import {UserPrivateNoteScreen} from '../../components/Screens/User/UserPrivateNoteScreen';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -62,6 +64,7 @@ export enum MainStackComponents {
   userProfileScreen = 'UserProfileScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
   editUserProfileScreen = 'EditUserProfileScreen',
+  userPrivateNoteScreen = 'UserPrivateNoteScreen',
 }
 
 export enum RootStackComponents {

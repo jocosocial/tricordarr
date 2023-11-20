@@ -89,6 +89,18 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
     setModalContent(<UserRegCodeModalView userID={profile.header.userID} />);
     setModalVisible(true);
   };
+  const handleNote = () => {
+    closeMenu();
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.userPrivateNoteScreen,
+        params: {
+          user: profile,
+        },
+      },
+    });
+  };
 
   return (
     <Menu
@@ -100,7 +112,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
         title={isFavorite ? 'Unfavorite' : 'Favorite'}
         onPress={handleFavorite}
       />
-      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Add Private Note'} />
+      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}

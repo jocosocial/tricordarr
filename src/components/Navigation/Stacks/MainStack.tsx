@@ -11,6 +11,7 @@ import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../../Screens/User/EditUserProfileScreen';
+import {UserPrivateNoteScreen} from '../../Screens/User/UserPrivateNoteScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -27,6 +28,9 @@ export type MainStackParamList = {
   };
   UserDirectoryScreen: undefined;
   EditUserProfileScreen: {
+    user: ProfilePublicData;
+  };
+  UserPrivateNoteScreen: {
     user: ProfilePublicData;
   };
 };
@@ -67,6 +71,11 @@ export const MainStack = () => {
         name={MainStackComponents.editUserProfileScreen}
         component={EditUserProfileScreen}
         options={{title: 'Edit Profile'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.userPrivateNoteScreen}
+        component={UserPrivateNoteScreen}
+        options={{title: 'Private Note'}}
       />
     </Stack.Navigator>
   );

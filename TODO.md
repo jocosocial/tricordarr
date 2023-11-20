@@ -7,5 +7,5 @@ Work Queue
   * Common open query function to hook into disable or not logged in
   * Snackbar now renders over bottomtabs - less ideal
 * User Profile
-  * Private Note
   * Picture
+  * only main stack - remove seamailstack ref

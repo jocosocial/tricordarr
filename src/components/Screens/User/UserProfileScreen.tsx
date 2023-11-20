@@ -33,6 +33,7 @@ import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList | MainStackParamList,
@@ -40,7 +41,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.seamailStack | NavigatorIDs.mainStack
 >;
 
-export const UserProfileScreen = ({route}: Props) => {
+export const UserProfileScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -48,7 +49,7 @@ export const UserProfileScreen = ({route}: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
-  const navigation = useBottomTabNavigator();
+  const bottomNavigation = useBottomTabNavigator();
   const {isLoggedIn} = useAuth();
 
   const {data, refetch} = useUserProfileQuery(route.params.userID);
@@ -63,13 +64,13 @@ export const UserProfileScreen = ({route}: Props) => {
   }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
 
   const seamailCreateHandler = useCallback(() => {
-    navigation.navigate(BottomTabComponents.seamailTab, {
+    bottomNavigation.navigate(BottomTabComponents.seamailTab, {
       screen: SeamailStackScreenComponents.seamailCreateScreen,
       params: {
         initialUserHeader: data?.header,
       },
     });
-  }, [data?.header, navigation]);
+  }, [data?.header, bottomNavigation]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -84,7 +85,7 @@ export const UserProfileScreen = ({route}: Props) => {
               title={'Edit'}
               iconName={AppIcons.edituser}
               onPress={() =>
-                navigation.navigate(BottomTabComponents.homeTab, {
+                bottomNavigation.navigate(BottomTabComponents.homeTab, {
                   screen: MainStackComponents.editUserProfileScreen,
                   params: {
                     user: data,
@@ -106,10 +107,19 @@ export const UserProfileScreen = ({route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [data, isBlocked, isFavorite, isLoggedIn, isMuted, profilePublicData?.header.userID, seamailCreateHandler]);
+  }, [
+    bottomNavigation,
+    data,
+    isBlocked,
+    isFavorite,
+    isLoggedIn,
+    isMuted,
+    profilePublicData?.header.userID,
+    seamailCreateHandler,
+  ]);
 
   useEffect(() => {
-    navigation.setOptions({
+    bottomNavigation.setOptions({
       headerRight: getNavButtons,
     });
     // Reset the mute/block state before re-determining.
@@ -132,7 +142,7 @@ export const UserProfileScreen = ({route}: Props) => {
         setIsBlocked(true);
       }
     });
-  }, [blocks, favorites, getNavButtons, mutes, navigation, route.params.userID]);
+  }, [blocks, favorites, getNavButtons, mutes, bottomNavigation, route.params.userID]);
 
   const styles = {
     image: [commonStyles.roundedBorderLarge, commonStyles.headerImage],
@@ -175,7 +185,22 @@ export const UserProfileScreen = ({route}: Props) => {
         </PaddedContentView>
         {data.note && (
           <PaddedContentView>
-            <UserNoteCard user={data} />
+            <UserNoteCard
+              user={data}
+              onPress={() =>
+                bottomNavigation.navigate(BottomTabComponents.homeTab, {
+                  screen: MainStackComponents.userPrivateNoteScreen,
+                  params: {
+                    user: data,
+                  },
+                })
+              }
+              onLongPress={() => {
+                if (data.note !== undefined) {
+                  Clipboard.setString(data.note);
+                }
+              }}
+            />
           </PaddedContentView>
         )}
         <PaddedContentView>

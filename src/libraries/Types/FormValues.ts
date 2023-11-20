@@ -27,6 +27,10 @@ export interface UserProfileFormValues {
   about: string;
 }
 
+export interface UserNoteFormValues {
+  note: string;
+}
+
 export interface KeywordFormValues {
   keyword: string;
 }
