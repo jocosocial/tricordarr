@@ -103,16 +103,20 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     setRefreshing(avatarMutation.isLoading || avatarQuery.isRefetching || userProfileQuery.isRefetching);
   }, [avatarMutation.isLoading, avatarQuery.isRefetching, setRefreshing, userProfileQuery.isRefetching]);
 
+  const isSelf = profilePublicData?.header.userID === user.header.userID;
+
   return (
     <View>
       <TouchableOpacity onPress={onTouch}>
         <AppImage style={styles.image} path={`/image/user/thumb/${user.header.userID}`} />
       </TouchableOpacity>
-      <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
-        <IconButton icon={AppIcons.newImage} onPress={pickImage} />
-        <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />
-        {profilePublicData?.header.userImage && <IconButton icon={AppIcons.delete} onPress={clearImage} />}
-      </View>
+      {isSelf && (
+        <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
+          <IconButton icon={AppIcons.newImage} onPress={pickImage} />
+          <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />
+          {profilePublicData?.header.userImage && <IconButton icon={AppIcons.delete} onPress={clearImage} />}
+        </View>
+      )}
     </View>
   );
 };
