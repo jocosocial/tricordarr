@@ -14,7 +14,6 @@ import {RefreshControl, View} from 'react-native';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {AppImage} from '../../Images/AppImage';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -33,6 +32,7 @@ import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
 
 export type Props = NativeStackScreenProps<
   MainStackParamList,
@@ -40,7 +40,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.mainStack
 >;
 
-export const UserProfileScreen = ({route, navigation}: Props) => {
+export const UserProfileScreen = ({route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -144,7 +144,6 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
   }, [blocks, favorites, getNavButtons, mutes, bottomNavigation, route.params.userID]);
 
   const styles = {
-    image: [commonStyles.roundedBorderLarge, commonStyles.headerImage],
     listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],
     button: [commonStyles.marginHorizontalSmall],
   };
@@ -169,7 +168,7 @@ export const UserProfileScreen = ({route, navigation}: Props) => {
           </PaddedContentView>
         )}
         <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
-          <AppImage style={styles.image} path={`/image/user/thumb/${route.params.userID}`} />
+          <UserProfileAvatar user={data} />
         </PaddedContentView>
         <PaddedContentView style={[styles.listContentCenter]}>
           <Text selectable={true} variant={'headlineMedium'}>

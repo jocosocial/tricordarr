@@ -11,6 +11,7 @@ type AppImageProps = {
 
 export const AppImage = ({path, style}: AppImageProps) => {
   const {data: imageUri} = useImageQuery(path);
+  console.log('Rendering AppImage');
 
   if (!imageUri) {
     return <Avatar.Icon style={style} icon={AppIcons.error} />;

@@ -89,6 +89,9 @@ export function getAuthHeaders(
 export const apiQueryImageUri = async ({queryKey}: {queryKey: string | string[]}) => {
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
+    headers: {
+      'Cache-Control': 'no-cache',
+    },
   });
   const b64Data = Buffer.from(data, 'binary').toString('base64');
   const contentType = headers['Content-Type'];

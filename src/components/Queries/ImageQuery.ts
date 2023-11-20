@@ -7,6 +7,7 @@ import {useQuery} from '@tanstack/react-query';
  */
 export const useImageQuery = (path: string) => {
   const {isLoggedIn} = useAuth();
+  console.log('useImageQuery', isLoggedIn && !!path);
   return useQuery({
     queryKey: [path],
     enabled: isLoggedIn && !!path,
