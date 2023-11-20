@@ -1,5 +1,3 @@
-import {UserPrivateNoteScreen} from '../../components/Screens/User/UserPrivateNoteScreen';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -49,7 +47,6 @@ export enum SeamailStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
   seamailScreen = 'SeamailScreen',
   seamailDetailsScreen = 'SeamailDetailsScreen',
-  userProfileScreen = 'UserProfileScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',

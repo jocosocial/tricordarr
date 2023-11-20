@@ -8,7 +8,6 @@ import {
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
@@ -36,9 +35,9 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 export type Props = NativeStackScreenProps<
-  SeamailStackParamList | MainStackParamList,
-  SeamailStackScreenComponents.userProfileScreen | MainStackComponents.userProfileScreen,
-  NavigatorIDs.seamailStack | NavigatorIDs.mainStack
+  MainStackParamList,
+  MainStackComponents.userProfileScreen,
+  NavigatorIDs.mainStack
 >;
 
 export const UserProfileScreen = ({route, navigation}: Props) => {

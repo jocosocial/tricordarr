@@ -8,4 +8,3 @@ Work Queue
   * Snackbar now renders over bottomtabs - less ideal
 * User Profile
   * Picture
-  * only main stack - remove seamailstack ref
