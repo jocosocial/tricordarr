@@ -1,20 +1,30 @@
 import {AppImage} from '../Images/AppImage';
-import React from 'react';
+import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {StyleSheet, Touchable, TouchableOpacity, View} from 'react-native';
-import {Button, TouchableRipple} from 'react-native-paper';
-import ImagePicker from 'react-native-image-crop-picker';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {IconButton} from 'react-native-paper';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
-import {useNavigation} from '@react-navigation/native';
 import {useImageQuery} from '../Queries/ImageQuery';
+import {AppIcons} from '../../libraries/Enums/Icons';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useUserProfileQuery} from '../Queries/User/UserQueries';
+import {useUserData} from '../Context/Contexts/UserDataContext';
 
-export const UserProfileAvatar = ({user}: {user: ProfilePublicData}) => {
+interface UserProfileAvatarProps {
+  user: ProfilePublicData;
+  setRefreshing: Dispatch<SetStateAction<boolean>>;
+}
+
+export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps) => {
   const {commonStyles} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarQuery = useImageQuery(`/image/user/thumb/${user.header.userID}`);
   const avatarMutation = useUserAvatarMutation();
-  // const {data: avatarImage} = useImageQuery(`/image/user/thumb/${user.header.userID}`);
+  const {setErrorMessage} = useErrorHandler();
+  const userProfileQuery = useUserProfileQuery();
+  const {profilePublicData} = useUserData();
 
   const styles = StyleSheet.create({
     image: {
@@ -24,15 +34,36 @@ export const UserProfileAvatar = ({user}: {user: ProfilePublicData}) => {
   });
 
   const pickImage = async () => {
-    console.log('image pick');
-    const image = await ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      includeBase64: true,
-      mediaType: 'photo',
-    });
-    console.log(image.path);
+    try {
+      const image = await ImagePicker.openPicker({
+        cropping: true,
+        width: 2048,
+        height: 2048,
+        includeBase64: true,
+        mediaType: 'photo',
+      });
+      processImage(image);
+    } catch (err) {
+      setErrorMessage(err);
+    }
+  };
+
+  const takeImage = async () => {
+    try {
+      const image = await ImagePicker.openCamera({
+        cropping: true,
+        width: 2048,
+        height: 2048,
+        includeBase64: true,
+        mediaType: 'photo',
+      });
+      processImage(image);
+    } catch (err) {
+      setErrorMessage(err);
+    }
+  };
+
+  const processImage = (image: Image) => {
     if (image.data) {
       avatarMutation.mutate(
         {
@@ -41,13 +72,11 @@ export const UserProfileAvatar = ({user}: {user: ProfilePublicData}) => {
         {
           onSuccess: () => {
             avatarQuery.refetch();
+            userProfileQuery.refetch();
           },
         },
       );
     }
-    // const imageData = await fetch(image.path);
-    // const blob = await imageData.blob();
-    // const arrayBuffer = await new Response(blob).arrayBuffer();
   };
 
   const clearImage = () => {
@@ -57,23 +86,30 @@ export const UserProfileAvatar = ({user}: {user: ProfilePublicData}) => {
       {
         onSuccess: () => {
           avatarQuery.refetch();
+          userProfileQuery.refetch();
         },
       },
     );
   };
 
   const onTouch = () => {
-    console.log('Refreshing');
     avatarQuery.refetch();
   };
+
+  useEffect(() => {
+    setRefreshing(avatarMutation.isLoading || avatarQuery.isRefetching || userProfileQuery.isRefetching);
+  }, [avatarMutation.isLoading, avatarQuery.isRefetching, setRefreshing, userProfileQuery.isRefetching]);
 
   return (
     <View>
       <TouchableOpacity onPress={onTouch}>
         <AppImage style={styles.image} path={`/image/user/thumb/${user.header.userID}`} />
       </TouchableOpacity>
-      <Button onPress={pickImage}>Pick</Button>
-      <Button onPress={clearImage}>Clear</Button>
+      <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
+        <IconButton icon={AppIcons.newImage} onPress={pickImage} />
+        <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />
+        {profilePublicData?.header.userImage && <IconButton icon={AppIcons.delete} onPress={clearImage} />}
+      </View>
     </View>
   );
 };

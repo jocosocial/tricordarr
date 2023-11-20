@@ -6,4 +6,5 @@ Work Queue
 * Nightly
 * User Profile
   * Picture
-    * Old data still persisting in query?
+  * take picture
+  * camera permission

@@ -168,7 +168,7 @@ export const UserProfileScreen = ({route}: Props) => {
           </PaddedContentView>
         )}
         <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
-          <UserProfileAvatar user={data} />
+          <UserProfileAvatar user={data} setRefreshing={setRefreshing} />
         </PaddedContentView>
         <PaddedContentView style={[styles.listContentCenter]}>
           <Text selectable={true} variant={'headlineMedium'}>
