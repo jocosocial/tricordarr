@@ -21,8 +21,13 @@
     Camera permission for taking pictures to upload to the service. Is non-essential.
     -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!--
+    Used to store images if the user wants to save them. Non-essential
+    -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <application
+  <application
         android:usesCleartextTraffic="true"
         tools:targetApi="28"
         tools:ignore="GoogleAppIndexingWarning">

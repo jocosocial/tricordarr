@@ -96,6 +96,23 @@ export const apiQueryImageUri = async ({queryKey}: {queryKey: string | string[]}
     },
   });
   const b64Data = Buffer.from(data, 'binary').toString('base64');
-  const contentType = headers['Content-Type'];
+  const contentType = headers['content-type'];
   return `data:${contentType};base64,${b64Data}`;
+};
+
+export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]}) => {
+  const {data, headers} = await axios.get(queryKey[0], {
+    responseType: 'arraybuffer',
+    headers: {
+      // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
+      // May need to figure this out better.
+      'Cache-Control': 'no-cache',
+    },
+  });
+  const contentType = headers['content-type'];
+  console.log('BAWLS', contentType);
+  return {
+    data: Buffer.from(data, 'binary').toString('base64'),
+    contentType: contentType,
+  };
 };

@@ -1,40 +1,14 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Text} from 'react-native-paper';
+import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  NavigatorIDs,
-  SeamailStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {UserHeader, UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
-import {RefreshControl, View} from 'react-native';
+import {UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {AppImage} from '../../Images/AppImage';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
-import {UserContentCard} from '../../Cards/UserProfile/UserContentCard';
-import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
-import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
-import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
-import {AppIcon} from '../../Images/AppIcon';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
-import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
-import {useAuth} from '../../Context/Contexts/AuthContext';
-import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {UserProfileForm} from '../../Forms/UserProfileForm';
-import {FezFormValues, UserProfileFormValues} from '../../../libraries/Types/FormValues';
+import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useUserProfileMutation} from '../../Queries/User/UserProfileQueries';
 import {useQueryClient} from '@tanstack/react-query';
