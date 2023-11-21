@@ -3,4 +3,5 @@ Backlog
 * join an LFG should remove from find list
 
 Work Queue
+* LFG post images
 * Nightly
