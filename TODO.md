@@ -8,7 +8,6 @@ Work Queue
 
 Nightly
 * header image broke, couldn't figure out why long time mid-day
-* After changing profile picture, didn't reload the full. Probably need to set query content to undef
 * Concat error in blocking muting
 * Vertical padding in report modalMove registration information to a screen rather than modal. Solves the nav issue
 * Creating seamail from profile makes the seamail stack stuck. Needs initial routing

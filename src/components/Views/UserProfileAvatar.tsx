@@ -74,6 +74,13 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     }
   };
 
+  const onSuccess = () => {
+    avatarQuery.refetch().then(() => userProfileQuery.refetch());
+    if (fullImageQuery.data) {
+      queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
+    }
+  };
+
   const processImage = (image: Image) => {
     if (image.data) {
       avatarMutation.mutate(
@@ -81,18 +88,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
           image: image.data,
         },
         {
-          onSuccess: () => {
-            avatarQuery.refetch().then(() => userProfileQuery.refetch());
-            if (fullImageQuery.data) {
-              // fullImageQuery.refetch();
-              console.log('### clearing on process');
-              // queryClient.setQueryData([`/image/user/full/${user.header.userID}`], () => {
-              //   return undefined;
-              // });
-              queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
-              // setViewerImages([]);
-            }
-          },
+          onSuccess: onSuccess,
         },
       );
     }
@@ -102,24 +98,12 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     avatarDeleteMutation.mutate(
       {},
       {
-        onSuccess: () => {
-          avatarQuery.refetch().then(() => userProfileQuery.refetch());
-          if (fullImageQuery.data) {
-            // fullImageQuery.refetch();
-            console.log('### clearing on clear');
-            // queryClient.setQueryData([`/image/user/full/${user.header.userID}`], () => {
-            //   return undefined;
-            // });
-            queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
-            // setViewerImages([]);
-          }
-        },
+        onSuccess: onSuccess,
       },
     );
   };
 
   const handleAvatarPress = () => {
-    console.log('AVATARRR');
     if (fullImageQuery.data) {
       setEnableFullQuery(true);
       return;
@@ -162,8 +146,6 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         imageData={avatarQuery.data}
         isLoading={avatarQuery.isLoading || fullImageQuery.isLoading}
         onPress={handleAvatarPress}
-        // path={`/image/user/thumb/${user.header.userID}`}
-        // fullPath={`/image/user/full/${user.header.userID}`}
       />
       {isSelf && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
