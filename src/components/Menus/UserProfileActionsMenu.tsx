@@ -38,6 +38,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const closeMenu = () => setVisible(false);
 
   const handleModerate = () => {
+    closeMenu();
     rootNavigation.push(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {

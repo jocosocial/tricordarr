@@ -97,7 +97,6 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
     },
   });
   const contentType = headers['content-type'];
-  console.log(headers);
   const base64Data = Buffer.from(data, 'binary').toString('base64');
   const fileName = queryKey[0].split('/').pop();
   if (!fileName) {
