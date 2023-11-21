@@ -1,7 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents, MainStackComponents,
+  NavigatorIDs,
+  RootStackComponents,
+  SeamailStackScreenComponents
+} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
@@ -27,6 +32,7 @@ import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -49,6 +55,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
   const {setErrorMessage} = useErrorHandler();
+  const rootNavigation = useRootStack();
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -145,8 +152,14 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
                   user={u}
                   fez={fez}
                   onPress={() =>
-                    navigation.push(SeamailStackScreenComponents.userProfileScreen, {
-                      userID: u.userID,
+                    rootNavigation.push(RootStackComponents.rootContentScreen, {
+                      screen: BottomTabComponents.homeTab,
+                      params: {
+                        screen: MainStackComponents.userProfileScreen,
+                        params: {
+                          userID: u.userID,
+                        },
+                      },
                     })
                   }
                 />

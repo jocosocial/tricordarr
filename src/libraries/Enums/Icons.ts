@@ -12,6 +12,7 @@ export enum AppIcons {
   new = 'plus',
   insert = 'plus-circle-outline',
   newImage = 'image-plus',
+  newImageCamera = 'camera-plus',
   delete = 'delete-forever',
   submit = 'send-circle-outline',
   scrollDown = 'arrow-down-circle',
@@ -72,4 +73,7 @@ export enum AppIcons {
   seamailSearch = 'email-search',
   eventSearch = 'calendar-search',
   info = 'information-outline',
+  save = 'content-save',
+  close = 'close',
+  download = 'download',
 }

@@ -3,9 +3,5 @@ Backlog
 * join an LFG should remove from find list
 
 Work Queue
+* LFG post images
 * Nightly
-  * Common open query function to hook into disable or not logged in
-  * Snackbar now renders over bottomtabs - less ideal
-* User Profile
-  * Private Note
-  * Picture

@@ -5,6 +5,7 @@ import {Buffer} from '@craftzdog/react-native-buffer';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
+import {ImageQueryData} from '../Types';
 
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
@@ -86,11 +87,26 @@ export function getAuthHeaders(
 // https://stackoverflow.com/questions/41846669/download-an-image-using-axios-and-convert-it-to-base64
 // https://www.npmjs.com/package/@craftzdog/react-native-buffer
 // https://reactnative.dev/docs/images
-export const apiQueryImageUri = async ({queryKey}: {queryKey: string | string[]}) => {
+export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
+    headers: {
+      // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
+      // May need to figure this out better.
+      'Cache-Control': 'no-cache',
+    },
   });
-  const b64Data = Buffer.from(data, 'binary').toString('base64');
-  const contentType = headers['Content-Type'];
-  return `data:${contentType};base64,${b64Data}`;
+  const contentType = headers['content-type'];
+  console.log(headers);
+  const base64Data = Buffer.from(data, 'binary').toString('base64');
+  const fileName = queryKey[0].split('/').pop();
+  if (!fileName) {
+    throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
+  }
+  return {
+    base64: base64Data,
+    mimeType: contentType,
+    dataURI: `data:${contentType};base64,${base64Data}`,
+    fileName: fileName,
+  };
 };

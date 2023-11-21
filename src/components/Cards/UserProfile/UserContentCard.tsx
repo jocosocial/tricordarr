@@ -5,6 +5,9 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Images/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, LfgStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 
 interface UserContentCardProps {
   user: ProfilePublicData;
@@ -12,6 +15,12 @@ interface UserContentCardProps {
 
 export const UserContentCard = ({user}: UserContentCardProps) => {
   const {commonStyles} = useStyles();
+  const {profilePublicData} = useUserData();
+  const rootNavigation = useRootStack();
+  const isSelf = profilePublicData?.header.userID === user.header.userID;
+
+  const getIcon = (icon: string) => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
+
   return (
     <Card>
       <Card.Title title={`Content by @${user.header.username}`} />
@@ -19,14 +28,23 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
         <ListSection>
           <List.Item
             title={'Forums'}
-            left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.forum} />}
-            onPress={() => console.log('forums', user.header.userID)}
+            left={() => getIcon(AppIcons.forum)}
+            onPress={() => console.warn('forums', user.header.userID)}
           />
-          <List.Item
-            title={'LFGs'}
-            left={() => <AppIcon style={[commonStyles.marginLeft]} icon={AppIcons.group} />}
-            onPress={() => console.log('LFGs', user.header.userID)}
-          />
+          {isSelf && (
+            <List.Item
+              title={'LFGs'}
+              left={() => getIcon(AppIcons.lfg)}
+              onPress={() =>
+                rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+                  screen: BottomTabComponents.lfgTab,
+                  params: {
+                    screen: LfgStackComponents.lfgOwnedScreen,
+                  },
+                })
+              }
+            />
+          )}
         </ListSection>
       </Card.Content>
     </Card>

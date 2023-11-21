@@ -87,6 +87,9 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  justifyContentEnd: {
+    justifyContent: 'flex-end',
+  },
   alignItemsCenter: {
     alignItems: 'center',
   },

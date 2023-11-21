@@ -7,9 +7,9 @@ import {MessageViewContainer} from '../../Views/MessageViewContainer';
 import {MessageSpacerView} from '../../Views/MessageSpacerView';
 import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../Views/Content/FlatListItemContent';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
@@ -25,8 +25,8 @@ interface FezPostListItemProps {
 
 export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
-  const navigation = useSeamailStack();
   const {asPrivilegedUser} = usePrivilege();
+  const rootNavigation = useRootStack();
 
   let showAuthor = fez.participantCount > 2;
 
@@ -44,8 +44,14 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
     fezPost.author.userID === profilePublicData?.header.userID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
-    navigation.push(SeamailStackScreenComponents.userProfileScreen, {
-      userID: fezPost.author.userID,
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.userProfileScreen,
+        params: {
+          userID: fezPost.author.userID,
+        },
+      },
     });
   };
 

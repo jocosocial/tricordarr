@@ -47,7 +47,6 @@ export enum SeamailStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
   seamailScreen = 'SeamailScreen',
   seamailDetailsScreen = 'SeamailDetailsScreen',
-  userProfileScreen = 'UserProfileScreen',
   seamailCreateScreen = 'SeamailCreateScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
@@ -62,6 +61,7 @@ export enum MainStackComponents {
   userProfileScreen = 'UserProfileScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
   editUserProfileScreen = 'EditUserProfileScreen',
+  userPrivateNoteScreen = 'UserPrivateNoteScreen',
 }
 
 export enum RootStackComponents {

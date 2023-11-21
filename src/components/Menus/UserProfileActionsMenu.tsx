@@ -13,6 +13,9 @@ import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
+import {UserRegCodeModalView} from '../Views/Modals/UserRegCodeModalView';
+import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -29,11 +32,24 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const favoriteMutation = useUserFavoriteMutation();
   const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const rootNavigation = useRootStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const handleModerate = () => console.log('Navigating to moderate user', profile.header.username);
+  const handleModerate = () => {
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.siteUIScreen,
+        params: {
+          resource: 'userprofile',
+          id: profile.header.userID,
+          moderate: true,
+        },
+      },
+    });
+  };
   const handleFavorite = () => {
     if (isFavorite) {
       favoriteMutation.mutate(
@@ -63,11 +79,27 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       );
     }
   };
-  const handleRegCode = () => console.log('Navigating to reg code');
   const handleModal = (content: ReactNode) => {
     closeMenu();
     setModalContent(content);
     setModalVisible(true);
+  };
+  const handleRegCode = () => {
+    closeMenu();
+    setModalContent(<UserRegCodeModalView userID={profile.header.userID} />);
+    setModalVisible(true);
+  };
+  const handleNote = () => {
+    closeMenu();
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.userPrivateNoteScreen,
+        params: {
+          user: profile,
+        },
+      },
+    });
   };
 
   return (
@@ -80,7 +112,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
         title={isFavorite ? 'Unfavorite' : 'Favorite'}
         onPress={handleFavorite}
       />
-      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Add Private Note'} />
+      <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}

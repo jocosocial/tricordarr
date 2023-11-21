@@ -303,13 +303,6 @@ export interface ErrorResponse {
   fieldErrors?: string | string[];
 }
 
-export interface ImageUploadData {
-  /// The filename of an existing image previously uploaded to the server. Ignored if image is set.
-  filename?: string;
-  /// The image in `Data` format.
-  image?: ArrayBuffer;
-}
-
 export interface PostContentData {
   /// The new text of the forum post.
   text: string;
@@ -473,4 +466,35 @@ export interface UserProfileUploadData {
   message: string;
   /// An optional blurb about the user.
   about: string;
+}
+
+export interface NoteCreateData {
+  /// The text of the note.
+  note: string;
+}
+
+export interface NoteData {
+  /// Timestamp of the note's creation.
+  createdAt: string;
+  /// Timestamp of the note's last update.
+  updatedAt: string;
+  /// The user the note is written about. The target user does not get to see notes written about them.
+  targetUser: UserHeader;
+  /// The text of the note.
+  note: string;
+}
+
+export interface RegistrationCodeUserData {
+  // User accounts associated with the reg code. First item in the array is the primary account.
+  users: [UserHeader];
+  /// The registration code associated with this account. If this account doesn't have an associated regcode, will be the empty string.
+  regCode: string;
+}
+
+export interface ImageUploadData {
+  /// The filename of an existing image previously uploaded to the server. Ignored if image is set.
+  filename?: string;
+  /// The image in `Data` format.
+  /// Which in client land means a Base64-encoded string.
+  image?: string;
 }

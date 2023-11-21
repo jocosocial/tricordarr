@@ -1,10 +1,10 @@
-import {createContext, useContext} from 'react';
+import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
 export interface ErrorHandlerContextType {
   errorMessage?: string;
-  setErrorMessage: Function;
+  setErrorMessage: Dispatch<SetStateAction<string | undefined>>;
   errorBanner?: string;
-  setErrorBanner: Function;
+  setErrorBanner: Dispatch<SetStateAction<string>>;
 }
 
 export const ErrorHandlerContext = createContext({} as ErrorHandlerContextType);

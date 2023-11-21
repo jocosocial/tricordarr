@@ -10,7 +10,7 @@ import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem';
 import {useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
 import {
   BottomTabComponents,
-  SeamailStackScreenComponents,
+  MainStackComponents,
   SettingsStackScreenComponents,
 } from '../../../../libraries/Enums/Navigation';
 import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
@@ -42,8 +42,8 @@ export const AccountManagementScreen = () => {
               title={'View Profile'}
               icon={AppIcons.user}
               onPress={() =>
-                bottomNav.navigate(BottomTabComponents.seamailTab, {
-                  screen: SeamailStackScreenComponents.userProfileScreen,
+                bottomNav.navigate(BottomTabComponents.homeTab, {
+                  screen: MainStackComponents.userProfileScreen,
                   params: {
                     userID: profilePublicData.header.userID,
                   },
