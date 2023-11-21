@@ -1,5 +1,5 @@
 import {AppImage} from '../Images/AppImage';
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
@@ -12,6 +12,9 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
+import {useQueryClient} from '@tanstack/react-query';
+import {ImageQueryData} from '../../libraries/Types';
+import {AppImageViewer} from '../Images/AppImageViewer';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -26,6 +29,11 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const {setErrorMessage} = useErrorHandler();
   const userProfileQuery = useUserProfileQuery();
   const {profilePublicData} = useUserData();
+  const queryClient = useQueryClient();
+  const fullImageQuery = useImageQuery(`/image/user/full/${user.header.userID}`, false);
+  const [visible, setIsVisible] = useState(false);
+  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
+  const [enableFullQuery, setEnableFullQuery] = useState(false);
 
   const styles = StyleSheet.create({
     image: {
@@ -74,8 +82,16 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         },
         {
           onSuccess: () => {
-            avatarQuery.refetch();
-            userProfileQuery.refetch();
+            avatarQuery.refetch().then(() => userProfileQuery.refetch());
+            if (fullImageQuery.data) {
+              // fullImageQuery.refetch();
+              console.log('### clearing on process');
+              // queryClient.setQueryData([`/image/user/full/${user.header.userID}`], () => {
+              //   return undefined;
+              // });
+              queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
+              // setViewerImages([]);
+            }
           },
         },
       );
@@ -83,30 +99,71 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const clearImage = () => {
-    console.log('clear');
     avatarDeleteMutation.mutate(
       {},
       {
         onSuccess: () => {
-          avatarQuery.refetch();
-          userProfileQuery.refetch();
+          avatarQuery.refetch().then(() => userProfileQuery.refetch());
+          if (fullImageQuery.data) {
+            // fullImageQuery.refetch();
+            console.log('### clearing on clear');
+            // queryClient.setQueryData([`/image/user/full/${user.header.userID}`], () => {
+            //   return undefined;
+            // });
+            queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
+            // setViewerImages([]);
+          }
         },
       },
     );
   };
 
+  const handleAvatarPress = () => {
+    console.log('AVATARRR');
+    if (fullImageQuery.data) {
+      setEnableFullQuery(true);
+      return;
+    }
+    fullImageQuery.refetch().then(() => {
+      setEnableFullQuery(true);
+    });
+  };
+
   useEffect(() => {
-    setRefreshing(avatarMutation.isLoading || avatarQuery.isRefetching || userProfileQuery.isRefetching);
-  }, [avatarMutation.isLoading, avatarQuery.isRefetching, setRefreshing, userProfileQuery.isRefetching]);
+    if (enableFullQuery && fullImageQuery.data) {
+      setViewerImages([fullImageQuery.data]);
+      setIsVisible(true);
+      setEnableFullQuery(false);
+    }
+  }, [enableFullQuery, fullImageQuery.data]);
+
+  useEffect(() => {
+    setRefreshing(
+      avatarMutation.isLoading ||
+        avatarQuery.isRefetching ||
+        userProfileQuery.isRefetching ||
+        fullImageQuery.isRefetching,
+    );
+  }, [
+    avatarMutation.isLoading,
+    avatarQuery.isRefetching,
+    fullImageQuery.isRefetching,
+    setRefreshing,
+    userProfileQuery.isRefetching,
+  ]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 
   return (
     <View>
+      <AppImageViewer viewerImages={viewerImages} isVisible={visible} setIsVisible={setIsVisible} />
       <AppImage
         style={styles.image}
-        path={`/image/user/thumb/${user.header.userID}`}
-        fullPath={`/image/user/full/${user.header.userID}`}
+        imageData={avatarQuery.data}
+        isLoading={avatarQuery.isLoading || fullImageQuery.isLoading}
+        onPress={handleAvatarPress}
+        // path={`/image/user/thumb/${user.header.userID}`}
+        // fullPath={`/image/user/full/${user.header.userID}`}
       />
       {isSelf && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
