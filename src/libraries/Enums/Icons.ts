@@ -73,4 +73,7 @@ export enum AppIcons {
   seamailSearch = 'email-search',
   eventSearch = 'calendar-search',
   info = 'information-outline',
+  save = 'content-save',
+  close = 'close',
+  download = 'download',
 }

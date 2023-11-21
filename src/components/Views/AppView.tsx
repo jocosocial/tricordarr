@@ -2,7 +2,7 @@ import React, {PropsWithChildren} from 'react';
 import {View} from 'react-native';
 import {Portal, useTheme} from 'react-native-paper';
 import {commonStyles} from '../../styles';
-import {ErrorSnackbar} from '../ErrorHandlers/ErrorSnackbar';
+import {ErrorSnackbar} from '../Snackbars/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 import {AppModal} from '../Modals/AppModal';
 

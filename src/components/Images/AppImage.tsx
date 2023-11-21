@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, IconButton, Text} from 'react-native-paper';
+import {Avatar, IconButton, Snackbar, Text} from 'react-native-paper';
 import {Image, ImageStyle, StyleProp, TouchableOpacity, View} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useImageQuery, useRawImageQuery} from '../Queries/ImageQuery';
@@ -7,7 +7,10 @@ import ImageView from 'react-native-image-viewing';
 import {ImageSource} from 'react-native-vector-icons/Icon';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import RNFS from 'react-native-fs';
-import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {ImageQueryData} from '../../libraries/Types';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {ImageViewerSnackbar} from '../Snackbars/ImageViewerSnackbar';
 
 type AppImageProps = {
   path: string;
@@ -16,14 +19,15 @@ type AppImageProps = {
 };
 
 export const AppImage = ({path, style, fullPath}: AppImageProps) => {
-  const {data: imageUri} = useImageQuery(path);
+  const imageQuery = useImageQuery(path);
   const [enableFullQuery, setEnableFullQuery] = useState(false);
   const fullImageQuery = useImageQuery(fullPath || path, enableFullQuery);
   console.log('Rendering AppImage');
   const [visible, setIsVisible] = useState(false);
   const [viewerImages, setViewerImages] = useState<ImageSource[]>([]);
   console.log(fullPath);
-  const rawImageQuery = useRawImageQuery(fullPath);
+  const rawImageQuery = useImageQuery(fullPath);
+  const [viewerMessage, setViewerMessage] = useState<string>();
 
   const handlePress = async () => {
     setEnableFullQuery(true);
@@ -32,7 +36,7 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
 
   useEffect(() => {
     if (enableFullQuery && fullImageQuery.data) {
-      setViewerImages([{uri: fullImageQuery.data}]);
+      setViewerImages([{uri: ImageQueryData.toDataURI(fullImageQuery.data.base64, fullImageQuery.data.mimeType)}]);
       setIsVisible(true);
       setEnableFullQuery(false);
     }
@@ -41,9 +45,15 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
   const viewerHeader = ({imageIndex}: {imageIndex: number}) => {
     return (
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <IconButton icon={AppIcons.cancel} onPress={() => setIsVisible(false)} />
-        <IconButton icon={AppIcons.seamail} onPress={() => saveImage(viewerImages[imageIndex])} />
+        <IconButton icon={AppIcons.download} onPress={() => saveImage(viewerImages[imageIndex])} />
+        <IconButton icon={AppIcons.close} onPress={() => setIsVisible(false)} />
       </View>
+    );
+  };
+
+  const viewerFooter = ({imageIndex}: {imageIndex: number}) => {
+    return (
+      <ImageViewerSnackbar message={viewerMessage} setMessage={setViewerMessage} />
     );
   };
 
@@ -58,7 +68,7 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
       console.log('NO DATA');
       return;
     }
-    const writeResult = await RNFS.writeFile(destPath, rawImageQuery.data.data, 'base64');
+    const writeResult = await RNFS.writeFile(destPath, rawImageQuery.data.base64, 'base64');
     console.log(writeResult);
     // await RNFS.copyFile(sourceUri, destPath);
     console.log('laslskdkslsd');
@@ -68,6 +78,7 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
         album: 'Tricordarr',
       });
       console.log(result);
+      setViewerMessage('Saved photo to camera roll');
     } catch (err) {
       console.log('ERROR', err);
     }
@@ -79,7 +90,7 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
     console.log('success!');
   };
 
-  if (!imageUri) {
+  if (!imageQuery.data) {
     return <Avatar.Icon style={style} icon={AppIcons.error} />;
   }
 
@@ -91,9 +102,15 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
         HeaderComponent={viewerHeader}
+        animationType={'none'}
+        presentationStyle={'formSheet'}
+        FooterComponent={viewerFooter}
       />
       <TouchableOpacity onPress={handlePress}>
-        <Image style={style} source={{uri: imageUri}} />
+        <Image
+          style={style}
+          source={{uri: ImageQueryData.toDataURI(imageQuery.data.base64, imageQuery.data.mimeType)}}
+        />
       </TouchableOpacity>
     </>
   );
