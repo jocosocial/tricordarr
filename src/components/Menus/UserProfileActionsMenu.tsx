@@ -13,7 +13,6 @@ import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
-import {UserRegCodeModalView} from '../Views/Modals/UserRegCodeModalView';
 import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
 
@@ -87,8 +86,15 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   };
   const handleRegCode = () => {
     closeMenu();
-    setModalContent(<UserRegCodeModalView userID={profile.header.userID} />);
-    setModalVisible(true);
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.userRegCodeScreen,
+        params: {
+          userID: profile.header.userID,
+        },
+      },
+    });
   };
   const handleNote = () => {
     closeMenu();
