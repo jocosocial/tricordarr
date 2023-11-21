@@ -4,6 +4,3 @@ Backlog
 
 Work Queue
 * Nightly
-* User Profile
-  * Picture
-    * View

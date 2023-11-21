@@ -1,27 +1,40 @@
 import ImageView from 'react-native-image-viewing';
-import React, {useCallback, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useState} from 'react';
 import {View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {ImageViewerSnackbar} from '../Snackbars/ImageViewerSnackbar';
-import {ImageSource} from 'react-native-vector-icons/Icon';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {ImageQueryData} from '../../libraries/Types';
+import {saveImageToLocal} from '../../libraries/Storage/ImageStorage';
 
 interface AppImageViewerProps {
   initialIndex?: number;
-  viewerImages?: ImageSource[];
+  viewerImages?: ImageQueryData[];
+  isVisible: boolean;
+  setIsVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 interface ImageViewerComponentProps {
   imageIndex: number;
 }
 
-export const AppImageViewer = ({viewerImages = [], initialIndex = 0}: AppImageViewerProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], initialIndex = 0}: AppImageViewerProps) => {
   const [viewerMessage, setViewerMessage] = useState<string>();
   const {commonStyles} = useStyles();
 
-  const saveImage = (index: number) => console.log('foo', index);
+  const saveImage = useCallback(
+    async (index: number) => {
+      try {
+        const image = viewerImages[index];
+        await saveImageToLocal(image);
+        setViewerMessage('Saved to camera roll.');
+      } catch (error: any) {
+        setViewerMessage(error);
+      }
+    },
+    [viewerImages],
+  );
 
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
@@ -32,7 +45,7 @@ export const AppImageViewer = ({viewerImages = [], initialIndex = 0}: AppImageVi
         </View>
       );
     },
-    [commonStyles],
+    [commonStyles.flexRow, commonStyles.justifyContentEnd, saveImage, setIsVisible],
   );
 
   const viewerFooter = useCallback(
@@ -48,9 +61,15 @@ export const AppImageViewer = ({viewerImages = [], initialIndex = 0}: AppImageVi
     return <></>;
   }
 
+  viewerImages.map(image => {
+    console.log('Looking at image', image.fileName);
+  });
+
   return (
     <ImageView
-      images={viewerImages}
+      images={viewerImages.map(image => {
+        return {uri: image.dataURI};
+      })}
       imageIndex={initialIndex}
       visible={isVisible}
       onRequestClose={onRequestClose}

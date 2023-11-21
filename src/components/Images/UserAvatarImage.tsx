@@ -19,5 +19,5 @@ export const UserAvatarImage = ({userID, small = false, icon = AppIcons.user}: U
     return <Avatar.Icon size={size} icon={icon} />;
   }
 
-  return <Avatar.Image size={size} source={{uri: ImageQueryData.toDataURI(data.base64, data.mimeType)}} />;
+  return <Avatar.Image size={size} source={{uri: data.dataURI}} />;
 };

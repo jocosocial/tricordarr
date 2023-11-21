@@ -2,7 +2,7 @@ import {AppImage} from '../Images/AppImage';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
@@ -44,7 +44,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         mediaType: 'photo',
       });
       processImage(image);
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err);
     }
   };
@@ -61,7 +61,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         mediaType: 'photo',
       });
       processImage(image);
-    } catch (err) {
+    } catch (err: any) {
       setErrorMessage(err);
     }
   };

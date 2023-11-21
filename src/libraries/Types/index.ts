@@ -40,10 +40,6 @@ export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
 export interface ImageQueryData {
   base64: string;
   mimeType: string;
-}
-
-export namespace ImageQueryData {
-  export const toDataURI = (base64Data: string, mimeType: string) => {
-    return `data:${mimeType};base64,${base64Data}`;
-  };
+  dataURI: string;
+  fileName: string;
 }
