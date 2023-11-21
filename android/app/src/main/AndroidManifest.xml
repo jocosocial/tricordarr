@@ -18,7 +18,6 @@
     <!--
     Used to store images if the user wants to save them. Non-essential
     -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
