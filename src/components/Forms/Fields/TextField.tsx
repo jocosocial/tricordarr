@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {KeyboardTypeOptions, StyleProp, View, ViewStyle} from 'react-native';
+import {KeyboardTypeOptions, StyleProp, TextStyle, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 import {FastField, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
@@ -21,6 +21,7 @@ export interface TextFieldProps {
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
   onChangeText?: (value: string) => void;
+  innerTextStyle?: StyleProp<TextStyle>;
 }
 
 export const TextField = ({
@@ -39,6 +40,7 @@ export const TextField = ({
   onFocus,
   keyboardType,
   onChangeText,
+  innerTextStyle,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -71,6 +73,7 @@ export const TextField = ({
             autoCapitalize={autoCapitalize}
             maxLength={maxLength}
             onFocus={onFocus}
+            style={innerTextStyle}
           />
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
             {meta.error}
