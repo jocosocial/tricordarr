@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar} from 'react-native-paper';
+import {ActivityIndicator, Avatar} from 'react-native-paper';
 import {Image, ImageStyle, StyleProp, TouchableOpacity} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useImageQuery} from '../Queries/ImageQuery';
@@ -31,6 +31,10 @@ export const AppImage = ({path, style, fullPath}: AppImageProps) => {
       setEnableFullQuery(false);
     }
   }, [enableFullQuery, fullImageQuery.data]);
+
+  if ((!imageQuery.data && imageQuery.isLoading) || enableFullQuery) {
+    return <ActivityIndicator style={style} />;
+  }
 
   if (!imageQuery.data) {
     return <Avatar.Icon style={style} icon={AppIcons.error} />;
