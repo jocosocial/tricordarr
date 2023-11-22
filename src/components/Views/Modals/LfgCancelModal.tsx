@@ -27,7 +27,7 @@ const ModalContent = () => {
 };
 
 export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
-  const {setErrorMessage} = useErrorHandler();
+  const {setErrorMessage, setInfoMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
@@ -40,8 +40,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
-          console.log('foo');
-          setErrorMessage('Successfully canceled this LFG.');
+          setInfoMessage('Successfully canceled this LFG.');
           setFez(response.data);
           setModalVisible(false);
         },

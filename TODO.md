@@ -3,7 +3,6 @@ Backlog
 Work Queue
 * LFG
   * post images
-  * canceled
 * theme photos
 * disabled app
 * blocks/mutes/favorites initial queries
@@ -11,7 +10,6 @@ Work Queue
 Nightly
 * header image broke, couldn't figure out why long time mid-day
 * Is there cross contamination between lfg and seamail context? I think so.Beginning of this seamail conversation in lfg chat
-* Make an info snack bar that dismissed quickly
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
 * push notification setting boolean is a little fidgity 
