@@ -210,7 +210,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
     return (
       <PaddedContentView padTop={true} invertVertical={true}>
         {!hasPreviousPage && (
-          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
+          <Text variant={'labelMedium'}>You've reached the beginning of this LFG conversation.</Text>
         )}
       </PaddedContentView>
     );
