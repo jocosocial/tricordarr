@@ -15,4 +15,3 @@ Nightly
 * Kraken Talk interoperability
 * Full image is loading show indicator
 * does the fgs start if user enables notifications late?
-* Why is a push notification in the background able to launch the app to the foreground?
