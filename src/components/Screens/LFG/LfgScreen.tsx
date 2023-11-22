@@ -168,12 +168,16 @@ export const LfgScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
+      {fez.cancelled && (
+        <View style={[commonStyles.displayFlex, commonStyles.flexColumn]}>
+          <LfgCanceledView />
+        </View>
+      )}
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}>
         {fez && (
           <>
-            {fez.cancelled && <LfgCanceledView />}
             <PaddedContentView padSides={false}>
               <ListSection>
                 <DataFieldListItem
@@ -255,37 +259,39 @@ export const LfgScreen = ({navigation, route}: Props) => {
           </>
         )}
       </ScrollingContentView>
-      {profilePublicData && fez.owner.userID !== profilePublicData.header.userID && (
-        <PaddedContentView>
-          {(FezData.isParticipant(fez, profilePublicData?.header) ||
-            FezData.isWaitlist(fez, profilePublicData?.header)) && (
-            <PrimaryActionButton
-              buttonText={FezData.isWaitlist(fez, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
-              onPress={handleMembershipPress}
-              buttonColor={theme.colors.twitarrNegativeButton}
-              isLoading={refreshing}
-            />
-          )}
-          {!FezData.isParticipant(fez, profilePublicData?.header) &&
-            !FezData.isWaitlist(fez, profilePublicData?.header) && (
+      <View style={[commonStyles.displayFlex, commonStyles.flexRow, commonStyles.marginTopSmall]}>
+        {profilePublicData && fez.owner.userID !== profilePublicData.header.userID && (
+          <PaddedContentView>
+            {(FezData.isParticipant(fez, profilePublicData?.header) ||
+              FezData.isWaitlist(fez, profilePublicData?.header)) && (
               <PrimaryActionButton
-                buttonText={FezData.isFull(fez) ? 'Join the waitlist' : 'Join this LFG'}
+                buttonText={FezData.isWaitlist(fez, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
                 onPress={handleMembershipPress}
-                buttonColor={theme.colors.twitarrPositiveButton}
+                buttonColor={theme.colors.twitarrNegativeButton}
                 isLoading={refreshing}
               />
             )}
-        </PaddedContentView>
-      )}
-      {profilePublicData && fez.owner.userID === profilePublicData.header.userID && (
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonText={'Edit'}
-            onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: fez})}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
-        </PaddedContentView>
-      )}
+            {!FezData.isParticipant(fez, profilePublicData?.header) &&
+              !FezData.isWaitlist(fez, profilePublicData?.header) && (
+                <PrimaryActionButton
+                  buttonText={FezData.isFull(fez) ? 'Join the waitlist' : 'Join this LFG'}
+                  onPress={handleMembershipPress}
+                  buttonColor={theme.colors.twitarrPositiveButton}
+                  isLoading={refreshing}
+                />
+              )}
+          </PaddedContentView>
+        )}
+        {profilePublicData && fez.owner.userID === profilePublicData.header.userID && (
+          <PaddedContentView>
+            <PrimaryActionButton
+              buttonText={'Edit'}
+              onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: fez})}
+              buttonColor={theme.colors.twitarrNeutralButton}
+            />
+          </PaddedContentView>
+        )}
+      </View>
     </AppView>
   );
 };

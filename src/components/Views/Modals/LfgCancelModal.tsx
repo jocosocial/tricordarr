@@ -40,6 +40,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
+          console.log('foo');
           setErrorMessage('Successfully canceled this LFG.');
           setFez(response.data);
           setModalVisible(false);

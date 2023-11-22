@@ -9,10 +9,11 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getFezTimezoneOffset, getTimeZoneOffset} from '../../../libraries/DateTime';
+import {getFezTimezoneOffset} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {LfgCanceledView} from '../../Views/LfgCanceledView';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgEditScreen, NavigatorIDs.lfgStack>;
 
@@ -47,6 +48,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
+          console.log('ZZZZZZZZZZ RESPONSE DATA', response.data.cancelled);
           setFez(response.data);
           navigation.goBack();
         },
@@ -82,8 +84,9 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
+      <ScrollingContentView isStack={true}>
+        {route.params.fez.cancelled && <LfgCanceledView update={true} />}
+        <PaddedContentView padTop={true}>
           <LfgForm onSubmit={onSubmit} initialValues={initialValues} buttonText={'Save'} />
         </PaddedContentView>
       </ScrollingContentView>

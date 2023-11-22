@@ -1,7 +1,9 @@
 Backlog
 
 Work Queue
-* LFG post images
+* LFG
+  * post images
+  * canceled
 * theme photos
 * disabled app
 * blocks/mutes/favorites initial queries

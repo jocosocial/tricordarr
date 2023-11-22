@@ -5,6 +5,7 @@ import {commonStyles} from '../../styles';
 import {ErrorSnackbar} from '../Snackbars/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 import {AppModal} from '../Modals/AppModal';
+import {InfoSnackbar} from '../Snackbars/InfoSnackbar';
 
 type AppViewProps = PropsWithChildren<{}>;
 
@@ -26,6 +27,7 @@ export const AppView = ({children}: AppViewProps) => {
         <ErrorBanner />
         <AppModal />
         <ErrorSnackbar />
+        <InfoSnackbar />
       </Portal>
       {children}
     </View>
