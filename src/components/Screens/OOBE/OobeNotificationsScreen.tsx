@@ -9,6 +9,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {check as checkPermission, PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 type Props = NativeStackScreenProps<
   OobeStackParamList,
@@ -18,6 +19,7 @@ type Props = NativeStackScreenProps<
 
 export const OobeNotificationsScreen = ({navigation}: Props) => {
   const [permissionStatus, setPermissionStatus] = useState('');
+  const {commonStyles} = useStyles();
 
   const enablePermissions = () => {
     requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
@@ -49,17 +51,18 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
-          <Text>
+          <Text style={commonStyles.marginBottomSmall}>
             This app can send you certain push notifications (assuming fair WiFi conditions). Would you like to enable
             this? You can always change or make up your mind later.
           </Text>
+          <Text>Example notifications include: chat messages, forum mentions, alert keywords, event reminders.</Text>
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton buttonText={buttonLabel()} onPress={enablePermissions} disabled={disableButton} />
         </PaddedContentView>
         <PaddedContentView>
           {permissionStatus === RESULTS.GRANTED && (
-            <Text>Cool!</Text>
+            <Text>Cool! You can pick exactly which kinds of notifications you want in the app settings.</Text>
           )}
           {permissionStatus === RESULTS.BLOCKED && (
             <Text>No problem! You can always change your mind in the app settings.</Text>
