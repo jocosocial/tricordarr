@@ -56,21 +56,21 @@ export class AppPermissions {
   }
 
   static requestRequiredPermissions = async () => {
-    let perm = [PERMISSIONS.ANDROID.POST_NOTIFICATIONS];
-
-    let permissionStatuses = await requestMultiple(perm);
-
-    if (permissionStatuses[perm[0]] !== RESULTS.GRANTED) {
-      Alert.alert(
-        'Insufficient permissions!',
-        'This app requires Notification permissions. Please enable them in the app settings',
-        [
-          {text: 'Open Settings', onPress: () => Linking.openSettings()},
-          {text: 'Exit', onPress: () => BackHandler.exitApp()},
-        ],
-      );
-      return false;
-    }
-    return true;
+  //   let perm = [PERMISSIONS.ANDROID.POST_NOTIFICATIONS];
+  //
+  //   let permissionStatuses = await requestMultiple(perm);
+  //
+  //   if (permissionStatuses[perm[0]] !== RESULTS.GRANTED) {
+  //     Alert.alert(
+  //       'Insufficient permissions!',
+  //       'This app requires Notification permissions. Please enable them in the app settings',
+  //       [
+  //         {text: 'Open Settings', onPress: () => Linking.openSettings()},
+  //         {text: 'Exit', onPress: () => BackHandler.exitApp()},
+  //       ],
+  //     );
+  //     return false;
+  //   }
+  //   return true;
   };
 }
