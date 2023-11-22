@@ -4,13 +4,15 @@ Work Queue
 * LFG post images
 * theme photos
 * disabled app
-* blocks/mutes/favorites initial queries 
+* blocks/mutes/favorites initial queries
+* Push Notifications
+  * FGS - should start if disabled?
+  * FGS - does start if enabled later?
 
 Nightly
 * header image broke, couldn't figure out why long time mid-day
 * Is there cross contamination between lfg and seamail context? I think so.Beginning of this seamail conversation in lfg chat
 * Make an info snack bar that dismissed quickly
-* Make notification permission optional
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
-* does the fgs start if user enables notifications late?
+* push notification setting boolean is a little fidgity 
