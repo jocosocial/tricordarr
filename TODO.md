@@ -13,5 +13,4 @@ Nightly
 * Make notification permission optional
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
-* Full image is loading show indicator
 * does the fgs start if user enables notifications late?

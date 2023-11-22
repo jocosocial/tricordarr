@@ -126,7 +126,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       avatarMutation.isLoading ||
         avatarQuery.isRefetching ||
         userProfileQuery.isRefetching ||
-        fullImageQuery.isRefetching,
+        fullImageQuery.isRefetching ||
+        fullImageQuery.isFetching,
     );
   }, [
     avatarMutation.isLoading,
@@ -134,6 +135,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     fullImageQuery.isRefetching,
     setRefreshing,
     userProfileQuery.isRefetching,
+    fullImageQuery.isFetching,
   ]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
