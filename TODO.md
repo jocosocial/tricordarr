@@ -11,8 +11,6 @@ Nightly
 * Is there cross contamination between lfg and seamail context? I think so.Beginning of this seamail conversation in lfg chat
 * Make an info snack bar that dismissed quickly
 * Make notification permission optional
-* Lfg screen claims regressing when there is data. Maybe do a dedicated state
-* Lfg leave warning say waitlist instead
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
 * Notifications to oobe
