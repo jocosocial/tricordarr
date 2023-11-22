@@ -16,7 +16,7 @@ export const InfoSnackbar = () => {
 
   return (
     <SnackBarBase
-      duration={5000}
+      duration={4000}
       message={infoMessage}
       setMessage={setInfoMessage}
       messagePrefix={'ℹ️ '}

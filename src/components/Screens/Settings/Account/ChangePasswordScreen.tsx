@@ -18,7 +18,7 @@ export const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const {appConfig} = useConfig();
   const passwordMutation = useUserPasswordMutation();
-  const {setErrorMessage} = useErrorHandler();
+  const {setInfoMessage} = useErrorHandler();
   const onSubmit = (values: ChangePasswordFormValues, helper: FormikHelpers<ChangePasswordFormValues>) => {
     passwordMutation.mutate(
       {
@@ -29,7 +29,7 @@ export const ChangePasswordScreen = () => {
       },
       {
         onSuccess: () => {
-          setErrorMessage('Successfully changed password!');
+          setInfoMessage('Successfully changed password!');
           navigation.goBack();
         },
         onSettled: () => helper.setSubmitting(false),
