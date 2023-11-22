@@ -17,7 +17,6 @@ import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {apiQueryV3, configureAxios} from './src/libraries/Network/APIClient';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
-import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
@@ -82,8 +81,6 @@ const {DarkTheme: navDarkTheme} = adaptNavigationTheme({reactNavigationDark: Def
 
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
-
-  AppPermissions.requestRequiredPermissions();
 
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
