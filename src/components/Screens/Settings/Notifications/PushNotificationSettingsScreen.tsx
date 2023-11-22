@@ -13,6 +13,7 @@ import {Formik} from 'formik';
 import {View} from 'react-native';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
 import {contentNotificationCategories} from '../../../../libraries/Notifications/Content';
+import {startForegroundServiceWorker} from '../../../../libraries/Service';
 
 export const PushNotificationSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -46,6 +47,9 @@ export const PushNotificationSettingsScreen = () => {
     console.log('Requesting Permission!');
     requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
       setPermissionStatus(status);
+      if (status === RESULTS.GRANTED) {
+        startForegroundServiceWorker();
+      }
     });
   };
 

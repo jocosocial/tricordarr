@@ -13,5 +13,6 @@ Nightly
 * Make notification permission optional
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
-* If no push then don't start fgs
 * Full image is loading show indicator
+* does the fgs start if user enables notifications late?
+* Why is a push notification in the background able to launch the app to the foreground?
