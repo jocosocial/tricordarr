@@ -1,7 +1,7 @@
 import React from 'react';
-import {Switch, View} from 'react-native';
+import {StyleProp, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
-import {FastField, useField, useFormikContext} from 'formik';
+import {Field, useField, useFormikContext} from 'formik';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {AppIcon} from '../../Images/AppIcon';
@@ -13,10 +13,10 @@ interface BooleanFieldProps {
   label: string;
   helperText?: string;
   icon?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-// @TODO unify this with SettingsBooleanListItem
-export const BooleanField = ({name, label, helperText, icon, onPress, value}: BooleanFieldProps) => {
+export const BooleanField = ({name, label, helperText, icon, onPress, value, style}: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
   const [field, meta, helpers] = useField<boolean>(name);
@@ -35,10 +35,11 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value}: Bo
   };
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
+  // FastField didn't update correctly
   return (
-    <FastField name={name}>
+    <Field name={name}>
       {() => (
-        <TouchableRipple style={styles.ripple} onPress={onPress || onPressDefault}>
+        <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault}>
           <View>
             <View style={styles.wrapper}>
               <Text>
@@ -61,6 +62,6 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value}: Bo
           </View>
         </TouchableRipple>
       )}
-    </FastField>
+    </Field>
   );
 };

@@ -4,9 +4,9 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {SettingsBooleanListItem} from '../../Lists/Items/SettingsBooleanListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
+import {BooleanField} from '../../Forms/Fields/BooleanField';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -36,7 +36,8 @@ export const EventSettingsScreen = () => {
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
-              <SettingsBooleanListItem
+              <BooleanField
+                name={'unifiedSchedule'}
                 label={'Show LFGs in Schedule'}
                 helperText={
                   "Display community-created Looking For Group events in the main schedule along with Official and Shadow Cruise events. Shows LFGs that are open or you've joined or created."
@@ -45,7 +46,8 @@ export const EventSettingsScreen = () => {
                 value={unified}
                 style={commonStyles.paddingHorizontal}
               />
-              <SettingsBooleanListItem
+              <BooleanField
+                name={'enableLateDayFlip'}
                 label={'Enable Late-Night Day Flip'}
                 helperText={
                   'Show the next days schedule after 3:00AM rather than after Midnight. For example: With this setting enabled (default), opening the schedule at 2:00AM on Thursday will show you Wednesdays schedule by default. If this setting is disabled, at 2:00AM on Thursday you would see Thursdays schedule by default.'

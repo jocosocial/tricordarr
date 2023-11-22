@@ -4,10 +4,10 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {SettingsBooleanListItem} from '../../Lists/Items/SettingsBooleanListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {BooleanField} from '../../Forms/Fields/BooleanField';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -16,12 +16,14 @@ export const LfgSettingsScreen = () => {
   const {commonStyles} = useStyles();
 
   const handleHidePastLfgs = () => {
+    const newValue = !appConfig.hidePastLfgs;
+    console.log('Setting to', newValue);
     updateAppConfig({
       ...appConfig,
-      hidePastLfgs: !appConfig.hidePastLfgs,
+      hidePastLfgs: newValue,
     });
-    setHidePastLfgs(!appConfig.hidePastLfgs);
-    setLfgHidePastFilter(!appConfig.hidePastLfgs);
+    setHidePastLfgs(newValue);
+    setLfgHidePastFilter(newValue);
   };
 
   return (
@@ -30,14 +32,15 @@ export const LfgSettingsScreen = () => {
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
-              <SettingsBooleanListItem
+              <BooleanField
+                name={'hidePastLfgs'}
                 label={'Hide Past LFGs by Default'}
+                onPress={handleHidePastLfgs}
+                style={commonStyles.paddingHorizontal}
                 helperText={
                   'Default to not showing LFGs that have already happened. You can still use the filters to view them.'
                 }
-                onPress={handleHidePastLfgs}
                 value={hidePastLfgs}
-                style={commonStyles.paddingHorizontal}
               />
             </View>
           </Formik>

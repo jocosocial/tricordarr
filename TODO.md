@@ -14,3 +14,5 @@ Nightly
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
 * If no push then don't start fgs
+* Full image is loading show indicator
+* Push boolean with descriptions 
