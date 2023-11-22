@@ -15,4 +15,3 @@ Nightly
 * Kraken Talk interoperability
 * If no push then don't start fgs
 * Full image is loading show indicator
-* Push boolean with descriptions 

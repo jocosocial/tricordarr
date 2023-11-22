@@ -14,9 +14,19 @@ interface BooleanFieldProps {
   helperText?: string;
   icon?: string;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 }
 
-export const BooleanField = ({name, label, helperText, icon, onPress, value, style}: BooleanFieldProps) => {
+export const BooleanField = ({
+  name,
+  label,
+  helperText,
+  icon,
+  onPress,
+  value,
+  style,
+  disabled = false,
+}: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
   const [field, meta, helpers] = useField<boolean>(name);
@@ -39,7 +49,7 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value, sty
   return (
     <Field name={name}>
       {() => (
-        <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault}>
+        <TouchableRipple style={[styles.ripple, style]} onPress={onPress || onPressDefault} disabled={disabled}>
           <View>
             <View style={styles.wrapper}>
               <Text>
@@ -52,7 +62,11 @@ export const BooleanField = ({name, label, helperText, icon, onPress, value, sty
                 )}
                 {label}
               </Text>
-              <Switch value={value === undefined ? field.value : value} onValueChange={onPress || onPressDefault} />
+              <Switch
+                value={value === undefined ? field.value : value}
+                onValueChange={onPress || onPressDefault}
+                disabled={disabled}
+              />
             </View>
             {helperText && (
               <HelperText style={styles.helperText} type={'info'}>
