@@ -13,5 +13,3 @@ Nightly
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
 * push notification setting boolean is a little fidgity 
-* app is spamming requests to notification/global on seamail push notification. home screen
-  * seamailscreen might not be helping
