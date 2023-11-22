@@ -10,6 +10,8 @@ import SunsetImage from '../../../../assets/mainview_sunset.jpg';
 import HappyHourImage from '../../../../assets/mainview_happy.jpg';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {TouchableOpacity} from 'react-native';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 /**
  * Display a pretty image in the app based on the time of day.
@@ -17,6 +19,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 export const MainImageCardCover = () => {
   const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
+  const {setErrorMessage} = useErrorHandler();
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
@@ -42,5 +45,13 @@ export const MainImageCardCover = () => {
     sourceImage = SunsetImage;
   }
 
-  return <Card.Cover source={sourceImage} />;
+  const debugPress = () => {
+    setErrorMessage(`The current hour is ${currentHour}`);
+  };
+
+  return (
+    <TouchableOpacity onPress={debugPress}>
+      <Card.Cover source={sourceImage} />
+    </TouchableOpacity>
+  );
 };

@@ -105,7 +105,7 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.networkInfoSettings}
                 />
                 <SettingsNavigationListItem
-                  title={'Notifications'}
+                  title={'Test Notifications'}
                   description={'Generate a test notification for debugging.'}
                   navComponent={SettingsStackScreenComponents.testNotification}
                 />
@@ -118,11 +118,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Background Connection'}
                   description={'Manage the worker that maintains a connection to the server.'}
                   navComponent={SettingsStackScreenComponents.serverConnectionSettings}
-                />
-                <SettingsNavigationListItem
-                  title={'Notifications'}
-                  description={'Generate a test notification for debugging.'}
-                  navComponent={SettingsStackScreenComponents.testNotification}
                 />
                 <SettingsNavigationListItem
                   title={'Sockets'}
