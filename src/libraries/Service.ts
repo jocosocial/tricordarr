@@ -11,6 +11,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import {SocketHealthcheckData} from './Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
+import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: number;
@@ -148,8 +149,18 @@ export async function stopForegroundServiceWorker() {
  * a notification associated with the foreground service.
  * This function is called every time the app launches so it needs to be smart
  * about whether it generates a new notification.
+ *
+ * During testing, it seems that the app was able to start the WebSocket, not display the notification,
+ * and leave the socket in the background as some sort of "foreground service task like thing". That is
+ * to say it kept running after the app was killed. I suspect the OS would come along at some point
+ * and terminate it. I believe the notification is the only way to ensure that it starts correctly.
  */
 export async function startForegroundServiceWorker() {
+  const notificationPermission = await checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+  if (notificationPermission !== RESULTS.GRANTED) {
+    console.log('[Service.ts] Notification permission not allowed. Not starting FGS or socket.');
+    return;
+  }
   console.log('[Service.ts] Starting foreground service worker.');
   const ws = await getSharedWebSocket();
 

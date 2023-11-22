@@ -5,9 +5,6 @@ Work Queue
 * theme photos
 * disabled app
 * blocks/mutes/favorites initial queries
-* Push Notifications
-  * FGS - should start if disabled?
-  * FGS - does start if enabled later?
 
 Nightly
 * header image broke, couldn't figure out why long time mid-day
@@ -16,3 +13,5 @@ Nightly
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
 * push notification setting boolean is a little fidgity 
+* app is spamming requests to notification/global on seamail push notification. home screen
+  * seamailscreen might not be helping
