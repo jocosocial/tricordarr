@@ -13,5 +13,4 @@ Nightly
 * Make notification permission optional
 * Performance degradation with background Ed lfg and event stacks. Find a way to unmount
 * Kraken Talk interoperability
-* Notifications to oobe
 * If no push then don't start fgs
