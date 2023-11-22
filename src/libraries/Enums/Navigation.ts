@@ -1,3 +1,5 @@
+import {SeamailHelpScreen} from '../../components/Screens/Seamail/SeamailHelpScreen';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -51,6 +53,7 @@ export enum SeamailStackScreenComponents {
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
   seamailSearchScreen = 'SeamailSearchScreen',
+  seamailHelpScreen = 'SeamailHelpScreen',
 }
 
 export enum MainStackComponents {

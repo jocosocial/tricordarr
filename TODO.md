@@ -8,7 +8,6 @@ Work Queue
 
 Nightly
 * header image broke, couldn't figure out why long time mid-day
-* Expand on seamail help
 * Is there cross contamination between lfg and seamail context? I think so.Beginning of this seamail conversation in lfg chat
 * Make an info snack bar that dismissed quickly
 * Make notification permission optional
