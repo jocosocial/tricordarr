@@ -4,6 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
+import {ThemeCardCoverImage} from '../../Images/ThemeCardCoverImage';
 
 /**
  * A card to display the daily theme object as returned from the API. If no object then no theme.
@@ -40,6 +41,8 @@ export const DailyThemeCard = () => {
     return <></>;
   }
 
+  console.log(dailyTheme);
+
   return (
     <Card style={[commonStyles.marginBottomSmall, commonStyles.twitarrNeutral]}>
       <Card.Title
@@ -49,9 +52,10 @@ export const DailyThemeCard = () => {
         subtitleVariant={'bodyLarge'}
         subtitleStyle={[commonStyles.onTwitarrButton]}
       />
-      <Card.Content>
+      <Card.Content style={[commonStyles.marginBottomSmall]}>
         <Text style={[commonStyles.onTwitarrButton]}>{dailyTheme.info}</Text>
       </Card.Content>
+      {dailyTheme.image && <ThemeCardCoverImage fileName={dailyTheme.image} />}
     </Card>
   );
 };

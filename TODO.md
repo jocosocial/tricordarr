@@ -4,6 +4,7 @@ Work Queue
 * LFG
   * post images
 * theme photos
+  * Implement the thumb->full for the image viewer
 * disabled app
 * blocks/mutes/favorites initial queries
 
