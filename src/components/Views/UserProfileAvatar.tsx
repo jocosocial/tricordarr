@@ -1,20 +1,18 @@
-import {AppImage} from '../Images/AppImage';
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
-import {useImageQuery} from '../Queries/ImageQuery';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
-import {useQueryClient} from '@tanstack/react-query';
-import {ImageQueryData} from '../../libraries/Types';
-import {AppImageViewer} from '../Images/AppImageViewer';
+import {AppImage} from '../Images/AppImage';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -24,16 +22,11 @@ interface UserProfileAvatarProps {
 export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps) => {
   const {commonStyles} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
-  const avatarQuery = useImageQuery(`/image/user/thumb/${user.header.userID}`);
   const avatarMutation = useUserAvatarMutation();
   const {setErrorMessage} = useErrorHandler();
   const userProfileQuery = useUserProfileQuery();
   const {profilePublicData} = useUserData();
-  const queryClient = useQueryClient();
-  const fullImageQuery = useImageQuery(`/image/user/full/${user.header.userID}`, false);
-  const [visible, setIsVisible] = useState(false);
-  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
-  const [enableFullQuery, setEnableFullQuery] = useState(false);
+  const {getIsDisabled} = useFeature();
 
   const styles = StyleSheet.create({
     image: {
@@ -59,7 +52,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   const takeImage = async () => {
     const permissionStatus = await requestPermission(PERMISSIONS.ANDROID.CAMERA);
-    console.log(permissionStatus);
+    console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,
@@ -75,10 +68,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   const onSuccess = () => {
-    avatarQuery.refetch().then(() => userProfileQuery.refetch());
-    if (fullImageQuery.data) {
-      queryClient.removeQueries([`/image/user/full/${user.header.userID}`]);
-    }
+    userProfileQuery.refetch();
   };
 
   const processImage = (image: Image) => {
@@ -103,53 +93,27 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     );
   };
 
-  const handleAvatarPress = () => {
-    if (fullImageQuery.data) {
-      setEnableFullQuery(true);
-      return;
-    }
-    fullImageQuery.refetch().then(() => {
-      setEnableFullQuery(true);
-    });
-  };
-
   useEffect(() => {
-    if (enableFullQuery && fullImageQuery.data) {
-      setViewerImages([fullImageQuery.data]);
-      setIsVisible(true);
-      setEnableFullQuery(false);
-    }
-  }, [enableFullQuery, fullImageQuery.data]);
-
-  useEffect(() => {
-    setRefreshing(
-      avatarMutation.isLoading ||
-        avatarQuery.isRefetching ||
-        userProfileQuery.isRefetching ||
-        fullImageQuery.isRefetching ||
-        fullImageQuery.isFetching,
-    );
-  }, [
-    avatarMutation.isLoading,
-    avatarQuery.isRefetching,
-    fullImageQuery.isRefetching,
-    setRefreshing,
-    userProfileQuery.isRefetching,
-    fullImageQuery.isFetching,
-  ]);
+    setRefreshing(avatarMutation.isLoading || userProfileQuery.isRefetching);
+  }, [avatarMutation.isLoading, setRefreshing, userProfileQuery.isRefetching]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 
+  if (!userProfileQuery.data) {
+    return <></>;
+  }
+
+  let thumbPath = `/image/thumb/${userProfileQuery.data.header.userImage}`;
+  let fullPath = `/image/full/${userProfileQuery.data.header.userImage}`;
+  if (!userProfileQuery.data.header.userImage) {
+    thumbPath = `/image/user/identicon/${userProfileQuery.data.header.userID}`;
+    fullPath = `/image/user/identicon/${userProfileQuery.data.header.userID}`;
+  }
+
   return (
     <View>
-      <AppImageViewer viewerImages={viewerImages} isVisible={visible} setIsVisible={setIsVisible} />
-      <AppImage
-        style={styles.image}
-        imageData={avatarQuery.data}
-        isLoading={avatarQuery.isLoading || fullImageQuery.isLoading}
-        onPress={handleAvatarPress}
-      />
-      {isSelf && (
+      <AppImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
+      {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
           <IconButton icon={AppIcons.newImage} onPress={pickImage} />
           <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />

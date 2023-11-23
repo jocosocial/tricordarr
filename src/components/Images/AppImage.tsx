@@ -1,59 +1,99 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Avatar} from 'react-native-paper';
-import {Image, ImageStyle, StyleProp, TouchableOpacity} from 'react-native';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useImageQuery} from '../Queries/ImageQuery';
 import {AppImageViewer} from './AppImageViewer';
+import {Image, ImageStyle, StyleProp, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, Card} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {useImageQuery} from '../Queries/ImageQuery';
+import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
+import {AppIcon} from './AppIcon';
+import {AppIcons} from '../../libraries/Enums/Icons';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {useModal} from '../Context/Contexts/ModalContext';
+import {HelpModalView} from '../Views/Modals/HelpModalView';
 
-type AppImageProps = {
-  // path: string;
+interface NewAppImageProps {
+  thumbPath: string;
+  fullPath: string;
   style?: StyleProp<ImageStyle>;
-  // fullPath: string;
-  onPress?: () => void;
-  imageData?: ImageQueryData;
-  isLoading?: boolean;
-};
+  mode?: 'cardcover' | 'image';
+}
 
-export const AppImage = ({style, onPress, imageData, isLoading = false}: AppImageProps) => {
-  // const imageQuery = useImageQuery(path);
-  // const [enableFullQuery, setEnableFullQuery] = useState(false);
-  // const fullImageQuery = useImageQuery(fullPath || path, enableFullQuery);
-  // const [visible, setIsVisible] = useState(false);
-  // const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
+export const AppImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: NewAppImageProps) => {
+  const {getIsDisabled} = useFeature();
+  const isDisabled = getIsDisabled(SwiftarrFeature.images);
+  const thumbImageQuery = useImageQuery(thumbPath, !isDisabled);
+  const fullImageQuery = useImageQuery(fullPath, false);
+  const {commonStyles} = useStyles();
+  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
+  const [isViewerVisible, setIsViewerVisible] = useState(false);
+  const [enableFullQuery, setEnableFullQuery] = useState(false);
+  const {setModalContent, setModalVisible} = useModal();
 
-  // const handlePress = async () => {
-  //   console.log('AppImage::handlePress');
-  //   setEnableFullQuery(true);
-  //   await fullImageQuery.refetch();
-  // };
-  //
-  // useEffect(() => {
-  //   console.log('AppImage::useEffect::start', !!fullImageQuery.data, fullImageQuery.isRefetching);
-  //   if (fullImageQuery.data) {
-  //     console.log('AppImage::useEffect::setViewerImages');
-  //     setViewerImages([fullImageQuery.data]);
-  //   }
-  //   if (enableFullQuery) {
-  //     console.log('AppImage::useEffect::setIsVisible');
-  //     setIsVisible(true);
-  //     setEnableFullQuery(false);
-  //   }
-  // }, [enableFullQuery, fullImageQuery.data, fullImageQuery.isRefetching]);
+  const handleThumbPress = () => {
+    if (fullImageQuery.data) {
+      setEnableFullQuery(true);
+      return;
+    }
+    fullImageQuery.refetch().then(() => {
+      setEnableFullQuery(true);
+    });
+  };
 
-  if (!imageData && isLoading) {
-    return <ActivityIndicator style={style} />;
+  useEffect(() => {
+    if (enableFullQuery && fullImageQuery.data) {
+      setViewerImages([fullImageQuery.data]);
+      setIsViewerVisible(true);
+      setEnableFullQuery(false);
+    }
+  }, [enableFullQuery, fullImageQuery.data]);
+
+  const handleDisableModal = () => {
+    setModalContent(
+      <HelpModalView
+        text={[
+          'Images have been disabled by the server admins. This could be for all clients or just Tricordarr. Check the forums, announcements, or Info Desk for more details.',
+        ]}
+      />,
+    );
+    setModalVisible(true);
+  };
+
+  if (isDisabled) {
+    return (
+      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+        <AppIcon icon={AppIcons.imageDisabled} onPress={handleDisableModal} />
+      </Card.Content>
+    );
   }
 
-  if (!imageData) {
-    return <Avatar.Icon style={style} icon={AppIcons.error} />;
+  if (
+    thumbImageQuery.isLoading ||
+    thumbImageQuery.isFetching ||
+    fullImageQuery.isFetching ||
+    fullImageQuery.isRefetching
+  ) {
+    return (
+      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+        <ActivityIndicator />
+      </Card.Content>
+    );
+  }
+
+  if (!thumbImageQuery.data) {
+    return (
+      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+        <AppIcon icon={AppIcons.error} />
+      </Card.Content>
+    );
   }
 
   return (
     <>
-      {/*<AppImageViewer viewerImages={viewerImages} isVisible={visible} setIsVisible={setIsVisible} />*/}
-      <TouchableOpacity onPress={onPress}>
-        <Image style={style} source={{uri: imageData.dataURI}} />
+      <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
+      <TouchableOpacity onPress={handleThumbPress}>
+        {mode === 'cardcover' && <Card.Cover style={style} source={{uri: thumbImageQuery.data.dataURI}} />}
+        {mode === 'image' && <Image style={[commonStyles.headerImage, style]} source={{uri: thumbImageQuery.data.dataURI}} />}
       </TouchableOpacity>
     </>
   );

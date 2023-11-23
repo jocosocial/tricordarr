@@ -4,7 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
-import {NewAppImage} from '../../Images/NewAppImage';
+import {AppImage} from '../../Images/AppImage';
 
 /**
  * A card to display the daily theme object as returned from the API. If no object then no theme.
@@ -54,7 +54,7 @@ export const DailyThemeCard = () => {
         <Text style={[commonStyles.onTwitarrButton]}>{dailyTheme.info}</Text>
       </Card.Content>
       {dailyTheme.image && (
-        <NewAppImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />
+        <AppImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />
       )}
     </Card>
   );

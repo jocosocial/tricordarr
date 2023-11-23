@@ -3,8 +3,6 @@ Backlog
 Work Queue
 * LFG
   * post images
-* disabled features
-  * profile images need unified to the new viewer component
 * Header image fixing
   * seems to be mornings now? still could be related to react-native development
 
