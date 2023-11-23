@@ -73,6 +73,7 @@ import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
 import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
 import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
+import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
 
 registerFgsWorker();
 
@@ -112,10 +113,12 @@ function App(): JSX.Element {
                                     <UserRelationsProvider>
                                       <DrawerProvider>
                                         <ScheduleFilterProvider>
-                                          <AppEventHandler />
-                                          <ForegroundService />
-                                          <NotificationDataListener />
-                                          <RootStackNavigator />
+                                          <FeatureProvider>
+                                            <AppEventHandler />
+                                            <ForegroundService />
+                                            <NotificationDataListener />
+                                            <RootStackNavigator />
+                                          </FeatureProvider>
                                         </ScheduleFilterProvider>
                                       </DrawerProvider>
                                     </UserRelationsProvider>

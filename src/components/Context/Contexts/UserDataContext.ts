@@ -1,6 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
-import {UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
 
 export interface UserDataContextType {
   profilePublicData?: ProfilePublicData;
