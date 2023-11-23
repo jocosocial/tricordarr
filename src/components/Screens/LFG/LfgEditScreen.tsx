@@ -14,12 +14,13 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LfgCanceledView} from '../../Views/LfgCanceledView';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgEditScreen, NavigatorIDs.lfgStack>;
 
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
-  const {setLfg} = useTwitarr();
+  const {setLfg, dispatchLfgList} = useTwitarr();
   const {appConfig} = useConfig();
   const offset = getFezTimezoneOffset(route.params.fez, appConfig.portTimeZoneID);
 
@@ -48,6 +49,10 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       {
         onSuccess: response => {
           setLfg(response.data);
+          dispatchLfgList({
+            type: FezListActions.updateFez,
+            fez: response.data,
+          });
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
