@@ -20,7 +20,7 @@ async function buildWebsocketURL(fezID?: string) {
   } else {
     wsUrl.replace('http', 'ws');
   }
-  console.log('Websocket URL is', wsUrl);
+  console.log('[Websockets.ts] Websocket URL is', wsUrl);
   return wsUrl;
 }
 
@@ -83,10 +83,10 @@ export const buildWebSocket = async (fezID?: string) => {
  */
 export const wsHealthcheck = (ws?: ReconnectingWebSocket) => {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    console.log('WebSocket is open and healthy');
+    console.log('[Websockets.ts] WebSocket is open and healthy');
     return true;
   }
-  console.warn('WebSocket is unhealthy!');
+  console.warn('[Websockets.ts] WebSocket is unhealthy!');
   return false;
 };
 

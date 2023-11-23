@@ -30,10 +30,10 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   // Array of cruise day names and configs.
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
 
-  console.log('Start Date', startDate.toISOString());
-  console.log('End Date', endDate.toISOString());
-  console.log('Current Date', hourlyUpdatingDate.toISOString());
-  console.log('Cruise Day Index', cruiseDayIndex);
+  // console.log('Start Date', startDate.toISOString());
+  // console.log('End Date', endDate.toISOString());
+  // console.log('Current Date', hourlyUpdatingDate.toISOString());
+  // console.log('Cruise Day Index', cruiseDayIndex);
 
   return (
     <CruiseContext.Provider

@@ -41,16 +41,17 @@ import moment from 'moment-timezone';
 // JS runtime check, which we disable here.
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 
+console.log('[App.tsx] Tricordarr start!');
+
+// Time and locale setup, used in various places within the app.
 TimeAgo.addDefaultLocale(en);
 // @TODO this timezone is a hack, until we figure out what to do about the API.
 moment.tz.link('AST|America/Santo_Domingo');
-
 registerTranslation('en', paperEn);
 
 // https://tanstack.com/query/latest/docs/react/overview
@@ -87,7 +88,7 @@ function App(): JSX.Element {
   });
 
   useEffect(() => {
-    console.log('Calling useEffect from Main App.');
+    console.log('[App.tsx] Calling useEffect from Main App.');
     setupInitialNotification().catch(console.error);
   }, []);
 

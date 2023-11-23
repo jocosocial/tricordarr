@@ -56,7 +56,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   }, [asModerator, asTwitarrTeam, asTHO, asAdmin, asPrivilegedUser, setAsPrivilegedUser]);
 
   const clearPrivileges = () => {
-    console.info('Clearing Privileges');
+    // console.info('Clearing Privileges');
     setAsModerator(false);
     setAsTwitarrTeam(false);
     setAsTHO(false);
@@ -64,7 +64,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   };
 
   const clearLevels = () => {
-    console.info('Clearing levels');
+    // console.info('Clearing levels');
     setHasModerator(false);
     setHasTwitarrTeam(false);
     setHasTHO(false);

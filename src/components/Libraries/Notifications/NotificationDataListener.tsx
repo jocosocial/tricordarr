@@ -36,12 +36,12 @@ export const NotificationDataListener = () => {
   );
 
   const addHandler = useCallback(() => {
-    console.log('UNDListener adding handler.');
+    console.log('[NotificationDataListener.tsx] Adding handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
   const removeHandler = useCallback(() => {
-    console.log('UNDListener removing handler.');
+    console.log('[NotificationDataListener.tsx] Removing handler.');
     notificationSocket?.removeEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
