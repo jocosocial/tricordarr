@@ -4,8 +4,6 @@ Work Queue
 * LFG
   * post images
   * dedicated state in useTwitarr rather than sharing with seamail
-* theme photos
-  * Implement the thumb->full for the image viewer
 * disabled app
 * blocks/mutes/favorites initial queries
 * Header image fixing
