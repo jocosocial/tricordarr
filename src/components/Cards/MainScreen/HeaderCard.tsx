@@ -27,7 +27,7 @@ export const HeaderCard = () => {
   }
 
   return (
-    <Card style={[commonStyles.marginBottomSmall]}>
+    <Card style={[commonStyles.marginBottom]}>
       <MainImageCardCover />
       <Card.Title
         titleVariant={'bodyLarge'}

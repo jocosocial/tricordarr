@@ -14,7 +14,6 @@ import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NextEventCard} from '../../Cards/MainScreen/NextEventCard';
-import {useRefresh} from '@react-native-community/hooks';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -45,7 +44,7 @@ export const MainScreen = ({navigation}: Props) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <HeaderCard />
-          <DailyThemeCard refreshing={refreshing} setRefreshing={setRefreshing} />
+          <DailyThemeCard />
           <MainAnnouncementView />
           {userNotificationData?.nextFollowedEventID && (
             <NextEventCard eventID={userNotificationData.nextFollowedEventID} />

@@ -42,7 +42,7 @@ export const DailyThemeCard = () => {
   }
 
   return (
-    <Card style={[commonStyles.marginBottomSmall, commonStyles.twitarrNeutral]}>
+    <Card style={[commonStyles.marginBottom, commonStyles.twitarrNeutral]}>
       <Card.Title
         title={"Today's Theme:"}
         subtitle={dailyTheme.title}
