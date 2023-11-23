@@ -129,6 +129,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
                 />
+                <SettingsNavigationListItem
+                  title={'Disabled Features'}
+                  description={'Show features that have been disabled by the server.'}
+                  navComponent={SettingsStackScreenComponents.featureSettingsScreen}
+                />
               </ListSection>
             </>
           )}

@@ -11,7 +11,10 @@ export const FeatureProvider = ({children}: PropsWithChildren) => {
     if (userNotificationData) {
       const ourFeatures = userNotificationData.disabledFeatures
         .filter(disabledFeature => {
-          if (disabledFeature.appName === SwiftarrClientApp.tricordarr) {
+          if (
+            disabledFeature.appName === SwiftarrClientApp.tricordarr ||
+            disabledFeature.appName === SwiftarrClientApp.all
+          ) {
             return disabledFeature.featureName;
           }
         })

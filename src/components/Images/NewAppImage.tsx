@@ -7,6 +7,10 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
 import {AppIcon} from './AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {useModal} from '../Context/Contexts/ModalContext';
+import {HelpModalView} from '../Views/Modals/HelpModalView';
 
 interface NewAppImageProps {
   thumbPath: string;
@@ -14,12 +18,15 @@ interface NewAppImageProps {
 }
 
 export const NewAppImage = ({thumbPath, fullPath}: NewAppImageProps) => {
-  const thumbImageQuery = useImageQuery(thumbPath);
+  const {getIsDisabled} = useFeature();
+  const isDisabled = getIsDisabled(SwiftarrFeature.images);
+  const thumbImageQuery = useImageQuery(thumbPath, !isDisabled);
   const fullImageQuery = useImageQuery(fullPath, false);
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const [enableFullQuery, setEnableFullQuery] = useState(false);
+  const {setModalContent, setModalVisible} = useModal();
 
   const handleThumbPress = () => {
     if (fullImageQuery.data) {
@@ -38,6 +45,25 @@ export const NewAppImage = ({thumbPath, fullPath}: NewAppImageProps) => {
       setEnableFullQuery(false);
     }
   }, [enableFullQuery, fullImageQuery.data]);
+
+  const handleDisableModal = () => {
+    setModalContent(
+      <HelpModalView
+        text={[
+          'Images have been disabled by the server admins. This could be for all clients or just Tricordarr. Check the forums, announcements, or Info Desk for more details.',
+        ]}
+      />,
+    );
+    setModalVisible(true);
+  };
+
+  if (isDisabled) {
+    return (
+      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+        <AppIcon icon={AppIcons.imageDisabled} onPress={handleDisableModal} />
+      </Card.Content>
+    );
+  }
 
   if (
     thumbImageQuery.isLoading ||

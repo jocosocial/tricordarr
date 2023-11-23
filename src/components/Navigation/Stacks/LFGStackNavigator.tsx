@@ -16,6 +16,9 @@ import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgEditScreen} from '../../Screens/LFG/LfgEditScreen';
 import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen';
+import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
+import {useFeature} from '../../Context/Contexts/FeatureContext';
+import {DisabledView} from '../../Views/Static/DisabledView';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;
@@ -45,6 +48,8 @@ export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<LfgStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
+  const {getIsDisabled} = useFeature();
+  const isDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
 
   return (
     <Stack.Navigator
@@ -67,13 +72,17 @@ export const LfgStackNavigator = () => {
       />
       <Stack.Screen
         name={LfgStackComponents.lfgFindScreen}
-        component={LfgFindScreen}
+        component={isDisabled ? DisabledView : LfgFindScreen}
         options={{
           title: 'Find Groups',
           headerLeft: getLeftMainHeaderButtons,
         }}
       />
-      <Stack.Screen name={LfgStackComponents.lfgScreen} component={LfgScreen} options={{title: 'Looking For Group'}} />
+      <Stack.Screen
+        name={LfgStackComponents.lfgScreen}
+        component={isDisabled ? DisabledView : LfgScreen}
+        options={{title: 'Looking For Group'}}
+      />
       <Stack.Screen
         name={LfgStackComponents.lfgParticipationScreen}
         component={LfgParticipationScreen}
@@ -84,7 +93,11 @@ export const LfgStackNavigator = () => {
         component={LfgAddParticipantScreen}
         options={{title: 'Add Participant'}}
       />
-      <Stack.Screen name={LfgStackComponents.lfgChatScreen} component={LfgChatScreen} options={{title: 'LFG Chat'}} />
+      <Stack.Screen
+        name={LfgStackComponents.lfgChatScreen}
+        component={isDisabled ? DisabledView : LfgChatScreen}
+        options={{title: 'LFG Chat'}}
+      />
       <Stack.Screen
         name={LfgStackComponents.lfgSettingsScreen}
         component={LfgSettingsScreen}

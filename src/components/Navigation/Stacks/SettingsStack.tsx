@@ -23,6 +23,7 @@ import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
+import {FeatureSettingsScreen} from '../../Screens/Settings/FeatureSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -45,6 +46,7 @@ export type SettingsStackParamList = {
   FavoriteUsersScreen: undefined;
   EventSettingsScreen: undefined;
   LfgSettingsScreen: undefined;
+  FeatureSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -149,6 +151,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.lfgSettings}
         component={LfgSettingsScreen}
         options={{title: 'LFG Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.featureSettingsScreen}
+        component={FeatureSettingsScreen}
+        options={{title: 'Disabled Features'}}
       />
     </Stack.Navigator>
   );

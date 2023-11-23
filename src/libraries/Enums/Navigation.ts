@@ -43,6 +43,7 @@ export enum SettingsStackScreenComponents {
   favoriteUsers = 'FavoriteUsersScreen',
   eventSettings = 'EventSettingsScreen',
   lfgSettings = 'LfgSettingsScreen',
+  featureSettingsScreen = 'FeatureSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {

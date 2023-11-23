@@ -13,6 +13,9 @@ import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../../Screens/User/UserRegCodeScreen';
+import {useFeature} from '../../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
+import {DisabledView} from '../../Views/Static/DisabledView';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -42,6 +45,8 @@ export type MainStackParamList = {
 export const MainStack = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<MainStackParamList>();
+  const {getIsDisabled} = useFeature();
+  const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
 
   return (
     <Stack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
@@ -63,12 +68,12 @@ export const MainStack = () => {
       />
       <Stack.Screen
         name={MainStackComponents.userDirectoryScreen}
-        component={UserDirectoryScreen}
+        component={isUsersDisabled ? DisabledView : UserDirectoryScreen}
         options={{title: 'Directory'}}
       />
       <Stack.Screen
         name={MainStackComponents.userProfileScreen}
-        component={UserProfileScreen}
+        component={isUsersDisabled ? DisabledView : UserProfileScreen}
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
