@@ -19,12 +19,11 @@ export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents
 
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
-  const {setFez} = useTwitarr();
+  const {setLfg} = useTwitarr();
   const {appConfig} = useConfig();
   const offset = getFezTimezoneOffset(route.params.fez, appConfig.portTimeZoneID);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    console.log(values);
     let fezStartTime = new Date(values.startDate);
     fezStartTime.setHours(values.startTime.hours);
     fezStartTime.setMinutes(values.startTime.minutes);
@@ -48,8 +47,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          console.log('ZZZZZZZZZZ RESPONSE DATA', response.data.cancelled);
-          setFez(response.data);
+          setLfg(response.data);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
@@ -57,13 +55,10 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
     );
   };
 
-  console.log('Start', route.params.fez.startTime, 'End', route.params.fez.endTime);
-  console.log('Fez has offset', offset);
   let startDate = new Date(route.params.fez.startTime || new Date());
   startDate = addMinutes(startDate, offset);
   let endDate = new Date(route.params.fez.endTime || new Date());
   endDate = addMinutes(endDate, offset);
-  console.log('Duration', differenceInMinutes(endDate, startDate).toString());
 
   const initialValues: FezFormValues = {
     title: route.params.fez.title,
@@ -79,8 +74,6 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       minutes: startDate.getMinutes(),
     },
   };
-
-  console.log(initialValues);
 
   return (
     <AppView>

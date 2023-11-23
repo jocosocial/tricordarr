@@ -21,7 +21,7 @@ export type Props = NativeStackScreenProps<
 
 export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {fez, setFez} = useTwitarr();
+  const {lfg, setLfg} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
 
   const onPress = (user: UserHeader) => {
@@ -33,7 +33,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          setFez(response.data);
+          setLfg(response.data);
           navigation.goBack();
         },
         onError: error => {
@@ -43,7 +43,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
     );
   };
 
-  if (!fez || !fez.members) {
+  if (!lfg || !lfg.members) {
     return <LoadingView />;
   }
 
@@ -51,7 +51,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isLoading} />}>
         <PaddedContentView>
-          <UserSearchBar userHeaders={fez.members.participants || []} onPress={onPress} />
+          <UserSearchBar userHeaders={lfg.members.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

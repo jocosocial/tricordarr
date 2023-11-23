@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   BottomTabComponents,
@@ -49,7 +49,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const {setModalVisible, setModalContent} = useModal();
-  const {fez, setFez} = useTwitarr();
+  const {lfg, setLfg} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
   const {setErrorMessage} = useErrorHandler();
   const {refetchUserNotificationData} = useUserNotificationData();
@@ -79,25 +79,25 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
 
   const handleMembershipPress = useCallback(() => {
-    if (!fez || !profilePublicData) {
+    if (!lfg || !profilePublicData) {
       return;
     }
-    if (FezData.isParticipant(fez, profilePublicData.header) || FezData.isWaitlist(fez, profilePublicData.header)) {
-      setModalContent(<LfgLeaveModal fezData={fez} />);
+    if (FezData.isParticipant(lfg, profilePublicData.header) || FezData.isWaitlist(lfg, profilePublicData.header)) {
+      setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
       setRefreshing(true);
       membershipMutation.mutate(
         {
-          fezID: fez.fezID,
+          fezID: lfg.fezID,
           action: 'join',
         },
         {
           onSuccess: response => {
-            setFez(response.data);
+            setLfg(response.data);
           },
           onError: error => {
-            setErrorMessage(error.response?.data.reason);
+            setErrorMessage(error.response?.data.reason || 'Unknown membership mutation error');
           },
           onSettled: () => {
             setRefreshing(false);
@@ -105,24 +105,24 @@ export const LfgScreen = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [fez, membershipMutation, profilePublicData, setErrorMessage, setFez, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, setErrorMessage, setLfg, setModalContent, setModalVisible]);
 
   const getNavButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          {fez && profilePublicData && (
+          {lfg && profilePublicData && (
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+              onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
             />
           )}
-          {fez && <ScheduleLfgMenu fezData={fez} />}
+          {lfg && <ScheduleLfgMenu fezData={lfg} />}
         </HeaderButtons>
       </View>
     );
-  }, [fez, navigation, profilePublicData]);
+  }, [lfg, navigation, profilePublicData]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -132,34 +132,34 @@ export const LfgScreen = ({navigation, route}: Props) => {
 
   useEffect(() => {
     if (data) {
-      setFez(data.pages[0]);
+      setLfg(data.pages[0]);
     }
-  }, [closeFezSocket, data, setFez]);
+  }, [closeFezSocket, data, setLfg]);
 
   // Mark as Read
   useEffect(() => {
-    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+    if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
       refetchUserNotificationData();
     }
     // @TODO this is still leaking
     if (isFocused) {
       closeFezSocket();
     }
-  }, [closeFezSocket, fez, isFocused, refetchUserNotificationData]);
+  }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
 
-  if (!fez) {
+  if (!lfg) {
     return <LoadingView />;
   }
 
   const getChatDescription = () => {
-    if (!fez.members) {
+    if (!lfg.members) {
       return;
     }
-    const unreadCount = fez.members.postCount - fez.members.readCount;
+    const unreadCount = lfg.members.postCount - lfg.members.readCount;
     return (
       <View style={styles.chatCountContainer}>
         <Text>
-          {fez.members.postCount} {pluralize('post', fez.members.postCount)}
+          {lfg.members.postCount} {pluralize('post', lfg.members.postCount)}
         </Text>
         {unreadCount !== 0 && <Badge style={styles.badge}>{`${unreadCount} new`}</Badge>}
       </View>
@@ -168,7 +168,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      {fez.cancelled && (
+      {lfg.cancelled && (
         <View style={[commonStyles.displayFlex, commonStyles.flexColumn]}>
           <LfgCanceledView />
         </View>
@@ -176,26 +176,26 @@ export const LfgScreen = ({navigation, route}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}>
-        {fez && (
+        {lfg && (
           <>
             <PaddedContentView padSides={false}>
               <ListSection>
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.events)}
-                  description={fez.title}
+                  description={lfg.title}
                   title={'Title'}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.time)}
-                  description={getDurationString(fez.startTime, fez.endTime, fez.timeZone, true)}
+                  description={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
                   title={'Date'}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.map)}
-                  description={fez.location}
+                  description={lfg.location}
                   title={'Location'}
                   onPress={() =>
                     rootStackNavigation.push(RootStackComponents.rootContentScreen, {
@@ -212,7 +212,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.user)}
-                  description={UserHeader.getByline(fez.owner)}
+                  description={UserHeader.getByline(lfg.owner)}
                   title={'Owner'}
                   onPress={() =>
                     rootStackNavigation.push(RootStackComponents.rootContentScreen, {
@@ -220,19 +220,19 @@ export const LfgScreen = ({navigation, route}: Props) => {
                       params: {
                         screen: MainStackComponents.userProfileScreen,
                         params: {
-                          userID: fez.owner.userID,
+                          userID: lfg.owner.userID,
                         },
                       },
                     })
                   }
                 />
-                {fez.members && (
+                {lfg.members && (
                   <DataFieldListItem
                     itemStyle={styles.item}
                     left={() => getIcon(AppIcons.group)}
-                    description={FezData.getParticipantLabel(fez)}
+                    description={FezData.getParticipantLabel(lfg)}
                     title={'Participation'}
-                    onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: fez?.fezID})}
+                    onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: lfg?.fezID})}
                   />
                 )}
                 <DataFieldListItem
@@ -240,18 +240,18 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.chat)}
                   description={getChatDescription}
                   title={'Chat'}
-                  onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: fez.fezID})}
+                  onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.description)}
-                  description={fez.info}
+                  description={lfg.info}
                   title={'Description'}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.type)}
-                  description={fez.fezType}
+                  description={lfg.fezType}
                   title={'Type'}
                 />
               </ListSection>
@@ -260,21 +260,21 @@ export const LfgScreen = ({navigation, route}: Props) => {
         )}
       </ScrollingContentView>
       <View style={[commonStyles.displayFlex, commonStyles.flexRow, commonStyles.marginTopSmall]}>
-        {profilePublicData && fez.owner.userID !== profilePublicData.header.userID && (
+        {profilePublicData && lfg.owner.userID !== profilePublicData.header.userID && (
           <PaddedContentView>
-            {(FezData.isParticipant(fez, profilePublicData?.header) ||
-              FezData.isWaitlist(fez, profilePublicData?.header)) && (
+            {(FezData.isParticipant(lfg, profilePublicData?.header) ||
+              FezData.isWaitlist(lfg, profilePublicData?.header)) && (
               <PrimaryActionButton
-                buttonText={FezData.isWaitlist(fez, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
+                buttonText={FezData.isWaitlist(lfg, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
                 onPress={handleMembershipPress}
                 buttonColor={theme.colors.twitarrNegativeButton}
                 isLoading={refreshing}
               />
             )}
-            {!FezData.isParticipant(fez, profilePublicData?.header) &&
-              !FezData.isWaitlist(fez, profilePublicData?.header) && (
+            {!FezData.isParticipant(lfg, profilePublicData?.header) &&
+              !FezData.isWaitlist(lfg, profilePublicData?.header) && (
                 <PrimaryActionButton
-                  buttonText={FezData.isFull(fez) ? 'Join the waitlist' : 'Join this LFG'}
+                  buttonText={FezData.isFull(lfg) ? 'Join the waitlist' : 'Join this LFG'}
                   onPress={handleMembershipPress}
                   buttonColor={theme.colors.twitarrPositiveButton}
                   isLoading={refreshing}
@@ -282,11 +282,11 @@ export const LfgScreen = ({navigation, route}: Props) => {
               )}
           </PaddedContentView>
         )}
-        {profilePublicData && fez.owner.userID === profilePublicData.header.userID && (
+        {profilePublicData && lfg.owner.userID === profilePublicData.header.userID && (
           <PaddedContentView>
             <PrimaryActionButton
               buttonText={'Edit'}
-              onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: fez})}
+              onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: lfg})}
               buttonColor={theme.colors.twitarrNeutralButton}
             />
           </PaddedContentView>

@@ -13,6 +13,9 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [searchString, setSearchString] = useState('');
   const [eventList, dispatchEventList] = useEventListReducer([]);
   const [scheduleList, dispatchScheduleList] = useScheduleListReducer([]);
+  const [lfgList, dispatchLfgList] = useFezListReducer([]);
+  const [lfg, setLfg] = useState<FezData>();
+  const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
 
   return (
     <TwitarrContext.Provider
@@ -29,6 +32,12 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         dispatchEventList,
         scheduleList,
         dispatchScheduleList,
+        lfgList,
+        dispatchLfgList,
+        lfg,
+        setLfg,
+        lfgPostsData,
+        dispatchLfgPostsData,
       }}>
       {children}
     </TwitarrContext.Provider>

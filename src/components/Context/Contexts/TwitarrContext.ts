@@ -18,6 +18,12 @@ interface TwitarrContextType {
   dispatchEventList: Dispatch<EventListActionsType>;
   scheduleList: (EventData | FezData)[];
   dispatchScheduleList: Dispatch<ScheduleListActionsType>;
+  lfgList: FezData[];
+  dispatchLfgList: Dispatch<FezListActionsType>;
+  lfg?: FezData;
+  setLfg: Dispatch<SetStateAction<FezData | undefined>>;
+  lfgPostsData: FezPostData[];
+  dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

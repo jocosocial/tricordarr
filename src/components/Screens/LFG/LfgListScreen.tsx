@@ -45,7 +45,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
-  const {setFez} = useTwitarr();
+  const {setLfg} = useTwitarr();
   const {closeFezSocket} = useSocket();
 
   let lfgList: FezData[] = [];
@@ -76,9 +76,9 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     });
     if (isFocused) {
       closeFezSocket();
-      setFez(undefined);
+      setLfg(undefined);
     }
-  }, [closeFezSocket, getNavButtons, isFocused, navigation, setFez]);
+  }, [closeFezSocket, getNavButtons, isFocused, navigation, setLfg]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
