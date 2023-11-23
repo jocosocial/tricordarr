@@ -4,7 +4,9 @@ import {FeatureContext} from '../Contexts/FeatureContext';
 import {useUserNotificationData} from '../Contexts/UserNotificationDataContext';
 
 export const FeatureProvider = ({children}: PropsWithChildren) => {
-  const [disabledFeatures, setDisabledFeatures] = useState<SwiftarrFeature[]>([]);
+  // Default to disabling images since those queries can fire pretty quickly. Once the state updates
+  // from UserNotificationData then the queries will all re-enable and function as expected.
+  const [disabledFeatures, setDisabledFeatures] = useState<SwiftarrFeature[]>([SwiftarrFeature.images]);
   const {userNotificationData} = useUserNotificationData();
 
   useEffect(() => {
