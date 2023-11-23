@@ -4,7 +4,6 @@ Work Queue
 * LFG
   * post images
 * disabled app
-* blocks/mutes/favorites initial queries
 * Header image fixing
   * seems to be mornings now? still could be related to react-native development
 
