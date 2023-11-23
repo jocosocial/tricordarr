@@ -42,6 +42,12 @@ export const DisabledView = () => {
               You could also check {appConfig.serverUrl} to see if there is more information available.
             </Text>
           </View>
+          <View style={styles.contentContainer}>
+            <Text>
+              If the feature works in the website but not in the app, it's likely that a critical bug in the app was
+              discovered. The server admins may have disabled the feature for the app as a precaution.
+            </Text>
+          </View>
         </View>
       </View>
     </AppView>
