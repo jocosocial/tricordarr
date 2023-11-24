@@ -13,13 +13,20 @@ interface AppImageViewerProps {
   viewerImages?: ImageQueryData[];
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  enableDownload?: boolean;
 }
 
 interface ImageViewerComponentProps {
   imageIndex: number;
 }
 
-export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], initialIndex = 0}: AppImageViewerProps) => {
+export const AppImageViewer = ({
+  isVisible,
+  setIsVisible,
+  viewerImages = [],
+  initialIndex = 0,
+  enableDownload = true,
+}: AppImageViewerProps) => {
   const [viewerMessage, setViewerMessage] = useState<string>();
   const {commonStyles} = useStyles();
 
@@ -40,7 +47,7 @@ export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], init
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
         <View style={[commonStyles.flexRow, commonStyles.justifyContentEnd]}>
-          <IconButton icon={AppIcons.download} onPress={() => saveImage(imageIndex)} />
+          {enableDownload && <IconButton icon={AppIcons.download} onPress={() => saveImage(imageIndex)} />}
           <IconButton icon={AppIcons.close} onPress={() => setIsVisible(false)} />
         </View>
       );
