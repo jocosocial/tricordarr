@@ -84,9 +84,7 @@ export const MainImageCardCover = () => {
   }, []);
 
   const debugPress = () => {
-    setErrorMessage(`The current hour is ${currentHour}, ${sourceImage}`);
-    console.log(Image.resolveAssetSource(sourceImage).uri);
-    console.log(sourceImage);
+    setErrorMessage(Image.resolveAssetSource(sourceImage).uri);
   };
 
   // Have to disable download since loading static images is actually really hard and I don't feel
