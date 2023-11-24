@@ -16,13 +16,17 @@ interface NewAppImageProps {
   thumbPath: string;
   fullPath: string;
   style?: StyleProp<ImageStyle>;
-  mode?: 'cardcover' | 'image';
+  mode?: 'cardcover' | 'image' | 'avatar';
 }
+
+const animatedRegex = new RegExp('\\.(gif)$', 'i');
 
 export const AppImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: NewAppImageProps) => {
   const {getIsDisabled} = useFeature();
+  // The thumbnails Swiftarr generates are not animated.
+  const isAnimated = animatedRegex.test(thumbPath);
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const thumbImageQuery = useImageQuery(thumbPath, !isDisabled);
+  const thumbImageQuery = useImageQuery(isAnimated ? fullPath : thumbPath, !isDisabled);
   const fullImageQuery = useImageQuery(fullPath, false);
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
@@ -93,7 +97,13 @@ export const AppImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: NewAp
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity onPress={handleThumbPress}>
         {mode === 'cardcover' && <Card.Cover style={style} source={{uri: thumbImageQuery.data.dataURI}} />}
-        {mode === 'image' && <Image style={[commonStyles.headerImage, style]} source={{uri: thumbImageQuery.data.dataURI}} />}
+        {mode === 'image' && (
+          <Image
+            resizeMode={'cover'}
+            style={[commonStyles.headerImage, style]}
+            source={{uri: thumbImageQuery.data.dataURI}}
+          />
+        )}
       </TouchableOpacity>
     </>
   );

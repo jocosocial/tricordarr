@@ -229,4 +229,7 @@ export const commonStyles = StyleSheet.create({
   fontFamilyNormal: {
     fontFamily: 'sans-serif',
   },
+  overflowHidden: {
+    overflow: 'hidden',
+  },
 });
