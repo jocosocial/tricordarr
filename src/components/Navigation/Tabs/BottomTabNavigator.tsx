@@ -45,7 +45,7 @@ export const BottomTabNavigator = () => {
         name={BottomTabComponents.homeTab}
         component={MainStack}
         options={{
-          title: 'Home',
+          title: 'Today',
           tabBarIcon: () => getIcon('home-account'),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
         }}
