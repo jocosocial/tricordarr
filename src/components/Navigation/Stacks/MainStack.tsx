@@ -9,13 +9,14 @@ import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
-import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
+import {DailyThemeData, ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../../Screens/User/UserRegCodeScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
+import {DailyThemeScreen} from '../../Screens/Main/DailyThemeScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -39,6 +40,9 @@ export type MainStackParamList = {
   };
   UserRegCodeScreen: {
     userID: string;
+  };
+  DailyThemeScreen: {
+    dailyTheme: DailyThemeData;
   };
 };
 
@@ -90,6 +94,11 @@ export const MainStack = () => {
         name={MainStackComponents.userRegCodeScreen}
         component={UserRegCodeScreen}
         options={{title: 'Registration'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.dailyThemeScreen}
+        component={DailyThemeScreen}
+        options={{title: 'Daily Theme'}}
       />
     </Stack.Navigator>
   );

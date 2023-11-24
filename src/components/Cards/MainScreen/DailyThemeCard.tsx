@@ -5,6 +5,8 @@ import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {AppImage} from '../../Images/AppImage';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 
 /**
  * A card to display the daily theme object as returned from the API. If no object then no theme.
@@ -15,6 +17,7 @@ export const DailyThemeCard = () => {
   const {cruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
   const {commonStyles} = useStyles();
+  const rootNavigation = useRootStack();
 
   useEffect(() => {
     refetch();
@@ -37,12 +40,26 @@ export const DailyThemeCard = () => {
     }
   }, [cruiseDayIndex, dailyThemeData]);
 
+  const onPress = () => {
+    if (dailyTheme) {
+      rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+        screen: BottomTabComponents.homeTab,
+        params: {
+          screen: MainStackComponents.dailyThemeScreen,
+          params: {
+            dailyTheme: dailyTheme,
+          },
+        },
+      });
+    }
+  };
+
   if (!dailyTheme) {
     return <></>;
   }
 
   return (
-    <Card style={[commonStyles.marginBottom, commonStyles.twitarrNeutral]}>
+    <Card style={[commonStyles.marginBottom, commonStyles.twitarrNeutral]} onPress={onPress}>
       <Card.Title
         title={"Today's Theme:"}
         subtitle={dailyTheme.title}
@@ -51,7 +68,9 @@ export const DailyThemeCard = () => {
         subtitleStyle={[commonStyles.onTwitarrButton]}
       />
       <Card.Content style={[commonStyles.marginBottomSmall]}>
-        <Text style={[commonStyles.onTwitarrButton]}>{dailyTheme.info}</Text>
+        <Text numberOfLines={3} style={[commonStyles.onTwitarrButton]}>
+          {dailyTheme.info}
+        </Text>
       </Card.Content>
       {dailyTheme.image && (
         <AppImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />

@@ -67,6 +67,7 @@ export enum MainStackComponents {
   editUserProfileScreen = 'EditUserProfileScreen',
   userPrivateNoteScreen = 'UserPrivateNoteScreen',
   userRegCodeScreen = 'UserRegCodeScreen',
+  dailyThemeScreen = 'DailyThemeScreen',
 }
 
 export enum RootStackComponents {
