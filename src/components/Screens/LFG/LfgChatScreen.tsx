@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -136,6 +136,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      Keyboard.dismiss();
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
