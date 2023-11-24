@@ -16,7 +16,7 @@ interface ContentInsertMenuViewProps {
 
 export const ContentInsertMenuView = ({visible, setVisible, fieldName = 'images'}: ContentInsertMenuViewProps) => {
   const {setErrorMessage} = useErrorHandler();
-  const {setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
+  const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
 
   const handleInsertEmoji = () => {
     setErrorMessage('This feature is not yet implemented.');
@@ -62,6 +62,11 @@ export const ContentInsertMenuView = ({visible, setVisible, fieldName = 'images'
     }
   };
 
+  const removeImage = () => {
+    setFieldValue(fieldName, []);
+    setVisible(false);
+  };
+
   return (
     <>
       {visible && (
@@ -70,6 +75,7 @@ export const ContentInsertMenuView = ({visible, setVisible, fieldName = 'images'
             <List.Item title={'Custom Emoji'} onPress={handleInsertEmoji} />
             <List.Item title={'Take New Photo'} onPress={takeImage} />
             <List.Item title={'Attach Existing Photo'} onPress={pickImage} />
+            {values.images.length > 0 && <List.Item title={'Remove Attachment'} onPress={removeImage} />}
           </ListSection>
         </View>
       )}

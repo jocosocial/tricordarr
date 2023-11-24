@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import {View, TextInput, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
@@ -63,6 +63,15 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
     lengthHintContainer: {
       ...commonStyles.flexRow,
     },
+    imageRow: {
+      ...commonStyles.flexRow,
+      ...commonStyles.marginTopSmall,
+    },
+    imagePressable: {
+      ...commonStyles.roundedBorder,
+      ...commonStyles.overflowHidden,
+    },
+    image: {width: 64, height: 64},
   });
 
   // https://formik.org/docs/api/withFormik
@@ -78,7 +87,7 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+      {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (
         <View style={styles.formContainer}>
           <View style={styles.formView}>
             <IconButton icon={AppIcons.insert} onPress={() => setInsertMenuVisible(!insertMenuVisible)} />
@@ -91,6 +100,29 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
                 onBlur={handleBlur('text')}
                 value={values.text}
               />
+              {values.images.length > 0 && (
+                <View style={styles.imageRow}>
+                  {values.images.map((imageData, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={styles.imagePressable}
+                        key={index}
+                        onPress={() =>
+                          setFieldValue(
+                            'images',
+                            values.images.filter((img, idx) => idx !== index),
+                          )
+                        }>
+                        <Image
+                          resizeMode={'cover'}
+                          style={styles.image}
+                          source={{uri: `data:image;base64,${imageData.image}`}}
+                        />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
             </View>
             <SubmitIconButton
               disabled={!values.text}
@@ -98,9 +130,6 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
               onPress={onPress || handleSubmit}
             />
           </View>
-          {/*<View style={styles.lengthHintContainer}>*/}
-          {/*  <PostLengthView content={values.text} />*/}
-          {/*</View>*/}
           <ContentInsertMenuView visible={insertMenuVisible} setVisible={setInsertMenuVisible} />
         </View>
       )}
