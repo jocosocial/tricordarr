@@ -103,11 +103,11 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     return <></>;
   }
 
-  let thumbPath = `/image/thumb/${userProfileQuery.data.header.userImage}`;
-  let fullPath = `/image/full/${userProfileQuery.data.header.userImage}`;
-  if (!userProfileQuery.data.header.userImage) {
-    thumbPath = `/image/user/identicon/${userProfileQuery.data.header.userID}`;
-    fullPath = `/image/user/identicon/${userProfileQuery.data.header.userID}`;
+  let thumbPath = `/image/thumb/${user.header.userImage}`;
+  let fullPath = `/image/full/${user.header.userImage}`;
+  if (!user.header.userImage) {
+    thumbPath = `/image/user/identicon/${user.header.userID}`;
+    fullPath = `/image/user/identicon/${user.header.userID}`;
   }
 
   return (
