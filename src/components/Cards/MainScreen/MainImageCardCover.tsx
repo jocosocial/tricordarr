@@ -46,7 +46,7 @@ export const MainImageCardCover = () => {
   }
 
   const debugPress = () => {
-    setErrorMessage(`The current hour is ${currentHour}`);
+    setErrorMessage(`The current hour is ${currentHour}, ${sourceImage}`);
   };
 
   return (
