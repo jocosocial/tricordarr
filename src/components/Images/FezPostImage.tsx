@@ -13,15 +13,24 @@ export const FezPostImage = ({image, messageOnRight}: FezPostImageProps) => {
 
   const styles = StyleSheet.create({
     view: {
+      ...commonStyles.fullWidth,
       ...(messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart),
       ...commonStyles.roundedBorderLarge,
       ...commonStyles.overflowHidden,
+    },
+    image: {
+      ...commonStyles.fullWidth,
     },
   });
 
   return (
     <View style={styles.view}>
-      <AppImage mode={'image'} thumbPath={`/image/thumb/${image}`} fullPath={`/image/full/${image}`} />
+      <AppImage
+        style={styles.image}
+        mode={'image'}
+        thumbPath={`/image/thumb/${image}`}
+        fullPath={`/image/full/${image}`}
+      />
     </View>
   );
 };
