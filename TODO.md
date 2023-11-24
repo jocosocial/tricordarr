@@ -3,6 +3,8 @@ Backlog
 Work Queue
 * LFG
   * post images
+    * uploading
+    * viewing
 * Header image fixing
   * seems to be mornings now? still could be related to react-native development
 * https://reactnative.dev/docs/image#gif-and-webp-support-on-android
