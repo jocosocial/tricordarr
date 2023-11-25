@@ -1,9 +1,10 @@
 import {LinkingOptions} from '@react-navigation/native';
 import {
   EventStackComponents,
-  LfgStackComponents, MainStackComponents,
+  LfgStackComponents,
+  MainStackComponents,
   SeamailStackScreenComponents,
-  SettingsStackScreenComponents
+  SettingsStackScreenComponents,
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
@@ -12,8 +13,7 @@ import Config from 'react-native-config';
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
  * be based on a StackScreenComponent enum value. The actual tabs will vary and should loosely
  * follow the routes that we use in the Swiftarr web UI.
- * I made the initialRouteName's undefined because the typing was yelling at me. I hope that
- * doesn't break anything.
+ * The initialRouteName's cannot be undefined or you'll lose initial navigation on link.
  */
 const deepLinksConf = {
   screens: {
@@ -21,7 +21,7 @@ const deepLinksConf = {
     RootContentScreen: {
       screens: {
         HomeTab: {
-          initialRouteName: undefined,
+          initialRouteName: MainStackComponents.mainScreen,
           screens: {
             MainScreen: 'home',
             AboutScreen: 'about',
@@ -39,18 +39,25 @@ const deepLinksConf = {
           },
         },
         SeamailTab: {
-          initialRouteName: undefined,
+          initialRouteName: SeamailStackScreenComponents.seamailListScreen,
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',
           },
         },
         LfgTab: {
-          initialRouteName: undefined,
+          initialRouteName: LfgStackComponents.lfgFindScreen,
           screens: {
             LfgTab: 'lfg',
             LfgScreen: 'lfg/:fezID',
             LfgChatScreen: 'lfg/:fezID/chat',
+          },
+        },
+        EventsTab: {
+          initialRouteName: EventStackComponents.eventDayScreen,
+          screens: {
+            EventDayScreen: 'events',
+            EventScreen: 'event/:eventID',
           },
         },
       },

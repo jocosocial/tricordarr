@@ -24,6 +24,7 @@ interface TwitarrContextType {
   setLfg: Dispatch<SetStateAction<FezData | undefined>>;
   lfgPostsData: FezPostData[];
   dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
+  openWebUrl: (url: string) => void;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

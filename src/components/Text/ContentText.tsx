@@ -6,6 +6,7 @@ import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {Hyperlink} from 'react-native-hyperlink';
+import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -19,6 +20,7 @@ interface ContentTextProps {
  */
 export const ContentText = ({textStyle, text}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
+  const {openWebUrl} = useTwitarr();
 
   const renderEmojiText = (line: string) => {
     const tokens = line.split(/(:[\w-]+:)/g);
@@ -59,7 +61,7 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
   const handleLink = (linkUrl?: string, linkText?: string) => {
     if (linkUrl) {
       console.log(`[ContentText.tsx] opening link to ${linkUrl}`);
-      Linking.openURL(linkUrl);
+      openWebUrl(linkUrl);
     }
   };
 
