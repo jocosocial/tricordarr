@@ -1,7 +1,7 @@
 import {LinkingOptions} from '@react-navigation/native';
 import {
   EventStackComponents,
-  LfgStackComponents,
+  LfgStackComponents, MainStackComponents,
   SeamailStackScreenComponents,
   SettingsStackScreenComponents
 } from './Enums/Navigation';
@@ -19,6 +19,7 @@ const deepLinksConf = {
     RootContentScreen: {
       screens: {
         HomeTab: {
+          initialRouteName: undefined,
           screens: {
             MainScreen: 'home',
             AboutScreen: 'about',
@@ -36,14 +37,14 @@ const deepLinksConf = {
           },
         },
         SeamailTab: {
-          initialRouteName: SeamailStackScreenComponents.seamailListScreen,
+          initialRouteName: undefined,
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',
           },
         },
         LfgTab: {
-          initialRouteName: LfgStackComponents.lfgJoinedScreen,
+          initialRouteName: undefined,
           screens: {
             LfgTab: 'lfg',
             LfgScreen: 'lfg/:fezID',
