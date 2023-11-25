@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {CustomEmoji} from '../../libraries/Enums/Emoji';
 import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {styleDefaults} from '../../styles';
+import {Hyperlink} from 'react-native-hyperlink';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -36,6 +36,7 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
       return (
         <React.Fragment key={lineIndex}>
           {renderEmojiText(line)}
+          {/*{renderHyperlinkText(line)}*/}
           {lineIndex < lines.length - 1 && '\n'}
         </React.Fragment>
       );
@@ -49,11 +50,28 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
     },
   });
 
+  const styles = StyleSheet.create({
+    linkText: {
+      textDecorationLine: 'underline',
+    },
+  });
+
+  const handleLink = (linkUrl?: string, linkText?: string) => {
+    if (linkUrl) {
+      console.log(`[ContentText.tsx] opening link to ${linkUrl}`);
+      Linking.openURL(linkUrl);
+    }
+  };
+
   const markdownIdentifier = '<Markdown>';
   if (text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
     return <Markdown style={markdownStyle}>{strippedText}</Markdown>;
   }
 
-  return <Text style={textStyle}>{renderContentText()}</Text>;
+  return (
+    <Hyperlink onPress={handleLink} linkStyle={styles.linkText}>
+      <Text style={textStyle}>{renderContentText()}</Text>
+    </Hyperlink>
+  );
 };
