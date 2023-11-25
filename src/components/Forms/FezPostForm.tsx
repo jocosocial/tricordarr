@@ -112,7 +112,8 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
                             'images',
                             values.images.filter((img, idx) => idx !== index),
                           )
-                        }>
+                        }
+                        disabled={isSubmitting}>
                         <Image
                           resizeMode={'cover'}
                           style={styles.image}
