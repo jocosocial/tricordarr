@@ -79,10 +79,6 @@ export const AppImageViewer = ({
     return <></>;
   }
 
-  viewerImages.map(image => {
-    console.log('Looking at image', image.fileName);
-  });
-
   return (
     <ImageView
       images={viewerImages.map(image => {

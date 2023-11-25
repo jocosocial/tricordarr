@@ -222,6 +222,7 @@ export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr:
  * For example: 30 -> 30 Minutes, 90 -> 1 hour 30 minutes.
  * ChatGPT wrote the base, I made some modifications.
  * @param minutes Number of minutes
+ * @TODO replace this with https://www.npmjs.com/package/humanize-duration
  */
 export const formatMinutesToHumanReadable = (minutes: number) => {
   const duration = moment.duration(minutes, 'minutes');

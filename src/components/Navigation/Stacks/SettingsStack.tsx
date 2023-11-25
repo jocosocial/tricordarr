@@ -24,6 +24,7 @@ import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {FeatureSettingsScreen} from '../../Screens/Settings/FeatureSettingsScreen';
+import {NotificationPollerSettingsScreen} from '../../Screens/Settings/NotificationPollerSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -47,6 +48,7 @@ export type SettingsStackParamList = {
   EventSettingsScreen: undefined;
   LfgSettingsScreen: undefined;
   FeatureSettingsScreen: undefined;
+  NotificationPollerSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -156,6 +158,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.featureSettingsScreen}
         component={FeatureSettingsScreen}
         options={{title: 'Disabled Features'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.notificationPollerSettingsScreen}
+        component={NotificationPollerSettingsScreen}
+        options={{title: 'Notification Polling'}}
       />
     </Stack.Navigator>
   );

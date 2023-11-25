@@ -74,6 +74,7 @@ import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider'
 import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
 import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
 import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
+import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 
 registerFgsWorker();
 
@@ -117,6 +118,7 @@ function App(): JSX.Element {
                                             <AppEventHandler />
                                             <ForegroundService />
                                             <NotificationDataListener />
+                                            <NotificationDataPoller />
                                             <RootStackNavigator />
                                           </FeatureProvider>
                                         </ScheduleFilterProvider>

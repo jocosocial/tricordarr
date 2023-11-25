@@ -54,6 +54,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Configure what events you wish to trigger a push notification.'}
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
             />
+            <SettingsNavigationListItem
+              title={'Polling'}
+              description={'Configure periodic notification polling while the app is active.'}
+              navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>
