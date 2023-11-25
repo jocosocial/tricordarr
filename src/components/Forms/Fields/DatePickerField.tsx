@@ -1,8 +1,13 @@
 import React from 'react';
-import {DatePickerInput} from 'react-native-paper-dates';
+import {DatePickerModal} from 'react-native-paper-dates';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {FastField, useField, useFormikContext} from 'formik';
-import {View} from 'react-native';
+import {useField, useFormikContext} from 'formik';
+import {StyleSheet, View} from 'react-native';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useAppTheme} from '../../../styles/Theme';
+import {Button} from 'react-native-paper';
+import {format} from 'date-fns';
+import {CalendarDate} from 'react-native-paper-dates/src/Date/Calendar';
 
 interface DatePickerFieldProps {
   name: string;
@@ -12,35 +17,68 @@ export const DatePickerField = ({name}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
   const [field, meta, helpers] = useField<string>(name);
   const {setFieldValue} = useFormikContext();
+  const [visible, setVisible] = React.useState(false);
+  const {commonStyles, styleDefaults} = useStyles();
+  const theme = useAppTheme();
 
-  const handleDateChange = (newValue: Date | undefined) => {
-    if (newValue) {
-      setFieldValue(name, newValue.toISOString());
+  const onDismiss = React.useCallback(() => {
+    setVisible(false);
+  }, [setVisible]);
+
+  const onConfirm = (params: {date: CalendarDate}) => {
+    setVisible(false);
+    if (params.date) {
+      setFieldValue(name, params.date.toISOString());
     }
   };
 
-  // If the user removes the text, it doesn't change the value. onChangeText can be used for that but it freaks
-  // out if the value is invalid (which is probably is).
+  const styles = StyleSheet.create({
+    button: {
+      ...commonStyles.roundedBorder,
+      ...commonStyles.flexRow,
+      minHeight: 48,
+      ...commonStyles.alignItemsCenter,
+    },
+    text: {
+      // paddingLeft: 8,
+      fontSize: styleDefaults.fontSize,
+      fontWeight: 'normal',
+      ...commonStyles.fontFamilyNormal,
+      marginHorizontal: 14,
+    },
+    content: {
+      ...commonStyles.flexRow,
+      ...commonStyles.flex,
+    },
+  });
+
+  const getDateFormat = () => {
+    return format(new Date(field.value), 'MM/dd/yyyy');
+  };
+
   return (
-    <FastField name={name}>
-      {() => (
-        <View>
-          <DatePickerInput
-            startYear={startDate.getFullYear()}
-            endYear={startDate.getFullYear()}
-            validRange={{startDate: startDate, endDate: endDate}}
-            locale={'en'}
-            onChange={handleDateChange}
-            value={new Date(field.value)}
-            inputMode={'start'}
-            mode={'outlined'}
-            label={'Date'}
-            withDateFormatInLabel={false}
-            presentationStyle={'pageSheet'}
-            animationType={'none'}
-          />
-        </View>
-      )}
-    </FastField>
+    <View>
+      <Button
+        buttonColor={theme.colors.background}
+        textColor={theme.colors.onBackground}
+        labelStyle={styles.text}
+        contentStyle={styles.content}
+        style={styles.button}
+        onPress={() => setVisible(true)}
+        mode={'outlined'}>
+        Date ({getDateFormat()})
+      </Button>
+      <DatePickerModal
+        visible={visible}
+        onDismiss={onDismiss}
+        onConfirm={onConfirm}
+        date={new Date(field.value)}
+        locale={'en'}
+        mode={'single'}
+        startYear={startDate.getFullYear()}
+        endYear={startDate.getFullYear()}
+        validRange={{startDate: startDate, endDate: endDate}}
+      />
+    </View>
   );
 };
