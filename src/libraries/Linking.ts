@@ -12,6 +12,8 @@ import Config from 'react-native-config';
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
  * be based on a StackScreenComponent enum value. The actual tabs will vary and should loosely
  * follow the routes that we use in the Swiftarr web UI.
+ * I made the initialRouteName's undefined because the typing was yelling at me. I hope that
+ * doesn't break anything.
  */
 const deepLinksConf = {
   screens: {
