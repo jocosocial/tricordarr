@@ -69,7 +69,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
     title: route.params.fez.title,
     location: route.params.fez.location || '',
     fezType: route.params.fez.fezType,
-    startDate: startDate.toISOString(),
+    startDate: startDate,
     duration: differenceInMinutes(endDate, startDate).toString(),
     minCapacity: route.params.fez.minParticipants.toString(),
     maxCapacity: route.params.fez.maxParticipants.toString(),

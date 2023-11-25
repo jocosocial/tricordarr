@@ -67,7 +67,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
     title: '',
     location: '',
     fezType: FezType.activity,
-    startDate: apparentCruiseDate.toISOString(),
+    startDate: apparentCruiseDate,
     duration: '30',
     minCapacity: '2',
     maxCapacity: '2',

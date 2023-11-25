@@ -15,7 +15,7 @@ interface DatePickerFieldProps {
 
 export const DatePickerField = ({name}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
-  const [field, meta, helpers] = useField<string>(name);
+  const [field, meta, helpers] = useField<Date>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -28,7 +28,7 @@ export const DatePickerField = ({name}: DatePickerFieldProps) => {
   const onConfirm = (params: {date: CalendarDate}) => {
     setVisible(false);
     if (params.date) {
-      setFieldValue(name, params.date.toISOString());
+      setFieldValue(name, params.date);
     }
   };
 
@@ -53,7 +53,7 @@ export const DatePickerField = ({name}: DatePickerFieldProps) => {
   });
 
   const getDateFormat = () => {
-    return format(new Date(field.value), 'MM/dd/yyyy');
+    return format(field.value, 'MM/dd/yyyy');
   };
 
   return (
@@ -72,7 +72,7 @@ export const DatePickerField = ({name}: DatePickerFieldProps) => {
         visible={visible}
         onDismiss={onDismiss}
         onConfirm={onConfirm}
-        date={new Date(field.value)}
+        date={field.value}
         locale={'en'}
         mode={'single'}
         startYear={startDate.getFullYear()}

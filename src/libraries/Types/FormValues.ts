@@ -49,7 +49,7 @@ export interface FezFormValues {
   title: string;
   location: string;
   fezType: FezType;
-  startDate: string;
+  startDate: Date;
   duration: string;
   minCapacity: string;
   maxCapacity: string;

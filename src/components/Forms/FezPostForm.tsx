@@ -6,10 +6,9 @@ import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
-import {PostLengthView} from '../Views/PostLengthView';
 import * as Yup from 'yup';
 
 interface FezPostFormProps {
