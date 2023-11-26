@@ -1,8 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {FlatList} from 'react-native-gesture-handler';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
