@@ -101,7 +101,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumPostFlatList postList={postList} onEndReached={handleLoadNext} />
+      <ForumPostFlatList postList={postList} onEndReached={handleLoadNext} onStartReached={handleLoadPrevious} fetchPreviousPage={fetchPreviousPage} />
       {/*<ScrollingContentView*/}
       {/*  isStack={true}*/}
       {/*  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>*/}
