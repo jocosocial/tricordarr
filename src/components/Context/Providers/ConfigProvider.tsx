@@ -15,11 +15,11 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     };
     loadConfig()
       .then(config => setAppConfig(config))
-      .finally(() => console.log('Finished loading app config.'));
+      .finally(() => console.log('[ConfigProvider.tsx] Finished loading app config.'));
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
-    console.info('Updating app config to', newConfig);
+    console.info('[ConfigProvider.tsx] Updating app config to', newConfig);
     AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => setAppConfig(newConfig));
   };
 

@@ -9,18 +9,20 @@ interface AppIconProps {
   color?: string;
   size?: number;
   style?: StyleProp<TextStyle>;
+  onPress?: () => void;
 }
 
 /**
  * An Icon based on Material UI.
  * https://pictogrammers.com/library/mdi/
  */
-export const AppIcon = ({icon, size, color, style}: AppIconProps) => {
+export const AppIcon = ({icon, size, color, style, onPress}: AppIconProps) => {
   const theme = useAppTheme();
   const {styleDefaults} = useStyles();
 
   return (
     <MaterialCommunityIcons
+      onPress={onPress}
       style={style}
       name={icon}
       size={size || styleDefaults.iconSize}

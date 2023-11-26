@@ -8,7 +8,7 @@ export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData
   const {commonStyles} = useStyles();
 
   return (
-    <Card style={[commonStyles.marginBottomSmall, commonStyles.twitarrPositive]}>
+    <Card style={[commonStyles.marginBottom, commonStyles.twitarrPositive]}>
       <Card.Title
         title={`From @${announcement.author.username}:`}
         titleStyle={[commonStyles.onTwitarrButton, commonStyles.bold]}

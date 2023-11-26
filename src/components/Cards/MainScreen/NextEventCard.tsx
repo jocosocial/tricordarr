@@ -8,7 +8,6 @@ import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 export const NextEventCard = ({eventID}: {eventID: string}) => {
   const {data} = useEventQuery({eventID: eventID});
-  const bottomNav = useBottomTabNavigator();
   const rootStackNavigation = useRootStack();
 
   return (
@@ -18,26 +17,17 @@ export const NextEventCard = ({eventID}: {eventID: string}) => {
           eventData={data}
           hideFavorite={true}
           showDay={true}
-          onPress={
-            () =>
-              rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                screen: BottomTabComponents.scheduleTab,
+          onPress={() =>
+            rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+              screen: BottomTabComponents.scheduleTab,
+              params: {
+                screen: EventStackComponents.eventScreen,
                 params: {
-                  screen: EventStackComponents.eventScreen,
-                  params: {
-                    eventID: eventID,
-                  },
-                  initial: false,
+                  eventID: eventID,
                 },
-              })
-            // bottomNav.navigate(BottomTabComponents.scheduleTab, {
-            //   // https://github.com/react-navigation/react-navigation/issues/7698
-            //   initial: false,
-            //   screen: EventStackComponents.eventScreen,
-            //   params: {
-            //     eventID: eventID,
-            //   },
-            // })
+                initial: false,
+              },
+            })
           }
           titleHeader={'Your next event:'}
         />

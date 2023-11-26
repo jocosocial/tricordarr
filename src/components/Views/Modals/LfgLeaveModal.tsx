@@ -15,7 +15,8 @@ const ModalContent = ({fezData}: {fezData: FezData}) => {
   const {commonStyles} = useStyles();
   return (
     <Text style={[commonStyles.marginBottomSmall]}>
-      Leave group {fezData.title}? If this group has limited capacity you may not be able to re-join.
+      Leave group {fezData.title}? If this group has limited capacity you may not be able to re-join. If you were on the
+      wait list you'll lose your place in the queue.
     </Text>
   );
 };

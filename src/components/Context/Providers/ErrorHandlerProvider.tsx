@@ -18,6 +18,7 @@ function getErrorMessage(e: StringOrError) {
 export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
   const [errorMessage, setErrorMessageString] = useState<string | undefined>();
   const [errorBanner, setErrorBannerString] = useState<string | undefined>();
+  const [infoMessage, setInfoMessage] = useState<string>();
 
   const setErrorMessage = useCallback(
     (e: StringOrError) => setErrorMessageString(getErrorMessage(e)),
@@ -29,7 +30,8 @@ export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
   );
 
   return (
-    <ErrorHandlerContext.Provider value={{errorMessage, setErrorMessage, errorBanner, setErrorBanner}}>
+    <ErrorHandlerContext.Provider
+      value={{errorMessage, setErrorMessage, errorBanner, setErrorBanner, infoMessage, setInfoMessage}}>
       {children}
     </ErrorHandlerContext.Provider>
   );

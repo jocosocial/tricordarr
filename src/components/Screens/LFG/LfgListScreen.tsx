@@ -6,7 +6,6 @@ import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {HeaderButtons} from 'react-navigation-header-buttons';
@@ -23,6 +22,8 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -31,7 +32,7 @@ interface LfgJoinedScreenProps {
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
   const {isLoggedIn} = useAuth();
-  const {data, isFetched, isFetching, refetch} = useLfgListQuery({
+  const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,
     excludeFezType: [FezType.open, FezType.closed],
     fezType: lfgTypeFilter,
@@ -45,15 +46,8 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
-  const {setFez} = useTwitarr();
+  const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
   const {closeFezSocket} = useSocket();
-
-  let lfgList: FezData[] = [];
-  data?.pages.map(page => {
-    page.fezzes.map(lfg => {
-      lfgList.push(lfg);
-    });
-  });
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -76,12 +70,25 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     });
     if (isFocused) {
       closeFezSocket();
-      setFez(undefined);
+      setLfg(undefined);
     }
-  }, [closeFezSocket, getNavButtons, isFocused, navigation, setFez]);
+  }, [closeFezSocket, getNavButtons, isFocused, navigation, setLfg]);
+
+  useEffect(() => {
+    if (data && data.pages) {
+      dispatchLfgList({
+        type: FezListActions.set,
+        fezList: data.pages.flatMap(p => p.fezzes),
+      });
+    }
+  }, [data, dispatchLfgList]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
+  }
+
+  if (isLoading) {
+    return <LoadingView />;
   }
 
   return (

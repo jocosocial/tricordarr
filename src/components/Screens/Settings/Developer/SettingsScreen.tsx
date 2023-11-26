@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
-import {SettingsNavigationListItem} from '../../Lists/Items/SettingsNavigationListItem';
-import {AccountListItem} from '../../Lists/Items/AccountListItem';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {ListSection} from '../../Lists/ListSection';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {SettingsNavigationListItem} from '../../../Lists/Items/SettingsNavigationListItem';
+import {AccountListItem} from '../../../Lists/Items/AccountListItem';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {ListSection} from '../../../Lists/ListSection';
+import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
-import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
+import {SettingsHeaderTitle} from '../../../Navigation/Components/SettingsHeaderTitle';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -53,6 +53,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Push Notifications'}
               description={'Configure what events you wish to trigger a push notification.'}
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
+            />
+            <SettingsNavigationListItem
+              title={'Polling'}
+              description={'Configure periodic notification polling while the app is active.'}
+              navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
             />
           </ListSection>
           <Divider bold={true} />
@@ -105,7 +110,7 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.networkInfoSettings}
                 />
                 <SettingsNavigationListItem
-                  title={'Notifications'}
+                  title={'Test Notifications'}
                   description={'Generate a test notification for debugging.'}
                   navComponent={SettingsStackScreenComponents.testNotification}
                 />
@@ -120,11 +125,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.serverConnectionSettings}
                 />
                 <SettingsNavigationListItem
-                  title={'Notifications'}
-                  description={'Generate a test notification for debugging.'}
-                  navComponent={SettingsStackScreenComponents.testNotification}
-                />
-                <SettingsNavigationListItem
                   title={'Sockets'}
                   description={'Manage websocket internals.'}
                   navComponent={SettingsStackScreenComponents.socketSettings}
@@ -133,6 +133,16 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Out-of-box Experience'}
                   description={'Internal OOBE information.'}
                   navComponent={SettingsStackScreenComponents.oobeSettings}
+                />
+                <SettingsNavigationListItem
+                  title={'Disabled Features'}
+                  description={'Show features that have been disabled by the server.'}
+                  navComponent={SettingsStackScreenComponents.featureSettingsScreen}
+                />
+                <SettingsNavigationListItem
+                  title={'Loading'}
+                  description={'Test the loading screen.'}
+                  navComponent={SettingsStackScreenComponents.loadingSettingScreen}
                 />
               </ListSection>
             </>

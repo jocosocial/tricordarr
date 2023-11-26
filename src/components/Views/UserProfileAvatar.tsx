@@ -1,4 +1,3 @@
-import {AppImage} from '../Images/AppImage';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -6,12 +5,14 @@ import {StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
-import {useImageQuery} from '../Queries/ImageQuery';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
+import {AppImage} from '../Images/AppImage';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -21,11 +22,11 @@ interface UserProfileAvatarProps {
 export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps) => {
   const {commonStyles} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
-  const avatarQuery = useImageQuery(`/image/user/thumb/${user.header.userID}`);
   const avatarMutation = useUserAvatarMutation();
   const {setErrorMessage} = useErrorHandler();
   const userProfileQuery = useUserProfileQuery();
   const {profilePublicData} = useUserData();
+  const {getIsDisabled} = useFeature();
 
   const styles = StyleSheet.create({
     image: {
@@ -51,7 +52,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   const takeImage = async () => {
     const permissionStatus = await requestPermission(PERMISSIONS.ANDROID.CAMERA);
-    console.log(permissionStatus);
+    console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,
@@ -66,6 +67,10 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     }
   };
 
+  const onSuccess = () => {
+    userProfileQuery.refetch();
+  };
+
   const processImage = (image: Image) => {
     if (image.data) {
       avatarMutation.mutate(
@@ -73,42 +78,42 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
           image: image.data,
         },
         {
-          onSuccess: () => {
-            avatarQuery.refetch();
-            userProfileQuery.refetch();
-          },
+          onSuccess: onSuccess,
         },
       );
     }
   };
 
   const clearImage = () => {
-    console.log('clear');
     avatarDeleteMutation.mutate(
       {},
       {
-        onSuccess: () => {
-          avatarQuery.refetch();
-          userProfileQuery.refetch();
-        },
+        onSuccess: onSuccess,
       },
     );
   };
 
   useEffect(() => {
-    setRefreshing(avatarMutation.isLoading || avatarQuery.isRefetching || userProfileQuery.isRefetching);
-  }, [avatarMutation.isLoading, avatarQuery.isRefetching, setRefreshing, userProfileQuery.isRefetching]);
+    setRefreshing(avatarMutation.isLoading || userProfileQuery.isRefetching);
+  }, [avatarMutation.isLoading, setRefreshing, userProfileQuery.isRefetching]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 
+  if (!userProfileQuery.data) {
+    return <></>;
+  }
+
+  let thumbPath = `/image/thumb/${user.header.userImage}`;
+  let fullPath = `/image/full/${user.header.userImage}`;
+  if (!user.header.userImage) {
+    thumbPath = `/image/user/identicon/${user.header.userID}`;
+    fullPath = `/image/user/identicon/${user.header.userID}`;
+  }
+
   return (
     <View>
-      <AppImage
-        style={styles.image}
-        path={`/image/user/thumb/${user.header.userID}`}
-        fullPath={`/image/user/full/${user.header.userID}`}
-      />
-      {isSelf && (
+      <AppImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
+      {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
           <IconButton icon={AppIcons.newImage} onPress={pickImage} />
           <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />

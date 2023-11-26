@@ -7,20 +7,29 @@ import {ImageViewerSnackbar} from '../Snackbars/ImageViewerSnackbar';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
 import {saveImageToLocal} from '../../libraries/Storage/ImageStorage';
+import {ImageViewerFooterView} from '../Views/ImageViewerFooterView';
 
 interface AppImageViewerProps {
   initialIndex?: number;
   viewerImages?: ImageQueryData[];
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  enableDownload?: boolean;
 }
 
 interface ImageViewerComponentProps {
   imageIndex: number;
 }
 
-export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], initialIndex = 0}: AppImageViewerProps) => {
+export const AppImageViewer = ({
+  isVisible,
+  setIsVisible,
+  viewerImages = [],
+  initialIndex = 0,
+  enableDownload = true,
+}: AppImageViewerProps) => {
   const [viewerMessage, setViewerMessage] = useState<string>();
+  const [currentImageIndex, setCurrentImageIndex] = useState(initialIndex);
   const {commonStyles} = useStyles();
 
   const saveImage = useCallback(
@@ -40,19 +49,28 @@ export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], init
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
         <View style={[commonStyles.flexRow, commonStyles.justifyContentEnd]}>
-          <IconButton icon={AppIcons.download} onPress={() => saveImage(imageIndex)} />
+          {enableDownload && <IconButton icon={AppIcons.download} onPress={() => saveImage(imageIndex)} />}
           <IconButton icon={AppIcons.close} onPress={() => setIsVisible(false)} />
         </View>
       );
     },
-    [commonStyles.flexRow, commonStyles.justifyContentEnd, saveImage, setIsVisible],
+    [commonStyles.flexRow, commonStyles.justifyContentEnd, enableDownload, saveImage, setIsVisible],
   );
 
   const viewerFooter = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
-      return <ImageViewerSnackbar message={viewerMessage} setMessage={setViewerMessage} />;
+      return (
+        <>
+          <ImageViewerSnackbar message={viewerMessage} setMessage={setViewerMessage} />
+          <ImageViewerFooterView
+            currentIndex={imageIndex}
+            viewerImages={viewerImages}
+            setImageIndex={setCurrentImageIndex}
+          />
+        </>
+      );
     },
-    [viewerMessage],
+    [viewerImages, viewerMessage],
   );
 
   const onRequestClose = () => setIsVisible(false);
@@ -61,20 +79,16 @@ export const AppImageViewer = ({isVisible, setIsVisible, viewerImages = [], init
     return <></>;
   }
 
-  viewerImages.map(image => {
-    console.log('Looking at image', image.fileName);
-  });
-
   return (
     <ImageView
       images={viewerImages.map(image => {
         return {uri: image.dataURI};
       })}
-      imageIndex={initialIndex}
+      imageIndex={currentImageIndex}
       visible={isVisible}
       onRequestClose={onRequestClose}
       HeaderComponent={viewerHeader}
-      animationType={'none'}
+      // animationType={'none'}
       FooterComponent={viewerFooter}
     />
   );

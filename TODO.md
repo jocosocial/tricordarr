@@ -1,7 +1,5 @@
 Backlog
-* favorite trigger refresh or update search results and eventdayscreen (if your events filter applied)
-* join an LFG should remove from find list
 
 Work Queue
-* LFG post images
-* Nightly
+
+Nightly

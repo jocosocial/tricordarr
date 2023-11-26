@@ -17,7 +17,6 @@ import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
 import {apiQueryV3, configureAxios} from './src/libraries/Network/APIClient';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
-import {AppPermissions} from './src/libraries/AppPermissions';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
@@ -42,16 +41,17 @@ import moment from 'moment-timezone';
 // JS runtime check, which we disable here.
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 
+console.log('[App.tsx] Tricordarr start!');
+
+// Time and locale setup, used in various places within the app.
 TimeAgo.addDefaultLocale(en);
 // @TODO this timezone is a hack, until we figure out what to do about the API.
 moment.tz.link('AST|America/Santo_Domingo');
-
 registerTranslation('en', paperEn);
 
 // https://tanstack.com/query/latest/docs/react/overview
@@ -73,6 +73,8 @@ import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
 import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
 import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
+import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
+import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
 
 registerFgsWorker();
 
@@ -83,14 +85,12 @@ const {DarkTheme: navDarkTheme} = adaptNavigationTheme({reactNavigationDark: Def
 function App(): JSX.Element {
   const colorScheme = useColorScheme();
 
-  AppPermissions.requestRequiredPermissions();
-
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
   });
 
   useEffect(() => {
-    console.log('Calling useEffect from Main App.');
+    console.log('[App.tsx] Calling useEffect from Main App.');
     setupInitialNotification().catch(console.error);
   }, []);
 
@@ -114,10 +114,13 @@ function App(): JSX.Element {
                                     <UserRelationsProvider>
                                       <DrawerProvider>
                                         <ScheduleFilterProvider>
-                                          <AppEventHandler />
-                                          <ForegroundService />
-                                          <NotificationDataListener />
-                                          <RootStackNavigator />
+                                          <FeatureProvider>
+                                            <AppEventHandler />
+                                            <ForegroundService />
+                                            <NotificationDataListener />
+                                            <NotificationDataPoller />
+                                            <RootStackNavigator />
+                                          </FeatureProvider>
                                         </ScheduleFilterProvider>
                                       </DrawerProvider>
                                     </UserRelationsProvider>

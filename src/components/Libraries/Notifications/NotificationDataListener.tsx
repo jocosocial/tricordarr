@@ -18,7 +18,7 @@ export const NotificationDataListener = () => {
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      console.log(`[message] Data received from server: ${event.data}`);
+      console.log(`[NotificationDataListener] wsMessageHandler received data from server: ${event.data}`);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       // Always refetch the UserNotificationData when we got a socket event.
@@ -36,13 +36,13 @@ export const NotificationDataListener = () => {
   );
 
   const addHandler = useCallback(() => {
-    console.log('UNDListener adding handler.');
+    console.log('[NotificationDataListener.tsx] Adding handler.');
     notificationSocket?.addEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
   const removeHandler = useCallback(() => {
-    console.log('UNDListener removing handler.');
-    notificationSocket?.addEventListener('message', wsMessageHandler);
+    console.log('[NotificationDataListener.tsx] Removing handler.');
+    notificationSocket?.removeEventListener('message', wsMessageHandler);
   }, [notificationSocket, wsMessageHandler]);
 
   useEffect(() => {

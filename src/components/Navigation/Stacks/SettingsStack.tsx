@@ -1,17 +1,17 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {NetworkInfoSettings} from '../../Screens/Settings/NetworkInfoSettings';
-import {ServerConnectionSettings} from '../../Screens/Settings/ServerConnectionSettings';
-import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
-import {TestNotificationScreen} from '../../Screens/Settings/TestNotificationScreen';
+import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoSettings';
+import {ServerConnectionSettings} from '../../Screens/Settings/Developer/ServerConnectionSettings';
+import {SettingsScreen} from '../../Screens/Settings/Developer/SettingsScreen';
+import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {TestErrorScreen} from '../../Screens/Settings/TestErrorScreen';
+import {TestErrorScreen} from '../../Screens/Settings/Developer/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
-import {OobeSettingsScreen} from '../../Screens/Settings/OobeSettingsScreen';
+import {OobeSettingsScreen} from '../../Screens/Settings/Developer/OobeSettingsScreen';
 import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
 import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertKeywordsSettingsScreen';
@@ -23,6 +23,9 @@ import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
 import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
+import {FeatureSettingsScreen} from '../../Screens/Settings/Developer/FeatureSettingsScreen';
+import {NotificationPollerSettingsScreen} from '../../Screens/Settings/NotificationPollerSettingsScreen';
+import {LoadingSettingScreen} from '../../Screens/Settings/Developer/LoadingSettingScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -45,6 +48,9 @@ export type SettingsStackParamList = {
   FavoriteUsersScreen: undefined;
   EventSettingsScreen: undefined;
   LfgSettingsScreen: undefined;
+  FeatureSettingsScreen: undefined;
+  NotificationPollerSettingsScreen: undefined;
+  LoadingSettingScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -149,6 +155,21 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.lfgSettings}
         component={LfgSettingsScreen}
         options={{title: 'LFG Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.featureSettingsScreen}
+        component={FeatureSettingsScreen}
+        options={{title: 'Disabled Features'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.notificationPollerSettingsScreen}
+        component={NotificationPollerSettingsScreen}
+        options={{title: 'Notification Polling'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.loadingSettingScreen}
+        component={LoadingSettingScreen}
+        options={{title: 'Loading'}}
       />
     </Stack.Navigator>
   );

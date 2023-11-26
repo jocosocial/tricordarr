@@ -25,6 +25,7 @@ export const MainScreen = ({navigation}: Props) => {
   const {refetchUserNotificationData, userNotificationData} = useUserNotificationData();
 
   const onRefresh = () => {
+    setRefreshing(true);
     refetchUserNotificationData().then(() =>
       refetchThemes().then(() => refetchAnnouncements().then(() => setRefreshing(false))),
     );

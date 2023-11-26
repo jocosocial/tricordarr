@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -37,11 +37,11 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const flatListRef = useRef<FlatList>(null);
-  const {fez, setFez} = useTwitarr();
+  const {lfg, setLfg} = useTwitarr();
   const {commonStyles} = useStyles();
   const {fezSocket, openFezSocket} = useSocket();
   const fezPostMutation = useFezPostMutation();
-  const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
+  const {dispatchLfgList, lfgPostsData, dispatchLfgPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
   const {refetchUserNotificationData} = useUserNotificationData();
 
@@ -66,18 +66,18 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   }, [refetch, refetchUserNotificationData]);
 
   const getNavButtons = useCallback(() => {
-    if (!fez) {
+    if (!lfg) {
       return <></>;
     }
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
-          <SeamailActionsMenu fez={fez} enableDetails={false} />
+          <SeamailActionsMenu fez={lfg} enableDetails={false} />
         </HeaderButtons>
       </View>
     );
-  }, [fez, onRefresh]);
+  }, [lfg, onRefresh]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -136,17 +136,18 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      Keyboard.dismiss();
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
           onSuccess: response => {
             formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
-            dispatchFezPostsData({
+            dispatchLfgPostsData({
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
-            dispatchFezList({
+            dispatchLfgList({
               type: FezListActions.addSelfPost,
               fezID: route.params.fezID,
             });
@@ -154,63 +155,63 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         },
       );
     },
-    [fezPostMutation, route.params.fezID, dispatchFezPostsData, dispatchFezList],
+    [fezPostMutation, route.params.fezID, dispatchLfgPostsData, dispatchLfgList],
   );
 
   // Initial set
   useEffect(() => {
     if (data) {
-      dispatchFezPostsData({
+      dispatchLfgPostsData({
         type: FezPostsActions.set,
         fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])].reverse(),
       });
-      setFez(data?.pages[0]);
+      setLfg(data?.pages[0]);
     }
-  }, [data, dispatchFezPostsData, setFez]);
+  }, [data, dispatchLfgPostsData, setLfg]);
 
   // Socket
   // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
   // with rendering.
   useEffect(() => {
-    if (fez) {
-      openFezSocket(fez.fezID);
+    if (lfg) {
+      openFezSocket(lfg.fezID);
       if (fezSocket) {
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
-  }, [fez, fezSocket, fezSocketMessageHandler, openFezSocket]);
+  }, [lfg, fezSocket, fezSocketMessageHandler, openFezSocket]);
 
   // Navigation
   useEffect(() => {
-    if (fez) {
+    if (lfg) {
       navigation.setOptions({
         headerRight: getNavButtons,
-        headerTitle: fez.title,
+        headerTitle: lfg.title,
       });
     } else {
       navigation.setOptions({
         headerTitle: 'Loading...',
       });
     }
-  }, [fez, getNavButtons, navigation]);
+  }, [lfg, getNavButtons, navigation]);
 
   // Mark as Read
   useEffect(() => {
-    if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+    if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
       console.info('Doing the fez thing');
-      dispatchFezList({
+      dispatchLfgList({
         type: FezListActions.markAsRead,
-        fezID: fez.fezID,
+        fezID: lfg.fezID,
       });
       refetchUserNotificationData();
     }
-  }, [dispatchFezList, fez, refetchUserNotificationData]);
+  }, [dispatchLfgList, lfg, refetchUserNotificationData]);
 
   const renderHeader = () => {
     return (
       <PaddedContentView padTop={true} invertVertical={true}>
         {!hasPreviousPage && (
-          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
+          <Text variant={'labelMedium'}>You've reached the beginning of this LFG conversation.</Text>
         )}
       </PaddedContentView>
     );
@@ -231,20 +232,20 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
 
   const showNewDivider = useCallback(
     (index: number) => {
-      if (fez && fez.members) {
-        if (fez.members.postCount === fez.members.readCount) {
+      if (lfg && lfg.members) {
+        if (lfg.members.postCount === lfg.members.readCount) {
           return false;
         }
         // index is inverted so the last message in the list is 0.
         // Add one to the readCount so that we render below the message at the readCount.
-        return fez.members.postCount - index === fez.members.readCount + 1;
+        return lfg.members.postCount - index === lfg.members.readCount + 1;
       }
     },
-    [fez],
+    [lfg],
   );
 
   // This is kinda hax for the fezPostData below
-  if (!fez) {
+  if (!lfg) {
     return <LoadingView />;
   }
 
@@ -265,7 +266,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         // Good thing selecting text isn't necessary anymore!
         // removeClippedSubviews={false}
         ItemSeparatorComponent={SpaceDivider}
-        data={fezPostsData}
+        data={lfgPostsData}
         // Inverted murders performance to the point of locking the app.
         // So we do a series of verticallyInverted, relying on a deprecated style prop.
         // https://github.com/facebook/react-native/issues/30034
@@ -279,7 +280,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={false}>
             {showNewDivider(index) && <LabelDivider label={'New'} />}
-            <FezPostListItem fezPost={item} index={index} separators={separators} fez={fez} />
+            <FezPostListItem fezPost={item} index={index} separators={separators} fez={lfg} />
           </PaddedContentView>
         )}
         // End is Start, Start is End.

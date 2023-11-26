@@ -12,7 +12,7 @@ import {ImageQueryData} from '../Types';
  * configure various parameters of the HTTP request, from full URL to timeouts.
  */
 export async function configureAxios() {
-  console.log('Configuring Axios interceptors.');
+  console.log('[APIClient.ts] Configuring Axios interceptors.');
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
     // URL
@@ -97,7 +97,6 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
     },
   });
   const contentType = headers['content-type'];
-  console.log(headers);
   const base64Data = Buffer.from(data, 'binary').toString('base64');
   const fileName = queryKey[0].split('/').pop();
   if (!fileName) {

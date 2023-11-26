@@ -22,7 +22,7 @@ export const ChangeUsernameScreen = () => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const {refetch: refetchProfilePublicData} = useUserProfileQuery();
 
-  const {setErrorMessage} = useErrorHandler();
+  const {setInfoMessage} = useErrorHandler();
 
   const onSubmit = (values: ChangeUsernameFormValues, helper: FormikHelpers<ChangeUsernameFormValues>) => {
     console.log(values);
@@ -34,7 +34,7 @@ export const ChangeUsernameScreen = () => {
         onSuccess: () => {
           refetchProfilePublicData().then(() =>
             refetchUserNotificationData().then(() => {
-              setErrorMessage('Successfully changed username!');
+              setInfoMessage('Successfully changed username!');
               helper.setSubmitting(false);
               navigation.goBack();
             }),

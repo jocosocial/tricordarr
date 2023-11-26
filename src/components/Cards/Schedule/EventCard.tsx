@@ -36,7 +36,7 @@ export const EventCard = ({
 }: EventCardProps) => {
   const theme = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
-  const {setErrorMessage} = useErrorHandler();
+  const {setInfoMessage} = useErrorHandler();
   const {dispatchScheduleList} = useTwitarr();
   const {refetchUserNotificationData} = useUserNotificationData();
   const {data: favoritesData, refetch: refetchFavorites} = useEventFavoriteQuery({enabled: false});
@@ -58,7 +58,7 @@ export const EventCard = ({
       },
       {
         onSuccess: () => {
-          setErrorMessage(`${eventData.isFavorite ? 'Unfollowed' : 'Followed'} event ${eventData.title}`);
+          setInfoMessage(`${eventData.isFavorite ? 'Unfollowed' : 'Followed'} event ${eventData.title}`);
           dispatchScheduleList({
             type: ScheduleListActions.updateEvent,
             newEvent: {

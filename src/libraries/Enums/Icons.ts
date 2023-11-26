@@ -76,4 +76,5 @@ export enum AppIcons {
   save = 'content-save',
   close = 'close',
   download = 'download',
+  imageDisabled = 'image-off',
 }

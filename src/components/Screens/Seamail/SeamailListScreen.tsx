@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -17,6 +17,9 @@ import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -24,7 +27,7 @@ type SeamailListScreenProps = NativeStackScreenProps<
   NavigatorIDs.seamailStack
 >;
 
-export const SeamailListScreen = ({}: SeamailListScreenProps) => {
+export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
@@ -90,6 +93,20 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
     [dispatchFezList, fezList, refetch],
   );
 
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(SeamailStackScreenComponents.seamailHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
   useEffect(() => {
     if (notificationSocket) {
       notificationSocket.addEventListener('message', notificationHandler);
@@ -106,7 +123,10 @@ export const SeamailListScreen = ({}: SeamailListScreenProps) => {
       closeFezSocket();
       setFez(undefined);
     }
-  }, [isFocused, closeFezSocket, setFez]);
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [isFocused, closeFezSocket, setFez, navigation]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

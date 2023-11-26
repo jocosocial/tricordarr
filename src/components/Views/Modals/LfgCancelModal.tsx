@@ -10,6 +10,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useFezCancelMutation} from '../../Queries/Fez/FezQueries';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -27,11 +28,11 @@ const ModalContent = () => {
 };
 
 export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
-  const {setErrorMessage} = useErrorHandler();
+  const {setErrorMessage, setInfoMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
-  const {setFez} = useTwitarr();
+  const {setFez, dispatchLfgList} = useTwitarr();
 
   const onSubmit = () => {
     cancelMutation.mutate(
@@ -40,8 +41,12 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
-          setErrorMessage('Successfully canceled this LFG.');
+          setInfoMessage('Successfully canceled this LFG.');
           setFez(response.data);
+          dispatchLfgList({
+            type: FezListActions.updateFez,
+            fez: response.data,
+          });
           setModalVisible(false);
         },
         onError: error => {

@@ -39,3 +39,17 @@ cd android
 ./gradlew bundleRelease # To build AAB
 ./gradlew assembleRelease # For an APK
 ```
+
+Navigation
+----------
+```
+// Push to ensure that back actually goes back somewhere useful.
+rootNavigation.push(RootStackComponents.rootContentScreen, {
+  screen: BottomTabComponents.lfgTab,
+  params: {
+    screen: LfgStackComponents.lfgOwnedScreen,
+    // initial false needed here to enable the stack to popToTop on bottom button press.
+    initial: false,
+  },
+})
+```

@@ -9,21 +9,22 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getFezTimezoneOffset, getTimeZoneOffset} from '../../../libraries/DateTime';
+import {getFezTimezoneOffset} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {LfgCanceledView} from '../../Views/LfgCanceledView';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgEditScreen, NavigatorIDs.lfgStack>;
 
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
-  const {setFez} = useTwitarr();
+  const {setLfg, dispatchLfgList} = useTwitarr();
   const {appConfig} = useConfig();
   const offset = getFezTimezoneOffset(route.params.fez, appConfig.portTimeZoneID);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    console.log(values);
     let fezStartTime = new Date(values.startDate);
     fezStartTime.setHours(values.startTime.hours);
     fezStartTime.setMinutes(values.startTime.minutes);
@@ -47,7 +48,11 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          setFez(response.data);
+          setLfg(response.data);
+          dispatchLfgList({
+            type: FezListActions.updateFez,
+            fez: response.data,
+          });
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
@@ -55,19 +60,16 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
     );
   };
 
-  console.log('Start', route.params.fez.startTime, 'End', route.params.fez.endTime);
-  console.log('Fez has offset', offset);
   let startDate = new Date(route.params.fez.startTime || new Date());
   startDate = addMinutes(startDate, offset);
   let endDate = new Date(route.params.fez.endTime || new Date());
   endDate = addMinutes(endDate, offset);
-  console.log('Duration', differenceInMinutes(endDate, startDate).toString());
 
   const initialValues: FezFormValues = {
     title: route.params.fez.title,
     location: route.params.fez.location || '',
     fezType: route.params.fez.fezType,
-    startDate: startDate.toISOString(),
+    startDate: startDate,
     duration: differenceInMinutes(endDate, startDate).toString(),
     minCapacity: route.params.fez.minParticipants.toString(),
     maxCapacity: route.params.fez.maxParticipants.toString(),
@@ -78,12 +80,11 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
     },
   };
 
-  console.log(initialValues);
-
   return (
     <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
+      <ScrollingContentView isStack={true}>
+        {route.params.fez.cancelled && <LfgCanceledView update={true} />}
+        <PaddedContentView padTop={true}>
           <LfgForm onSubmit={onSubmit} initialValues={initialValues} buttonText={'Save'} />
         </PaddedContentView>
       </ScrollingContentView>

@@ -47,7 +47,7 @@ const helpContent = [
 ];
 
 export const LfgParticipationScreen = ({navigation, route}: Props) => {
-  const {fez, setFez} = useTwitarr();
+  const {lfg, setLfg} = useTwitarr();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
@@ -79,7 +79,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: response => {
-          setFez(response.data);
+          setLfg(response.data);
         },
         onError: error => {
           setErrorMessage(error.response?.data.reason || error);
@@ -108,22 +108,22 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   );
 
   const handleJoin = useCallback(() => {
-    if (!fez || !profilePublicData) {
+    if (!lfg || !profilePublicData) {
       return;
     }
-    if (FezData.isParticipant(fez, profilePublicData.header)) {
-      setModalContent(<LfgLeaveModal fezData={fez} />);
+    if (FezData.isParticipant(lfg, profilePublicData.header)) {
+      setModalContent(<LfgLeaveModal fezData={lfg} />);
       setModalVisible(true);
     } else {
       setRefreshing(true);
       membershipMutation.mutate(
         {
-          fezID: fez.fezID,
+          fezID: lfg.fezID,
           action: 'join',
         },
         {
           onSuccess: response => {
-            setFez(response.data);
+            setLfg(response.data);
           },
           onError: error => {
             setErrorMessage(error.response?.data.reason || error);
@@ -132,7 +132,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [fez, membershipMutation, profilePublicData, setErrorMessage, setFez, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, setErrorMessage, setLfg, setModalContent, setModalVisible]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -140,50 +140,50 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  if (!fez || !fez.members) {
+  if (!lfg || !lfg.members) {
     return <LoadingView />;
   }
 
-  const manageUsers = fez.owner.userID === profilePublicData?.header.userID;
-  const isFull = FezData.isFull(fez);
-  const isUnlimited = fez.maxParticipants === 0;
-  const isMember = FezData.isParticipant(fez, profilePublicData?.header);
-  const isWaitlist = FezData.isWaitlist(fez, profilePublicData?.header);
+  const manageUsers = lfg.owner.userID === profilePublicData?.header.userID;
+  const isFull = FezData.isFull(lfg);
+  const isUnlimited = lfg.maxParticipants === 0;
+  const isMember = FezData.isParticipant(lfg, profilePublicData?.header);
+  const isWaitlist = FezData.isWaitlist(lfg, profilePublicData?.header);
 
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
-          <TouchableOpacity onLongPress={() => Clipboard.setString(fez.title)}>
+          <TouchableOpacity onLongPress={() => Clipboard.setString(lfg.title)}>
             <TitleTag>Title</TitleTag>
-            <Text>{fez.title}</Text>
+            <Text>{lfg.title}</Text>
           </TouchableOpacity>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Minimum Needed</TitleTag>
-          <Text>{fez.minParticipants}</Text>
+          <Text>{lfg.minParticipants}</Text>
         </PaddedContentView>
         <PaddedContentView>
           <TitleTag>Maximum Allowed</TitleTag>
-          <Text>{fez.maxParticipants === 0 ? 'Unlimited' : fez.maxParticipants}</Text>
+          <Text>{lfg.maxParticipants === 0 ? 'Unlimited' : lfg.maxParticipants}</Text>
         </PaddedContentView>
         <PaddedContentView padBottom={false}>
-          <TitleTag>Participants ({fez.participantCount})</TitleTag>
+          <TitleTag>Participants ({lfg.participantCount})</TitleTag>
         </PaddedContentView>
         <PaddedContentView padSides={false}>
           <ListSection>
             {manageUsers && !isFull && (
               <FezParticipantAddItem
-                onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
               />
             )}
             {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
-            {fez.members.participants.map(u => (
+            {lfg.members.participants.map(u => (
               <FezParticipantListItem
-                onRemove={() => onParticipantRemove(fez, u.userID)}
+                onRemove={() => onParticipantRemove(lfg, u.userID)}
                 key={u.userID}
                 user={u}
-                fez={fez}
+                fez={lfg}
                 onPress={() =>
                   bottomNav.navigate(BottomTabComponents.homeTab, {
                     screen: MainStackComponents.userProfileScreen,
@@ -198,24 +198,24 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         {isFull && !isUnlimited && (
           <>
             <PaddedContentView padBottom={false}>
-              <TitleTag>Waitlist ({fez.members.waitingList.length})</TitleTag>
+              <TitleTag>Waitlist ({lfg.members.waitingList.length})</TitleTag>
             </PaddedContentView>
             <PaddedContentView padSides={false}>
               <ListSection>
                 {manageUsers && (
                   <FezParticipantAddItem
-                    onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: fez.fezID})}
+                    onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
                   />
                 )}
                 {!isMember && !isWaitlist && isFull && (
                   <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />
                 )}
-                {fez.members.waitingList.map(u => (
+                {lfg.members.waitingList.map(u => (
                   <FezParticipantListItem
-                    onRemove={() => onParticipantRemove(fez, u.userID)}
+                    onRemove={() => onParticipantRemove(lfg, u.userID)}
                     key={u.userID}
                     user={u}
-                    fez={fez}
+                    fez={lfg}
                     onPress={() =>
                       bottomNav.navigate(BottomTabComponents.homeTab, {
                         screen: MainStackComponents.userProfileScreen,

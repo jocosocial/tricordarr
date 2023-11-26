@@ -28,7 +28,12 @@ const ReportContentFormBody = () => {
       <Text style={[commonStyles.marginBottomSmall]}>
         The content you are reporting is already attached. You can add additional information below.
       </Text>
-      <TextField name={'message'} multiline={true} numberOfLines={3} />
+      <TextField
+        innerTextStyle={[commonStyles.paddingVerticalSmall]}
+        name={'message'}
+        multiline={true}
+        numberOfLines={3}
+      />
     </>
   );
 };

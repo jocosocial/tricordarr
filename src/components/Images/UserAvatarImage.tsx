@@ -3,7 +3,8 @@ import {Avatar} from 'react-native-paper';
 import {styleDefaults} from '../../styles';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useImageQuery} from '../Queries/ImageQuery';
-import {ImageQueryData} from '../../libraries/Types';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 
 type UserAvatarImageProps = {
   userID?: string;
@@ -13,9 +14,11 @@ type UserAvatarImageProps = {
 
 export const UserAvatarImage = ({userID, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
-  const {data} = useImageQuery(`/image/user/thumb/${userID}`);
+  const {getIsDisabled} = useFeature();
+  const isDisabled = getIsDisabled(SwiftarrFeature.images);
+  const {data} = useImageQuery(`/image/user/thumb/${userID}`, !isDisabled);
 
-  if (!data) {
+  if (!data || isDisabled) {
     return <Avatar.Icon size={size} icon={icon} />;
   }
 

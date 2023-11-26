@@ -12,6 +12,7 @@ export interface AppConfig {
   urlPrefix: string;
   enableBackgroundWorker: boolean;
   notificationPollInterval: number;
+  enableNotificationPolling: boolean;
   enableNotificationSocket: boolean;
   enableFezSocket: boolean;
   pushNotifications: PushNotificationConfig;
@@ -31,7 +32,8 @@ const defaultAppConfig: AppConfig = {
   serverUrl: 'http://joco.hollandamerica.com', // This uses the deprecated URL so we can be sure its overridden later.
   urlPrefix: '/api/v3',
   enableBackgroundWorker: true,
-  notificationPollInterval: 300000,
+  notificationPollInterval: 120000, // 2 minutes
+  enableNotificationPolling: false,
   enableNotificationSocket: true,
   enableFezSocket: true,
   pushNotifications: {

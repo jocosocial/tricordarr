@@ -9,14 +9,14 @@ import {SecretHeaderTitle} from './SecretHeaderTitle';
  */
 export const SettingsHeaderTitle = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {setErrorMessage} = useErrorHandler();
+  const {setInfoMessage} = useErrorHandler();
 
   const onReveal = () => {
     updateAppConfig({
       ...appConfig,
       enableDeveloperOptions: !appConfig.enableDeveloperOptions,
     });
-    setErrorMessage(`Developer options are now ${!appConfig.enableDeveloperOptions ? 'enabled' : 'disabled'}`);
+    setInfoMessage(`Developer options are now ${!appConfig.enableDeveloperOptions ? 'enabled' : 'disabled'}`);
   };
 
   return <SecretHeaderTitle title={'Settings'} onReveal={onReveal} />;

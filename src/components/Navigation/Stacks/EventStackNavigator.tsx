@@ -11,6 +11,9 @@ import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {EventScreen} from '../../Screens/Event/EventScreen';
 import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
 import {EventFavoritesScreen} from '../../Screens/Event/EventFavoritesScreen';
+import {useFeature} from '../../Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
+import {DisabledView} from '../../Views/Static/DisabledView';
 
 export type EventStackParamList = {
   EventDayScreen: {
@@ -30,6 +33,8 @@ export const EventStackNavigator = () => {
   const Stack = createNativeStackNavigator<EventStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
   const {cruiseDayToday} = useCruise();
+  const {getIsDisabled} = useFeature();
+  const isDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
   return (
     <Stack.Navigator
@@ -37,7 +42,7 @@ export const EventStackNavigator = () => {
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={EventStackComponents.eventDayScreen}
-        component={EventDayScreen}
+        component={isDisabled ? DisabledView : EventDayScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Events',

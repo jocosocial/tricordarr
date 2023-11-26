@@ -5,7 +5,7 @@ import {CustomEmoji} from '../../libraries/Enums/Emoji';
 import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {styleDefaults} from '../../styles';
+import {HyperlinkText} from './HyperlinkText';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -36,6 +36,7 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
       return (
         <React.Fragment key={lineIndex}>
           {renderEmojiText(line)}
+          {/*{renderHyperlinkText(line)}*/}
           {lineIndex < lines.length - 1 && '\n'}
         </React.Fragment>
       );
@@ -55,5 +56,9 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
     return <Markdown style={markdownStyle}>{strippedText}</Markdown>;
   }
 
-  return <Text style={textStyle}>{renderContentText()}</Text>;
+  return (
+    <HyperlinkText>
+      <Text style={textStyle}>{renderContentText()}</Text>
+    </HyperlinkText>
+  );
 };

@@ -13,7 +13,6 @@ import {
   InfoStringValidation,
   NumberValidation,
 } from '../../libraries/ValidationSchema';
-import {FezType} from '../../libraries/Enums/FezType';
 import {FezFormValues} from '../../libraries/Types/FormValues';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
@@ -21,7 +20,6 @@ import {DurationPickerField} from './Fields/DurationPickerField';
 import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
 import {DatePickerField} from './Fields/DatePickerField';
-import {useCruise} from '../Context/Contexts/CruiseContext';
 import {TimePickerField} from './Fields/TimePickerField';
 
 interface LfgFormProps {

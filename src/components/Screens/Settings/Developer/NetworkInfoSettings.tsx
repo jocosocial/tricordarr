@@ -3,9 +3,9 @@ import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable, useTheme} from 'react-native-paper';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '../../Views/AppView';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {AppView} from '../../../Views/AppView';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,

@@ -1,22 +1,23 @@
 import React from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import {View, TextInput, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
-import {PostLengthView} from '../Views/PostLengthView';
 import * as Yup from 'yup';
+import {EmojiPickerField} from './Fields/EmojiPickerField';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
   formRef?: React.RefObject<FormikProps<PostContentData>>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
+  enablePhotos?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -30,10 +31,17 @@ const validationSchema = Yup.object().shape({
 });
 
 // https://formik.org/docs/guides/react-native
-export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
+export const FezPostForm = ({
+  onSubmit,
+  formRef,
+  onPress,
+  overrideSubmitting,
+  enablePhotos = true,
+}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
+  const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
 
   const initialValues: PostContentData = {
     images: [],
@@ -63,7 +71,21 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
     lengthHintContainer: {
       ...commonStyles.flexRow,
     },
+    imageRow: {
+      ...commonStyles.flexRow,
+      ...commonStyles.marginTopSmall,
+    },
+    imagePressable: {
+      ...commonStyles.roundedBorder,
+      ...commonStyles.overflowHidden,
+    },
+    image: {width: 64, height: 64},
   });
+
+  const handleInsertPress = () => {
+    setEmojiPickerVisible(false);
+    setInsertMenuVisible(!insertMenuVisible);
+  };
 
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
@@ -78,10 +100,17 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+      {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (
         <View style={styles.formContainer}>
+          {emojiPickerVisible && <EmojiPickerField />}
+          <ContentInsertMenuView
+            enablePhotos={enablePhotos}
+            visible={insertMenuVisible}
+            setVisible={setInsertMenuVisible}
+            setEmojiVisible={setEmojiPickerVisible}
+          />
           <View style={styles.formView}>
-            <IconButton icon={AppIcons.insert} onPress={() => setInsertMenuVisible(!insertMenuVisible)} />
+            <IconButton icon={AppIcons.insert} onPress={handleInsertPress} />
             <View style={styles.inputWrapperView}>
               <TextInput
                 underlineColorAndroid={'transparent'}
@@ -91,6 +120,30 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
                 onBlur={handleBlur('text')}
                 value={values.text}
               />
+              {values.images.length > 0 && (
+                <View style={styles.imageRow}>
+                  {values.images.map((imageData, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={styles.imagePressable}
+                        key={index}
+                        onPress={() =>
+                          setFieldValue(
+                            'images',
+                            values.images.filter((img, idx) => idx !== index),
+                          )
+                        }
+                        disabled={isSubmitting}>
+                        <Image
+                          resizeMode={'cover'}
+                          style={styles.image}
+                          source={{uri: `data:image;base64,${imageData.image}`}}
+                        />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
             </View>
             <SubmitIconButton
               disabled={!values.text}
@@ -98,10 +151,6 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
               onPress={onPress || handleSubmit}
             />
           </View>
-          {/*<View style={styles.lengthHintContainer}>*/}
-          {/*  <PostLengthView content={values.text} />*/}
-          {/*</View>*/}
-          <ContentInsertMenuView visible={insertMenuVisible} setVisible={setInsertMenuVisible} />
         </View>
       )}
     </Formik>

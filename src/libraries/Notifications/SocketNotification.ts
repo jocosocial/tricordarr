@@ -15,6 +15,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
 
   // Do not generate a notification if the user has disabled that category.
   if (!appConfig.pushNotifications[notificationType]) {
+    console.log('[generatePushNotificationFromEvent] user has disabled category', notificationType);
     return;
   }
 
