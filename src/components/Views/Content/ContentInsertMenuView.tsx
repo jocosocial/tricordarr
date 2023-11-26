@@ -13,11 +13,13 @@ interface ContentInsertMenuViewProps {
   setVisible: Dispatch<SetStateAction<boolean>>;
   fieldName?: string;
   enablePhotos?: boolean;
+  setEmojiVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ContentInsertMenuView = ({
   visible,
   setVisible,
+  setEmojiVisible,
   enablePhotos = true,
   fieldName = 'images',
 }: ContentInsertMenuViewProps) => {
@@ -25,15 +27,16 @@ export const ContentInsertMenuView = ({
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
 
   const handleInsertEmoji = () => {
-    setErrorMessage('This feature is not yet implemented.');
     setVisible(false);
+    setEmojiVisible(true);
   };
 
   useEffect(() => {
     if (isSubmitting) {
       setVisible(false);
+      setEmojiVisible(false);
     }
-  }, [isSubmitting, setVisible]);
+  }, [isSubmitting, setEmojiVisible, setVisible]);
 
   const takeImage = async () => {
     const permissionStatus = await requestPermission(PERMISSIONS.ANDROID.CAMERA);

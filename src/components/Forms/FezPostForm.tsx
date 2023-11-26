@@ -10,6 +10,7 @@ import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
+import {EmojiPickerField} from './Fields/EmojiPickerField';
 
 interface FezPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -40,6 +41,7 @@ export const FezPostForm = ({
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
+  const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
 
   const initialValues: PostContentData = {
     images: [],
@@ -80,6 +82,11 @@ export const FezPostForm = ({
     image: {width: 64, height: 64},
   });
 
+  const handleInsertPress = () => {
+    setEmojiPickerVisible(false);
+    setInsertMenuVisible(!insertMenuVisible);
+  };
+
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
   // https://formik.org/docs/guides/react-native
@@ -95,8 +102,9 @@ export const FezPostForm = ({
       validationSchema={validationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (
         <View style={styles.formContainer}>
+          {emojiPickerVisible && <EmojiPickerField />}
           <View style={styles.formView}>
-            <IconButton icon={AppIcons.insert} onPress={() => setInsertMenuVisible(!insertMenuVisible)} />
+            <IconButton icon={AppIcons.insert} onPress={handleInsertPress} />
             <View style={styles.inputWrapperView}>
               <TextInput
                 underlineColorAndroid={'transparent'}
@@ -141,6 +149,7 @@ export const FezPostForm = ({
             enablePhotos={enablePhotos}
             visible={insertMenuVisible}
             setVisible={setInsertMenuVisible}
+            setEmojiVisible={setEmojiPickerVisible}
           />
         </View>
       )}
