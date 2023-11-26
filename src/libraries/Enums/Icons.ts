@@ -77,4 +77,12 @@ export enum AppIcons {
   close = 'close',
   download = 'download',
   imageDisabled = 'image-off',
+  post = 'comment',
+  postEdit = 'comment-edit',
+  postRemove = 'comment-remove',
+  postSearch = 'comment-search',
+  postSelf = 'comment-account',
+  // postMention = 'comment-eye',
+  postMention = 'at',
+  postFavorite = 'message-star',
 }

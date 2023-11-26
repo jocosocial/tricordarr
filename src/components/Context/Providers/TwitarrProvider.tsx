@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {CategoryData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, FezData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
@@ -20,6 +20,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
   const [forumCategories, setForumCategories] = useState<CategoryData[]>([]);
+  const [forumThreads, setForumThreads] = useState<ForumListData[]>([]);
 
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
@@ -65,6 +66,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         openWebUrl,
         forumCategories,
         setForumCategories,
+        forumThreads,
+        setForumThreads,
       }}>
       {children}
     </TwitarrContext.Provider>

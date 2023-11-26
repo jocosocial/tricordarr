@@ -8,6 +8,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryListItem} from '../../Lists/Items/ForumCategoryListItem';
+import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
 
 export const ForumCategoriesScreen = () => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
@@ -48,6 +49,7 @@ export const ForumCategoriesScreen = () => {
           </ListSection>
         </View>
       </ScrollingContentView>
+      <ForumCategoryFAB />
     </AppView>
   );
 };

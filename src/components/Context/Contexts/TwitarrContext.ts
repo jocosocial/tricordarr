@@ -1,5 +1,11 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {CategoryData, EventData, FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
+import {
+  CategoryData,
+  EventData,
+  FezData,
+  FezPostData,
+  ForumListData,
+} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 import {EventListActionsType} from '../../Reducers/Schedule/EventListReducer';
@@ -27,6 +33,8 @@ interface TwitarrContextType {
   openWebUrl: (url: string) => void;
   forumCategories: CategoryData[];
   setForumCategories: Dispatch<SetStateAction<CategoryData[]>>;
+  forumThreads: ForumListData[];
+  setForumThreads: Dispatch<SetStateAction<ForumListData[]>>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

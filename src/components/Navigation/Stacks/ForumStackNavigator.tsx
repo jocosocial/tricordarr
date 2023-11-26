@@ -8,9 +8,13 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
+import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
+  ForumCategoryScreen: {
+    categoryId: string;
+  };
 };
 
 export const ForumStackNavigator = () => {
@@ -30,6 +34,13 @@ export const ForumStackNavigator = () => {
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Forum Categories',
+        }}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumCategoryScreen}
+        component={isDisabled ? DisabledView : ForumCategoryScreen}
+        options={{
+          title: 'Threads',
         }}
       />
     </Stack.Navigator>

@@ -516,7 +516,7 @@ export interface ForumListData {
   /// The last user to post to the forum. Nil if there are no posts in the forum.
   lastPoster?: UserHeader;
   /// Timestamp of most recent post. Needs to be optional because admin forums may be empty.
-  lastPostAt: string;
+  lastPostAt?: string;
   /// Whether the forum is in read-only state.
   isLocked: boolean;
   /// Whether user has favorited forum.
