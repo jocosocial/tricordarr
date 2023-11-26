@@ -12,6 +12,9 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumThreadListItem} from '../../Lists/Items/ForumThreadListItem';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -19,7 +22,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.forumStack
 >;
 
-export const ForumCategoryScreen = ({route}: Props) => {
+export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoryQuery(route.params.categoryId);
   const [refreshing, setRefreshing] = useState(false);
   const {forumThreads, setForumThreads} = useTwitarr();
@@ -33,11 +36,29 @@ export const ForumCategoryScreen = ({route}: Props) => {
     console.log('Creating in', data?.categoryID);
   };
 
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title={'Sort'} iconName={AppIcons.sort} onPress={() => console.log('sort')} />
+          <Item title={'Filter'} iconName={AppIcons.filter} onPress={() => console.log('filter')} />
+          <Item title={'Help'} iconName={AppIcons.help} onPress={() => console.log('help')} />
+        </HeaderButtons>
+      </View>
+    );
+  }, []);
+
   useEffect(() => {
     if (data && data.forumThreads) {
       setForumThreads(data.forumThreads);
     }
   }, [data, setForumThreads]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (!data) {
     return <LoadingView />;

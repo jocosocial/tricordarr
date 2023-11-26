@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
@@ -10,6 +10,11 @@ import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategor
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {ForumActionsMenu} from '../../Menus/ForumActionsMenu';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -17,10 +22,11 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.forumStack
 >;
 
-export const ForumThreadScreen = ({route}: Props) => {
+export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {data, refetch, isLoading} = useForumThreadQuery(route.params.forumID);
   // const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
+  const {profilePublicData} = useUserData();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -32,6 +38,27 @@ export const ForumThreadScreen = ({route}: Props) => {
   //     setForumCategories(data);
   //   }
   // }, [data, setForumCategories]);
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title={'Favorite'} iconName={AppIcons.favorite} onPress={() => console.log('fav')} />
+          <Item title={'Mute'} iconName={AppIcons.mute} onPress={() => console.log('mute')} />
+          {profilePublicData?.header.username === data?.creator.username && (
+            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit')} />
+          )}
+          <ForumActionsMenu forumData={data} />
+        </HeaderButtons>
+      </View>
+    );
+  }, [data, profilePublicData?.header.username]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (!data) {
     return <LoadingView />;
@@ -56,7 +83,6 @@ export const ForumThreadScreen = ({route}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumCategoryFAB />
     </AppView>
   );
 };

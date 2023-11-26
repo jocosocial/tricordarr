@@ -85,4 +85,5 @@ export enum AppIcons {
   // postMention = 'comment-eye',
   postMention = 'at',
   postFavorite = 'message-star',
+  sort = 'sort',
 }
