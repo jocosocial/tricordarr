@@ -4,7 +4,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {Divider, Text} from 'react-native-paper';
+import {Button, Divider, Text} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -15,6 +15,8 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ForumActionsMenu} from '../../Menus/ForumActionsMenu';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -23,10 +25,21 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ForumThreadScreen = ({route, navigation}: Props) => {
-  const {data, refetch, isLoading} = useForumThreadQuery(route.params.forumID);
+  const {
+    data,
+    refetch,
+    isLoading,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+  } = useForumThreadQuery(route.params.forumID);
   // const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
+  const [postList, setPostList] = useState<PostData[]>([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -62,29 +75,51 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   console.log(data?.pages.length);
 
+  const handleLoadNext = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      setRefreshing(true);
+      fetchNextPage().finally(() => setRefreshing(false));
+    }
+  };
+  const handleLoadPrevious = () => {
+    if (!isFetchingPreviousPage && hasPreviousPage) {
+      setRefreshing(true);
+      fetchPreviousPage().finally(() => setRefreshing(false));
+    }
+  };
+
+  useEffect(() => {
+    if (data && data.pages) {
+      setPostList(data.pages.flatMap(forumData => forumData.posts));
+    }
+  }, [data]);
+
   if (!data) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
-      <ScrollingContentView
-        isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
-        <View>
-          <ListSection>
-            {/*{data.posts.map((post, index) => {*/}
-            {/*  return (*/}
-            {/*    <React.Fragment key={post.postID}>*/}
-            {/*      {index === 0 && <Divider bold={true} />}*/}
-            {/*      <Text>{post.text}</Text>*/}
-            {/*      <Divider bold={true} />*/}
-            {/*    </React.Fragment>*/}
-            {/*  );*/}
-            {/*})}*/}
-          </ListSection>
-        </View>
-      </ScrollingContentView>
+      <ForumPostFlatList postList={postList} onEndReached={handleLoadNext} />
+      {/*<ScrollingContentView*/}
+      {/*  isStack={true}*/}
+      {/*  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>*/}
+      {/*  <View>*/}
+      {/*    <ListSection>*/}
+      {/*      <Button onPress={() => fetchNextPage()}>Fetch Next</Button>*/}
+      {/*      <Button onPress={() => fetchPreviousPage()}>Fetch Previous</Button>*/}
+      {/*      /!*{data.posts.map((post, index) => {*!/*/}
+      {/*      /!*  return (*!/*/}
+      {/*      /!*    <React.Fragment key={post.postID}>*!/*/}
+      {/*      /!*      {index === 0 && <Divider bold={true} />}*!/*/}
+      {/*      /!*      <Text>{post.text}</Text>*!/*/}
+      {/*      /!*      <Divider bold={true} />*!/*/}
+      {/*      /!*    </React.Fragment>*!/*/}
+      {/*      /!*  );*!/*/}
+      {/*      /!*})}*!/*/}
+      {/*    </ListSection>*/}
+      {/*  </View>*/}
+      {/*</ScrollingContentView>*/}
     </AppView>
   );
 };
