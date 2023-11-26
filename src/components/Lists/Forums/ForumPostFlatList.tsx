@@ -1,5 +1,5 @@
 import {FezData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, RefreshControlProps, ScrollView, View} from 'react-native';
+import {RefreshControlProps, ScrollView, View} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useRef, useState} from 'react';
 import {Button, Divider, Text} from 'react-native-paper';
@@ -8,6 +8,7 @@ import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {FlatList} from 'react-native-bidirectional-infinite-scroll';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -81,47 +82,51 @@ export const ForumPostFlatList = ({
   };
 
   // , autoscrollToTopThreshold: 10
-  return (
-    <ScrollView
-      refreshControl={refreshControl}
-      maintainVisibleContentPosition={{minIndexForVisible: 0}}>
-      {getListHeader()}
-      {postList.map((item, index) => (
-        <PaddedContentView key={index} invertVertical={false} padBottom={true}>
-          <Text>{item.text}</Text>
-        </PaddedContentView>
-      ))}
-      {getListFooter()}
-    </ScrollView>
-  );
-
   // return (
-  //   <FlatList
-  //     // onLayout={handleLayout}
-  //     ref={flatListRef}
+  //   <ScrollView
   //     refreshControl={refreshControl}
-  //     // ItemSeparatorComponent={ListSeparator}
-  //     // ListHeaderComponent={SeamailListHeader}
-  //     // ListFooterComponent={ListSeparator}
-  //     // onEndReached={handleLoadNext}
-  //     // onStartReached={handleLoadPrevious}
-  //     // // onStartReached={onStartReached}
-  //     data={postList}
-  //     renderItem={({item}) => (
-  //       <PaddedContentView invertVertical={false} padBottom={true}>
+  //     maintainVisibleContentPosition={{minIndexForVisible: 0}}>
+  //     {getListHeader()}
+  //     {postList.map((item, index) => (
+  //       <PaddedContentView key={index} invertVertical={false} padBottom={true}>
   //         <Text>{item.text}</Text>
   //       </PaddedContentView>
-  //     )}
-  //     // // initialScrollIndex={5}
-  //     // onScrollToIndexFailed={(info) => console.log('fail!', info)}
-  //     ListFooterComponent={getListFooter}
-  //     ListHeaderComponent={getListHeader}
-  //     // onContentSizeChange={handleContentSizeChange}
-  //     // // onViewableItemsChanged={onChange}
-  //     onScroll={handleScroll}
-  //     // style={commonStyles.verticallyInverted}
-  //     // initialNumToRender={postList.length}
-  //     maintainVisibleContentPosition={{minIndexForVisible: 0, autoscrollToTopThreshold: 10}}
-  //   />
+  //     ))}
+  //     {getListFooter()}
+  //   </ScrollView>
   // );
+
+  return (
+    <FlatList
+      // onLayout={handleLayout}
+      // ref={flatListRef}
+      refreshControl={refreshControl}
+      // ItemSeparatorComponent={ListSeparator}
+      // ListHeaderComponent={SeamailListHeader}
+      // ListFooterComponent={ListSeparator}
+      // onEndReached={handleLoadNext}
+      // onStartReached={handleLoadPrevious}
+      // // onStartReached={onStartReached}
+      data={postList}
+      renderItem={({item}) => (
+        <PaddedContentView invertVertical={false} padBottom={true}>
+          <Text>{item.text}</Text>
+        </PaddedContentView>
+      )}
+      // // initialScrollIndex={5}
+      // onScrollToIndexFailed={(info) => console.log('fail!', info)}
+      ListFooterComponent={getListFooter}
+      ListHeaderComponent={getListHeader}
+      // onContentSizeChange={handleContentSizeChange}
+      // // onViewableItemsChanged={onChange}
+      onScroll={handleScroll}
+      // style={commonStyles.verticallyInverted}
+      // initialNumToRender={postList.length}
+      // maintainVisibleContentPosition={{minIndexForVisible: 0, autoscrollToTopThreshold: 10}}
+      onStartReached={() => new Promise(() => console.log('start'))}
+      onEndReached={() => new Promise(() => console.log('end'))}
+      showDefaultLoadingIndicators={false}
+      keyExtractor={(item: PostData) => String(item.postID)}
+    />
+  );
 };
