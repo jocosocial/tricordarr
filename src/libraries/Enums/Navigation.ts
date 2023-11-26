@@ -1,5 +1,6 @@
 import {SeamailHelpScreen} from '../../components/Screens/Seamail/SeamailHelpScreen';
 import {NotificationPollerSettingsScreen} from '../../components/Screens/Settings/NotificationPollerSettingsScreen';
+import {LoadingSettingScreen} from '../../components/Screens/Settings/Developer/LoadingSettingScreen';
 
 /**
  * These are used for Navigation TypeScript checking.
@@ -46,6 +47,7 @@ export enum SettingsStackScreenComponents {
   lfgSettings = 'LfgSettingsScreen',
   featureSettingsScreen = 'FeatureSettingsScreen',
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
+  loadingSettingScreen = 'LoadingSettingScreen',
 }
 
 export enum SeamailStackScreenComponents {

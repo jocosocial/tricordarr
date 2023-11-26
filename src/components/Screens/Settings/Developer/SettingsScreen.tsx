@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
-import {SettingsNavigationListItem} from '../../Lists/Items/SettingsNavigationListItem';
-import {AccountListItem} from '../../Lists/Items/AccountListItem';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {ListSection} from '../../Lists/ListSection';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {SettingsNavigationListItem} from '../../../Lists/Items/SettingsNavigationListItem';
+import {AccountListItem} from '../../../Lists/Items/AccountListItem';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {ListSection} from '../../../Lists/ListSection';
+import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
-import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
+import {SettingsHeaderTitle} from '../../../Navigation/Components/SettingsHeaderTitle';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -138,6 +138,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Disabled Features'}
                   description={'Show features that have been disabled by the server.'}
                   navComponent={SettingsStackScreenComponents.featureSettingsScreen}
+                />
+                <SettingsNavigationListItem
+                  title={'Loading'}
+                  description={'Test the loading screen.'}
+                  navComponent={SettingsStackScreenComponents.loadingSettingScreen}
                 />
               </ListSection>
             </>

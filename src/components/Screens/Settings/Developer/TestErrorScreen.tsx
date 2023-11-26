@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {useAppTheme} from '../../../styles/Theme';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {AppView} from '../../Views/AppView';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {useAppTheme} from '../../../../styles/Theme';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
+import {useStyles} from '../../../Context/Contexts/StyleContext';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();

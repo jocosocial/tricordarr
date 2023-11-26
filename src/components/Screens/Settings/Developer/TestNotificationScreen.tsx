@@ -1,11 +1,11 @@
 import React from 'react';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {cancelTestNotification, displayTestNotification} from '../../../libraries/Notifications/TestNotification';
-import {useAppTheme} from '../../../styles/Theme';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {AppView} from '../../Views/AppView';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {cancelTestNotification, displayTestNotification} from '../../../../libraries/Notifications/TestNotification';
+import {useAppTheme} from '../../../../styles/Theme';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView';
+import {useStyles} from '../../../Context/Contexts/StyleContext';
 
 export const TestNotificationScreen = () => {
   const theme = useAppTheme();

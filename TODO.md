@@ -5,5 +5,3 @@ Work Queue
 * emoji picker
 
 Nightly
-* Improve the loading screen
-* Registration if disabled

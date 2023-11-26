@@ -5,27 +5,27 @@ import {
   getSharedWebSocket,
   startForegroundServiceWorker,
   stopForegroundServiceWorker,
-} from '../../../libraries/Service';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {AppView} from '../../Views/AppView';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {commonStyles} from '../../../styles';
+} from '../../../../libraries/Service';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {AppView} from '../../../Views/AppView';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {commonStyles} from '../../../../styles';
 import {useBackHandler} from '@react-native-community/hooks';
-import {fgsFailedCounter} from '../../../libraries/Service';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {fgsFailedCounter} from '../../../../libraries/Service';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useAppTheme} from '../../../styles/Theme';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {WebSocketState} from '../../../libraries/Network/Websockets';
-import {SettingDataTableRow} from '../../DataTables/SettingDataTableRow';
-import {SocketHealthcheckData} from '../../../libraries/Structs/SocketStructs';
+import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {useAppTheme} from '../../../../styles/Theme';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
+import {useConfig} from '../../../Context/Contexts/ConfigContext';
+import {WebSocketState} from '../../../../libraries/Network/Websockets';
+import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
+import {SocketHealthcheckData} from '../../../../libraries/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from '../../../libraries/Storage';
-import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
-import {SettingSwitch} from '../../Switches/SettingSwitch';
+import {StorageKeys} from '../../../../libraries/Storage';
+import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {SettingSwitch} from '../../../Switches/SettingSwitch';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
