@@ -103,6 +103,12 @@ export const FezPostForm = ({
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (
         <View style={styles.formContainer}>
           {emojiPickerVisible && <EmojiPickerField />}
+          <ContentInsertMenuView
+            enablePhotos={enablePhotos}
+            visible={insertMenuVisible}
+            setVisible={setInsertMenuVisible}
+            setEmojiVisible={setEmojiPickerVisible}
+          />
           <View style={styles.formView}>
             <IconButton icon={AppIcons.insert} onPress={handleInsertPress} />
             <View style={styles.inputWrapperView}>
@@ -145,12 +151,6 @@ export const FezPostForm = ({
               onPress={onPress || handleSubmit}
             />
           </View>
-          <ContentInsertMenuView
-            enablePhotos={enablePhotos}
-            visible={insertMenuVisible}
-            setVisible={setInsertMenuVisible}
-            setEmojiVisible={setEmojiPickerVisible}
-          />
         </View>
       )}
     </Formik>
