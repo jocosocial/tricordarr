@@ -5,3 +5,6 @@ Work Queue
 * emoji picker
 
 Nightly
+* Improve the loading screen
+* User profile lfgs stuck lfg stack
+* Registration if disabled

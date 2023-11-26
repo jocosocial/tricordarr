@@ -12,9 +12,15 @@ interface ContentInsertMenuViewProps {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   fieldName?: string;
+  enablePhotos?: boolean;
 }
 
-export const ContentInsertMenuView = ({visible, setVisible, fieldName = 'images'}: ContentInsertMenuViewProps) => {
+export const ContentInsertMenuView = ({
+  visible,
+  setVisible,
+  enablePhotos = true,
+  fieldName = 'images',
+}: ContentInsertMenuViewProps) => {
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
 
@@ -73,9 +79,13 @@ export const ContentInsertMenuView = ({visible, setVisible, fieldName = 'images'
         <View>
           <ListSection>
             <List.Item title={'Custom Emoji'} onPress={handleInsertEmoji} />
-            <List.Item title={'Take New Photo'} onPress={takeImage} />
-            <List.Item title={'Attach Existing Photo'} onPress={pickImage} />
-            {values.images.length > 0 && <List.Item title={'Remove Attachment'} onPress={removeImage} />}
+            {enablePhotos && (
+              <>
+                <List.Item title={'Take New Photo'} onPress={takeImage} />
+                <List.Item title={'Attach Existing Photo'} onPress={pickImage} />
+                {values.images.length > 0 && <List.Item title={'Remove Attachment'} onPress={removeImage} />}
+              </>
+            )}
           </ListSection>
         </View>
       )}

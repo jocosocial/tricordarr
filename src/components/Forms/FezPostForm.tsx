@@ -16,6 +16,7 @@ interface FezPostFormProps {
   formRef?: React.RefObject<FormikProps<PostContentData>>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
+  enablePhotos?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -29,7 +30,13 @@ const validationSchema = Yup.object().shape({
 });
 
 // https://formik.org/docs/guides/react-native
-export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: FezPostFormProps) => {
+export const FezPostForm = ({
+  onSubmit,
+  formRef,
+  onPress,
+  overrideSubmitting,
+  enablePhotos = true,
+}: FezPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
@@ -130,7 +137,11 @@ export const FezPostForm = ({onSubmit, formRef, onPress, overrideSubmitting}: Fe
               onPress={onPress || handleSubmit}
             />
           </View>
-          <ContentInsertMenuView visible={insertMenuVisible} setVisible={setInsertMenuVisible} />
+          <ContentInsertMenuView
+            enablePhotos={enablePhotos}
+            visible={insertMenuVisible}
+            setVisible={setInsertMenuVisible}
+          />
         </View>
       )}
     </Formik>

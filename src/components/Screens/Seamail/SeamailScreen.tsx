@@ -290,7 +290,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         onEndReached={handleLoadPrevious}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} />
+      <FezPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );
 };

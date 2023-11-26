@@ -122,6 +122,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         overrideSubmitting={submitting}
         onPress={onSubmit}
         onSubmit={onPostSubmit}
+        enablePhotos={false}
       />
     </AppView>
   );
