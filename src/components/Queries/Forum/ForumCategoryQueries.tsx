@@ -1,4 +1,4 @@
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
 import {CategoryData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 
 export const useForumCategoriesQuery = () => {
@@ -15,8 +15,12 @@ export const useForumCategoryQuery = (categoryId: string) => {
 };
 
 // @TODO infinite
+// export const useForumThreadQuery = (forumID: string) => {
+//   return useTokenAuthQuery<ForumData>({
+//     queryKey: [`/forum/${forumID}`],
+//   });
+// };
+
 export const useForumThreadQuery = (forumID: string) => {
-  return useTokenAuthQuery<ForumData>({
-    queryKey: [`/forum/${forumID}`],
-  });
+  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, [`/forum/${forumID}`]);
 };

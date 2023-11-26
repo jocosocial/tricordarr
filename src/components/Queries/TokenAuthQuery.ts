@@ -7,8 +7,8 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
-import {AxiosError} from 'axios';
-import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
+import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
+import {ErrorResponse, FezData, ForumData, Paginator} from '../../libraries/Structs/ControllerStructs';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -50,4 +50,64 @@ export function useTokenAuthInfiniteQuery<
     enabled: isLoggedIn,
     ...options,
   });
+}
+
+interface TokenAuthPaginationQueryProps {
+  pageSize?: number;
+}
+
+// async function queryFunction<TQueryFnData = AxiosResponse<FezData>, TError = AxiosError<ErrorResponse>>({
+//   pageParam = {start: undefined, limit: pageSize},
+// }) {
+//   const {data: responseData} = await axios.get<TQueryFnData, TError>(
+//     `/fez/${fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
+//   );
+//   return responseData;
+// }
+
+interface PaginationParams {
+  limit: number;
+  start: number;
+}
+
+interface WithPaginator {
+  paginator: Paginator;
+}
+
+export function useTokenAuthPaginationQuery<
+  TData extends WithPaginator,
+  TError = AxiosError<ErrorResponse>,
+  TQueryKey extends QueryKey = QueryKey,
+>(endpoint: string, queryKey: TQueryKey, pageSize: number = 10) {
+  return useInfiniteQuery<TData, TError, TData, TQueryKey>(
+    // @TODO the key needs start too
+    // [`/fez/${fezID}?limit=${pageSize}`],
+    queryKey,
+    async ({pageParam = {start: undefined, limit: pageSize}}) => {
+      const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(
+        // `/fez/${fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
+        endpoint,
+        {
+          params: {
+            limit: pageParam.limit,
+            start: pageParam.start,
+          },
+        },
+      );
+      return responseData;
+    },
+    // queryFunction,
+    {
+      getNextPageParam: lastPage => {
+        const {limit, start, total} = lastPage.paginator;
+        const nextStart = start + limit;
+        return nextStart < total ? {start: nextStart, limit} : undefined;
+      },
+      getPreviousPageParam: firstPage => {
+        const {limit, start} = firstPage.paginator;
+        const prevStart = start - limit;
+        return prevStart >= 0 ? {start: prevStart, limit} : undefined;
+      },
+    },
+  );
 }

@@ -39,26 +39,28 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   //   }
   // }, [data, setForumCategories]);
 
-  const getNavButtons = useCallback(() => {
-    return (
-      <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Favorite'} iconName={AppIcons.favorite} onPress={() => console.log('fav')} />
-          <Item title={'Mute'} iconName={AppIcons.mute} onPress={() => console.log('mute')} />
-          {profilePublicData?.header.username === data?.creator.username && (
-            <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit')} />
-          )}
-          <ForumActionsMenu forumData={data} />
-        </HeaderButtons>
-      </View>
-    );
-  }, [data, profilePublicData?.header.username]);
+  // const getNavButtons = useCallback(() => {
+  //   return (
+  //     <View>
+  //       <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+  //         <Item title={'Favorite'} iconName={AppIcons.favorite} onPress={() => console.log('fav')} />
+  //         <Item title={'Mute'} iconName={AppIcons.mute} onPress={() => console.log('mute')} />
+  //         {profilePublicData?.header.username === data?.creator.username && (
+  //           <Item title={'Edit'} iconName={AppIcons.edituser} onPress={() => console.log('edit')} />
+  //         )}
+  //         <ForumActionsMenu forumData={data} />
+  //       </HeaderButtons>
+  //     </View>
+  //   );
+  // }, [data, profilePublicData?.header.username]);
+  //
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: getNavButtons,
+  //   });
+  // }, [getNavButtons, navigation]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
+  console.log(data?.pages.length);
 
   if (!data) {
     return <LoadingView />;
@@ -71,15 +73,15 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           <ListSection>
-            {data.posts.map((post, index) => {
-              return (
-                <React.Fragment key={post.postID}>
-                  {index === 0 && <Divider bold={true} />}
-                  <Text>{post.text}</Text>
-                  <Divider bold={true} />
-                </React.Fragment>
-              );
-            })}
+            {/*{data.posts.map((post, index) => {*/}
+            {/*  return (*/}
+            {/*    <React.Fragment key={post.postID}>*/}
+            {/*      {index === 0 && <Divider bold={true} />}*/}
+            {/*      <Text>{post.text}</Text>*/}
+            {/*      <Divider bold={true} />*/}
+            {/*    </React.Fragment>*/}
+            {/*  );*/}
+            {/*})}*/}
           </ListSection>
         </View>
       </ScrollingContentView>

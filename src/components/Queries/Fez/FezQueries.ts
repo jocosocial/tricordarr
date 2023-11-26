@@ -60,7 +60,9 @@ interface SeamailListQueryOptions {
   options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50}) => {
+export const useSeamailListQuery = (
+  {pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50},
+) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined', {type: ['closed', 'open'], search: search}],
