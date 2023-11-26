@@ -91,8 +91,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      // setPostList(data.pages.flatMap(forumData => forumData.posts).reverse());
-      setPostList(data.pages.flatMap(forumData => forumData.posts));
+      setPostList(data.pages.flatMap(forumData => forumData.posts).reverse());
+      // setPostList(data.pages.flatMap(forumData => forumData.posts));
     }
   }, [data]);
 
@@ -102,7 +102,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ForumPostFlatList postList={postList} handleLoadNext={handleLoadNext} handleLoadPrevious={handleLoadPrevious} />
+      <ForumPostFlatList
+        postList={postList}
+        handleLoadNext={handleLoadNext}
+        handleLoadPrevious={handleLoadPrevious}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
+        forumData={data.pages[0]}
+      />
       {/*<ScrollingContentView*/}
       {/*  isStack={true}*/}
       {/*  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>*/}

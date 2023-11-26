@@ -14,13 +14,6 @@ export const useForumCategoryQuery = (categoryId: string) => {
   });
 };
 
-// @TODO infinite
-// export const useForumThreadQuery = (forumID: string) => {
-//   return useTokenAuthQuery<ForumData>({
-//     queryKey: [`/forum/${forumID}`],
-//   });
-// };
-
 export const useForumThreadQuery = (forumID: string) => {
-  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, [`/forum/${forumID}`]);
+  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, [`/forum/${forumID}`], 50);
 };

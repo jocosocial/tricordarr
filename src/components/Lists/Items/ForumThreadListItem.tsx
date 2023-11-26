@@ -7,6 +7,9 @@ import pluralize from 'pluralize';
 import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcon} from '../../Images/AppIcon';
+import {useAppTheme} from '../../../styles/Theme';
 
 interface ForumThreadListItemProps {
   forumData: ForumListData;
@@ -14,6 +17,7 @@ interface ForumThreadListItemProps {
 
 export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
+  const theme = useAppTheme();
   const styles = StyleSheet.create({
     item: {
       // ...commonStyles.paddingHorizontal,
@@ -24,17 +28,31 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
       ...commonStyles.bold,
       ...commonStyles.paddingHorizontalSmall,
     },
-    badgeContainer: {
+    rightContainer: {
       ...commonStyles.marginLeftSmall,
+    },
+    rightContent: {
+      ...commonStyles.flexRow,
+    },
+    badgeContainer: {
+      ...commonStyles.justifyCenter,
     },
   });
 
   const getRight = () => {
-    if (forumData.readCount !== forumData.postCount) {
-      const unreadCount = forumData.postCount - forumData.readCount;
+    const unreadCount = forumData.postCount - forumData.readCount;
+    if (unreadCount || forumData.isFavorite || forumData.isMuted) {
       return (
-        <View style={styles.badgeContainer}>
-          <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
+        <View style={styles.rightContainer}>
+          <View style={styles.rightContent}>
+            {unreadCount !== 0 && !forumData.isMuted && (
+              <View style={styles.badgeContainer}>
+                <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
+              </View>
+            )}
+            {forumData.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
+            {forumData.isMuted && <AppIcon icon={AppIcons.mute} />}
+          </View>
         </View>
       );
     }
@@ -45,7 +63,8 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
         {forumData.postCount} {pluralize('post', forumData.postCount)}
       </Text>
       <Text variant={'bodyMedium'}>
-        Created <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumData.createdAt)} /> by {UserHeader.getByline(forumData.creator)}
+        Created <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumData.createdAt)} /> by{' '}
+        {UserHeader.getByline(forumData.creator)}
       </Text>
       {forumData.lastPostAt && (
         <Text variant={'bodyMedium'}>

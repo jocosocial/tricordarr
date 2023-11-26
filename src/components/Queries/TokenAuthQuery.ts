@@ -78,7 +78,7 @@ export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
   TError = AxiosError<ErrorResponse>,
   TQueryKey extends QueryKey = QueryKey,
->(endpoint: string, queryKey: TQueryKey, pageSize: number = 10) {
+>(endpoint: string, queryKey: TQueryKey, pageSize: number = 50) {
   return useInfiniteQuery<TData, TError, TData, TQueryKey>(
     // @TODO the key needs start too
     // [`/fez/${fezID}?limit=${pageSize}`],
