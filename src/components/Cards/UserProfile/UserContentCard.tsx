@@ -36,10 +36,11 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
               title={'LFGs'}
               left={() => getIcon(AppIcons.lfg)}
               onPress={() =>
-                rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+                rootNavigation.push(RootStackComponents.rootContentScreen, {
                   screen: BottomTabComponents.lfgTab,
                   params: {
                     screen: LfgStackComponents.lfgOwnedScreen,
+                    initial: false,
                   },
                 })
               }
