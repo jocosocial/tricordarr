@@ -5,7 +5,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {BaseFAB} from './BaseFAB';
+import {BaseFABGroup} from './BaseFABGroup';
 
 export const SeamailFAB = () => {
   const theme = useAppTheme();
@@ -33,7 +33,7 @@ export const SeamailFAB = () => {
   ];
 
   return (
-    <BaseFAB
+    <BaseFABGroup
       color={color}
       backgroundColor={backgroundColor}
       actions={actions}

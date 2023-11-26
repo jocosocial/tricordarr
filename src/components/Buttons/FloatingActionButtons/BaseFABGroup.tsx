@@ -30,7 +30,7 @@ interface BaseFABProps {
   icon?: IconSource;
 }
 
-export const BaseFAB = ({color, backgroundColor, openLabel, icon, actions = []}: BaseFABProps) => {
+export const BaseFABGroup = ({color, backgroundColor, openLabel, icon, actions = []}: BaseFABProps) => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const {open} = state;

@@ -3,7 +3,7 @@ import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
-import {BaseFAB} from './BaseFAB';
+import {BaseFABGroup} from './BaseFABGroup';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
 
@@ -43,5 +43,5 @@ export const EventFAB = () => {
     }),
   ];
 
-  return <BaseFAB actions={actions} openLabel={'Events'} icon={AppIcons.events} />;
+  return <BaseFABGroup actions={actions} openLabel={'Events'} icon={AppIcons.events} />;
 };

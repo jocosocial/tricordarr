@@ -11,6 +11,7 @@ import {Divider} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumThreadListItem} from '../../Lists/Items/ForumThreadListItem';
 import {ListSection} from '../../Lists/ListSection';
+import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -28,6 +29,10 @@ export const ForumCategoryScreen = ({route}: Props) => {
     refetch().then(() => setRefreshing(false));
   }, [refetch]);
 
+  const onCreatePress = () => {
+    console.log('Creating in', data?.categoryID);
+  };
+
   useEffect(() => {
     if (data && data.forumThreads) {
       setForumThreads(data.forumThreads);
@@ -41,6 +46,7 @@ export const ForumCategoryScreen = ({route}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
+        isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
         <View>
           <ListSection>
@@ -56,6 +62,7 @@ export const ForumCategoryScreen = ({route}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
+      <ForumThreadFAB onPress={onCreatePress} />
     </AppView>
   );
 };

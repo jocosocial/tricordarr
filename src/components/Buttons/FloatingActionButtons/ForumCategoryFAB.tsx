@@ -2,7 +2,7 @@ import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
-import {BaseFAB} from './BaseFAB';
+import {BaseFABGroup} from './BaseFABGroup';
 import {useForumStackNavigation, useForumStackRoute} from '../../Navigation/Stacks/ForumStackNavigator';
 
 export const ForumCategoryFAB = () => {
@@ -54,5 +54,5 @@ export const ForumCategoryFAB = () => {
     }),
   ];
 
-  return <BaseFAB actions={actions} openLabel={'Forum Categories'} icon={AppIcons.forum} />;
+  return <BaseFABGroup actions={actions} openLabel={'Forum Categories'} icon={AppIcons.forum} />;
 };

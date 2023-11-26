@@ -21,13 +21,16 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
       ...commonStyles.bold,
       ...commonStyles.paddingHorizontalSmall,
     },
+    badgeContainer: {
+      ...commonStyles.marginLeftSmall,
+    },
   });
 
   const getRight = () => {
     if (forumData.readCount !== forumData.postCount) {
       const unreadCount = forumData.postCount - forumData.readCount;
       return (
-        <View>
+        <View style={styles.badgeContainer}>
           <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
         </View>
       );
