@@ -6,10 +6,12 @@ import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';
+import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
   text: string;
+  textVariant?: VariantProp<never>;
 }
 
 /**
@@ -17,7 +19,7 @@ interface ContentTextProps {
  * @TODO this may need cleaned up and refactored to be more generic with content views.
  * Right now it's just announcements.
  */
-export const ContentText = ({textStyle, text}: ContentTextProps) => {
+export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
 
   const renderEmojiText = (line: string) => {
@@ -58,7 +60,7 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
 
   return (
     <HyperlinkText>
-      <Text style={textStyle}>{renderContentText()}</Text>
+      <Text variant={textVariant} style={textStyle}>{renderContentText()}</Text>
     </HyperlinkText>
   );
 };

@@ -498,3 +498,52 @@ export interface ImageUploadData {
   /// Which in client land means a Base64-encoded string.
   image?: string;
 }
+
+export interface ForumListData {
+  /// The forum's ID.
+  forumID: string;
+  /// The forum's creator.
+  creator: UserHeader;
+  /// The forum's title.
+  title: string;
+  /// The number of posts in the forum.
+  postCount: number;
+  /// The number of posts the user has read.  Specifically, this will be the number of posts the forum contained the last time the user called a fn that returned a `ForumData`.
+  /// Blocked and muted posts are included in this number, but not returned in the array of posts.
+  readCount: number;
+  /// Time forum was created.
+  createdAt: string;
+  /// The last user to post to the forum. Nil if there are no posts in the forum.
+  lastPoster?: UserHeader;
+  /// Timestamp of most recent post. Needs to be optional because admin forums may be empty.
+  lastPostAt: string;
+  /// Whether the forum is in read-only state.
+  isLocked: boolean;
+  /// Whether user has favorited forum.
+  isFavorite: boolean;
+  /// Whether user has muted the forum.
+  isMuted: boolean;
+  /// If this forum is for an Event on the schedule, the start time of the event.
+  eventTime?: string;
+  /// If this forum is for an Event on the schedule, the timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
+  timeZone?: string;
+  /// If this forum is for an Event on the schedule, the ID of the event.
+  eventID?: string;
+}
+
+export interface CategoryData {
+  /// The ID of the category.
+  categoryID: string;
+  /// The title of the category.
+  title: string;
+  /// The purpose string for the category.
+  purpose: string;
+  /// If TRUE, the user cannot create/modify threads in this forum. Should be sorted to top of category list.
+  isRestricted: boolean;
+  /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
+  isEventCategory: boolean;
+  /// The number of threads in this category
+  numThreads: number;
+  ///The threads in the category. Only populated for /categories/ID.
+  forumThreads?: [ForumListData];
+}

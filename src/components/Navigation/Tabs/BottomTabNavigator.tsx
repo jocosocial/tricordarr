@@ -8,9 +8,9 @@ import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStack, MainStackParamList} from '../Stacks/MainStack';
-import {NotImplementedView} from '../../Views/Static/NotImplementedView';
 import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
+import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -27,7 +27,7 @@ export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
   ScheduleTab: NavigatorScreenParams<EventStackParamList>;
-  ForumsTab: undefined;
+  ForumsTab: NavigatorScreenParams<ForumStackParamList>;
   LfgTab: NavigatorScreenParams<LfgStackParamList>;
 };
 
@@ -61,7 +61,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.forumsTab}
-        component={NotImplementedView}
+        component={ForumStackNavigator}
         options={{
           title: 'Forums',
           tabBarIcon: () => getIcon(AppIcons.forum),

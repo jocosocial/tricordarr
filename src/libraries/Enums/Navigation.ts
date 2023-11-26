@@ -1,7 +1,3 @@
-import {SeamailHelpScreen} from '../../components/Screens/Seamail/SeamailHelpScreen';
-import {NotificationPollerSettingsScreen} from '../../components/Screens/Settings/NotificationPollerSettingsScreen';
-import {LoadingSettingScreen} from '../../components/Screens/Settings/Developer/LoadingSettingScreen';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -14,6 +10,7 @@ export enum NavigatorIDs {
   oobeStack = 'OobeStackNavigator',
   eventStack = 'EventStackNavigator',
   lfgStack = 'LfgStackNavigator',
+  forumStack = 'ForumStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -112,4 +109,8 @@ export enum LfgStackComponents {
   lfgSettingsScreen = 'LfgSettingsScreen',
   lfgCreateScreen = 'LfgCreateScreen',
   lfgEditScreen = 'LfgEditScreen',
+}
+
+export enum ForumStackComponents {
+  forumCategoriesScreen = 'ForumCategoriesScreen',
 }
