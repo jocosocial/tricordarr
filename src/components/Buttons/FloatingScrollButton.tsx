@@ -2,7 +2,6 @@ import {IconButton} from 'react-native-paper';
 import {View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../styles/Theme';
 import {AppIcons} from '../../libraries/Enums/Icons';
 
 interface FloatingScrollButtonProps {

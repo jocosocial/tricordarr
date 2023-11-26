@@ -39,7 +39,7 @@ export const ForumPostFlatList = ({postList, refreshControl, onEndReached, onSta
       // ListHeaderComponent={SeamailListHeader}
       ListFooterComponent={ListSeparator}
       onEndReached={onEndReached}
-      // onStartReached={onStartReached}
+      onStartReached={onStartReached}
       data={postList}
       renderItem={({item}) => <Text>{item.text}</Text>}
     />

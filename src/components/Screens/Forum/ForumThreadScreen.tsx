@@ -17,6 +17,7 @@ import {ForumActionsMenu} from '../../Menus/ForumActionsMenu';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
+import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
