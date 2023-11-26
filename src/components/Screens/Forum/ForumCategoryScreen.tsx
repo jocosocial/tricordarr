@@ -7,7 +7,7 @@ import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {Divider} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumThreadListItem} from '../../Lists/Items/ForumThreadListItem';
 import {ListSection} from '../../Lists/ListSection';
@@ -15,6 +15,7 @@ import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -70,6 +71,11 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
         <View>
+          {forumThreads.length === 0 && (
+            <PaddedContentView padTop={true}>
+              <Text>There aren't any forums in this category yet.</Text>
+            </PaddedContentView>
+          )}
           <ListSection>
             {forumThreads.map((thread, index) => {
               return (

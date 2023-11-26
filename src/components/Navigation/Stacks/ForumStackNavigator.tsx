@@ -44,7 +44,7 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumCategoryScreen}
         component={isDisabled ? DisabledView : ForumCategoryScreen}
         options={{
-          title: 'Threads',
+          title: 'Forums',
         }}
       />
       <Stack.Screen

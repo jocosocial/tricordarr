@@ -21,7 +21,7 @@ export const ForumCategoryListItem = ({category}: ForumCategoryListItemProps) =>
     title: commonStyles.bold,
   });
 
-  const getThreadCount = () => <Text>{category.numThreads} threads</Text>;
+  const getThreadCount = () => <Text variant={'bodyMedium'}>{category.numThreads} threads</Text>;
   const getDescription = () => <ContentText textVariant={'bodyMedium'} text={category.purpose} />;
   const onPress = () =>
     forumNavigation.push(ForumStackComponents.forumCategoryScreen, {categoryId: category.categoryID});

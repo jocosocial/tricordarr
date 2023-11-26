@@ -6,6 +6,8 @@ Work Queue
   * sorting
   * help
   * reducer for the forum thread list
+  * Thread flatlist
 * consistent forum icons
+
 
 Nightly
