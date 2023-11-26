@@ -4,6 +4,7 @@ import {SwiftarrClientApp, SwiftarrFeature} from '../Enums/AppFeatures';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {StorageKeys} from '../Storage';
 import {HttpStatusCode} from 'axios';
+import {LikeType} from '../Enums/LikeType';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -546,4 +547,46 @@ export interface CategoryData {
   numThreads: number;
   ///The threads in the category. Only populated for /categories/ID.
   forumThreads?: [ForumListData];
+}
+
+export interface ForumData {
+  /// The forum's ID.
+  forumID: string;
+  /// The ID of the forum's containing Category..
+  categoryID: string;
+  /// The forum's title
+  title: string;
+  /// The forum's creator.
+  creator: UserHeader;
+  /// Whether the forum is in read-only state.
+  isLocked: boolean;
+  /// Whether the user has favorited forum.
+  isFavorite: boolean;
+  /// Whether the user has muted the forum.
+  isMuted: boolean;
+  /// The paginator contains the total number of posts in the forum, and the start and limit of the requested subset in `posts`.
+  paginator: Paginator;
+  /// Posts in the forum.
+  posts: [PostData];
+  /// If this forum is for an Event on the schedule, the ID of the event.
+  eventID?: string;
+}
+
+export interface PostData {
+  /// The ID of the post.
+  postID: number;
+  /// The timestamp of the post.
+  createdAt: string;
+  /// The post's author.
+  author: UserHeader;
+  /// The text of the post.
+  text: string;
+  /// The filenames of the post's optional images.
+  images?: [string];
+  /// Whether the current user has bookmarked the post.
+  isBookmarked: boolean;
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The total number of `LikeType` reactions on the post.
+  likeCount: number;
 }

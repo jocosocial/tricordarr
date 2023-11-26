@@ -5,12 +5,15 @@ import {ForumListData, UserHeader} from '../../../libraries/Structs/ControllerSt
 import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
 import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 
 interface ForumThreadListItemProps {
   forumData: ForumListData;
 }
 
 export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
+  const forumNavigation = useForumStackNavigation();
   const styles = StyleSheet.create({
     item: {
       // ...commonStyles.paddingHorizontal,
@@ -52,7 +55,7 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
       )}
     </View>
   );
-  const onPress = () => console.log('foo');
+  const onPress = () => forumNavigation.push(ForumStackComponents.forumThreadScreen, {forumID: forumData.forumID});
 
   return (
     <List.Item

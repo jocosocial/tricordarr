@@ -9,11 +9,15 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
+import {ForumThreadScreen} from '../../Screens/Forum/ForumThreadScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
     categoryId: string;
+  };
+  ForumThreadScreen: {
+    forumID: string;
   };
 };
 
@@ -41,6 +45,13 @@ export const ForumStackNavigator = () => {
         component={isDisabled ? DisabledView : ForumCategoryScreen}
         options={{
           title: 'Threads',
+        }}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadScreen}
+        component={isDisabled ? DisabledView : ForumThreadScreen}
+        options={{
+          title: 'Forum',
         }}
       />
     </Stack.Navigator>

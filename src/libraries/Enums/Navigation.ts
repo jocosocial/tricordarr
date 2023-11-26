@@ -114,4 +114,5 @@ export enum LfgStackComponents {
 export enum ForumStackComponents {
   forumCategoriesScreen = 'ForumCategoriesScreen',
   forumCategoryScreen = 'ForumCategoryScreen',
+  forumThreadScreen = 'ForumThreadScreen',
 }
