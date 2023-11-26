@@ -1,12 +1,11 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {CustomEmoji} from '../../libraries/Enums/Emoji';
 import {Emoji} from '../Images/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {Hyperlink} from 'react-native-hyperlink';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import {HyperlinkText} from './HyperlinkText';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -20,7 +19,6 @@ interface ContentTextProps {
  */
 export const ContentText = ({textStyle, text}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
-  const {openWebUrl} = useTwitarr();
 
   const renderEmojiText = (line: string) => {
     const tokens = line.split(/(:[\w-]+:)/g);
@@ -52,19 +50,6 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
     },
   });
 
-  const styles = StyleSheet.create({
-    linkText: {
-      textDecorationLine: 'underline',
-    },
-  });
-
-  const handleLink = (linkUrl?: string, linkText?: string) => {
-    if (linkUrl) {
-      console.log(`[ContentText.tsx] opening link to ${linkUrl}`);
-      openWebUrl(linkUrl);
-    }
-  };
-
   const markdownIdentifier = '<Markdown>';
   if (text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
@@ -72,8 +57,8 @@ export const ContentText = ({textStyle, text}: ContentTextProps) => {
   }
 
   return (
-    <Hyperlink onPress={handleLink} linkStyle={styles.linkText}>
+    <HyperlinkText>
       <Text style={textStyle}>{renderContentText()}</Text>
-    </Hyperlink>
+    </HyperlinkText>
   );
 };

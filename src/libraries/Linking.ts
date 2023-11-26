@@ -51,6 +51,7 @@ const deepLinksConf = {
             LfgTab: 'lfg',
             LfgScreen: 'lfg/:fezID',
             LfgChatScreen: 'lfg/:fezID/chat',
+            LfgHelpScreen: 'lfg/faq',
           },
         },
         EventsTab: {
