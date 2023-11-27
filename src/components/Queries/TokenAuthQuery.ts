@@ -52,24 +52,6 @@ export function useTokenAuthInfiniteQuery<
   });
 }
 
-interface TokenAuthPaginationQueryProps {
-  pageSize?: number;
-}
-
-// async function queryFunction<TQueryFnData = AxiosResponse<FezData>, TError = AxiosError<ErrorResponse>>({
-//   pageParam = {start: undefined, limit: pageSize},
-// }) {
-//   const {data: responseData} = await axios.get<TQueryFnData, TError>(
-//     `/fez/${fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
-//   );
-//   return responseData;
-// }
-
-interface PaginationParams {
-  limit: number;
-  start: number;
-}
-
 interface WithPaginator {
   paginator: Paginator;
 }
@@ -80,23 +62,16 @@ export function useTokenAuthPaginationQuery<
   TQueryKey extends QueryKey = QueryKey,
 >(endpoint: string, queryKey: TQueryKey, pageSize: number = 50) {
   return useInfiniteQuery<TData, TError, TData, TQueryKey>(
-    // @TODO the key needs start too
-    // [`/fez/${fezID}?limit=${pageSize}`],
     queryKey,
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
-      const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(
-        // `/fez/${fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
-        endpoint,
-        {
-          params: {
-            limit: pageParam.limit,
-            start: pageParam.start,
-          },
+      const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
+        params: {
+          limit: pageParam.limit,
+          start: pageParam.start,
         },
-      );
+      });
       return responseData;
     },
-    // queryFunction,
     {
       getNextPageParam: lastPage => {
         const {limit, start, total} = lastPage.paginator;

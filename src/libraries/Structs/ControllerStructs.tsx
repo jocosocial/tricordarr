@@ -590,3 +590,25 @@ export interface PostData {
   /// The total number of `LikeType` reactions on the post.
   likeCount: number;
 }
+
+export interface ForumSearchData {
+  /// Paginates the list of forum threads. `paginator.total` is the total number of forums that match the request parameters.
+  /// `limit` and `start` define a slice of the total results set being returned in `forumThreads`.
+  paginator: Paginator;
+  /// A slice of the set of forum threads that match the request parameters.
+  forumThreads: ForumListData[];
+}
+
+export interface PostSearchData {
+  /// The search query used to create these results.
+  queryString: string;
+  /// The total number of posts in the result set. The actual # of results returned may be fewer than this, even if we return 'complete' results. This is due to additional filtering that
+  /// is done after the database query. See notes on `ContentFilterable.filterForMention(of:)`
+  totalPosts: number;
+  /// The index into totalPosts of the first post in the `posts` array. 0 is the index of the first result. This number is usually  a multiple of `limit` and indicates the page of results.
+  start: number;
+  /// The number of posts the server attempted to gather. posts.count may be less than this number if posts were filtered out by post-query filtering, or if start + limit > totalPosts.
+  limit: number;
+  /// The posts in the forum.
+  posts: PostData[];
+}
