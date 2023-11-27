@@ -8,6 +8,5 @@ Work Queue
   * reducer for the forum thread list
   * Thread flatlist
 * consistent forum icons
-* deprecate react-native-gesture-handler
 
 Nightly

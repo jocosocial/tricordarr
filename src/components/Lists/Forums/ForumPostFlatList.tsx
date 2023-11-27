@@ -9,6 +9,7 @@ import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
+import {ForumPostListItem} from '../Items/ForumPostListItem';
 // import {FlatList} from 'react-native-bidirectional-infinite-scroll';
 
 interface ForumPostFlatListProps {
@@ -132,9 +133,9 @@ export const ForumPostFlatList = ({
         // onStartReached={handleLoadPrevious}
         // // onStartReached={onStartReached}
         data={postList}
-        renderItem={({item}) => (
+        renderItem={({item, index, separators}) => (
           <PaddedContentView invertVertical={true} padBottom={true}>
-            <Text>{item.text}</Text>
+            <ForumPostListItem postData={item} index={index} separators={separators} />
           </PaddedContentView>
         )}
         // // initialScrollIndex={5}

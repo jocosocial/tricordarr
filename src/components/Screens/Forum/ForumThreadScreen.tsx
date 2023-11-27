@@ -106,7 +106,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         postList={postList}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
+        refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
         forumData={data.pages[0]}
       />
       {/*<ScrollingContentView*/}
