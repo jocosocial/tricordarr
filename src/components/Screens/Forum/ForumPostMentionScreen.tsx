@@ -17,6 +17,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -97,6 +98,7 @@ export const ForumPostMentionScreen = ({navigation}: Props) => {
           );
         })}
       </ScrollingContentView>
+      <ForumCategoryFAB />
     </AppView>
   );
 };

@@ -1,35 +1,38 @@
-import {StyleSheet} from 'react-native';
-import {useAppTheme} from '../../../styles/Theme';
-import React from 'react';
-import {AnimatedFAB} from 'react-native-paper';
+import * as React from 'react';
+import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
+import {BaseFABGroup} from './BaseFABGroup';
+import {useForumStackNavigation, useForumStackRoute} from '../../Navigation/Stacks/ForumStackNavigator';
 
-interface SingleFABProps {
-  backgroundColor?: string;
-  color?: string;
-  onPress?: () => void;
-}
+export const ForumThreadFAB = () => {
+  const navigation = useForumStackNavigation();
+  const route = useForumStackRoute();
 
-export const ForumThreadFAB = ({backgroundColor, color, onPress}: SingleFABProps) => {
-  const theme = useAppTheme();
-  const styles = StyleSheet.create({
-    fabGroup: {
-      backgroundColor: backgroundColor ? backgroundColor : theme.colors.inverseSurface,
-      bottom: 16,
-      right: 16,
-      position: 'absolute',
-    },
-  });
-  return (
-    <AnimatedFAB
-      icon={AppIcons.new}
-      label={'New Thread'}
-      onPress={onPress}
-      visible={true}
-      // animateFrom={'right'}
-      style={styles.fabGroup}
-      extended={true}
-      color={color ? color : theme.colors.inverseOnSurface}
-    />
-  );
+  const handleNavigation = (component: ForumStackComponents) => {
+    if (route.name === component) {
+      return;
+    }
+    navigation.push(component);
+  };
+
+  const actions = [
+    FabGroupAction({
+      icon: AppIcons.new,
+      label: 'New Forum',
+      onPress: () => console.log('newforum'),
+    }),
+    FabGroupAction({
+      icon: AppIcons.postSearch,
+      label: 'Search Posts',
+      onPress: () => console.log('searchposts'),
+    }),
+    FabGroupAction({
+      icon: AppIcons.search,
+      label: 'Search Forums',
+      onPress: () => console.log('searchforum'),
+    }),
+  ];
+
+  return <BaseFABGroup actions={actions} openLabel={'Forum Categories'} icon={AppIcons.forum} />;
 };

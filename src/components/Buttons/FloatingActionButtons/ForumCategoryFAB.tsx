@@ -18,38 +18,13 @@ export const ForumCategoryFAB = () => {
 
   const actions = [
     FabGroupAction({
-      icon: AppIcons.favorite,
-      label: 'Favorite Forums',
+      icon: AppIcons.postSearch,
+      label: 'Search Posts',
       onPress: () => console.log('woo'),
     }),
     FabGroupAction({
-      icon: AppIcons.time,
-      label: 'Recent Forums',
-      onPress: () => console.log('woo'),
-    }),
-    FabGroupAction({
-      icon: AppIcons.user,
-      label: 'Forums You Created',
-      onPress: () => console.log('woo'),
-    }),
-    FabGroupAction({
-      icon: AppIcons.mute,
-      label: 'Muted Forums',
-      onPress: () => console.log('woo'),
-    }),
-    FabGroupAction({
-      icon: AppIcons.favorite,
-      label: 'Favorite Posts',
-      onPress: () => console.log('woo'),
-    }),
-    FabGroupAction({
-      icon: AppIcons.postSelf,
-      label: 'Posts You Wrote',
-      onPress: () => console.log('woo'),
-    }),
-    FabGroupAction({
-      icon: AppIcons.postMention,
-      label: 'Posts Mentioning You',
+      icon: AppIcons.search,
+      label: 'Search Forums',
       onPress: () => console.log('woo'),
     }),
   ];
