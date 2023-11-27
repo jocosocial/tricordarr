@@ -23,6 +23,7 @@ Work Queue
     * or a ForumDetailsScreen with basic information from ForumData
   * Mentions
     * containingpost thread link - navigate to the thread but with different start data
+    * remove the invert
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Search Threads
@@ -36,8 +37,6 @@ Work Queue
   * Move FGS settings to public non-developer settings
 
 Nightly
-* changing server url before re-signin:
-  * main screen still has stale data
 * can't sign out if twitarr is down/404
 * Long seamail title gets ugly on seamail screen
   * Doesn't render great in listitem either. Wrap?

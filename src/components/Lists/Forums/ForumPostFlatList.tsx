@@ -1,59 +1,30 @@
-import {FezData, ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {RefreshControlProps, ScrollView, View, FlatList} from 'react-native';
-import {SeamailListItem} from '../Items/SeamailListItem';
+import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {RefreshControlProps, FlatList, View} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
-import {Button, Divider, Text} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
-// import {FlatList} from 'react-native-bidirectional-infinite-scroll';
+import {TimeDivider} from '../Dividers/TimeDivider';
+import {SpaceDivider} from '../Dividers/SpaceDivider';
+import {timeAgo} from '../../../libraries/DateTime';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  // onEndReached?: ((info: {distanceFromEnd: number}) => void) | null | undefined;
-  // onStartReached?: ((info: {distanceFromStart: number}) => void) | null | undefined;
   handleLoadNext: () => void;
   handleLoadPrevious: () => void;
-  forumData: ForumData;
+  itemSeparator?: 'time';
 }
 
-const ListSeparator = () => <Divider bold={true} />;
-
-// const SeamailListHeader = () => {
-//   const {hasTwitarrTeam, hasModerator} = usePrivilege();
-//   return (
-//     <View>
-//       {(hasTwitarrTeam || hasModerator) && (
-//         <PaddedContentView padTop={true}>
-//           <SeamailAccountButtons />
-//         </PaddedContentView>
-//       )}
-//       <ListSeparator />
-//     </View>
-//   );
-// };
 export const ForumPostFlatList = ({
   postList,
   refreshControl,
   handleLoadNext,
   handleLoadPrevious,
-  forumData,
+  itemSeparator,
 }: ForumPostFlatListProps) => {
-  const getListHeader = () => (
-    <PaddedContentView invertVertical={true} padBottom={false}>
-      <Button onPress={handleLoadPrevious}>Load Previous</Button>
-    </PaddedContentView>
-  );
-  const getListFooter = () => (
-    <PaddedContentView invertVertical={true} padBottom={false}>
-      <Button onPress={handleLoadNext}>Load Next</Button>
-    </PaddedContentView>
-  );
   const flatListRef = useRef<FlatList<PostData>>(null);
   // const scrollPositionRef = useRef();
   const [position, setPosition] = useState(0);
@@ -79,7 +50,6 @@ export const ForumPostFlatList = ({
 
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    console.log(event.nativeEvent.contentOffset.y);
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
@@ -119,10 +89,69 @@ export const ForumPostFlatList = ({
   //   [forumData],
   // );
 
+  const renderItem = useCallback(
+    ({item}: {item: PostData}) => (
+      <View style={commonStyles.verticallyInverted}>
+        <ForumPostListItem postData={item} />
+      </View>
+    ),
+    [commonStyles.verticallyInverted],
+  );
+
+  const renderSeparator = useCallback(
+    ({leadingItem}: {leadingItem: PostData}) => {
+      if (!itemSeparator) {
+        return <SpaceDivider />;
+      }
+      const leadingIndex = postList.indexOf(leadingItem);
+      if (leadingIndex === undefined) {
+        return <TimeDivider label={'Leading Unknown?'} />;
+      }
+      const trailingIndex = leadingIndex + 1;
+      const trailingItem = postList[trailingIndex];
+      if (!leadingItem.createdAt || !trailingItem.createdAt) {
+        return <SpaceDivider />;
+      }
+      const leadingDate = new Date(leadingItem.createdAt);
+      const trailingDate = new Date(trailingItem.createdAt);
+      const leadingTimeMarker = timeAgo.format(leadingDate, 'round');
+      const trailingTimeMarker = timeAgo.format(trailingDate, 'round');
+      if (leadingTimeMarker === trailingTimeMarker) {
+        return <SpaceDivider />;
+      }
+
+      return <TimeDivider label={timeAgo.format(leadingDate, 'round')} style={commonStyles.verticallyInverted} />;
+    },
+    [commonStyles.verticallyInverted, itemSeparator, postList],
+  );
+
+  const renderListHeader = useCallback(() => {
+    if (!itemSeparator) {
+      return <SpaceDivider />;
+    }
+    if (postList.length === 0) {
+      return <TimeDivider label={'No mentions'} />;
+    }
+    const lastItem = postList[postList.length - 1];
+    if (!lastItem.createdAt) {
+      return <SpaceDivider />;
+    }
+
+    let label = timeAgo.format(new Date(lastItem.createdAt), 'round');
+    return <TimeDivider style={commonStyles.verticallyInverted} label={label} />;
+  }, [commonStyles.verticallyInverted, itemSeparator, postList]);
+
+  const renderListFooter = useCallback(() => <SpaceDivider />, []);
+
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlatList
+        style={{
+          ...commonStyles.paddingHorizontal,
+          ...commonStyles.verticallyInverted,
+          // ...commonStyles.paddingVertical,
+        }}
         // onLayout={handleLayout}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -133,19 +162,15 @@ export const ForumPostFlatList = ({
         // onStartReached={handleLoadPrevious}
         // // onStartReached={onStartReached}
         data={postList}
-        renderItem={({item, index, separators}) => (
-          <PaddedContentView invertVertical={true} padBottom={true}>
-            <ForumPostListItem postData={item} index={index} separators={separators} />
-          </PaddedContentView>
-        )}
+        renderItem={renderItem}
         // // initialScrollIndex={5}
         // onScrollToIndexFailed={(info) => console.log('fail!', info)}
-        // ListFooterComponent={getListFooter}
+        ListFooterComponent={renderListHeader}
+        ListHeaderComponent={renderListFooter}
         // ListHeaderComponent={getListHeader}
         // onContentSizeChange={handleContentSizeChange}
         // // onViewableItemsChanged={onChange}
         onScroll={handleScroll}
-        style={commonStyles.verticallyInverted}
         // initialNumToRender={postList.length}
         maintainVisibleContentPosition={{minIndexForVisible: 0}}
         // onStartReached={handleLoadPrevious}
@@ -154,6 +179,7 @@ export const ForumPostFlatList = ({
         onEndReached={handleLoadPrevious} // Inverted
         // showDefaultLoadingIndicators={false}
         keyExtractor={(item: PostData) => String(item.postID)}
+        ItemSeparatorComponent={renderSeparator}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
     </>

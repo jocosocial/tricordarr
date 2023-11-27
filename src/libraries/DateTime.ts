@@ -14,6 +14,7 @@ import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import {FezData} from './Structs/ControllerStructs';
+import TimeAgo from 'javascript-time-ago';
 
 const thresholdMap = {
   second: {
@@ -248,3 +249,6 @@ export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => 
   }
   return 0;
 };
+
+// Formatter for relative time
+export const timeAgo = new TimeAgo('en-US');
