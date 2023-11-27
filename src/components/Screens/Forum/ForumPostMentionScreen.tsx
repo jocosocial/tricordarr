@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumPostSearchQuery} from '../../Queries/Forum/ForumSearchQueries';
@@ -9,16 +9,24 @@ import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {Text} from 'react-native-paper';
 import {ForumPostListItem} from '../../Lists/Items/Forum/ForumPostListItem';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
 export const ForumPostMentionScreen = () => {
   const {data, refetch} = useForumPostSearchQuery({mentionself: true});
   const [refreshing, setRefreshing] = useState(false);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
+  const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
 
-  const onRefresh = () => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));
-  };
+  }, [refetch]);
+
+  useEffect(() => {
+    if (userNotificationData?.newForumMentionCount) {
+      onRefresh();
+    }
+  }, [onRefresh, userNotificationData?.newForumMentionCount]);
 
   useEffect(() => {
     if (data) {
@@ -27,7 +35,10 @@ export const ForumPostMentionScreen = () => {
         postList: data.pages.flatMap(p => p.posts),
       });
     }
-  }, [data, dispatchForumPosts]);
+    if (userNotificationData?.newForumMentionCount) {
+      refetchUserNotificationData();
+    }
+  }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
   if (!data) {
     return <LoadingView />;

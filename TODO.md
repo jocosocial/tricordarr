@@ -21,7 +21,7 @@ Work Queue
   * Consider setting title? No idea what thread I'm in.
     * onPress => modal of title?
     * or a ForumDetailsScreen with basic information from ForumData
-  * containingpost thread link
+  * containingpost thread link - navigate to the thread but with different start data
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Search Threads
