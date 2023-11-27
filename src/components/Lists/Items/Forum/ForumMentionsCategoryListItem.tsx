@@ -6,9 +6,12 @@ import {StyleSheet, View} from 'react-native';
 import {commonStyles} from '../../../../styles';
 import {Text} from 'react-native-paper';
 import pluralize from 'pluralize';
+import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 
 export const ForumMentionsCategoryListItem = () => {
   const {userNotificationData} = useUserNotificationData();
+  const forumNavigation = useForumStackNavigation();
   const styles = StyleSheet.create({
     rightContainer: {
       ...commonStyles.marginLeftSmall,
@@ -35,7 +38,7 @@ export const ForumMentionsCategoryListItem = () => {
   return (
     <ForumCategoryListItemBase
       title={'Posts Mentioning You'}
-      onPress={() => console.log('yourmentions')}
+      onPress={() => forumNavigation.push(ForumStackComponents.forumPostMentionScreen)}
       description={'Posts from others that mention you in forums.'}
       right={getRight}
     />

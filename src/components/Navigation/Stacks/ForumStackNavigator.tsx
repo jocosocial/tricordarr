@@ -10,6 +10,7 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
 import {ForumThreadScreen} from '../../Screens/Forum/ForumThreadScreen';
+import {ForumPostMentionScreen} from '../../Screens/Forum/ForumPostMentionScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -19,6 +20,7 @@ export type ForumStackParamList = {
   ForumThreadScreen: {
     forumID: string;
   };
+  ForumPostMentionScreen: undefined;
 };
 
 export const ForumStackNavigator = () => {
@@ -53,6 +55,11 @@ export const ForumStackNavigator = () => {
         options={{
           title: 'Forum',
         }}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostMentionScreen}
+        component={isDisabled ? DisabledView : ForumPostMentionScreen}
+        options={{title: 'Posts Mentioning You'}}
       />
     </Stack.Navigator>
   );

@@ -21,8 +21,8 @@ import {commonStyles} from '../../../../styles';
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {
   postData: PostData;
-  index: number;
-  separators: {
+  index?: number;
+  separators?: {
     highlight: () => void;
     unhighlight: () => void;
     updateProps: (select: 'leading' | 'trailing', newProps: any) => void;

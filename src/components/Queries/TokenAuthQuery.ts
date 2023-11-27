@@ -56,11 +56,19 @@ interface WithPaginator {
   paginator: Paginator;
 }
 
+// @TODO deal with the type shenanigans
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
+  TQueryFnData = AxiosResponse<TData>,
   TError = AxiosError<ErrorResponse>,
   TQueryKey extends QueryKey = QueryKey,
->(endpoint: string, queryKey: TQueryKey, pageSize: number = 50) {
+>(
+  endpoint: string,
+  queryKey: TQueryKey,
+  pageSize: number = 50,
+  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
+) {
+  const {isLoggedIn} = useAuth();
   return useInfiniteQuery<TData, TError, TData, TQueryKey>(
     queryKey,
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
@@ -73,6 +81,7 @@ export function useTokenAuthPaginationQuery<
       return responseData;
     },
     {
+      enabled: isLoggedIn,
       getNextPageParam: lastPage => {
         const {limit, start, total} = lastPage.paginator;
         const nextStart = start + limit;
@@ -83,6 +92,7 @@ export function useTokenAuthPaginationQuery<
         const prevStart = start - limit;
         return prevStart >= 0 ? {start: prevStart, limit} : undefined;
       },
+      ...options,
     },
   );
 }

@@ -1,3 +1,5 @@
+import {ForumPostMentionScreen} from '../../components/Screens/Forum/ForumPostMentionScreen';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -115,4 +117,5 @@ export enum ForumStackComponents {
   forumCategoriesScreen = 'ForumCategoriesScreen',
   forumCategoryScreen = 'ForumCategoryScreen',
   forumThreadScreen = 'ForumThreadScreen',
+  forumPostMentionScreen = 'ForumPostMentionScreen',
 }
