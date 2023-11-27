@@ -1,15 +1,16 @@
 import React from 'react';
 import {Badge, List, Text} from 'react-native-paper';
-import {commonStyles} from '../../../styles';
-import {ForumListData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {commonStyles} from '../../../../styles';
+import {ForumListData, UserHeader} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
-import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {AppIcon} from '../../Images/AppIcon';
-import {useAppTheme} from '../../../styles/Theme';
+import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
+import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {AppIcon} from '../../../Images/AppIcon';
+import {useAppTheme} from '../../../../styles/Theme';
+import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 
 interface ForumThreadListItemProps {
   forumData: ForumListData;
@@ -24,18 +25,11 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
       // ...commonStyles.paddingLeftZero,
     },
     title: commonStyles.bold,
-    badge: {
-      ...commonStyles.bold,
-      ...commonStyles.paddingHorizontalSmall,
-    },
     rightContainer: {
       ...commonStyles.marginLeftSmall,
     },
     rightContent: {
       ...commonStyles.flexRow,
-    },
-    badgeContainer: {
-      ...commonStyles.justifyCenter,
     },
   });
 
@@ -45,11 +39,7 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
       return (
         <View style={styles.rightContainer}>
           <View style={styles.rightContent}>
-            {unreadCount !== 0 && !forumData.isMuted && (
-              <View style={styles.badgeContainer}>
-                <Badge style={styles.badge}>{`${unreadCount} new ${pluralize('post', unreadCount)}`}</Badge>
-              </View>
-            )}
+            {unreadCount !== 0 && !forumData.isMuted && <ForumNewBadge unreadCount={unreadCount} unit={'post'} />}
             {forumData.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
             {forumData.isMuted && <AppIcon icon={AppIcons.mute} />}
           </View>

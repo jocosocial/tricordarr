@@ -9,7 +9,7 @@ import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {ForumPostListItem} from '../Items/ForumPostListItem';
+import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
 // import {FlatList} from 'react-native-bidirectional-infinite-scroll';
 
 interface ForumPostFlatListProps {

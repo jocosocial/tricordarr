@@ -9,7 +9,7 @@ import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider, Text} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumThreadListItem} from '../../Lists/Items/ForumThreadListItem';
+import {ForumThreadListItem} from '../../Lists/Items/Forum/ForumThreadListItem';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';

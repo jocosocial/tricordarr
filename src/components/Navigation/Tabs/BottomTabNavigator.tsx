@@ -65,6 +65,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Forums',
           tabBarIcon: () => getIcon(AppIcons.forum),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newForumMentionCount),
         }}
       />
       <Tab.Screen
