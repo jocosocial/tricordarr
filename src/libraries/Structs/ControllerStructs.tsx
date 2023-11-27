@@ -567,7 +567,7 @@ export interface ForumData {
   /// The paginator contains the total number of posts in the forum, and the start and limit of the requested subset in `posts`.
   paginator: Paginator;
   /// Posts in the forum.
-  posts: [PostData];
+  posts: PostData[];
   /// If this forum is for an Event on the schedule, the ID of the event.
   eventID?: string;
 }

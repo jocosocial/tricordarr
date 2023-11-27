@@ -16,6 +16,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -26,7 +27,7 @@ export type Props = NativeStackScreenProps<
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoryQuery(route.params.categoryId);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumThreads, setForumThreads} = useTwitarr();
+  const {forumListData, dispatchForumListData} = useTwitarr();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -51,9 +52,12 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     if (data && data.forumThreads) {
-      setForumThreads(data.forumThreads);
+      dispatchForumListData({
+        type: ForumListDataActions.setList,
+        threadList: data.forumThreads,
+      });
     }
-  }, [data, setForumThreads]);
+  }, [data, dispatchForumListData, route.params.categoryId]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -71,13 +75,13 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
         <View>
-          {forumThreads.length === 0 && (
+          {forumListData.length === 0 && (
             <PaddedContentView padTop={true}>
               <Text>There aren't any forums in this category yet.</Text>
             </PaddedContentView>
           )}
           <ListSection>
-            {forumThreads.map((thread, index) => {
+            {forumListData.map((thread, index) => {
               return (
                 <React.Fragment key={thread.forumID}>
                   {index === 0 && <Divider bold={true} />}
