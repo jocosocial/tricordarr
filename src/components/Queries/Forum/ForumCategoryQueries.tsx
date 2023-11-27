@@ -7,13 +7,10 @@ export const useForumCategoriesQuery = () => {
   });
 };
 
-// @TODO infinite
 export const useForumCategoryQuery = (categoryId: string) => {
-  return useTokenAuthQuery<CategoryData>({
-    queryKey: [`/forum/categories/${categoryId}`],
-  });
+  return useTokenAuthPaginationQuery<ForumData>(`/forum/categories/${categoryId}`);
 };
 
 export const useForumThreadQuery = (forumID: string) => {
-  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, 50);
+  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`);
 };

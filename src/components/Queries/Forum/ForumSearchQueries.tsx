@@ -19,6 +19,7 @@ interface ForumPostSearchQueryParams {
 }
 
 // https://github.com/jocosocial/swiftarr/issues/235
+// @TODO combine this with useTokenAuthPaginationQuery when that can take queryKey, function, and options.
 export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams = {}, pageSize = 50) => {
   const {isLoggedIn} = useAuth();
   return useInfiniteQuery<PostSearchData>(

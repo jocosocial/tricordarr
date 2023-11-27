@@ -39,6 +39,7 @@ export function useTokenAuthQuery<
 /**
  * Clone of useInfiniteQuery but coded to require the user be logged in.
  * Some endpoints can be used without authentication such as the schedule.
+ * @deprecated replace with useTokenAuthPaginationQuery
  */
 export function useTokenAuthInfiniteQuery<
   TQueryFnData = unknown,
@@ -68,6 +69,7 @@ interface WithPaginator {
 // I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
 // Though maybe because I'm not returning the entire query response object (TQueryFnData)
 // then maybe it's OK? This is some meta voodoo.
+// @TODO make this accept a queryKey not an endpoint in the options
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
   // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
