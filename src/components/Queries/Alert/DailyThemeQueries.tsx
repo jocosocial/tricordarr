@@ -1,8 +1,8 @@
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
-import {useQuery} from '@tanstack/react-query';
+import {useOpenQuery} from '../OpenQuery';
 
 export const useDailyThemeQuery = () => {
-  return useQuery<DailyThemeData[]>({
+  return useOpenQuery<DailyThemeData[]>({
     queryKey: ['/notification/dailythemes'],
   });
 };

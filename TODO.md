@@ -31,11 +31,13 @@ Work Queue
   based on the route that you came from?
 * Events
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
+* FGS
+  * Improve settings screen wording to explain what it means
+  * Move FGS settings to public non-developer settings
 
 Nightly
 * changing server url before re-signin:
   * main screen still has stale data
-  * Refetch yelling
 * can't sign out if twitarr is down/404
 * Long seamail title gets ugly on seamail screen
   * Doesn't render great in listitem either. Wrap?

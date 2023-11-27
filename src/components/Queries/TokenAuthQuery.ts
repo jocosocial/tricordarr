@@ -7,8 +7,9 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
-import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
-import {ErrorResponse, FezData, ForumData, Paginator} from '../../libraries/Structs/ControllerStructs';
+import axios, {AxiosError, AxiosResponse} from 'axios';
+import {ErrorResponse, Paginator} from '../../libraries/Structs/ControllerStructs';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -16,7 +17,7 @@ import {ErrorResponse, FezData, ForumData, Paginator} from '../../libraries/Stru
  */
 export function useTokenAuthQuery<
   TQueryFnData = unknown,
-  TError = AxiosError<ErrorResponse>,
+  TError extends Error = AxiosError<ErrorResponse>,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -25,8 +26,12 @@ export function useTokenAuthQuery<
   },
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
+  const {setErrorMessage} = useErrorHandler();
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     enabled: isLoggedIn,
+    onError: error => {
+      setErrorMessage(error);
+    },
     ...options,
   });
 }
@@ -37,7 +42,7 @@ export function useTokenAuthQuery<
  */
 export function useTokenAuthInfiniteQuery<
   TQueryFnData = unknown,
-  TError = AxiosError<ErrorResponse>,
+  TError extends Error = AxiosError<ErrorResponse>,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -46,8 +51,12 @@ export function useTokenAuthInfiniteQuery<
   options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
 ): UseInfiniteQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
+  const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey>(queryKey, queryFn, {
     enabled: isLoggedIn,
+    onError: error => {
+      setErrorMessage(error);
+    },
     ...options,
   });
 }
@@ -60,7 +69,7 @@ interface WithPaginator {
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
   TQueryFnData = AxiosResponse<TData>,
-  TError = AxiosError<ErrorResponse>,
+  TError extends Error = AxiosError<ErrorResponse>,
   // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
@@ -68,6 +77,7 @@ export function useTokenAuthPaginationQuery<
   options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData>, 'queryKey' | 'queryFn'>,
 ) {
   const {isLoggedIn} = useAuth();
+  const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<TData, TError, TData>(
     [endpoint],
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
@@ -90,6 +100,9 @@ export function useTokenAuthPaginationQuery<
         const {limit, start} = firstPage.paginator;
         const prevStart = start - limit;
         return prevStart >= 0 ? {start: prevStart, limit} : undefined;
+      },
+      onError: error => {
+        setErrorMessage(error);
       },
       ...options,
     },

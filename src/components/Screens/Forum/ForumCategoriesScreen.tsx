@@ -14,12 +14,15 @@ import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryLi
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {ForumNewBadge} from '../../Badges/ForumNewBadge';
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 export const ForumCategoriesScreen = () => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
+  const {isLoggedIn} = useAuth();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -31,6 +34,10 @@ export const ForumCategoriesScreen = () => {
       setForumCategories(data);
     }
   }, [data, setForumCategories]);
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   if (!data) {
     return <LoadingView />;

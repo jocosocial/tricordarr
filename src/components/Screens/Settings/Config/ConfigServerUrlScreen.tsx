@@ -12,6 +12,8 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {configureAxios} from '../../../../libraries/Network/APIClient';
+import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
+import {useQueryClient} from '@tanstack/react-query';
 
 const validationSchema = Yup.object().shape({
   settingValue: Yup.string().required('Server URL cannot be empty.').url('Must be valid URL.'),
@@ -23,6 +25,8 @@ export const ConfigServerUrlScreen = () => {
   const {setErrorMessage} = useErrorHandler();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
+  const {clearPrivileges} = usePrivilege();
+  const queryClient = useQueryClient();
 
   const onSave = (values: SettingFormValues) => {
     try {
@@ -32,7 +36,11 @@ export const ConfigServerUrlScreen = () => {
         serverUrl: values.settingValue,
       });
       if (oldServerUrl !== values.settingValue) {
-        signOut().then(() => configureAxios().then(() => navigation.goBack()));
+        signOut().then(() => {
+          clearPrivileges();
+          queryClient.clear();
+          configureAxios().then(() => navigation.goBack());
+        });
       } else {
         navigation.goBack();
       }
