@@ -2,16 +2,14 @@
 <!--
 https://developer.android.com/privacy-and-security/security-config#network-security-config
 As of Android 6.0 / API 23 "User" certificates are no longer trusted by default. If we're
-developing against a local self-signed instance of Twitarr you'd need your device to trust
-the cert. cleartext traffic is necessary for Metro to communicate with the host.
+connecting to a local self-signed instance of Twitarr you'd need your device to trust
+the cert. We don't allow cleartext traffic to promote good hygiene.
 -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
-    </base-config>
-    <debug-overrides>
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system"/>
             <certificates src="user" />
         </trust-anchors>
-    </debug-overrides>
+    </base-config>
 </network-security-config>
