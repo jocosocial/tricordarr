@@ -29,6 +29,8 @@ Work Queue
 * Search Posts
 * Have search be context-aware? Navigate you to search page with some options pre-specified
   based on the route that you came from?
+* Events
+  * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 
 Nightly
 * changing server url before re-signin:
