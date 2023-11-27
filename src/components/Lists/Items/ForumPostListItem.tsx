@@ -70,7 +70,10 @@ export const ForumPostListItem = ({postData, index, separators}: ForumPostListIt
       </MessageAvatarContainerView>
       <MessageViewContainer>
         <ForumPostMessageView postData={postData} showAuthor={true} />
-        {/*{fezPost.image && <FezPostImage image={fezPost.image} messageOnRight={messageOnRight} />}*/}
+        {postData.images &&
+          postData.images.map((image, index) => {
+            return <FezPostImage key={index} image={image} messageOnRight={false} />;
+          })}
       </MessageViewContainer>
     </FlatListItemContent>
   );

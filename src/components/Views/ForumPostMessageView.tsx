@@ -21,10 +21,9 @@ interface ForumPostMessageViewProps {
 export const ForumPostMessageView = ({postData, messageOnRight = false, showAuthor}: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
-  const [rawTime, setRawTime] = useState(false);
   const openMenu = () => setMenuVisible(true);
   // const closeMenu = () => setMenuVisible(false);
-  const toggleRawTime = () => setRawTime(!rawTime);
+  // const toggleRawTime = () => setRawTime(!rawTime);
 
   const styles = {
     messageView: [
@@ -46,7 +45,7 @@ export const ForumPostMessageView = ({postData, messageOnRight = false, showAuth
 
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onLongPress={openMenu} onPress={toggleRawTime}>
+      <TouchableOpacity style={styles.opacity} onPress={openMenu}>
         {showAuthor && <Text style={styles.messageTextHeader}>{postData.author.username}</Text>}
         {/*<FezPostActionsMenu*/}
         {/*  visible={menuVisible}*/}
@@ -56,12 +55,7 @@ export const ForumPostMessageView = ({postData, messageOnRight = false, showAuth
         {/*/>*/}
         <ContentText textStyle={styles.messageText} text={postData.text} />
         {postData.createdAt && (
-          <RelativeTimeTag
-            date={new Date(postData.createdAt)}
-            style={styles.messageDateText}
-            variant={'labelSmall'}
-            raw={rawTime}
-          />
+          <RelativeTimeTag date={new Date(postData.createdAt)} style={styles.messageDateText} variant={'labelSmall'} />
         )}
       </TouchableOpacity>
     </View>
