@@ -15,5 +15,5 @@ export const useForumCategoryQuery = (categoryId: string) => {
 };
 
 export const useForumThreadQuery = (forumID: string) => {
-  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, [`/forum/${forumID}`], 50);
+  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`, 50);
 };

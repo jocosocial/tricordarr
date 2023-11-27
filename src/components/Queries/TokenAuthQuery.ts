@@ -61,16 +61,15 @@ export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
   TQueryFnData = AxiosResponse<TData>,
   TError = AxiosError<ErrorResponse>,
-  TQueryKey extends QueryKey = QueryKey,
+  // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
-  queryKey: TQueryKey,
   pageSize: number = 50,
-  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData>, 'queryKey' | 'queryFn'>,
 ) {
   const {isLoggedIn} = useAuth();
-  return useInfiniteQuery<TData, TError, TData, TQueryKey>(
-    queryKey,
+  return useInfiniteQuery<TData, TError, TData>(
+    [endpoint],
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
       const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
         params: {
