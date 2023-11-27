@@ -65,16 +65,18 @@ interface WithPaginator {
   paginator: Paginator;
 }
 
-// @TODO deal with the type shenanigans
+// I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
+// Though maybe because I'm not returning the entire query response object (TQueryFnData)
+// then maybe it's OK? This is some meta voodoo.
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator,
-  TQueryFnData = AxiosResponse<TData>,
+  // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
   TError extends Error = AxiosError<ErrorResponse>,
   // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
   pageSize: number = 50,
-  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey' | 'queryFn'>,
 ) {
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
