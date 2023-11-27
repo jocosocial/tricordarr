@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
-import {CategoryData, ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>({
@@ -7,8 +7,11 @@ export const useForumCategoriesQuery = () => {
   });
 };
 
+// @TODO this paginates based on query params not on data returned
 export const useForumCategoryQuery = (categoryId: string) => {
-  return useTokenAuthPaginationQuery<ForumData>(`/forum/categories/${categoryId}`);
+  return useTokenAuthQuery<CategoryData>({
+    queryKey: [`/forum/categories/${categoryId}`],
+  });
 };
 
 export const useForumThreadQuery = (forumID: string) => {
