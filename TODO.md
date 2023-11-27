@@ -31,3 +31,8 @@ Work Queue
   based on the route that you came from?
 
 Nightly
+* changing server url before re-signin:
+  * main screen still has stale data
+  * Refetch yelling
+  * not using my custom CA
+* can't sign out if twitarr is down/404
