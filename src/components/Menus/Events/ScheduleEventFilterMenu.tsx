@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {EventType} from '../../libraries/Enums/EventType';
-import {useAppTheme} from '../../styles/Theme';
-import {useFilter} from '../Context/Contexts/FilterContext';
+import {EventType} from '../../../libraries/Enums/EventType';
+import {useAppTheme} from '../../../styles/Theme';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
 
 export const ScheduleEventFilterMenu = () => {

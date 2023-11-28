@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {ForumFilter} from '../../libraries/Enums/ForumSortFilter';
-import {useFilter} from '../Context/Contexts/FilterContext';
+import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
-import {useAppTheme} from '../../styles/Theme';
+import {useAppTheme} from '../../../styles/Theme';
 
 export const ForumThreadFilterMenu = () => {
   const [visible, setVisible] = useState(false);

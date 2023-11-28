@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {TextStyle} from 'react-native';
-import {useCruise} from '../Context/Contexts/CruiseContext';
+import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
-import {EventStackParamList, useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../libraries/Enums/Navigation';
+import {EventStackParamList, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp} from '@react-navigation/native';
 
 interface CruiseDayMenuItemProps {

@@ -6,7 +6,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
-import {ScheduleCruiseDayMenu} from '../../Menus/ScheduleCruiseDayMenu';
+import {ScheduleCruiseDayMenu} from '../../Menus/Events/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
@@ -18,7 +18,7 @@ import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
-import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
+import {ScheduleEventFilterMenu} from '../../Menus/Events/ScheduleEventFilterMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
@@ -27,7 +27,7 @@ import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {EventActionsMenu} from '../../Menus/EventActionsMenu';
+import {EventActionsMenu} from '../../Menus/Events/EventActionsMenu';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,

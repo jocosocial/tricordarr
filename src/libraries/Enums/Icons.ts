@@ -88,4 +88,6 @@ export enum AppIcons {
   postFavorite = 'message-star',
   sort = 'sort',
   locked = 'lock',
+  recent = 'history',
+  text = 'text',
 }

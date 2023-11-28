@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useEventStackNavigation} from '../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../libraries/Enums/Navigation';
+import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
+import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 
 export const EventActionsMenu = () => {
   const [visible, setVisible] = useState(false);

@@ -16,7 +16,8 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
-import {ForumThreadFilterMenu} from '../../Menus/ForumThreadFilterMenu';
+import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
+import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -61,7 +62,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Sort'} iconName={AppIcons.sort} onPress={() => console.log('sort')} />
+          <ForumThreadSortMenu />
           <ForumThreadFilterMenu />
           <Item title={'Help'} iconName={AppIcons.help} onPress={() => console.log('help')} />
         </HeaderButtons>

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {SeamailStackScreenComponents} from '../../libraries/Enums/Navigation';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {FezData, ForumData} from '../../libraries/Structs/ControllerStructs';
-import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useUserData} from '../Context/Contexts/UserDataContext';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 
 interface ForumActionsMenuProps {
