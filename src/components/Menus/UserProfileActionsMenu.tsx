@@ -47,6 +47,7 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
           id: profile.header.userID,
           moderate: true,
         },
+        initial: false,
       },
     });
   };

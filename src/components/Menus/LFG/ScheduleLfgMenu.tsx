@@ -71,6 +71,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
                   id: fezData.fezID,
                   moderate: true,
                 },
+                initial: false,
               },
             });
             closeMenu();

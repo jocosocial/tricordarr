@@ -5,12 +5,26 @@ import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  EventStackComponents,
+  ForumStackComponents,
+  NavigatorIDs,
+  RootStackComponents,
+} from '../../../libraries/Enums/Navigation';
 import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {ForumThreadActionsMenu} from '../../Menus/Forum/ForumThreadActionsMenu';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -18,7 +32,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.forumStack
 >;
 
-export const ForumThreadScreen = ({route}: Props) => {
+export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {
     data,
     refetch,
@@ -33,6 +47,8 @@ export const ForumThreadScreen = ({route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const [postList, setPostList] = useState<PostData[]>([]);
   const [forumData, setForumData] = useState<ForumData>();
+  const rootNavigation = useRootStack();
+  const {profilePublicData} = useUserData();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -51,6 +67,51 @@ export const ForumThreadScreen = ({route}: Props) => {
       fetchPreviousPage().finally(() => setRefreshing(false));
     }
   };
+
+  const getNavButtons = useCallback(() => {
+    // Typescript struggles
+    if (!forumData) {
+      return <></>;
+    }
+    const eventID = forumData?.eventID;
+
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          {eventID && (
+            <Item
+              title={'Event'}
+              iconName={AppIcons.events}
+              onPress={() =>
+                rootNavigation.push(RootStackComponents.rootContentScreen, {
+                  screen: BottomTabComponents.scheduleTab,
+                  params: {
+                    screen: EventStackComponents.eventScreen,
+                    initial: false,
+                    params: {
+                      eventID: eventID,
+                    },
+                  },
+                })
+              }
+            />
+          )}
+          {forumData.creator.userID === profilePublicData?.header.userID && (
+            <Item title={'Edit'} iconName={AppIcons.forumEdit} />
+          )}
+          <Item title={'Favorite'} iconName={AppIcons.favorite} />
+          <Item title={'Mute'} iconName={AppIcons.mute} />
+          <ForumThreadActionsMenu forumData={forumData} />
+        </HeaderButtons>
+      </View>
+    );
+  }, [forumData, profilePublicData?.header.userID, rootNavigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   useEffect(() => {
     if (data && data.pages) {

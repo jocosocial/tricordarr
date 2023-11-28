@@ -90,4 +90,5 @@ export enum AppIcons {
   locked = 'lock',
   recent = 'history',
   text = 'text',
+  forumEdit = 'playlist-edit',
 }
