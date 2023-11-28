@@ -3,9 +3,9 @@ import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../Text/RelativeTimeTag';
-import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
-import {FezPostData, PostData} from '../../libraries/Structs/ControllerStructs';
+import {PostData} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
+import {ForumPostActionsMenu} from '../Menus/Forum/ForumPostActionsMenu';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -22,8 +22,7 @@ export const ForumPostMessageView = ({postData, messageOnRight = false, showAuth
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);
-  // const closeMenu = () => setMenuVisible(false);
-  // const toggleRawTime = () => setRawTime(!rawTime);
+  const closeMenu = () => setMenuVisible(false);
 
   const styles = {
     messageView: [
@@ -45,15 +44,14 @@ export const ForumPostMessageView = ({postData, messageOnRight = false, showAuth
 
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onPress={openMenu}>
+      <TouchableOpacity style={styles.opacity} onPress={openMenu} onLongPress={openMenu}>
         {showAuthor && <Text style={styles.messageTextHeader}>{postData.author.username}</Text>}
-        {/*<FezPostActionsMenu*/}
-        {/*  visible={menuVisible}*/}
-        {/*  closeMenu={closeMenu}*/}
-        {/*  anchor={<ContentText textStyle={styles.messageText} text={fezPost.text} />}*/}
-        {/*  fezPost={fezPost}*/}
-        {/*/>*/}
-        <ContentText textStyle={styles.messageText} text={postData.text} />
+        <ForumPostActionsMenu
+          visible={menuVisible}
+          closeMenu={closeMenu}
+          anchor={<ContentText textStyle={styles.messageText} text={postData.text} />}
+          forumPost={postData}
+        />
         {postData.createdAt && (
           <RelativeTimeTag date={new Date(postData.createdAt)} style={styles.messageDateText} variant={'labelSmall'} />
         )}
