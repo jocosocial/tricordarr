@@ -3,8 +3,9 @@ Backlog
 
 Work Queue
 * consistent forum icons
+* Thread View
+  * Edit
 * thread posts
-  * Buttons: Event|Edit/Favorite/Mute Menu:Report/Mod/Help thread
   * post actions menu: Favorite/Report/Mod + Reactions
   * Show reactions
   * Consider setting title? No idea what thread I'm in.

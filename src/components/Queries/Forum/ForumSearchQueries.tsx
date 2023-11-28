@@ -76,24 +76,3 @@ export interface ForumSearchQueryParams {
 export const useForumSearchQuery = (queryParams?: ForumSearchQueryParams, options = {}) => {
   return useTokenAuthPaginationQuery<ForumSearchData>('/forum/search', undefined, options, queryParams);
 };
-
-export interface ForumFavoritesQueryParams {
-  start?: number;
-  limit?: number;
-  cat?: string;
-  sort?: 'create' | 'update' | 'title';
-}
-
-export enum ForumRelationQueryType {
-  owner = 'owner',
-  favorites = 'favorites',
-  mutes = 'mutes',
-}
-
-export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumFavoritesQueryParams) => {
-  return useTokenAuthPaginationQuery<ForumSearchData>(`/forum/${relation}`, undefined, undefined, queryParams);
-};
-
-export const useForumRecentQuery = () => {
-  return useTokenAuthPaginationQuery<ForumSearchData>('/forum/recent');
-};

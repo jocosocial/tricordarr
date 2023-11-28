@@ -14,17 +14,15 @@ import {
 } from '../../../libraries/Enums/Navigation';
 import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Text} from 'react-native-paper';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
-import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ForumThreadActionsMenu} from '../../Menus/Forum/ForumThreadActionsMenu';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
+import {useAppTheme} from '../../../styles/Theme';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -49,6 +47,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const [forumData, setForumData] = useState<ForumData>();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
+  const relationMutation = useForumRelationMutation();
+  const theme = useAppTheme();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -65,6 +65,52 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
+    }
+  };
+
+  const handleFavorite = () => {
+    if (forumData) {
+      setRefreshing(true);
+      relationMutation.mutate(
+        {
+          forumID: forumData.forumID,
+          relationType: 'favorite',
+          action: forumData.isFavorite ? 'delete' : 'create',
+        },
+        {
+          onSuccess: () => {
+            setForumData({
+              ...forumData,
+              isFavorite: !forumData.isFavorite,
+            });
+            // @TODO update list
+          },
+          onSettled: () => setRefreshing(false),
+        },
+      );
+    }
+  };
+
+  const handleMute = () => {
+    if (forumData) {
+      setRefreshing(true);
+      relationMutation.mutate(
+        {
+          forumID: forumData.forumID,
+          relationType: 'mute',
+          action: forumData.isMuted ? 'delete' : 'create',
+        },
+        {
+          onSuccess: () => {
+            setForumData({
+              ...forumData,
+              isMuted: !forumData.isMuted,
+            });
+            // @TODO update list
+          },
+          onSettled: () => setRefreshing(false),
+        },
+      );
     }
   };
 
@@ -99,8 +145,18 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
           {forumData.creator.userID === profilePublicData?.header.userID && (
             <Item title={'Edit'} iconName={AppIcons.forumEdit} />
           )}
-          <Item title={'Favorite'} iconName={AppIcons.favorite} />
-          <Item title={'Mute'} iconName={AppIcons.mute} />
+          <Item
+            title={'Favorite'}
+            color={forumData.isFavorite ? theme.colors.twitarrYellow : undefined}
+            iconName={forumData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+            onPress={handleFavorite}
+          />
+          <Item
+            title={'Mute'}
+            color={forumData.isMuted ? theme.colors.twitarrNegativeButton : undefined}
+            iconName={forumData.isMuted ? AppIcons.mute : AppIcons.unmute}
+            onPress={handleMute}
+          />
           <ForumThreadActionsMenu forumData={forumData} />
         </HeaderButtons>
       </View>

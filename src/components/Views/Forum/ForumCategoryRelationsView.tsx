@@ -9,9 +9,9 @@ import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB
 import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
-import {useForumRelationQuery} from '../../Queries/Forum/ForumSearchQueries';
 import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
+import {useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
 
 export const ForumCategoryRelationsView = ({
   forumFilter,

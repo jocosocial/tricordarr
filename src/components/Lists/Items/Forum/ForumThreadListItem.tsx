@@ -42,8 +42,8 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
           <View style={styles.rightContent}>
             {unreadCount !== 0 && !forumData.isMuted && <ForumNewBadge unreadCount={unreadCount} unit={'post'} />}
             {forumData.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
-            {forumData.isMuted && <AppIcon icon={AppIcons.mute} />}
-            {forumData.isLocked && <AppIcon icon={AppIcons.locked} />}
+            {forumData.isMuted && <AppIcon icon={AppIcons.mute} color={theme.colors.twitarrNegativeButton} />}
+            {forumData.isLocked && <AppIcon icon={AppIcons.locked} color={theme.colors.twitarrNegativeButton} />}
           </View>
         </View>
       );

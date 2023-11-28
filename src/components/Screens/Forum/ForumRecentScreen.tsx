@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {useForumRecentQuery} from '../../Queries/Forum/ForumSearchQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -10,6 +9,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
+import {useForumRecentQuery} from '../../Queries/Forum/ForumRelationQueries';
 
 export const ForumRecentScreen = () => {
   const {
