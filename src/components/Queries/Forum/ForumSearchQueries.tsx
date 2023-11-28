@@ -3,7 +3,7 @@ import {useInfiniteQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios/index';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 
-interface ForumPostSearchQueryParams {
+export interface ForumPostSearchQueryParams {
   search?: string;
   hashtag?: string;
   mentionname?: string;

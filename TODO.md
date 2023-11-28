@@ -13,6 +13,7 @@ Work Queue
 * consistent forum icons
 * thread posts
   * image gallery
+  * markdown not rendering in post view?
   * refresh button, or make the refreshcontrol not as sensitive. had trouble with scrolling vs refresh.
   * add "this is the start of this forum"
   * Buttons: Event|Edit/Favorite/Mute Menu:Report/Mod/Help thread
@@ -47,3 +48,4 @@ Nightly
 * Header cruise index should follow real time not late day
 * Nearly all of the nav gripes about back to home stack first are related to user profile.
 * Ssl issues are a great way to test query network behavior and error handling
+* thumbnail not honoring rotation? - self posts in beta

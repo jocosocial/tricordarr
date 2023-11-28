@@ -9,15 +9,22 @@ import {Divider, List} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryListItem} from '../../Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
-import {commonStyles} from '../../../styles';
 import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryListItemBase';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {ForumNewBadge} from '../../Badges/ForumNewBadge';
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 
-export const ForumCategoriesScreen = () => {
+export type Props = NativeStackScreenProps<
+  ForumStackParamList,
+  ForumStackComponents.forumCategoriesScreen,
+  NavigatorIDs.forumStack
+>;
+
+export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
@@ -92,13 +99,13 @@ export const ForumCategoriesScreen = () => {
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Favorite Posts'}
-              onPress={() => console.log('favposts')}
+              onPress={() => navigation.push(ForumStackComponents.forumPostFavoriteScreen)}
               description={'Posts that you have saved from forums.'}
             />
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Your Posts'}
-              onPress={() => console.log('yourposts')}
+              onPress={() => navigation.push(ForumStackComponents.forumPostSelfScreen)}
               description={'Posts that you have made in forums.'}
             />
             <Divider bold={true} />

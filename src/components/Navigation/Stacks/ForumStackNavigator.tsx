@@ -11,6 +11,8 @@ import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
 import {ForumThreadScreen} from '../../Screens/Forum/ForumThreadScreen';
 import {ForumPostMentionScreen} from '../../Screens/Forum/ForumPostMentionScreen';
+import {ForumPostSelfScreen} from '../../Screens/Forum/ForumPostSelfScreen';
+import {ForumPostFavoriteScreen} from '../../Screens/Forum/ForumPostFavoriteScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -21,6 +23,8 @@ export type ForumStackParamList = {
     forumID: string;
   };
   ForumPostMentionScreen: undefined;
+  ForumPostSelfScreen: undefined;
+  ForumPostFavoriteScreen: undefined;
 };
 
 export const ForumStackNavigator = () => {
@@ -60,6 +64,16 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostMentionScreen}
         component={isDisabled ? DisabledView : ForumPostMentionScreen}
         options={{title: 'Posts Mentioning You'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostSelfScreen}
+        component={isDisabled ? DisabledView : ForumPostSelfScreen}
+        options={{title: 'Your Posts'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostFavoriteScreen}
+        component={isDisabled ? DisabledView : ForumPostFavoriteScreen}
+        options={{title: 'Favorite Posts'}}
       />
     </Stack.Navigator>
   );

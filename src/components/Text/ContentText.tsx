@@ -38,7 +38,6 @@ export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) =>
       return (
         <React.Fragment key={lineIndex}>
           {renderEmojiText(line)}
-          {/*{renderHyperlinkText(line)}*/}
           {lineIndex < lines.length - 1 && '\n'}
         </React.Fragment>
       );
@@ -60,7 +59,9 @@ export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) =>
 
   return (
     <HyperlinkText>
-      <Text variant={textVariant} style={textStyle}>{renderContentText()}</Text>
+      <Text variant={textVariant} style={textStyle}>
+        {renderContentText()}
+      </Text>
     </HyperlinkText>
   );
 };

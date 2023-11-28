@@ -30,25 +30,7 @@ interface ForumPostListItemProps {
 }
 
 export const ForumPostListItem = ({postData, index, separators}: ForumPostListItemProps) => {
-  // const {profilePublicData} = useUserData();
-  // const {asPrivilegedUser} = usePrivilege();
   const rootNavigation = useRootStack();
-  // const {commonStyles} = useStyles();
-  //
-  // let showAuthor = fez.participantCount > 2;
-  //
-  // // Do not show the author for the users own messages.
-  // if (fezPost.author.userID === profilePublicData?.header.userID) {
-  //   showAuthor = false;
-  // }
-  //
-  // // Always show the author of all messages in privileged conversations.
-  // if (asPrivilegedUser) {
-  //   showAuthor = true;
-  // }
-  //
-  // const messageOnRight =
-  //   fezPost.author.userID === profilePublicData?.header.userID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
     rootNavigation.push(RootStackComponents.rootContentScreen, {
