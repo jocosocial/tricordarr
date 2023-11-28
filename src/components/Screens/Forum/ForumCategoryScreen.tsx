@@ -1,24 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {RefreshControl, View} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView';
-import {Text} from 'react-native-paper';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
+import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
 import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
+import {ForumCategoryRelationsView} from '../../Views/Forum/ForumCategoryRelationsView';
+import {ForumCategoryBaseView} from '../../Views/Forum/ForumCategoryBaseView';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -26,41 +20,19 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.forumStack
 >;
 
+const helpText = [
+  'Muted forums appear at the end of this list.',
+  'Favorited forums appear in the sort order, which by default is Most Recent Post first.',
+];
+
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
-  const {forumSortOrder} = useFilter();
-  const {
-    data,
-    refetch,
-    isLoading,
-    hasPreviousPage,
-    fetchPreviousPage,
-    isFetchingPreviousPage,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = useForumCategoryQuery(route.params.categoryId, {
-    sort: forumSortOrder,
-  });
-  const [refreshing, setRefreshing] = useState(false);
-  const {forumListData, dispatchForumListData} = useTwitarr();
+  const {forumFilter} = useFilter();
+  const {setModalVisible, setModalContent} = useModal();
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const handleHelp = useCallback(() => {
+    setModalContent(<HelpModalView text={helpText} />);
+    setModalVisible(true);
+  }, [setModalContent, setModalVisible]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -68,20 +40,11 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <ForumThreadSortMenu />
           <ForumThreadFilterMenu />
-          <Item title={'Help'} iconName={AppIcons.help} onPress={() => console.log('help')} />
+          <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelp} />
         </HeaderButtons>
       </View>
     );
-  }, []);
-
-  useEffect(() => {
-    if (data && data.pages) {
-      dispatchForumListData({
-        type: ForumListDataActions.setList,
-        threadList: data.pages.flatMap(p => p.forumThreads || []),
-      });
-    }
-  }, [data, dispatchForumListData, route.params.categoryId]);
+  }, [handleHelp]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -89,33 +52,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  if (!data) {
-    return <LoadingView />;
+  if (forumFilter) {
+    return <ForumCategoryRelationsView forumFilter={forumFilter} categoryId={route.params.categoryId} />;
   }
-
-  if (forumListData.length === 0) {
-    return (
-      <AppView>
-        <ScrollingContentView
-          isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
-          <PaddedContentView padTop={true}>
-            <Text>There aren't any forums in this category yet.</Text>
-          </PaddedContentView>
-        </ScrollingContentView>
-      </AppView>
-    );
-  }
-
-  return (
-    <AppView>
-      <ForumThreadFlatList
-        forumListData={forumListData}
-        handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-      />
-      <ForumThreadFAB />
-    </AppView>
-  );
+  return <ForumCategoryBaseView categoryId={route.params.categoryId} />;
 };

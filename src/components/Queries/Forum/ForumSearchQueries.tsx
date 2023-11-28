@@ -1,4 +1,4 @@
-import {PostSearchData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumSearchData, PostSearchData} from '../../../libraries/Structs/ControllerStructs';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios/index';
 import {useAuth} from '../../Context/Contexts/AuthContext';
@@ -83,6 +83,12 @@ export interface ForumFavoritesQueryParams {
   sort?: 'create' | 'update' | 'title';
 }
 
-export const useForumFavoritesQuery = (queryParams?: ForumFavoritesQueryParams) => {
-  return useTokenAuthPaginationQuery('/forum/favorites', undefined, undefined, queryParams);
+export enum ForumRelationQueryType {
+  owner = 'owner',
+  favorites = 'favorites',
+  mutes = 'mutes',
+}
+
+export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumFavoritesQueryParams) => {
+  return useTokenAuthPaginationQuery<ForumSearchData>(`/forum/${relation}`, undefined, undefined, queryParams);
 };

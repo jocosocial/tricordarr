@@ -1,4 +1,6 @@
-// // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/SiteForumController.swift
+// https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/SiteForumController.swift
+import {ForumRelationQueryType} from '../../components/Queries/Forum/ForumSearchQueries';
+
 export enum ForumSortOrder {
   event = 'event',
   update = 'update',
@@ -10,4 +12,17 @@ export enum ForumFilter {
   owned = 'owned',
   favorite = 'favorite',
   mute = 'mute',
+}
+
+export namespace ForumFilter {
+  export const toRelation = (f: ForumFilter) => {
+    switch (f) {
+      case ForumFilter.favorite:
+        return ForumRelationQueryType.favorites;
+      case ForumFilter.owned:
+        return ForumRelationQueryType.owner;
+      case ForumFilter.mute:
+        return ForumRelationQueryType.mutes;
+    }
+  };
 }

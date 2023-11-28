@@ -2,10 +2,6 @@ Backlog
 * user quarantine
 
 Work Queue
-* thread list
-  * sorting
-  * filter
-  * help
 * consistent forum icons
 * thread posts
   * Buttons: Event|Edit/Favorite/Mute Menu:Report/Mod/Help thread
