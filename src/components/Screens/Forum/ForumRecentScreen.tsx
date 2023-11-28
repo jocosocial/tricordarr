@@ -1,26 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '../AppView';
-import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
-import {LoadingView} from '../Static/LoadingView';
-import {Text} from 'react-native-paper';
+import {useForumRecentQuery} from '../../Queries/Forum/ForumSearchQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
-import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
+import {LoadingView} from '../../Views/Static/LoadingView';
+import {AppView} from '../../Views/AppView';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
-import {useForumRelationQuery} from '../../Queries/Forum/ForumSearchQueries';
-import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
-import {useFilter} from '../../Context/Contexts/FilterContext';
+import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
 
-export const ForumCategoryRelationsView = ({
-  forumFilter,
-  categoryId,
-}: {
-  forumFilter: ForumFilter;
-  categoryId?: string;
-}) => {
-  const {forumSortOrder} = useFilter();
+export const ForumRecentScreen = () => {
   const {
     data,
     refetch,
@@ -31,10 +22,7 @@ export const ForumCategoryRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumRelationQuery(ForumFilter.toRelation(forumFilter), {
-    cat: categoryId,
-    sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
-  });
+  } = useForumRecentQuery();
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
 

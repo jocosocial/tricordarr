@@ -73,25 +73,25 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Favorite Forums'}
-              onPress={() => console.log('fav')}
+              onPress={() => navigation.push(ForumStackComponents.forumFavoritesScreen)}
               description={'Forums that you have favorited for easy access.'}
             />
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Recent Forums'}
-              onPress={() => console.log('recent')}
-              description={'Forums that you have been active in recently.'}
+              onPress={() => navigation.push(ForumStackComponents.forumRecentScreen)}
+              description={'Forums that you have viewed recently.'}
             />
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Your Forums'}
-              onPress={() => console.log('yours')}
+              onPress={() => navigation.push(ForumStackComponents.forumOwnedScreen)}
               description={'Forums that you created.'}
             />
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Muted Forums'}
-              onPress={() => console.log('muted')}
+              onPress={() => navigation.push(ForumStackComponents.forumMutesScreen)}
               description={'Forums that you have muted.'}
             />
             <Divider bold={true} />

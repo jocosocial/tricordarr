@@ -13,6 +13,10 @@ import {ForumThreadScreen} from '../../Screens/Forum/ForumThreadScreen';
 import {ForumPostMentionScreen} from '../../Screens/Forum/ForumPostMentionScreen';
 import {ForumPostSelfScreen} from '../../Screens/Forum/ForumPostSelfScreen';
 import {ForumPostFavoriteScreen} from '../../Screens/Forum/ForumPostFavoriteScreen';
+import {ForumFavoritesScreen} from '../../Screens/Forum/ForumFavoritesScreen';
+import {ForumMutesScreen} from '../../Screens/Forum/ForumMutesScreen';
+import {ForumOwnedScreen} from '../../Screens/Forum/ForumOwnedScreen';
+import {ForumRecentScreen} from '../../Screens/Forum/ForumRecentScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -25,6 +29,10 @@ export type ForumStackParamList = {
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;
   ForumPostFavoriteScreen: undefined;
+  ForumFavoritesScreen: undefined;
+  ForumMutesScreen: undefined;
+  ForumOwnedScreen: undefined;
+  ForumRecentScreen: undefined;
 };
 
 export const ForumStackNavigator = () => {
@@ -74,6 +82,26 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostFavoriteScreen}
         component={isDisabled ? DisabledView : ForumPostFavoriteScreen}
         options={{title: 'Favorite Posts'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumFavoritesScreen}
+        component={isDisabled ? DisabledView : ForumFavoritesScreen}
+        options={{title: 'Favorite Forums'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumMutesScreen}
+        component={isDisabled ? DisabledView : ForumMutesScreen}
+        options={{title: 'Muted Forums'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumOwnedScreen}
+        component={isDisabled ? DisabledView : ForumOwnedScreen}
+        options={{title: 'Your Forums'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumRecentScreen}
+        component={isDisabled ? DisabledView : ForumRecentScreen}
+        options={{title: 'Recently Viewed'}}
       />
     </Stack.Navigator>
   );

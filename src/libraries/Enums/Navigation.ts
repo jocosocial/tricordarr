@@ -118,4 +118,8 @@ export enum ForumStackComponents {
   forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostSelfScreen = 'ForumPostSelfScreen',
   forumPostFavoriteScreen = 'ForumPostFavoriteScreen',
+  forumFavoritesScreen = 'ForumFavoritesScreen',
+  forumMutesScreen = 'ForumMutesScreen',
+  forumOwnedScreen = 'ForumOwnedScreen',
+  forumRecentScreen = 'ForumRecentScreen',
 }
