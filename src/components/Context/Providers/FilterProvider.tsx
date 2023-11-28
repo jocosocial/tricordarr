@@ -12,7 +12,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
-  const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder | undefined>(ForumSortOrder.update);
+  const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
 
   return (
     <FilterContext.Provider
