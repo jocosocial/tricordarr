@@ -51,6 +51,11 @@ export const ForumPostMentionScreen = ({navigation}: Props) => {
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch().then(() => setRefreshing(false));
+  }, [refetch]);
+
   const getNavButtons = useCallback(() => {
     return (
       <View>
@@ -60,7 +65,7 @@ export const ForumPostMentionScreen = ({navigation}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [handleHelpModal]);
+  }, [handleHelpModal, onRefresh]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -74,11 +79,6 @@ export const ForumPostMentionScreen = ({navigation}: Props) => {
       fetchPreviousPage().finally(() => setRefreshing(false));
     }
   };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
 
   useEffect(() => {
     if (userNotificationData?.newForumMentionCount) {
@@ -111,8 +111,9 @@ export const ForumPostMentionScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ForumPostFlatList
+        invertList={false}
         postList={forumPosts}
-        refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadPrevious={handleLoadPrevious}
         handleLoadNext={handleLoadNext}
         itemSeparator={'time'}

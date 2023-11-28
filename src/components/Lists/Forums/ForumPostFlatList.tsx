@@ -1,14 +1,13 @@
 import {PostData} from '../../../libraries/Structs/ControllerStructs';
-import {RefreshControlProps, FlatList, View} from 'react-native';
+import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
-import {Button} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {timeAgo} from '../../../libraries/DateTime';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -16,6 +15,7 @@ interface ForumPostFlatListProps {
   handleLoadNext: () => void;
   handleLoadPrevious: () => void;
   itemSeparator?: 'time';
+  invertList?: boolean;
 }
 
 export const ForumPostFlatList = ({
@@ -24,78 +24,41 @@ export const ForumPostFlatList = ({
   handleLoadNext,
   handleLoadPrevious,
   itemSeparator,
+  invertList,
 }: ForumPostFlatListProps) => {
   const flatListRef = useRef<FlatList<PostData>>(null);
-  // const scrollPositionRef = useRef();
-  const [position, setPosition] = useState(0);
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
 
-  const onChange = () => {
-    // flatListRef.current?.scrollToOffset({animated: false, offset: position});
-    console.log(position);
-  };
-
-  // const onPrevious = () => {
-  //   fetchPreviousPage();
-  //   console.log('Position', position);
-  //   // flatListRef.current.scrollToOffset({animated: false, offset: position});
-  //   // flatListRef.current.scrollToItem({animated: false, item: postList[postList.length - 1]});
-  //   // flatListRef.current.scrollToEnd();
-  // };
-
-  const handleContentSizeChange = () => {
-    console.log('content has changed');
-  };
+  const styles = StyleSheet.create({
+    postContainerView: {
+      ...(invertList ? commonStyles.verticallyInverted : undefined),
+    },
+    timeDividerStyle: {
+      ...(invertList ? commonStyles.verticallyInverted : undefined),
+    },
+    flatList: {
+      ...commonStyles.paddingHorizontal,
+      ...(invertList ? commonStyles.verticallyInverted : undefined),
+    },
+  });
 
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
-  const handleLayout = event => {
-    console.log('New Layout', event.nativeEvent.layout.height);
-  };
-
-  const scrollToBottom = () => {
-    // flatListRef.current?.scrollToEnd({animated: false});
+  const handleScrollButtonPress = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
 
-  // , autoscrollToTopThreshold: 10
-  // return (
-  //   <ScrollView
-  //     refreshControl={refreshControl}
-  //     maintainVisibleContentPosition={{minIndexForVisible: 0}}>
-  //     {getListHeader()}
-  //     {postList.map((item, index) => (
-  //       <PaddedContentView key={index} invertVertical={false} padBottom={true}>
-  //         <Text>{item.text}</Text>
-  //       </PaddedContentView>
-  //     ))}
-  //     {getListFooter()}
-  //   </ScrollView>
-  // );
-
-  // const showNewDivider = useCallback(
-  //   (index: number) => {
-  //     if (forumData. === fez.members.readCount) {
-  //       return false;
-  //     }
-  //     // index is inverted so the last message in the list is 0.
-  //     // Add one to the readCount so that we render below the message at the readCount.
-  //     return fez.members.postCount - index === fez.members.readCount + 1;
-  //   },
-  //   [forumData],
-  // );
-
   const renderItem = useCallback(
     ({item}: {item: PostData}) => (
-      <View style={commonStyles.verticallyInverted}>
+      <View style={styles.postContainerView}>
         <ForumPostListItem postData={item} />
       </View>
     ),
-    [commonStyles.verticallyInverted],
+    [styles.postContainerView],
   );
 
   const renderSeparator = useCallback(
@@ -105,7 +68,7 @@ export const ForumPostFlatList = ({
       }
       const leadingIndex = postList.indexOf(leadingItem);
       if (leadingIndex === undefined) {
-        return <TimeDivider label={'Leading Unknown?'} />;
+        return <TimeDivider style={styles.timeDividerStyle} label={'Leading Unknown?'} />;
       }
       const trailingIndex = leadingIndex + 1;
       const trailingItem = postList[trailingIndex];
@@ -120,9 +83,14 @@ export const ForumPostFlatList = ({
         return <SpaceDivider />;
       }
 
-      return <TimeDivider label={timeAgo.format(leadingDate, 'round')} style={commonStyles.verticallyInverted} />;
+      return (
+        <TimeDivider
+          label={timeAgo.format(invertList ? leadingDate : trailingDate, 'round')}
+          style={styles.timeDividerStyle}
+        />
+      );
     },
-    [commonStyles.verticallyInverted, itemSeparator, postList],
+    [invertList, itemSeparator, postList, styles.timeDividerStyle],
   );
 
   const renderListHeader = useCallback(() => {
@@ -130,16 +98,17 @@ export const ForumPostFlatList = ({
       return <SpaceDivider />;
     }
     if (postList.length === 0) {
-      return <TimeDivider label={'No mentions'} />;
+      return <TimeDivider style={styles.timeDividerStyle} label={'No mentions'} />;
     }
-    const lastItem = postList[postList.length - 1];
-    if (!lastItem.createdAt) {
+    const firstDisplayItemIndex = invertList ? postList.length - 1 : 0;
+    const firstDisplayItem = postList[firstDisplayItemIndex];
+    if (!firstDisplayItem.createdAt) {
       return <SpaceDivider />;
     }
 
-    let label = timeAgo.format(new Date(lastItem.createdAt), 'round');
-    return <TimeDivider style={commonStyles.verticallyInverted} label={label} />;
-  }, [commonStyles.verticallyInverted, itemSeparator, postList]);
+    let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
+    return <TimeDivider style={styles.timeDividerStyle} label={label} />;
+  }, [invertList, itemSeparator, postList, styles.timeDividerStyle]);
 
   const renderListFooter = useCallback(() => <SpaceDivider />, []);
 
@@ -147,41 +116,27 @@ export const ForumPostFlatList = ({
   return (
     <>
       <FlatList
-        style={{
-          ...commonStyles.paddingHorizontal,
-          ...commonStyles.verticallyInverted,
-          // ...commonStyles.paddingVertical,
-        }}
-        // onLayout={handleLayout}
+        style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
-        // ItemSeparatorComponent={ListSeparator}
-        // ListHeaderComponent={SeamailListHeader}
-        // ListFooterComponent={ListSeparator}
-        // onEndReached={handleLoadNext}
-        // onStartReached={handleLoadPrevious}
-        // // onStartReached={onStartReached}
         data={postList}
         renderItem={renderItem}
-        // // initialScrollIndex={5}
-        // onScrollToIndexFailed={(info) => console.log('fail!', info)}
-        ListFooterComponent={renderListHeader}
-        ListHeaderComponent={renderListFooter}
-        // ListHeaderComponent={getListHeader}
-        // onContentSizeChange={handleContentSizeChange}
-        // // onViewableItemsChanged={onChange}
+        ListFooterComponent={invertList ? renderListHeader : renderListFooter}
+        ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
         onScroll={handleScroll}
-        // initialNumToRender={postList.length}
         maintainVisibleContentPosition={{minIndexForVisible: 0}}
-        // onStartReached={handleLoadPrevious}
-        // onEndReached={handleLoadNext}
-        onStartReached={handleLoadNext} // Inverted
-        onEndReached={handleLoadPrevious} // Inverted
-        // showDefaultLoadingIndicators={false}
+        onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
+        onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
       />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      {showButton && (
+        <FloatingScrollButton
+          icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
+          onPress={handleScrollButtonPress}
+          displayPosition={invertList ? 'bottom' : 'top'}
+        />
+      )}
     </>
   );
 };

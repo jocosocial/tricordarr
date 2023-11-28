@@ -16,6 +16,7 @@ export enum AppIcons {
   delete = 'delete-forever',
   submit = 'send-circle-outline',
   scrollDown = 'arrow-down-circle',
+  scrollUp = 'arrow-up-circle',
   back = 'arrow-left',
   forward = 'arrow-right',
   reload = 'reload',
