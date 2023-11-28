@@ -12,7 +12,7 @@ import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../Menus/ScheduleLfgFilterMenu';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/ScheduleLfgCruiseDayFilterMenu';
 import {ScheduleLfgListMenu} from '../../Menus/ScheduleLfgListMenu';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
@@ -30,7 +30,7 @@ interface LfgJoinedScreenProps {
 }
 
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,

@@ -4,13 +4,13 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {EventType} from '../../libraries/Enums/EventType';
 import {useAppTheme} from '../../styles/Theme';
-import {useScheduleFilter} from '../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
-  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} = useScheduleFilter();
+  const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} = useFilter();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

@@ -8,7 +8,6 @@ Work Queue
   * help
 * consistent forum icons
 * thread posts
-  * image gallery
   * Buttons: Event|Edit/Favorite/Mute Menu:Report/Mod/Help thread
   * post actions menu: Favorite/Report/Mod + Reactions
   * Show reactions

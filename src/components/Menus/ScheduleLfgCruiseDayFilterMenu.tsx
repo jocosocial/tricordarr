@@ -5,13 +5,13 @@ import {Item} from 'react-navigation-header-buttons';
 import {ViewStyle} from 'react-native';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
-import {useScheduleFilter} from '../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../Context/Contexts/FilterContext';
 import {useAppTheme} from '../../styles/Theme';
 
 export const ScheduleLfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, cruiseDayToday} = useCruise();
-  const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useScheduleFilter();
+  const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();
   const theme = useAppTheme();
 
   const openMenu = () => setVisible(true);

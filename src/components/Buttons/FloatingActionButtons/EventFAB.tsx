@@ -5,13 +5,13 @@ import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stac
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 
 export const EventFAB = () => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
   const {cruiseDayToday} = useCruise();
-  const {setEventFavoriteFilter} = useScheduleFilter();
+  const {setEventFavoriteFilter} = useFilter();
 
   const handleNavigation = (component: EventStackComponents) => {
     if (route.name === component) {

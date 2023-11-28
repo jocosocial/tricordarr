@@ -19,7 +19,7 @@ import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
 import {ScheduleEventFilterMenu} from '../../Menus/ScheduleEventFilterMenu';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
@@ -36,7 +36,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const EventDayScreen = ({navigation, route}: Props) => {
-  const {eventTypeFilter, eventFavoriteFilter} = useScheduleFilter();
+  const {eventTypeFilter, eventFavoriteFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {
     data: eventData,

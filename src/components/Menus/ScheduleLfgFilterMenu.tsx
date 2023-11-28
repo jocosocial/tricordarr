@@ -3,7 +3,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {useAppTheme} from '../../styles/Theme';
-import {useScheduleFilter} from '../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
 import {FezType} from '../../libraries/Enums/FezType';
 import {useConfig} from '../Context/Contexts/ConfigContext';
@@ -11,7 +11,7 @@ import {useConfig} from '../Context/Contexts/ConfigContext';
 export const ScheduleLfgFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
-  const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useScheduleFilter();
+  const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();
 
   const openMenu = () => setVisible(true);
