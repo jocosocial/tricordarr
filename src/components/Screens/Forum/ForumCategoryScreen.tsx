@@ -18,6 +18,7 @@ import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
 import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -26,6 +27,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
+  const {forumSortOrder} = useFilter();
   const {
     data,
     refetch,
@@ -36,7 +38,9 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumCategoryQuery(route.params.categoryId);
+  } = useForumCategoryQuery(route.params.categoryId, {
+    sort: forumSortOrder,
+  });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
 

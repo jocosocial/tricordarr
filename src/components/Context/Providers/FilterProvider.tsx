@@ -1,4 +1,4 @@
-import React, {useState, PropsWithChildren} from 'react';
+import React, {PropsWithChildren, useState} from 'react';
 import {FilterContext} from '../Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../Contexts/ConfigContext';
@@ -12,7 +12,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
-  const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
+  const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder | undefined>(ForumSortOrder.update);
 
   return (
     <FilterContext.Provider

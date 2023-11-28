@@ -3,6 +3,7 @@ import {CategoryData, ForumData} from '../../../libraries/Structs/ControllerStru
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios';
+import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>({
@@ -11,7 +12,7 @@ export const useForumCategoriesQuery = () => {
 };
 
 export interface ForumCategoryQueryParams {
-  sort?: 'create' | 'update' | 'title' | 'event';
+  sort?: ForumSortOrder;
   start?: number;
   limit?: number;
   afterdate?: string; // mutually exclusive
@@ -26,7 +27,7 @@ export const useForumCategoryQuery = (
 ) => {
   const {isLoggedIn} = useAuth();
   return useInfiniteQuery<CategoryData>(
-    [`/forum/categories/${categoryId}`],
+    [`/forum/categories/${categoryId}`, queryParams],
     async ({pageParam = {start: queryParams.start, limit: pageSize}}) => {
       const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
         `/forum/categories/${categoryId}`,

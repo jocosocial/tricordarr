@@ -23,7 +23,7 @@ export interface ForumPostSearchQueryParams {
 export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams = {}, pageSize = 50) => {
   const {isLoggedIn} = useAuth();
   return useInfiniteQuery<PostSearchData>(
-    ['/forum/post/search'],
+    ['/forum/post/search', queryParams],
     async ({pageParam = {start: queryParams.start, limit: pageSize}}) => {
       const {data: responseData} = await axios.get<PostSearchData, AxiosResponse<PostSearchData>>(
         '/forum/post/search',
