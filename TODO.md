@@ -28,12 +28,10 @@ Nightly
 * Turn off the raw time seamail thing
 * Missing key in emoji viewer
 * Close emoji viewer without selecting one - Makena good way to do that
-* Make email a mail to link
 * Header cruise index should follow real time not late day
 * Nearly all of the nav gripes about back to home stack first are related to user profile.
 * Ssl issues are a great way to test query network behavior and error handling
 * thumbnail not honoring rotation? - self posts in beta
-* scroll up button flatlist covering refresh icon
 * Forum thread screen start at unread
 * Unread marker in post flatlist
 * Mark thread as read
