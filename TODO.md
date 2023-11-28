@@ -38,4 +38,11 @@ Nightly
 * Ssl issues are a great way to test query network behavior and error handling
 * thumbnail not honoring rotation? - self posts in beta
 * scroll up button flatlist covering refresh icon
-* r
+* Forum thread screen start at unread
+* Unread marker in post flatlist
+* Mark thread as read
+* Does lfg list need pagination
+* Non mods should not see lfg chat
+* Shared thread list is buggy if screens background? I'm getting crossed data when changing the filter
+* Perhaps add a is focused to the dispatch calls
+* Debounce directory search 

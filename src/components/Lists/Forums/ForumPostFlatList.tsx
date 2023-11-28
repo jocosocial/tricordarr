@@ -20,6 +20,7 @@ interface ForumPostFlatListProps {
   invertList?: boolean;
   forumData?: ForumData;
   hasPreviousPage?: boolean;
+  maintainViewPosition?: boolean;
 }
 
 export const ForumPostFlatList = ({
@@ -31,6 +32,7 @@ export const ForumPostFlatList = ({
   invertList,
   forumData,
   hasPreviousPage,
+  maintainViewPosition,
 }: ForumPostFlatListProps) => {
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -51,6 +53,7 @@ export const ForumPostFlatList = ({
 
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
+    // console.log(event.nativeEvent.contentOffset.y);
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
@@ -111,7 +114,7 @@ export const ForumPostFlatList = ({
       return <SpaceDivider />;
     }
     if (postList.length === 0) {
-      return <TimeDivider style={styles.timeDividerStyle} label={'No mentions'} />;
+      return <TimeDivider style={styles.timeDividerStyle} label={'No posts to display'} />;
     }
     const firstDisplayItemIndex = invertList ? postList.length - 1 : 0;
     const firstDisplayItem = postList[firstDisplayItemIndex];
@@ -137,7 +140,7 @@ export const ForumPostFlatList = ({
         ListFooterComponent={invertList ? renderListHeader : renderListFooter}
         ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
         onScroll={handleScroll}
-        maintainVisibleContentPosition={{minIndexForVisible: 0}}
+        maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
         keyExtractor={(item: PostData) => String(item.postID)}

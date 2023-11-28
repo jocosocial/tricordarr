@@ -74,6 +74,7 @@ export const ForumThreadScreen = ({route}: Props) => {
         invertList={true}
         forumData={forumData}
         hasPreviousPage={hasPreviousPage}
+        maintainViewPosition={true}
       />
     </AppView>
   );
