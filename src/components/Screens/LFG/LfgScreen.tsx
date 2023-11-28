@@ -31,7 +31,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {Badge, Text} from 'react-native-paper';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import pluralize from 'pluralize';
-import {LfgCanceledView} from '../../Views/LfgCanceledView';
+import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';

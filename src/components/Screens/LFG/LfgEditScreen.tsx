@@ -13,7 +13,7 @@ import {getFezTimezoneOffset} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {LfgCanceledView} from '../../Views/LfgCanceledView';
+import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgEditScreen, NavigatorIDs.lfgStack>;

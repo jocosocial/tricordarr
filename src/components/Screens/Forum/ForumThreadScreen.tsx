@@ -1,13 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {Text} from 'react-native-paper';
+import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -29,6 +32,7 @@ export const ForumThreadScreen = ({route}: Props) => {
   } = useForumThreadQuery(route.params.forumID);
   const [refreshing, setRefreshing] = useState(false);
   const [postList, setPostList] = useState<PostData[]>([]);
+  const [forumData, setForumData] = useState<ForumData>();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -51,6 +55,7 @@ export const ForumThreadScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setPostList(data.pages.flatMap(forumData => forumData.posts).reverse());
+      setForumData(data.pages[0]);
     }
   }, [data]);
 
@@ -60,13 +65,14 @@ export const ForumThreadScreen = ({route}: Props) => {
 
   return (
     <AppView>
+      {forumData?.isLocked && <ForumLockedView />}
       <ForumPostFlatList
         postList={postList}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
         invertList={true}
-        forumData={data.pages[0]}
+        forumData={forumData}
         hasPreviousPage={hasPreviousPage}
       />
     </AppView>
