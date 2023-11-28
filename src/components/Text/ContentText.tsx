@@ -44,9 +44,12 @@ export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) =>
     });
   };
 
+  // https://www.npmjs.com/package/@ronradtke/react-native-markdown-display
   const markdownStyle = StyleSheet.create({
     text: {
       ...commonStyles.onTwitarrButton,
+    },
+    body: {
       fontSize: styleDefaults.fontSize,
     },
   });

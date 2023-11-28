@@ -1,4 +1,4 @@
-import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -8,6 +8,8 @@ import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {timeAgo} from '../../../libraries/DateTime';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {Text} from 'react-native-paper';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -16,6 +18,8 @@ interface ForumPostFlatListProps {
   handleLoadPrevious: () => void;
   itemSeparator?: 'time';
   invertList?: boolean;
+  forumData?: ForumData;
+  hasPreviousPage?: boolean;
 }
 
 export const ForumPostFlatList = ({
@@ -25,6 +29,8 @@ export const ForumPostFlatList = ({
   handleLoadPrevious,
   itemSeparator,
   invertList,
+  forumData,
+  hasPreviousPage,
 }: ForumPostFlatListProps) => {
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -94,6 +100,13 @@ export const ForumPostFlatList = ({
   );
 
   const renderListHeader = useCallback(() => {
+    if (forumData && !hasPreviousPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={true}>
+          <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+        </PaddedContentView>
+      );
+    }
     if (!itemSeparator) {
       return <SpaceDivider />;
     }
@@ -108,7 +121,7 @@ export const ForumPostFlatList = ({
 
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
     return <TimeDivider style={styles.timeDividerStyle} label={label} />;
-  }, [invertList, itemSeparator, postList, styles.timeDividerStyle]);
+  }, [forumData, hasPreviousPage, invertList, itemSeparator, postList, styles.timeDividerStyle]);
 
   const renderListFooter = useCallback(() => <SpaceDivider />, []);
 

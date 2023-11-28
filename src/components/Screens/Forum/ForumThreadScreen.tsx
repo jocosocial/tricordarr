@@ -66,6 +66,8 @@ export const ForumThreadScreen = ({route}: Props) => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
         invertList={true}
+        forumData={data.pages[0]}
+        hasPreviousPage={hasPreviousPage}
       />
     </AppView>
   );

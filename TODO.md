@@ -13,9 +13,6 @@ Work Queue
 * consistent forum icons
 * thread posts
   * image gallery
-  * markdown not rendering in post view?
-  * refresh button, or make the refreshcontrol not as sensitive. had trouble with scrolling vs refresh.
-  * add "this is the start of this forum"
   * Buttons: Event|Edit/Favorite/Mute Menu:Report/Mod/Help thread
   * post actions menu: Favorite/Report/Mod + Reactions
   * Show reactions
