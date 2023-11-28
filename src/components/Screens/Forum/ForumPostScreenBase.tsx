@@ -22,7 +22,7 @@ interface ForumPostScreenBaseProps {
   refreshOnUserNotification?: boolean;
 }
 
-const helpText = [
+export const forumPostHelpText = [
   'Long-press a post to favorite, edit, or add a reaction.',
   'Tapping on a post will take you to the posts forum to see it in context.',
   'Favoriting a post will save it to an easily accessible Personal Category on the Forums page.',
@@ -47,7 +47,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   const {setModalContent, setModalVisible} = useModal();
 
   const handleHelpModal = useCallback(() => {
-    setModalContent(<HelpModalView text={helpText} />);
+    setModalContent(<HelpModalView text={forumPostHelpText} />);
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
