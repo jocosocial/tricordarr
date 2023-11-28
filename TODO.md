@@ -9,7 +9,6 @@ Work Queue
   * help
   * reducer for the forum thread list
   * Thread flatlist
-  * show event time if exists
 * consistent forum icons
 * thread posts
   * image gallery

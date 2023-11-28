@@ -11,6 +11,7 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {AppIcon} from '../../../Images/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
+import {getEventTimeString} from '../../../../libraries/DateTime';
 
 interface ForumThreadListItemProps {
   forumData: ForumListData;
@@ -50,6 +51,9 @@ export const ForumThreadListItem = ({forumData}: ForumThreadListItemProps) => {
   };
   const getDescription = () => (
     <View>
+      {forumData.eventTime && (
+        <Text variant={'bodyMedium'}>{getEventTimeString(forumData.eventTime, forumData.timeZone)}</Text>
+      )}
       <Text variant={'bodyMedium'}>
         {forumData.postCount} {pluralize('post', forumData.postCount)}
       </Text>
