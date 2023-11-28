@@ -37,3 +37,5 @@ Nightly
 * Nearly all of the nav gripes about back to home stack first are related to user profile.
 * Ssl issues are a great way to test query network behavior and error handling
 * thumbnail not honoring rotation? - self posts in beta
+* scroll up button flatlist covering refresh icon
+* r
