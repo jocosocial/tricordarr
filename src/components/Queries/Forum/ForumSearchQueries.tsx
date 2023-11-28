@@ -2,6 +2,7 @@ import {PostSearchData} from '../../../libraries/Structs/ControllerStructs';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios/index';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 
 export interface ForumPostSearchQueryParams {
   search?: string;
@@ -60,4 +61,28 @@ export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams 
       },
     },
   );
+};
+
+export interface ForumSearchQueryParams {
+  start?: number;
+  limit?: number;
+  sort?: 'create' | 'update' | 'title';
+  search?: string;
+  creator?: string;
+  creatorid?: string;
+}
+
+export const useForumSearchQuery = (queryParams?: ForumSearchQueryParams) => {
+  return useTokenAuthPaginationQuery('/forum/search', undefined, undefined, queryParams);
+};
+
+export interface ForumFavoritesQueryParams {
+  start?: number;
+  limit?: number;
+  cat?: string;
+  sort?: 'create' | 'update' | 'title';
+}
+
+export const useForumFavoritesQuery = (queryParams?: ForumFavoritesQueryParams) => {
+  return useTokenAuthPaginationQuery('/forum/favorites', undefined, undefined, queryParams);
 };
