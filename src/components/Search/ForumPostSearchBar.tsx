@@ -82,7 +82,9 @@ export const ForumPostSearchBar = () => {
       </View>
       <View style={[commonStyles.flex]}>
         <ForumPostFlatList
-          refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
+          }
           postList={postList}
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}

@@ -27,7 +27,7 @@ export const FloatingScrollButton = ({
     ...commonStyles.backgroundTransparent,
     ...commonStyles.positionAbsolute,
     ...(displayPosition === 'bottom' ? {bottom: 64} : undefined), // this may not behave as expected
-    ...(displayPosition === 'top' ? {top: 80} : undefined), // this may not behave as expected
+    ...(displayPosition === 'top' ? {bottom: 32} : undefined), // this may not behave as expected
   };
   return (
     <View style={style}>

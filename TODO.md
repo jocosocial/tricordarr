@@ -16,7 +16,6 @@ Work Queue
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Search Threads
-* Search Posts
 * Have search be context-aware? Navigate you to search page with some options pre-specified
   based on the route that you came from?
 * Events
