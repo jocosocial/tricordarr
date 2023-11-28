@@ -15,9 +15,6 @@ Work Queue
     * remove the invert
 * Thread Post Form
   * Same as Fez just with multiple image support
-* Search Threads
-* Have search be context-aware? Navigate you to search page with some options pre-specified
-  based on the route that you came from?
 * Events
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 * FGS

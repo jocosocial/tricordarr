@@ -18,6 +18,7 @@ import {ForumMutesScreen} from '../../Screens/Forum/ForumMutesScreen';
 import {ForumOwnedScreen} from '../../Screens/Forum/ForumOwnedScreen';
 import {ForumRecentScreen} from '../../Screens/Forum/ForumRecentScreen';
 import {ForumPostSearchScreen} from '../../Screens/Forum/ForumPostSearchScreen';
+import {ForumThreadSearchScreen} from '../../Screens/Forum/ForumThreadSearchScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -35,6 +36,7 @@ export type ForumStackParamList = {
   ForumOwnedScreen: undefined;
   ForumRecentScreen: undefined;
   ForumPostSearchScreen: undefined;
+  ForumThreadSearchScreen: undefined;
 };
 
 export const ForumStackNavigator = () => {
@@ -109,6 +111,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostSearchScreen}
         component={isDisabled ? DisabledView : ForumPostSearchScreen}
         options={{title: 'Post Search'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadSearchScreen}
+        component={isDisabled ? DisabledView : ForumThreadSearchScreen}
+        options={{title: 'Forum Search'}}
       />
     </Stack.Navigator>
   );

@@ -17,7 +17,7 @@ export const ForumCategoryFAB = () => {
     FabGroupAction({
       icon: AppIcons.search,
       label: 'Search Forums',
-      onPress: () => console.log('woo'),
+      onPress: () => navigation.push(ForumStackComponents.forumThreadSearchScreen),
     }),
   ];
 

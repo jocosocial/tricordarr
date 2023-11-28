@@ -22,7 +22,7 @@ export const ForumThreadFAB = () => {
     FabGroupAction({
       icon: AppIcons.search,
       label: 'Search Forums',
-      onPress: () => console.log('searchforum'),
+      onPress: () => navigation.push(ForumStackComponents.forumThreadSearchScreen),
     }),
   ];
 

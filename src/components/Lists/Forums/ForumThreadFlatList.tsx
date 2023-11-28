@@ -6,12 +6,15 @@ import {Divider} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {TimeDivider} from '../Dividers/TimeDivider';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   forumListData: ForumListData[];
   handleLoadNext: () => void;
   handleLoadPrevious: () => void;
+  maintainViewPosition?: boolean;
 }
 
 export const ForumThreadFlatList = ({
@@ -19,11 +22,23 @@ export const ForumThreadFlatList = ({
   refreshControl,
   handleLoadNext,
   handleLoadPrevious,
+  maintainViewPosition,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlatList<ForumListData>>(null);
-  const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
+  const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
+  const renderListHeader = () => {
+    if (forumListData.length === 0) {
+      return <TimeDivider label={'No forums to display'} />;
+    }
+    return <Divider bold={true} />;
+  };
+  const renderListFooter = () => {
+    if (forumListData.length !== 0) {
+      return <Divider bold={true} />;
+    }
+  };
   const handleScrollButtonPress = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
@@ -35,17 +50,17 @@ export const ForumThreadFlatList = ({
     <>
       <FlatList
         ref={flatListRef}
-        // style={commonStyles.paddingHorizontal}
+        style={forumListData.length === 0 ? commonStyles.paddingHorizontal : undefined}
         refreshControl={refreshControl}
         data={forumListData}
         renderItem={({item}) => <ForumThreadListItem forumData={item} />}
         onEndReached={handleLoadNext}
         // onStartReached={handleLoadPrevious}
-        maintainVisibleContentPosition={{minIndexForVisible: 0}}
+        maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         keyExtractor={(item: ForumListData) => item.forumID}
         ItemSeparatorComponent={renderSeparator}
-        ListHeaderComponent={renderSeparator}
-        ListFooterComponent={renderSeparator}
+        ListHeaderComponent={renderListHeader}
+        ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
       />
       {showButton && (

@@ -73,8 +73,8 @@ export interface ForumSearchQueryParams {
   creatorid?: string;
 }
 
-export const useForumSearchQuery = (queryParams?: ForumSearchQueryParams) => {
-  return useTokenAuthPaginationQuery('/forum/search', undefined, undefined, queryParams);
+export const useForumSearchQuery = (queryParams?: ForumSearchQueryParams, options = {}) => {
+  return useTokenAuthPaginationQuery<ForumSearchData>('/forum/search', undefined, options, queryParams);
 };
 
 export interface ForumFavoritesQueryParams {
