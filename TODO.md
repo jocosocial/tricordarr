@@ -6,7 +6,7 @@ Work Queue
 * Thread View
   * Edit
 * thread posts
-  * post actions menu: Favorite/Report/Mod + Reactions
+  * post actions menu: Favorite + Reactions
   * Show reactions
   * Consider setting title? No idea what thread I'm in.
     * onPress => modal of title?

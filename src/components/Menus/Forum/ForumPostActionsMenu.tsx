@@ -9,6 +9,8 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {View} from 'react-native';
 import {LaughReaction, LoveReaction, ThumbsUpReaction} from '../../Text/Reactions';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -29,6 +31,7 @@ export const ForumPostActionsMenu = ({
   // const {fez} = useTwitarr();
   const {hasModerator} = usePrivilege();
   const {commonStyles} = useStyles();
+  const rootStackNavigation = useRootStack();
 
   const handleReport = () => {
     closeMenu();
@@ -53,7 +56,28 @@ export const ForumPostActionsMenu = ({
       )}
       <Menu.Item title={'Favorite'} dense={false} leadingIcon={AppIcons.favorite} />
       <Menu.Item title={'Report'} dense={false} leadingIcon={AppIcons.report} onPress={handleReport} />
-      {hasModerator && <Menu.Item title={'Moderate'} dense={false} leadingIcon={AppIcons.moderator} />}
+      {hasModerator && (
+        <Menu.Item
+          title={'Moderate'}
+          dense={false}
+          leadingIcon={AppIcons.moderator}
+          onPress={() => {
+            closeMenu();
+            rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+              screen: BottomTabComponents.homeTab,
+              params: {
+                screen: MainStackComponents.siteUIScreen,
+                params: {
+                  resource: 'forumpost',
+                  id: forumPost.postID.toString(),
+                  moderate: true,
+                },
+                initial: false,
+              },
+            });
+          }}
+        />
+      )}
       <Divider bold={true} />
       <View style={commonStyles.flexRow}>
         <IconButton icon={LaughReaction} />
