@@ -87,4 +87,5 @@ export enum AppIcons {
   postMention = 'at',
   postFavorite = 'message-star',
   sort = 'sort',
+  locked = 'lock',
 }
