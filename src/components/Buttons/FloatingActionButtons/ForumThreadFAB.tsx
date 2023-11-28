@@ -34,5 +34,5 @@ export const ForumThreadFAB = () => {
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'Forum Categories'} icon={AppIcons.forum} />;
+  return <BaseFABGroup actions={actions} openLabel={'Forums'} icon={AppIcons.forum} />;
 };

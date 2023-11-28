@@ -3,12 +3,9 @@ Backlog
 
 Work Queue
 * thread list
-  * pagination query
   * sorting
   * filter
   * help
-  * reducer for the forum thread list
-  * Thread flatlist
 * consistent forum icons
 * thread posts
   * image gallery

@@ -98,12 +98,12 @@ export function useTokenAuthPaginationQuery<
       getNextPageParam: lastPage => {
         const {limit, start, total} = lastPage.paginator;
         const nextStart = start + limit;
-        return nextStart < total ? {start: nextStart, limit} : undefined;
+        return nextStart < total ? {start: nextStart, limit: limit} : undefined;
       },
       getPreviousPageParam: firstPage => {
         const {limit, start} = firstPage.paginator;
         const prevStart = start - limit;
-        return prevStart >= 0 ? {start: prevStart, limit} : undefined;
+        return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
       },
       onError: error => {
         setErrorMessage(error);

@@ -51,12 +51,12 @@ export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams 
       getNextPageParam: lastPage => {
         const {limit, start, totalPosts} = lastPage;
         const nextStart = start + limit;
-        return nextStart < totalPosts ? {start: nextStart, limit} : undefined;
+        return nextStart < totalPosts ? {start: nextStart, limit: limit} : undefined;
       },
       getPreviousPageParam: firstPage => {
         const {limit, start} = firstPage;
         const prevStart = start - limit;
-        return prevStart >= 0 ? {start: prevStart, limit} : undefined;
+        return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
       },
     },
   );
