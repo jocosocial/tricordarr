@@ -120,6 +120,7 @@ export const ForumPostSearchBar = () => {
           handleLoadPrevious={handleLoadPrevious}
           itemSeparator={'time'}
           invertList={false}
+          enableShowInThread={true}
         />
       </View>
     </>

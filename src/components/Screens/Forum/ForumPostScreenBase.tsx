@@ -117,6 +117,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
         handleLoadPrevious={handleLoadPrevious}
         handleLoadNext={handleLoadNext}
         itemSeparator={'time'}
+        enableShowInThread={true}
       />
       <ForumCategoryFAB />
     </AppView>

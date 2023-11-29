@@ -11,6 +11,7 @@ interface ForumPostMessageViewProps {
   postData: PostData;
   messageOnRight?: boolean;
   showAuthor?: boolean;
+  enableShowInThread?: boolean;
 }
 
 /**
@@ -18,7 +19,7 @@ interface ForumPostMessageViewProps {
  * It only contains the message itself.
  * Maybe dedupe with MessageView?
  */
-export const ForumPostMessageView = ({postData, messageOnRight = false, showAuthor}: ForumPostMessageViewProps) => {
+export const ForumPostMessageView = ({postData, messageOnRight = false, showAuthor, enableShowInThread}: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);
@@ -51,6 +52,7 @@ export const ForumPostMessageView = ({postData, messageOnRight = false, showAuth
           closeMenu={closeMenu}
           anchor={<ContentText textStyle={styles.messageText} text={postData.text} />}
           forumPost={postData}
+          enableShowInThread={enableShowInThread}
         />
         {postData.createdAt && (
           <RelativeTimeTag date={new Date(postData.createdAt)} style={styles.messageDateText} variant={'labelSmall'} />

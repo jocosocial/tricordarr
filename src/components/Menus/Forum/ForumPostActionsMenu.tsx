@@ -11,6 +11,7 @@ import {LaughReaction, LoveReaction, ThumbsUpReaction} from '../../Text/Reaction
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -28,10 +29,11 @@ export const ForumPostActionsMenu = ({
   enableShowInThread,
 }: ForumPostActionsMenuProps) => {
   const {setModalContent, setModalVisible} = useModal();
-  // const {fez} = useTwitarr();
   const {hasModerator} = usePrivilege();
   const {commonStyles} = useStyles();
   const rootStackNavigation = useRootStack();
+  const {profilePublicData} = useUserData();
+  const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
 
   const handleReport = () => {
     closeMenu();
@@ -41,6 +43,12 @@ export const ForumPostActionsMenu = ({
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
+      {enableShowInThread && (
+        <>
+          <Menu.Item dense={false} leadingIcon={AppIcons.forum} title={'View Thread'} onPress={handleReport} />
+          <Divider bold={true} />
+        </>
+      )}
       <Menu.Item
         dense={false}
         leadingIcon={AppIcons.copy}
@@ -50,10 +58,18 @@ export const ForumPostActionsMenu = ({
           closeMenu();
         }}
       />
-      <Divider bold={true} />
-      {enableShowInThread && (
-        <Menu.Item dense={false} leadingIcon={AppIcons.forum} title={'View Thread'} onPress={handleReport} />
+      {bySelf && (
+        <Menu.Item dense={false} leadingIcon={AppIcons.postEdit} title={'Edit'} onPress={() => console.log('edit')} />
       )}
+      {bySelf && (
+        <Menu.Item
+          dense={false}
+          leadingIcon={AppIcons.postRemove}
+          title={'Delete'}
+          onPress={() => console.log('delete')}
+        />
+      )}
+      <Divider bold={true} />
       <Menu.Item title={'Favorite'} dense={false} leadingIcon={AppIcons.favorite} />
       <Menu.Item title={'Report'} dense={false} leadingIcon={AppIcons.report} onPress={handleReport} />
       {hasModerator && (

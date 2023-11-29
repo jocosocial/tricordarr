@@ -27,9 +27,10 @@ interface ForumPostListItemProps {
     unhighlight: () => void;
     updateProps: (select: 'leading' | 'trailing', newProps: any) => void;
   };
+  enableShowInThread?: boolean;
 }
 
-export const ForumPostListItem = ({postData, index, separators}: ForumPostListItemProps) => {
+export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListItemProps) => {
   const rootNavigation = useRootStack();
 
   const onPress = () => {
@@ -51,7 +52,7 @@ export const ForumPostListItem = ({postData, index, separators}: ForumPostListIt
         <UserAvatarImage userID={postData.author.userID} small={true} />
       </MessageAvatarContainerView>
       <MessageViewContainer>
-        <ForumPostMessageView postData={postData} showAuthor={true} />
+        <ForumPostMessageView postData={postData} showAuthor={true} enableShowInThread={enableShowInThread} />
         {postData.images &&
           postData.images.map((image, index) => {
             return <FezPostImage key={index} image={image} messageOnRight={false} />;

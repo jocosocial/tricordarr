@@ -21,6 +21,7 @@ interface ForumPostFlatListProps {
   forumData?: ForumData;
   hasPreviousPage?: boolean;
   maintainViewPosition?: boolean;
+  enableShowInThread?: boolean;
 }
 
 export const ForumPostFlatList = ({
@@ -33,6 +34,7 @@ export const ForumPostFlatList = ({
   forumData,
   hasPreviousPage,
   maintainViewPosition,
+  enableShowInThread,
 }: ForumPostFlatListProps) => {
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -64,10 +66,10 @@ export const ForumPostFlatList = ({
   const renderItem = useCallback(
     ({item}: {item: PostData}) => (
       <View style={styles.postContainerView}>
-        <ForumPostListItem postData={item} />
+        <ForumPostListItem postData={item} enableShowInThread={enableShowInThread} />
       </View>
     ),
-    [styles.postContainerView],
+    [styles.postContainerView, enableShowInThread],
   );
 
   const renderSeparator = useCallback(

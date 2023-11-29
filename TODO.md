@@ -6,7 +6,12 @@ Work Queue
 * Thread View
   * Edit
 * thread posts
-  * post actions menu: Favorite + Reactions
+  * post actions menu
+    * Favorite
+    * reactions
+    * edit
+    * delete
+    * test that report works
   * Show reactions
   * Consider setting title? No idea what thread I'm in.
     * onPress => modal of title?
@@ -14,6 +19,7 @@ Work Queue
   * Mentions
     * containingpost thread link - navigate to the thread but with different start data
     * remove the invert
+  * Figure out a place to put the favorite icon
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Events
