@@ -48,7 +48,7 @@ export const ForumPostActionsMenu = ({
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
       {enableShowInThread && (
         <>
-          <Menu.Item dense={false} leadingIcon={AppIcons.forum} title={'View Thread'} onPress={handleReport} />
+          <Menu.Item dense={false} leadingIcon={AppIcons.forum} title={'View In Thread'} onPress={handleReport} />
           <Divider bold={true} />
         </>
       )}
