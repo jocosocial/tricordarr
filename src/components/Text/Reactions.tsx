@@ -1,6 +1,7 @@
-import {Text} from 'react-native-paper';
+import {ActivityIndicator, Text} from 'react-native-paper';
 import React from 'react';
 
+export const LikeReaction = () => <Text>👍</Text>;
 export const LaughReaction = () => <Text>😆</Text>;
-export const ThumbsUpReaction = () => <Text>👍</Text>;
 export const LoveReaction = () => <Text>❤️</Text>;
+export const LoadingReaction = () => <ActivityIndicator />;

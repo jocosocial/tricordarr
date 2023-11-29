@@ -149,6 +149,7 @@ export const FezPostForm = ({
               disabled={!values.text}
               submitting={overrideSubmitting || isSubmitting}
               onPress={onPress || handleSubmit}
+              withPrivilegeColors={true}
             />
           </View>
         </View>

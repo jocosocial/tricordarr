@@ -2,17 +2,19 @@ import React, {ReactNode} from 'react';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
-import {Divider, IconButton, Menu, Text} from 'react-native-paper';
+import {Divider, IconButton, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {View} from 'react-native';
-import {LaughReaction, LoveReaction, ThumbsUpReaction} from '../../Text/Reactions';
+import {LaughReaction, LoveReaction, LikeReaction} from '../../Text/Reactions';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem';
+import {LikeType} from '../../../libraries/Enums/LikeType';
+import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -96,11 +98,7 @@ export const ForumPostActionsMenu = ({
         />
       )}
       <Divider bold={true} />
-      <View style={commonStyles.flexRow}>
-        <IconButton icon={LaughReaction} />
-        <IconButton icon={ThumbsUpReaction} />
-        <IconButton icon={LoveReaction} />
-      </View>
+      <ForumPostActionsReactionItem forumPost={forumPost} />
     </Menu>
   );
 };

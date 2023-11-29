@@ -612,3 +612,44 @@ export interface PostSearchData {
   /// The posts in the forum.
   posts: PostData[];
 }
+
+export interface PostDetailData {
+  /// The ID of the post.
+  postID: number;
+  /// The ID of the Forum containing the post.
+  forumID: number;
+  /// The timestamp of the post.
+  createdAt: string;
+  /// The post's author.
+  author: UserHeader;
+  /// The text of the forum post.
+  text: string;
+  /// The filenames of the post's optional images.
+  images?: string[];
+  /// Whether the current user has bookmarked the post.
+  isBookmarked: boolean;
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The users with "laugh" reactions on the post.
+  laughs: UserHeader[];
+  /// The users with "like" reactions on the post.
+  likes: UserHeader[];
+  /// The users with "love" reactions on the post.
+  loves: UserHeader[];
+}
+
+export namespace PostDetailData {
+  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, likeType?: LikeType) => {
+    if (!likeType) {
+      return !!postData.userLike;
+    }
+    switch (likeType) {
+      case LikeType.like:
+        return postData.likes.flatMap(uh => uh.userID).includes(userHeader.userID);
+      case LikeType.laugh:
+        return postData.laughs.flatMap(uh => uh.userID).includes(userHeader.userID);
+      case LikeType.love:
+        return postData.loves.flatMap(uh => uh.userID).includes(userHeader.userID);
+    }
+  };
+}

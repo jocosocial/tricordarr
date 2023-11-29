@@ -10,7 +10,6 @@ Work Queue
   * post actions menu
     * Favorite
       * updating real but not udating state
-    * reactions
     * edit
     * delete
     * test that report works
@@ -45,4 +44,8 @@ Nightly
 * Non mods should not see lfg chat
 * Shared thread list is buggy if screens background? I'm getting crossed data when changing the filter
 * Perhaps add a is focused to the dispatch calls
-* Debounce directory search 
+* Debounce directory search
+* Edit forum to the menu rather than button
+* Moderators should still be able to post in forums. Add wording to the locked view
+* The unfavorite icon is confusing. So is unmute. shoukd it be current state or action?
+* mention auto complete
