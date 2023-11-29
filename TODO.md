@@ -12,7 +12,6 @@ Work Queue
       * updating real but not udating state
     * edit
     * delete
-    * test that report works
   * Show reactions
   * Consider setting title? No idea what thread I'm in.
     * onPress => modal of title?
