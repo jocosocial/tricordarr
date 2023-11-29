@@ -12,7 +12,7 @@ import {
   NavigatorIDs,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
-import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -23,6 +23,8 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ForumThreadActionsMenu} from '../../Menus/Forum/ForumThreadActionsMenu';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
 import {useAppTheme} from '../../../styles/Theme';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -43,7 +45,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID);
   const [refreshing, setRefreshing] = useState(false);
-  const [postList, setPostList] = useState<PostData[]>([]);
+  // const [postList, setPostList] = useState<PostData[]>([]);
+  const {forumPosts, dispatchForumPosts} = useTwitarr();
   const [forumData, setForumData] = useState<ForumData>();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
@@ -171,10 +174,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      setPostList(data.pages.flatMap(forumData => forumData.posts).reverse());
+      dispatchForumPosts({
+        type: ForumPostListActions.setList,
+        postList: data.pages.flatMap(forumData => forumData.posts).reverse(),
+      });
       setForumData(data.pages[0]);
     }
-  }, [data]);
+  }, [data, dispatchForumPosts]);
 
   if (!data) {
     return <LoadingView />;
@@ -184,7 +190,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     <AppView>
       {forumData?.isLocked && <ForumLockedView />}
       <ForumPostFlatList
-        postList={postList}
+        postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}

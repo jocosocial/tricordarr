@@ -3,7 +3,6 @@ import {RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {PostData} from '../../libraries/Structs/ControllerStructs';
 import {useForumPostSearchQuery} from '../Queries/Forum/ForumSearchQueries';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {useModal} from '../Context/Contexts/ModalContext';
@@ -13,6 +12,8 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
+import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../Reducers/Forum/ForumPostListReducer';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -37,7 +38,8 @@ export const ForumPostSearchBar = () => {
     },
   );
   const {commonStyles} = useStyles();
-  const [postList, setPostList] = useState<PostData[]>([]);
+  // const [postList, setPostList] = useState<PostData[]>([]);
+  const {forumPosts, dispatchForumPosts} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
@@ -48,7 +50,10 @@ export const ForumPostSearchBar = () => {
   }, [setModalContent, setModalVisible]);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
-  const onClear = () => setPostList([]);
+  const onClear = () =>
+    dispatchForumPosts({
+      type: ForumPostListActions.clear,
+    });
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));
@@ -83,7 +88,7 @@ export const ForumPostSearchBar = () => {
         </HeaderButtons>
       </View>
     );
-  }, [handleHelpModal, onRefresh]);
+  }, [handleHelpModal]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -93,9 +98,12 @@ export const ForumPostSearchBar = () => {
 
   useEffect(() => {
     if (data && data.pages) {
-      setPostList(data.pages.flatMap(p => p.posts));
+      dispatchForumPosts({
+        type: ForumPostListActions.setList,
+        postList: data.pages.flatMap(p => p.posts),
+      });
     }
-  }, [data]);
+  }, [data, dispatchForumPosts]);
 
   return (
     <>
@@ -115,7 +123,7 @@ export const ForumPostSearchBar = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }
-          postList={postList}
+          postList={forumPosts}
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           itemSeparator={'time'}

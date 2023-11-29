@@ -4,11 +4,13 @@ import {useReducer} from 'react';
 export enum ForumPostListActions {
   setList = 'SET',
   updatePost = 'UPDATE_POST',
+  clear = 'CLEAR',
 }
 
 export type ForumPostListActionsType =
   | {type: ForumPostListActions.setList; postList: PostData[]}
-  | {type: ForumPostListActions.updatePost; newPost: PostData};
+  | {type: ForumPostListActions.updatePost; newPost: PostData}
+  | {type: ForumPostListActions.clear};
 
 const forumPostListReducer = (postList: PostData[], action: ForumPostListActionsType): PostData[] => {
   console.log('forumPostListReducer got action', action.type);
@@ -24,6 +26,9 @@ const forumPostListReducer = (postList: PostData[], action: ForumPostListActions
         }
         return p;
       });
+    }
+    case ForumPostListActions.clear: {
+      return [];
     }
     default: {
       throw new Error('Unknown ForumPostListActions action');
