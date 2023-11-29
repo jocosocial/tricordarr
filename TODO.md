@@ -5,8 +5,8 @@ Work Queue
 * consistent forum icons
 * Thread View
   * Edit
+  * Mute needs to dispatch the list
 * thread posts
-  * rename favorite posts to bookmarked posts? not consistent with site UI
   * post actions menu
     * edit
     * delete
@@ -42,5 +42,4 @@ Nightly
 * Perhaps add a is focused to the dispatch calls
 * Debounce directory search
 * Edit forum to the menu rather than button
-* The unfavorite icon is confusing. So is unmute. shoukd it be current state or action?
 * mention auto complete

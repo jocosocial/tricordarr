@@ -39,6 +39,12 @@ export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps)
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      {forumData.creator.userID === profilePublicData?.header.userID && (
+        <>
+          <Menu.Item dense={false} title={'Edit'} leadingIcon={AppIcons.forumEdit} />
+          <Divider bold={true} />
+        </>
+      )}
       {forumData?.creator.username !== profilePublicData?.header.username && (
         <>
           <Menu.Item

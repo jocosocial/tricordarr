@@ -145,26 +145,33 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
               }
             />
           )}
-          {forumData.creator.userID === profilePublicData?.header.userID && (
-            <Item title={'Edit'} iconName={AppIcons.forumEdit} />
-          )}
           <Item
             title={'Favorite'}
             color={forumData.isFavorite ? theme.colors.twitarrYellow : undefined}
-            iconName={forumData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
+            iconName={AppIcons.favorite}
             onPress={handleFavorite}
           />
-          <Item
-            title={'Mute'}
-            color={forumData.isMuted ? theme.colors.twitarrNegativeButton : undefined}
-            iconName={forumData.isMuted ? AppIcons.mute : AppIcons.unmute}
-            onPress={handleMute}
-          />
+          {forumData.creator.userID !== profilePublicData?.header.userID && (
+            <Item
+              title={'Mute'}
+              color={forumData.isMuted ? theme.colors.twitarrNegativeButton : undefined}
+              iconName={AppIcons.mute}
+              onPress={handleMute}
+            />
+          )}
           <ForumThreadActionsMenu forumData={forumData} />
         </HeaderButtons>
       </View>
     );
-  }, [forumData, profilePublicData?.header.userID, rootNavigation]);
+  }, [
+    forumData,
+    handleFavorite,
+    handleMute,
+    profilePublicData?.header.userID,
+    rootNavigation,
+    theme.colors.twitarrNegativeButton,
+    theme.colors.twitarrYellow,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({
