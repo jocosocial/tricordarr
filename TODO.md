@@ -8,8 +8,6 @@ Work Queue
 * thread posts
   * rename favorite posts to bookmarked posts? not consistent with site UI
   * post actions menu
-    * Favorite
-      * updating real but not udating state
     * edit
     * delete
   * Consider setting title? No idea what thread I'm in.
