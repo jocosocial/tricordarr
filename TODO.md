@@ -16,7 +16,6 @@ Work Queue
   * Mentions
     * containingpost thread link - navigate to the thread but with different start data
     * remove the invert
-  * Figure out a place to put the favorite icon
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Events

@@ -49,6 +49,10 @@ export namespace UserHeader {
     }
     return `@${header.username}`;
   }
+
+  export const contains = (headers: UserHeader[], header: UserHeader) => {
+    return headers.map(h => h.userID).includes(header.userID);
+  };
 }
 
 export interface ProfilePublicData {

@@ -3,9 +3,13 @@ import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../Text/RelativeTimeTag';
-import {PostData} from '../../libraries/Structs/ControllerStructs';
+import {PostData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
 import {ForumPostActionsMenu} from '../Menus/Forum/ForumPostActionsMenu';
+import {AppIcon} from '../Images/AppIcon';
+import {AppIcons} from '../../libraries/Enums/Icons';
+import {useAppTheme} from '../../styles/Theme';
+import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -29,6 +33,8 @@ export const ForumPostMessageView = ({
   const [menuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
+  const theme = useAppTheme();
+  const {favorites} = useUserRelations();
 
   const styles = {
     messageView: [
@@ -51,7 +57,20 @@ export const ForumPostMessageView = ({
   return (
     <View style={styles.messageView}>
       <TouchableOpacity style={styles.opacity} onPress={openMenu} onLongPress={openMenu}>
-        {showAuthor && <Text style={styles.messageTextHeader}>{postData.author.username}</Text>}
+        <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
+          {showAuthor && (
+            <>
+              <View>
+                <Text style={[styles.messageTextHeader, commonStyles.flexStart]}>
+                  {UserHeader.getByline(postData.author)}
+                </Text>
+              </View>
+              {UserHeader.contains(favorites, postData.author) && (
+                <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+              )}
+            </>
+          )}
+        </View>
         <ForumPostActionsMenu
           visible={menuVisible}
           closeMenu={closeMenu}
@@ -59,9 +78,22 @@ export const ForumPostMessageView = ({
           forumPost={postData}
           enableShowInThread={enableShowInThread}
         />
-        {postData.createdAt && (
-          <RelativeTimeTag date={new Date(postData.createdAt)} style={styles.messageDateText} variant={'labelSmall'} />
-        )}
+        <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween]}>
+          <View style={[commonStyles.flex0]}>
+            {postData.createdAt && (
+              <RelativeTimeTag
+                date={new Date(postData.createdAt)}
+                style={[styles.messageDateText, commonStyles.flexStart]}
+                variant={'labelSmall'}
+              />
+            )}
+          </View>
+          <View style={[commonStyles.flex0]}>
+            {postData.isBookmarked && (
+              <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={[commonStyles.flexEnd]} />
+            )}
+          </View>
+        </View>
       </TouchableOpacity>
     </View>
   );
