@@ -7,7 +7,7 @@ import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScheduleItemCardBase} from '../../Cards/Schedule/ScheduleItemCardBase';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export const EventHelpScreen = () => {

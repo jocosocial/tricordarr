@@ -4,7 +4,7 @@ import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 import {Field, useField, useFormikContext} from 'formik';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 
 interface BooleanFieldProps {
   onPress?: () => void;

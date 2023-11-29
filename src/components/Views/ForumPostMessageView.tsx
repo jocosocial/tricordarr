@@ -6,7 +6,7 @@ import {RelativeTimeTag} from '../Text/RelativeTimeTag';
 import {PostData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
 import {ForumPostActionsMenu} from '../Menus/Forum/ForumPostActionsMenu';
-import {AppIcon} from '../Images/AppIcon';
+import {AppIcon} from '../Icons/AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
@@ -78,7 +78,7 @@ export const ForumPostMessageView = ({
           forumPost={postData}
           enableShowInThread={enableShowInThread}
         />
-        <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween]}>
+        <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween, commonStyles.alignItemsCenter]}>
           <View style={[commonStyles.flex0]}>
             {postData.createdAt && (
               <RelativeTimeTag

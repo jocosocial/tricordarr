@@ -3,7 +3,7 @@ import {ScheduleItemCardBase} from './ScheduleItemCardBase';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
 import {EventType} from '../../../libraries/Enums/EventType';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';

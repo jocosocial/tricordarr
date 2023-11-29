@@ -8,7 +8,7 @@ import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {AppIcon} from '../../../Images/AppIcon';
+import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';

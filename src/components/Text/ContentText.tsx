@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {CustomEmoji} from '../../libraries/Enums/Emoji';
-import {Emoji} from '../Images/Emoji';
+import {Emoji} from '../Icons/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';

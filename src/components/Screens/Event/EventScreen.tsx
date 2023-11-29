@@ -18,7 +18,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {ListSection} from '../../Lists/ListSection';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';

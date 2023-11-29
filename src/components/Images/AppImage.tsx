@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
-import {AppIcon} from './AppIcon';
+import {AppIcon} from '../Icons/AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';

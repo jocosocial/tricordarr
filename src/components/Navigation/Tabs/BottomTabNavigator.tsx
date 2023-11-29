@@ -1,6 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';

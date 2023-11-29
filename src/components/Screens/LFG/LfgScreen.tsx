@@ -16,7 +16,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';

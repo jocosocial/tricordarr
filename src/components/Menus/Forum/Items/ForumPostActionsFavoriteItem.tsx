@@ -5,8 +5,9 @@ import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {useForumPostBookmarkMutation} from '../../../Queries/Forum/ForumPostBookmarkQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
-import {AppIcon} from '../../../Images/AppIcon';
+import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
+import {FavoriteIcon} from '../../../Icons/FavoriteIcon';
 
 interface ForumPostActionsFavoriteItemProps {
   forumPost: PostData;
@@ -37,12 +38,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost}: ForumPostActionsFavori
     );
   };
 
-  const getIcon = () => {
-    if (favoriteMutation.isLoading) {
-      return <ActivityIndicator />;
-    }
-    return <AppIcon icon={AppIcons.favorite} color={forumPost.isBookmarked ? theme.colors.twitarrYellow : undefined}/>
-  };
+  const getIcon = () => <FavoriteIcon isFavorite={forumPost.isBookmarked} isLoading={favoriteMutation.isLoading} />;
 
   return (
     <Menu.Item

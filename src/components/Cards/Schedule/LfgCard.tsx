@@ -7,7 +7,7 @@ import {Badge} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {AndroidColor} from '@notifee/react-native';
 
