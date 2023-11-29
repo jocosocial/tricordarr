@@ -12,6 +12,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -70,7 +71,7 @@ export const ForumPostActionsMenu = ({
         />
       )}
       <Divider bold={true} />
-      <Menu.Item title={'Favorite'} dense={false} leadingIcon={AppIcons.favorite} />
+      <ForumPostActionsFavoriteItem forumPost={forumPost} />
       <Menu.Item title={'Report'} dense={false} leadingIcon={AppIcons.report} onPress={handleReport} />
       {hasModerator && (
         <Menu.Item

@@ -19,7 +19,12 @@ interface ForumPostMessageViewProps {
  * It only contains the message itself.
  * Maybe dedupe with MessageView?
  */
-export const ForumPostMessageView = ({postData, messageOnRight = false, showAuthor, enableShowInThread}: ForumPostMessageViewProps) => {
+export const ForumPostMessageView = ({
+  postData,
+  messageOnRight = false,
+  showAuthor,
+  enableShowInThread,
+}: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);

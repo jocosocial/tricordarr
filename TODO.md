@@ -6,8 +6,10 @@ Work Queue
 * Thread View
   * Edit
 * thread posts
+  * rename favorite posts to bookmarked posts? not consistent with site UI
   * post actions menu
     * Favorite
+      * updating real but not udating state
     * reactions
     * edit
     * delete
