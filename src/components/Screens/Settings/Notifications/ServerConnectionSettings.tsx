@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {Text, DataTable, Divider} from 'react-native-paper';
+import {Text, DataTable, Divider, HelperText} from 'react-native-paper';
 import {
   getSharedWebSocket,
   startForegroundServiceWorker,
@@ -26,6 +26,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../../libraries/Storage';
 import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import {SettingSwitch} from '../../../Switches/SettingSwitch';
+import {Formik} from 'formik';
+import {BooleanField} from '../../../Forms/Fields/BooleanField';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -42,6 +44,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
   const [rawTime, setRawTime] = useState(false);
   const toggleRawTime = () => setRawTime(!rawTime);
+  const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -71,13 +74,43 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     return true;
   });
 
+  const handleEnable = () => {
+    const newValue = !appConfig.enableBackgroundWorker;
+    updateAppConfig({
+      ...appConfig,
+      enableBackgroundWorker: newValue,
+    });
+    setEnable(newValue);
+  };
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <Divider bold={true} />
+        <PaddedContentView padSides={false}>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
+              <BooleanField
+                name={'enableBackgroundWorker'}
+                label={'Enable Background Worker'}
+                onPress={handleEnable}
+                style={commonStyles.paddingHorizontal}
+                helperText={
+                  'The background worker (which Android calls a Foreground Service) is necessary to enable push notifications in an off-grid environment.'
+                }
+                value={enable}
+              />
+            </View>
+          </Formik>
+        </PaddedContentView>
+        <Divider bold={true} />
         <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Shared Websocket</Text>
+          <Text variant={'titleMedium'}>Worker WebSocket</Text>
+          <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
+            You can pull to refresh this page if you believe the WebSocket state is out of date.
+          </HelperText>
           <DataTable>
             <SettingDataTableRow
               title={'Socket State'}
@@ -91,14 +124,13 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
         </PaddedContentView>
         <Divider bold={true} />
         <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Notifications</Text>
+          <Text variant={'titleMedium'}>Worker Control</Text>
+          <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
+            Note: It may take up to 10 seconds for the worker notification to appear on start.
+          </HelperText>
           <DataTable>
             <SettingDataTableRow title={'Enabled'} value={String(enableUserNotifications)} />
           </DataTable>
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>FGS Control</Text>
           <PrimaryActionButton
             buttonText={'Start'}
             buttonColor={theme.colors.twitarrPositiveButton}
@@ -112,6 +144,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>
+        <Divider bold={true} />
       </ScrollingContentView>
     </AppView>
   );

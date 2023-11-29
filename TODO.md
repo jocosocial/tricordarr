@@ -24,9 +24,6 @@ Work Queue
   * Same as Fez just with multiple image support
 * Events
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
-* FGS
-  * Improve settings screen wording to explain what it means
-  * Move FGS settings to public non-developer settings
 
 Nightly
 * can't sign out if twitarr is down/404

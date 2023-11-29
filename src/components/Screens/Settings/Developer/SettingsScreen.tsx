@@ -34,16 +34,12 @@ export const SettingsScreen = ({navigation}: Props) => {
         <View>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Network</List.Subheader>
+            <List.Subheader>Account</List.Subheader>
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
-          </ListSection>
-          <Divider bold={true} />
-          <ListSection>
-            <List.Subheader>Account</List.Subheader>
             <AccountListItem />
           </ListSection>
           <Divider bold={true} />
@@ -58,6 +54,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Polling'}
               description={'Configure periodic notification polling while the app is active.'}
               navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Background Connection'}
+              description={'Manage the worker that maintains a connection to the server.'}
+              navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
           </ListSection>
           <Divider bold={true} />
@@ -90,7 +91,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             />
             <SettingsNavigationListItem
               title={'Event Settings'}
-              description={'Settings for events (sanctioned by THO).'}
+              description={'Settings for official and shadow event schedule.'}
               navComponent={SettingsStackScreenComponents.eventSettings}
             />
             <SettingsNavigationListItem
@@ -118,11 +119,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   title={'Errors'}
                   description={'Generate test error messages.'}
                   navComponent={SettingsStackScreenComponents.testError}
-                />
-                <SettingsNavigationListItem
-                  title={'Background Connection'}
-                  description={'Manage the worker that maintains a connection to the server.'}
-                  navComponent={SettingsStackScreenComponents.serverConnectionSettings}
                 />
                 <SettingsNavigationListItem
                   title={'Sockets'}

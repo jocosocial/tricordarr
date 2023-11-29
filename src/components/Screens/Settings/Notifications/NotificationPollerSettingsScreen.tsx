@@ -1,12 +1,12 @@
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import React, {useState} from 'react';
-import {AppView} from '../../Views/AppView';
-import {BooleanField} from '../../Forms/Fields/BooleanField';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView';
+import {BooleanField} from '../../../Forms/Fields/BooleanField';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Formik} from 'formik';
 import {View} from 'react-native';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useConfig} from '../../../Context/Contexts/ConfigContext';
+import {useStyles} from '../../../Context/Contexts/StyleContext';
 import humanizeDuration from 'humanize-duration';
 
 export const NotificationPollerSettingsScreen = () => {
@@ -36,7 +36,7 @@ export const NotificationPollerSettingsScreen = () => {
                 onPress={handleEnable}
                 helperText={`Enable periodic (${humanizeDuration(
                   appConfig.notificationPollInterval,
-                )}) notification data polling. This functionality is already covered with the WebSockets. The poller exists in the event that goes poorly.`}
+                )}) notification data polling. This functionality is redundant with the WebSockets and Background Worker, but exists in the event those perform poorly.`}
                 value={enable}
               />
             </View>
