@@ -8,6 +8,7 @@ import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem
 import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem';
 import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem';
 import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem';
+import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -52,14 +53,7 @@ export const ForumPostActionsMenu = ({
       {bySelf && (
         <Menu.Item dense={false} leadingIcon={AppIcons.postEdit} title={'Edit'} onPress={() => console.log('edit')} />
       )}
-      {bySelf && (
-        <Menu.Item
-          dense={false}
-          leadingIcon={AppIcons.postRemove}
-          title={'Delete'}
-          onPress={() => console.log('delete')}
-        />
-      )}
+      <ForumPostActionsDeleteItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />
       <ForumPostActionsFavoriteItem forumPost={forumPost} />
       <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />

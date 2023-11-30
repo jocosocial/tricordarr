@@ -2,14 +2,12 @@ Backlog
 * user quarantine
 
 Work Queue
-* consistent forum icons
 * Thread View
   * Edit
   * Mute needs to dispatch the list
 * thread posts
   * post actions menu
     * edit
-    * delete
     * view in thread
   * Consider setting title? No idea what thread I'm in.
     * onPress => modal of title?

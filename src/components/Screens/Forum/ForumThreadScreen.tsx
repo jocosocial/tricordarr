@@ -127,6 +127,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
           {eventID && (
             <Item
               title={'Event'}

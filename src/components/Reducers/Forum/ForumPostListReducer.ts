@@ -5,12 +5,14 @@ export enum ForumPostListActions {
   setList = 'SET',
   updatePost = 'UPDATE_POST',
   clear = 'CLEAR',
+  deletePost = 'DELETE_POST',
 }
 
 export type ForumPostListActionsType =
   | {type: ForumPostListActions.setList; postList: PostData[]}
   | {type: ForumPostListActions.updatePost; newPost: PostData}
-  | {type: ForumPostListActions.clear};
+  | {type: ForumPostListActions.clear}
+  | {type: ForumPostListActions.deletePost; oldPost: PostData};
 
 const forumPostListReducer = (postList: PostData[], action: ForumPostListActionsType): PostData[] => {
   console.log('forumPostListReducer got action', action.type);
@@ -29,6 +31,9 @@ const forumPostListReducer = (postList: PostData[], action: ForumPostListActions
     }
     case ForumPostListActions.clear: {
       return [];
+    }
+    case ForumPostListActions.deletePost: {
+      return postList.filter(p => p.postID !== action.oldPost.postID);
     }
     default: {
       throw new Error('Unknown ForumPostListActions action');
