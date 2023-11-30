@@ -9,9 +9,6 @@ Work Queue
   * post actions menu
     * edit
     * view in thread
-  * Consider setting title? No idea what thread I'm in.
-    * onPress => modal of title?
-    * or a ForumDetailsScreen with basic information from ForumData
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Events

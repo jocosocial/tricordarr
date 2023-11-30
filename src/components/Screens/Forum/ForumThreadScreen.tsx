@@ -25,6 +25,8 @@ import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries
 import {useAppTheme} from '../../../styles/Theme';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
+import {Text} from 'react-native-paper';
+import {ForumTitleView} from '../../Views/ForumTitleView';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -197,6 +199,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   return (
     <AppView>
       {forumData?.isLocked && <ForumLockedView />}
+      <ForumTitleView title={forumData?.title} />
       <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
