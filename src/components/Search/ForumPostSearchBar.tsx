@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -14,6 +14,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../Reducers/Forum/ForumPostListReducer';
+import {PostData} from '../../libraries/Structs/ControllerStructs';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -43,6 +44,7 @@ export const ForumPostSearchBar = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
+  const flatListRef = useRef<FlatList<PostData>>(null);
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -120,6 +122,7 @@ export const ForumPostSearchBar = () => {
       </View>
       <View style={[commonStyles.flex]}>
         <ForumPostFlatList
+          flatListRef={flatListRef}
           refreshControl={
             <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }

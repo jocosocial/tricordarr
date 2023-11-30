@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
@@ -12,7 +12,7 @@ import {
   NavigatorIDs,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
-import {ForumData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostContentData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -61,6 +61,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const {setErrorMessage} = useErrorHandler();
+  const flatListRef = useRef<FlatList<PostData>>(null);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -230,7 +231,6 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
           });
           const forumListItem = forumListData.find(fdl => fdl.forumID === forumData.forumID);
           if (forumListItem) {
-            // https://github.com/jocosocial/swiftarr/issues/237
             dispatchForumListData({
               type: ForumListDataActions.upsert,
               thread: {
@@ -243,6 +243,11 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
             });
           }
           formikHelpers.resetForm();
+          // https://github.com/jocosocial/swiftarr/issues/237
+          // Refetch needed to "mark" the forum as read.
+          refetch().then(() => {
+            flatListRef.current?.scrollToOffset({offset: 0, animated: false});
+          });
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
@@ -271,6 +276,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
         headerText={headerText}
+        flatListRef={flatListRef}
       />
       <ContentPostForm
         onSubmit={onPostSubmit}

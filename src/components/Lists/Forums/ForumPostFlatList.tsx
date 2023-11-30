@@ -23,6 +23,7 @@ interface ForumPostFlatListProps {
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
   headerText?: string;
+  flatListRef: React.RefObject<FlatList<PostData>>;
 }
 
 export const ForumPostFlatList = ({
@@ -37,8 +38,9 @@ export const ForumPostFlatList = ({
   maintainViewPosition,
   enableShowInThread,
   headerText,
+  flatListRef,
 }: ForumPostFlatListProps) => {
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
 
@@ -136,7 +138,18 @@ export const ForumPostFlatList = ({
 
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
     return <TimeDivider style={styles.timeDividerStyle} label={label} />;
-  }, [forumData, hasPreviousPage, invertList, itemSeparator, postList, styles.timeDividerStyle]);
+  }, [
+    commonStyles.alignItemsCenter,
+    commonStyles.flex,
+    commonStyles.flexRow,
+    forumData,
+    hasPreviousPage,
+    headerText,
+    invertList,
+    itemSeparator,
+    postList,
+    styles.timeDividerStyle,
+  ]);
 
   const renderListFooter = useCallback(() => <SpaceDivider />, []);
 

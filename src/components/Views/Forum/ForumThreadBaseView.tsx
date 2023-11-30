@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {
@@ -8,7 +8,7 @@ import {
   EventStackComponents,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
-import {ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -55,6 +55,7 @@ export const ForumThreadBaseView = ({
   const relationMutation = useForumRelationMutation();
   const theme = useAppTheme();
   const navigation = useForumStackNavigation();
+  const flatListRef = useRef<FlatList<PostData>>(null);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -203,6 +204,7 @@ export const ForumThreadBaseView = ({
       {forumData?.isLocked && <ForumLockedView />}
       <ForumTitleView title={forumData?.title} />
       <ForumPostFlatList
+        flatListRef={flatListRef}
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}

@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../Queries/Forum/ForumSearchQueries';
-import {RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
@@ -16,6 +16,7 @@ import {ForumStackParamList, useForumStackNavigation} from '../../Navigation/Sta
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
+import {PostData} from '../../../libraries/Structs/ControllerStructs';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -45,6 +46,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
   const {setModalContent, setModalVisible} = useModal();
+  const flatListRef = useRef<FlatList<PostData>>(null);
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -111,6 +113,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   return (
     <AppView>
       <ForumPostFlatList
+        flatListRef={flatListRef}
         invertList={false}
         postList={forumPosts}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
