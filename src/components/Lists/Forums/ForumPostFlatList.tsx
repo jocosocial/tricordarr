@@ -22,6 +22,7 @@ interface ForumPostFlatListProps {
   hasPreviousPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
+  headerText?: string;
 }
 
 export const ForumPostFlatList = ({
@@ -35,6 +36,7 @@ export const ForumPostFlatList = ({
   hasPreviousPage,
   maintainViewPosition,
   enableShowInThread,
+  headerText,
 }: ForumPostFlatListProps) => {
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -107,8 +109,16 @@ export const ForumPostFlatList = ({
   const renderListHeader = useCallback(() => {
     if (forumData && !hasPreviousPage) {
       return (
-        <PaddedContentView padTop={true} invertVertical={true}>
-          <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+        <PaddedContentView padTop={true} invertVertical={invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              {headerText ? (
+                <Text variant={'labelMedium'}>{headerText}</Text>
+              ) : (
+                <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+              )}
+            </View>
+          </View>
         </PaddedContentView>
       );
     }

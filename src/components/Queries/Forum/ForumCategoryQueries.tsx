@@ -59,6 +59,13 @@ export const useForumCategoryQuery = (
   );
 };
 
-export const useForumThreadQuery = (forumID: string) => {
-  return useTokenAuthPaginationQuery<ForumData>(`/forum/${forumID}`);
+export const useForumThreadQuery = (forumID?: string, postID?: string) => {
+  if (!forumID && !postID) {
+    throw new Error('Invalid usage of useForumThreadQuery()');
+  }
+  let endpoint = `/forum/${forumID}`;
+  if (postID) {
+    endpoint = `/forum/post/${postID}/forum`;
+  }
+  return useTokenAuthPaginationQuery<ForumData>(endpoint);
 };

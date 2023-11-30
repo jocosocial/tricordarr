@@ -26,7 +26,8 @@ export type ForumStackParamList = {
     categoryId: string;
   };
   ForumThreadScreen: {
-    forumID: string;
+    forumID?: string;
+    postID?: string;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;

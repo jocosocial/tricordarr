@@ -1,15 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {
   BottomTabComponents,
   EventStackComponents,
-  ForumStackComponents,
-  NavigatorIDs,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
 import {ForumData} from '../../../libraries/Structs/ControllerStructs';
@@ -26,25 +22,31 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumTitleView} from '../../Views/ForumTitleView';
+import {InfiniteData} from '@tanstack/react-query';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumThreadScreen,
-  NavigatorIDs.forumStack
->;
+interface ForumThreadBaseViewProps {
+  data?: InfiniteData<ForumData>;
+  refetch: () => Promise<void>;
+  isLoading: boolean;
+  fetchNextPage: () => Promise<void>;
+  fetchPreviousPage: () => Promise<void>;
+  isFetchingNextPage: boolean;
+  isFetchingPreviousPage: boolean;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+}
 
-export const ForumThreadScreen = ({route, navigation}: Props) => {
-  const {
-    data,
-    refetch,
-    isLoading,
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-  } = useForumThreadQuery(route.params.forumID, route.params.postID);
+export const ForumThreadBaseView = ({
+  data,
+  refetch,
+  isLoading,
+  fetchNextPage,
+  fetchPreviousPage,
+  isFetchingPreviousPage,
+  isFetchingNextPage,
+  hasNextPage,
+  hasPreviousPage,
+}: ForumThreadBaseViewProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const [forumData, setForumData] = useState<ForumData>();
@@ -52,7 +54,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
   const theme = useAppTheme();
-  const startScreenAtBottom = !route.params.postID;
+  const navigation = useForumStackNavigation();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -184,20 +186,17 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      const postListData = data.pages.flatMap(fd => fd.posts)
       dispatchForumPosts({
         type: ForumPostListActions.setList,
-        postList: startScreenAtBottom ? postListData.reverse() : postListData,
+        postList: data.pages.flatMap(fd => fd.posts).reverse(),
       });
       setForumData(data.pages[0]);
     }
-  }, [data, dispatchForumPosts, route.params.postID]);
+  }, [data, dispatchForumPosts]);
 
   if (!data) {
     return <LoadingView />;
   }
-
-  const headerText = route.params.postID ? 'Showing forum starting at selected post.' : undefined;
 
   return (
     <AppView>
@@ -208,11 +207,10 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
-        invertList={startScreenAtBottom}
+        invertList={true}
         forumData={forumData}
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
-        headerText={headerText}
       />
     </AppView>
   );

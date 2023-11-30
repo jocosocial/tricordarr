@@ -8,7 +8,6 @@ Work Queue
 * thread posts
   * post actions menu
     * edit
-    * view in thread
 * Thread Post Form
   * Same as Fez just with multiple image support
 * Events

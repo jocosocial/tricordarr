@@ -3,17 +3,22 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
 import React from 'react';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
+import {RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface ForumPostActionsModerateItemProps {
   closeMenu: () => void;
   forumPost: PostData;
+  rootNavigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
-export const ForumPostActionsModerateItem = ({forumPost, closeMenu}: ForumPostActionsModerateItemProps) => {
+export const ForumPostActionsModerateItem = ({
+  forumPost,
+  closeMenu,
+  rootNavigation,
+}: ForumPostActionsModerateItemProps) => {
   const {hasModerator} = usePrivilege();
-  const rootStackNavigation = useRootStack();
 
   if (!hasModerator) {
     return null;
@@ -26,7 +31,7 @@ export const ForumPostActionsModerateItem = ({forumPost, closeMenu}: ForumPostAc
       leadingIcon={AppIcons.moderator}
       onPress={() => {
         closeMenu();
-        rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+        rootNavigation.push(RootStackComponents.rootContentScreen, {
           screen: BottomTabComponents.homeTab,
           params: {
             screen: MainStackComponents.siteUIScreen,
