@@ -1,16 +1,27 @@
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, ForumListData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useReducer} from 'react';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export enum ForumListDataActions {
   setList = 'SET',
   updateThread = 'UPDATE_THREAD',
   updateRelations = 'UPDATE_RELATIONS',
+  prependNewForumData = 'PREPEND_NEW_FORUM_DATA',
 }
 
 export type ForumListDataActionsType =
   | {type: ForumListDataActions.setList; threadList: ForumListData[]}
   | {type: ForumListDataActions.updateThread; newThread: ForumListData}
-  | {type: ForumListDataActions.updateRelations; forumID: string; isFavorite: boolean; isMuted: boolean};
+  | {type: ForumListDataActions.updateRelations; forumID: string; isFavorite: boolean; isMuted: boolean}
+  | {
+      type: ForumListDataActions.prependNewForumData;
+      forumData: ForumData;
+      createdAt: string;
+      postCount: number;
+      readCount: number;
+      lastPostAt?: string;
+      lastPoster?: UserHeader;
+    };
 
 const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActionsType): ForumListData[] => {
   console.log('forumThreadListReducer got action', action.type);
@@ -38,6 +49,17 @@ const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActi
         }
         return f;
       });
+    }
+    case ForumListDataActions.prependNewForumData: {
+      const newListData: ForumListData = {
+        ...action.forumData,
+        createdAt: action.createdAt,
+        postCount: action.postCount,
+        readCount: action.readCount,
+        lastPostAt: action.lastPostAt,
+        lastPoster: action.lastPoster,
+      };
+      return [newListData].concat(threadList);
     }
     default: {
       throw new Error('Unknown ForumListDataActions action');

@@ -11,7 +11,7 @@ import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {FezPostForm} from '../../Forms/FezPostForm';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -290,7 +290,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         onEndReached={handleLoadPrevious}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} enablePhotos={false} />
+      <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );
 };

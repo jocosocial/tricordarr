@@ -12,36 +12,40 @@ import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
 
-interface FezPostFormProps {
+interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
   formRef?: React.RefObject<FormikProps<PostContentData>>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
   enablePhotos?: boolean;
+  maxLength?: number;
+  maxPhotos?: number;
 }
 
-const validationSchema = Yup.object().shape({
-  text: Yup.string()
-    .required('Post is required.')
-    .min(1, 'Post cannot be empty.')
-    .max(500, 'Post must be less than 500 characters.')
-    .test('maxLines', 'Post must be less than 25 lines', value => {
-      return value.split(/\r\n|\r|\n/).length <= 25;
-    }),
-});
-
 // https://formik.org/docs/guides/react-native
-export const FezPostForm = ({
+export const ContentPostForm = ({
   onSubmit,
   formRef,
   onPress,
   overrideSubmitting,
   enablePhotos = true,
-}: FezPostFormProps) => {
+  maxLength = 500,
+  maxPhotos = 1, // @TODO
+}: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
+
+  const validationSchema = Yup.object().shape({
+    text: Yup.string()
+      .required('Post is required.')
+      .min(1, 'Post cannot be empty.')
+      .max(maxLength, 'Post must be less than 500 characters.')
+      .test('maxLines', 'Post must be less than 25 lines', value => {
+        return value.split(/\r\n|\r|\n/).length <= 25;
+      }),
+  });
 
   const initialValues: PostContentData = {
     images: [],

@@ -27,7 +27,7 @@ import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {FezPostForm} from '../../Forms/FezPostForm';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
@@ -287,7 +287,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         onEndReached={handleLoadPrevious}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} />
+      <ContentPostForm onSubmit={onSubmit} />
     </AppView>
   );
 };
