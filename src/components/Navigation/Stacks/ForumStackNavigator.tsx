@@ -20,6 +20,9 @@ import {ForumRecentScreen} from '../../Screens/Forum/ForumRecentScreen';
 import {ForumPostSearchScreen} from '../../Screens/Forum/ForumPostSearchScreen';
 import {ForumThreadSearchScreen} from '../../Screens/Forum/ForumThreadSearchScreen';
 import {ForumThreadCreateScreen} from '../../Screens/Forum/ForumThreadCreateScreen';
+import {ForumThreadEditScreen} from '../../Screens/Forum/ForumThreadEditScreen';
+import {ForumPostEditScreen} from '../../Screens/Forum/ForumPostEditScreen';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -41,6 +44,12 @@ export type ForumStackParamList = {
   ForumThreadSearchScreen: undefined;
   ForumThreadCreateScreen: {
     categoryId: string;
+  };
+  ForumThreadEditScreen: {
+    forumData: ForumData;
+  };
+  ForumPostEditScreen: {
+    postData: PostData;
   };
 };
 
@@ -126,6 +135,16 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumThreadCreateScreen}
         component={isDisabled ? DisabledView : ForumThreadCreateScreen}
         options={{title: 'New Forum'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadEditScreen}
+        component={isDisabled ? DisabledView : ForumThreadEditScreen}
+        options={{title: 'Edit Forum'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostEditScreen}
+        component={isDisabled ? DisabledView : ForumPostEditScreen}
+        options={{title: 'Edit Post'}}
       />
     </Stack.Navigator>
   );

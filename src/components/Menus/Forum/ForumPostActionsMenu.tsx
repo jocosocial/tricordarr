@@ -11,6 +11,8 @@ import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem
 import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem';
 import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -31,6 +33,7 @@ export const ForumPostActionsMenu = ({
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const rootNavigation = useRootStack();
+  const forumNavigation = useForumStackNavigation();
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
@@ -50,7 +53,17 @@ export const ForumPostActionsMenu = ({
         }}
       />
       {bySelf && (
-        <Menu.Item dense={false} leadingIcon={AppIcons.postEdit} title={'Edit'} onPress={() => console.log('edit')} />
+        <Menu.Item
+          dense={false}
+          leadingIcon={AppIcons.postEdit}
+          title={'Edit'}
+          onPress={() => {
+            closeMenu();
+            forumNavigation.push(ForumStackComponents.forumPostEditScreen, {
+              postData: forumPost,
+            });
+          }}
+        />
       )}
       <ForumPostActionsDeleteItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />

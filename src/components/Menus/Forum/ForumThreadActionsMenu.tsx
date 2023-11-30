@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  ForumStackComponents,
+  MainStackComponents,
+  RootStackComponents,
+} from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -11,6 +16,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {ReactNode} from 'react';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -24,6 +30,7 @@ export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps)
   const {hasModerator} = usePrivilege();
   const {profilePublicData} = useUserData();
   const rootStackNavigation = useRootStack();
+  const forumStackNavigation = useForumStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -41,7 +48,17 @@ export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps)
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       {forumData.creator.userID === profilePublicData?.header.userID && (
         <>
-          <Menu.Item dense={false} title={'Edit'} leadingIcon={AppIcons.forumEdit} />
+          <Menu.Item
+            dense={false}
+            title={'Edit'}
+            leadingIcon={AppIcons.forumEdit}
+            onPress={() => {
+              closeMenu();
+              forumStackNavigation.push(ForumStackComponents.forumThreadEditScreen, {
+                forumData: forumData,
+              });
+            }}
+          />
           <Divider bold={true} />
         </>
       )}
