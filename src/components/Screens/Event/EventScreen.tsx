@@ -12,6 +12,7 @@ import {
   RootStackComponents,
   BottomTabComponents,
   MainStackComponents,
+  ForumStackComponents,
 } from '../../../libraries/Enums/Navigation';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -95,7 +96,21 @@ export const EventScreen = ({navigation, route}: Props) => {
                 <Item
                   title={'Forum'}
                   iconName={AppIcons.forum}
-                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/forum/${eventData.forum}`)}
+                  onPress={() => {
+                    if (eventData.forum) {
+                      rootStackNavigation.push(RootStackComponents.rootContentScreen, {
+                        screen: BottomTabComponents.forumsTab,
+                        params: {
+                          screen: ForumStackComponents.forumThreadScreen,
+                          // initial false needed here to enable the stack to popToTop on bottom button press.
+                          initial: false,
+                          params: {
+                            forumID: eventData.forum,
+                          },
+                        },
+                      });
+                    }
+                  }}
                 />
               )}
             </>
