@@ -31,9 +31,10 @@ export const EmojiPickerField = () => {
 
   return (
     <View style={styles.outerView}>
-      {Object.keys(CustomEmoji).map(emoji => {
+      {Object.keys(CustomEmoji).map((emoji, index) => {
         return (
           <IconButton
+            key={index}
             onPress={() => handleEmojiPress(emoji)}
             icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}
           />
