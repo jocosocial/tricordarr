@@ -19,3 +19,16 @@ export const useForumCreateMutation = () => {
     forumCreateQueryHandler,
   );
 };
+
+interface ForumRenameMutationProps {
+  forumID: string;
+  name: string;
+}
+
+const forumRenameQueryHandler = async ({forumID, name}: ForumRenameMutationProps) => {
+  return await axios.post(`/forum/${forumID}/rename/${encodeURIComponent(name)}`);
+};
+
+export const useForumRenameMutation = () => {
+  return useTokenAuthMutation(forumRenameQueryHandler);
+};

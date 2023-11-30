@@ -51,8 +51,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
-  const [forumData, setForumData] = useState<ForumData>();
+  const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();

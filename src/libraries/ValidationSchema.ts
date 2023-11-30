@@ -33,3 +33,11 @@ export const DateValidation = Yup.date().required('Date is required');
 export const EmailValidation = Yup.string().email();
 
 export const RoomNumberValidation = Yup.string().optional().min(4, 'If specified, must be minimum 4 characters');
+
+export const ForumPostTextValidation = Yup.string()
+  .required('Post is required.')
+  .min(1, 'Post cannot be empty.')
+  .max(2000, 'Post must be less than 2000 characters.')
+  .test('maxLines', 'Post must be less than 25 lines', value => {
+    return value.split(/\r\n|\r|\n/).length <= 25;
+  });

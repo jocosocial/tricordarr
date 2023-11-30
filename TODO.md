@@ -4,13 +4,13 @@ Backlog
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 
 Work Queue
-* Thread View
-  * Edit
 * thread posts
   * post actions menu
     * edit
+    * remove or change photos
 * Thread Post Form
   * Same as Fez just with multiple image support
+  * add support for moderator/twitarrteam
 * Forum Fabs
   * combine them and add flags for creating
   * isRestricted || isEventCategory prevent create

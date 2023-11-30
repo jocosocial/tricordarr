@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {CategoryData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
@@ -7,7 +7,6 @@ import {useEventListReducer} from '../../Reducers/Schedule/EventListReducer';
 import {useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
-import {useForumDataReducer} from '../../Reducers/Forum/ForumDataReducer';
 import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
 import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
 
@@ -23,7 +22,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
   const [forumCategories, setForumCategories] = useState<CategoryData[]>([]);
-  const [forumData, dispatchForumData] = useForumDataReducer([]);
+  const [forumData, setForumData] = useState<ForumData>();
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
 
@@ -72,7 +71,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         forumCategories,
         setForumCategories,
         forumData,
-        dispatchForumData,
+        setForumData,
         forumListData,
         dispatchForumListData,
         forumPosts,

@@ -12,7 +12,6 @@ import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 import {EventListActionsType} from '../../Reducers/Schedule/EventListReducer';
 import {ScheduleListActionsType} from '../../Reducers/Schedule/ScheduleListReducer';
-import {ForumDataActionsType} from '../../Reducers/Forum/ForumDataReducer';
 import {ForumPostListActionsType} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActionsType} from '../../Reducers/Forum/ForumListDataReducer';
 
@@ -38,8 +37,8 @@ interface TwitarrContextType {
   openWebUrl: (url: string) => void;
   forumCategories: CategoryData[];
   setForumCategories: Dispatch<SetStateAction<CategoryData[]>>;
-  forumData: ForumData[];
-  dispatchForumData: Dispatch<ForumDataActionsType>;
+  forumData: ForumData | undefined;
+  setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
   forumListData: ForumListData[];
   dispatchForumListData: Dispatch<ForumListDataActionsType>;
   forumPosts: PostData[];
