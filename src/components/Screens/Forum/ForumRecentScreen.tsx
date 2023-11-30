@@ -9,7 +9,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useForumRecentQuery} from '../../Queries/Forum/ForumRelationQueries';
-import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
+import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 
 export const ForumRecentScreen = () => {
   const {
@@ -79,7 +79,7 @@ export const ForumRecentScreen = () => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      <ForumCategoryFAB />
+      <ForumFAB />
     </AppView>
   );
 };

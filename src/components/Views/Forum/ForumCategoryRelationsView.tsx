@@ -5,13 +5,13 @@ import {RefreshControl} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
 import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
+import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 
 export const ForumCategoryRelationsView = ({
   forumFilter,
@@ -91,7 +91,6 @@ export const ForumCategoryRelationsView = ({
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      {categoryId && <ForumThreadFAB categoryId={categoryId} />}
     </AppView>
   );
 };

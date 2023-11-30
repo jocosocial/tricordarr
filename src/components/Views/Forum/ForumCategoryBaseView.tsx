@@ -6,11 +6,12 @@ import {RefreshControl} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumThreadFAB} from '../../Buttons/FloatingActionButtons/ForumThreadFAB';
 import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
+import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
   const {forumSortOrder} = useFilter();
@@ -29,6 +30,8 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
+  const [isUserRestricted, setIsUserRestricted] = useState(false);
+  const {hasModerator} = usePrivilege();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -54,8 +57,15 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
       });
+
+      const categoryData = data.pages[0];
+      if (hasModerator) {
+        setIsUserRestricted(false);
+      } else {
+        setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
+      }
     }
-  }, [data, dispatchForumListData, categoryId]);
+  }, [data, dispatchForumListData, categoryId, hasModerator]);
 
   if (!data) {
     return <LoadingView />;
@@ -83,7 +93,7 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      <ForumThreadFAB categoryId={categoryId} />
+      <ForumFAB categoryId={categoryId} enableNewButton={!isUserRestricted} />
     </AppView>
   );
 };

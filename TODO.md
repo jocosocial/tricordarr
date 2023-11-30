@@ -11,9 +11,6 @@ Work Queue
 * Thread Post Form
   * Same as Fez just with multiple image support
   * add support for moderator/twitarrteam
-* Forum Fabs
-  * combine them and add flags for creating
-  * isRestricted || isEventCategory prevent create
 
 Nightly
 * can't sign out if twitarr is down/404
@@ -28,9 +25,6 @@ Nightly
 * Forum thread screen start at unread
 * Unread marker in post flatlist
 * Mark thread as read
-* Does lfg list need pagination
 * Non mods should not see lfg chat
-* Perhaps add a is focused to the dispatch calls
 * Debounce directory search
-* Edit forum to the menu rather than button
 * mention auto complete

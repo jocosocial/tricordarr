@@ -11,10 +11,7 @@ import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../libraries/Structs/ControllerStructs';
 
@@ -122,7 +119,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
         itemSeparator={'time'}
         enableShowInThread={true}
       />
-      <ForumCategoryFAB />
     </AppView>
   );
 };

@@ -8,7 +8,6 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider, List} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryListItem} from '../../Lists/Items/Forum/ForumCategoryListItem';
-import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryListItemBase';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
@@ -20,6 +19,7 @@ import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
+import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -130,7 +130,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumCategoryFAB />
+      <ForumFAB openLabel={'Categories'} />
     </AppView>
   );
 };
