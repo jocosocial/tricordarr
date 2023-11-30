@@ -26,6 +26,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumTitleView} from '../../Views/ForumTitleView';
+import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -46,7 +47,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumPosts, dispatchForumPosts} = useTwitarr();
+  const {forumPosts, dispatchForumPosts, dispatchForumListData} = useTwitarr();
   const [forumData, setForumData] = useState<ForumData>();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
@@ -87,7 +88,12 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
               ...forumData,
               isFavorite: !forumData.isFavorite,
             });
-            // @TODO update list
+            dispatchForumListData({
+              type: ForumListDataActions.updateRelations,
+              forumID: forumData.forumID,
+              isMuted: forumData.isMuted,
+              isFavorite: !forumData.isFavorite,
+            });
           },
           onSettled: () => setRefreshing(false),
         },
@@ -110,7 +116,12 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
               ...forumData,
               isMuted: !forumData.isMuted,
             });
-            // @TODO update list
+            dispatchForumListData({
+              type: ForumListDataActions.updateRelations,
+              forumID: forumData.forumID,
+              isMuted: !forumData.isMuted,
+              isFavorite: forumData.isFavorite,
+            });
           },
           onSettled: () => setRefreshing(false),
         },

@@ -4,11 +4,13 @@ import {useReducer} from 'react';
 export enum ForumListDataActions {
   setList = 'SET',
   updateThread = 'UPDATE_THREAD',
+  updateRelations = 'UPDATE_RELATIONS',
 }
 
 export type ForumListDataActionsType =
   | {type: ForumListDataActions.setList; threadList: ForumListData[]}
-  | {type: ForumListDataActions.updateThread; newThread: ForumListData};
+  | {type: ForumListDataActions.updateThread; newThread: ForumListData}
+  | {type: ForumListDataActions.updateRelations; forumID: string; isFavorite: boolean; isMuted: boolean};
 
 const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActionsType): ForumListData[] => {
   console.log('forumThreadListReducer got action', action.type);
@@ -21,6 +23,18 @@ const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActi
         if (f.forumID === action.newThread.forumID) {
           console.log('Updating Thread', f.forumID);
           return action.newThread;
+        }
+        return f;
+      });
+    }
+    case ForumListDataActions.updateRelations: {
+      return threadList.flatMap(f => {
+        if (f.forumID === action.forumID) {
+          return {
+            ...f,
+            isMuted: action.isMuted,
+            isFavorite: action.isFavorite,
+          };
         }
         return f;
       });

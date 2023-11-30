@@ -4,7 +4,6 @@ Backlog
 Work Queue
 * Thread View
   * Edit
-  * Mute needs to dispatch the list
 * thread posts
   * post actions menu
     * edit
