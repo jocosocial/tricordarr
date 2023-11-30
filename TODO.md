@@ -30,7 +30,6 @@ Nightly
 * Mark thread as read
 * Does lfg list need pagination
 * Non mods should not see lfg chat
-* Shared thread list is buggy if screens background? I'm getting crossed data when changing the filter
 * Perhaps add a is focused to the dispatch calls
 * Debounce directory search
 * Edit forum to the menu rather than button

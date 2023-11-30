@@ -13,6 +13,9 @@ import {ForumCategoryRelationsView} from '../../Views/Forum/ForumCategoryRelatio
 import {ForumCategoryBaseView} from '../../Views/Forum/ForumCategoryBaseView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useIsFocused} from '@react-navigation/native';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -28,6 +31,8 @@ const helpText = [
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();
   const {setModalVisible, setModalContent} = useModal();
+  const isFocused = useIsFocused();
+  const {dispatchForumPosts, setForumData} = useTwitarr();
 
   const handleHelp = useCallback(() => {
     setModalContent(<HelpModalView text={helpText} />);
@@ -47,10 +52,17 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }, [handleHelp]);
 
   useEffect(() => {
+    // This clears the previous state of forum posts and a specific forum.
+    if (isFocused) {
+      dispatchForumPosts({
+        type: ForumPostListActions.clear,
+      });
+      setForumData(undefined);
+    }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData]);
 
   if (forumFilter) {
     return <ForumCategoryRelationsView forumFilter={forumFilter} categoryId={route.params.categoryId} />;

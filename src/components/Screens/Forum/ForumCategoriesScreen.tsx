@@ -17,6 +17,9 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
+import {useIsFocused} from '@react-navigation/native';
+import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
+import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -30,6 +33,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
+  const isFocused = useIsFocused();
+  const {dispatchForumPosts, dispatchForumListData, setForumData} = useTwitarr();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -41,6 +46,19 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       setForumCategories(data);
     }
   }, [data, setForumCategories]);
+
+  useEffect(() => {
+    // This clears the previous state of forum posts, specific forum, and the category list data.
+    if (isFocused) {
+      dispatchForumPosts({
+        type: ForumPostListActions.clear,
+      });
+      dispatchForumListData({
+        type: ForumListDataActions.clear,
+      });
+      setForumData(undefined);
+    }
+  }, [dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
