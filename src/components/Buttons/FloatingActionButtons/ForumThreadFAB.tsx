@@ -5,14 +5,17 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 
-export const ForumThreadFAB = () => {
+export const ForumThreadFAB = ({categoryId}: {categoryId: string}) => {
   const navigation = useForumStackNavigation();
 
   const actions = [
     FabGroupAction({
       icon: AppIcons.new,
       label: 'New Forum',
-      onPress: () => console.log('newforum'),
+      onPress: () =>
+        navigation.push(ForumStackComponents.forumThreadCreateScreen, {
+          categoryId: categoryId,
+        }),
     }),
     FabGroupAction({
       icon: AppIcons.postSearch,

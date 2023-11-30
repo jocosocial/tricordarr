@@ -59,3 +59,7 @@ export interface FezFormValues {
     minutes: number;
   };
 }
+
+export interface ForumThreadValues {
+  title: string;
+}

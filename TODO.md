@@ -1,5 +1,7 @@
 Backlog
 * user quarantine
+* Events
+  * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 
 Work Queue
 * Thread View
@@ -9,8 +11,6 @@ Work Queue
     * edit
 * Thread Post Form
   * Same as Fez just with multiple image support
-* Events
-  * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 
 Nightly
 * can't sign out if twitarr is down/404

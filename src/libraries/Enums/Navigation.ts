@@ -124,4 +124,5 @@ export enum ForumStackComponents {
   forumRecentScreen = 'ForumRecentScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   forumThreadSearchScreen = 'ForumThreadSearchScreen',
+  forumThreadCreateScreen = 'ForumThreadCreateScreen',
 }

@@ -83,7 +83,7 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      <ForumThreadFAB />
+      <ForumThreadFAB categoryId={categoryId} />
     </AppView>
   );
 };

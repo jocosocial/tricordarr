@@ -91,7 +91,7 @@ export const ForumCategoryRelationsView = ({
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      <ForumThreadFAB />
+      {categoryId && <ForumThreadFAB categoryId={categoryId} />}
     </AppView>
   );
 };

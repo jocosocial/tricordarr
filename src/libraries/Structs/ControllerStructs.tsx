@@ -657,3 +657,10 @@ export namespace PostDetailData {
     }
   };
 }
+
+export interface ForumCreateData {
+  /// The forum's title.
+  title: string;
+  /// The first post in the forum.
+  firstPost: PostContentData;
+}
