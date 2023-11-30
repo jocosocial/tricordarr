@@ -1,5 +1,5 @@
 import {useTokenAuthQuery} from '../TokenAuthQuery';
-import {ForumData, PostDetailData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostContentData, PostData, PostDetailData} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 import axios, {AxiosResponse} from 'axios';
 
@@ -21,4 +21,18 @@ const deleteQueryHandler = async ({postID}: {postID: string}): Promise<AxiosResp
 
 export const useForumPostDeleteMutation = () => {
   return useTokenAuthMutation(deleteQueryHandler);
+};
+
+const createQueryHandler = async ({
+  forumID,
+  postData,
+}: {
+  forumID: string;
+  postData: PostContentData;
+}): Promise<AxiosResponse<PostData>> => {
+  return await axios.post(`/forum/${forumID}/create`, postData);
+};
+
+export const useForumPostCreateMutation = () => {
+  return useTokenAuthMutation(createQueryHandler);
 };

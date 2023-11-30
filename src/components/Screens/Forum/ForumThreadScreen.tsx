@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
@@ -12,7 +12,7 @@ import {
   NavigatorIDs,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
-import {ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -27,6 +27,10 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumTitleView} from '../../Views/ForumTitleView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
+import {FormikHelpers, FormikProps} from 'formik';
+import {useForumPostCreateMutation} from '../../Queries/Forum/ForumPostQueries';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -47,13 +51,16 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumPosts, dispatchForumPosts, dispatchForumListData} = useTwitarr();
+  const {forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
   const [forumData, setForumData] = useState<ForumData>();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
   const theme = useAppTheme();
   const startScreenAtBottom = !route.params.postID;
+  const postFormRef = useRef<FormikProps<PostContentData>>(null);
+  const postCreateMutation = useForumPostCreateMutation();
+  const {setErrorMessage} = useErrorHandler();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -99,7 +106,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         },
       );
     }
-  }, [forumData, relationMutation]);
+  }, [dispatchForumListData, forumData, relationMutation]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -127,7 +134,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         },
       );
     }
-  }, [forumData, relationMutation]);
+  }, [dispatchForumListData, forumData, relationMutation]);
 
   const getNavButtons = useCallback(() => {
     // Typescript struggles
@@ -195,14 +202,54 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      const postListData = data.pages.flatMap(fd => fd.posts)
+      const postListData = data.pages.flatMap(fd => fd.posts);
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: startScreenAtBottom ? postListData.reverse() : postListData,
       });
       setForumData(data.pages[0]);
     }
-  }, [data, dispatchForumPosts, route.params.postID]);
+  }, [data, dispatchForumPosts, route.params.postID, startScreenAtBottom]);
+
+  const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+    if (!forumData) {
+      setErrorMessage('Forum Data missing? This is definitely a bug.');
+      formikHelpers.setSubmitting(false);
+      return;
+    }
+    postCreateMutation.mutate(
+      {
+        forumID: forumData.forumID,
+        postData: values,
+      },
+      {
+        onSuccess: response => {
+          dispatchForumPosts({
+            type: ForumPostListActions.prependPost,
+            newPost: response.data,
+          });
+          const forumListItem = forumListData.find(fdl => fdl.forumID === forumData.forumID);
+          if (forumListItem) {
+            // https://github.com/jocosocial/swiftarr/issues/237
+            dispatchForumListData({
+              type: ForumListDataActions.upsert,
+              thread: {
+                ...forumListItem,
+                postCount: forumListItem.postCount + 1,
+                readCount: forumListItem.readCount + 1,
+                lastPostAt: new Date().toISOString(),
+                lastPoster: profilePublicData?.header,
+              },
+            });
+          }
+          formikHelpers.resetForm();
+        },
+        onSettled: () => {
+          formikHelpers.setSubmitting(false);
+        },
+      },
+    );
+  };
 
   if (!data) {
     return <LoadingView />;
@@ -224,6 +271,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
         headerText={headerText}
+      />
+      <ContentPostForm
+        onSubmit={onPostSubmit}
+        formRef={postFormRef}
+        enablePhotos={true}
+        maxLength={2000}
+        maxPhotos={4}
       />
     </AppView>
   );

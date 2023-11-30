@@ -61,9 +61,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
             forumID: response.data.forumID,
           });
         },
-        onSettled: () => {
-          setSubmitting(false);
-        },
+        onSettled: () => formikHelpers.setSubmitting(false),
       },
     );
   };
