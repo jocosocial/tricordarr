@@ -9,7 +9,7 @@ Work Queue
     * edit
     * remove or change photos
 * Thread Post Form
-  * Same as Fez just with multiple image support
+  * multi image support
 
 Nightly
 * can't sign out if twitarr is down/404
@@ -27,3 +27,11 @@ Nightly
 * Non mods should not see lfg chat
 * Debounce directory search
 * mention auto complete
+* Forum flatlist scroll button with post form 
+* No post in locked
+* How to get from post limited view to full view? Tap title?
+* Scroll down button needs better spacing with post view too
+* Query last fetched at?
+* Tap post jump to thread (noop on regular view), long press for details
+* Disable mute / favorite if favorites / muted (mutual exclusivity)
+* Flatlist load offset (or indicator of more) 
