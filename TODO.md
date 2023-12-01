@@ -27,5 +27,5 @@ Nightly
 * Disable mute / favorite if favorites / muted (mutual exclusivity)
 * Flatlist load offset (or indicator of more) 
 * missing a key in forum thread view with images added. Probably with the new element
-* maybe add chars lines after all? Bottom in small text* forum post menu long press only
+* maybe add chars lines after all? Bottom in small text
 * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
