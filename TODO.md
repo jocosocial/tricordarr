@@ -3,6 +3,8 @@ Backlog
 * Events
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 * Query last fetched at?
+* Directory
+  * Debounce directory search
 
 Work Queue
 * Forum
@@ -21,7 +23,6 @@ Work Queue
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 * Auth Flow
   * can't sign out if twitarr is down/404
-* Directory
-  * Debounce directory search
+
 
 Nightly
