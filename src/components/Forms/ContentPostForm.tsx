@@ -8,9 +8,10 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
-import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
+import {ContentInsertMenuView} from '../Views/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
+import {ContentInsertPhotosView} from '../Views/ContentInsertPhotosView';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -30,7 +31,7 @@ export const ContentPostForm = ({
   overrideSubmitting,
   enablePhotos = true,
   maxLength = 500,
-  maxPhotos = 1, // @TODO
+  maxPhotos = 1,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
@@ -75,15 +76,6 @@ export const ContentPostForm = ({
     lengthHintContainer: {
       ...commonStyles.flexRow,
     },
-    imageRow: {
-      ...commonStyles.flexRow,
-      ...commonStyles.marginTopSmall,
-    },
-    imagePressable: {
-      ...commonStyles.roundedBorder,
-      ...commonStyles.overflowHidden,
-    },
-    image: {width: 64, height: 64},
   });
 
   const handleInsertPress = () => {
@@ -112,6 +104,7 @@ export const ContentPostForm = ({
             visible={insertMenuVisible}
             setVisible={setInsertMenuVisible}
             setEmojiVisible={setEmojiPickerVisible}
+            maxPhotos={maxPhotos}
           />
           <View style={styles.formView}>
             <IconButton icon={AppIcons.insert} onPress={handleInsertPress} />
@@ -124,30 +117,7 @@ export const ContentPostForm = ({
                 onBlur={handleBlur('text')}
                 value={values.text}
               />
-              {values.images.length > 0 && (
-                <View style={styles.imageRow}>
-                  {values.images.map((imageData, index) => {
-                    return (
-                      <TouchableOpacity
-                        style={styles.imagePressable}
-                        key={index}
-                        onPress={() =>
-                          setFieldValue(
-                            'images',
-                            values.images.filter((img, idx) => idx !== index),
-                          )
-                        }
-                        disabled={isSubmitting}>
-                        <Image
-                          resizeMode={'cover'}
-                          style={styles.image}
-                          source={{uri: `data:image;base64,${imageData.image}`}}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              )}
+              <ContentInsertPhotosView />
             </View>
             <SubmitIconButton
               disabled={!values.text}

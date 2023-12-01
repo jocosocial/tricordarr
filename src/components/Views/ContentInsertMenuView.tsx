@@ -1,12 +1,12 @@
-import {ListSection} from '../../Lists/ListSection';
+import {ListSection} from '../Lists/ListSection';
 import {List} from 'react-native-paper';
 import {View} from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useFormikContext} from 'formik';
-import {PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 
 interface ContentInsertMenuViewProps {
   visible: boolean;
@@ -14,6 +14,7 @@ interface ContentInsertMenuViewProps {
   fieldName?: string;
   enablePhotos?: boolean;
   setEmojiVisible: Dispatch<SetStateAction<boolean>>;
+  maxPhotos: number;
 }
 
 export const ContentInsertMenuView = ({
@@ -22,9 +23,11 @@ export const ContentInsertMenuView = ({
   setEmojiVisible,
   enablePhotos = true,
   fieldName = 'images',
+  maxPhotos,
 }: ContentInsertMenuViewProps) => {
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
+  const currentPhotoCount = values.images.length;
 
   const handleInsertEmoji = () => {
     setVisible(false);
@@ -66,14 +69,9 @@ export const ContentInsertMenuView = ({
 
   const processImage = (image: Image) => {
     if (image.data) {
-      setFieldValue(fieldName, [{image: image.data}]);
+      setFieldValue(fieldName, values.images.concat([{image: image.data}]));
       setVisible(false);
     }
-  };
-
-  const removeImage = () => {
-    setFieldValue(fieldName, []);
-    setVisible(false);
   };
 
   return (
@@ -84,9 +82,12 @@ export const ContentInsertMenuView = ({
             <List.Item title={'Custom Emoji'} onPress={handleInsertEmoji} />
             {enablePhotos && (
               <>
-                <List.Item title={'Take New Photo'} onPress={takeImage} />
-                <List.Item title={'Attach Existing Photo'} onPress={pickImage} />
-                {values.images.length > 0 && <List.Item title={'Remove Attachment'} onPress={removeImage} />}
+                <List.Item disabled={currentPhotoCount >= maxPhotos} title={'Take a New Photo'} onPress={takeImage} />
+                <List.Item
+                  disabled={currentPhotoCount >= maxPhotos}
+                  title={'Attach Existing Photo'}
+                  onPress={pickImage}
+                />
               </>
             )}
           </ListSection>

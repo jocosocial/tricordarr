@@ -7,8 +7,6 @@ Work Queue
 * thread posts
   * post actions menu
     * remove or change photos
-* Thread Post Form
-  * multi image support
 
 Nightly
 * can't sign out if twitarr is down/404
@@ -28,7 +26,6 @@ Nightly
 * mention auto complete
 * Forum flatlist scroll button with post form 
 * No post in locked
-* How to get from post limited view to full view? Tap title?
 * Scroll down button needs better spacing with post view too
 * Query last fetched at?
 * Tap post jump to thread (noop on regular view), long press for details

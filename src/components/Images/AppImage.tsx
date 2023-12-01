@@ -92,17 +92,18 @@ export const AppImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: NewAp
     );
   }
 
+  // If we have already fetched the full resolution version, show that instead of the thumbnail.
+  const imageSource = fullImageQuery.data?.dataURI
+    ? {uri: fullImageQuery.data.dataURI}
+    : {uri: thumbImageQuery.data.dataURI};
+
   return (
     <>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity onPress={handleThumbPress}>
-        {mode === 'cardcover' && <Card.Cover style={style} source={{uri: thumbImageQuery.data.dataURI}} />}
+        {mode === 'cardcover' && <Card.Cover style={style} source={imageSource} />}
         {mode === 'image' && (
-          <Image
-            resizeMode={'cover'}
-            style={[commonStyles.headerImage, style]}
-            source={{uri: thumbImageQuery.data.dataURI}}
-          />
+          <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageSource} />
         )}
       </TouchableOpacity>
     </>
