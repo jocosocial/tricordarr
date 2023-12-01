@@ -31,6 +31,7 @@ import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
 import {useForumPostCreateMutation} from '../../Queries/Forum/ForumPostQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -209,7 +210,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       });
       setForumData(data.pages[0]);
     }
-  }, [data, dispatchForumPosts, route.params.postID, startScreenAtBottom]);
+  }, [data, dispatchForumPosts, route.params.postID, setForumData, startScreenAtBottom]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
@@ -263,6 +264,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
+      <PostAsUserBanner />
       {forumData?.isLocked && <ForumLockedView />}
       <ForumTitleView title={forumData?.title} />
       <ForumPostFlatList

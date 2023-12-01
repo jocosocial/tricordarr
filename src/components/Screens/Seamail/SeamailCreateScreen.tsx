@@ -14,6 +14,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -109,6 +110,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
+      <PostAsUserBanner />
       <ScrollingContentView>
         <SeamailCreateForm
           initialUserHeader={route.params?.initialUserHeader}

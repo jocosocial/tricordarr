@@ -22,7 +22,7 @@ import {FormikHelpers} from 'formik';
 import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
@@ -254,7 +254,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   // const fezPostData: FezPostData[] = [...fezPageData.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
-      <FezPostAsUserBanner />
+      <PostAsUserBanner />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.

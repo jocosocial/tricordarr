@@ -3,7 +3,7 @@ import {Banner, Text} from 'react-native-paper';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useAppTheme} from '../../styles/Theme';
 
-export const FezPostAsUserBanner = () => {
+export const PostAsUserBanner = () => {
   const {asPrivilegedUser} = usePrivilege();
   const theme = useAppTheme();
 

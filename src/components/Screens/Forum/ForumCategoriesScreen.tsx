@@ -20,6 +20,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -35,6 +36,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
   const {dispatchForumPosts, dispatchForumListData, setForumData} = useTwitarr();
+  const {clearPrivileges} = usePrivilege();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -56,9 +58,10 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       dispatchForumListData({
         type: ForumListDataActions.clear,
       });
+      clearPrivileges();
       setForumData(undefined);
     }
-  }, [dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
+  }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

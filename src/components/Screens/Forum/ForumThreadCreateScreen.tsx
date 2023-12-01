@@ -14,6 +14,7 @@ import {useForumCreateMutation} from '../../Queries/Forum/ForumMutationQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -37,6 +38,10 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
       setSubmitting(false);
       return;
     }
+    // Whatever we picked in the Forum is what should be set in the Post.
+    // Forum doesn't take these params and keys off of the first post.
+    postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
+    postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
     const forumData: ForumCreateData = {
       title: values.title,
       firstPost: postFormRef.current.values,
@@ -78,6 +83,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
+      <PostAsUserBanner />
       <ScrollingContentView>
         <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} />
       </ScrollingContentView>

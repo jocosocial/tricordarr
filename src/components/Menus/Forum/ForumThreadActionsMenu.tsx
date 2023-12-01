@@ -17,6 +17,8 @@ import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {ReactNode} from 'react';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
+import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
+import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -27,7 +29,7 @@ const helpContent = ['Click/tap on a post to favorite, edit, or add a reaction.'
 export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
-  const {hasModerator} = usePrivilege();
+  const {hasModerator, setAsModerator, setAsTwitarrTeam, hasTwitarrTeam, asTwitarrTeam, asModerator} = usePrivilege();
   const {profilePublicData} = useUserData();
   const rootStackNavigation = useRootStack();
   const forumStackNavigation = useForumStackNavigation();
@@ -73,8 +75,15 @@ export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps)
           <Divider bold={true} />
         </>
       )}
+      {hasTwitarrTeam && (
+        <>
+          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
+          <Divider bold={true} />
+        </>
+      )}
       {hasModerator && (
         <>
+          <PostAsModeratorMenuItem closeMenu={closeMenu} />
           <Menu.Item
             dense={false}
             leadingIcon={AppIcons.moderator}

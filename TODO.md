@@ -10,7 +10,6 @@ Work Queue
     * remove or change photos
 * Thread Post Form
   * Same as Fez just with multiple image support
-  * add support for moderator/twitarrteam
 
 Nightly
 * can't sign out if twitarr is down/404

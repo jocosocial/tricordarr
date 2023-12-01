@@ -16,6 +16,7 @@ import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -33,6 +34,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {setModalVisible, setModalContent} = useModal();
   const isFocused = useIsFocused();
   const {dispatchForumPosts, setForumData} = useTwitarr();
+  const {clearPrivileges} = usePrivilege();
 
   const handleHelp = useCallback(() => {
     setModalContent(<HelpModalView text={helpText} />);
@@ -58,11 +60,12 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         type: ForumPostListActions.clear,
       });
       setForumData(undefined);
+      clearPrivileges();
     }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData]);
+  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData, clearPrivileges]);
 
   if (forumFilter) {
     return <ForumCategoryRelationsView forumFilter={forumFilter} categoryId={route.params.categoryId} />;

@@ -18,7 +18,7 @@ import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
-import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
@@ -257,7 +257,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // const fezPostData: FezPostData[] = [...fezPageData.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
-      <FezPostAsUserBanner />
+      <PostAsUserBanner />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.

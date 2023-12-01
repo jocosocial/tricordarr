@@ -62,4 +62,6 @@ export interface FezFormValues {
 
 export interface ForumThreadValues {
   title: string;
+  postAsModerator?: boolean;
+  postAsTwitarrTeam?: boolean;
 }
