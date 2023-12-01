@@ -6,6 +6,7 @@ import {View} from 'react-native';
 import {TextField} from './Fields/TextField';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import React from 'react';
+import {ContentInsertPhotosView} from '../Views/ContentInsertPhotosView';
 
 const validationSchema = Yup.object().shape({
   text: Yup.string()
@@ -36,7 +37,8 @@ export const ForumPostEditForm = ({postData, onSubmit}: ForumPostEditFormProps) 
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
-          <TextField name={'text'} label={'Text'} />
+          <TextField name={'text'} label={'Text'} multiline={true} />
+          <ContentInsertPhotosView />
           <PrimaryActionButton
             disabled={isSubmitting || !isValid}
             isLoading={isSubmitting}

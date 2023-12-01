@@ -13,7 +13,7 @@ import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {AppImage} from '../../../Images/AppImage';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {FezPostImage} from '../../../Images/FezPostImage';
+import {ContentPostImage} from '../../../Images/ContentPostImage';
 import {Text} from 'react-native-paper';
 import {ForumPostMessageView} from '../../../Views/ForumPostMessageView';
 import {commonStyles} from '../../../../styles';
@@ -55,7 +55,7 @@ export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListI
         <ForumPostMessageView postData={postData} showAuthor={true} enableShowInThread={enableShowInThread} />
         {postData.images &&
           postData.images.map((image, index) => {
-            return <FezPostImage key={index} image={image} messageOnRight={false} />;
+            return <ContentPostImage key={index} image={image} messageOnRight={false} />;
           })}
       </MessageViewContainer>
     </FlatListItemContent>

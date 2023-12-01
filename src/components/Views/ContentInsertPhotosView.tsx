@@ -1,12 +1,11 @@
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useFormikContext} from 'formik';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
-import {AppIcon} from '../Icons/AppIcon';
-import {AppIcons} from '../../libraries/Enums/Icons';
 import {AppImageViewer} from '../Images/AppImageViewer';
 import {ImageQueryData} from '../../libraries/Types';
+import {ContentPostAttachmentImage} from '../Images/ContentPostAttachmentImage';
 
 export const ContentInsertPhotosView = () => {
   const {commonStyles} = useStyles();
@@ -20,18 +19,6 @@ export const ContentInsertPhotosView = () => {
       ...commonStyles.flexRow,
       ...commonStyles.marginTopSmall,
     },
-    imagePressable: {
-      ...commonStyles.roundedBorder,
-      ...commonStyles.overflowHidden,
-      ...commonStyles.marginRightSmall,
-    },
-    image: {width: 64, height: 64},
-    iconContainer: {
-      position: 'absolute',
-      top: 0, // Adjust top position as needed
-      right: 0, // Adjust right position as needed
-    },
-    imageContainer: {position: 'relative'},
   });
 
   useEffect(() => {
@@ -61,28 +48,22 @@ export const ContentInsertPhotosView = () => {
       />
       {values.images.map((imageData, index) => {
         return (
-          <View key={index} style={styles.imageContainer}>
-            <TouchableOpacity
-              style={styles.imagePressable}
-              onPress={() => {
-                setViewerIndex(index);
-                setIsViewerVisible(true);
-              }}
-              disabled={isSubmitting}>
-              <Image resizeMode={'cover'} style={styles.image} source={{uri: `data:image;base64,${imageData.image}`}} />
-              <TouchableOpacity
-                style={styles.iconContainer}
-                onPress={() => {
-                  setFieldValue(
-                    'images',
-                    values.images.filter((img, idx) => idx !== index),
-                  );
-                  setViewerIndex(0);
-                }}>
-                <AppIcon icon={AppIcons.close} />
-              </TouchableOpacity>
-            </TouchableOpacity>
-          </View>
+          <ContentPostAttachmentImage
+            key={index}
+            onIconPress={() => {
+              setFieldValue(
+                'images',
+                values.images.filter((img, idx) => idx !== index),
+              );
+              setViewerIndex(0);
+            }}
+            onImagePress={() => {
+              setViewerIndex(index);
+              setIsViewerVisible(true);
+            }}
+            disabled={isSubmitting}
+            imageSource={{uri: `data:image;base64,${imageData.image}`}}
+          />
         );
       })}
     </View>

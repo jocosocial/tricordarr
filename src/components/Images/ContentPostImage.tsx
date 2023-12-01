@@ -8,7 +8,7 @@ interface FezPostImageProps {
   messageOnRight?: boolean;
 }
 
-export const FezPostImage = ({image, messageOnRight}: FezPostImageProps) => {
+export const ContentPostImage = ({image, messageOnRight}: FezPostImageProps) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
