@@ -25,7 +25,7 @@ import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries
 import {useAppTheme} from '../../../styles/Theme';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {ForumTitleView} from '../../Views/ForumTitleView';
+import {ListTitleView} from '../../Views/ListTitleView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
@@ -266,7 +266,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     <AppView>
       <PostAsUserBanner />
       {forumData?.isLocked && <ForumLockedView />}
-      <ForumTitleView title={forumData?.title} />
+      <ListTitleView title={forumData?.title} />
       <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}

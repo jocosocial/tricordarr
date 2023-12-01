@@ -30,6 +30,7 @@ import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTi
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {ListTitleView} from '../../Views/ListTitleView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -258,6 +259,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   return (
     <AppView>
       <PostAsUserBanner />
+      <ListTitleView title={fez.title} />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.

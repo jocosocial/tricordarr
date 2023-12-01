@@ -12,7 +12,7 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {ForumTitleView} from '../ForumTitleView';
+import {ListTitleView} from '../ListTitleView';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 
 interface ForumCategoryBaseViewProps {
@@ -93,7 +93,7 @@ export const ForumCategoryBaseView = (props: ForumCategoryBaseViewProps) => {
 
   return (
     <AppView>
-      <ForumTitleView title={props.category.title} />
+      <ListTitleView title={props.category.title} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}

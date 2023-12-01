@@ -21,7 +21,7 @@ import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries
 import {useAppTheme} from '../../../styles/Theme';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {ForumTitleView} from '../../Views/ForumTitleView';
+import {ListTitleView} from '../ListTitleView';
 import {InfiniteData} from '@tanstack/react-query';
 
 interface ForumThreadBaseViewProps {
@@ -202,7 +202,7 @@ export const ForumThreadBaseView = ({
   return (
     <AppView>
       {forumData?.isLocked && <ForumLockedView />}
-      <ForumTitleView title={forumData?.title} />
+      <ListTitleView title={forumData?.title} />
       <ForumPostFlatList
         flatListRef={flatListRef}
         postList={forumPosts}

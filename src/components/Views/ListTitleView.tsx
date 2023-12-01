@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 
-export const ForumTitleView = ({title}: {title?: string}) => {
+export const ListTitleView = ({title}: {title?: string}) => {
   const {commonStyles} = useStyles();
   if (!title) {
     return null;
