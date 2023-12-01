@@ -1,12 +1,15 @@
 import React from 'react';
-import {ContentPostAttachmentImage} from './ContentPostAttachmentImage';
+import {ContentPostAttachment} from '../Views/Content/ContentPostAttachment';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {ActivityIndicator} from 'react-native-paper';
 import {ImageUploadData} from '../../libraries/Structs/ControllerStructs';
+import {APIImage} from './APIImage';
+import {Image, StyleSheet} from 'react-native';
+import {AppIcon} from '../Icons/AppIcon';
+import {AppIcons} from '../../libraries/Enums/Icons';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;
-  // imagePath: string;
   onIconPress: () => void;
   onImagePress: () => void;
   disabled?: boolean;
@@ -15,26 +18,29 @@ interface ContentPostAttachedImageProps {
 // Y'know, sometimes I wonder why I am the way I am. Why haven't I been doing the shorthand "props"
 // this entire time? No idea.
 export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) => {
-  let imagePath = `/image/thumb/${props.imageData.filename}`;
-  const imageQuery = useImageQuery(imagePath, !!props.imageData.filename);
-  let imageUri = '';
-
-  if (props.imageData.filename && !imageQuery.data) {
-    return <ActivityIndicator />;
+  const styles = StyleSheet.create({
+    image: {width: 64, height: 64},
+  });
+  if (props.imageData.image) {
+    return (
+      <ContentPostAttachment
+        onIconPress={props.onIconPress}
+        onImagePress={props.onImagePress}
+        disabled={props.disabled}>
+        <Image resizeMode={'cover'} style={styles.image} source={{uri: `data:image;base64,${props.imageData.image}`}} />
+      </ContentPostAttachment>
+    );
+  } else if (props.imageData.filename) {
+    return (
+      <ContentPostAttachment onIconPress={props.onIconPress} disabled={props.disabled}>
+        <APIImage
+          thumbPath={`/image/thumb/${props.imageData.filename}`}
+          fullPath={`/image/full/${props.imageData.filename}`}
+          mode={'image'}
+          style={styles.image}
+        />
+      </ContentPostAttachment>
+    );
   }
-
-  if (imageQuery.data) {
-    imageUri = imageQuery.data.dataURI;
-  } else if (props.imageData.image) {
-    imageUri = `data:image;base64,${props.imageData.image}`;
-  }
-
-  return (
-    <ContentPostAttachmentImage
-      imageSource={{uri: imageUri}}
-      onIconPress={props.onIconPress}
-      onImagePress={props.onImagePress}
-      disabled={props.disabled}
-    />
-  );
+  return <AppIcon size={64} icon={AppIcons.error} />;
 };

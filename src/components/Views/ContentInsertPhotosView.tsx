@@ -5,9 +5,10 @@ import {useFormikContext} from 'formik';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppImageViewer} from '../Images/AppImageViewer';
 import {ImageQueryData} from '../../libraries/Types';
-import {ContentPostAttachmentImage} from '../Images/ContentPostAttachmentImage';
 import {ContentPostAttachedImage} from '../Images/ContentPostAttachedImage';
 
+// Some day it might be good to break the viewer out of this into a generic "PendingAttachmentImage" thing.
+// Basically APIImage but LocalImage or BlobImage
 export const ContentInsertPhotosView = () => {
   const {commonStyles} = useStyles();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();

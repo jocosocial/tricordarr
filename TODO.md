@@ -4,9 +4,6 @@ Backlog
   * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 
 Work Queue
-* thread posts
-  * post actions menu
-    * remove or change photos
 
 Nightly
 * can't sign out if twitarr is down/404

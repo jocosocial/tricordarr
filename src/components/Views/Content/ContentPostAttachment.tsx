@@ -1,22 +1,21 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {AppIcon} from '../Icons/AppIcon';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {AppIcon} from '../../Icons/AppIcon';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import React, {PropsWithChildren} from 'react';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ImageSource} from 'react-native-vector-icons/Icon';
 
-interface ContentPostAttachmentImageProps {
-  imageSource: ImageSource;
+interface ContentPostAttachmentImageProps extends PropsWithChildren {
   onIconPress: () => void;
   disabled?: boolean;
-  onImagePress: () => void;
+  onImagePress?: () => void;
 }
 
-export const ContentPostAttachmentImage = ({
-  imageSource,
+export const ContentPostAttachment = ({
   onIconPress,
   disabled,
   onImagePress,
+  children,
 }: ContentPostAttachmentImageProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
@@ -25,7 +24,6 @@ export const ContentPostAttachmentImage = ({
       ...commonStyles.overflowHidden,
       ...commonStyles.marginRightSmall,
     },
-    image: {width: 64, height: 64},
     iconContainer: {
       position: 'absolute',
       top: 0,
@@ -38,7 +36,7 @@ export const ContentPostAttachmentImage = ({
   return (
     <View style={styles.imageContainer}>
       <TouchableOpacity style={styles.imagePressable} onPress={onImagePress} disabled={disabled}>
-        <Image resizeMode={'cover'} style={styles.image} source={imageSource} />
+        {children}
         <TouchableOpacity style={styles.iconContainer} onPress={onIconPress} disabled={disabled}>
           <AppIcon icon={AppIcons.close} />
         </TouchableOpacity>
