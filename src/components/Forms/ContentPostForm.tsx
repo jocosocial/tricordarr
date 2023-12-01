@@ -79,7 +79,11 @@ export const ContentPostForm = ({
   });
 
   const handleInsertPress = () => {
-    setEmojiPickerVisible(false);
+    if (emojiPickerVisible || insertMenuVisible) {
+      setEmojiPickerVisible(false);
+      setInsertMenuVisible(false);
+      return;
+    }
     setInsertMenuVisible(!insertMenuVisible);
   };
 
@@ -107,7 +111,7 @@ export const ContentPostForm = ({
             maxPhotos={maxPhotos}
           />
           <View style={styles.formView}>
-            <IconButton icon={AppIcons.insert} onPress={handleInsertPress} />
+            <IconButton icon={emojiPickerVisible ? AppIcons.close : AppIcons.insert} onPress={handleInsertPress} />
             <View style={styles.inputWrapperView}>
               <TextInput
                 underlineColorAndroid={'transparent'}

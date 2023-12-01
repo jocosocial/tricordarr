@@ -13,7 +13,6 @@ Nightly
 * Long seamail title gets ugly on seamail screen
   * Doesn't render great in listitem either. Wrap?
 * Turn off the raw time seamail thing
-* Close emoji viewer without selecting one - Makena good way to do that
 * Header cruise index should follow real time not late day
 * Nearly all of the nav gripes about back to home stack first are related to user profile.
 * Ssl issues are a great way to test query network behavior and error handling
