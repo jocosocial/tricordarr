@@ -1,5 +1,5 @@
 import ImageView from 'react-native-image-viewing';
-import React, {Dispatch, SetStateAction, useCallback, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
@@ -74,6 +74,10 @@ export const AppImageViewer = ({
   );
 
   const onRequestClose = () => setIsVisible(false);
+
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [viewerImages]);
 
   if (!viewerImages) {
     return <></>;

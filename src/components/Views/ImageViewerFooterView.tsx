@@ -31,10 +31,13 @@ export const ImageViewerFooterView = ({currentIndex, setImageIndex, viewerImages
       ...commonStyles.alignItemsCenter,
     },
   };
+  // This is a hack to get around the ImageViewer not updating in time if the underlying images changes and you
+  // have already scrolled around in the viewer.
+  const filename = viewerImages[currentIndex] ? viewerImages[currentIndex].fileName : '';
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={commonStyles.marginBottomSmall}>{viewerImages[currentIndex].fileName}</Text>
+        <Text style={commonStyles.marginBottomSmall}>{filename}</Text>
         <Text>
           {currentIndex + 1} of {viewerImages.length}
         </Text>

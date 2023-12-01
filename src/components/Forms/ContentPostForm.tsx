@@ -111,7 +111,10 @@ export const ContentPostForm = ({
             maxPhotos={maxPhotos}
           />
           <View style={styles.formView}>
-            <IconButton icon={emojiPickerVisible ? AppIcons.close : AppIcons.insert} onPress={handleInsertPress} />
+            <IconButton
+              icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
+              onPress={handleInsertPress}
+            />
             <View style={styles.inputWrapperView}>
               <TextInput
                 underlineColorAndroid={'transparent'}

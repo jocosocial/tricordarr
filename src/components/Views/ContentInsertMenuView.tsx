@@ -82,10 +82,14 @@ export const ContentInsertMenuView = ({
             <List.Item title={'Custom Emoji'} onPress={handleInsertEmoji} />
             {enablePhotos && (
               <>
-                <List.Item disabled={currentPhotoCount >= maxPhotos} title={'Take a New Photo'} onPress={takeImage} />
                 <List.Item
                   disabled={currentPhotoCount >= maxPhotos}
-                  title={'Attach Existing Photo'}
+                  title={`Take a New Photo (Max: ${maxPhotos})`}
+                  onPress={takeImage}
+                />
+                <List.Item
+                  disabled={currentPhotoCount >= maxPhotos}
+                  title={`Attach Existing Photo (Max: ${maxPhotos})`}
                   onPress={pickImage}
                 />
               </>

@@ -11,6 +11,7 @@ export enum AppIcons {
   // Generic
   new = 'plus',
   insert = 'plus-circle-outline',
+  insertClose = 'close-circle-outline',
   newImage = 'image-plus',
   newImageCamera = 'camera-plus',
   delete = 'delete-forever',
