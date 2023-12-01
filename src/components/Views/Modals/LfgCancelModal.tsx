@@ -32,7 +32,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
-  const {setFez, dispatchLfgList} = useTwitarr();
+  const {setLfg, dispatchLfgList} = useTwitarr();
 
   const onSubmit = () => {
     cancelMutation.mutate(
@@ -42,7 +42,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       {
         onSuccess: response => {
           setInfoMessage('Successfully canceled this LFG.');
-          setFez(response.data);
+          setLfg(response.data);
           dispatchLfgList({
             type: FezListActions.updateFez,
             fez: response.data,
@@ -50,7 +50,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
           setModalVisible(false);
         },
         onError: error => {
-          setErrorMessage(error.response?.data.reason);
+          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );

@@ -21,8 +21,6 @@ Work Queue
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 * Auth Flow
   * can't sign out if twitarr is down/404
-* LFG
-  * lfgs not loading if youre not a mod?
 * Directory
   * Debounce directory search
 
