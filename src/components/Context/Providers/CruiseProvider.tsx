@@ -15,7 +15,8 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   }
   let adjustedDate = new Date(hourlyUpdatingDate.getTime() - lateNightOffset);
   // Day of the cruise. Starts at 1 and goes up to the appConfig.cruiseLength (usually 8 for a week-long Sat->Sat cruise).
-  const cruiseDayToday = getCruiseDay(adjustedDate, appConfig.cruiseStartDate.getDay());
+  const cruiseDayToday = getCruiseDay(hourlyUpdatingDate, appConfig.cruiseStartDate.getDay());
+  const adjustedCruiseDayToday = getCruiseDay(adjustedDate, appConfig.cruiseStartDate.getDay());
   // Start date of the cruise.
   const startDate = appConfig.cruiseStartDate;
   // Number of days in the cruise (including Embarkation/Debarkation days).
@@ -24,7 +25,8 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
-  const cruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
+  const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
+  const adjustedCruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
   // Days Since. @TODO has this been tested with pre-cruise?
   const daysSince = cruiseDayIndex - cruiseLength;
   // Array of cruise day names and configs.
@@ -46,6 +48,8 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
         hourlyUpdatingDate,
         cruiseDays,
         cruiseDayToday,
+        adjustedCruiseDayIndex,
+        adjustedCruiseDayToday,
       }}>
       {children}
     </CruiseContext.Provider>

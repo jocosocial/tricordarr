@@ -21,7 +21,7 @@ export type Props = NativeStackScreenProps<
 
 export const LfgCreateScreen = ({navigation}: Props) => {
   const fezMutation = useFezCreateMutation();
-  const {startDate, cruiseDayToday} = useCruise();
+  const {startDate, adjustedCruiseDayToday} = useCruise();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     console.log(values);
@@ -61,7 +61,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
   };
 
   const apparentCruiseDate = new Date(startDate);
-  apparentCruiseDate.setDate(startDate.getDate() + (cruiseDayToday - 1));
+  apparentCruiseDate.setDate(startDate.getDate() + (adjustedCruiseDayToday - 1));
 
   const initialValues: FezFormValues = {
     title: '',

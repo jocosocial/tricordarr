@@ -32,7 +32,7 @@ export const EventStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<EventStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
-  const {cruiseDayToday} = useCruise();
+  const {adjustedCruiseDayToday} = useCruise();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
@@ -48,7 +48,7 @@ export const EventStackNavigator = () => {
           title: 'Events',
         }}
         initialParams={{
-          cruiseDay: cruiseDayToday,
+          cruiseDay: adjustedCruiseDayToday,
         }}
       />
       <Stack.Screen

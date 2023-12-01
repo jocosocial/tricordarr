@@ -10,7 +10,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 export const EventFAB = () => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
-  const {cruiseDayToday} = useCruise();
+  const {adjustedCruiseDayToday} = useCruise();
   const {setEventFavoriteFilter} = useFilter();
 
   const handleNavigation = (component: EventStackComponents) => {
@@ -22,7 +22,7 @@ export const EventFAB = () => {
 
   const handleYourDay = () => {
     setEventFavoriteFilter(true);
-    navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: cruiseDayToday});
+    navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
   };
 
   const actions = [

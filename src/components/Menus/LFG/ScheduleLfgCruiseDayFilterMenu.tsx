@@ -10,7 +10,7 @@ import {useAppTheme} from '../../../styles/Theme';
 
 export const ScheduleLfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
-  const {cruiseDays, cruiseDayToday} = useCruise();
+  const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();
   const theme = useAppTheme();
 
@@ -51,7 +51,7 @@ export const ScheduleLfgCruiseDayFilterMenu = () => {
             style={itemStyle}
             key={day.cruiseDay}
             onPress={() => handleCruiseDaySelection(day.cruiseDay)}
-            title={`${format(day.date, 'EEEE')}${cruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
+            title={`${format(day.date, 'EEEE')}${adjustedCruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
           />
         );
       })}

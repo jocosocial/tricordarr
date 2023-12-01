@@ -30,7 +30,7 @@ interface ScheduleCruiseDayMenuProps {
 
 export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
-  const {cruiseDays, cruiseDayToday} = useCruise();
+  const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const navigation = useEventStackNavigation();
 
   const openMenu = () => setVisible(true);
@@ -42,12 +42,12 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
   };
 
   const navigateToday = () => {
-    if (route.params.cruiseDay === cruiseDayToday) {
+    if (route.params.cruiseDay === adjustedCruiseDayToday) {
       console.log('Navigating to same day.');
       scrollToNow();
       return;
     }
-    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: cruiseDayToday});
+    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
   };
 
   const menuAnchor = (
@@ -60,7 +60,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
         <CruiseDayMenuItem
           key={day.cruiseDay}
           handleSelection={handleCruiseDaySelection}
-          title={`${format(day.date, 'EEEE')}${cruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
+          title={`${format(day.date, 'EEEE')}${adjustedCruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
           currentCruiseDay={route.params.cruiseDay}
           itemCruiseDay={day.cruiseDay}
         />
