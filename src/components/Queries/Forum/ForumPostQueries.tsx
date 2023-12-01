@@ -1,13 +1,7 @@
 import {useTokenAuthQuery} from '../TokenAuthQuery';
-import {ForumData, PostContentData, PostData, PostDetailData} from '../../../libraries/Structs/ControllerStructs';
+import {PostContentData, PostData, PostDetailData} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 import axios, {AxiosResponse} from 'axios';
-
-export const useForumPostForumQuery = (postID: string) => {
-  return useTokenAuthQuery<ForumData>({
-    queryKey: [`/forum/post/${postID}/forum`],
-  });
-};
 
 export const useForumPostQuery = (postID: string) => {
   return useTokenAuthQuery<PostDetailData>({
@@ -35,4 +29,20 @@ const createQueryHandler = async ({
 
 export const useForumPostCreateMutation = () => {
   return useTokenAuthMutation(createQueryHandler);
+};
+
+interface ForumPostUpdateMutationProps {
+  postID: string;
+  postContentData: PostContentData;
+}
+
+const forumPostUpdateHandler = async ({
+  postID,
+  postContentData,
+}: ForumPostUpdateMutationProps): Promise<AxiosResponse<PostData>> => {
+  return await axios.post(`/forum/post/${postID}/update`, postContentData);
+};
+
+export const useForumPostUpdateMutation = () => {
+  return useTokenAuthMutation(forumPostUpdateHandler);
 };

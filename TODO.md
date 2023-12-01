@@ -6,7 +6,6 @@ Backlog
 Work Queue
 * thread posts
   * post actions menu
-    * edit
     * remove or change photos
 * Thread Post Form
   * multi image support
