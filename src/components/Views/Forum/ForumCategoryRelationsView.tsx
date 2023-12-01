@@ -11,14 +11,14 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
-import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 
 export const ForumCategoryRelationsView = ({
   forumFilter,
-  categoryId,
+  category,
 }: {
   forumFilter: ForumFilter;
-  categoryId?: string;
+  category?: CategoryData;
 }) => {
   const {forumSortOrder} = useFilter();
   const {
@@ -32,7 +32,7 @@ export const ForumCategoryRelationsView = ({
     hasNextPage,
     fetchNextPage,
   } = useForumRelationQuery(ForumFilter.toRelation(forumFilter), {
-    cat: categoryId,
+    cat: category?.categoryID,
     sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
   });
   const [refreshing, setRefreshing] = useState(false);
@@ -85,6 +85,7 @@ export const ForumCategoryRelationsView = ({
 
   return (
     <AppView>
+
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}

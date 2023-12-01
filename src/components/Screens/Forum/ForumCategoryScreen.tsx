@@ -68,7 +68,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData, clearPrivileges]);
 
   if (forumFilter) {
-    return <ForumCategoryRelationsView forumFilter={forumFilter} categoryId={route.params.categoryId} />;
+    return <ForumCategoryRelationsView forumFilter={forumFilter} category={route.params.category} />;
   }
-  return <ForumCategoryBaseView categoryId={route.params.categoryId} />;
+  return <ForumCategoryBaseView category={route.params.category} />;
 };

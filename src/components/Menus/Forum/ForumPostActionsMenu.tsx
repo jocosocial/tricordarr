@@ -52,23 +52,29 @@ export const ForumPostActionsMenu = ({
           closeMenu();
         }}
       />
+      <Divider bold={true} />
       {bySelf && (
-        <Menu.Item
-          dense={false}
-          leadingIcon={AppIcons.postEdit}
-          title={'Edit'}
-          onPress={() => {
-            closeMenu();
-            forumNavigation.push(ForumStackComponents.forumPostEditScreen, {
-              postData: forumPost,
-            });
-          }}
-        />
+        <>
+          <Menu.Item
+            dense={false}
+            leadingIcon={AppIcons.postEdit}
+            title={'Edit'}
+            onPress={() => {
+              closeMenu();
+              forumNavigation.push(ForumStackComponents.forumPostEditScreen, {
+                postData: forumPost,
+              });
+            }}
+          />
+          <Divider bold={true} />
+        </>
       )}
       <ForumPostActionsDeleteItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />
       <ForumPostActionsFavoriteItem forumPost={forumPost} />
+      <Divider bold={true} />
       <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
+      <Divider bold={true} />
       <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} rootNavigation={rootNavigation} />
       <Divider bold={true} />
       <ForumPostActionsReactionItem forumPost={forumPost} />

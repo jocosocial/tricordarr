@@ -12,7 +12,7 @@ import {
   NavigatorIDs,
   RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
-import {ForumData, PostContentData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {PostContentData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -107,7 +107,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         },
       );
     }
-  }, [dispatchForumListData, forumData, relationMutation]);
+  }, [dispatchForumListData, forumData, relationMutation, setForumData]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -135,7 +135,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         },
       );
     }
-  }, [dispatchForumListData, forumData, relationMutation]);
+  }, [dispatchForumListData, forumData, relationMutation, setForumData]);
 
   const getNavButtons = useCallback(() => {
     // Typescript struggles

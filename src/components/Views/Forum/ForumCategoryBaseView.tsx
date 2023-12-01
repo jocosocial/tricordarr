@@ -12,8 +12,14 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ForumTitleView} from '../ForumTitleView';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 
-export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
+interface ForumCategoryBaseViewProps {
+  category: CategoryData;
+}
+
+export const ForumCategoryBaseView = (props: ForumCategoryBaseViewProps) => {
   const {forumSortOrder} = useFilter();
   const {
     data,
@@ -25,7 +31,7 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumCategoryQuery(categoryId, {
+  } = useForumCategoryQuery(props.category.categoryID, {
     sort: forumSortOrder,
   });
   const [refreshing, setRefreshing] = useState(false);
@@ -65,7 +71,7 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
         setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
       }
     }
-  }, [data, dispatchForumListData, categoryId, hasModerator]);
+  }, [data, dispatchForumListData, hasModerator]);
 
   if (!data) {
     return <LoadingView />;
@@ -87,13 +93,14 @@ export const ForumCategoryBaseView = ({categoryId}: {categoryId: string}) => {
 
   return (
     <AppView>
+      <ForumTitleView title={props.category.title} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
       />
-      <ForumFAB categoryId={categoryId} enableNewButton={!isUserRestricted} />
+      <ForumFAB categoryId={props.category.categoryID} enableNewButton={!isUserRestricted} />
     </AppView>
   );
 };

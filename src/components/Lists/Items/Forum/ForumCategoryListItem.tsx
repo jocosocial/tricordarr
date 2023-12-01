@@ -14,7 +14,7 @@ export const ForumCategoryListItem = ({category}: ForumCategoryListItemProps) =>
 
   const getThreadCount = () => <Text variant={'bodyMedium'}>{category.numThreads} threads</Text>;
   const onPress = () =>
-    forumNavigation.push(ForumStackComponents.forumCategoryScreen, {categoryId: category.categoryID});
+    forumNavigation.push(ForumStackComponents.forumCategoryScreen, {category: category});
 
   return (
     <ForumCategoryListItemBase
