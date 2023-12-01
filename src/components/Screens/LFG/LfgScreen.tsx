@@ -39,6 +39,7 @@ import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -58,6 +59,12 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const rootStackNavigation = useRootStack();
+  const {hasModerator} = usePrivilege();
+
+  const showChat =
+    hasModerator ||
+    FezData.isParticipant(lfg, profilePublicData?.header) ||
+    FezData.isWaitlist(lfg, profilePublicData?.header);
 
   const styles = StyleSheet.create({
     item: {
@@ -111,7 +118,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          {lfg && profilePublicData && (
+          {lfg && profilePublicData && showChat && (
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
@@ -122,7 +129,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [lfg, navigation, profilePublicData]);
+  }, [lfg, navigation, profilePublicData, showChat]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -235,13 +242,15 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: lfg?.fezID})}
                   />
                 )}
-                <DataFieldListItem
-                  itemStyle={styles.item}
-                  left={() => getIcon(AppIcons.chat)}
-                  description={getChatDescription}
-                  title={'Chat'}
-                  onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
-                />
+                {showChat && (
+                  <DataFieldListItem
+                    itemStyle={styles.item}
+                    left={() => getIcon(AppIcons.chat)}
+                    description={getChatDescription}
+                    title={'Chat'}
+                    onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
+                  />
+                )}
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.description)}

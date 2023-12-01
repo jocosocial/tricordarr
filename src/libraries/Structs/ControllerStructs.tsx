@@ -267,15 +267,15 @@ export namespace FezData {
     return false;
   };
 
-  export const isParticipant = (fezData: FezData, user?: UserHeader) => {
-    if (!user) {
+  export const isParticipant = (fezData?: FezData, user?: UserHeader) => {
+    if (!user || !fezData) {
       return false;
     }
     return isMember(fezData.members?.participants, user);
   };
 
-  export const isWaitlist = (fezData: FezData, user?: UserHeader) => {
-    if (!user) {
+  export const isWaitlist = (fezData?: FezData, user?: UserHeader) => {
+    if (!user || !fezData) {
       return false;
     }
     return isMember(fezData.members?.waitingList, user);

@@ -22,7 +22,7 @@ Work Queue
 * Auth Flow
   * can't sign out if twitarr is down/404
 * LFG
-  * Non mods should not see lfg chat until theyve joined
+  * lfgs not loading if youre not a mod?
 * Directory
   * Debounce directory search
 
