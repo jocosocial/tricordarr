@@ -12,7 +12,7 @@ import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
 
-interface NewAppImageProps {
+interface APIImageProps {
   thumbPath: string;
   fullPath: string;
   style?: StyleProp<ImageStyle>;
@@ -21,7 +21,7 @@ interface NewAppImageProps {
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
 
-export const AppImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: NewAppImageProps) => {
+export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
   // The thumbnails Swiftarr generates are not animated.
   const isAnimated = animatedRegex.test(thumbPath);

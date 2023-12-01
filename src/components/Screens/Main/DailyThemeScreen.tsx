@@ -9,7 +9,7 @@ import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
-import {AppImage} from '../../Images/AppImage';
+import {APIImage} from '../../Images/APIImage';
 
 export type Props = NativeStackScreenProps<
   MainStackParamList,
@@ -44,7 +44,7 @@ export const DailyThemeScreen = ({route}: Props) => {
           <DataFieldListItem itemStyle={styles.item} description={route.params.dailyTheme.info} title={'Info'} />
           {route.params.dailyTheme.image && (
             <View style={styles.imageView}>
-              <AppImage
+              <APIImage
                 fullPath={`/image/full/${route.params.dailyTheme.image}`}
                 thumbPath={`/image/thumb/${route.params.dailyTheme.image}`}
               />

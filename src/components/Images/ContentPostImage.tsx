@@ -1,4 +1,4 @@
-import {AppImage} from './AppImage';
+import {APIImage} from './APIImage';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -25,7 +25,7 @@ export const ContentPostImage = ({image, messageOnRight}: FezPostImageProps) => 
 
   return (
     <View style={styles.view}>
-      <AppImage
+      <APIImage
         style={styles.image}
         mode={'image'}
         thumbPath={`/image/thumb/${image}`}

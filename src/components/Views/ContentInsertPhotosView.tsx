@@ -6,6 +6,7 @@ import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppImageViewer} from '../Images/AppImageViewer';
 import {ImageQueryData} from '../../libraries/Types';
 import {ContentPostAttachmentImage} from '../Images/ContentPostAttachmentImage';
+import {ContentPostAttachedImage} from '../Images/ContentPostAttachedImage';
 
 export const ContentInsertPhotosView = () => {
   const {commonStyles} = useStyles();
@@ -48,7 +49,7 @@ export const ContentInsertPhotosView = () => {
       />
       {values.images.map((imageData, index) => {
         return (
-          <ContentPostAttachmentImage
+          <ContentPostAttachedImage
             key={index}
             onIconPress={() => {
               setFieldValue(
@@ -62,7 +63,7 @@ export const ContentInsertPhotosView = () => {
               setIsViewerVisible(true);
             }}
             disabled={isSubmitting}
-            imageSource={{uri: `data:image;base64,${imageData.image}`}}
+            imageData={imageData}
           />
         );
       })}

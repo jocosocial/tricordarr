@@ -10,7 +10,7 @@ import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
-import {AppImage} from '../../../Images/AppImage';
+import {APIImage} from '../../../Images/APIImage';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {ContentPostImage} from '../../../Images/ContentPostImage';

@@ -30,3 +30,8 @@ Nightly
 * Tap post jump to thread (noop on regular view), long press for details
 * Disable mute / favorite if favorites / muted (mutual exclusivity)
 * Flatlist load offset (or indicator of more) 
+* show category header title like forum view in the list
+* missing a key in forum thread view with images added. Probably with the new element
+* maybe add chars lines after all? Bottom in small text* forum post menu long press only
+* add dividers to post actions
+* how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
