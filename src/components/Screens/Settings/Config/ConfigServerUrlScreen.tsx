@@ -49,7 +49,7 @@ export const ConfigServerUrlScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text variant={'bodyLarge'} style={[commonStyles.bold]}>
-            Warning: Changing this value requires fully restarting the app.
+            Warning: It is recommended to fully restart the app after changing this value.
           </Text>
           <SettingForm
             value={appConfig.serverUrl}

@@ -7,6 +7,9 @@ Backlog
   * Debounce directory search
 
 Work Queue
+* ErrorBanner
+  * onPress settings needs to dismiss
+* Snackbars linger a lot
 * Forum
   * Forum thread screen start at unread
   * Unread marker in post flatlist

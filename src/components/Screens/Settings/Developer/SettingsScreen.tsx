@@ -39,13 +39,13 @@ export const SettingsScreen = ({navigation}: Props) => {
           <Divider bold={true} />
           <ListSection>
             <List.Subheader>Account</List.Subheader>
+            {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
+            {!tokenData && <SettingsRegistrationListItem />}
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
-            {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
-            {!tokenData && <SettingsRegistrationListItem />}
           </ListSection>
           <Divider bold={true} />
           <ListSection>
@@ -56,14 +56,14 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
             />
             <SettingsNavigationListItem
-              title={'Polling'}
-              description={'Configure periodic notification polling while the app is active.'}
-              navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
-            />
-            <SettingsNavigationListItem
               title={'Background Connection'}
               description={'Manage the worker that maintains a connection to the server.'}
               navComponent={SettingsStackScreenComponents.serverConnectionSettings}
+            />
+            <SettingsNavigationListItem
+              title={'Polling'}
+              description={'Configure periodic notification polling while the app is active.'}
+              navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
             />
           </ListSection>
           <Divider bold={true} />
