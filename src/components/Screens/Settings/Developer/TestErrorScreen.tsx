@@ -14,11 +14,13 @@ export const TestErrorScreen = () => {
   const theme = useAppTheme();
   const {setErrorMessage, setErrorBanner, errorBanner, errorMessage} = useErrorHandler();
   const {commonStyles} = useStyles();
-  const {setModalContent, setModalVisible} = useModal();
+  const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
 
+  const onDismiss = () => console.log('O HAI');
   const onModal = () => {
     setModalContent(<HelpModalView text={'This is a test'} />);
     setModalVisible(true);
+    setModalOnDismiss(onDismiss);
   };
 
   return (

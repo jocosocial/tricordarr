@@ -11,19 +11,30 @@ import {UserCreateForm} from '../../../Forms/UserCreateForm';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView';
 import {Text} from 'react-native-paper';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
+import {useNavigation} from '@react-navigation/native';
 
 export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginQuery();
   const {signIn} = useAuth();
-  const {setModalContent, setModalVisible} = useModal();
+  const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
+  const {setErrorMessage} = useErrorHandler();
+  const navigation = useNavigation();
+
+  const onPress = useCallback(() => {
+    setModalVisible(false);
+  }, [setModalVisible]);
+
+  const onDismiss = useCallback(() => {
+    onPress();
+    navigation.goBack();
+  }, [navigation, onPress]);
 
   const onSubmit = useCallback(
     (formValues: UserRegistrationFormValues, formikHelpers: FormikHelpers<UserRegistrationFormValues>) => {
       createMutation.mutate(formValues, {
         onSuccess: userCreateResponse => {
-          setModalContent(<UserRecoveryKeyModalView userRecoveryKey={userCreateResponse.data.recoveryKey} />);
-          setModalVisible(true);
           const loginValues: LoginFormValues = {
             username: formValues.username,
             password: formValues.password,
@@ -31,16 +42,32 @@ export const RegisterScreen = () => {
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
               signIn(response.data).then(() => {
-                formikHelpers.setSubmitting(false);
+                setModalOnDismiss(onDismiss);
+                setModalContent(
+                  <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
+                );
+                setModalVisible(true);
               });
             },
             onSettled: () => formikHelpers.setSubmitting(false),
           });
         },
-        onSettled: () => formikHelpers.setSubmitting(false),
+        onError: error => {
+          formikHelpers.setSubmitting(false);
+          setErrorMessage(error.response?.data.reason || error);
+        },
       });
     },
-    [createMutation, loginMutation, setModalContent, setModalVisible, signIn],
+    [
+      createMutation,
+      loginMutation,
+      onPress,
+      setErrorMessage,
+      setModalContent,
+      setModalOnDismiss,
+      setModalVisible,
+      signIn,
+    ],
   );
 
   return (

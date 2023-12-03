@@ -83,7 +83,7 @@ export enum OobeStackComponents {
   oobeServerScreen = 'OobeServerScreen',
   oobeConductScreen = 'OobeConductScreen',
   oobeAccountScreen = 'OobeAccountScreen',
-  oobeRegisterScreen = 'OobeRegisterScreen',
+  oobeRegisterScreen = 'RegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
   oobeNotificationsScreen = 'OobeNotificationsScreen',

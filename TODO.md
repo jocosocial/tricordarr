@@ -21,7 +21,5 @@ Work Queue
   * missing a key in forum thread view with images added. Probably with the new element
   * maybe add chars lines after all? Bottom in small text
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
-* Auth Flow
-  * can't sign out if twitarr is down/404
 
 Nightly

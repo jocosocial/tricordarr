@@ -24,7 +24,7 @@ export const AppModal = () => {
     }
     setModalVisible(false);
     // I hope this doesnt get weird
-    // setModalOnDismiss(undefined);
+    setModalOnDismiss(undefined);
   };
 
   return (

@@ -11,6 +11,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 
 interface UserRecoveryKeyModalViewProps {
   userRecoveryKey: string;
+  onPress: () => void;
 }
 
 const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
@@ -39,19 +40,16 @@ const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
   );
 };
 
-export const UserRecoveryKeyModalView = ({userRecoveryKey}: UserRecoveryKeyModalViewProps) => {
+export const UserRecoveryKeyModalView = ({userRecoveryKey, onPress}: UserRecoveryKeyModalViewProps) => {
   const theme = useAppTheme();
-  const navigation = useNavigation();
-  const {setModalVisible, setModalOnDismiss} = useModal();
-
-  const onPress = useCallback(() => {
-    setModalVisible(false);
-    navigation.goBack();
-  }, [navigation, setModalVisible]);
-
-  useEffect(() => {
-    setModalOnDismiss(onPress);
-  }, [onPress, setModalOnDismiss]);
+  // const navigation = useNavigation();
+  // const {setModalVisible} = useModal();
+  //
+  // useEffect(() => {
+  //   if (!modalOnDismiss) {
+  //     setModalOnDismiss(onPress);
+  //   }
+  // }, [modalOnDismiss, onPress, setModalOnDismiss]);
 
   const cardActions = (
     <PrimaryActionButton
