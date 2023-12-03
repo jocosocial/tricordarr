@@ -145,6 +145,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   description={'Settings for the cruise.'}
                   navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
                 />
+                <SettingsNavigationListItem
+                  title={'User Info'}
+                  description={'Show internal state of user and auth information.'}
+                  navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
+                />
               </ListSection>
             </>
           )}
