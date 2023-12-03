@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -13,6 +13,7 @@ import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyMod
 import {Text} from 'react-native-paper';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
+import {RefreshControl} from 'react-native';
 
 export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
@@ -21,6 +22,7 @@ export const RegisterScreen = () => {
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const {setErrorMessage} = useErrorHandler();
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
 
   const onPress = useCallback(() => {
     setModalVisible(false);
@@ -33,6 +35,7 @@ export const RegisterScreen = () => {
 
   const onSubmit = useCallback(
     (formValues: UserRegistrationFormValues, formikHelpers: FormikHelpers<UserRegistrationFormValues>) => {
+      setRefreshing(true);
       createMutation.mutate(formValues, {
         onSuccess: userCreateResponse => {
           const loginValues: LoginFormValues = {
@@ -49,11 +52,15 @@ export const RegisterScreen = () => {
                 setModalVisible(true);
               });
             },
-            onSettled: () => formikHelpers.setSubmitting(false),
+            onSettled: () => {
+              formikHelpers.setSubmitting(false);
+              setRefreshing(false);
+            },
           });
         },
         onError: error => {
           formikHelpers.setSubmitting(false);
+          setRefreshing(false);
           setErrorMessage(error.response?.data.reason || error);
         },
       });
@@ -61,6 +68,7 @@ export const RegisterScreen = () => {
     [
       createMutation,
       loginMutation,
+      onDismiss,
       onPress,
       setErrorMessage,
       setModalContent,
@@ -72,7 +80,7 @@ export const RegisterScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} refreshControl={<RefreshControl enabled={false} refreshing={refreshing} />}>
         <PaddedContentView padTop={true}>
           <Text>
             Your Twitarr registration code was sent to you via e-mail. If you did not receive your registration code or
