@@ -6,7 +6,6 @@ import {SettingForm} from '../../../Forms/SettingForm';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {SettingFormValues} from '../../../../libraries/Types/FormValues';
 import {useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
@@ -14,38 +13,34 @@ import * as Yup from 'yup';
 import {configureAxios} from '../../../../libraries/Network/APIClient';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
+import {ServerURLValidation} from '../../../../libraries/ValidationSchema';
 
 const validationSchema = Yup.object().shape({
-  settingValue: Yup.string().required('Server URL cannot be empty.').url('Must be valid URL.'),
+  settingValue: ServerURLValidation,
 });
 
 export const ConfigServerUrlScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const navigation = useSettingsStack();
-  const {setErrorMessage} = useErrorHandler();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
 
   const onSave = (values: SettingFormValues) => {
-    try {
-      const oldServerUrl = appConfig.serverUrl;
-      updateAppConfig({
-        ...appConfig,
-        serverUrl: values.settingValue,
+    const oldServerUrl = appConfig.serverUrl;
+    updateAppConfig({
+      ...appConfig,
+      serverUrl: values.settingValue,
+    });
+    if (oldServerUrl !== values.settingValue) {
+      signOut().then(() => {
+        clearPrivileges();
+        queryClient.clear();
+        configureAxios().then(() => navigation.goBack());
       });
-      if (oldServerUrl !== values.settingValue) {
-        signOut().then(() => {
-          clearPrivileges();
-          queryClient.clear();
-          configureAxios().then(() => navigation.goBack());
-        });
-      } else {
-        navigation.goBack();
-      }
-    } catch (e) {
-      setErrorMessage(e);
+    } else {
+      navigation.goBack();
     }
   };
 

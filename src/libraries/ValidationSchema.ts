@@ -41,3 +41,17 @@ export const ForumPostTextValidation = Yup.string()
   .test('maxLines', 'Post must be less than 25 lines', value => {
     return value.split(/\r\n|\r|\n/).length <= 25;
   });
+
+// This may need a if (__DEV__) block to enable local instances.
+export const ServerURLValidation = Yup.string()
+  .required('Server URL cannot be empty.')
+  .lowercase('Lower-case only.')
+  .url('Must be valid URL.')
+  .test({
+    name: 'startsWithHttps',
+    message: 'Server URL must be secure (HTTPS).',
+    test: value => {
+      return value.startsWith('https');
+    },
+  })
+  .strict();
