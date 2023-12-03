@@ -26,6 +26,7 @@ import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {FeatureSettingsScreen} from '../../Screens/Settings/Developer/FeatureSettingsScreen';
 import {NotificationPollerSettingsScreen} from '../../Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {LoadingSettingScreen} from '../../Screens/Settings/Developer/LoadingSettingScreen';
+import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -51,6 +52,7 @@ export type SettingsStackParamList = {
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
+  RegisterScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -126,6 +128,11 @@ export const SettingsStack = () => {
         options={{title: 'Mute Keywords'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.login} component={LoginScreen} options={{title: 'Login'}} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.registerScreen}
+        component={RegisterScreen}
+        options={{title: 'New Account'}}
+      />
       <Stack.Screen
         name={SettingsStackScreenComponents.accountManagement}
         component={AccountManagementScreen}

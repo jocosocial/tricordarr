@@ -5,7 +5,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../styles/Theme';
 
 export const AppModal = () => {
-  const {modalVisible, modalContent, setModalVisible} = useModal();
+  const {modalVisible, modalContent, setModalVisible, modalOnDismiss, setModalOnDismiss} = useModal();
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
@@ -18,12 +18,17 @@ export const AppModal = () => {
     },
   };
 
+  const onDismiss = () => {
+    if (modalOnDismiss) {
+      modalOnDismiss();
+    }
+    setModalVisible(false);
+    // I hope this doesnt get weird
+    // setModalOnDismiss(undefined);
+  };
+
   return (
-    <Modal
-      contentContainerStyle={styles.content}
-      style={styles.modal}
-      visible={modalVisible}
-      onDismiss={() => setModalVisible(false)}>
+    <Modal contentContainerStyle={styles.content} style={styles.modal} visible={modalVisible} onDismiss={onDismiss}>
       {modalContent}
     </Modal>
   );

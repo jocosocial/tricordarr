@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {TextStyle, View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -42,12 +42,16 @@ const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
 export const UserRecoveryKeyModalView = ({userRecoveryKey}: UserRecoveryKeyModalViewProps) => {
   const theme = useAppTheme();
   const navigation = useNavigation();
-  const {setModalVisible} = useModal();
+  const {setModalVisible, setModalOnDismiss} = useModal();
 
-  const onPress = () => {
+  const onPress = useCallback(() => {
     setModalVisible(false);
     navigation.goBack();
-  };
+  }, [navigation, setModalVisible]);
+
+  useEffect(() => {
+    setModalOnDismiss(onPress);
+  }, [onPress, setModalOnDismiss]);
 
   const cardActions = (
     <PrimaryActionButton

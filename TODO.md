@@ -24,5 +24,4 @@ Work Queue
 * Auth Flow
   * can't sign out if twitarr is down/404
 
-
 Nightly

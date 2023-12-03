@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
-import {SettingsNavigationListItem} from '../../../Lists/Items/SettingsNavigationListItem';
-import {AccountListItem} from '../../../Lists/Items/AccountListItem';
+import {SettingsNavigationListItem} from '../../../Lists/Items/Settings/SettingsNavigationListItem';
+import {SettingsAccountListItem} from '../../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
@@ -11,6 +11,9 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
 import {SettingsHeaderTitle} from '../../../Navigation/Components/SettingsHeaderTitle';
+import {SettingsLoginListItem} from '../../../Lists/Items/Settings/SettingsLoginListItem';
+import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {SettingsRegistrationListItem} from '../../../Lists/Items/Settings/SettingsRegistrationListItem';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -21,6 +24,7 @@ export type Props = NativeStackScreenProps<
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const getHeaderTitle = useCallback(() => <SettingsHeaderTitle />, []);
+  const {tokenData} = useAuth();
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,7 +44,8 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'URL of the Twitarr server.'}
               navComponent={SettingsStackScreenComponents.configServerUrl}
             />
-            <AccountListItem />
+            {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
+            {!tokenData && <SettingsRegistrationListItem />}
           </ListSection>
           <Divider bold={true} />
           <ListSection>

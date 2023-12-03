@@ -7,11 +7,19 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {AppView} from '../../../Views/AppView';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {useModal} from '../../../Context/Contexts/ModalContext';
+import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();
   const {setErrorMessage, setErrorBanner, errorBanner, errorMessage} = useErrorHandler();
   const {commonStyles} = useStyles();
+  const {setModalContent, setModalVisible} = useModal();
+
+  const onModal = () => {
+    setModalContent(<HelpModalView text={'This is a test'} />);
+    setModalVisible(true);
+  };
 
   return (
     <AppView>
@@ -29,6 +37,13 @@ export const TestErrorScreen = () => {
             buttonText="Snackbar"
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => setErrorMessage('This is a snackbar error.')}
+            style={[commonStyles.marginTopSmall]}
+          />
+          <Text>Modal</Text>
+          <PrimaryActionButton
+            buttonText={'Modal'}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            onPress={onModal}
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>

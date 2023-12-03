@@ -1,24 +1,18 @@
 import React, {useCallback} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
-import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {LoginFormValues, UserRegistrationFormValues} from '../../../libraries/Types/FormValues';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {LoginFormValues, UserRegistrationFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import NetInfo from '@react-native-community/netinfo';
-import {useUserCreateQuery} from '../../Queries/User/UserQueries';
-import {useLoginQuery} from '../../Queries/Auth/LoginQueries';
-import {useAuth} from '../../Context/Contexts/AuthContext';
-import {UserCreateForm} from '../../Forms/UserCreateForm';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {UserRecoveryKeyModalView} from '../../Views/Modals/UserRecoveryKeyModalView';
+import {useUserCreateQuery} from '../../../Queries/User/UserQueries';
+import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
+import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {UserCreateForm} from '../../../Forms/UserCreateForm';
+import {useModal} from '../../../Context/Contexts/ModalContext';
+import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView';
 import {Text} from 'react-native-paper';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeRegisterScreen, NavigatorIDs.oobeStack>;
-
-export const OobeRegisterScreen = ({navigation}: Props) => {
+export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
   const loginMutation = useLoginQuery();
   const {signIn} = useAuth();
@@ -37,9 +31,7 @@ export const OobeRegisterScreen = ({navigation}: Props) => {
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
               signIn(response.data).then(() => {
-                // Triggering NetInfo here can tell the other providers
-                // that we may need to start the Foreground Service Worker.
-                NetInfo.refresh();
+                formikHelpers.setSubmitting(false);
               });
             },
             onSettled: () => formikHelpers.setSubmitting(false),
