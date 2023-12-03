@@ -46,6 +46,7 @@ export enum SettingsStackScreenComponents {
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
   loadingSettingScreen = 'LoadingSettingScreen',
   registerScreen = 'RegisterScreen',
+  cruiseSettingsScreen = 'CruiseSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {

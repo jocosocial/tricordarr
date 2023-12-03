@@ -141,9 +141,9 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.featureSettingsScreen}
                 />
                 <SettingsNavigationListItem
-                  title={'Loading'}
-                  description={'Test the loading screen.'}
-                  navComponent={SettingsStackScreenComponents.loadingSettingScreen}
+                  title={'Cruise'}
+                  description={'Settings for the cruise.'}
+                  navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
                 />
               </ListSection>
             </>

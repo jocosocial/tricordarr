@@ -27,6 +27,7 @@ import {FeatureSettingsScreen} from '../../Screens/Settings/Developer/FeatureSet
 import {NotificationPollerSettingsScreen} from '../../Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {LoadingSettingScreen} from '../../Screens/Settings/Developer/LoadingSettingScreen';
 import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
+import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -53,6 +54,7 @@ export type SettingsStackParamList = {
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
   RegisterScreen: undefined;
+  CruiseSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -177,6 +179,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.loadingSettingScreen}
         component={LoadingSettingScreen}
         options={{title: 'Loading'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.cruiseSettingsScreen}
+        component={CruiseSettingsScreen}
+        options={{title: 'Cruise Settings'}}
       />
     </Stack.Navigator>
   );

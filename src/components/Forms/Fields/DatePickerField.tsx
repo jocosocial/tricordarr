@@ -7,13 +7,14 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {Button} from 'react-native-paper';
 import {format} from 'date-fns';
-import {CalendarDate} from 'react-native-paper-dates/src/Date/Calendar';
+import {CalendarDate, ValidRangeType} from 'react-native-paper-dates/src/Date/Calendar';
 
 interface DatePickerFieldProps {
   name: string;
+  limitRange?: boolean;
 }
 
-export const DatePickerField = ({name}: DatePickerFieldProps) => {
+export const DatePickerField = ({name, limitRange}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
   const [field, meta, helpers] = useField<Date>(name);
   const {setFieldValue} = useFormikContext();
@@ -75,9 +76,9 @@ export const DatePickerField = ({name}: DatePickerFieldProps) => {
         date={field.value}
         locale={'en'}
         mode={'single'}
-        startYear={startDate.getFullYear()}
-        endYear={startDate.getFullYear()}
-        validRange={{startDate: startDate, endDate: endDate}}
+        startYear={limitRange ? startDate.getFullYear() : undefined}
+        endYear={limitRange ? startDate.getFullYear() : undefined}
+        validRange={limitRange ? {startDate: startDate, endDate: endDate} : undefined}
       />
     </View>
   );

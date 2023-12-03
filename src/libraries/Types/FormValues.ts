@@ -65,3 +65,9 @@ export interface ForumThreadValues {
   postAsModerator?: boolean;
   postAsTwitarrTeam?: boolean;
 }
+
+export interface CruiseSettingsFormValues {
+  startDate: Date;
+  cruiseLength: string;
+  portTimeZoneID: string;
+}
