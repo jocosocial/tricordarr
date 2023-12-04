@@ -6,12 +6,13 @@ import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton} from 'react-native-paper';
+import {IconButton, Text} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
 import {ContentInsertPhotosView} from '../Views/ContentInsertPhotosView';
+import {PostLengthView} from '../Views/PostLengthView';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -77,6 +78,8 @@ export const ContentPostForm = ({
     },
     lengthHintContainer: {
       ...commonStyles.flexRow,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.marginBottomSmall,
     },
   });
 
@@ -102,7 +105,7 @@ export const ContentPostForm = ({
       initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (
+      {({handleChange, handleBlur, handleSubmit, values, isSubmitting, dirty}) => (
         <View style={styles.formContainer}>
           {emojiPickerVisible && <EmojiPickerField />}
           <ContentInsertMenuView
@@ -135,6 +138,7 @@ export const ContentPostForm = ({
               withPrivilegeColors={true}
             />
           </View>
+          {dirty && <PostLengthView content={values.text} maxChars={maxLength} />}
         </View>
       )}
     </Formik>

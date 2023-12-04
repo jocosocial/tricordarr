@@ -20,7 +20,7 @@ export const PostLengthView = ({content, maxLines = 25, maxChars = 500}: PostLen
 
   const styles = StyleSheet.create({
     container: {
-      ...commonStyles.flex,
+      // ...commonStyles.flex,
       ...commonStyles.flexRow,
       ...commonStyles.justifyCenter,
       ...commonStyles.paddingBottomSmall,
