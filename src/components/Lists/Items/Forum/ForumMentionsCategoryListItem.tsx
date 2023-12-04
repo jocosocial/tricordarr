@@ -26,7 +26,7 @@ export const ForumMentionsCategoryListItem = () => {
     <View style={styles.rightContainer}>
       <View style={styles.rightContent}>
         <ForumNewBadge unreadCount={userNotificationData?.newForumMentionCount} unit={'mention'} />
-        {userNotificationData && (
+        {!!userNotificationData?.forumMentionCount && (
           <Text variant={'bodyMedium'}>
             {userNotificationData.forumMentionCount} {pluralize('mention', userNotificationData.forumMentionCount)}
           </Text>
