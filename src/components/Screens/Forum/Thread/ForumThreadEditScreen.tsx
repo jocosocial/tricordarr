@@ -1,16 +1,16 @@
-import {AppView} from '../../Views/AppView';
+import {AppView} from '../../../Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {ForumThreadEditForm} from '../../Forms/ForumThreadEditForm';
-import {ForumThreadValues} from '../../../libraries/Types/FormValues';
+import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ForumThreadEditForm} from '../../../Forms/ForumThreadEditForm';
+import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useForumRenameMutation} from '../../Queries/Forum/ForumMutationQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
+import {useForumRenameMutation} from '../../../Queries/Forum/ForumMutationQueries';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,

@@ -1,16 +1,16 @@
-import {AppView} from '../../Views/AppView';
+import {AppView} from '../../../Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {ImageUploadData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ImageUploadData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
-import {useForumPostUpdateMutation} from '../../Queries/Forum/ForumPostQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {ContentPostForm} from '../../Forms/ContentPostForm';
+import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostQueries';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
+import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {View} from 'react-native';
 
 export type Props = NativeStackScreenProps<

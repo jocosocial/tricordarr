@@ -7,7 +7,7 @@ import {ForumListData} from '../../libraries/Structs/ControllerStructs';
 import {useForumSearchQuery} from '../Queries/Forum/ForumSearchQueries';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {forumPostHelpText} from '../Screens/Forum/ForumPostScreenBase';
+import {forumPostHelpText} from '../Screens/Forum/Post/ForumPostScreenBase';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';

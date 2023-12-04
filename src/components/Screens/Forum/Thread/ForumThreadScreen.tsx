@@ -1,40 +1,40 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '../../Views/AppView';
-import {useForumThreadQuery} from '../../Queries/Forum/ForumCategoryQueries';
+import {AppView} from '../../../Views/AppView';
+import {useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView';
+import {LoadingView} from '../../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {
   BottomTabComponents,
   EventStackComponents,
   ForumStackComponents,
   NavigatorIDs,
   RootStackComponents,
-} from '../../../libraries/Enums/Navigation';
-import {PostContentData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
-import {ForumLockedView} from '../../Views/Static/ForumLockedView';
+} from '../../../../libraries/Enums/Navigation';
+import {PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
+import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {ForumThreadActionsMenu} from '../../Menus/Forum/ForumThreadActionsMenu';
-import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
-import {useAppTheme} from '../../../styles/Theme';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {ListTitleView} from '../../Views/ListTitleView';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {ContentPostForm} from '../../Forms/ContentPostForm';
+import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
+import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
+import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
+import {useAppTheme} from '../../../../styles/Theme';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
+import {ListTitleView} from '../../../Views/ListTitleView';
+import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
+import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useForumPostCreateMutation} from '../../Queries/Forum/ForumPostQueries';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostQueries';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
+import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
+import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {Button, Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useIsFocused} from '@react-navigation/native';
 
 export type Props = NativeStackScreenProps<

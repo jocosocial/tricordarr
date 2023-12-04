@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '../../Views/AppView';
-import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../Queries/Forum/ForumSearchQueries';
+import {AppView} from '../../../Views/AppView';
+import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {LoadingView} from '../../../Views/Static/LoadingView';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {useModal} from '../../../Context/Contexts/ModalContext';
+import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
-import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
+import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
+import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {useIsFocused} from '@react-navigation/native';
 
 interface ForumPostScreenBaseProps {

@@ -1,20 +1,20 @@
 import React, {useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {ForumCreateForm} from '../../Forms/ForumCreateForm';
+import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {ForumCreateForm} from '../../../Forms/ForumCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {ForumCreateData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
-import {ForumThreadValues} from '../../../libraries/Types/FormValues';
-import {ContentPostForm} from '../../Forms/ContentPostForm';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useForumCreateMutation} from '../../Queries/Forum/ForumMutationQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
+import {ForumCreateData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
+import {ContentPostForm} from '../../../Forms/ContentPostForm';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
+import {useForumCreateMutation} from '../../../Queries/Forum/ForumMutationQueries';
+import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
+import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
+import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,

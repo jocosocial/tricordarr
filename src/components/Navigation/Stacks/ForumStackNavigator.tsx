@@ -9,19 +9,19 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
-import {ForumThreadScreen} from '../../Screens/Forum/ForumThreadScreen';
-import {ForumPostMentionScreen} from '../../Screens/Forum/ForumPostMentionScreen';
-import {ForumPostSelfScreen} from '../../Screens/Forum/ForumPostSelfScreen';
-import {ForumPostFavoriteScreen} from '../../Screens/Forum/ForumPostFavoriteScreen';
-import {ForumFavoritesScreen} from '../../Screens/Forum/ForumFavoritesScreen';
-import {ForumMutesScreen} from '../../Screens/Forum/ForumMutesScreen';
-import {ForumOwnedScreen} from '../../Screens/Forum/ForumOwnedScreen';
-import {ForumRecentScreen} from '../../Screens/Forum/ForumRecentScreen';
-import {ForumPostSearchScreen} from '../../Screens/Forum/ForumPostSearchScreen';
-import {ForumThreadSearchScreen} from '../../Screens/Forum/ForumThreadSearchScreen';
-import {ForumThreadCreateScreen} from '../../Screens/Forum/ForumThreadCreateScreen';
-import {ForumThreadEditScreen} from '../../Screens/Forum/ForumThreadEditScreen';
-import {ForumPostEditScreen} from '../../Screens/Forum/ForumPostEditScreen';
+import {ForumThreadScreen} from '../../Screens/Forum/Thread/ForumThreadScreen';
+import {ForumPostMentionScreen} from '../../Screens/Forum/Post/ForumPostMentionScreen';
+import {ForumPostSelfScreen} from '../../Screens/Forum/Post/ForumPostSelfScreen';
+import {ForumPostFavoriteScreen} from '../../Screens/Forum/Post/ForumPostFavoriteScreen';
+import {ForumThreadFavoritesScreen} from '../../Screens/Forum/Thread/ForumThreadFavoritesScreen';
+import {ForumThreadMutesScreen} from '../../Screens/Forum/Thread/ForumThreadMutesScreen';
+import {ForumThreadOwnedScreen} from '../../Screens/Forum/Thread/ForumThreadOwnedScreen';
+import {ForumThreadRecentScreen} from '../../Screens/Forum/Thread/ForumThreadRecentScreen';
+import {ForumPostSearchScreen} from '../../Screens/Forum/Post/ForumPostSearchScreen';
+import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSearchScreen';
+import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
+import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
+import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
 import {CategoryData, ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 
 export type ForumStackParamList = {
@@ -103,22 +103,22 @@ export const ForumStackNavigator = () => {
       />
       <Stack.Screen
         name={ForumStackComponents.forumFavoritesScreen}
-        component={isDisabled ? DisabledView : ForumFavoritesScreen}
+        component={isDisabled ? DisabledView : ForumThreadFavoritesScreen}
         options={{title: 'Favorite Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumMutesScreen}
-        component={isDisabled ? DisabledView : ForumMutesScreen}
+        component={isDisabled ? DisabledView : ForumThreadMutesScreen}
         options={{title: 'Muted Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumOwnedScreen}
-        component={isDisabled ? DisabledView : ForumOwnedScreen}
+        component={isDisabled ? DisabledView : ForumThreadOwnedScreen}
         options={{title: 'Your Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumRecentScreen}
-        component={isDisabled ? DisabledView : ForumRecentScreen}
+        component={isDisabled ? DisabledView : ForumThreadRecentScreen}
         options={{title: 'Recently Viewed'}}
       />
       <Stack.Screen
