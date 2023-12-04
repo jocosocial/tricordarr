@@ -105,7 +105,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Settings'}
                 icon={AppIcons.settings}
-                onPress={() => handleDrawerNav('tricordarr://settingstab')}
+                onPress={() => handleDrawerNav('tricordarr://settings')}
               />
               <PaperDrawer.Item
                 label={'Twitarr Web UI'}

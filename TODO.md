@@ -11,8 +11,6 @@ Backlog
 
 
 Work Queue
-* ErrorBanner
-  * onPress settings needs to dismiss
 * Forum
   * Forum thread screen start at unread
   * Unread marker in post flatlist

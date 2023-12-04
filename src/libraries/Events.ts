@@ -37,7 +37,7 @@ export const getUrlForEvent = (
         return;
       }
       case PressAction.worker: {
-        return '/settingstab/serverconnectionsettingsscreen';
+        return '/settings/serverconnectionsettingsscreen';
       }
       case PressAction.seamail: {
         if (notification.id && notification.data) {
