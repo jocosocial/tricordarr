@@ -5,31 +5,38 @@ import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
+import {useAppTheme} from '../../styles/Theme';
+import {AppIcon} from '../Icons/AppIcon';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData} = useUserData();
   const {userNotificationData} = useUserNotificationData();
   const [forUser, setForUser] = useState(profilePublicData?.header.username || '');
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam} = usePrivilege();
+  const theme = useAppTheme();
 
   let buttons = [];
 
   if (hasModerator) {
+    const moderatorIcon = userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
+      ? () => <AppIcon size={18} icon={AppIcons.notification} color={theme.colors.error} />
+      : AppIcons.moderator;
     buttons.push({
       value: PrivilegedUserAccounts.moderator,
       label: 'Moderator',
-      icon: userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
-        ? AppIcons.notification
-        : AppIcons.moderator,
+      icon: moderatorIcon,
       onPress: () => becomeUser(PrivilegedUserAccounts.moderator),
     });
   }
 
   if (hasTwitarrTeam) {
+    const twitarrTeamIcon = userNotificationData?.moderatorData?.newTTSeamailMessageCount
+      ? () => <AppIcon size={18} icon={AppIcons.notification} color={theme.colors.error} />
+      : AppIcons.moderator;
     buttons.push({
       value: PrivilegedUserAccounts.TwitarrTeam,
       label: 'TwitarrTeam',
-      icon: userNotificationData?.moderatorData?.newTTSeamailMessageCount ? AppIcons.notification : AppIcons.twitarteam,
+      icon: twitarrTeamIcon,
       onPress: () => becomeUser(PrivilegedUserAccounts.TwitarrTeam),
     });
   }

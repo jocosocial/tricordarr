@@ -39,6 +39,17 @@ export const BottomTabNavigator = () => {
     return <AppIcon icon={icon} />;
   }
 
+  const getChatBadgeCount = () => {
+    let count = userNotificationData?.newSeamailMessageCount || 0;
+    if (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount) {
+      count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
+    }
+    if (userNotificationData?.moderatorData?.newTTSeamailMessageCount) {
+      count += userNotificationData.moderatorData.newTTSeamailMessageCount;
+    }
+    return count;
+  };
+
   return (
     <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
       <Tab.Screen
@@ -56,7 +67,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Chat',
           tabBarIcon: () => getIcon('email'),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newSeamailMessageCount),
+          tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
       <Tab.Screen

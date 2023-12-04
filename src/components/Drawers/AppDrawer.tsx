@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Drawer} from 'react-native-drawer-layout';
-import {Drawer as PaperDrawer} from 'react-native-paper';
+import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
 import {useDrawer} from '../Context/Contexts/DrawerContext';
 import {PropsWithChildren} from 'react';
 import {Linking, ScrollView} from 'react-native';
@@ -8,16 +8,24 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const theme = useAppTheme();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {profilePublicData} = useUserData();
+  const {userNotificationData} = useUserNotificationData();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
     setDrawerOpen(false);
+  };
+
+  const getModReportBadge = () => {
+    if (userNotificationData?.moderatorData?.openReportCount) {
+      return <Badge>{userNotificationData.moderatorData.openReportCount}</Badge>;
+    }
   };
 
   return (
@@ -109,6 +117,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
                   onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
+                  right={getModReportBadge}
                 />
               )}
               {hasTwitarrTeam && (
