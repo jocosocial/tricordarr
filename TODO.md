@@ -20,7 +20,6 @@ Work Queue
   * Forum flatlist scroll button with post form
     * Scroll down button needs better spacing with post view too
   * Tap post jump to thread (noop on regular view), long press for details
-  * Disable mute / favorite if favorites / muted (mutual exclusivity)
   * Flatlist loadNext/loadPrevious offset (or indicator of more/previous posts) so user knows the end is not the end
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 

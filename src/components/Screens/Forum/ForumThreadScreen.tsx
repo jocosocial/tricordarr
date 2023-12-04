@@ -170,16 +170,30 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
           )}
           <Item
             title={'Favorite'}
-            color={forumData.isFavorite ? theme.colors.twitarrYellow : undefined}
+            color={
+              forumData.isFavorite
+                ? theme.colors.twitarrYellow
+                : forumData.isMuted
+                ? theme.colors.onSurfaceDisabled
+                : undefined
+            }
             iconName={AppIcons.favorite}
             onPress={handleFavorite}
+            disabled={forumData.isMuted}
           />
           {forumData.creator.userID !== profilePublicData?.header.userID && (
             <Item
               title={'Mute'}
-              color={forumData.isMuted ? theme.colors.twitarrNegativeButton : undefined}
+              color={
+                forumData.isMuted
+                  ? theme.colors.twitarrNegativeButton
+                  : forumData.isFavorite
+                  ? theme.colors.onSurfaceDisabled
+                  : undefined
+              }
               iconName={AppIcons.mute}
               onPress={handleMute}
+              disabled={forumData.isFavorite}
             />
           )}
           <ForumThreadActionsMenu forumData={forumData} />
