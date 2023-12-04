@@ -10,6 +10,8 @@ import {AppIcon} from '../Icons/AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
+import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
+import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -35,6 +37,7 @@ export const ForumPostMessageView = ({
   const closeMenu = () => setMenuVisible(false);
   const theme = useAppTheme();
   const {favorites} = useUserRelations();
+  const rootNavigation = useRootStack();
 
   const styles = {
     messageView: [
@@ -54,9 +57,26 @@ export const ForumPostMessageView = ({
     opacity: [commonStyles.paddingSmall, commonStyles.roundedBorderLarge],
   };
 
+  // Same as the button in the menu used in the menu
+  const onPress = () => {
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.forumsTab,
+      params: {
+        screen: ForumStackComponents.forumThreadScreen,
+        params: {
+          postID: postData.postID.toString(),
+        },
+        initial: false,
+      },
+    });
+  };
+
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onLongPress={openMenu}>
+      <TouchableOpacity
+        style={styles.opacity}
+        onLongPress={openMenu}
+        onPress={enableShowInThread ? onPress : undefined}>
         <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
           {showAuthor && (
             <>

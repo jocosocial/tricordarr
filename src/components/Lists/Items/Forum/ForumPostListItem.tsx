@@ -33,7 +33,7 @@ interface ForumPostListItemProps {
 export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListItemProps) => {
   const rootNavigation = useRootStack();
 
-  const onPress = () => {
+  const handleAuthorAvatarPress = () => {
     rootNavigation.push(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
@@ -48,7 +48,7 @@ export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListI
 
   return (
     <FlatListItemContent>
-      <MessageAvatarContainerView onPress={onPress}>
+      <MessageAvatarContainerView onPress={handleAuthorAvatarPress}>
         <UserAvatarImage userID={postData.author.userID} small={true} />
       </MessageAvatarContainerView>
       <MessageViewContainer>

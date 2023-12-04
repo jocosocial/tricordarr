@@ -85,7 +85,6 @@ export const ForumCategoryRelationsView = ({
 
   return (
     <AppView>
-
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}

@@ -8,6 +8,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {SpaceDivider} from '../Dividers/SpaceDivider';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -38,6 +39,7 @@ export const ForumThreadFlatList = ({
     if (forumListData.length !== 0) {
       return <Divider bold={true} />;
     }
+    return <SpaceDivider />;
   };
   const handleScrollButtonPress = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
