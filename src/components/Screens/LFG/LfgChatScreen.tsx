@@ -285,6 +285,10 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         )}
         // End is Start, Start is End.
         onEndReached={handleLoadPrevious}
+        // Gonna try this out to see if it helps with rendering the "header" too soon.
+        // hasNextPage is false and theres no more data to fetch, but the header
+        // appears. I suspect it's related to the list not having rendered the next batch yet.
+        onEndReachedThreshold={4}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
       <ContentPostForm onSubmit={onSubmit} />
