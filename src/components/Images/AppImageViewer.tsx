@@ -8,6 +8,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
 import {saveImageToLocal} from '../../libraries/Storage/ImageStorage';
 import {ImageViewerFooterView} from '../Views/ImageViewerFooterView';
+import {useAppTheme} from '../../styles/Theme';
 
 interface AppImageViewerProps {
   initialIndex?: number;
@@ -31,6 +32,7 @@ export const AppImageViewer = ({
   const [viewerMessage, setViewerMessage] = useState<string>();
   const [currentImageIndex, setCurrentImageIndex] = useState(initialIndex);
   const {commonStyles} = useStyles();
+  const theme = useAppTheme();
 
   const saveImage = useCallback(
     async (index: number) => {
@@ -49,12 +51,29 @@ export const AppImageViewer = ({
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
         <View style={[commonStyles.flexRow, commonStyles.justifyContentEnd]}>
-          {enableDownload && <IconButton icon={AppIcons.download} onPress={() => saveImage(imageIndex)} />}
-          <IconButton icon={AppIcons.close} onPress={() => setIsVisible(false)} />
+          {enableDownload && (
+            <IconButton
+              icon={AppIcons.download}
+              onPress={() => saveImage(imageIndex)}
+              iconColor={theme.colors.onImageViewer}
+            />
+          )}
+          <IconButton
+            icon={AppIcons.close}
+            onPress={() => setIsVisible(false)}
+            iconColor={theme.colors.onImageViewer}
+          />
         </View>
       );
     },
-    [commonStyles.flexRow, commonStyles.justifyContentEnd, enableDownload, saveImage, setIsVisible],
+    [
+      commonStyles.flexRow,
+      commonStyles.justifyContentEnd,
+      enableDownload,
+      saveImage,
+      setIsVisible,
+      theme.colors.onImageViewer,
+    ],
   );
 
   const viewerFooter = useCallback(

@@ -38,8 +38,8 @@ export const ImageViewerFooterView = ({currentIndex, setImageIndex, viewerImages
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={commonStyles.marginBottomSmall}>{filename}</Text>
-        <Text>
+        <Text style={[commonStyles.marginBottomSmall, commonStyles.onImageViewer]}>{filename}</Text>
+        <Text style={[commonStyles.onImageViewer]}>
           {currentIndex + 1} of {viewerImages.length}
         </Text>
       </View>

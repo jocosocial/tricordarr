@@ -26,7 +26,6 @@ Work Queue
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 
 Nightly
-* image snack bar needs raised above the footer because z index is wrong
 * do not show "start of lfg" if hasneztpage
 * lfg card really needs to go back to the event day screen
 * measure power consumption https://www.npmjs.com/package/@welldone-software/why-did-you-render
