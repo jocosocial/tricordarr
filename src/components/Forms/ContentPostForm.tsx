@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, TextInput, StyleSheet} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
@@ -21,6 +21,7 @@ interface ContentPostFormProps {
   enablePhotos?: boolean;
   maxLength?: number;
   maxPhotos?: number;
+  initialValues?: PostContentData;
 }
 
 // https://formik.org/docs/guides/react-native
@@ -32,6 +33,7 @@ export const ContentPostForm = ({
   enablePhotos = true,
   maxLength = 500,
   maxPhotos = 1,
+  initialValues,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
@@ -48,7 +50,7 @@ export const ContentPostForm = ({
       }),
   });
 
-  const initialValues: PostContentData = {
+  const defaultInitialValues: PostContentData = {
     images: [],
     postAsModerator: asPrivilegedUser === PrivilegedUserAccounts.moderator,
     postAsTwitarrTeam: asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam,
@@ -97,7 +99,7 @@ export const ContentPostForm = ({
     <Formik
       innerRef={formRef}
       enableReinitialize={true}
-      initialValues={initialValues}
+      initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting, setFieldValue}) => (

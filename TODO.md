@@ -26,7 +26,6 @@ Work Queue
   * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 
 Nightly
-* emoji picker and insert menu for forum post. Consider using the full post form and displaying the current post above?
 * image snack bar needs raised above the footer because z index is wrong
 * do not show "start of lfg" if hasneztpage
 * lfg card really needs to go back to the event day screen

@@ -77,6 +77,7 @@ export const twitarrTheme = {
     twitarrYellow: '#FFD04D',
     twitarrGrey: 'rgb(46, 49, 51)',
     onTwitarrPositiveButton: 'rgb(255, 255, 255)',
+    onTwitarrNeutralButton: 'rgb(255, 255, 255)',
     onTwitarrYellow: 'rgb(0, 0, 0)',
   },
 };
@@ -134,6 +135,7 @@ export const twitarrThemeDark = {
     twitarrYellow: '#FFD04D',
     twitarrGrey: 'rgb(46, 49, 51)',
     onTwitarrPositiveButton: 'rgb(255, 255, 255)',
+    onTwitarrNeutralButton: 'rgb(255, 255, 255)',
     onTwitarrYellow: 'rgb(0, 0, 0)',
   },
 };

@@ -30,7 +30,7 @@ export const SubmitIconButton = ({
   const {styleDefaults} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const buttonContainerColor = asPrivilegedUser ? theme.colors.errorContainer : theme.colors.twitarrNeutralButton;
-  const buttonColor = asPrivilegedUser ? theme.colors.onErrorContainer : theme.colors.onBackground;
+  const buttonColor = asPrivilegedUser ? theme.colors.onErrorContainer : theme.colors.onTwitarrNeutralButton;
 
   const iconProp = submitting ? () => <ActivityIndicator /> : icon;
 
