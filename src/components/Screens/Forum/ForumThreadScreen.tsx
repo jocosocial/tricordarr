@@ -32,6 +32,7 @@ import {FormikHelpers, FormikProps} from 'formik';
 import {useForumPostCreateMutation} from '../../Queries/Forum/ForumPostQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -62,6 +63,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const postCreateMutation = useForumPostCreateMutation();
   const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  const {hasModerator} = usePrivilege();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -265,8 +267,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   return (
     <AppView>
       <PostAsUserBanner />
-      {forumData?.isLocked && <ForumLockedView />}
       <ListTitleView title={forumData?.title} />
+      {forumData?.isLocked && <ForumLockedView />}
       <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
@@ -279,13 +281,16 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         headerText={headerText}
         flatListRef={flatListRef}
       />
-      <ContentPostForm
-        onSubmit={onPostSubmit}
-        formRef={postFormRef}
-        enablePhotos={true}
-        maxLength={2000}
-        maxPhotos={4}
-      />
+      {!forumData?.isLocked ||
+        (hasModerator && (
+          <ContentPostForm
+            onSubmit={onPostSubmit}
+            formRef={postFormRef}
+            enablePhotos={true}
+            maxLength={2000}
+            maxPhotos={4}
+          />
+        ))}
     </AppView>
   );
 };

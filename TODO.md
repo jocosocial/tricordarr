@@ -19,7 +19,6 @@ Work Queue
   * Mark thread as read (dispatch)
   * Forum flatlist scroll button with post form
     * Scroll down button needs better spacing with post view too
-  * No post in locked
   * Tap post jump to thread (noop on regular view), long press for details
   * Disable mute / favorite if favorites / muted (mutual exclusivity)
   * Flatlist loadNext/loadPrevious offset (or indicator of more/previous posts) so user knows the end is not the end
