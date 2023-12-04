@@ -1,4 +1,4 @@
-import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {ReactNode, useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -10,6 +10,7 @@ import {timeAgo} from '../../../libraries/DateTime';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
+import {LabelDivider} from '../Dividers/LabelDivider';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -24,6 +25,7 @@ interface ForumPostFlatListProps {
   enableShowInThread?: boolean;
   flatListRef: React.RefObject<FlatList<PostData>>;
   getListHeader?: () => ReactNode;
+  forumListData?: ForumListData;
 }
 
 export const ForumPostFlatList = ({
@@ -39,6 +41,7 @@ export const ForumPostFlatList = ({
   enableShowInThread,
   flatListRef,
   getListHeader,
+  forumListData,
 }: ForumPostFlatListProps) => {
   // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -67,13 +70,29 @@ export const ForumPostFlatList = ({
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
 
+  const showNewDivider = useCallback(
+    (index: number) => {
+      if (forumListData) {
+        if (forumListData.postCount === forumListData.readCount) {
+          return false;
+        }
+        // index is inverted so the last message in the list is 0.
+        // Add one to the readCount so that we render below the message at the readCount.
+        // This doesn't do anything with un-inverted lists.
+        return forumListData.postCount - index === forumListData.readCount + 1;
+      }
+    },
+    [forumListData],
+  );
+
   const renderItem = useCallback(
-    ({item}: {item: PostData}) => (
+    ({item, index}: {item: PostData; index: number}) => (
       <View style={styles.postContainerView}>
+        {showNewDivider(index) && <LabelDivider label={'New'} />}
         <ForumPostListItem postData={item} enableShowInThread={enableShowInThread} />
       </View>
     ),
-    [styles.postContainerView, enableShowInThread],
+    [styles.postContainerView, showNewDivider, enableShowInThread],
   );
 
   const renderSeparator = useCallback(

@@ -12,7 +12,7 @@ import {
   NavigatorIDs,
   RootStackComponents,
 } from '../../../../libraries/Enums/Navigation';
-import {PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -70,6 +70,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {hasModerator} = usePrivilege();
   const {commonStyles} = useStyles();
   const isFocused = useIsFocused();
+  const [forumListItem, setForumListItem] = useState<ForumListData>();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -233,8 +234,35 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         postList: startScreenAtBottom ? postListData.reverse() : postListData,
       });
       setForumData(data.pages[0]);
+      // This is a hack to get around unread counts on first load.
+      // The spread operator is to ensure a copy of the object that doesn't update with the list
+      // when the mark-as-read action occurs.
+      if (!forumListItem) {
+        const item = forumListData.find(fdl => fdl.forumID === data.pages[0].forumID);
+        setForumListItem(item ? {...item} : undefined);
+      }
     }
-  }, [data, dispatchForumThreadPosts, route.params.postID, setForumData, startScreenAtBottom, isFocused]);
+  }, [
+    data,
+    dispatchForumThreadPosts,
+    route.params.postID,
+    setForumData,
+    startScreenAtBottom,
+    isFocused,
+    setForumListItem,
+    forumListData,
+    forumListItem,
+  ]);
+
+  useEffect(() => {
+    if (forumListItem) {
+      console.log(`[ForumThreadScreen.tsx] Marking forum ${forumListItem.forumID} as read.`);
+      dispatchForumListData({
+        type: ForumListDataActions.markAsRead,
+        forumID: forumListItem.forumID,
+      });
+    }
+  }, [dispatchForumListData, forumListItem]);
 
   useEffect(() => {
     if (!isFocused) {
@@ -263,7 +291,6 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
             type: ForumPostListActions.prependPost,
             newPost: response.data,
           });
-          const forumListItem = forumListData.find(fdl => fdl.forumID === forumData.forumID);
           if (forumListItem) {
             dispatchForumListData({
               type: ForumListDataActions.upsert,
@@ -332,6 +359,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         maintainViewPosition={true}
         getListHeader={route.params.postID ? getListHeader : undefined}
         flatListRef={flatListRef}
+        forumListData={forumListItem}
       />
       {(!forumData?.isLocked || hasModerator) && (
         <ContentPostForm

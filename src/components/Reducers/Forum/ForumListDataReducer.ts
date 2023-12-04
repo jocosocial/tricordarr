@@ -9,6 +9,7 @@ export enum ForumListDataActions {
   prependNewForumData = 'PREPEND_NEW_FORUM_DATA',
   upsert = 'UPSERT', // update and move to the top
   clear = 'CLEAR',
+  markAsRead = 'MARK_AS_READ',
 }
 
 export type ForumListDataActionsType =
@@ -25,7 +26,8 @@ export type ForumListDataActionsType =
       lastPoster?: UserHeader;
     }
   | {type: ForumListDataActions.upsert; thread: ForumListData}
-  | {type: ForumListDataActions.clear};
+  | {type: ForumListDataActions.clear}
+  | {type: ForumListDataActions.markAsRead; forumID: string};
 
 const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActionsType): ForumListData[] => {
   console.log('forumThreadListReducer got action', action.type);
@@ -70,6 +72,14 @@ const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActi
     }
     case ForumListDataActions.clear: {
       return [];
+    }
+    case ForumListDataActions.markAsRead: {
+      return threadList.flatMap(thread => {
+        if (thread.forumID === action.forumID) {
+          thread.readCount = thread.postCount;
+        }
+        return thread;
+      });
     }
     default: {
       throw new Error('Unknown ForumListDataActions action');

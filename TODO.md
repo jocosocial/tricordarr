@@ -12,9 +12,6 @@ Backlog
 
 Work Queue
 * Forum
-  * Forum thread screen start at unread
-  * Unread marker in post flatlist
-  * Mark thread as read (dispatch)
   * Flatlist loadNext/loadPrevious offset (or indicator of more/previous posts) so user knows the end is not the end
 
 Nightly
