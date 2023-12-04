@@ -7,16 +7,16 @@ Backlog
   * Debounce directory search
 * account avatar button on main screen in top right corner. Do account switching (far future), manage account, etc.
 * alert word notification counts
+* mention auto complete
+
 
 Work Queue
 * ErrorBanner
   * onPress settings needs to dismiss
-* Snackbars linger a lot
 * Forum
   * Forum thread screen start at unread
   * Unread marker in post flatlist
   * Mark thread as read (dispatch)
-  * mention auto complete
   * Forum flatlist scroll button with post form
     * Scroll down button needs better spacing with post view too
   * No post in locked
