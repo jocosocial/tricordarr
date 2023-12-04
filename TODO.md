@@ -11,15 +11,11 @@ Backlog
 
 
 Work Queue
-* Forum posts cross contamination
 * Forum
   * Forum thread screen start at unread
   * Unread marker in post flatlist
   * Mark thread as read (dispatch)
-  * Forum flatlist scroll button with post form
-    * Scroll down button needs better spacing with post view too
   * Flatlist loadNext/loadPrevious offset (or indicator of more/previous posts) so user knows the end is not the end
-  * how to get from a thread list starting st a specific post to the full thread? Button in the list header? Tap the title view?
 
 Nightly
 * lfg card really needs to go back to the event day screen

@@ -56,7 +56,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
+  const {forumData, setForumData, forumThreadPosts, dispatchForumThreadPosts, forumListData, dispatchForumListData} =
+    useTwitarr();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
@@ -212,6 +213,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     onRefresh,
     profilePublicData?.header.userID,
     rootNavigation,
+    theme.colors.onSurfaceDisabled,
     theme.colors.twitarrNegativeButton,
     theme.colors.twitarrYellow,
   ]);
@@ -223,25 +225,26 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       const postListData = data.pages.flatMap(fd => fd.posts);
-      dispatchForumPosts({
+      console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts and ForumData.');
+      dispatchForumThreadPosts({
         type: ForumPostListActions.setList,
         postList: startScreenAtBottom ? postListData.reverse() : postListData,
       });
       setForumData(data.pages[0]);
     }
-  }, [data, dispatchForumPosts, route.params.postID, setForumData, startScreenAtBottom]);
+  }, [data, dispatchForumThreadPosts, route.params.postID, setForumData, startScreenAtBottom, isFocused]);
 
   useEffect(() => {
     if (!isFocused) {
-      console.log('[ForumThreadScreen.tsx] Clearing ForumPosts and ForumData.');
-      dispatchForumPosts({
+      console.log('[ForumThreadScreen.tsx] Clearing ForumThreadPosts and ForumData.');
+      dispatchForumThreadPosts({
         type: ForumPostListActions.clear,
       });
       setForumData(undefined);
     }
-  }, [dispatchForumPosts, isFocused, setForumData]);
+  }, [dispatchForumThreadPosts, isFocused, setForumData]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
@@ -256,7 +259,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          dispatchForumPosts({
+          dispatchForumThreadPosts({
             type: ForumPostListActions.prependPost,
             newPost: response.data,
           });
@@ -319,7 +322,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       <ListTitleView title={forumData?.title} />
       {forumData?.isLocked && <ForumLockedView />}
       <ForumPostFlatList
-        postList={forumPosts}
+        postList={forumThreadPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
@@ -327,19 +330,18 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         forumData={forumData}
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
-        getListHeader={getListHeader}
+        getListHeader={route.params.postID ? getListHeader : undefined}
         flatListRef={flatListRef}
       />
-      {!forumData?.isLocked ||
-        (hasModerator && (
-          <ContentPostForm
-            onSubmit={onPostSubmit}
-            formRef={postFormRef}
-            enablePhotos={true}
-            maxLength={2000}
-            maxPhotos={4}
-          />
-        ))}
+      {(!forumData?.isLocked || hasModerator) && (
+        <ContentPostForm
+          onSubmit={onPostSubmit}
+          formRef={postFormRef}
+          enablePhotos={true}
+          maxLength={2000}
+          maxPhotos={4}
+        />
+      )}
     </AppView>
   );
 };

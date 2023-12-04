@@ -93,14 +93,17 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
     });
   }, [getNavButtons, navigation]);
 
+  // useEffect(() => {
+  // if (!isFocused) {
+  //   console.log('[ForumPostScreenBase.tsx] Clearing ForumPosts');
+  //   dispatchForumPosts({
+  //     type: ForumPostListActions.clear,
+  //   });
+  //   return;
+  // }
+  // }, [isFocused]);
+
   useEffect(() => {
-    if (!isFocused) {
-      console.log('[ForumPostScreenBase.tsx] Clearing ForumPosts');
-      dispatchForumPosts({
-        type: ForumPostListActions.clear,
-      });
-      return;
-    }
     if (data) {
       console.log('[ForumPostScreenBase.tsx] Setting ForumPosts.');
       dispatchForumPosts({
@@ -111,7 +114,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
     if (userNotificationData?.newForumMentionCount) {
       refetchUserNotificationData();
     }
-  }, [data, dispatchForumPosts, isFocused, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
+  }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
   if (!data) {
     return <LoadingView />;
