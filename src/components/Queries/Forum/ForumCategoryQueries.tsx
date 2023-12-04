@@ -23,7 +23,7 @@ export interface ForumCategoryQueryParams {
 export const useForumCategoryQuery = (
   categoryId: string,
   queryParams: ForumCategoryQueryParams = {},
-  pageSize = 50,
+  pageSize = 2,
 ) => {
   const {isLoggedIn} = useAuth();
   return useInfiniteQuery<CategoryData>(
@@ -33,8 +33,8 @@ export const useForumCategoryQuery = (
         `/forum/categories/${categoryId}`,
         {
           params: {
-            limit: pageParam.limit,
-            start: pageParam.start,
+            ...(pageParam.start ? {start: pageParam.start} : undefined),
+            ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
             ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
             ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
             ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
@@ -52,8 +52,10 @@ export const useForumCategoryQuery = (
       },
       getPreviousPageParam: (firstPage, allPages) => {
         const start = pageSize * allPages.length;
+        console.log('Start', start);
         const prevStart = start - pageSize;
-        return prevStart >= 0 ? {start: prevStart, limit: pageSize} : undefined;
+        console.log('Previous Start', prevStart);
+        return prevStart > 0 ? {start: prevStart, limit: pageSize} : undefined;
       },
     },
   );

@@ -99,6 +99,8 @@ export const ForumCategoryBaseView = (props: ForumCategoryBaseViewProps) => {
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
       />
       <ForumFAB categoryId={props.category.categoryID} enableNewButton={!isUserRestricted} />
     </AppView>

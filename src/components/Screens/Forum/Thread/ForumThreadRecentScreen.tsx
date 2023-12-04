@@ -78,6 +78,8 @@ export const ForumThreadRecentScreen = () => {
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
       />
       <ForumFAB />
     </AppView>

@@ -360,6 +360,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         getListHeader={route.params.postID ? getListHeader : undefined}
         flatListRef={flatListRef}
         forumListData={forumListItem}
+        hasNextPage={hasNextPage}
       />
       {(!forumData?.isLocked || hasModerator) && (
         <ContentPostForm

@@ -1,6 +1,6 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
-import React, {ReactNode, useCallback, useRef, useState} from 'react';
+import React, {ReactNode, useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
@@ -21,6 +21,7 @@ interface ForumPostFlatListProps {
   invertList?: boolean;
   forumData?: ForumData;
   hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
   flatListRef: React.RefObject<FlatList<PostData>>;
@@ -42,6 +43,7 @@ export const ForumPostFlatList = ({
   flatListRef,
   getListHeader,
   forumListData,
+  hasNextPage,
 }: ForumPostFlatListProps) => {
   // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -142,6 +144,16 @@ export const ForumPostFlatList = ({
           )}
         </PaddedContentView>
       );
+    } else if (hasPreviousPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>Loading more...</Text>
+            </View>
+          </View>
+        </PaddedContentView>
+      );
     }
     if (!itemSeparator) {
       return <SpaceDivider />;
@@ -170,7 +182,20 @@ export const ForumPostFlatList = ({
     styles.timeDividerStyle,
   ]);
 
-  const renderListFooter = useCallback(() => <SpaceDivider />, []);
+  const renderListFooter = useCallback(() => {
+    if (hasNextPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>Loading more...</Text>
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    }
+    return <SpaceDivider />;
+  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, invertList]);
 
   // https://github.com/facebook/react-native/issues/25239
   return (

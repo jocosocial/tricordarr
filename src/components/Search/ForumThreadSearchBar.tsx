@@ -128,6 +128,8 @@ export const ForumThreadSearchBar = () => {
           forumListData={forumList}
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
         />
       </View>
     </>

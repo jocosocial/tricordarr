@@ -1,8 +1,8 @@
-import {FlatList, RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
 import {ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {Divider} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -16,6 +16,8 @@ interface ForumThreadFlatListProps {
   handleLoadNext: () => void;
   handleLoadPrevious: () => void;
   maintainViewPosition?: boolean;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
 }
 
 export const ForumThreadFlatList = ({
@@ -24,6 +26,8 @@ export const ForumThreadFlatList = ({
   handleLoadNext,
   handleLoadPrevious,
   maintainViewPosition,
+  hasNextPage,
+  hasPreviousPage,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlatList<ForumListData>>(null);
   const [showButton, setShowButton] = useState(false);
@@ -33,9 +37,31 @@ export const ForumThreadFlatList = ({
     if (forumListData.length === 0) {
       return <TimeDivider label={'No forums to display'} />;
     }
+    if (hasPreviousPage) {
+      return (
+        <PaddedContentView>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>Loading more previous...</Text>
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    }
     return <Divider bold={true} />;
   };
   const renderListFooter = () => {
+    if (hasNextPage) {
+      return (
+        <PaddedContentView>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>Loading more next...</Text>
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    }
     if (forumListData.length !== 0) {
       return <Divider bold={true} />;
     }

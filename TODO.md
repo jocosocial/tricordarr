@@ -12,7 +12,7 @@ Backlog
 
 Work Queue
 * Forum
-  * Flatlist loadNext/loadPrevious offset (or indicator of more/previous posts) so user knows the end is not the end
+  * Category pagination query is wrong with hasNext/hasPrevious
 
 Nightly
 * lfg card really needs to go back to the event day screen

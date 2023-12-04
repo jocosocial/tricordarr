@@ -132,6 +132,7 @@ export const ForumPostSearchBar = () => {
           itemSeparator={'time'}
           invertList={false}
           enableShowInThread={true}
+          hasNextPage={hasNextPage}
         />
       </View>
     </>
