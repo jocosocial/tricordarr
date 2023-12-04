@@ -56,6 +56,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
     if (isFocused) {
+      console.log('[ForumCategoryScreen.tsx] Clearing ForumPosts and ForumData');
       dispatchForumPosts({
         type: ForumPostListActions.clear,
       });

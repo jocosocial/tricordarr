@@ -14,6 +14,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumPostFlatList} from '../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {useIsFocused} from '@react-navigation/native';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -44,6 +45,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
   const {setModalContent, setModalVisible} = useModal();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -86,7 +88,21 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   }, [onRefresh, refreshOnUserNotification, userNotificationData?.newForumMentionCount]);
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      console.log('[ForumPostScreenBase.tsx] Clearing ForumPosts');
+      dispatchForumPosts({
+        type: ForumPostListActions.clear,
+      });
+      return;
+    }
     if (data) {
+      console.log('[ForumPostScreenBase.tsx] Setting ForumPosts.');
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: data.pages.flatMap(p => p.posts),
@@ -95,13 +111,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
     if (userNotificationData?.newForumMentionCount) {
       refetchUserNotificationData();
     }
-  }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-  }, [getNavButtons, navigation]);
+  }, [data, dispatchForumPosts, isFocused, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
   if (!data) {
     return <LoadingView />;

@@ -1,6 +1,6 @@
 import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {ReactNode, useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
@@ -22,8 +22,8 @@ interface ForumPostFlatListProps {
   hasPreviousPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
-  headerText?: string;
   flatListRef: React.RefObject<FlatList<PostData>>;
+  getListHeader?: () => ReactNode;
 }
 
 export const ForumPostFlatList = ({
@@ -37,8 +37,8 @@ export const ForumPostFlatList = ({
   hasPreviousPage,
   maintainViewPosition,
   enableShowInThread,
-  headerText,
   flatListRef,
+  getListHeader,
 }: ForumPostFlatListProps) => {
   // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
@@ -112,15 +112,15 @@ export const ForumPostFlatList = ({
     if (forumData && !hasPreviousPage) {
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              {headerText ? (
-                <Text variant={'labelMedium'}>{headerText}</Text>
-              ) : (
+          {getListHeader ? (
+            getListHeader()
+          ) : (
+            <View style={[commonStyles.flexRow]}>
+              <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
                 <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
-              )}
+              </View>
             </View>
-          </View>
+          )}
         </PaddedContentView>
       );
     }
@@ -144,7 +144,7 @@ export const ForumPostFlatList = ({
     commonStyles.flexRow,
     forumData,
     hasPreviousPage,
-    headerText,
+    getListHeader,
     invertList,
     itemSeparator,
     postList,

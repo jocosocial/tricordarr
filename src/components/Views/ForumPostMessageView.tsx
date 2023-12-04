@@ -12,6 +12,7 @@ import {useAppTheme} from '../../styles/Theme';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
 import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
 import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -37,7 +38,7 @@ export const ForumPostMessageView = ({
   const closeMenu = () => setMenuVisible(false);
   const theme = useAppTheme();
   const {favorites} = useUserRelations();
-  const rootNavigation = useRootStack();
+  const forumNavigation = useForumStackNavigation();
 
   const styles = {
     messageView: [
@@ -59,15 +60,8 @@ export const ForumPostMessageView = ({
 
   // Same as the button in the menu used in the menu
   const onPress = () => {
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.forumsTab,
-      params: {
-        screen: ForumStackComponents.forumThreadScreen,
-        params: {
-          postID: postData.postID.toString(),
-        },
-        initial: false,
-      },
+    forumNavigation.push(ForumStackComponents.forumThreadScreen, {
+      postID: postData.postID.toString(),
     });
   };
 

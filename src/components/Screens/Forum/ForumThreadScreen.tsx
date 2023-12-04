@@ -33,6 +33,9 @@ import {useForumPostCreateMutation} from '../../Queries/Forum/ForumPostQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {Button, Text} from 'react-native-paper';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useIsFocused} from '@react-navigation/native';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -64,6 +67,8 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {hasModerator} = usePrivilege();
+  const {commonStyles} = useStyles();
+  const isFocused = useIsFocused();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -228,6 +233,16 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     }
   }, [data, dispatchForumPosts, route.params.postID, setForumData, startScreenAtBottom]);
 
+  useEffect(() => {
+    if (!isFocused) {
+      console.log('[ForumThreadScreen.tsx] Clearing ForumPosts and ForumData.');
+      dispatchForumPosts({
+        type: ForumPostListActions.clear,
+      });
+      setForumData(undefined);
+    }
+  }, [dispatchForumPosts, isFocused, setForumData]);
+
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
       setErrorMessage('Forum Data missing? This is definitely a bug.');
@@ -276,7 +291,27 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
-  const headerText = route.params.postID ? 'Showing forum starting at selected post.' : undefined;
+  const getListHeader = () => {
+    return (
+      <View style={[commonStyles.flexRow]}>
+        <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+          <Text variant={'labelMedium'}>Showing forum starting at selected post.</Text>
+          {forumData && (
+            <Button
+              mode={'outlined'}
+              style={[commonStyles.marginTopSmall]}
+              onPress={() =>
+                navigation.push(ForumStackComponents.forumThreadScreen, {
+                  forumID: forumData.forumID,
+                })
+              }>
+              View Full Forum
+            </Button>
+          )}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <AppView>
@@ -292,7 +327,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         forumData={forumData}
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
-        headerText={headerText}
+        getListHeader={getListHeader}
         flatListRef={flatListRef}
       />
       {!forumData?.isLocked ||
