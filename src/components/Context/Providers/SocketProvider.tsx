@@ -16,52 +16,52 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   const openFezSocket = useCallback(
     (fezID: string) => {
       if (!appConfig.enableFezSocket) {
-        console.log('[fezSocket] skipping open, fez sockets are disabled');
+        console.log('[SocketProvider.tsx] FezSocket is disabled. Skipping open.');
         return;
       }
-      console.log(`[fezSocket] open for ${fezID}, state = ${fezSocket?.readyState}`);
+      console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
       if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
-        console.log('[fezSocket] socket exists, skipping...');
+        console.log('[SocketProvider.tsx] FezSocket already exists. Skipping buildWebSocket.');
       } else {
         buildWebSocket(fezID).then(ws => setFezSocket(ws));
       }
-      console.log(`[fezSocket] open complete, state = ${fezSocket?.readyState}`);
+      console.log(`[SocketProvider.tsx] FezSocket open complete! State: ${fezSocket?.readyState}`);
     },
     [appConfig.enableFezSocket, fezSocket],
   );
 
   const openNotificationSocket = useCallback(() => {
     if (!appConfig.enableNotificationSocket) {
-      console.log('[NotificationSocket] skipping open, notification sockets are disabled');
+      console.log('[SocketProvider.tsx] NotificationSocket is disabled. Skipping open.');
       return;
     }
-    console.log(`[NotificationSocket] open, state = ${notificationSocket?.readyState}`);
+    console.log(`[SocketProvider.tsx] NotificationSocket enabled. State: ${notificationSocket?.readyState}`);
     if (
       notificationSocket &&
       (notificationSocket.readyState === WebSocket.OPEN || notificationSocket.readyState === WebSocket.CONNECTING)
     ) {
-      console.log('[NotificationSocket] socket exists, skipping...');
+      console.log('[SocketProvider.tsx] NotificationSocket already exists. Skipping buildWebSocket.');
     } else {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
-    console.log(`[NotificationSocket] open complete, state = ${notificationSocket?.readyState}`);
+    console.log(`[SocketProvider.tsx] NotificationSocket open complete! State: ${notificationSocket?.readyState}`);
   }, [appConfig.enableNotificationSocket, notificationSocket]);
 
   // Socket Close
 
   const closeFezSocket = useCallback(() => {
-    console.log('[fezSocket] close');
+    console.log('[SocketProvider.tsx] FezSocket is closing.');
     if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
       fezSocket.close();
       setFezSocket(undefined);
     } else {
-      console.log('[fezSocket] socket ineligible for close. state =', fezSocket?.readyState);
+      console.log(`[SocketProvider.tsx] FezSocket ineligible for close. State: ${fezSocket?.readyState}`);
     }
-    console.log(`[fezSocket] close complete, state = ${fezSocket?.readyState}`);
+    console.log(`[SocketProvider.tsx] FezSocket close complete. State: ${fezSocket?.readyState}`);
   }, [fezSocket]);
 
   const closeNotificationSocket = useCallback(() => {
-    console.log('[NotificationSocket] close');
+    console.log('[SocketProvider.tsx] NotificationSocket is closing.');
     if (
       notificationSocket &&
       (notificationSocket.readyState === WebSocket.OPEN || notificationSocket.readyState === WebSocket.CLOSED)
@@ -69,28 +69,34 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       notificationSocket.close();
       setNotificationSocket(undefined);
     } else {
-      console.log('[NotificationSocket] socket ineligible for close. state =', notificationSocket?.readyState);
+      console.log(
+        `[SocketProvider.tsx] NotificationSocket ineligible for close. State: ${notificationSocket?.readyState}`,
+      );
     }
-    console.log(`[NotificationSocket] close complete, state = ${notificationSocket?.readyState}`);
+    console.log(`[SocketProvider.tsx] NotificationSocket close complete. State: ${notificationSocket?.readyState}`);
   }, [notificationSocket]);
 
   // Effects
 
   useEffect(() => {
+    console.log('[SocketProvider.tsx] Triggering openNotificationSocket useEffect.');
     if (profilePublicData) {
       openNotificationSocket();
     }
+    console.log('[SocketProvider.tsx] Finished openNotificationSocket useEffect.');
   }, [openNotificationSocket, profilePublicData]);
 
   useEffect(() => {
+    console.log('[SocketProvider.tsx] Triggering socket close useEffect.');
     if (!appConfig.enableNotificationSocket) {
-      console.log('[NotificationSocket] notification sockets are disabled. Explicitly closing.');
+      console.log('[SocketProvider.tsx] NotificationSocket is disabled. Explicitly closing.');
       closeNotificationSocket();
     }
     if (!appConfig.enableFezSocket) {
-      console.log('[fezSocket] fez sockets are disabled. Explicitly closing.');
+      console.log('[SocketProvider.tsx] FezSocket is disabled. Explicitly closing.');
       closeFezSocket();
     }
+    console.log('[SocketProvider.tsx] Finished socket close useEffect.');
   }, [appConfig.enableFezSocket, appConfig.enableNotificationSocket, closeFezSocket, closeNotificationSocket]);
 
   return (
