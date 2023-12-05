@@ -16,7 +16,7 @@ interface ForumPostFlatListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext: () => void;
-  handleLoadPrevious: () => void;
+  handleLoadPrevious?: () => void;
   itemSeparator?: 'time';
   invertList?: boolean;
   forumData?: ForumData;
@@ -45,7 +45,6 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
 }: ForumPostFlatListProps) => {
-  // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
 
@@ -195,7 +194,7 @@ export const ForumPostFlatList = ({
       );
     }
     return <SpaceDivider />;
-  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, invertList]);
+  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, hasNextPage, invertList]);
 
   // https://github.com/facebook/react-native/issues/25239
   return (

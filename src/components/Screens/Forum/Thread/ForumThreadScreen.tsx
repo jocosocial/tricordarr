@@ -351,11 +351,11 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       <ForumPostFlatList
         postList={forumThreadPosts}
         handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
+        handleLoadPrevious={route.params.postID ? undefined : handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
         invertList={startScreenAtBottom}
         forumData={forumData}
-        hasPreviousPage={hasPreviousPage}
+        hasPreviousPage={route.params.postID ? undefined : hasPreviousPage}
         maintainViewPosition={true}
         getListHeader={route.params.postID ? getListHeader : undefined}
         flatListRef={flatListRef}
