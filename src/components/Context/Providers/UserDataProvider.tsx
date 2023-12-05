@@ -10,11 +10,11 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
   const {tokenData} = useAuth();
-
   const {data: profileQueryData, error: profileQueryError} = useUserProfileQuery();
 
   useEffect(() => {
     if (tokenData && profileQueryData) {
+      console.log('[UserDataProvider.tsx] Setting profile public data');
       setProfilePublicData(profileQueryData);
     }
     if (tokenData && profileQueryError && profileQueryError.response) {

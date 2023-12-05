@@ -32,7 +32,7 @@ export function useTokenAuthQuery<
       setErrorMessage(error);
     },
     ...options,
-    enabled: options.enabled ? isLoggedIn : false,
+    enabled: options.enabled ? options.enabled && isLoggedIn : isLoggedIn,
   });
 }
 
@@ -88,15 +88,15 @@ export function useTokenAuthPaginationQuery<
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
       const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
         params: {
-          limit: pageParam.limit,
-          start: pageParam.start,
+          ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+          ...(pageParam.start ? {start: pageParam.start} : undefined),
           ...queryParams,
         },
       });
+      console.log(responseData);
       return responseData;
     },
     {
-      enabled: isLoggedIn,
       getNextPageParam: lastPage => {
         const {limit, start, total} = lastPage.paginator;
         const nextStart = start + limit;
@@ -111,6 +111,7 @@ export function useTokenAuthPaginationQuery<
         setErrorMessage(error);
       },
       ...options,
+      enabled: options?.enabled ? options.enabled && isLoggedIn : isLoggedIn,
     },
   );
 }

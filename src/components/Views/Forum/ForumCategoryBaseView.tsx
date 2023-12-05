@@ -32,7 +32,8 @@ export const ForumCategoryBaseView = (props: ForumCategoryBaseViewProps) => {
     hasNextPage,
     fetchNextPage,
   } = useForumCategoryQuery(props.category.categoryID, {
-    sort: forumSortOrder,
+    ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
+    start: 0,
   });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
