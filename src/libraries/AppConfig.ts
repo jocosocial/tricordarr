@@ -7,6 +7,10 @@ export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
 };
 
+export interface APIClientConfig {
+  defaultPageSize: number;
+}
+
 export interface ScheduleConfig {
   eventsShowJoinedLfgs: boolean;
   eventsShowOpenLfgs: boolean;
@@ -31,6 +35,7 @@ export interface AppConfig {
   cruiseLength: number;
   schedule: ScheduleConfig;
   portTimeZoneID: string;
+  apiClientConfig: APIClientConfig;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -67,6 +72,10 @@ const defaultAppConfig: AppConfig = {
     eventsShowOpenLfgs: false,
   },
   portTimeZoneID: 'America/New_York',
+  // Inserting for future use.
+  apiClientConfig: {
+    defaultPageSize: 50,
+  },
 };
 
 /**
