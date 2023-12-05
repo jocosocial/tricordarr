@@ -9,6 +9,8 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
+import {LabelDivider} from '../Dividers/LabelDivider';
+import {useAppTheme} from '../../../styles/Theme';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -33,6 +35,7 @@ export const ForumThreadFlatList = ({
   const [showButton, setShowButton] = useState(false);
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
+  const theme = useAppTheme();
   const renderListHeader = () => {
     if (forumListData.length === 0) {
       return <TimeDivider label={'No forums to display'} />;
@@ -63,7 +66,14 @@ export const ForumThreadFlatList = ({
       );
     }
     if (forumListData.length !== 0) {
-      return <Divider bold={true} />;
+      return (
+        <LabelDivider
+          label={'End of Category'}
+          color={theme.colors.onBackground}
+          wrapperStyle={[commonStyles.marginTopZero, commonStyles.marginBottomSmall]}
+          dividerColor={theme.colors.outlineVariant}
+        />
+      );
     }
     return <SpaceDivider />;
   };
