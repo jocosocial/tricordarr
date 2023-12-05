@@ -32,7 +32,8 @@ export type ScheduleFilterSettings = {
   eventTypeFilter?: keyof typeof EventType;
   eventFavoriteFilter?: boolean;
   lfgTypeFilter?: keyof typeof FezType;
-  showLfgs?: boolean;
+  showJoinedLfgs?: boolean;
+  showOpenLfgs?: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;

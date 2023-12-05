@@ -11,16 +11,18 @@ import {BooleanField} from '../../Forms/Fields/BooleanField';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.hidePastLfgs);
+  const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
   const {setLfgHidePastFilter} = useFilter();
   const {commonStyles} = useStyles();
 
   const handleHidePastLfgs = () => {
-    const newValue = !appConfig.hidePastLfgs;
-    console.log('Setting to', newValue);
+    const newValue = !appConfig.schedule.hidePastLfgs;
     updateAppConfig({
       ...appConfig,
-      hidePastLfgs: newValue,
+      schedule: {
+        ...appConfig.schedule,
+        hidePastLfgs: newValue,
+      },
     });
     setHidePastLfgs(newValue);
     setLfgHidePastFilter(newValue);

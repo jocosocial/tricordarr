@@ -7,6 +7,13 @@ export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
 };
 
+export interface ScheduleConfig {
+  eventsShowJoinedLfgs: boolean;
+  eventsShowOpenLfgs: boolean;
+  hidePastLfgs: boolean;
+  enableLateDayFlip: boolean;
+}
+
 export interface AppConfig {
   serverUrl: string;
   urlPrefix: string;
@@ -22,9 +29,7 @@ export interface AppConfig {
   enableDeveloperOptions: boolean;
   cruiseStartDate: Date;
   cruiseLength: number;
-  unifiedSchedule: boolean;
-  hidePastLfgs: boolean;
-  enableLateDayFlip: boolean;
+  schedule: ScheduleConfig;
   portTimeZoneID: string;
 }
 
@@ -55,9 +60,12 @@ const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
-  unifiedSchedule: true,
-  hidePastLfgs: true,
-  enableLateDayFlip: true,
+  schedule: {
+    hidePastLfgs: true,
+    enableLateDayFlip: true,
+    eventsShowJoinedLfgs: true,
+    eventsShowOpenLfgs: false,
+  },
   portTimeZoneID: 'America/New_York',
 };
 

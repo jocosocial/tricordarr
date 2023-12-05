@@ -10,24 +10,42 @@ import {BooleanField} from '../../Forms/Fields/BooleanField';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const [unified, setUnified] = useState(appConfig.unifiedSchedule);
-  const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.enableLateDayFlip);
+  const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
   const {commonStyles} = useStyles();
+  const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
+  const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
 
-  const handleShowLfgs = () => {
+  const handleOpenLfgs = () => {
     updateAppConfig({
       ...appConfig,
-      unifiedSchedule: !appConfig.unifiedSchedule,
+      schedule: {
+        ...appConfig.schedule,
+        eventsShowOpenLfgs: !appConfig.schedule.eventsShowOpenLfgs,
+      },
     });
-    setUnified(!appConfig.unifiedSchedule);
+    setOpen(!appConfig.schedule.eventsShowOpenLfgs);
+  };
+
+  const handleJoinedLfgs = () => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        eventsShowJoinedLfgs: !appConfig.schedule.eventsShowJoinedLfgs,
+      },
+    });
+    setJoined(!appConfig.schedule.eventsShowJoinedLfgs);
   };
 
   const handleEnableLateDayFlip = () => {
     updateAppConfig({
       ...appConfig,
-      enableLateDayFlip: !appConfig.enableLateDayFlip,
+      schedule: {
+        ...appConfig.schedule,
+        enableLateDayFlip: !appConfig.schedule.enableLateDayFlip,
+      },
     });
-    setEnableLateDayFlip(!appConfig.enableLateDayFlip);
+    setEnableLateDayFlip(!appConfig.schedule.enableLateDayFlip);
   };
 
   return (
@@ -37,13 +55,23 @@ export const EventSettingsScreen = () => {
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
               <BooleanField
-                name={'unifiedSchedule'}
-                label={'Show LFGs in Schedule'}
+                name={'eventsShowJoinedLfgs'}
+                label={'Show Joined LFGs in Events'}
                 helperText={
-                  "Display community-created Looking For Group events in the main schedule along with Official and Shadow Cruise events. Shows LFGs that are open or you've joined or created."
+                  'Display community-created Looking For Group events that you have joined in the Events screen along with Official and Shadow Cruise events.'
                 }
-                onPress={handleShowLfgs}
-                value={unified}
+                onPress={handleJoinedLfgs}
+                value={joined}
+                style={commonStyles.paddingHorizontal}
+              />
+              <BooleanField
+                name={'eventsShowOpenLfgs'}
+                label={'Show Open LFGs in Events'}
+                helperText={
+                  'Display community-created Looking For Group events that are open to you in the Events screen along with Official and Shadow Cruise events.'
+                }
+                onPress={handleOpenLfgs}
+                value={open}
                 style={commonStyles.paddingHorizontal}
               />
               <BooleanField

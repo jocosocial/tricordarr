@@ -2,12 +2,11 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
 import {
   BottomTabComponents,
-  EventStackComponents,
-  LfgStackComponents, MainStackComponents,
-  RootStackComponents
+  LfgStackComponents,
+  MainStackComponents,
+  RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';

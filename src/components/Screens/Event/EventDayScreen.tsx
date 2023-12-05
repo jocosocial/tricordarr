@@ -38,6 +38,7 @@ export type Props = NativeStackScreenProps<
 export const EventDayScreen = ({navigation, route}: Props) => {
   const {eventTypeFilter, eventFavoriteFilter} = useFilter();
   const {isLoggedIn} = useAuth();
+  const {appConfig} = useConfig();
   const {
     data: eventData,
     isLoading: isEventLoading,
@@ -56,7 +57,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     cruiseDay: route.params.cruiseDay - 1,
     endpoint: 'open',
     options: {
-      enabled: isLoggedIn,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs,
     },
   });
   const {
@@ -67,7 +68,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     cruiseDay: route.params.cruiseDay - 1,
     endpoint: 'joined',
     options: {
-      enabled: isLoggedIn,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs,
     },
   });
 
@@ -78,7 +79,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
   const {scheduleList, dispatchScheduleList} = useTwitarr();
-  const {appConfig} = useConfig();
 
   const getScrollIndex = useCallback(
     (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {
@@ -149,7 +149,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     }
   }, [scheduleList, scrollNowIndex]);
 
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetchEvents().then(() => {
@@ -180,11 +179,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     (filterSettings: ScheduleFilterSettings) => {
       let lfgList: FezData[] = [];
       if (!filterSettings.eventTypeFilter) {
-        if (filterSettings.showLfgs && lfgJoinedData) {
+        if (filterSettings.showJoinedLfgs && lfgJoinedData) {
           lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
         }
         if (!filterSettings.eventFavoriteFilter) {
-          if (filterSettings.showLfgs && lfgOpenData) {
+          if (filterSettings.showOpenLfgs && lfgOpenData) {
             lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
           }
         }
@@ -221,11 +220,13 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     const filterSettings: ScheduleFilterSettings = {
       eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
       eventFavoriteFilter: eventFavoriteFilter,
-      showLfgs: appConfig.unifiedSchedule,
+      showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
+      showOpenLfgs: appConfig.schedule.eventsShowOpenLfgs,
     };
     buildScheduleList(filterSettings);
   }, [
-    appConfig.unifiedSchedule,
+    appConfig.schedule.eventsShowJoinedLfgs,
+    appConfig.schedule.eventsShowOpenLfgs,
     buildScheduleList,
     dispatchScheduleList,
     eventData,
@@ -256,7 +257,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     return <NotLoggedInView />;
   }
 
-  if (isLfgJoinedLoading || isLfgOpenLoading || isEventLoading) {
+  if (
+    (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) ||
+    (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenLoading) ||
+    isEventLoading
+  ) {
     return <LoadingView />;
   }
 
