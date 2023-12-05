@@ -28,11 +28,11 @@ export function useTokenAuthQuery<
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
-    enabled: isLoggedIn,
     onError: error => {
       setErrorMessage(error);
     },
     ...options,
+    enabled: options.enabled ? isLoggedIn : false,
   });
 }
 

@@ -1,8 +1,7 @@
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
-import {ErrorResponse, EventData} from '../../../libraries/Structs/ControllerStructs';
+import axios, {AxiosResponse} from 'axios';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 interface EventFavoriteMutationProps {
   eventID: string;
@@ -15,18 +14,17 @@ const queryHandler = async ({eventID, action}: EventFavoriteMutationProps): Prom
   return await axios.post(`/events/${eventID}/${endpoint}`);
 };
 
-export const useEventFavoriteMutation = (retry = 0) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, EventFavoriteMutationProps>(queryHandler, {
-    retry: retry,
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-  });
+export const useEventFavoriteMutation = () => {
+  return useTokenAuthMutation(queryHandler);
 };
 
-export const useEventFavoritesQuery = () => {
+interface EventFavoriteQueryProps {
+  enabled?: boolean;
+}
+
+export const useEventFavoriteQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
   return useTokenAuthQuery<EventData[]>({
     queryKey: ['/events/favorites'],
+    enabled: enabled,
   });
 };

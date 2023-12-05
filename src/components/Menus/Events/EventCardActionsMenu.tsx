@@ -5,11 +5,10 @@ import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '..
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
-import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
+import {useEventFavoriteMutation, useEventFavoriteQuery} from '../../Queries/Events/EventFavoriteQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
 
 interface EventCardActionsMenuProps {
   anchor: JSX.Element;

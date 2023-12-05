@@ -1,6 +1,7 @@
-import {ErrorResponse, EventData} from '../../../libraries/Structs/ControllerStructs';
-import {useQuery} from '@tanstack/react-query';
-import axios, {AxiosError} from 'axios';
+import {EventData} from '../../../libraries/Structs/ControllerStructs';
+import axios from 'axios';
+import {useOpenQuery} from '../OpenQuery';
+import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface EventsQueryOptions {
   cruiseDay?: number;
@@ -13,9 +14,9 @@ interface EventsQueryOptions {
 }
 
 export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options = {}}: EventsQueryOptions) => {
-  return useQuery<[EventData], AxiosError<ErrorResponse>>(
-    ['/events', {cruiseDay: cruiseDay, eventType: eventType}],
-    async () => {
+  return useOpenQuery<EventData[]>({
+    queryKey: ['/events', {cruiseDay: cruiseDay, eventType: eventType}],
+    queryFn: async () => {
       const queryParams = {
         ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
         ...(day && {day: day}),
@@ -29,18 +30,12 @@ export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, o
       });
       return responseData;
     },
-    options,
-  );
+    ...options,
+  });
 };
 
 export const useEventQuery = ({eventID}: {eventID: string}) => {
-  return useQuery<EventData>([`/events/${eventID}`]);
-};
-
-interface EventFavoriteQueryProps {
-  enabled?: boolean;
-}
-
-export const useEventFavoriteQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
-  return useQuery<EventData[]>(['/events/favorites'], {enabled: enabled});
+  return useOpenQuery<EventData>({
+    queryKey: [`/events/${eventID}`],
+  });
 };

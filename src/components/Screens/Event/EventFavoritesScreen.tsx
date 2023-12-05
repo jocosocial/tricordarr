@@ -4,10 +4,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {FlatList, RefreshControl} from 'react-native';
-import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {useEventFavoriteQuery} from '../../Queries/Events/EventFavoriteQueries';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
