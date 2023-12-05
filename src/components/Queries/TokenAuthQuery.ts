@@ -10,6 +10,7 @@ import {useAuth} from '../Context/Contexts/AuthContext';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {ErrorResponse, Paginator} from '../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -62,10 +63,6 @@ export function useTokenAuthInfiniteQuery<
   });
 }
 
-interface WithPaginator {
-  paginator: Paginator;
-}
-
 // I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
 // Though maybe because I'm not returning the entire query response object (TQueryFnData)
 // then maybe it's OK? This is some meta voodoo.
@@ -98,16 +95,8 @@ export function useTokenAuthPaginationQuery<
           return responseData;
         },
     {
-      getNextPageParam: lastPage => {
-        const {limit, start, total} = lastPage.paginator;
-        const nextStart = start + limit;
-        return nextStart < total ? {start: nextStart, limit: limit} : undefined;
-      },
-      getPreviousPageParam: firstPage => {
-        const {limit, start} = firstPage.paginator;
-        const prevStart = start - limit;
-        return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
-      },
+      getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
+      getPreviousPageParam: firstPage => getPreviousPageParam(firstPage.paginator),
       onError: error => {
         setErrorMessage(error);
       },
