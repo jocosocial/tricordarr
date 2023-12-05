@@ -3,16 +3,14 @@ import {
   ErrorResponse,
   KeywordData,
   ProfilePublicData,
-  TokenStringData,
   UserCreateData,
   UserPasswordData,
   UserUsernameData,
 } from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
+import axios, {AxiosResponse} from 'axios';
 import {KeywordAction, KeywordType} from '../../../libraries/Types';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 export const useUserProfileQuery = () => {
   return useTokenAuthQuery<ProfilePublicData>({
@@ -47,13 +45,7 @@ const keywordQueryHandler = async ({
 };
 
 export const useUserKeywordMutation = (options = {}) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<KeywordData>, AxiosError<ErrorResponse>, KeywordMutationProps>(keywordQueryHandler, {
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-    ...options,
-  });
+  return useTokenAuthMutation(keywordQueryHandler, options);
 };
 
 interface UserPasswordMutationProps {
@@ -64,13 +56,7 @@ const userPasswordHandler = async ({userPasswordData}: UserPasswordMutationProps
   await axios.post('/user/password', userPasswordData);
 
 export const useUserPasswordMutation = (options = {}) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserPasswordMutationProps>(userPasswordHandler, {
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-    ...options,
-  });
+  return useTokenAuthMutation(userPasswordHandler, options);
 };
 
 interface UserUsernameMutationProps {
@@ -90,13 +76,7 @@ const userUsernameHandler = async ({
 };
 
 export const useUserUsernameMutation = (options = {}) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, UserUsernameMutationProps>(userUsernameHandler, {
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-    ...options,
-  });
+  return useTokenAuthMutation(userUsernameHandler, options);
 };
 
 const userCreateHandler = async ({
@@ -107,11 +87,5 @@ const userCreateHandler = async ({
   await axios.post('/user/create', {username, password, verification});
 
 export const useUserCreateQuery = (options = {}) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<CreatedUserData>, AxiosError<ErrorResponse>, UserCreateData>(userCreateHandler, {
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-    ...options,
-  });
+  return useTokenAuthMutation(userCreateHandler, options);
 };
