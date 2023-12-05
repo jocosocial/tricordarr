@@ -4,6 +4,7 @@ import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {Linking} from 'react-native';
 
 interface UserProfileCardProps {
   user: ProfilePublicData;
@@ -22,7 +23,13 @@ export const UserProfileCard = ({user}: UserProfileCardProps) => {
           {user.realName && <DataFieldListItem title={'Real Name'} description={user.realName} />}
           {user.header.username && <DataFieldListItem title={'Username'} description={user.header.username} />}
           {user.preferredPronoun && <DataFieldListItem title={'Pronouns'} description={user.preferredPronoun} />}
-          {user.email && <DataFieldListItem title={'Email'} description={user.email} />}
+          {user.email && (
+            <DataFieldListItem
+              title={'Email'}
+              description={user.email}
+              onPress={() => Linking.openURL(`mailto:${user.email}`)}
+            />
+          )}
           {user.homeLocation && <DataFieldListItem title={'Home Location'} description={user.homeLocation} />}
           {user.roomNumber && <DataFieldListItem title={'Room Number'} description={user.roomNumber} />}
         </ListSection>

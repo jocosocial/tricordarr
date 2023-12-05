@@ -60,7 +60,9 @@ interface SeamailListQueryOptions {
   options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50}) => {
+export const useSeamailListQuery = (
+  {pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 50},
+) => {
   const {setErrorMessage} = useErrorHandler();
   return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
     ['/fez/joined', {type: ['closed', 'open'], search: search}],
@@ -95,27 +97,30 @@ export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
     // @TODO the key needs start too
     [`/fez/${fezID}?limit=${pageSize}`],
     async ({pageParam = {start: undefined, limit: pageSize}}) => {
-      const {data: responseData} = await axios.get<FezData>(
-        `/fez/${fezID}?limit=${pageParam.limit}&start=${pageParam.start}`,
-      );
+      const {data: responseData} = await axios.get<FezData>(`/fez/${fezID}`, {
+        params: {
+          ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+          ...(pageParam.start ? {start: pageParam.start} : undefined),
+        },
+      });
       return responseData;
     },
     {
       getNextPageParam: lastPage => {
+        // no members can mean that this is an LFG you haven't joined.
         if (lastPage.members) {
           const {limit, start, total} = lastPage.members.paginator;
           const nextStart = start + limit;
           return nextStart < total ? {start: nextStart, limit} : undefined;
         }
-        throw new Error('getNextPageParam no member');
       },
       getPreviousPageParam: firstPage => {
+        // no members can mean that this is an LFG you haven't joined.
         if (firstPage.members) {
           const {limit, start} = firstPage.members.paginator;
           const prevStart = start - limit;
           return prevStart >= 0 ? {start: prevStart, limit} : undefined;
         }
-        throw new Error('getPreviousPageParam no member');
       },
     },
   );

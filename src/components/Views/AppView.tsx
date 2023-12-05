@@ -6,6 +6,7 @@ import {ErrorSnackbar} from '../Snackbars/ErrorSnackbar';
 import {ErrorBanner} from '../ErrorHandlers/ErrorBanner';
 import {AppModal} from '../Modals/AppModal';
 import {InfoSnackbar} from '../Snackbars/InfoSnackbar';
+import {useIsFocused} from '@react-navigation/native';
 
 type AppViewProps = PropsWithChildren<{}>;
 
@@ -15,11 +16,18 @@ type AppViewProps = PropsWithChildren<{}>;
  */
 export const AppView = ({children}: AppViewProps) => {
   const theme = useTheme();
+  const isFocused = useIsFocused();
 
   const style = {
     backgroundColor: theme.colors.background,
     ...commonStyles.flex,
   };
+
+  if (!isFocused) {
+    console.log('[AppView.tsx] View is not focused.');
+    // idk about this...
+    // return null;
+  }
 
   return (
     <View style={style}>

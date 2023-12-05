@@ -19,6 +19,7 @@ export interface AuthState {
   tokenData: TokenStringData | null;
 }
 export const authActionReducer = (prevState: AuthState, action: AuthActionsType): AuthState => {
+  console.log('[AuthReducer.ts] Got action:', action.type);
   switch (action.type) {
     case AuthActions.signIn || AuthActions.signUp: {
       return {

@@ -2,7 +2,7 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {CustomEmoji} from '../../../libraries/Enums/Emoji';
-import {Emoji} from '../../Images/Emoji';
+import {Emoji} from '../../Icons/Emoji';
 import {IconButton} from 'react-native-paper';
 import {useFormikContext} from 'formik';
 import {PostContentData} from '../../../libraries/Structs/ControllerStructs';
@@ -31,9 +31,10 @@ export const EmojiPickerField = () => {
 
   return (
     <View style={styles.outerView}>
-      {Object.keys(CustomEmoji).map(emoji => {
+      {Object.keys(CustomEmoji).map((emoji, index) => {
         return (
           <IconButton
+            key={index}
             onPress={() => handleEmojiPress(emoji)}
             icon={() => getEmojiIcon(emoji as keyof typeof CustomEmoji)}
           />

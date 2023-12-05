@@ -1,9 +1,19 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {EventData, FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
+import {
+  CategoryData,
+  EventData,
+  FezData,
+  FezPostData,
+  ForumData,
+  ForumListData,
+  PostData,
+} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 import {EventListActionsType} from '../../Reducers/Schedule/EventListReducer';
 import {ScheduleListActionsType} from '../../Reducers/Schedule/ScheduleListReducer';
+import {ForumPostListActionsType} from '../../Reducers/Forum/ForumPostListReducer';
+import {ForumListDataActionsType} from '../../Reducers/Forum/ForumListDataReducer';
 
 interface TwitarrContextType {
   fez?: FezData;
@@ -25,6 +35,16 @@ interface TwitarrContextType {
   lfgPostsData: FezPostData[];
   dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
   openWebUrl: (url: string) => void;
+  forumCategories: CategoryData[];
+  setForumCategories: Dispatch<SetStateAction<CategoryData[]>>;
+  forumData: ForumData | undefined;
+  setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
+  forumListData: ForumListData[];
+  dispatchForumListData: Dispatch<ForumListDataActionsType>;
+  forumPosts: PostData[];
+  dispatchForumPosts: Dispatch<ForumPostListActionsType>;
+  forumThreadPosts: PostData[];
+  dispatchForumThreadPosts: Dispatch<ForumPostListActionsType>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});

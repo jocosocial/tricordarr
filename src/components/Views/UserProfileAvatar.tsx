@@ -10,7 +10,7 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
-import {AppImage} from '../Images/AppImage';
+import {APIImage} from '../Images/APIImage';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 
@@ -112,7 +112,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   return (
     <View>
-      <AppImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
+      <APIImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
       {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
           <IconButton icon={AppIcons.newImage} onPress={pickImage} />

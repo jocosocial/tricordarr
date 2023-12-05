@@ -24,7 +24,7 @@ import {UserContentCard} from '../../Cards/UserProfile/UserContentCard';
 import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';

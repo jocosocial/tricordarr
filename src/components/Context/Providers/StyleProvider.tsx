@@ -89,6 +89,13 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     onError: {
       color: theme.colors.onError,
     },
+    surfaceVariant: {
+      color: theme.colors.onSurfaceVariant,
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    onImageViewer: {
+      color: theme.colors.onImageViewer,
+    },
   });
 
   const screenOptions = {

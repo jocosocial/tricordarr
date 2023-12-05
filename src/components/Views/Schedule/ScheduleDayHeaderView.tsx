@@ -18,7 +18,7 @@ export const ScheduleDayHeaderView = ({
   selectedCruiseDay,
 }: ScheduleDayHeaderViewProps) => {
   const {commonStyles} = useStyles();
-  const {cruiseDays, cruiseDayToday, cruiseLength} = useCruise();
+  const {cruiseDays, adjustedCruiseDayToday, cruiseLength} = useCruise();
 
   const styles = StyleSheet.create({
     headerText: {
@@ -40,7 +40,7 @@ export const ScheduleDayHeaderView = ({
       <View style={styles.headerTextContainer}>
         <Text style={styles.headerText}>
           {format(cruiseDays[selectedCruiseDay - 1].date, 'eeee LLLL do')}
-          {cruiseDayToday === selectedCruiseDay ? ' (Today)' : ''}
+          {adjustedCruiseDayToday === selectedCruiseDay ? ' (Today)' : ''}
         </Text>
       </View>
       <IconButton icon={AppIcons.forward} onPress={navigateNextDay} disabled={selectedCruiseDay === cruiseLength} />

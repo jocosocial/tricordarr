@@ -22,12 +22,12 @@ import {FormikHelpers} from 'formik';
 import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {FezPostForm} from '../../Forms/FezPostForm';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
@@ -254,7 +254,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   // const fezPostData: FezPostData[] = [...fezPageData.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
-      <FezPostAsUserBanner />
+      <PostAsUserBanner />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.
@@ -285,9 +285,13 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         )}
         // End is Start, Start is End.
         onEndReached={handleLoadPrevious}
+        // Gonna try this out to see if it helps with rendering the "header" too soon.
+        // hasNextPage is false and theres no more data to fetch, but the header
+        // appears. I suspect it's related to the list not having rendered the next batch yet.
+        onEndReachedThreshold={4}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} />
+      <ContentPostForm onSubmit={onSubmit} />
     </AppView>
   );
 };

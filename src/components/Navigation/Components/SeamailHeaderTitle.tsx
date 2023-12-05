@@ -16,7 +16,7 @@ const SeamailHeaderTitle = ({fezID, title}: SeamailHeaderTitleProps) => {
     navigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {
       fezID: fezID,
     });
-  return <NavHeaderTitle title={title} onPress={onPress} />;
+  return <NavHeaderTitle title={'Seamail Chat'} onPress={onPress} />;
 };
 
 // This exists to prevent defining the component during render, because the navigator

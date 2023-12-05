@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoSettings';
-import {ServerConnectionSettings} from '../../Screens/Settings/Developer/ServerConnectionSettings';
+import {ServerConnectionSettings} from '../../Screens/Settings/Notifications/ServerConnectionSettings';
 import {SettingsScreen} from '../../Screens/Settings/Developer/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -24,8 +24,11 @@ import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {FeatureSettingsScreen} from '../../Screens/Settings/Developer/FeatureSettingsScreen';
-import {NotificationPollerSettingsScreen} from '../../Screens/Settings/NotificationPollerSettingsScreen';
+import {NotificationPollerSettingsScreen} from '../../Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {LoadingSettingScreen} from '../../Screens/Settings/Developer/LoadingSettingScreen';
+import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
+import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSettingsScreen';
+import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -51,6 +54,9 @@ export type SettingsStackParamList = {
   FeatureSettingsScreen: undefined;
   NotificationPollerSettingsScreen: undefined;
   LoadingSettingScreen: undefined;
+  RegisterScreen: undefined;
+  CruiseSettingsScreen: undefined;
+  UserInfoSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -127,6 +133,11 @@ export const SettingsStack = () => {
       />
       <Stack.Screen name={SettingsStackScreenComponents.login} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen
+        name={SettingsStackScreenComponents.registerScreen}
+        component={RegisterScreen}
+        options={{title: 'New Account'}}
+      />
+      <Stack.Screen
         name={SettingsStackScreenComponents.accountManagement}
         component={AccountManagementScreen}
         options={{title: 'Account Management'}}
@@ -170,6 +181,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.loadingSettingScreen}
         component={LoadingSettingScreen}
         options={{title: 'Loading'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.cruiseSettingsScreen}
+        component={CruiseSettingsScreen}
+        options={{title: 'Cruise Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.userInfoSettingsScreen}
+        component={UserInfoSettingsScreen}
+        options={{title: 'User Info'}}
       />
     </Stack.Navigator>
   );

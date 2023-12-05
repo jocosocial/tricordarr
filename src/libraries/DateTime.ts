@@ -14,6 +14,7 @@ import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import {FezData} from './Structs/ControllerStructs';
+import TimeAgo from 'javascript-time-ago';
 
 const thresholdMap = {
   second: {
@@ -188,6 +189,16 @@ export const getDurationString = (
   return `${startText} - ${endText} ${timeZoneAbbrStr}`;
 };
 
+export const getEventTimeString = (startTimeStr?: string, timeZoneAbbrStr?: string) => {
+  if (!startTimeStr || !timeZoneAbbrStr) {
+    return '';
+  }
+  const startFormat = 'ddd MMM D hh:mm A';
+  const startDate = moment(startTimeStr);
+  const text = startDate.tz(timeZoneAbbrStr).format(startFormat);
+  return `${text} ${timeZoneAbbrStr}`;
+};
+
 export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
   const date = moment(dateTimeStr);
   return date.tz(timeZoneAbbrStr);
@@ -248,3 +259,6 @@ export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => 
   }
   return 0;
 };
+
+// Formatter for relative time
+export const timeAgo = new TimeAgo('en-US');

@@ -11,14 +11,14 @@ import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {FezPostForm} from '../../Forms/FezPostForm';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
-import {FezPostAsUserBanner} from '../../Banners/FezPostAsUserBanner';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
@@ -30,6 +30,7 @@ import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTi
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {ListTitleView} from '../../Views/ListTitleView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -257,7 +258,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // const fezPostData: FezPostData[] = [...fezPageData.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
-      <FezPostAsUserBanner />
+      <PostAsUserBanner />
+      <ListTitleView title={fez.title} />
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.
@@ -290,7 +292,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         onEndReached={handleLoadPrevious}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
-      <FezPostForm onSubmit={onSubmit} enablePhotos={false} />
+      <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );
 };

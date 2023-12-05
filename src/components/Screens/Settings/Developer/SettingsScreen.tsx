@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider, List} from 'react-native-paper';
-import {SettingsNavigationListItem} from '../../../Lists/Items/SettingsNavigationListItem';
-import {AccountListItem} from '../../../Lists/Items/AccountListItem';
+import {SettingsNavigationListItem} from '../../../Lists/Items/Settings/SettingsNavigationListItem';
+import {SettingsAccountListItem} from '../../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
@@ -11,6 +11,9 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStack';
 import {SettingsHeaderTitle} from '../../../Navigation/Components/SettingsHeaderTitle';
+import {SettingsLoginListItem} from '../../../Lists/Items/Settings/SettingsLoginListItem';
+import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {SettingsRegistrationListItem} from '../../../Lists/Items/Settings/SettingsRegistrationListItem';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -21,6 +24,7 @@ export type Props = NativeStackScreenProps<
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
   const getHeaderTitle = useCallback(() => <SettingsHeaderTitle />, []);
+  const {tokenData} = useAuth();
 
   useEffect(() => {
     navigation.setOptions({
@@ -34,7 +38,9 @@ export const SettingsScreen = ({navigation}: Props) => {
         <View>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Network</List.Subheader>
+            <List.Subheader>Account</List.Subheader>
+            {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
+            {!tokenData && <SettingsRegistrationListItem />}
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
@@ -43,16 +49,16 @@ export const SettingsScreen = ({navigation}: Props) => {
           </ListSection>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Account</List.Subheader>
-            <AccountListItem />
-          </ListSection>
-          <Divider bold={true} />
-          <ListSection>
             <List.Subheader>Notifications</List.Subheader>
             <SettingsNavigationListItem
               title={'Push Notifications'}
               description={'Configure what events you wish to trigger a push notification.'}
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
+            />
+            <SettingsNavigationListItem
+              title={'Background Connection'}
+              description={'Manage the worker that maintains a connection to the server.'}
+              navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
             <SettingsNavigationListItem
               title={'Polling'}
@@ -90,7 +96,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             />
             <SettingsNavigationListItem
               title={'Event Settings'}
-              description={'Settings for events (sanctioned by THO).'}
+              description={'Settings for official and shadow event schedule.'}
               navComponent={SettingsStackScreenComponents.eventSettings}
             />
             <SettingsNavigationListItem
@@ -120,11 +126,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.testError}
                 />
                 <SettingsNavigationListItem
-                  title={'Background Connection'}
-                  description={'Manage the worker that maintains a connection to the server.'}
-                  navComponent={SettingsStackScreenComponents.serverConnectionSettings}
-                />
-                <SettingsNavigationListItem
                   title={'Sockets'}
                   description={'Manage websocket internals.'}
                   navComponent={SettingsStackScreenComponents.socketSettings}
@@ -140,9 +141,14 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.featureSettingsScreen}
                 />
                 <SettingsNavigationListItem
-                  title={'Loading'}
-                  description={'Test the loading screen.'}
-                  navComponent={SettingsStackScreenComponents.loadingSettingScreen}
+                  title={'Cruise'}
+                  description={'Settings for the cruise.'}
+                  navComponent={SettingsStackScreenComponents.cruiseSettingsScreen}
+                />
+                <SettingsNavigationListItem
+                  title={'User Info'}
+                  description={'Show internal state of user and auth information.'}
+                  navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
                 />
               </ListSection>
             </>

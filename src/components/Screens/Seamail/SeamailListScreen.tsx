@@ -126,7 +126,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, closeFezSocket, setFez, navigation]);
+  }, [isFocused, closeFezSocket, setFez, navigation, getNavButtons]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

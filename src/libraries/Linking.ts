@@ -29,8 +29,8 @@ const deepLinksConf = {
             MainSettingsScreen: {
               initialRouteName: SettingsStackScreenComponents.settings,
               screens: {
-                SettingsTab: 'settingstab',
-                ServerConnectionSettingsScreen: 'settingstab/serverconnectionsettingsscreen',
+                SettingsScreen: 'settings',
+                ServerConnectionSettingsScreen: 'settings/serverconnectionsettingsscreen',
                 LoginScreen: 'login',
               },
             },

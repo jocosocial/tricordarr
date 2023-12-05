@@ -6,13 +6,13 @@ import {Formik} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 import {BooleanField} from '../../Forms/Fields/BooleanField';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.hidePastLfgs);
-  const {setLfgHidePastFilter} = useScheduleFilter();
+  const {setLfgHidePastFilter} = useFilter();
   const {commonStyles} = useStyles();
 
   const handleHidePastLfgs = () => {

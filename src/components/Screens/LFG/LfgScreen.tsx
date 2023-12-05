@@ -16,12 +16,12 @@ import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ScheduleLfgMenu} from '../../Menus/ScheduleLfgMenu';
+import {ScheduleLfgMenu} from '../../Menus/LFG/ScheduleLfgMenu';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
@@ -31,7 +31,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {Badge, Text} from 'react-native-paper';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import pluralize from 'pluralize';
-import {LfgCanceledView} from '../../Views/LfgCanceledView';
+import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
@@ -39,6 +39,7 @@ import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -58,6 +59,12 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const rootStackNavigation = useRootStack();
+  const {hasModerator} = usePrivilege();
+
+  const showChat =
+    hasModerator ||
+    FezData.isParticipant(lfg, profilePublicData?.header) ||
+    FezData.isWaitlist(lfg, profilePublicData?.header);
 
   const styles = StyleSheet.create({
     item: {
@@ -111,7 +118,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          {lfg && profilePublicData && (
+          {lfg && profilePublicData && showChat && (
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
@@ -122,7 +129,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [lfg, navigation, profilePublicData]);
+  }, [lfg, navigation, profilePublicData, showChat]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -235,13 +242,15 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: lfg?.fezID})}
                   />
                 )}
-                <DataFieldListItem
-                  itemStyle={styles.item}
-                  left={() => getIcon(AppIcons.chat)}
-                  description={getChatDescription}
-                  title={'Chat'}
-                  onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
-                />
+                {showChat && (
+                  <DataFieldListItem
+                    itemStyle={styles.item}
+                    left={() => getIcon(AppIcons.chat)}
+                    description={getChatDescription}
+                    title={'Chat'}
+                    onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
+                  />
+                )}
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.description)}

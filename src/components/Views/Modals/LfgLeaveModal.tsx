@@ -26,7 +26,7 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
-  const {setFez} = useTwitarr();
+  const {setLfg} = useTwitarr();
 
   const onSubmit = () => {
     membershipMutation.mutate(
@@ -36,11 +36,13 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
-          setFez(response.data);
+          console.log('WPOWWWWWWWWWWWW');
+          console.log(response.data);
+          setLfg(response.data);
           setModalVisible(false);
         },
         onError: error => {
-          setErrorMessage(error.response?.data.reason);
+          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );

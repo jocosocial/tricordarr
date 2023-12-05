@@ -10,7 +10,7 @@ import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';

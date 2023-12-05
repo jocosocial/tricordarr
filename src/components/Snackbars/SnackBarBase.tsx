@@ -1,7 +1,7 @@
 import {Snackbar, Text} from 'react-native-paper';
 import React, {Dispatch, SetStateAction} from 'react';
 import {useAppTheme} from '../../styles/Theme';
-import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import {Animated, StyleProp, StyleSheet, ViewStyle} from 'react-native';
 
 export interface SnackBarBaseProps {
   message: string | undefined;
@@ -10,6 +10,7 @@ export interface SnackBarBaseProps {
   duration?: number;
   messagePrefix?: string;
   style?: StyleProp<ViewStyle>;
+  elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }
 
 export const SnackBarBase = ({
@@ -19,6 +20,7 @@ export const SnackBarBase = ({
   actionLabel = 'Close',
   duration = 5000,
   messagePrefix = '',
+  elevation,
 }: SnackBarBaseProps) => {
   const theme = useAppTheme();
 
@@ -37,6 +39,7 @@ export const SnackBarBase = ({
       duration={duration}
       visible={!!message}
       action={{label: actionLabel}}
+      elevation={elevation}
       onDismiss={() => setMessage(undefined)}>
       <Text style={styles.text}>
         {messagePrefix}

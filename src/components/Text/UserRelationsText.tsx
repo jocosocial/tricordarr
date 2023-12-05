@@ -1,4 +1,4 @@
-import {AppIcon} from '../Images/AppIcon';
+import {AppIcon} from '../Icons/AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Text} from 'react-native-paper';
 import React from 'react';

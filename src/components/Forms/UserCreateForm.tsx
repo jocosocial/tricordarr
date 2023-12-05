@@ -38,7 +38,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
   };
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting}) => (
+      {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
           <TextField
             viewStyle={styles.inputContainer}
@@ -71,7 +71,12 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
           />
           <PrimaryActionButton
             disabled={
-              !values.username || !values.password || !values.passwordVerify || !values.verification || isSubmitting
+              !values.username ||
+              !values.password ||
+              !values.passwordVerify ||
+              !values.verification ||
+              !isValid ||
+              isSubmitting
             }
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}

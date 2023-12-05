@@ -8,6 +8,7 @@ import {
 } from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {useCruise} from '../Contexts/CruiseContext';
+import {useConfig} from '../Contexts/ConfigContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
@@ -19,6 +20,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   // This is provided here for convenience.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {hourlyUpdatingDate} = useCruise();
+  const {appConfig} = useConfig();
 
   /**
    * Once the app has "started", figure out if we should enable the background worker.
@@ -29,14 +31,15 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       return;
     }
     if (isLoggedIn) {
-      console.log('[UserNotificationDataProvider.tsx] Enabling user notifications');
-      setEnableUserNotifications(true);
+      console.log('[UserNotificationDataProvider.tsx] User notifications can start.');
+      console.log('[UserNotificationDataProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
+      setEnableUserNotifications(appConfig.enableBackgroundWorker);
     } else {
       console.log('[UserNotificationDataProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
       setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [isLoggedIn, setErrorMessage, isLoading]);
+  }, [isLoggedIn, setErrorMessage, isLoading, appConfig.enableBackgroundWorker]);
 
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.

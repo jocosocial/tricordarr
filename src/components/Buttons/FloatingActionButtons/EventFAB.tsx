@@ -3,15 +3,15 @@ import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
-import {BaseFAB} from './BaseFAB';
+import {BaseFABGroup} from './BaseFABGroup';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext';
 
 export const EventFAB = () => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
-  const {cruiseDayToday} = useCruise();
-  const {setEventFavoriteFilter} = useScheduleFilter();
+  const {adjustedCruiseDayToday} = useCruise();
+  const {setEventFavoriteFilter} = useFilter();
 
   const handleNavigation = (component: EventStackComponents) => {
     if (route.name === component) {
@@ -22,7 +22,7 @@ export const EventFAB = () => {
 
   const handleYourDay = () => {
     setEventFavoriteFilter(true);
-    navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: cruiseDayToday});
+    navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
   };
 
   const actions = [
@@ -43,5 +43,5 @@ export const EventFAB = () => {
     }),
   ];
 
-  return <BaseFAB actions={actions} openLabel={'Events'} icon={AppIcons.events} />;
+  return <BaseFABGroup actions={actions} openLabel={'Events'} icon={AppIcons.events} />;
 };

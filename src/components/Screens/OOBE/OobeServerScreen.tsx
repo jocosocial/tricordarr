@@ -16,11 +16,12 @@ import {useHealthQuery} from '../../Queries/Client/ClientQueries';
 import {HttpStatusCode} from 'axios';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeaderTitle';
+import {ServerURLValidation} from '../../../libraries/ValidationSchema';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
 
 const validationSchema = Yup.object().shape({
-  settingValue: Yup.string().required('Server URL cannot be empty.').url('Must be valid URL.'),
+  settingValue: ServerURLValidation,
 });
 
 export const OobeServerScreen = ({navigation}: Props) => {

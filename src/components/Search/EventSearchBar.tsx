@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {RefreshControl} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {EventData, FezData} from '../../libraries/Structs/ControllerStructs';
 import {EventFlatList} from '../Lists/Schedule/EventFlatList';
-import {FlatList} from 'react-native-gesture-handler';
 import {TimeDivider} from '../Lists/Dividers/TimeDivider';
 import {getDayMarker} from '../../libraries/DateTime';
 

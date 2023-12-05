@@ -4,6 +4,7 @@ import {SwiftarrClientApp, SwiftarrFeature} from '../Enums/AppFeatures';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {StorageKeys} from '../Storage';
 import {HttpStatusCode} from 'axios';
+import {LikeType} from '../Enums/LikeType';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -48,6 +49,10 @@ export namespace UserHeader {
     }
     return `@${header.username}`;
   }
+
+  export const contains = (headers: UserHeader[], header: UserHeader) => {
+    return headers.map(h => h.userID).includes(header.userID);
+  };
 }
 
 export interface ProfilePublicData {
@@ -262,15 +267,15 @@ export namespace FezData {
     return false;
   };
 
-  export const isParticipant = (fezData: FezData, user?: UserHeader) => {
-    if (!user) {
+  export const isParticipant = (fezData?: FezData, user?: UserHeader) => {
+    if (!user || !fezData) {
       return false;
     }
     return isMember(fezData.members?.participants, user);
   };
 
-  export const isWaitlist = (fezData: FezData, user?: UserHeader) => {
-    if (!user) {
+  export const isWaitlist = (fezData?: FezData, user?: UserHeader) => {
+    if (!user || !fezData) {
       return false;
     }
     return isMember(fezData.members?.waitingList, user);
@@ -497,4 +502,165 @@ export interface ImageUploadData {
   /// The image in `Data` format.
   /// Which in client land means a Base64-encoded string.
   image?: string;
+}
+
+export interface ForumListData {
+  /// The forum's ID.
+  forumID: string;
+  /// The forum's creator.
+  creator: UserHeader;
+  /// The forum's title.
+  title: string;
+  /// The number of posts in the forum.
+  postCount: number;
+  /// The number of posts the user has read.  Specifically, this will be the number of posts the forum contained the last time the user called a fn that returned a `ForumData`.
+  /// Blocked and muted posts are included in this number, but not returned in the array of posts.
+  readCount: number;
+  /// Time forum was created.
+  createdAt: string;
+  /// The last user to post to the forum. Nil if there are no posts in the forum.
+  lastPoster?: UserHeader;
+  /// Timestamp of most recent post. Needs to be optional because admin forums may be empty.
+  lastPostAt?: string;
+  /// Whether the forum is in read-only state.
+  isLocked: boolean;
+  /// Whether user has favorited forum.
+  isFavorite: boolean;
+  /// Whether user has muted the forum.
+  isMuted: boolean;
+  /// If this forum is for an Event on the schedule, the start time of the event.
+  eventTime?: string;
+  /// If this forum is for an Event on the schedule, the timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
+  timeZone?: string;
+  /// If this forum is for an Event on the schedule, the ID of the event.
+  eventID?: string;
+}
+
+export interface CategoryData {
+  /// The ID of the category.
+  categoryID: string;
+  /// The title of the category.
+  title: string;
+  /// The purpose string for the category.
+  purpose: string;
+  /// If TRUE, the user cannot create/modify threads in this forum. Should be sorted to top of category list.
+  isRestricted: boolean;
+  /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
+  isEventCategory: boolean;
+  /// The number of threads in this category
+  numThreads: number;
+  ///The threads in the category. Only populated for /categories/ID.
+  forumThreads?: [ForumListData];
+}
+
+export interface ForumData {
+  /// The forum's ID.
+  forumID: string;
+  /// The ID of the forum's containing Category..
+  categoryID: string;
+  /// The forum's title
+  title: string;
+  /// The forum's creator.
+  creator: UserHeader;
+  /// Whether the forum is in read-only state.
+  isLocked: boolean;
+  /// Whether the user has favorited forum.
+  isFavorite: boolean;
+  /// Whether the user has muted the forum.
+  isMuted: boolean;
+  /// The paginator contains the total number of posts in the forum, and the start and limit of the requested subset in `posts`.
+  paginator: Paginator;
+  /// Posts in the forum.
+  posts: PostData[];
+  /// If this forum is for an Event on the schedule, the ID of the event.
+  eventID?: string;
+}
+
+export interface PostData {
+  /// The ID of the post.
+  postID: number;
+  /// The timestamp of the post.
+  createdAt: string;
+  /// The post's author.
+  author: UserHeader;
+  /// The text of the post.
+  text: string;
+  /// The filenames of the post's optional images.
+  images?: [string];
+  /// Whether the current user has bookmarked the post.
+  isBookmarked: boolean;
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The total number of `LikeType` reactions on the post.
+  likeCount: number;
+}
+
+export interface ForumSearchData {
+  /// Paginates the list of forum threads. `paginator.total` is the total number of forums that match the request parameters.
+  /// `limit` and `start` define a slice of the total results set being returned in `forumThreads`.
+  paginator: Paginator;
+  /// A slice of the set of forum threads that match the request parameters.
+  forumThreads: ForumListData[];
+}
+
+export interface PostSearchData {
+  /// The search query used to create these results.
+  queryString: string;
+  /// The total number of posts in the result set. The actual # of results returned may be fewer than this, even if we return 'complete' results. This is due to additional filtering that
+  /// is done after the database query. See notes on `ContentFilterable.filterForMention(of:)`
+  totalPosts: number;
+  /// The index into totalPosts of the first post in the `posts` array. 0 is the index of the first result. This number is usually  a multiple of `limit` and indicates the page of results.
+  start: number;
+  /// The number of posts the server attempted to gather. posts.count may be less than this number if posts were filtered out by post-query filtering, or if start + limit > totalPosts.
+  limit: number;
+  /// The posts in the forum.
+  posts: PostData[];
+}
+
+export interface PostDetailData {
+  /// The ID of the post.
+  postID: number;
+  /// The ID of the Forum containing the post.
+  forumID: number;
+  /// The timestamp of the post.
+  createdAt: string;
+  /// The post's author.
+  author: UserHeader;
+  /// The text of the forum post.
+  text: string;
+  /// The filenames of the post's optional images.
+  images?: string[];
+  /// Whether the current user has bookmarked the post.
+  isBookmarked: boolean;
+  /// The current user's `LikeType` reaction on the post.
+  userLike?: LikeType;
+  /// The users with "laugh" reactions on the post.
+  laughs: UserHeader[];
+  /// The users with "like" reactions on the post.
+  likes: UserHeader[];
+  /// The users with "love" reactions on the post.
+  loves: UserHeader[];
+}
+
+export namespace PostDetailData {
+  export const hasUserReacted = (postData: PostDetailData, userHeader: UserHeader, likeType?: LikeType) => {
+    if (!likeType) {
+      return !!postData.userLike;
+    }
+    switch (likeType) {
+      case LikeType.like:
+        return postData.likes.flatMap(uh => uh.userID).includes(userHeader.userID);
+      case LikeType.laugh:
+        return postData.laughs.flatMap(uh => uh.userID).includes(userHeader.userID);
+      case LikeType.love:
+        return postData.loves.flatMap(uh => uh.userID).includes(userHeader.userID);
+    }
+  };
+}
+
+export interface ForumCreateData {
+  /// The forum's title.
+  title: string;
+  /// The first post in the forum.
+  firstPost: PostContentData;
 }

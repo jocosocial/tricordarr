@@ -29,50 +29,54 @@ export const AccountManagementScreen = () => {
     setModalVisible(true);
   };
 
-  if (!profilePublicData) {
-    return <LoadingView />;
-  }
-
+  // Need to conditional on ProfilePublicData in case it never loaded because the user lost communication
+  // with the server. Logout device should still be allowed when no local data because it clears state.
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
+          {profilePublicData && (
+            <ListSection>
+              <MinorActionListItem
+                title={'View Profile'}
+                icon={AppIcons.user}
+                onPress={() =>
+                  bottomNav.navigate(BottomTabComponents.homeTab, {
+                    screen: MainStackComponents.userProfileScreen,
+                    params: {
+                      userID: profilePublicData.header.userID,
+                    },
+                    initial: false,
+                  })
+                }
+              />
+              <List.Subheader>Manage Your Account</List.Subheader>
+              <MinorActionListItem
+                title={'Change Username'}
+                icon={AppIcons.edituser}
+                onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changeUsername)}
+              />
+              <MinorActionListItem
+                title={'Change Password'}
+                icon={AppIcons.password}
+                onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
+              />
+            </ListSection>
+          )}
           <ListSection>
-            <MinorActionListItem
-              title={'View Profile'}
-              icon={AppIcons.user}
-              onPress={() =>
-                bottomNav.navigate(BottomTabComponents.homeTab, {
-                  screen: MainStackComponents.userProfileScreen,
-                  params: {
-                    userID: profilePublicData.header.userID,
-                  },
-                  initial: false,
-                })
-              }
-            />
-            <List.Subheader>Manage Your Account</List.Subheader>
-            <MinorActionListItem
-              title={'Change Username'}
-              icon={AppIcons.edituser}
-              onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changeUsername)}
-            />
-            <MinorActionListItem
-              title={'Change Password'}
-              icon={AppIcons.password}
-              onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
-            />
             <List.Subheader>Log Out</List.Subheader>
             <MinorActionListItem
               title={'Logout this device'}
               icon={AppIcons.logout}
               onPress={() => handleLogoutModal()}
             />
-            <MinorActionListItem
-              title={'Logout all devices'}
-              icon={AppIcons.error}
-              onPress={() => handleLogoutModal(true)}
-            />
+            {profilePublicData && (
+              <MinorActionListItem
+                title={'Logout all devices'}
+                icon={AppIcons.error}
+                onPress={() => handleLogoutModal(true)}
+              />
+            )}
           </ListSection>
         </PaddedContentView>
       </ScrollingContentView>

@@ -2,7 +2,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {FezContentData, FezData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {FezPostForm} from '../../Forms/FezPostForm';
+import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
@@ -14,6 +14,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -109,6 +110,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
+      <PostAsUserBanner />
       <ScrollingContentView>
         <SeamailCreateForm
           initialUserHeader={route.params?.initialUserHeader}
@@ -117,7 +119,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           initialValues={initialFormValues}
         />
       </ScrollingContentView>
-      <FezPostForm
+      <ContentPostForm
         formRef={seamailPostFormRef}
         overrideSubmitting={submitting}
         onPress={onSubmit}

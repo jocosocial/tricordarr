@@ -10,11 +10,11 @@ import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ScheduleLfgFilterMenu} from '../../Menus/ScheduleLfgFilterMenu';
+import {ScheduleLfgFilterMenu} from '../../Menus/LFG/ScheduleLfgFilterMenu';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
-import {useScheduleFilter} from '../../Context/Contexts/ScheduleFilterContext';
-import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/ScheduleLfgCruiseDayFilterMenu';
-import {ScheduleLfgListMenu} from '../../Menus/ScheduleLfgListMenu';
+import {useFilter} from '../../Context/Contexts/FilterContext';
+import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/LFG/ScheduleLfgCruiseDayFilterMenu';
+import {ScheduleLfgListMenu} from '../../Menus/LFG/ScheduleLfgListMenu';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
@@ -30,7 +30,7 @@ interface LfgJoinedScreenProps {
 }
 
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
-  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useScheduleFilter();
+  const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,

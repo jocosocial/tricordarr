@@ -14,6 +14,8 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSettingsStack} from '../../Navigation/Stacks/SettingsStack';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {useQueryClient} from '@tanstack/react-query';
+import {stopForegroundServiceWorker} from '../../../libraries/Service';
 
 interface LogoutModalContentProps {
   allDevices: boolean;
@@ -45,6 +47,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const {closeNotificationSocket, closeFezSocket} = useSocket();
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
+  const queryClient = useQueryClient();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -54,12 +57,15 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
     });
     closeNotificationSocket();
     closeFezSocket();
-    signOut().then(() => {
-      clearPrivileges();
-      setModalVisible(false);
-      setLoading(false);
-      settingsNavigation.goBack();
-    });
+    stopForegroundServiceWorker().then(() =>
+      signOut().then(() => {
+        clearPrivileges();
+        queryClient.clear();
+        setModalVisible(false);
+        setLoading(false);
+        settingsNavigation.goBack();
+      }),
+    );
   };
 
   const logoutDevice = () => {

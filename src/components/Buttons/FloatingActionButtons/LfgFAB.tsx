@@ -3,7 +3,7 @@ import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
-import {BaseFAB} from './BaseFAB';
+import {BaseFABGroup} from './BaseFABGroup';
 
 export const LfgFAB = () => {
   const navigation = useLFGStackNavigation();
@@ -39,5 +39,5 @@ export const LfgFAB = () => {
     }),
   ];
 
-  return <BaseFAB actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} />;
+  return <BaseFABGroup actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} />;
 };

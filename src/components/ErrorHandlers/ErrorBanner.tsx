@@ -27,7 +27,10 @@ export const ErrorBanner = () => {
       actions={[
         {
           label: 'Settings',
-          onPress: () => Linking.openURL('tricordarr://settingstab'),
+          onPress: () => {
+            setErrorBanner(undefined);
+            Linking.openURL('tricordarr://settings');
+          },
           labelStyle: styles.button,
         },
         {

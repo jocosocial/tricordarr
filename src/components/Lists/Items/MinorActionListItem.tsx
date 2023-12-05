@@ -1,5 +1,5 @@
 import {List} from 'react-native-paper';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 

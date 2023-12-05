@@ -3,7 +3,7 @@ import {Card, List} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
-import {AppIcon} from '../../Images/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';

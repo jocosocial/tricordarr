@@ -4,7 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
-import {AppImage} from '../../Images/AppImage';
+import {APIImage} from '../../Images/APIImage';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 
@@ -73,7 +73,7 @@ export const DailyThemeCard = () => {
         </Text>
       </Card.Content>
       {dailyTheme.image && (
-        <AppImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />
+        <APIImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />
       )}
     </Card>
   );

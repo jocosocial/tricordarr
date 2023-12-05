@@ -1,7 +1,3 @@
-import {SeamailHelpScreen} from '../../components/Screens/Seamail/SeamailHelpScreen';
-import {NotificationPollerSettingsScreen} from '../../components/Screens/Settings/NotificationPollerSettingsScreen';
-import {LoadingSettingScreen} from '../../components/Screens/Settings/Developer/LoadingSettingScreen';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -14,6 +10,7 @@ export enum NavigatorIDs {
   oobeStack = 'OobeStackNavigator',
   eventStack = 'EventStackNavigator',
   lfgStack = 'LfgStackNavigator',
+  forumStack = 'ForumStackNavigator',
 }
 
 export enum BottomTabComponents {
@@ -48,6 +45,9 @@ export enum SettingsStackScreenComponents {
   featureSettingsScreen = 'FeatureSettingsScreen',
   notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
   loadingSettingScreen = 'LoadingSettingScreen',
+  registerScreen = 'RegisterScreen',
+  cruiseSettingsScreen = 'CruiseSettingsScreen',
+  userInfoSettingsScreen = 'UserInfoSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -85,7 +85,7 @@ export enum OobeStackComponents {
   oobeServerScreen = 'OobeServerScreen',
   oobeConductScreen = 'OobeConductScreen',
   oobeAccountScreen = 'OobeAccountScreen',
-  oobeRegisterScreen = 'OobeRegisterScreen',
+  oobeRegisterScreen = 'RegisterScreen',
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
   oobeNotificationsScreen = 'OobeNotificationsScreen',
@@ -112,4 +112,22 @@ export enum LfgStackComponents {
   lfgSettingsScreen = 'LfgSettingsScreen',
   lfgCreateScreen = 'LfgCreateScreen',
   lfgEditScreen = 'LfgEditScreen',
+}
+
+export enum ForumStackComponents {
+  forumCategoriesScreen = 'ForumCategoriesScreen',
+  forumCategoryScreen = 'ForumCategoryScreen',
+  forumThreadScreen = 'ForumThreadScreen',
+  forumPostMentionScreen = 'ForumPostMentionScreen',
+  forumPostSelfScreen = 'ForumPostSelfScreen',
+  forumPostFavoriteScreen = 'ForumPostFavoriteScreen',
+  forumFavoritesScreen = 'ForumFavoritesScreen',
+  forumMutesScreen = 'ForumMutesScreen',
+  forumOwnedScreen = 'ForumOwnedScreen',
+  forumRecentScreen = 'ForumRecentScreen',
+  forumPostSearchScreen = 'ForumPostSearchScreen',
+  forumThreadSearchScreen = 'ForumThreadSearchScreen',
+  forumThreadCreateScreen = 'ForumThreadCreateScreen',
+  forumThreadEditScreen = 'ForumThreadEditScreen',
+  forumPostEditScreen = 'ForumPostEditScreen',
 }

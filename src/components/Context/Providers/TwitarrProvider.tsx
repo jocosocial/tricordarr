@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
@@ -7,6 +7,8 @@ import {useEventListReducer} from '../../Reducers/Schedule/EventListReducer';
 import {useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
+import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
+import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
@@ -19,6 +21,11 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
+  const [forumCategories, setForumCategories] = useState<CategoryData[]>([]);
+  const [forumData, setForumData] = useState<ForumData>();
+  const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
+  const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
+  const [forumThreadPosts, dispatchForumThreadPosts] = useForumPostListReducer([]);
 
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
@@ -62,6 +69,16 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         lfgPostsData,
         dispatchLfgPostsData,
         openWebUrl,
+        forumCategories,
+        setForumCategories,
+        forumData,
+        setForumData,
+        forumListData,
+        dispatchForumListData,
+        forumPosts,
+        dispatchForumPosts,
+        forumThreadPosts,
+        dispatchForumThreadPosts,
       }}>
       {children}
     </TwitarrContext.Provider>

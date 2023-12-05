@@ -71,7 +71,7 @@ import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNa
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
-import {ScheduleFilterProvider} from './src/components/Context/Providers/ScheduleFilterProvider';
+import {FilterProvider} from './src/components/Context/Providers/FilterProvider';
 import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
 import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
 import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
@@ -113,7 +113,7 @@ function App(): JSX.Element {
                                   <CruiseProvider>
                                     <UserRelationsProvider>
                                       <DrawerProvider>
-                                        <ScheduleFilterProvider>
+                                        <FilterProvider>
                                           <FeatureProvider>
                                             <AppEventHandler />
                                             <ForegroundService />
@@ -121,7 +121,7 @@ function App(): JSX.Element {
                                             <NotificationDataPoller />
                                             <RootStackNavigator />
                                           </FeatureProvider>
-                                        </ScheduleFilterProvider>
+                                        </FilterProvider>
                                       </DrawerProvider>
                                     </UserRelationsProvider>
                                   </CruiseProvider>

@@ -2,7 +2,6 @@ import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
 import {LoginForm} from '../../../Forms/LoginForm';
 import {useNavigation} from '@react-navigation/native';
-import NetInfo from '@react-native-community/netinfo';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -41,7 +40,6 @@ export const LoginScreen = () => {
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottom}>Logging in to {appConfig.serverUrl}.</Text>
           <Text style={commonStyles.marginBottom}>Usernames are case-insensitive.</Text>
-
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>
       </ScrollingContentView>

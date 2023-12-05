@@ -1,15 +1,16 @@
 import React from 'react';
 import {Divider, Text} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
-import {ColorValue, View} from 'react-native';
+import {ColorValue, StyleProp, View, ViewStyle} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface LabelDividerProps {
   label?: string;
   color?: ColorValue;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const TimeDivider = ({label = 'ASD'}: LabelDividerProps) => {
+export const TimeDivider = ({label = 'ASD', style}: LabelDividerProps) => {
   const theme = useAppTheme();
   const styles = {
     wrapper: {
@@ -34,7 +35,7 @@ export const TimeDivider = ({label = 'ASD'}: LabelDividerProps) => {
     },
   };
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, style]}>
       <View style={styles.textWrapper}>
         <Text style={styles.text} variant={'bodyLarge'}>
           {label}

@@ -44,6 +44,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
       style={styles.item}
       title={fez.title}
       titleStyle={styles.title}
+      titleNumberOfLines={0}
       description={description}
       descriptionStyle={styles.description}
       onPress={onPress}

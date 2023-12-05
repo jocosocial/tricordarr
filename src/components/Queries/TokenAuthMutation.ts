@@ -7,7 +7,7 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 
 export function useTokenAuthMutation<
   TData = unknown,
-  TError = AxiosError<ErrorResponse>,
+  TError extends Error = AxiosError<ErrorResponse>,
   TVariables = void,
   TContext = unknown,
 >(
@@ -17,7 +17,7 @@ export function useTokenAuthMutation<
   const {setErrorMessage} = useErrorHandler();
   return useMutation<TData, TError, TVariables, TContext>(mutationFn, {
     onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
+      setErrorMessage(error);
     },
     ...options,
   });

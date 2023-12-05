@@ -1,5 +1,6 @@
 import React from 'react';
 import {SnackBarBase, SnackBarBaseProps} from './SnackBarBase';
+import {StyleSheet} from 'react-native';
 
 export const ImageViewerSnackbar = ({
   setMessage,
@@ -7,5 +8,19 @@ export const ImageViewerSnackbar = ({
   duration = 4000,
   messagePrefix = '✅ ',
 }: SnackBarBaseProps) => {
-  return <SnackBarBase message={message} setMessage={setMessage} messagePrefix={messagePrefix} duration={duration} />;
+  const styles = StyleSheet.create({
+    snackbar: {
+      marginBottom: 80,
+    },
+  });
+  return (
+    <SnackBarBase
+      style={styles.snackbar}
+      message={message}
+      setMessage={setMessage}
+      messagePrefix={messagePrefix}
+      duration={duration}
+      elevation={0}
+    />
+  );
 };

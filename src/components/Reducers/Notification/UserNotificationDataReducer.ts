@@ -15,6 +15,7 @@ export const userNotificationDataReducer = (
   currentData: UserNotificationData | undefined,
   action: UserNotificationDataActionsType,
 ): UserNotificationData | undefined => {
+  console.log('[UserNotificationDataReducer.ts] Got action:', action.type);
   switch (action.type) {
     case UserNotificationDataActions.set: {
       return action.userNotificationData;

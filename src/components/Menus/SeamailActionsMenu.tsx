@@ -9,6 +9,8 @@ import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
+import {PostAsModeratorMenuItem} from './Items/PostAsModeratorMenuItem';
+import {PostAsTwitarrTeamMenuItem} from './Items/PostAsTwitarrTeamMenuItem';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -62,19 +64,8 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />
-          {(hasModerator || hasTwitarrTeam) && (
-            <Menu.Item
-              leadingIcon={AppIcons.user}
-              title={`Post as ${profilePublicData?.header.username}`}
-              onPress={postAsSelf}
-            />
-          )}
-          {hasModerator && (
-            <Menu.Item leadingIcon={AppIcons.moderator} title={'Post as Moderator'} onPress={postAsModerator} />
-          )}
-          {hasTwitarrTeam && (
-            <Menu.Item leadingIcon={AppIcons.twitarteam} title={'Post as TwitarrTeam'} onPress={postAsTwitarrTeam} />
-          )}
+          <PostAsModeratorMenuItem closeMenu={closeMenu} />
+          <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />
           <Divider bold={true} />
         </>
       )}

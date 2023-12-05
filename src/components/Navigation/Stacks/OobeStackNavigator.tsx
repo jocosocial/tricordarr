@@ -9,7 +9,7 @@ import {OobeConductScreen} from '../../Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '../../Screens/OOBE/OobeFinishScreen';
 import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
-import {OobeRegisterScreen} from '../../Screens/OOBE/OobeRegisterScreen';
+import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {OobeNotificationsScreen} from '../../Screens/OOBE/OobeNotificationsScreen';
 
 export type OobeStackParamList = {
@@ -54,7 +54,7 @@ export const OobeStackNavigator = () => {
       <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen
         name={OobeStackComponents.oobeRegisterScreen}
-        component={OobeRegisterScreen}
+        component={RegisterScreen}
         options={{title: 'Register'}}
       />
       <Stack.Screen

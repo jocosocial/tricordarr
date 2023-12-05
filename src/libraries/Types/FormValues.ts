@@ -59,3 +59,15 @@ export interface FezFormValues {
     minutes: number;
   };
 }
+
+export interface ForumThreadValues {
+  title: string;
+  postAsModerator?: boolean;
+  postAsTwitarrTeam?: boolean;
+}
+
+export interface CruiseSettingsFormValues {
+  startDate: Date;
+  cruiseLength: string;
+  portTimeZoneID: string;
+}
