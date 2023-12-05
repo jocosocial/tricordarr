@@ -9,10 +9,7 @@ Backlog
 * alert word notification counts
 * mention auto complete
 
-
 Work Queue
-* Forum
-  * Category pagination query is wrong with hasNext/hasPrevious
 
 Nightly
 * lfg card really needs to go back to the event day screen
