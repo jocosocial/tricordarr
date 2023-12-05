@@ -4,7 +4,6 @@ import {SeamailListItem} from '../Items/SeamailListItem';
 import React from 'react';
 import {Divider} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
@@ -38,8 +37,10 @@ export const SeamailFlatList = ({fezList, refreshControl, onEndReached}: Seamail
       ListHeaderComponent={SeamailListHeader}
       ListFooterComponent={ListSeparator}
       onEndReached={onEndReached}
+      keyExtractor={(item: FezData) => item.fezID}
       data={fezList}
       renderItem={({item}) => <SeamailListItem fez={item} />}
+      onEndReachedThreshold={5}
     />
   );
 };

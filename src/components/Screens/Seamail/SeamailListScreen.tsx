@@ -39,9 +39,13 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {isLoggedIn} = useAuth();
   const {refetchUserNotificationData} = useUserNotificationData();
 
+  console.log('Has next', hasNextPage, 'Fetching Next', isFetchingNextPage);
+
   const handleLoadNext = () => {
+    console.log('AAAAAAAAAA Called handleLoadNext');
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
+      console.log('ZZZZZZZZZZzz Triggering load next');
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };

@@ -1,14 +1,9 @@
-import {QueryFunction, QueryKey} from '@tanstack/query-core';
+import {QueryKey} from '@tanstack/query-core';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
-import {
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query/src/types';
+import {UseInfiniteQueryOptions, UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse, Paginator} from '../../libraries/Structs/ControllerStructs';
+import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 
@@ -34,32 +29,6 @@ export function useTokenAuthQuery<
     },
     ...options,
     enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
-  });
-}
-
-/**
- * Clone of useInfiniteQuery but coded to require the user be logged in.
- * Some endpoints can be used without authentication such as the schedule.
- * @deprecated replace with useTokenAuthPaginationQuery
- */
-export function useTokenAuthInfiniteQuery<
-  TQueryFnData = unknown,
-  TError extends Error = AxiosError<ErrorResponse>,
-  TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey,
->(
-  queryKey: TQueryKey,
-  queryFn: QueryFunction<TQueryFnData, TQueryKey>,
-  options?: Omit<UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryFnData, TQueryKey>, 'queryKey' | 'queryFn'>,
-): UseInfiniteQueryResult<TData, TError> {
-  const {isLoggedIn} = useAuth();
-  const {setErrorMessage} = useErrorHandler();
-  return useInfiniteQuery<TQueryFnData, TError, TData, TQueryKey>(queryKey, queryFn, {
-    enabled: isLoggedIn,
-    onError: error => {
-      setErrorMessage(error);
-    },
-    ...options,
   });
 }
 
