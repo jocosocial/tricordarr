@@ -1,7 +1,7 @@
 import {FlatList, RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
-import {ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -26,7 +26,6 @@ export const ForumThreadFlatList = ({
   forumListData,
   refreshControl,
   handleLoadNext,
-  handleLoadPrevious,
   maintainViewPosition,
   hasNextPage,
   hasPreviousPage,
@@ -93,13 +92,13 @@ export const ForumThreadFlatList = ({
         data={forumListData}
         renderItem={({item}) => <ForumThreadListItem forumData={item} />}
         onEndReached={handleLoadNext}
-        // onStartReached={handleLoadPrevious}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         keyExtractor={(item: ForumListData) => item.forumID}
         ItemSeparatorComponent={renderSeparator}
         ListHeaderComponent={renderListHeader}
         ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
+        onEndReachedThreshold={10}
       />
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'top'} />
