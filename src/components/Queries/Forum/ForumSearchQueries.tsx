@@ -1,7 +1,5 @@
-import {ForumSearchData, PostSearchData} from '../../../libraries/Structs/ControllerStructs';
-import {useInfiniteQuery} from '@tanstack/react-query';
+import {ForumSearchData, Paginator, PostSearchData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosResponse} from 'axios/index';
-import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 
 export interface ForumPostSearchQueryParams {
@@ -20,18 +18,19 @@ export interface ForumPostSearchQueryParams {
 }
 
 // https://github.com/jocosocial/swiftarr/issues/235
-// @TODO combine this with useTokenAuthPaginationQuery when that can take queryKey, function, and options.
+export interface PostSearchDataResponse extends PostSearchData {
+  paginator: Paginator;
+}
+
 export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams = {}, pageSize = 50, options = {}) => {
-  const {isLoggedIn} = useAuth();
-  return useInfiniteQuery<PostSearchData>(
-    ['/forum/post/search', queryParams],
-    async ({pageParam = {start: queryParams.start, limit: pageSize}}) => {
+  return useTokenAuthPaginationQuery<PostSearchDataResponse>('/forum/post/search', pageSize, {
+    queryFn: async ({pageParam = {start: queryParams.start || 0, limit: pageSize}}) => {
       const {data: responseData} = await axios.get<PostSearchData, AxiosResponse<PostSearchData>>(
         '/forum/post/search',
         {
           params: {
-            limit: pageParam.limit,
-            start: pageParam.start,
+            ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+            ...(pageParam.start ? {start: pageParam.start} : undefined),
             ...(queryParams.search ? {search: queryParams.search} : undefined),
             ...(queryParams.hashtag ? {hashtag: queryParams.hashtag} : undefined),
             ...(queryParams.mentionname ? {mentionname: queryParams.mentionname} : undefined),
@@ -45,23 +44,17 @@ export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams 
           },
         },
       );
-      return responseData;
+      return {
+        ...responseData,
+        paginator: {
+          total: responseData.totalPosts,
+          start: pageParam.start,
+          limit: pageParam.limit,
+        },
+      };
     },
-    {
-      enabled: isLoggedIn,
-      getNextPageParam: lastPage => {
-        const {limit, start, totalPosts} = lastPage;
-        const nextStart = start + limit;
-        return nextStart < totalPosts ? {start: nextStart, limit: limit} : undefined;
-      },
-      getPreviousPageParam: firstPage => {
-        const {limit, start} = firstPage;
-        const prevStart = start - limit;
-        return prevStart >= 0 ? {start: prevStart, limit: limit} : undefined;
-      },
-      ...options,
-    },
-  );
+    ...options,
+  });
 };
 
 export interface ForumSearchQueryParams {

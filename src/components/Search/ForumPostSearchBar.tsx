@@ -39,7 +39,6 @@ export const ForumPostSearchBar = () => {
     },
   );
   const {commonStyles} = useStyles();
-  // const [postList, setPostList] = useState<PostData[]>([]);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
@@ -52,10 +51,12 @@ export const ForumPostSearchBar = () => {
   }, [setModalContent, setModalVisible]);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
-  const onClear = () =>
+  const onClear = () => {
     dispatchForumPosts({
       type: ForumPostListActions.clear,
     });
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));

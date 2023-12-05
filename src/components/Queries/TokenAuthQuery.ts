@@ -112,7 +112,7 @@ export function useTokenAuthPaginationQuery<
         setErrorMessage(error);
       },
       ...options,
-      enabled: options?.enabled ? options.enabled && isLoggedIn : isLoggedIn,
+      enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
     },
   );
 }
