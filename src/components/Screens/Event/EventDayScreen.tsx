@@ -149,6 +149,18 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     }
   }, [scheduleList, scrollNowIndex]);
 
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetchEvents().then(() => {
+      refetchLfgJoined().then(() => {
+        refetchLfgOpen().then(() => {
+          setRefreshing(false);
+        });
+      });
+    });
+  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen]);
+
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
       return <></>;
@@ -158,11 +170,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
           <ScheduleEventFilterMenu />
-          <EventActionsMenu />
+          <EventActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, route, scrollToNow]);
+  }, [isLoggedIn, route, scrollToNow, onRefresh]);
 
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
@@ -197,17 +209,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     },
     [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData],
   );
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetchEvents().then(() => {
-      refetchLfgJoined().then(() => {
-        refetchLfgOpen().then(() => {
-          setRefreshing(false);
-        });
-      });
-    });
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -272,7 +273,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
             listRef={listRef}
             scheduleItems={scheduleList}
             scrollNowIndex={scrollNowIndex}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
           />
         </View>

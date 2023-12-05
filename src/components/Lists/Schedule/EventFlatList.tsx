@@ -7,7 +7,7 @@ import useDateTime, {
   calcCruiseDayTime,
   getDayMarker,
   getTimeMarker,
-  getTimeZoneOffset,
+  getTimeZoneOffset, useRefreshingDate,
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
@@ -74,7 +74,8 @@ export const EventFlatList = ({
   const {commonStyles} = useStyles();
   const navigation = useEventStackNavigation();
   const {startDate, endDate} = useCruise();
-  const minutelyUpdatingDate = useDateTime('minute');
+  // const minutelyUpdatingDate = useDateTime('minute');
+  const minutelyUpdatingDate = useRefreshingDate();
   const {appConfig} = useConfig();
   const bottomNavigation = useBottomTabNavigator();
 
