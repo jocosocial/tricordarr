@@ -1,10 +1,7 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
 import {CategoryData, ForumData, Paginator} from '../../../libraries/Structs/ControllerStructs';
-import {useAuth} from '../../Context/Contexts/AuthContext';
-import {useInfiniteQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
-import {getNextPageParam, getPreviousPageParam} from '../Pagination';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>({
@@ -28,40 +25,33 @@ export interface CategoryDataQueryResponse extends CategoryData {
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
   return useTokenAuthPaginationQuery<CategoryDataQueryResponse>(
     `/forum/categories/${categoryId}`,
-    undefined,
-    undefined,
+    50,
+    {
+      queryFn: async ({pageParam = {start: queryParams.start || 0, limit: 50}}): Promise<CategoryDataQueryResponse> => {
+        const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
+          `/forum/categories/${categoryId}`,
+          {
+            params: {
+              ...(pageParam.start ? {start: pageParam.start} : undefined),
+              ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+              ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
+              ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
+              ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
+            },
+          },
+        );
+        return {
+          ...responseData,
+          paginator: {
+            total: responseData.numThreads,
+            start: pageParam.start,
+            limit: pageParam.limit,
+          },
+        };
+      },
+    },
     queryParams,
   );
-  // return useInfiniteQuery<CategoryDataQueryResponse>(
-  //   [, queryParams],
-  //   async ({pageParam = {start: queryParams.start || 0, limit: pageSize}}): Promise<CategoryDataQueryResponse> => {
-  //     const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
-  //       `/forum/categories/${categoryId}`,
-  //       {
-  //         params: {
-  //           ...(pageParam.start ? {start: pageParam.start} : undefined),
-  //           ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
-  //           ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
-  //           ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
-  //           ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
-  //         },
-  //       },
-  //     );
-  //     return {
-  //       ...responseData,
-  //       paginator: {
-  //         total: responseData.numThreads,
-  //         start: pageParam.start,
-  //         limit: pageParam.limit,
-  //       },
-  //     };
-  //   },
-  // {
-  //   enabled: isLoggedIn,
-  //   getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
-  //   getPreviousPageParam: firstPage => getPreviousPageParam(firstPage.paginator),
-  // },
-  // );
 };
 
 export const useForumThreadQuery = (forumID?: string, postID?: string) => {

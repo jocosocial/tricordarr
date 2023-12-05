@@ -78,24 +78,25 @@ export function useTokenAuthPaginationQuery<
 >(
   endpoint: string,
   pageSize: number = 50,
-  options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
   queryParams?: Object,
 ) {
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   return useInfiniteQuery<TData, TError, TData>(
     [endpoint, queryParams],
-    async ({pageParam = {start: undefined, limit: pageSize}}) => {
-      const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
-        params: {
-          ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
-          ...(pageParam.start ? {start: pageParam.start} : undefined),
-          ...queryParams,
+    options?.queryFn
+      ? options.queryFn
+      : async ({pageParam = {start: undefined, limit: pageSize}}) => {
+          const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
+            params: {
+              ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+              ...(pageParam.start ? {start: pageParam.start} : undefined),
+              ...queryParams,
+            },
+          });
+          return responseData;
         },
-      });
-      console.log(responseData);
-      return responseData;
-    },
     {
       getNextPageParam: lastPage => {
         const {limit, start, total} = lastPage.paginator;
