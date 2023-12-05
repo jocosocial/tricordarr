@@ -18,6 +18,7 @@ import {PostData} from '../../libraries/Structs/ControllerStructs';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [queryEnable, setQueryEnable] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const {
     data,
@@ -29,13 +30,14 @@ export const ForumPostSearchBar = () => {
     isFetchingPreviousPage,
     isFetchingNextPage,
     isFetching,
+    remove,
   } = useForumPostSearchQuery(
     {
       search: searchQuery,
     },
     undefined,
     {
-      enabled: false,
+      enabled: queryEnable,
     },
   );
   const {commonStyles} = useStyles();
@@ -55,6 +57,8 @@ export const ForumPostSearchBar = () => {
     dispatchForumPosts({
       type: ForumPostListActions.clear,
     });
+    remove();
+    setQueryEnable(false);
   };
 
   const onRefresh = () => {
@@ -65,19 +69,22 @@ export const ForumPostSearchBar = () => {
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
+      setQueryEnable(false);
     } else {
+      setQueryEnable(true);
+      console.log('[ForumPostSearchBar.tsx] Refetching results');
       refetch();
     }
   };
 
   const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
+    if (!isFetchingNextPage && hasNextPage && queryEnable) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };
   const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
+    if (!isFetchingPreviousPage && hasPreviousPage && queryEnable) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
     }

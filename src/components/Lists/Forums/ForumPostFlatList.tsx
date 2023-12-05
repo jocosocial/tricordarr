@@ -211,6 +211,7 @@ export const ForumPostFlatList = ({
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
+        onEndReachedThreshold={10}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
       />
