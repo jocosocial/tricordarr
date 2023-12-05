@@ -34,7 +34,6 @@ export const useForumCategoryQuery = (
   return useInfiniteQuery<CategoryDataQueryResponse>(
     [`/forum/categories/${categoryId}`, queryParams],
     async ({pageParam = {start: queryParams.start || 0, limit: pageSize}}): Promise<CategoryDataQueryResponse> => {
-      console.log('Query Page Param', pageParam);
       const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
         `/forum/categories/${categoryId}`,
         {

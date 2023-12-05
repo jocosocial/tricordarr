@@ -11,7 +11,7 @@ export type FezPostsActionsType =
   | {type: FezPostsActions.appendPost; fezPostData: FezPostData};
 
 const fezPostsReducer = (fezPosts: FezPostData[] = [], action: FezPostsActionsType) => {
-  console.log('fezPostsReducer Action:', action.type);
+  console.log('[FezPostsReducer.ts] Got action:', action.type);
   switch (action.type) {
     case FezPostsActions.set: {
       return action.fezPosts;

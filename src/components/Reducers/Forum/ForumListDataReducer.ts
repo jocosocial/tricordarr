@@ -1,6 +1,5 @@
 import {ForumData, ForumListData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useReducer} from 'react';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 export enum ForumListDataActions {
   setList = 'SET',
@@ -30,7 +29,7 @@ export type ForumListDataActionsType =
   | {type: ForumListDataActions.markAsRead; forumID: string};
 
 const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActionsType): ForumListData[] => {
-  console.log('forumThreadListReducer got action', action.type);
+  console.log('[ForumListDataReducer.ts] Got action:', action.type);
   switch (action.type) {
     case ForumListDataActions.setList: {
       return action.threadList;

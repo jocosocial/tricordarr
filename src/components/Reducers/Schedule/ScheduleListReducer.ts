@@ -14,7 +14,7 @@ const scheduleListReducer = (
   scheduleList: (EventData | FezData)[],
   action: ScheduleListActionsType,
 ): (EventData | FezData)[] => {
-  console.log('scheduleListReducer got action', action.type);
+  console.log('[ScheduleListReducer.ts] Got action:', action.type);
   switch (action.type) {
     case ScheduleListActions.setList: {
       let itemList: (EventData | FezData)[] = action.eventList;
@@ -26,7 +26,6 @@ const scheduleListReducer = (
     case ScheduleListActions.updateEvent: {
       return scheduleList.flatMap(item => {
         if ('eventID' in item && item.eventID === action.newEvent.eventID) {
-          console.log('Updating event', item.eventID, item.title);
           return action.newEvent;
         }
         return item;

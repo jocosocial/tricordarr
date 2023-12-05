@@ -19,7 +19,7 @@ export type ForumPostListActionsType =
   | {type: ForumPostListActions.prependPost; newPost: PostData};
 
 const forumPostListReducer = (postList: PostData[], action: ForumPostListActionsType): PostData[] => {
-  console.log('forumPostListReducer got action', action.type);
+  console.log('[ForumPostListReducer.ts] Got action:', action.type);
   switch (action.type) {
     case ForumPostListActions.setList: {
       return action.postList;

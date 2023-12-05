@@ -21,7 +21,7 @@ export type FezListActionsType =
   | {type: FezListActions.addSelfPost; fezID: string};
 
 const fezListReducer = (fezList: FezData[], action: FezListActionsType): FezData[] => {
-  console.log('fezListReducer Action:', action.type);
+  console.log('[FezListReducer.ts] Got action:', action.type);
   if (action.type === FezListActions.set) {
     return action.fezList;
   }
