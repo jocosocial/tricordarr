@@ -1,7 +1,5 @@
 Backlog
 * user quarantine
-* Events
-  * Jump to now doesnt seem to work if cruise is in the future but schedule is from the past
 * Query last fetched at?
 * Directory
   * Debounce directory search
