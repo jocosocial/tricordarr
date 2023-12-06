@@ -46,7 +46,7 @@ interface SeamailListQueryOptions {
   options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize = 10, forUser, search, options = {}}: SeamailListQueryOptions) => {
+export const useSeamailListQuery = ({pageSize = 50, forUser, search, options = {}}: SeamailListQueryOptions) => {
   const queryParams = {
     ...(search && {search: search}),
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
@@ -54,35 +54,6 @@ export const useSeamailListQuery = ({pageSize = 10, forUser, search, options = {
     type: [FezType.closed, FezType.open],
   };
   return useTokenAuthPaginationQuery<FezListData>('/fez/joined', pageSize, options, queryParams);
-  // Keeping this around until we fix the upstream bug and confirm.
-  // https://github.com/jocosocial/swiftarr/issues/239
-  // const {setErrorMessage} = useErrorHandler();
-  // return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
-  //   ['/fez/joined', {type: ['closed', 'open'], search: search}],
-  //   async ({pageParam = {limit: pageSize}}) => {
-  //     const {start, limit} = pageParam as PaginationParams;
-  //     const queryParams = {
-  //       ...(start !== undefined && {start: start}),
-  //       ...(limit !== undefined && {limit: limit}),
-  //       ...(search && {search: search}),
-  //       // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
-  //       ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
-  //       type: [FezType.closed, FezType.open],
-  //     };
-  //     const {data: responseData} = await axios.get<FezListData>('/fez/joined', {
-  //       params: queryParams,
-  //     });
-  //     return responseData;
-  //   },
-  //   {
-  //     getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
-  //     getPreviousPageParam: lastPage => getPreviousPageParam(lastPage.paginator),
-  //     onError: error => {
-  //       setErrorMessage(error?.response?.data.reason);
-  //     },
-  //     ...options,
-  //   },
-  // );
 };
 
 export const useSeamailQuery = ({pageSize = 5, fezID}: SeamailQueryProps) => {

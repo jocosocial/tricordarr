@@ -31,6 +31,7 @@ export async function configureAxios() {
     config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
     // Other Config
     config.timeout = 5000;
+    config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';
     // Return
     console.info(
       `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
@@ -38,6 +39,19 @@ export async function configureAxios() {
     );
     return config;
   });
+  // // https://github.com/axios/axios/issues/1503
+  // axios.defaults.timeout = 5000;
+  // // https://rapidapi.com/guides/axios-timeouts
+  // axios.interceptors.response.use(
+  //   response => response,
+  //   error => {
+  //     console.error('[APIClient.ts] Axios error:', error);
+  //     if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+  //       console.error('[APIClient.ts] Request timed out.');
+  //     }
+  //     return Promise.reject(error);
+  //   },
+  // );
 }
 
 /**
