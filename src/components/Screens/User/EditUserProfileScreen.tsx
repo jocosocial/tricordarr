@@ -36,7 +36,6 @@ export const EditUserProfileScreen = ({route, navigation}: Props) => {
 
   const onSubmit = (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => {
     helpers.setSubmitting(true);
-    // console.log(values);
     const postData: UserProfileUploadData = {
       ...values,
       header: route.params.user.header,

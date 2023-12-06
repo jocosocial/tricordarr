@@ -1,7 +1,6 @@
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
-import {ErrorResponse, FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import axios, {AxiosResponse} from 'axios';
+import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -14,12 +13,6 @@ const queryHandler = async ({fezID, postContentData}: FezPostMutationProps): Pro
   return await axios.post(`/fez/${fezID}/post`, postContentData);
 };
 
-export const useFezPostMutation = (retry = 0) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<FezPostData>, AxiosError<ErrorResponse>, FezPostMutationProps>(queryHandler, {
-    retry: retry,
-    onError: error => {
-      setErrorMessage(error.response?.data.reason);
-    },
-  });
+export const useFezPostMutation = () => {
+  return useTokenAuthMutation(queryHandler);
 };

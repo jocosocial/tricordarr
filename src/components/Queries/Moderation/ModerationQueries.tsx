@@ -1,8 +1,7 @@
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
-import {ErrorResponse, ReportData} from '../../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import axios, {AxiosResponse} from 'axios';
+import {ReportData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 interface ModReportMutationProps {
   contentType: ReportContentType;
@@ -18,12 +17,6 @@ const queryHandler = async ({
   return await axios.post(`/${contentType}/${contentID}/report`, reportData);
 };
 
-export const useReportMutation = (retry = 0) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<void>, AxiosError<ErrorResponse>, ModReportMutationProps>(queryHandler, {
-    retry: retry,
-    onError: error => {
-      setErrorMessage(error.response?.data.reason);
-    },
-  });
+export const useReportMutation = () => {
+  return useTokenAuthMutation(queryHandler);
 };

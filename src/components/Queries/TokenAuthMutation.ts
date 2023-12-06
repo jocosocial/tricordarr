@@ -5,6 +5,12 @@ import {UseMutationResult} from '@tanstack/react-query/src/types';
 import {useMutation, UseMutationOptions} from '@tanstack/react-query';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 
+/**
+ * Common mutation wrapper. Somewhat of a misnomer being called "Token Auth Mutation" because
+ * there is no check to see if you're logged in or not.
+ * @param mutationFn
+ * @param options
+ */
 export function useTokenAuthMutation<
   TData = unknown,
   TError extends Error = AxiosError<ErrorResponse>,

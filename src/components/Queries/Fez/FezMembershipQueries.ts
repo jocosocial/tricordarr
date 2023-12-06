@@ -1,7 +1,6 @@
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse, FezData} from '../../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useMutation} from '@tanstack/react-query';
+import axios, {AxiosResponse} from 'axios';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 interface FezMembershipMutationProps {
   fezID: string;
@@ -12,12 +11,6 @@ const queryHandler = async ({fezID, action}: FezMembershipMutationProps): Promis
   return await axios.post(`/fez/${fezID}/${action}`);
 };
 
-export const useFezMembershipMutation = (retry = 0) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, FezMembershipMutationProps>(queryHandler, {
-    retry: retry,
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-  });
+export const useFezMembershipMutation = () => {
+  return useTokenAuthMutation(queryHandler);
 };

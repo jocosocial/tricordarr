@@ -4,7 +4,6 @@ import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {getNextPageParam, getPreviousPageParam} from '../Pagination';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -58,10 +57,7 @@ export const useSeamailListQuery = ({pageSize = 50, forUser, search, options = {
 };
 
 export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
-  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`, pageSize, {
-    getNextPageParam: lastPage => getNextPageParam(lastPage.members?.paginator),
-    getPreviousPageParam: firstPage => getPreviousPageParam(firstPage.members?.paginator),
-  });
+  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`, pageSize);
 };
 
 interface LfgListQueryOptions {
