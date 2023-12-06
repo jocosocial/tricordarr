@@ -34,6 +34,8 @@ Releasing
 ---------
 https://reactnative.dev/docs/signed-apk-android
 
+Edit android/app/build.gradle with appropriate version info.
+
 ```
 cd android
 ./gradlew bundleRelease # To build AAB
