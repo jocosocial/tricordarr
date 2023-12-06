@@ -29,6 +29,7 @@ const SeamailListHeader = () => {
   );
 };
 
+// With RN 0.72 if pageSize is too small this doesnt trigger onEndReached. Page size bigger, just fine. WTF?
 export const SeamailFlatList = ({fezList, refreshControl, onEndReached}: SeamailFlatListProps) => {
   return (
     <FlatList

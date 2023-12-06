@@ -46,16 +46,16 @@ interface SeamailListQueryOptions {
   options?: {};
 }
 
-export const useSeamailListQuery = (
-  {pageSize, forUser, search, options = {}}: SeamailListQueryOptions = {pageSize: 5},
-) => {
+export const useSeamailListQuery = ({pageSize = 10, forUser, search, options = {}}: SeamailListQueryOptions) => {
   const queryParams = {
     ...(search && {search: search}),
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
     type: [FezType.closed, FezType.open],
   };
-  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', 5, options, queryParams);
+  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', pageSize, options, queryParams);
+  // Keeping this around until we fix the upstream bug and confirm.
+  // https://github.com/jocosocial/swiftarr/issues/239
   // const {setErrorMessage} = useErrorHandler();
   // return useTokenAuthInfiniteQuery<FezListData, AxiosError<ErrorResponse>>(
   //   ['/fez/joined', {type: ['closed', 'open'], search: search}],
