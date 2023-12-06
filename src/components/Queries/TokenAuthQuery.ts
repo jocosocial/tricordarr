@@ -3,7 +3,7 @@ import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {UseInfiniteQueryOptions, UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
+import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 
@@ -37,7 +37,7 @@ export function useTokenAuthQuery<
 // then maybe it's OK? This is some meta voodoo.
 // @TODO make this accept a queryKey not an endpoint in the options
 export function useTokenAuthPaginationQuery<
-  TData extends WithPaginator,
+  TData extends WithPaginator | FezData,
   // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
   TError extends Error = AxiosError<ErrorResponse>,
   // TQueryKey extends QueryKey = QueryKey,
