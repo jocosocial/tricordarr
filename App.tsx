@@ -1,8 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
+ * Tricordarr Secondary Entrypoint.
+ * index.js is still the start. The good stuff goes here.
  */
 
 import React, {useEffect} from 'react';
@@ -94,6 +92,13 @@ function App(): JSX.Element {
     setupInitialNotification().catch(console.error);
   }, []);
 
+  /**
+   * Known Dependencies:
+   * These were of course not determined when I did the big refactor around LFGs/Forums
+   * when it would have been useful...
+   *
+   * ModalProvider needs UserRelationsProvider for blocks/mutes/favorites to mutate successfully.
+   */
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
@@ -106,12 +111,12 @@ function App(): JSX.Element {
                     <PrivilegeProvider>
                       <SocketProvider>
                         <TwitarrProvider>
-                          <UserNotificationDataProvider>
-                            <ModalProvider>
-                              <Portal.Host>
-                                <HeaderButtonsProvider stackType={'native'}>
-                                  <CruiseProvider>
-                                    <UserRelationsProvider>
+                          <UserRelationsProvider>
+                            <UserNotificationDataProvider>
+                              <ModalProvider>
+                                <Portal.Host>
+                                  <HeaderButtonsProvider stackType={'native'}>
+                                    <CruiseProvider>
                                       <DrawerProvider>
                                         <FilterProvider>
                                           <FeatureProvider>
@@ -123,12 +128,12 @@ function App(): JSX.Element {
                                           </FeatureProvider>
                                         </FilterProvider>
                                       </DrawerProvider>
-                                    </UserRelationsProvider>
-                                  </CruiseProvider>
-                                </HeaderButtonsProvider>
-                              </Portal.Host>
-                            </ModalProvider>
-                          </UserNotificationDataProvider>
+                                    </CruiseProvider>
+                                  </HeaderButtonsProvider>
+                                </Portal.Host>
+                              </ModalProvider>
+                            </UserNotificationDataProvider>
+                          </UserRelationsProvider>
                         </TwitarrProvider>
                       </SocketProvider>
                     </PrivilegeProvider>
