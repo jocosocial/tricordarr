@@ -10,5 +10,8 @@ Nightly
 * Changing forum filter is locking up the app
 * Forum filter open triggering refresh
   * Same with sort 
+* forum thread list cross contamination between screens
+  * one context for each screen, make a dispatchAll in the provider?
 * markdown text color in light mode
 * LFG filters cross contaminate state - ended up with an Owned screen of Finds
+* refresh main screen fetch blocks/reports/mutes

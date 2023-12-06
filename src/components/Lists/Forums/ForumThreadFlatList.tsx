@@ -67,7 +67,7 @@ export const ForumThreadFlatList = ({
     if (forumListData.length !== 0) {
       return (
         <LabelDivider
-          label={'End of Category'}
+          label={'End of Results'}
           color={theme.colors.onBackground}
           wrapperStyle={[commonStyles.marginTopZero, commonStyles.marginBottomSmall]}
           dividerColor={theme.colors.outlineVariant}

@@ -22,7 +22,8 @@ import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSea
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
 import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
-import {CategoryData, ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -50,6 +51,9 @@ export type ForumStackParamList = {
   };
   ForumPostEditScreen: {
     postData: PostData;
+  };
+  ForumThreadUserScreen: {
+    user: UserHeader;
   };
 };
 
@@ -145,6 +149,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostEditScreen}
         component={isDisabled ? DisabledView : ForumPostEditScreen}
         options={{title: 'Edit Post'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadUserScreen}
+        component={isDisabled ? DisabledView : ForumThreadUserScreen}
+        options={{title: 'Forums by User'}}
       />
     </Stack.Navigator>
   );

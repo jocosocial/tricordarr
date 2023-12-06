@@ -7,7 +7,12 @@ import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents, LfgStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  ForumStackComponents,
+  LfgStackComponents,
+  RootStackComponents
+} from '../../../libraries/Enums/Navigation';
 
 interface UserContentCardProps {
   user: ProfilePublicData;
@@ -29,7 +34,18 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
           <List.Item
             title={'Forums'}
             left={() => getIcon(AppIcons.forum)}
-            onPress={() => console.warn('forums', user.header.userID)}
+            onPress={() =>
+              rootNavigation.push(RootStackComponents.rootContentScreen, {
+                screen: BottomTabComponents.forumsTab,
+                params: {
+                  screen: ForumStackComponents.forumThreadUserScreen,
+                  initial: false,
+                  params: {
+                    user: user.header,
+                  },
+                },
+              })
+            }
           />
           {isSelf && (
             <List.Item
