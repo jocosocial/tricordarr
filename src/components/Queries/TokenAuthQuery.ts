@@ -64,8 +64,8 @@ export function useTokenAuthPaginationQuery<
           return responseData;
         },
     {
-      getNextPageParam: lastPage => getNextPageParam(lastPage.paginator),
-      getPreviousPageParam: firstPage => getPreviousPageParam(firstPage.paginator),
+      getNextPageParam: lastPage => getNextPageParam(lastPage),
+      getPreviousPageParam: firstPage => getPreviousPageParam(firstPage),
       onError: error => {
         setErrorMessage(error);
       },

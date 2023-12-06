@@ -1,13 +1,20 @@
-import {MembersOnlyData, Paginator} from '../../libraries/Structs/ControllerStructs';
+import {FezData, Paginator} from '../../libraries/Structs/ControllerStructs';
 
 /**
  * Tells useInfiniteQuery if there's a next page.
  */
-export const getNextPageParam = (paginator?: Paginator) => {
+export const getNextPageParam = (page: WithPaginator | FezData) => {
+  let paginator;
+  if ('fezID' in page && page.members) {
+    paginator = page.members.paginator;
+  } else if ('paginator' in page) {
+    paginator = page.paginator;
+  }
   if (!paginator) {
     return;
   }
   const {limit, start, total} = paginator;
+
   const nextStart = start + limit;
   return nextStart < total ? {start: nextStart, limit: limit} : undefined;
 };
@@ -15,7 +22,13 @@ export const getNextPageParam = (paginator?: Paginator) => {
 /**
  * Tells useInfiniteQuery if there's a previous page.
  */
-export const getPreviousPageParam = (paginator?: Paginator) => {
+export const getPreviousPageParam = (page: WithPaginator | FezData) => {
+  let paginator;
+  if ('fezID' in page && page.members) {
+    paginator = page.members.paginator;
+  } else if ('paginator' in page) {
+    paginator = page.paginator;
+  }
   if (!paginator) {
     return;
   }
