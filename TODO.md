@@ -10,3 +10,6 @@ Nightly
 * Changing forum filter is locking up the app
 * Forum filter open triggering refresh
   * Same with sort 
+* markdown text color in light mode
+* LFG filters cross contaminate state - ended up with an Owned screen of Finds
+* 
