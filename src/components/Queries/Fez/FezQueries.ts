@@ -75,7 +75,7 @@ export const useLfgListQuery = ({
   fezType,
   excludeFezType,
   hidePast = false,
-  pageSize = 5,
+  pageSize = 50,
   endpoint = 'open',
   options = {},
 }: LfgListQueryOptions) => {
