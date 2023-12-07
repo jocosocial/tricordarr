@@ -91,7 +91,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   }
 
   return (
-    <View>
+    <>
       <ListTitleView title={props.category.title} />
       <ForumThreadFlatList
         forumListData={forumListData}
@@ -102,6 +102,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         hasPreviousPage={hasPreviousPage}
       />
       <ForumFAB categoryId={props.category.categoryID} enableNewButton={!isUserRestricted} />
-    </View>
+    </>
   );
 };
