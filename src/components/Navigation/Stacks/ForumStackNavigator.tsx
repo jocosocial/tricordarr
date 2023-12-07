@@ -94,6 +94,13 @@ export const ForumStackNavigator = () => {
         }}
       />
       <Stack.Screen
+        name={ForumStackComponents.forumThreadPostScreen}
+        component={isDisabled ? DisabledView : ForumThreadPostScreen}
+        options={{
+          title: 'Forum',
+        }}
+      />
+      <Stack.Screen
         name={ForumStackComponents.forumPostMentionScreen}
         component={isDisabled ? DisabledView : ForumPostMentionScreen}
         options={{title: 'Posts Mentioning You'}}

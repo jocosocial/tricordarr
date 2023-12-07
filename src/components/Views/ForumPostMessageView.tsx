@@ -60,7 +60,7 @@ export const ForumPostMessageView = ({
 
   // Same as the button in the menu used in the menu
   const onPress = () => {
-    forumNavigation.push(ForumStackComponents.forumThreadScreen, {
+    forumNavigation.push(ForumStackComponents.forumThreadPostScreen, {
       postID: postData.postID.toString(),
     });
   };
