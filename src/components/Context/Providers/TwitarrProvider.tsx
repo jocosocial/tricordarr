@@ -7,7 +7,7 @@ import {useEventListReducer} from '../../Reducers/Schedule/EventListReducer';
 import {useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
-import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
+import {ForumListDataActionsType, useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
 import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
@@ -26,6 +26,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
   const [forumThreadPosts, dispatchForumThreadPosts] = useForumPostListReducer([]);
+  const [forumListDataUser, dispatchForumListDataUser] = useForumListDataReducer([]);
 
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
@@ -45,6 +46,11 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
       return;
     }
     Linking.openURL(url);
+  };
+
+  const dispatchForumListDataAll = (action: ForumListDataActionsType) => {
+    dispatchForumListData(action);
+    dispatchForumListDataUser(action);
   };
 
   return (
@@ -79,6 +85,9 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         dispatchForumPosts,
         forumThreadPosts,
         dispatchForumThreadPosts,
+        forumListDataUser,
+        dispatchForumListDataUser,
+        dispatchForumListDataAll,
       }}>
       {children}
     </TwitarrContext.Provider>

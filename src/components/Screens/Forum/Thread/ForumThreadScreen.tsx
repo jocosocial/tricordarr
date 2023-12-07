@@ -56,8 +56,16 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumData, setForumData, forumThreadPosts, dispatchForumThreadPosts, forumListData, dispatchForumListData} =
-    useTwitarr();
+  const {
+    forumData,
+    setForumData,
+    forumThreadPosts,
+    dispatchForumThreadPosts,
+    forumListData,
+    forumListDataUser,
+    dispatchForumListData,
+    dispatchForumListDataAll,
+  } = useTwitarr();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
@@ -237,8 +245,12 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       // This is a hack to get around unread counts on first load.
       // The spread operator is to ensure a copy of the object that doesn't update with the list
       // when the mark-as-read action occurs.
+      // Only works if you came from ForumCategoriesScreen.
       if (!forumListItem) {
-        const item = forumListData.find(fdl => fdl.forumID === data.pages[0].forumID);
+        let item = forumListData.find(fdl => fdl.forumID === data.pages[0].forumID);
+        // if (!item) {
+        //   item = forumListDataUser.find(fdl => fdl.forumID === data.pages[0].forumID);
+        // }
         setForumListItem(item ? {...item} : undefined);
       }
     }
@@ -252,17 +264,18 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     setForumListItem,
     forumListData,
     forumListItem,
+    // forumListDataUser,
   ]);
 
   useEffect(() => {
     if (forumListItem) {
       console.log(`[ForumThreadScreen.tsx] Marking forum ${forumListItem.forumID} as read.`);
-      dispatchForumListData({
+      dispatchForumListDataAll({
         type: ForumListDataActions.markAsRead,
         forumID: forumListItem.forumID,
       });
     }
-  }, [dispatchForumListData, forumListItem]);
+  }, [dispatchForumListDataAll, forumListItem]);
 
   useEffect(() => {
     if (!isFocused) {
@@ -293,7 +306,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
           });
           if (forumListItem) {
             dispatchForumListData({
-              type: ForumListDataActions.upsert,
+              type: ForumListDataActions.touch,
               thread: {
                 ...forumListItem,
                 postCount: forumListItem.postCount + 1,
