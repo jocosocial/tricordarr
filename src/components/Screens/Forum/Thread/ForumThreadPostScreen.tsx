@@ -33,15 +33,17 @@ import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostQuerie
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
+import {Button, Text} from 'react-native-paper';
+import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useIsFocused} from '@react-navigation/native';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
-  ForumStackComponents.forumThreadScreen,
+  ForumStackComponents.forumThreadPostScreen,
   NavigatorIDs.forumStack
 >;
 
-export const ForumThreadScreen = ({route, navigation}: Props) => {
+export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   const {
     data,
     refetch,
@@ -52,7 +54,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     isFetchingPreviousPage,
     hasNextPage,
     hasPreviousPage,
-  } = useForumThreadQuery(route.params.forumID);
+  } = useForumThreadQuery(undefined, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
   const {
     forumData,
@@ -67,11 +69,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
   const theme = useAppTheme();
+  const startScreenAtBottom = !route.params.postID;
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {hasModerator} = usePrivilege();
+  const {commonStyles} = useStyles();
   const isFocused = useIsFocused();
   const [forumListItem, setForumListItem] = useState<ForumListData>();
 
@@ -234,7 +238,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts and ForumData.');
       dispatchForumThreadPosts({
         type: ForumPostListActions.setList,
-        postList: postListData.reverse(),
+        postList: startScreenAtBottom ? postListData.reverse() : postListData,
       });
       setForumData(data.pages[0]);
       // This is a hack to get around unread counts on first load.
@@ -252,7 +256,9 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   }, [
     data,
     dispatchForumThreadPosts,
+    route.params.postID,
     setForumData,
+    startScreenAtBottom,
     isFocused,
     setForumListItem,
     forumListData,
@@ -327,6 +333,28 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
+  const getListHeader = () => {
+    return (
+      <View style={[commonStyles.flexRow]}>
+        <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+          <Text variant={'labelMedium'}>Showing forum starting at selected post.</Text>
+          {forumData && (
+            <Button
+              mode={'outlined'}
+              style={[commonStyles.marginTopSmall]}
+              onPress={() =>
+                navigation.push(ForumStackComponents.forumThreadScreen, {
+                  forumID: forumData.forumID,
+                })
+              }>
+              View Full Forum
+            </Button>
+          )}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <AppView>
       <PostAsUserBanner />
@@ -335,13 +363,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       <ForumPostFlatList
         postList={forumThreadPosts}
         handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
+        handleLoadPrevious={route.params.postID ? undefined : handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-        invertList={true}
+        invertList={startScreenAtBottom}
         forumData={forumData}
-        hasPreviousPage={hasPreviousPage}
+        hasPreviousPage={route.params.postID ? undefined : hasPreviousPage}
         maintainViewPosition={true}
-        getListHeader={undefined}
+        getListHeader={route.params.postID ? getListHeader : undefined}
         flatListRef={flatListRef}
         forumListData={forumListItem}
         hasNextPage={hasNextPage}

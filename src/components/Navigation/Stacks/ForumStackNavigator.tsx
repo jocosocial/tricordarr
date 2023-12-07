@@ -24,6 +24,7 @@ import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditS
 import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
 import {CategoryData, ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
+import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -31,8 +32,10 @@ export type ForumStackParamList = {
     category: CategoryData;
   };
   ForumThreadScreen: {
-    forumID?: string;
-    postID?: string;
+    forumID: string;
+  };
+  ForumThreadPostScreen: {
+    postID: string;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;

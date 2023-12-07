@@ -9,14 +9,15 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
 import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ForumCategoryRelationsView} from '../../Views/Forum/ForumCategoryRelationsView';
-import {ForumCategoryBaseView} from '../../Views/Forum/ForumCategoryBaseView';
+import {ForumThreadsRelationsView} from '../../Views/Forum/ForumThreadsRelationsView';
+import {ForumThreadsCategoryView} from '../../Views/Forum/ForumThreadsCategoryView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {AppView} from '../../Views/AppView';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -69,7 +70,15 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData, clearPrivileges]);
 
   if (forumFilter) {
-    return <ForumCategoryRelationsView forumFilter={forumFilter} category={route.params.category} />;
+    return (
+      <AppView>
+        <ForumThreadsRelationsView forumFilter={forumFilter} category={route.params.category} />
+      </AppView>
+    );
   }
-  return <ForumCategoryBaseView category={route.params.category} />;
+  return (
+    <AppView>
+      <ForumThreadsCategoryView category={route.params.category} />
+    </AppView>
+  );
 };

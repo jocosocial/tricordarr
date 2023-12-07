@@ -1,25 +1,24 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '../AppView';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
-import {RefreshControl} from 'react-native';
+import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
+import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
-import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
+import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ListTitleView} from '../ListTitleView';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 
-export const ForumCategoryRelationsView = ({
-  forumFilter,
-  category,
-}: {
-  forumFilter: ForumFilter;
-  category?: CategoryData;
-}) => {
+interface ForumCategoryBaseViewProps {
+  category: CategoryData;
+}
+
+export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const {forumSortOrder} = useFilter();
   const {
     data,
@@ -31,12 +30,13 @@ export const ForumCategoryRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumRelationQuery(ForumFilter.toRelation(forumFilter), {
-    cat: category?.categoryID,
-    sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
+  } = useForumCategoryQuery(props.category.categoryID, {
+    ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
+  const [isUserRestricted, setIsUserRestricted] = useState(false);
+  const {hasModerator} = usePrivilege();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -62,8 +62,15 @@ export const ForumCategoryRelationsView = ({
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
       });
+
+      const categoryData = data.pages[0];
+      if (hasModerator) {
+        setIsUserRestricted(false);
+      } else {
+        setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
+      }
     }
-  }, [data, dispatchForumListData]);
+  }, [data, dispatchForumListData, hasModerator]);
 
   if (!data) {
     return <LoadingView />;
@@ -71,20 +78,21 @@ export const ForumCategoryRelationsView = ({
 
   if (forumListData.length === 0) {
     return (
-      <AppView>
+      <View>
         <ScrollingContentView
           isStack={true}
           refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
           <PaddedContentView padTop={true}>
-            <Text>There aren't any forums matching these filters.</Text>
+            <Text>There aren't any forums in this category yet.</Text>
           </PaddedContentView>
         </ScrollingContentView>
-      </AppView>
+      </View>
     );
   }
 
   return (
-    <AppView>
+    <View>
+      <ListTitleView title={props.category.title} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
@@ -93,6 +101,7 @@ export const ForumCategoryRelationsView = ({
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-    </AppView>
+      <ForumFAB categoryId={props.category.categoryID} enableNewButton={!isUserRestricted} />
+    </View>
   );
 };
