@@ -36,15 +36,16 @@ export const ForumThreadFlatList = ({
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
   const renderListHeader = () => {
-    if (forumListData.length === 0) {
-      return <TimeDivider label={'No forums to display'} />;
-    }
+    // Turning this off because the list renders too quickly based on the state data.
+    // if (forumListData.length === 0) {
+    //   return <TimeDivider label={'No forums to display'} />;
+    // }
     if (hasPreviousPage) {
       return (
         <PaddedContentView>
           <View style={[commonStyles.flexRow]}>
             <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading more previous...</Text>
+              <Text variant={'labelMedium'}>Loading...</Text>
             </View>
           </View>
         </PaddedContentView>
@@ -58,7 +59,7 @@ export const ForumThreadFlatList = ({
         <PaddedContentView>
           <View style={[commonStyles.flexRow]}>
             <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading more next...</Text>
+              <Text variant={'labelMedium'}>Loading...</Text>
             </View>
           </View>
         </PaddedContentView>
