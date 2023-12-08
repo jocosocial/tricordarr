@@ -6,6 +6,7 @@ import {TokenStringData} from '../Structs/ControllerStructs';
 import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
 import {ImageQueryData} from '../Types';
+import DeviceInfo from 'react-native-device-info';
 
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
@@ -28,7 +29,7 @@ export async function configureAxios() {
     }
     // Other Headers
     config.headers.Accept = 'application/json';
-    config.headers['X-Swiftarr-Client'] = 'Tricordarr 1.0';
+    config.headers['X-Swiftarr-Client'] = `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`;
     // Other Config
     config.timeout = 5000;
     config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';

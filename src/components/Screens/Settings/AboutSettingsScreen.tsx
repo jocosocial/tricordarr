@@ -26,6 +26,10 @@ export const AboutSettingsScreen = () => {
               <DataTable.Title>This App</DataTable.Title>
             </DataTable.Header>
             <DataTable.Row>
+              <DataTable.Cell>App Name</DataTable.Cell>
+              <DataTable.Cell>{DeviceInfo.getApplicationName()}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
               <DataTable.Cell>App Version</DataTable.Cell>
               <DataTable.Cell>{DeviceInfo.getVersion()}</DataTable.Cell>
             </DataTable.Row>

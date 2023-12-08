@@ -70,7 +70,8 @@ export const ForumThreadsRelationsView = ({
     return <LoadingView />;
   }
 
-  if (forumListData.length === 0) {
+  // Don't use the state list because it renders too quickly.
+  if (data.pages[0].forumThreads.length === 0) {
     return (
       <View>
         <ScrollingContentView
