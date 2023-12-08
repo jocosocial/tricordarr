@@ -18,6 +18,7 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {AppView} from '../../Views/AppView';
+import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -72,7 +73,10 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   if (forumFilter) {
     return (
       <AppView>
-        <ForumThreadsRelationsView forumFilter={forumFilter} category={route.params.category} />
+        <ForumThreadsRelationsView
+          relationType={ForumFilter.toRelation(forumFilter)}
+          category={route.params.category}
+        />
       </AppView>
     );
   }

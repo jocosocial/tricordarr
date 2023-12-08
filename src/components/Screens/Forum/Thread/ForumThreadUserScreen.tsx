@@ -1,11 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
-import {ForumThreadSearchBar} from '../../../Search/ForumThreadSearchBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumListDataActions, useForumListDataReducer} from '../../../Reducers/Forum/ForumListDataReducer';
+import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';

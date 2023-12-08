@@ -7,16 +7,16 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
-import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
+import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 
 export const ForumThreadsRelationsView = ({
-  forumFilter,
+  relationType,
   category,
 }: {
-  forumFilter: ForumFilter;
+  relationType: ForumRelationQueryType;
   category?: CategoryData;
 }) => {
   const {forumSortOrder} = useFilter();
@@ -30,7 +30,7 @@ export const ForumThreadsRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumRelationQuery(ForumFilter.toRelation(forumFilter), {
+  } = useForumRelationQuery(relationType, {
     cat: category?.categoryID,
     sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
   });

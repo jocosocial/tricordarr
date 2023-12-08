@@ -7,7 +7,7 @@ import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {ForumThreadSortMenu} from '../../../Menus/Forum/ForumThreadSortMenu';
 import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
-import {ForumFilter} from '../../../../libraries/Enums/ForumSortFilter';
+import {ForumRelationQueryType} from '../../../Queries/Forum/ForumRelationQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -32,5 +32,5 @@ export const ForumThreadFavoritesScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ForumThreadsRelationsView forumFilter={ForumFilter.favorite} />;
+  return <ForumThreadsRelationsView relationType={ForumRelationQueryType.favorites} />;
 };

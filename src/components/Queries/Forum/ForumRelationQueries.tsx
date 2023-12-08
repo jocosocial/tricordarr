@@ -24,7 +24,7 @@ export const useForumRelationMutation = () => {
   return useTokenAuthMutation(relationQueryHandler);
 };
 
-export interface ForumFavoritesQueryParams {
+export interface ForumRelationQueryParams {
   start?: number;
   limit?: number;
   cat?: string;
@@ -38,6 +38,6 @@ export enum ForumRelationQueryType {
   recent = 'recent',
 }
 
-export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumFavoritesQueryParams) => {
+export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumRelationQueryParams) => {
   return useTokenAuthPaginationQuery<ForumSearchData>(`/forum/${relation}`, undefined, undefined, queryParams);
 };

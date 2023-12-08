@@ -8,6 +8,7 @@ import {HeaderButtons} from 'react-navigation-header-buttons';
 import {ForumThreadSortMenu} from '../../../Menus/Forum/ForumThreadSortMenu';
 import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
 import {ForumFilter} from '../../../../libraries/Enums/ForumSortFilter';
+import {ForumRelationQueryType} from '../../../Queries/Forum/ForumRelationQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -32,5 +33,5 @@ export const ForumThreadOwnedScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ForumThreadsRelationsView forumFilter={ForumFilter.owned} />;
+  return <ForumThreadsRelationsView relationType={ForumRelationQueryType.owner} />;
 };
