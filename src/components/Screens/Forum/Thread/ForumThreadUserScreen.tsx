@@ -11,7 +11,6 @@ import {RefreshControl} from 'react-native';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
-import {ForumFAB} from '../../../Buttons/FloatingActionButtons/ForumFAB';
 import {useForumSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {UserHeader} from '../../../../libraries/Structs/ControllerStructs';
@@ -96,7 +95,6 @@ export const ForumThreadUserScreen = ({route}: Props) => {
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-      <ForumFAB />
     </AppView>
   );
 };

@@ -9,10 +9,10 @@ import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumNewFAB} from '../../Buttons/FloatingActionButtons/ForumNewFAB';
 
 interface ForumCategoryBaseViewProps {
   category: CategoryData;
@@ -101,7 +101,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-      <ForumFAB categoryId={props.category.categoryID} enableNewButton={!isUserRestricted} />
+      {!isUserRestricted && <ForumNewFAB categoryId={props.category.categoryID} />}
     </>
   );
 };

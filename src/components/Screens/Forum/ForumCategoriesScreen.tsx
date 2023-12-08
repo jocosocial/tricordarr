@@ -19,7 +19,7 @@ import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 export type Props = NativeStackScreenProps<
@@ -134,7 +134,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumFAB openLabel={'Categories'} />
+      <ForumSearchFAB />
     </AppView>
   );
 };
