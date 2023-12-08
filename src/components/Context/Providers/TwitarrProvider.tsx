@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {CategoryData, FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
@@ -21,7 +21,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
-  const [forumCategories, setForumCategories] = useState<CategoryData[]>([]);
   const [forumData, setForumData] = useState<ForumData>();
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
@@ -69,8 +68,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         lfgPostsData,
         dispatchLfgPostsData,
         openWebUrl,
-        forumCategories,
-        setForumCategories,
         forumData,
         setForumData,
         forumListData,

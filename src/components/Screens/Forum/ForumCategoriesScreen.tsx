@@ -30,7 +30,6 @@ export type Props = NativeStackScreenProps<
 
 export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
-  const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
@@ -42,12 +41,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     setRefreshing(true);
     refetch().then(() => refetchUserNotificationData().then(() => setRefreshing(false)));
   }, [refetch, refetchUserNotificationData]);
-
-  useEffect(() => {
-    if (data) {
-      setForumCategories(data);
-    }
-  }, [data, setForumCategories]);
 
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
@@ -80,7 +73,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
         <View>
           <ListSection>
             <List.Subheader>Forum Categories</List.Subheader>
-            {forumCategories.map((category, index) => {
+            {data.map((category, index) => {
               return (
                 <React.Fragment key={category.categoryID}>
                   {index === 0 && <Divider bold={true} />}

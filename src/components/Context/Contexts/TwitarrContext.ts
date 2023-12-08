@@ -1,6 +1,5 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
 import {
-  CategoryData,
   EventData,
   FezData,
   FezPostData,
@@ -35,8 +34,6 @@ interface TwitarrContextType {
   lfgPostsData: FezPostData[];
   dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
   openWebUrl: (url: string) => void;
-  forumCategories: CategoryData[];
-  setForumCategories: Dispatch<SetStateAction<CategoryData[]>>;
   forumData: ForumData | undefined;
   setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
   forumListData: ForumListData[];
