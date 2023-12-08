@@ -15,6 +15,7 @@ import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator'
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../Reducers/Forum/ForumPostListReducer';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
+import {useIsFocused} from '@react-navigation/native';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -46,6 +47,7 @@ export const ForumPostSearchBar = () => {
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -107,13 +109,13 @@ export const ForumPostSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: data.pages.flatMap(p => p.posts),
       });
     }
-  }, [data, dispatchForumPosts]);
+  }, [data, dispatchForumPosts, isFocused]);
 
   return (
     <>

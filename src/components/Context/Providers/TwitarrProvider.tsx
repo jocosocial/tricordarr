@@ -24,7 +24,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [forumData, setForumData] = useState<ForumData>();
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
-  const [forumThreadPosts, dispatchForumThreadPosts] = useForumPostListReducer([]);
 
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
@@ -74,8 +73,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         dispatchForumListData,
         forumPosts,
         dispatchForumPosts,
-        forumThreadPosts,
-        dispatchForumThreadPosts,
       }}>
       {children}
     </TwitarrContext.Provider>

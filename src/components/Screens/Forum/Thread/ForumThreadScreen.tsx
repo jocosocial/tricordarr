@@ -54,8 +54,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumData, setForumData, forumThreadPosts, dispatchForumThreadPosts, forumListData, dispatchForumListData} =
-    useTwitarr();
+  const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
@@ -225,7 +224,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     if (data && data.pages && isFocused) {
       const postListData = data.pages.flatMap(fd => fd.posts);
       console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts and ForumData.');
-      dispatchForumThreadPosts({
+      dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: postListData.reverse(),
       });
@@ -244,7 +243,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     }
   }, [
     data,
-    dispatchForumThreadPosts,
+    dispatchForumPosts,
     setForumData,
     isFocused,
     setForumListItem,
@@ -263,16 +262,6 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     }
   }, [dispatchForumListData, forumListItem]);
 
-  useEffect(() => {
-    if (!isFocused) {
-      console.log('[ForumThreadScreen.tsx] Clearing ForumThreadPosts and ForumData.');
-      dispatchForumThreadPosts({
-        type: ForumPostListActions.clear,
-      });
-      setForumData(undefined);
-    }
-  }, [dispatchForumThreadPosts, isFocused, setForumData]);
-
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     if (!forumData) {
       setErrorMessage('Forum Data missing? This is definitely a bug.');
@@ -286,7 +275,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          dispatchForumThreadPosts({
+          dispatchForumPosts({
             type: ForumPostListActions.prependPost,
             newPost: response.data,
           });
@@ -326,7 +315,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       <ListTitleView title={forumData?.title} />
       {forumData?.isLocked && <ForumLockedView />}
       <ForumPostFlatList
-        postList={forumThreadPosts}
+        postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
