@@ -16,6 +16,7 @@ import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadSortMenu} from '../Menus/Forum/ForumThreadSortMenu';
+import {useIsFocused} from '@react-navigation/native';
 
 export const ForumThreadSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -46,6 +47,7 @@ export const ForumThreadSearchBar = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -102,10 +104,10 @@ export const ForumThreadSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       setForumList(data.pages.flatMap(p => p.forumThreads));
     }
-  }, [data]);
+  }, [data, isFocused]);
 
   return (
     <>

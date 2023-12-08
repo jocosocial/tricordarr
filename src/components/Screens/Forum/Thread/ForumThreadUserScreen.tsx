@@ -14,6 +14,7 @@ import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
 import {useForumSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {UserHeader} from '../../../../libraries/Structs/ControllerStructs';
+import {useIsFocused} from '@react-navigation/native';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -38,6 +39,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   // const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const {forumListData, dispatchForumListData} = useTwitarr();
+  const isFocused = useIsFocused();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -58,13 +60,13 @@ export const ForumThreadUserScreen = ({route}: Props) => {
   };
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchForumListData({
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
       });
     }
-  }, [data, dispatchForumListData]);
+  }, [data, dispatchForumListData, isFocused]);
 
   if (!data) {
     return <LoadingView />;

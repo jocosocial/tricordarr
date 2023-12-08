@@ -13,6 +13,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumNewFAB} from '../../Buttons/FloatingActionButtons/ForumNewFAB';
+import {useIsFocused} from '@react-navigation/native';
 
 interface ForumCategoryBaseViewProps {
   category: CategoryData;
@@ -37,6 +38,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const {forumListData, dispatchForumListData} = useTwitarr();
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
+  const isFocused = useIsFocused();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -57,7 +59,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   };
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchForumListData({
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
@@ -70,7 +72,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
       }
     }
-  }, [data, dispatchForumListData, hasModerator]);
+  }, [data, dispatchForumListData, hasModerator, isFocused]);
 
   if (!data) {
     return <LoadingView />;

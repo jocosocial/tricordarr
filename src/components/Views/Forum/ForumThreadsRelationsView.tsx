@@ -11,6 +11,7 @@ import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
+import {useIsFocused} from '@react-navigation/native';
 
 export const ForumThreadsRelationsView = ({
   relationType,
@@ -36,6 +37,7 @@ export const ForumThreadsRelationsView = ({
   });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
+  const isFocused = useIsFocused();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -56,13 +58,13 @@ export const ForumThreadsRelationsView = ({
   };
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchForumListData({
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
       });
     }
-  }, [data, dispatchForumListData]);
+  }, [data, dispatchForumListData, isFocused]);
 
   if (!data) {
     return <LoadingView />;
