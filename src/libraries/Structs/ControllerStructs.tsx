@@ -549,7 +549,7 @@ export interface CategoryData {
   isEventCategory: boolean;
   /// The number of threads in this category
   numThreads: number;
-  ///The threads in the category. Only populated for /categories/ID.
+  /// The threads in the category. Only populated for /categories/ID.
   forumThreads?: [ForumListData];
 }
 

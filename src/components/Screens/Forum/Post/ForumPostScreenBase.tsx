@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
-import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
+import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';

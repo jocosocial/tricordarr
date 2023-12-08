@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
-import {CategoryData, ForumData, Paginator} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosResponse} from 'axios';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
@@ -18,9 +18,9 @@ export interface ForumCategoryQueryParams {
   beforedate?: string; // mutually exclusive
 }
 
+// https://github.com/jocosocial/swiftarr/issues/236
 export interface CategoryDataQueryResponse extends CategoryData, WithPaginator {}
 
-// https://github.com/jocosocial/swiftarr/issues/236
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
   return useTokenAuthPaginationQuery<CategoryDataQueryResponse>(
     `/forum/categories/${categoryId}`,

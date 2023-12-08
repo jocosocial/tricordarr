@@ -4,7 +4,6 @@ import {ForumThreadSearchBar} from '../../../Search/ForumThreadSearchBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
-import {useForumRecentQuery} from '../../../Queries/Forum/ForumRelationQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions, useForumListDataReducer} from '../../../Reducers/Forum/ForumListDataReducer';
 import {LoadingView} from '../../../Views/Static/LoadingView';

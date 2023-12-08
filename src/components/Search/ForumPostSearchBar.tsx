@@ -3,7 +3,7 @@ import {FlatList, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {useForumPostSearchQuery} from '../Queries/Forum/ForumSearchQueries';
+import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';

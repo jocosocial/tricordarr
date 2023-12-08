@@ -8,7 +8,7 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
-import {useForumRecentQuery} from '../../../Queries/Forum/ForumRelationQueries';
+import {ForumRelationQueryType, useForumRelationQuery} from '../../../Queries/Forum/ForumRelationQueries';
 import {ForumFAB} from '../../../Buttons/FloatingActionButtons/ForumFAB';
 
 export const ForumThreadRecentScreen = () => {
@@ -22,7 +22,7 @@ export const ForumThreadRecentScreen = () => {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumRecentQuery();
+  } = useForumRelationQuery(ForumRelationQueryType.recent);
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
 
