@@ -87,7 +87,7 @@ export const useLfgListQuery = ({
     ...(hidePast !== undefined && {hidePast: hidePast}),
     ...(excludeFezType && {excludetype: excludeFezType}),
   };
-  return useTokenAuthPaginationQuery(`/fez/${endpoint}`, pageSize, options, queryParams);
+  return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, pageSize, options, queryParams);
 };
 
 interface FezCancelMutationProps {

@@ -75,13 +75,13 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   }, [closeFezSocket, getNavButtons, isFocused, navigation, setLfg]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchLfgList({
         type: FezListActions.set,
         fezList: data.pages.flatMap(p => p.fezzes),
       });
     }
-  }, [data, dispatchLfgList]);
+  }, [data, dispatchLfgList, isFocused]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
