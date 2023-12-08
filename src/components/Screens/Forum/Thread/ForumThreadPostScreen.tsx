@@ -43,6 +43,7 @@ export type Props = NativeStackScreenProps<
   NavigatorIDs.forumStack
 >;
 
+// @TODO unify a common view with ForumThreadScreen
 export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   const {
     data,
@@ -56,15 +57,8 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(undefined, route.params.postID);
   const [refreshing, setRefreshing] = useState(false);
-  const {
-    forumData,
-    setForumData,
-    forumThreadPosts,
-    dispatchForumThreadPosts,
-    forumListData,
-    dispatchForumListData,
-    dispatchForumListDataAll,
-  } = useTwitarr();
+  const {forumData, setForumData, forumThreadPosts, dispatchForumThreadPosts, forumListData, dispatchForumListData} =
+    useTwitarr();
   const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
@@ -269,12 +263,12 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     if (forumListItem) {
       console.log(`[ForumThreadScreen.tsx] Marking forum ${forumListItem.forumID} as read.`);
-      dispatchForumListDataAll({
+      dispatchForumListData({
         type: ForumListDataActions.markAsRead,
         forumID: forumListItem.forumID,
       });
     }
-  }, [dispatchForumListDataAll, forumListItem]);
+  }, [dispatchForumListData, forumListItem]);
 
   useEffect(() => {
     if (!isFocused) {
