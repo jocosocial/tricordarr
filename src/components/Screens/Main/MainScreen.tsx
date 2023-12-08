@@ -14,6 +14,9 @@ import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NextEventCard} from '../../Cards/MainScreen/NextEventCard';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -23,12 +26,25 @@ export const MainScreen = ({navigation}: Props) => {
   const {refetch: refetchThemes} = useDailyThemeQuery();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
   const {refetchUserNotificationData, userNotificationData} = useUserNotificationData();
+  const {refetch: refetchFavorites} = useUserFavoritesQuery();
+  const {refetch: refetchMutes} = useUserMutesQuery();
+  const {refetch: refetchBlocks} = useUserBlocksQuery();
 
   const onRefresh = () => {
     setRefreshing(true);
-    refetchUserNotificationData().then(() =>
-      refetchThemes().then(() => refetchAnnouncements().then(() => setRefreshing(false))),
-    );
+    refetchUserNotificationData().then(() => {
+      refetchThemes().then(() => {
+        refetchAnnouncements().then(() => {
+          refetchFavorites().then(() => {
+            refetchMutes().then(() => {
+              refetchBlocks().then(() => {
+                setRefreshing(false);
+              });
+            });
+          });
+        });
+      });
+    });
   };
 
   useEffect(() => {
