@@ -263,12 +263,12 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     if (forumListItem) {
       console.log(`[ForumThreadScreen.tsx] Marking forum ${forumListItem.forumID} as read.`);
-      dispatchForumListDataAll({
+      dispatchForumListData({
         type: ForumListDataActions.markAsRead,
         forumID: forumListItem.forumID,
       });
     }
-  }, [dispatchForumListDataAll, forumListItem]);
+  }, [dispatchForumListData, forumListItem]);
 
   useEffect(() => {
     if (!isFocused) {
