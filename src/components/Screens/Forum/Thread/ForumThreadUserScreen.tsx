@@ -37,7 +37,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
   });
   const [refreshing, setRefreshing] = useState(false);
   // const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
-  const {forumListDataUser, dispatchForumListDataUser} = useTwitarr();
+  const {forumListData, dispatchForumListData} = useTwitarr();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -59,18 +59,18 @@ export const ForumThreadUserScreen = ({route}: Props) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      dispatchForumListDataUser({
+      dispatchForumListData({
         type: ForumListDataActions.setList,
         threadList: data.pages.flatMap(p => p.forumThreads || []),
       });
     }
-  }, [data, dispatchForumListDataUser]);
+  }, [data, dispatchForumListData]);
 
   if (!data) {
     return <LoadingView />;
   }
 
-  if (forumListDataUser.length === 0) {
+  if (forumListData.length === 0) {
     return (
       <AppView>
         <ScrollingContentView
@@ -88,7 +88,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
     <AppView>
       <ListTitleView title={`Forums by ${UserHeader.getByline(route.params.user)}`} />
       <ForumThreadFlatList
-        forumListData={forumListDataUser}
+        forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}

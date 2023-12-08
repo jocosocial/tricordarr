@@ -45,9 +45,6 @@ interface TwitarrContextType {
   dispatchForumPosts: Dispatch<ForumPostListActionsType>;
   forumThreadPosts: PostData[];
   dispatchForumThreadPosts: Dispatch<ForumPostListActionsType>;
-  forumListDataUser: ForumListData[];
-  dispatchForumListDataUser: Dispatch<ForumListDataActionsType>;
-  dispatchForumListDataAll: Dispatch<ForumListDataActionsType>;
 }
 
 export const TwitarrContext = createContext(<TwitarrContextType>{});
