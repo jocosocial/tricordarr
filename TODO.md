@@ -10,6 +10,5 @@ Nightly
 * Why does refreshing for forum favorite not spin?
 * Your day today sets a surprise filter that feels kinda weird.
 * Loading a forum view triggers refresh briefly after initial render
-* Refresh a forum thread screen does not update read state. Still showing the new divider
 * Schedule long press being problematic. Sometimes doesn't register. Is douvle tap a thing?
 * clear oobe server healthcheck between changes

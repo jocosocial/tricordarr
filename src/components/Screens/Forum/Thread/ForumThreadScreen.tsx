@@ -69,8 +69,17 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
+    refetch().then(() => {
+      if (forumListItem) {
+        console.log('[ForumThreadScreen.tsx] Marking local ForumListItem as read.');
+        setForumListItem({
+          ...forumListItem,
+          readCount: forumListItem.postCount,
+        });
+      }
+      setRefreshing(false);
+    });
+  }, [forumListItem, refetch]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -235,9 +244,6 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       // Only works if you came from ForumCategoriesScreen.
       if (!forumListItem) {
         let item = forumListData.find(fdl => fdl.forumID === data.pages[0].forumID);
-        // if (!item) {
-        //   item = forumListDataUser.find(fdl => fdl.forumID === data.pages[0].forumID);
-        // }
         setForumListItem(item ? {...item} : undefined);
       }
     }
