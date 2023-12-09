@@ -42,8 +42,8 @@ export const ForumPostTextValidation = Yup.string()
     return value.split(/\r\n|\r|\n/).length <= 25;
   });
 
-// This may need a if (__DEV__) block to enable local instances.
-export const ServerURLValidation = Yup.string()
+// Validator must square with the network_security_config.xml in effect for the particular build.
+const productionUrlValidation = Yup.string()
   .required('Server URL cannot be empty.')
   .lowercase('Lower-case only.')
   .url('Must be valid URL.')
@@ -55,3 +55,11 @@ export const ServerURLValidation = Yup.string()
     },
   })
   .strict();
+
+const developmentUrlValidation = Yup.string()
+  .required('Server URL cannot be empty.')
+  .lowercase('Lower-case only.')
+  .url('Must be valid URL.')
+  .strict();
+
+export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;
