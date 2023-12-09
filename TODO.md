@@ -3,6 +3,7 @@ Backlog
 * local deck map
 
 Work Queue
+* Confirm against canonical API endpoints
 
 Nightly
 * lfg card really needs to go back to the event day screen
@@ -17,4 +18,3 @@ Nightly
 * Refresh a forum thread screen does not update read state. Still showing the new divider
 * Schedule long press being problematic. Sometimes doesn't register. Is douvle tap a thing?
 * clear oobe server healthcheck between changes
-* forumcategoryscreen needs categoryID only to enable linking

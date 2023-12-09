@@ -10,15 +10,15 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
-import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 import {useIsFocused} from '@react-navigation/native';
+import {ListTitleView} from '../ListTitleView';
 
 export const ForumThreadsRelationsView = ({
   relationType,
-  category,
+  categoryID,
 }: {
   relationType: ForumRelationQueryType;
-  category?: CategoryData;
+  categoryID?: string;
 }) => {
   const {forumSortOrder} = useFilter();
   const {
@@ -32,7 +32,7 @@ export const ForumThreadsRelationsView = ({
     hasNextPage,
     fetchNextPage,
   } = useForumRelationQuery(relationType, {
-    cat: category?.categoryID,
+    cat: categoryID,
     sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
   });
   const [refreshing, setRefreshing] = useState(false);
@@ -86,7 +86,7 @@ export const ForumThreadsRelationsView = ({
   }
 
   return (
-    <View>
+    <>
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
@@ -95,6 +95,6 @@ export const ForumThreadsRelationsView = ({
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-    </View>
+    </>
   );
 };

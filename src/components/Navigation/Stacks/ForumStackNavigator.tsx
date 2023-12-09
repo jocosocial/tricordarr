@@ -22,14 +22,15 @@ import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSea
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
 import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
-import {CategoryData, ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
 import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
-    category: CategoryData;
+    // category: CategoryData;
+    categoryID: string;
   };
   ForumThreadScreen: {
     forumID: string;

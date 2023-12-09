@@ -75,14 +75,14 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
       <AppView>
         <ForumThreadsRelationsView
           relationType={ForumFilter.toRelation(forumFilter)}
-          category={route.params.category}
+          categoryID={route.params.categoryID}
         />
       </AppView>
     );
   }
   return (
     <AppView>
-      <ForumThreadsCategoryView category={route.params.category} />
+      <ForumThreadsCategoryView categoryID={route.params.categoryID} />
     </AppView>
   );
 };

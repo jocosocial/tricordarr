@@ -11,12 +11,11 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
-import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumNewFAB} from '../../Buttons/FloatingActionButtons/ForumNewFAB';
 import {useIsFocused} from '@react-navigation/native';
 
 interface ForumCategoryBaseViewProps {
-  category: CategoryData;
+  categoryID: string;
 }
 
 export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
@@ -31,7 +30,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useForumCategoryQuery(props.category.categoryID, {
+  } = useForumCategoryQuery(props.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
@@ -95,7 +94,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
 
   return (
     <>
-      <ListTitleView title={props.category.title} />
+      <ListTitleView title={data.pages[0].title} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
@@ -104,7 +103,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-      {!isUserRestricted && <ForumNewFAB categoryId={props.category.categoryID} />}
+      {!isUserRestricted && <ForumNewFAB categoryId={props.categoryID} />}
     </>
   );
 };
