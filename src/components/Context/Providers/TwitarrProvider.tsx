@@ -9,6 +9,7 @@ import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
 import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
+import URLParse from 'url-parse';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
@@ -25,6 +26,14 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
 
+  const openAppUrl = (appUrl: string) => {
+    if (appUrl.includes('/fez')) {
+      appUrl = appUrl.replace('/fez', '/lfg');
+    }
+    console.log('[TwitarrProvider.tsx] Opening reformed URL', appUrl);
+    Linking.openURL(appUrl);
+  };
+
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
    * https://developer.android.com/training/app-links but verifying a non-public
@@ -33,13 +42,15 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
    * @param url
    */
   const openWebUrl = (url: string) => {
+    const linkUrlObject = new URLParse(url);
     if (url.startsWith(appConfig.serverUrl)) {
       let appUrl = url.replace(appConfig.serverUrl, 'tricordarr:/');
-      if (appUrl.includes('/fez')) {
-        appUrl = appUrl.replace('/fez', '/lfg');
-      }
-      console.log('[TwitarrProvider.tsx] Opening reformed URL', appUrl);
-      Linking.openURL(appUrl);
+      openAppUrl(appUrl);
+      return;
+    } else if (appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)) {
+      // Apparently protocol includes the colon.
+      let appUrl = url.replace(`${linkUrlObject.protocol}//${linkUrlObject.hostname}`, 'tricordarr:/');
+      openAppUrl(appUrl);
       return;
     }
     Linking.openURL(url);

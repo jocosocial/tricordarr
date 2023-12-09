@@ -9,6 +9,7 @@ export type PushNotificationConfig = {
 
 export interface APIClientConfig {
   defaultPageSize: number;
+  canonicalHostnames: string[];
 }
 
 export interface ScheduleConfig {
@@ -72,9 +73,9 @@ const defaultAppConfig: AppConfig = {
     eventsShowOpenLfgs: false,
   },
   portTimeZoneID: 'America/New_York',
-  // Inserting for future use.
   apiClientConfig: {
     defaultPageSize: 50,
+    canonicalHostnames: ['joco.hollandamerica.com', 'twitarr.com'],
   },
 };
 

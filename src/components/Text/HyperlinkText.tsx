@@ -4,6 +4,7 @@ import {StyleSheet} from 'react-native';
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
 import {useConfig} from '../Context/Contexts/ConfigContext';
+import URLParse from 'url-parse';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
@@ -40,7 +41,11 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
   };
 
   const handleText = (linkUrl: string) => {
-    if (linkUrl.startsWith(appConfig.serverUrl)) {
+    const linkUrlObject = new URLParse(linkUrl);
+    if (
+      linkUrl.startsWith(appConfig.serverUrl) ||
+      appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)
+    ) {
       const matchedMapping = urlPathLabelMappings.find(mapping => {
         return mapping.pattern.test(linkUrl);
       });

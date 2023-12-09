@@ -16,4 +16,5 @@ Nightly
 * Long press a forum list data item in the flatlist to bring up menu to favorite/mute/etc.
 * Refresh a forum thread screen does not update read state. Still showing the new divider
 * Schedule long press being problematic. Sometimes doesn't register. Is douvle tap a thing?
-* Canonical url handling
+* clear oobe server healthcheck between changes
+* forumcategoryscreen needs categoryID only to enable linking
