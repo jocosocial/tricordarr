@@ -7,7 +7,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
 import {useAppTheme} from '../../../styles/Theme';
 
-export const ForumThreadFilterMenu = () => {
+export const ForumThreadScreenFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {forumFilter, setForumFilter} = useFilter();
   const theme = useAppTheme();

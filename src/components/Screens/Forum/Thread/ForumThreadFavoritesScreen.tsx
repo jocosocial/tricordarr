@@ -5,7 +5,7 @@ import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigato
 import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {ForumThreadSortMenu} from '../../../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu';
 import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
 import {ForumRelationQueryType} from '../../../Queries/Forum/ForumRelationQueries';
 
@@ -20,7 +20,7 @@ export const ForumThreadFavoritesScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
+          <ForumThreadScreenSortMenu />
         </HeaderButtons>
       </View>
     );

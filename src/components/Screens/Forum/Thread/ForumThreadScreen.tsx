@@ -20,7 +20,7 @@ import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
+import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
@@ -198,7 +198,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
               disabled={forumData.isFavorite}
             />
           )}
-          <ForumThreadActionsMenu forumData={forumData} />
+          <ForumThreadScreenActionsMenu forumData={forumData} />
         </HeaderButtons>
       </View>
     );

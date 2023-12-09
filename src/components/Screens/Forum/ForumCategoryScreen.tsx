@@ -6,8 +6,8 @@ import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
-import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadScreenFilterMenu} from '../../Menus/Forum/ForumThreadScreenFilterMenu';
+import {ForumThreadScreenSortMenu} from '../../Menus/Forum/ForumThreadScreenSortMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumThreadsRelationsView} from '../../Views/Forum/ForumThreadsRelationsView';
 import {ForumThreadsCategoryView} from '../../Views/Forum/ForumThreadsCategoryView';
@@ -47,8 +47,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
-          <ForumThreadFilterMenu />
+          <ForumThreadScreenSortMenu />
+          <ForumThreadScreenFilterMenu />
           <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelp} />
         </HeaderButtons>
       </View>

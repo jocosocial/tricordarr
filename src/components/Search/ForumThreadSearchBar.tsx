@@ -15,7 +15,7 @@ import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator'
 import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
-import {ForumThreadSortMenu} from '../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
 import {useIsFocused} from '@react-navigation/native';
 
 export const ForumThreadSearchBar = () => {
@@ -90,7 +90,7 @@ export const ForumThreadSearchBar = () => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
+          <ForumThreadScreenSortMenu />
           <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelpModal} />
         </HeaderButtons>
       </View>

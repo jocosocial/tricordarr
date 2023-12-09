@@ -1,22 +1,13 @@
 import React from 'react';
-import {FezData, FezPostData, PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
+import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {UserAvatarImage} from '../../../Images/UserAvatarImage';
-import {MessageView} from '../../../Views/MessageView';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
-import {MessageSpacerView} from '../../../Views/MessageSpacerView';
 import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
-import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
-import {APIImage} from '../../../Images/APIImage';
-import {View} from 'react-native';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {ContentPostImage} from '../../../Images/ContentPostImage';
-import {Text} from 'react-native-paper';
 import {ForumPostMessageView} from '../../../Views/ForumPostMessageView';
-import {commonStyles} from '../../../../styles';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {

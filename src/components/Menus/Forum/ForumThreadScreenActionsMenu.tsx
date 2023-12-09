@@ -26,7 +26,7 @@ interface ForumThreadActionsMenuProps {
 
 const helpContent = ['Click/tap on a post to favorite, edit, or add a reaction.'];
 
-export const ForumThreadActionsMenu = ({forumData}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, setAsModerator, setAsTwitarrTeam, hasTwitarrTeam, asTwitarrTeam, asModerator} = usePrivilege();

@@ -7,7 +7,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
 import {useAppTheme} from '../../../styles/Theme';
 
-export const ForumThreadSortMenu = () => {
+export const ForumThreadScreenSortMenu = () => {
   const [visible, setVisible] = useState(false);
   const {forumSortOrder, setForumSortOrder} = useFilter();
   const theme = useAppTheme();

@@ -91,7 +91,7 @@ export const ForumThreadFlatList = ({
         style={forumListData.length === 0 ? commonStyles.paddingHorizontal : undefined}
         refreshControl={refreshControl}
         data={forumListData}
-        renderItem={({item}) => <ForumThreadListItem forumData={item} />}
+        renderItem={({item}) => <ForumThreadListItem forumListData={item} />}
         onEndReached={handleLoadNext}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         keyExtractor={(item: ForumListData) => item.forumID}
