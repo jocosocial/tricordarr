@@ -5,8 +5,7 @@ import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '..
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
-import {useEventFavoriteMutation, useEventFavoriteQuery} from '../../Queries/Events/EventFavoriteQueries';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import {useEventFavoriteMutation, useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 
@@ -20,10 +19,9 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const rootNavigation = useRootStack();
   const eventFavoriteMutation = useEventFavoriteMutation();
-  const {setInfoMessage} = useErrorHandler();
   const {dispatchScheduleList} = useTwitarr();
   const {refetchUserNotificationData} = useUserNotificationData();
-  const {data: favoritesData, refetch: refetchFavorites} = useEventFavoriteQuery({enabled: false});
+  const {data: favoritesData, refetch: refetchFavorites} = useEventFavoritesQuery({enabled: false});
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -39,7 +37,6 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
       },
       {
         onSuccess: () => {
-          setInfoMessage(`${props.eventData.isFavorite ? 'Unfollowed' : 'Followed'} event ${props.eventData.title}`);
           dispatchScheduleList({
             type: ScheduleListActions.updateEvent,
             newEvent: {

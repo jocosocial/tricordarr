@@ -7,7 +7,7 @@ import {FlatList, RefreshControl} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
-import {useEventFavoriteQuery} from '../../Queries/Events/EventFavoriteQueries';
+import {useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -16,7 +16,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const EventFavoritesScreen = () => {
-  const {data, isFetching, refetch} = useEventFavoriteQuery();
+  const {data, isFetching, refetch} = useEventFavoritesQuery();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
 
   if (!data) {

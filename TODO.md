@@ -7,9 +7,6 @@ Work Queue
 
 Nightly
 * lfg card really needs to go back to the event day screen
-* Forum screen changes are laggy. May be because I'm aggressively clearing state? Just browsing forums
-* Favoriting events is super slow
-* Kill the event favorite snack bar
 * Why does refreshing for forum favorite not spin?
 * Your day today sets a surprise filter that feels kinda weird.
 * Loading a forum view triggers refresh briefly after initial render

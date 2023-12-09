@@ -22,7 +22,7 @@ interface EventFavoriteQueryProps {
   enabled?: boolean;
 }
 
-export const useEventFavoriteQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
+export const useEventFavoritesQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
   return useTokenAuthQuery<EventData[]>({
     queryKey: ['/events/favorites'],
     enabled: enabled,
