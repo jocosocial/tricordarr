@@ -9,6 +9,6 @@ Nightly
 * lfg card really needs to go back to the event day screen
 * Why does refreshing for forum favorite not spin?
 * Your day today sets a surprise filter that feels kinda weird.
-* Loading a forum view triggers refresh briefly after initial render
 * Schedule long press being problematic. Sometimes doesn't register. Is douvle tap a thing?
-* clear oobe server healthcheck between changes
+* oobe account screen empty with failed server first time
+  * This might be a development thing with reseting OOBE while still logged in.
