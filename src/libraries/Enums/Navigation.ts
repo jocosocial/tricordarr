@@ -99,6 +99,7 @@ export enum EventStackComponents {
   eventScreen = 'EventScreen',
   eventHelpScreen = 'EventHelpScreen',
   eventFavoritesScreen = 'EventFavoritesScreen',
+  eventYourDayScreen = 'EventYourDayScreen',
 }
 
 export enum LfgStackComponents {

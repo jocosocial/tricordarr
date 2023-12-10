@@ -3,11 +3,12 @@ import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react'
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import useDateTime, {
+import {
   calcCruiseDayTime,
   getDayMarker,
   getTimeMarker,
-  getTimeZoneOffset, useRefreshingDate,
+  getTimeZoneOffset,
+  useRefreshingDate,
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
@@ -20,11 +21,10 @@ import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {EventCardListItem} from '../Items/Event/EventCardListItem';
 
-interface SeamailFlatListProps {
+interface EventFlatListProps {
   scheduleItems: (EventData | FezData)[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<EventData | FezData>>;
-  scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
@@ -70,7 +70,7 @@ export const EventFlatList = ({
   listHeader,
   listFooter,
   separator = 'time',
-}: SeamailFlatListProps) => {
+}: EventFlatListProps) => {
   const {commonStyles} = useStyles();
   const navigation = useEventStackNavigation();
   const {startDate, endDate} = useCruise();
