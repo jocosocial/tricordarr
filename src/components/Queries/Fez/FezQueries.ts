@@ -73,7 +73,7 @@ interface LfgListQueryOptions {
 export const useLfgListQuery = ({
   cruiseDay,
   fezType,
-  excludeFezType,
+  excludeFezType = [FezType.open, FezType.closed],
   hidePast = false,
   pageSize = 50,
   endpoint = 'open',

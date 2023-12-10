@@ -34,7 +34,6 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {isLoggedIn} = useAuth();
   const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,
-    excludeFezType: [FezType.open, FezType.closed],
     fezType: lfgTypeFilter,
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
