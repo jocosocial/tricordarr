@@ -25,6 +25,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
 
   const closeMenu = () => props.setMenuVisible(false);
 
+  // I have no idea why the refreshing doesnt spin
   const handleFavoritePress = () => {
     closeMenu();
     if (props.setRefreshing) {
@@ -44,14 +45,16 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
               isFavorite: !props.eventData.isFavorite,
             },
           });
-          if (props.setRefreshing) {
-            props.setRefreshing(false);
-          }
           // Update the user notification data in case this was/is a favorite.
           refetchUserNotificationData();
           // Update favorites
           if (favoritesData !== undefined) {
             refetchFavorites();
+          }
+        },
+        onSettled: () => {
+          if (props.setRefreshing) {
+            props.setRefreshing(false);
           }
         },
       },

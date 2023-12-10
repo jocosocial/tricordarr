@@ -7,7 +7,7 @@ interface UserNotificationDataContextType {
   dispatchUserNotificationData: Dispatch<UserNotificationDataActionsType>;
   enableUserNotifications: boolean | null;
   setEnableUserNotifications: Dispatch<SetStateAction<boolean | null>>;
-  refetchUserNotificationData: Function;
+  refetchUserNotificationData: (...args: any[]) => Promise<any>;
 }
 
 export const UserNotificationDataContext = createContext({} as UserNotificationDataContextType);

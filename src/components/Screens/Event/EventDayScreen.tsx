@@ -277,7 +277,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
           <EventFlatList
             listRef={listRef}
             scheduleItems={scheduleList}
-            scrollNowIndex={scrollNowIndex}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
             setRefreshing={setRefreshing}
           />
