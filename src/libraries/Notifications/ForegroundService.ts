@@ -35,6 +35,7 @@ export async function generateForegroundServiceNotification(
         pressAction: {
           id: PressAction.worker,
         },
+        smallIcon: 'ic_notification',
       },
     });
   }

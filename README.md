@@ -59,3 +59,13 @@ rootNavigation.push(RootStackComponents.rootContentScreen, {
   },
 })
 ```
+
+Android Studio
+--------------
+Open the `android` directory in Android Studio instead of the project root. It behaves better.
+Might be able to mark a different one as Project Root?
+https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-in-android-studio
+
+Icons
+-----
+Notification: trim yes padding 0

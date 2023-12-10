@@ -6,6 +6,7 @@ Work Queue
 * Confirm against canonical API endpoints
 * Forgot password flow
 * Register screen should remind of CoC
+* lfg screen needs notificationsocket handler
 
 Nightly
 * lfg card really needs to go back to the event day screen
