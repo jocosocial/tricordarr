@@ -138,21 +138,23 @@ export const LfgScreen = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data) {
+    if (data && isFocused) {
       setLfg(data.pages[0]);
-    }
-  }, [closeFezSocket, data, setLfg]);
-
-  // Mark as Read
-  useEffect(() => {
-    if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
-      refetchUserNotificationData();
-    }
-    // @TODO this is still leaking
-    if (isFocused) {
       closeFezSocket();
     }
-  }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
+  }, [closeFezSocket, data, setLfg, isFocused]);
+
+  // Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
+  // the API considers the GET in this screen as you reading it.
+  // useEffect(() => {
+  //   if (lfg && lfg.members && lfg.members.readCount !== lfg.members.postCount) {
+  //     refetchUserNotificationData();
+  //   }
+  //   // @TODO this is still leaking. Is it?
+  //   if (isFocused) {
+  //     closeFezSocket();
+  //   }
+  // }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
 
   if (!lfg) {
     return <LoadingView />;
