@@ -18,7 +18,6 @@ import {
 } from '../../libraries/Enums/Navigation';
 import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
-import {useBottomTabNavigator} from '../Navigation/Tabs/BottomTabNavigator';
 
 interface ForumPostMessageViewProps {
   postData: PostData;

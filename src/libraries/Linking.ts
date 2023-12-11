@@ -35,6 +35,7 @@ const deepLinksConf = {
               },
             },
             UserProfileScreen: 'user/:userID',
+            UsernameProfileScreen: 'username/:username',
             UserDirectoryScreen: 'users',
           },
         },
