@@ -14,7 +14,6 @@ import {useConfig} from '../Contexts/ConfigContext';
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
-  const {setErrorMessage} = useErrorHandler();
   const {isLoading, isLoggedIn} = useAuth();
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
@@ -37,9 +36,8 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
     } else {
       console.log('[UserNotificationDataProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
-      setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [isLoggedIn, setErrorMessage, isLoading, appConfig.enableBackgroundWorker]);
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker]);
 
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.
