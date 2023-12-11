@@ -7,8 +7,11 @@ Work Queue
 * Forgot password flow
 * Register screen should remind of CoC
 * lfg screen needs notificationsocket handler
+* query result caching
+* test offline behavior
 
 Nightly
 * lfg card really needs to go back to the event day screen
 * oobe account screen empty with failed server first time
   * This might be a development thing with reseting OOBE while still logged in.
+* new forum first in category did not update category list

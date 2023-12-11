@@ -80,15 +80,18 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   // Don't use the state list because it renders too quickly.
   if (data.pages[0].numThreads === 0) {
     return (
-      <View>
-        <ScrollingContentView
-          isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
-          <PaddedContentView padTop={true}>
-            <Text>There aren't any forums in this category yet.</Text>
-          </PaddedContentView>
-        </ScrollingContentView>
-      </View>
+      <>
+        <View>
+          <ScrollingContentView
+            isStack={true}
+            refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
+            <PaddedContentView padTop={true}>
+              <Text>There aren't any forums in this category yet.</Text>
+            </PaddedContentView>
+          </ScrollingContentView>
+        </View>
+        {!isUserRestricted && <ForumNewFAB categoryId={props.categoryID} />}
+      </>
     );
   }
 
