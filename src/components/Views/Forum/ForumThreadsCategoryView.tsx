@@ -73,12 +73,21 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     }
   }, [data, dispatchForumListData, hasModerator, isFocused]);
 
+  // Refresh if user goes back to the category so that it triggers the useEffect above to
+  // load the correct list data. Theres a race condition because the effect above wants
+  // to set the list to the query data result, but the query is now out of date.
+  useEffect(() => {
+    if (isFocused && data && data.pages[0].numThreads !== forumListData.length) {
+      setRefreshing(true);
+      refetch().then(() => setRefreshing(false));
+    }
+  }, [isFocused, data, forumListData, refetch]);
+
   if (!data) {
     return <LoadingView />;
   }
 
-  // Don't use the state list because it renders too quickly.
-  if (data.pages[0].numThreads === 0) {
+  if (data.pages[0].numThreads === 0 && forumListData.length === 0) {
     return (
       <>
         <View>
