@@ -14,7 +14,7 @@ import {
   BottomTabComponents,
   ForumStackComponents,
   MainStackComponents,
-  RootStackComponents
+  RootStackComponents,
 } from '../../libraries/Enums/Navigation';
 import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
@@ -45,7 +45,7 @@ export const ForumPostMessageView = ({
   const theme = useAppTheme();
   const {favorites} = useUserRelations();
   const forumNavigation = useForumStackNavigation();
-  const bottomNavigation = useBottomTabNavigator();
+  const rootNavigation = useRootStack();
 
   const styles = {
     messageView: [
@@ -72,17 +72,23 @@ export const ForumPostMessageView = ({
     });
   };
 
-  const hashtagOnPress = (tag) => {
+  const hashtagOnPress = (tag: string) => {
     forumNavigation.push(ForumStackComponents.forumPostHashtagScreen, {
       hashtag: tag,
     });
   };
 
-  const mentionOnPress = (username) => {
-    bottomNavigation.navigate(BottomTabComponents.homeTab, {
-      screen: MainStackComponents.userProfileScreen,
+  const mentionOnPress = (username: string) => {
+    const strippedName = username.replace('@', '');
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
       params: {
-        userID: username,
+        screen: MainStackComponents.usernameProfileScreen,
+        // initial false needed here to enable the stack to popToTop on bottom button press.
+        initial: false,
+        params: {
+          username: strippedName,
+        },
       },
     });
   };
@@ -110,7 +116,14 @@ export const ForumPostMessageView = ({
         <ForumPostActionsMenu
           visible={menuVisible}
           closeMenu={closeMenu}
-          anchor={<ContentText textStyle={styles.messageText} text={postData.text} hashtagOnPress={hashtagOnPress} />}
+          anchor={
+            <ContentText
+              textStyle={styles.messageText}
+              text={postData.text}
+              hashtagOnPress={hashtagOnPress}
+              mentionOnPress={mentionOnPress}
+            />
+          }
           forumPost={postData}
           enableShowInThread={enableShowInThread}
         />

@@ -9,7 +9,6 @@ Work Queue
 * lfg screen needs notificationsocket handler
 * query result caching
 * test offline behavior
-* forum search hashtag
 
 Nightly
 * lfg card really needs to go back to the event day screen

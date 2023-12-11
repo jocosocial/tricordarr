@@ -31,7 +31,6 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
       mentionOnPressFunction?: (username: string) => void,
     ) => {
       const tokens = line.split(/(:[\w-]+:)|([#@]\w+)/g);
-      console.log(tokens);
       return tokens.map((token, tokenIndex) => {
         if (!token) {
           return;
@@ -40,7 +39,6 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
           return <Emoji key={tokenIndex} emojiName={token as keyof typeof CustomEmoji} />;
         }
         if (hashtagOnPressFunction && token.startsWith('#')) {
-          console.log('HASH TOKEN', token);
           return (
             <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => hashtagOnPressFunction(token)}>
               {token}
@@ -48,7 +46,6 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
           );
         }
         if (mentionOnPressFunction && token.startsWith('@')) {
-          console.log('MENTION TOKEN', token);
           return (
             <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => mentionOnPressFunction(token)}>
               {token}

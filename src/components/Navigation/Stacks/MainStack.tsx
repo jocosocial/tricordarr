@@ -17,6 +17,7 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {DailyThemeScreen} from '../../Screens/Main/DailyThemeScreen';
+import {UsernameProfileScreen} from '../../Screens/User/UsernameProfileScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -30,6 +31,9 @@ export type MainStackParamList = {
   AboutScreen: undefined;
   UserProfileScreen: {
     userID: string;
+  };
+  UsernameProfileScreen: {
+    username: string;
   };
   UserDirectoryScreen: undefined;
   EditUserProfileScreen: {
@@ -78,6 +82,11 @@ export const MainStack = () => {
       <Stack.Screen
         name={MainStackComponents.userProfileScreen}
         component={isUsersDisabled ? DisabledView : UserProfileScreen}
+        options={{title: 'User Profile'}}
+      />
+      <Stack.Screen
+        name={MainStackComponents.usernameProfileScreen}
+        component={isUsersDisabled ? DisabledView : UsernameProfileScreen}
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
