@@ -6,7 +6,6 @@ Work Queue
 * Confirm against canonical API endpoints
 * Forgot password flow
 * Register screen should remind of CoC
-* lfg screen needs notificationsocket handler
 * query result caching
 * test offline behavior
 

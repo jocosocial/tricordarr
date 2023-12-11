@@ -40,6 +40,8 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -56,7 +58,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const {closeFezSocket} = useSocket();
+  const {closeFezSocket, notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const rootStackNavigation = useRootStack();
   const {hasModerator} = usePrivilege();
@@ -155,6 +157,37 @@ export const LfgScreen = ({navigation, route}: Props) => {
   //     closeFezSocket();
   //   }
   // }, [closeFezSocket, lfg, isFocused, refetchUserNotificationData]);
+
+  const notificationHandler = useCallback(
+    (event: WebSocketMessageEvent) => {
+      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
+      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
+        if (lfg && lfg.members && lfg.fezID === socketMessage.contentID) {
+          setLfg({
+            ...lfg,
+            members: {
+              ...lfg.members,
+              postCount: lfg.members.postCount + 1,
+            },
+          });
+        }
+      }
+    },
+    [lfg, setLfg],
+  );
+
+  useEffect(() => {
+    if (notificationSocket && isFocused) {
+      notificationSocket.addEventListener('message', notificationHandler);
+    } else if (notificationSocket && !isFocused) {
+      notificationSocket.removeEventListener('message', notificationHandler);
+    }
+    return () => {
+      if (notificationSocket) {
+        notificationSocket.removeEventListener('message', notificationHandler);
+      }
+    };
+  }, [isFocused, notificationHandler, notificationSocket]);
 
   if (!lfg) {
     return <LoadingView />;
