@@ -25,6 +25,7 @@ import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen'
 import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
 import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
+import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -58,6 +59,9 @@ export type ForumStackParamList = {
   };
   ForumThreadUserScreen: {
     user: UserHeader;
+  };
+  ForumPostHashtagScreen: {
+    hashtag: string;
   };
 };
 
@@ -165,6 +169,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumThreadUserScreen}
         component={isDisabled ? DisabledView : ForumThreadUserScreen}
         options={{title: 'Forums by User'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostHashtagScreen}
+        component={isDisabled ? DisabledView : ForumPostHashtagScreen}
+        options={{title: 'Hashtag'}}
       />
     </Stack.Navigator>
   );

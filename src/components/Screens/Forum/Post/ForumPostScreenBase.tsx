@@ -14,10 +14,12 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ListTitleView} from '../../../Views/ListTitleView';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
   refreshOnUserNotification?: boolean;
+  title?: string;
 }
 
 export const forumPostHelpText = [
@@ -27,7 +29,7 @@ export const forumPostHelpText = [
   'You can edit or delete your own forum posts.',
 ];
 
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: ForumPostScreenBaseProps) => {
+export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
   const {
     data,
     refetch,
@@ -120,6 +122,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
 
   return (
     <AppView>
+      {title && <ListTitleView title={title} />}
       <ForumPostFlatList
         flatListRef={flatListRef}
         invertList={false}

@@ -235,4 +235,7 @@ export const commonStyles = StyleSheet.create({
   overflowHidden: {
     overflow: 'hidden',
   },
+  linkText: {
+    textDecorationLine: 'underline',
+  },
 });

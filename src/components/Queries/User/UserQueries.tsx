@@ -3,7 +3,7 @@ import {
   ErrorResponse,
   KeywordData,
   ProfilePublicData,
-  UserCreateData,
+  UserCreateData, UserHeader,
   UserPasswordData,
   UserUsernameData,
 } from '../../../libraries/Structs/ControllerStructs';
@@ -88,4 +88,10 @@ const userCreateHandler = async ({
 
 export const useUserCreateQuery = (options = {}) => {
   return useTokenAuthMutation(userCreateHandler, options);
+};
+
+export const useUserFindQuery = (username: string) => {
+  return useTokenAuthQuery<UserHeader>({
+    queryKey: [`/users/find/${username}`],
+  });
 };

@@ -10,9 +10,15 @@ import {AppIcon} from '../Icons/AppIcon';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
-import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  ForumStackComponents,
+  MainStackComponents,
+  RootStackComponents
+} from '../../libraries/Enums/Navigation';
 import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
+import {useBottomTabNavigator} from '../Navigation/Tabs/BottomTabNavigator';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -39,6 +45,7 @@ export const ForumPostMessageView = ({
   const theme = useAppTheme();
   const {favorites} = useUserRelations();
   const forumNavigation = useForumStackNavigation();
+  const bottomNavigation = useBottomTabNavigator();
 
   const styles = {
     messageView: [
@@ -65,6 +72,21 @@ export const ForumPostMessageView = ({
     });
   };
 
+  const hashtagOnPress = (tag) => {
+    forumNavigation.push(ForumStackComponents.forumPostHashtagScreen, {
+      hashtag: tag,
+    });
+  };
+
+  const mentionOnPress = (username) => {
+    bottomNavigation.navigate(BottomTabComponents.homeTab, {
+      screen: MainStackComponents.userProfileScreen,
+      params: {
+        userID: username,
+      },
+    });
+  };
+
   return (
     <View style={styles.messageView}>
       <TouchableOpacity
@@ -88,7 +110,7 @@ export const ForumPostMessageView = ({
         <ForumPostActionsMenu
           visible={menuVisible}
           closeMenu={closeMenu}
-          anchor={<ContentText textStyle={styles.messageText} text={postData.text} />}
+          anchor={<ContentText textStyle={styles.messageText} text={postData.text} hashtagOnPress={hashtagOnPress} />}
           forumPost={postData}
           enableShowInThread={enableShowInThread}
         />
