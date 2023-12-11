@@ -80,6 +80,7 @@ export enum RootStackComponents {
   oobeNavigator = 'OobeStackNavigator',
   rootContentScreen = 'RootContentScreen',
   lighterScreen = 'LighterScreen',
+  accountRecoveryScreen = 'AccountRecoveryScreen',
 }
 
 export enum OobeStackComponents {

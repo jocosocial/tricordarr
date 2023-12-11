@@ -12,6 +12,10 @@ export const RecoveryKeyValidation = Yup.string()
   .max(7)
   .required('Six-character registration code is required.');
 
+export const AccountRecoveryValidation = Yup.string()
+  .min(6)
+  .required('Old password, registration code, or recovery key required.');
+
 export const PasswordValidation = Yup.string().min(6).max(50).required('Password cannot be empty.');
 
 export const KeywordValidation = Yup.string()

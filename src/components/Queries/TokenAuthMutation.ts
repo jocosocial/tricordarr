@@ -23,7 +23,7 @@ export function useTokenAuthMutation<
   const {setErrorMessage} = useErrorHandler();
   return useMutation<TData, TError, TVariables, TContext>(mutationFn, {
     onError: error => {
-      setErrorMessage(error);
+      setErrorMessage(error.response?.data.reason || error);
     },
     ...options,
   });

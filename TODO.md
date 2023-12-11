@@ -4,7 +4,6 @@ Backlog
 
 Work Queue
 * Confirm against canonical API endpoints
-* Forgot password flow
 * Register screen should remind of CoC
 * query result caching
 * test offline behavior

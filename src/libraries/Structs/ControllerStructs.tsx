@@ -664,3 +664,12 @@ export interface ForumCreateData {
   /// The first post in the forum.
   firstPost: PostContentData;
 }
+
+export interface UserRecoveryData {
+  /// The user's username.
+  username: string;
+  /// The string to use – any one of: password / registration key / recovery key.
+  recoveryKey: string;
+  /// The new password to set for the account.
+  newPassword: string;
+}

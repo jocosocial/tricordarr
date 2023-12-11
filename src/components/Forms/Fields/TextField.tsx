@@ -22,6 +22,7 @@ export interface TextFieldProps {
   keyboardType?: KeyboardTypeOptions;
   onChangeText?: (value: string) => void;
   innerTextStyle?: StyleProp<TextStyle>;
+  infoText?: string;
 }
 
 export const TextField = ({
@@ -41,6 +42,7 @@ export const TextField = ({
   keyboardType,
   onChangeText,
   innerTextStyle,
+  infoText,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -75,6 +77,7 @@ export const TextField = ({
             onFocus={onFocus}
             style={innerTextStyle}
           />
+          {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
             {meta.error}
           </HelperText>
