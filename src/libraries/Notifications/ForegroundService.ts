@@ -14,7 +14,6 @@ export async function generateForegroundServiceNotification(
   let show = !onlyIfShowing;
   const displayedNotifications = await notifee.getDisplayedNotifications();
   displayedNotifications.map(entry => {
-    console.log('lolol', entry.id);
     if (entry.id === fgsWorkerNotificationIDs.worker) {
       // We are currently showing.
       if (onlyIfShowing) {
@@ -55,6 +54,7 @@ export async function generateFgsShutdownNotification() {
       pressAction: {
         id: PressAction.worker,
       },
+      smallIcon: 'ic_notification',
     },
   });
 }
