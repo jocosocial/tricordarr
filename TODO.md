@@ -12,4 +12,3 @@ Nightly
 * lfg card really needs to go back to the event day screen
 * oobe account screen empty with failed server first time
   * This might be a development thing with reseting OOBE while still logged in.
-* Unread seamail and forum new divider stays, lfg should too

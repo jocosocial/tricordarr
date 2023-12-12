@@ -20,6 +20,8 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {Text} from 'react-native-paper';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -31,7 +33,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isInitialLoading} =
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isInitialLoading, isFetched} =
     useSeamailListQuery({
       forUser: asPrivilegedUser,
     });
@@ -39,6 +41,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
   const {refetchUserNotificationData} = useUserNotificationData();
+  const {commonStyles} = useStyles();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -139,6 +142,11 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   return (
     <AppView>
+      {isFetched && fezList.length === 0 && (
+        <View key={'noResults'} style={[commonStyles.paddingSmall]}>
+          <Text>No Results</Text>
+        </View>
+      )}
       <SeamailFlatList
         fezList={fezList}
         refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}
