@@ -8,5 +8,3 @@ Work Queue
 * test offline behavior
 
 Nightly
-* oobe account screen empty with failed server first time
-  * This might be a development thing with reseting OOBE while still logged in.

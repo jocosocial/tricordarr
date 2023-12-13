@@ -3,6 +3,7 @@ import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {QueryKey, useQuery} from '@tanstack/react-query';
 import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useConfig} from '../Context/Contexts/ConfigContext';
 
 /**
  * Clone of useQuery but dedicated for queries that can be performed without the user needing
@@ -20,7 +21,13 @@ export function useOpenQuery<
   },
 ): UseQueryResult<TData, TError> {
   const {setErrorMessage} = useErrorHandler();
+  const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  if (!oobeCompleted) {
+    console.log('[OpenQuery.tsx] Query disabled because OOBE not completed.');
+  }
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+    enabled: oobeCompleted,
     onError: error => {
       setErrorMessage(error);
     },

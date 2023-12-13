@@ -25,7 +25,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
           tokenData: tokenData,
         });
       } else {
-        console.log('No token data found in local encrypted storage');
+        console.log('[AuthProvider.tsx] No token data found in local encrypted storage.');
       }
     });
   }, [dispatchAuthState]);
@@ -46,7 +46,6 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
           type: AuthActions.signOut,
         });
       },
-      signUp: () => console.log('sign up'),
     }),
     [dispatchAuthState],
   );

@@ -57,10 +57,12 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
    * data this also brings along a new server timestamp which is used in certain components.
    */
   useEffect(() => {
-    refetchUserNotificationData().then(() =>
-      console.log('[UserNotificationDataProvider.tsx] Refreshed UserNotificationData'),
-    );
-  }, [refetchUserNotificationData, hourlyUpdatingDate]);
+    if (isLoggedIn) {
+      refetchUserNotificationData().then(() =>
+        console.log('[UserNotificationDataProvider.tsx] Refreshed UserNotificationData'),
+      );
+    }
+  }, [isLoggedIn, refetchUserNotificationData, hourlyUpdatingDate]);
 
   return (
     <UserNotificationDataContext.Provider

@@ -55,7 +55,12 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
             This app can send you certain push notifications (assuming fair WiFi conditions). Would you like to enable
             this? You can always change or make up your mind later.
           </Text>
-          <Text>Example notifications include: chat messages, forum mentions, alert keywords, event reminders.</Text>
+          <Text style={commonStyles.marginBottomSmall}>
+            Example notifications include: chat messages, forum mentions, alert keywords, event reminders.
+          </Text>
+          <Text style={commonStyles.marginBottomSmall}>
+            Enabling this setting will make this app consume more battery.
+          </Text>
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton buttonText={buttonLabel()} onPress={enablePermissions} disabled={disableButton} />
