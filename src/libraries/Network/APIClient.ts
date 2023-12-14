@@ -9,6 +9,7 @@ import {ImageQueryData} from '../Types';
 import DeviceInfo from 'react-native-device-info';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import superjson from 'superjson';
 
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
@@ -42,19 +43,6 @@ export async function configureAxios() {
     );
     return config;
   });
-  // // https://github.com/axios/axios/issues/1503
-  // axios.defaults.timeout = 5000;
-  // // https://rapidapi.com/guides/axios-timeouts
-  // axios.interceptors.response.use(
-  //   response => response,
-  //   error => {
-  //     console.error('[APIClient.ts] Axios error:', error);
-  //     if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
-  //       console.error('[APIClient.ts] Request timed out.');
-  //     }
-  //     return Promise.reject(error);
-  //   },
-  // );
 }
 
 /**
@@ -127,19 +115,29 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
   };
 };
 
-// https://tanstack.com/query/latest/docs/react/overview
+/**
+ * React-Query Client.
+ * https://tanstack.com/query/latest/docs/react/overview
+ */
 export const SwiftarrQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: apiQueryV3,
-      cacheTime: 1000 * 60 * 15, // 24 hours eventually, 15 mins for now
+      cacheTime: 1000 * 60 * 60 * 24, // 24 hours eventually, 15 mins for now
       retry: 2,
       staleTime: 0,
     },
   },
 });
 
+/**
+ * React-Query Storage Persister.
+ */
 export const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,
   throttleTime: 1000,
+  // https://github.com/TanStack/query/issues/4309
+  // The default [de]serializer turns undefined into null, which breaks pageParam.
+  serialize: superjson.stringify,
+  deserialize: superjson.parse,
 });
