@@ -2,13 +2,14 @@ import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {HealthResponse} from '../../../libraries/Structs/ControllerStructs';
 import {AxiosError} from 'axios';
 
-export const useHealthQuery = () => {
+export const useHealthQuery = (options = {}) => {
   const client = useQueryClient();
   return useQuery<HealthResponse, AxiosError<HealthResponse>>({
     queryKey: ['/client/health'],
     retry: false,
     keepPreviousData: false,
     cacheTime: 0,
+    staleTime: 0,
     onError: response => {
       // Axios gets "helpful" and throws an exception with a 500 error response. But the healthcheck
       // endpoint returns something if thats the case. This forces the response data to be set if we got
@@ -20,5 +21,6 @@ export const useHealthQuery = () => {
         client.setQueryData(['/client/health'], () => response.response?.data);
       }
     },
+    ...options,
   });
 };
