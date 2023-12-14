@@ -56,8 +56,8 @@ export const SettingsScreen = ({navigation}: Props) => {
               navComponent={SettingsStackScreenComponents.pushNotificationSettings}
             />
             <SettingsNavigationListItem
-              title={'Background Connection'}
-              description={'Manage the worker that maintains a connection to the server.'}
+              title={'Background Worker'}
+              description={'Manage the worker that maintains a connection to the server when this app is not running.'}
               navComponent={SettingsStackScreenComponents.serverConnectionSettings}
             />
             <SettingsNavigationListItem
