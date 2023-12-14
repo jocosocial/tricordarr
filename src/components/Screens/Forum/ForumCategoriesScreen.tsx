@@ -29,7 +29,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ForumCategoriesScreen = ({navigation}: Props) => {
-  const {data, refetch, isLoading} = useForumCategoriesQuery();
+  const {data, refetch, isLoading, isInitialLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
@@ -61,7 +61,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     return <NotLoggedInView />;
   }
 
-  if (!data) {
+  if (!data && isInitialLoading) {
     return <LoadingView />;
   }
 
@@ -71,18 +71,20 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
-          <ListSection>
-            <List.Subheader>Forum Categories</List.Subheader>
-            {data.map((category, index) => {
-              return (
-                <React.Fragment key={category.categoryID}>
-                  {index === 0 && <Divider bold={true} />}
-                  <ForumCategoryListItem category={category} />
-                  <Divider bold={true} />
-                </React.Fragment>
-              );
-            })}
-          </ListSection>
+          {data && (
+            <ListSection>
+              <List.Subheader>Forum Categories</List.Subheader>
+              {data.map((category, index) => {
+                return (
+                  <React.Fragment key={category.categoryID}>
+                    {index === 0 && <Divider bold={true} />}
+                    <ForumCategoryListItem category={category} />
+                    <Divider bold={true} />
+                  </React.Fragment>
+                );
+              })}
+            </ListSection>
+          )}
           <ListSection>
             <List.Subheader>Personal Categories</List.Subheader>
             <Divider bold={true} />

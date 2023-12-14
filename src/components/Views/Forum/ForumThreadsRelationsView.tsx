@@ -11,7 +11,7 @@ import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
 import {useIsFocused} from '@react-navigation/native';
-import {ListTitleView} from '../ListTitleView';
+import {ErrorView} from '../Static/ErrorView';
 
 export const ForumThreadsRelationsView = ({
   relationType,
@@ -31,6 +31,7 @@ export const ForumThreadsRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isInitialLoading,
   } = useForumRelationQuery(relationType, {
     cat: categoryID,
     sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
@@ -66,8 +67,12 @@ export const ForumThreadsRelationsView = ({
     }
   }, [data, dispatchForumListData, isFocused]);
 
-  if (!data) {
+  if (isInitialLoading) {
     return <LoadingView />;
+  }
+
+  if (!data) {
+    return <ErrorView />;
   }
 
   // Don't use the state list because it renders too quickly.

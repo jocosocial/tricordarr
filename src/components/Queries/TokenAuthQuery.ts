@@ -24,9 +24,12 @@ export function useTokenAuthQuery<
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     onError: error => {
-      setErrorMessage(error);
+      if (!disruptionDetected) {
+        setErrorMessage(error);
+      }
     },
     ...options,
     enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
