@@ -9,7 +9,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<
@@ -21,7 +20,6 @@ export type Props = NativeStackScreenProps<
 export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {setFez} = useTwitarr();
-  const {setErrorMessage} = useErrorHandler();
   const {dispatchFezList} = useTwitarr();
 
   const onPress = (user: UserHeader) => {
@@ -39,9 +37,6 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
             fez: response.data,
           });
           navigation.goBack();
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason);
         },
       },
     );

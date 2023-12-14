@@ -27,12 +27,10 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {Badge, Text} from 'react-native-paper';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import pluralize from 'pluralize';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
@@ -41,7 +39,6 @@ import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -54,8 +51,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {setModalVisible, setModalContent} = useModal();
   const {lfg, setLfg} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
-  const {setErrorMessage} = useErrorHandler();
-  const {refetchUserNotificationData} = useUserNotificationData();
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
   const {closeFezSocket, notificationSocket} = useSocket();
@@ -105,16 +100,13 @@ export const LfgScreen = ({navigation, route}: Props) => {
           onSuccess: response => {
             setLfg(response.data);
           },
-          onError: error => {
-            setErrorMessage(error.response?.data.reason || 'Unknown membership mutation error');
-          },
           onSettled: () => {
             setRefreshing(false);
           },
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, setErrorMessage, setLfg, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, setLfg, setModalContent, setModalVisible]);
 
   const getNavButtons = useCallback(() => {
     return (

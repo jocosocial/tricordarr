@@ -12,7 +12,6 @@ import {ReportContentForm} from '../../Forms/ReportContentForm';
 import {useReportMutation} from '../../Queries/Moderation/ModerationQueries';
 import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
 import {ReportModalSuccessView} from './ReportModalSuccessView';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {ReportModalErrorView} from './ReportModalErrorView';
 
 interface ReportModalViewProps {
@@ -26,7 +25,6 @@ interface ReportModalViewProps {
 export const ReportModalView = ({profile, fezPost, fez, forumPost, forum}: ReportModalViewProps) => {
   const reportMutation = useReportMutation();
   const [submitted, setSubmitted] = useState(false);
-  const {setErrorMessage} = useErrorHandler();
 
   if (!profile && !fezPost && !fez && !forumPost && !forum) {
     return <ReportModalErrorView />;
@@ -59,13 +57,11 @@ export const ReportModalView = ({profile, fezPost, fez, forumPost, forum}: Repor
       },
       {
         onSuccess: () => {
-          formikHelpers.setSubmitting(false);
           formikHelpers.resetForm();
           setSubmitted(true);
         },
-        onError: error => {
+        onSettled: () => {
           formikHelpers.setSubmitting(false);
-          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );

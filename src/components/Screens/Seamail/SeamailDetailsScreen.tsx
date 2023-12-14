@@ -2,10 +2,11 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {
-  BottomTabComponents, MainStackComponents,
+  BottomTabComponents,
+  MainStackComponents,
   NavigatorIDs,
   RootStackComponents,
-  SeamailStackScreenComponents
+  SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -29,7 +30,6 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
@@ -54,7 +54,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {fezSocket} = useSocket();
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
-  const {setErrorMessage} = useErrorHandler();
   const rootNavigation = useRootStack();
 
   const onRefresh = () => {
@@ -76,9 +75,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
             fez: response.data,
           });
           setFez(response.data);
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason);
         },
       },
     );

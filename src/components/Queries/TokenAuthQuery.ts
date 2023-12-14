@@ -6,6 +6,7 @@ import axios, {AxiosError, AxiosResponse} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
+import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -49,6 +50,7 @@ export function useTokenAuthPaginationQuery<
 ) {
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
+  const {disruptionDetected} = useSwiftarrQueryClient();
   return useInfiniteQuery<TData, TError, TData>(
     [endpoint, queryParams],
     options?.queryFn
@@ -67,7 +69,9 @@ export function useTokenAuthPaginationQuery<
       getNextPageParam: lastPage => getNextPageParam(lastPage),
       getPreviousPageParam: firstPage => getPreviousPageParam(firstPage),
       onError: error => {
-        setErrorMessage(error);
+        if (!disruptionDetected) {
+          setErrorMessage(error);
+        }
       },
       ...options,
       enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,

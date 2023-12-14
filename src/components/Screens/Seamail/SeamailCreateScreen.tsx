@@ -64,15 +64,14 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
             seamailPostFormRef.current?.submitForm();
           },
-          onError: error => {
-            setErrorMessage(error.response?.request.reason || error);
+          onSettled: () => {
             setSubmitting(false);
             seamailCreateFormRef.current?.setSubmitting(false);
           },
         },
       );
     },
-    [dispatchFezList, fezMutation, setErrorMessage],
+    [dispatchFezList, fezMutation],
   );
 
   // Handler for pushing the FezPost submit button.
