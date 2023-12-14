@@ -49,6 +49,7 @@ export enum SettingsStackScreenComponents {
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   userInfoSettingsScreen = 'UserInfoSettingsScreen',
   aboutSettingsScreen = 'AboutSettingsScreen',
+  querySettingsScreen = 'QuerySettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {

@@ -30,6 +30,7 @@ import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSettingsScreen';
 import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoSettingsScreen';
 import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
+import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -59,6 +60,7 @@ export type SettingsStackParamList = {
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;
+  QuerySettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -77,7 +79,11 @@ export const SettingsStack = () => {
         component={SettingsScreen}
         options={{title: 'Settings'}}
       />
-      <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.networkInfoSettings}
+        component={NetworkInfoSettings}
+        options={{title: 'Network'}}
+      />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
         component={ServerConnectionSettings}
@@ -198,6 +204,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.aboutSettingsScreen}
         component={AboutSettingsScreen}
         options={{title: 'About'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.querySettingsScreen}
+        component={QuerySettingsScreen}
+        options={{title: 'Query Settings'}}
       />
     </Stack.Navigator>
   );

@@ -155,6 +155,11 @@ export const SettingsScreen = ({navigation}: Props) => {
                   description={'Show internal state of user and auth information.'}
                   navComponent={SettingsStackScreenComponents.userInfoSettingsScreen}
                 />
+                <SettingsNavigationListItem
+                  title={'Query Client'}
+                  description={'Settings for the Twitarr API client.'}
+                  navComponent={SettingsStackScreenComponents.querySettingsScreen}
+                />
               </ListSection>
             </>
           )}

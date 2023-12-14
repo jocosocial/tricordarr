@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -17,34 +17,36 @@ import {NextEventCard} from '../../Cards/MainScreen/NextEventCard';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
 export const MainScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
-  const [refreshing, setRefreshing] = useState(false);
-  const {refetch: refetchThemes} = useDailyThemeQuery();
-  const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
-  const {refetchUserNotificationData, userNotificationData} = useUserNotificationData();
-  const {refetch: refetchFavorites} = useUserFavoritesQuery();
-  const {refetch: refetchMutes} = useUserMutesQuery();
-  const {refetch: refetchBlocks} = useUserBlocksQuery();
+  const {refetch: refetchThemes, isFetching: isDailyThemeFetching} = useDailyThemeQuery();
+  const {refetch: refetchAnnouncements, isFetching: isAnnouncementsFetching} = useAnnouncementsQuery();
+  const {userNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData, isFetching: isUserNotificationDataFetching} =
+    useUserNotificationDataQuery();
+  const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery();
+  const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery();
+  const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery();
+
+  const isRefreshing =
+    isUserNotificationDataFetching ||
+    isAnnouncementsFetching ||
+    isDailyThemeFetching ||
+    isFavoritesFetching ||
+    isMutesFetching ||
+    isBlocksFetching;
 
   const onRefresh = () => {
-    setRefreshing(true);
-    refetchUserNotificationData().then(() => {
-      refetchThemes().then(() => {
-        refetchAnnouncements().then(() => {
-          refetchFavorites().then(() => {
-            refetchMutes().then(() => {
-              refetchBlocks().then(() => {
-                setRefreshing(false);
-              });
-            });
-          });
-        });
-      });
-    });
+    refetchUserNotificationData();
+    refetchThemes();
+    refetchAnnouncements();
+    refetchFavorites();
+    refetchBlocks();
+    refetchMutes();
   };
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export const MainScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <HeaderCard />
           <DailyThemeCard />

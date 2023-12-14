@@ -27,6 +27,7 @@ export function useTokenAuthQuery<
     onError: error => {
       setErrorMessage(error);
     },
+    networkMode: 'always',
     ...options,
     enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
   });
@@ -69,6 +70,7 @@ export function useTokenAuthPaginationQuery<
       onError: error => {
         setErrorMessage(error);
       },
+      networkMode: 'always',
       ...options,
       enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
     },
