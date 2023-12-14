@@ -3,10 +3,12 @@ import {encode as base64_encode} from 'base-64';
 import axios, {AxiosResponse} from 'axios';
 import {Buffer} from '@craftzdog/react-native-buffer';
 import {TokenStringData} from '../Structs/ControllerStructs';
-import {QueryFunctionContext, QueryKey} from '@tanstack/react-query';
+import {QueryClient, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
 import {ImageQueryData} from '../Types';
 import DeviceInfo from 'react-native-device-info';
+import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
@@ -106,9 +108,9 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
     // headers: {
-      // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
-      // May need to figure this out better.
-      // 'Cache-Control': 'no-cache',
+    // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
+    // May need to figure this out better.
+    // 'Cache-Control': 'no-cache',
     // },
   });
   const contentType = headers['content-type'];
@@ -124,3 +126,20 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
     fileName: fileName,
   };
 };
+
+// https://tanstack.com/query/latest/docs/react/overview
+export const SwiftarrQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: apiQueryV3,
+      cacheTime: 1000 * 60 * 15, // 24 hours eventually, 15 mins for now
+      retry: 2,
+      staleTime: 0,
+    },
+  },
+});
+
+export const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+  throttleTime: 1000,
+});
