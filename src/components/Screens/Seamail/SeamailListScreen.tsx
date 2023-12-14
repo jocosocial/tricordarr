@@ -33,7 +33,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isInitialLoading, isFetched} =
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isFetched, isLoading} =
     useSeamailListQuery({
       forUser: asPrivilegedUser,
     });
@@ -136,7 +136,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     return <NotLoggedInView />;
   }
 
-  if (isInitialLoading) {
+  if (isLoading) {
     return <LoadingView />;
   }
 

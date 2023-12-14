@@ -29,7 +29,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const ForumCategoriesScreen = ({navigation}: Props) => {
-  const {data, refetch, isLoading, isInitialLoading} = useForumCategoriesQuery();
+  const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
@@ -61,7 +61,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     return <NotLoggedInView />;
   }
 
-  if (!data && isInitialLoading) {
+  if (isLoading) {
     return <LoadingView />;
   }
 

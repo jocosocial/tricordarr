@@ -11,7 +11,8 @@ import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
 import {useIsFocused} from '@react-navigation/native';
-import {ErrorView} from '../Static/ErrorView';
+import {NotLoggedInView} from '../Static/NotLoggedInView';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 export const ForumThreadsRelationsView = ({
   relationType,
@@ -31,7 +32,6 @@ export const ForumThreadsRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-    isInitialLoading,
   } = useForumRelationQuery(relationType, {
     cat: categoryID,
     sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
@@ -39,6 +39,7 @@ export const ForumThreadsRelationsView = ({
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
   const isFocused = useIsFocused();
+  const {isLoggedIn} = useAuth();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -67,16 +68,16 @@ export const ForumThreadsRelationsView = ({
     }
   }, [data, dispatchForumListData, isFocused]);
 
-  if (isInitialLoading) {
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
+
+  if (isLoading) {
     return <LoadingView />;
   }
 
-  if (!data) {
-    return <ErrorView />;
-  }
-
   // Don't use the state list because it renders too quickly.
-  if (data.pages[0].forumThreads.length === 0) {
+  if (data && data.pages[0].forumThreads.length === 0) {
     return (
       <View>
         <ScrollingContentView
