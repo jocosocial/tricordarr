@@ -15,7 +15,7 @@ export type Props = NativeStackScreenProps<
 export const UsernameProfileScreen = ({route}: Props) => {
   const [userID, setUserID] = useState('');
   const {data: lookupData} = useUserFindQuery(route.params.username);
-  const {data, refetch} = useUserProfileQuery(userID, {
+  const {data, refetch, isLoading} = useUserProfileQuery(userID, {
     enabled: !!userID,
   });
 
@@ -25,5 +25,5 @@ export const UsernameProfileScreen = ({route}: Props) => {
     }
   }, [lookupData]);
 
-  return <UserProfileScreenBase data={data} refetch={refetch} />;
+  return <UserProfileScreenBase data={data} refetch={refetch} isLoading={isLoading} />;
 };

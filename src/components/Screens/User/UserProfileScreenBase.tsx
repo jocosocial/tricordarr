@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   BottomTabComponents,
   MainStackComponents,
-  NavigatorIDs,
   RootStackComponents,
-  SeamailStackScreenComponents, SettingsStackScreenComponents,
+  SeamailStackScreenComponents,
+  SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
@@ -25,21 +24,22 @@ import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
 import {AppIcon} from '../../Icons/AppIcon';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {MainStackParamList, useMainStack} from '../../Navigation/Stacks/MainStack';
+import {useMainStack} from '../../Navigation/Stacks/MainStack';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {ErrorView} from '../../Views/Static/ErrorView';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
+  isLoading: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch}: UserProfileScreenBaseProps) => {
+export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScreenBaseProps) => {
   const navigation = useMainStack();
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
@@ -174,8 +174,12 @@ export const UserProfileScreenBase = ({data, refetch}: UserProfileScreenBaseProp
     return <NotLoggedInView />;
   }
 
-  if (!data) {
+  if (isLoading) {
     return <LoadingView />;
+  }
+
+  if (!data) {
+    return <ErrorView refreshing={refreshing} onRefresh={onRefresh} />;
   }
 
   return (
