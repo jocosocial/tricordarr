@@ -3,10 +3,10 @@ import React from 'react';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../styles/Theme';
+import {commonStyles} from '../../styles';
 
 export const AppModal = () => {
   const {modalVisible, modalContent, setModalVisible, modalOnDismiss, setModalOnDismiss} = useModal();
-  const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
   const styles = {

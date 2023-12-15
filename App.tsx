@@ -98,8 +98,8 @@ function App(): JSX.Element {
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
-        <SwiftarrQueryClientProvider>
-          <StyleProvider>
+        <StyleProvider>
+          <SwiftarrQueryClientProvider>
             <ErrorHandlerProvider>
               <ConfigProvider>
                 <AuthProvider>
@@ -137,8 +137,8 @@ function App(): JSX.Element {
                 </AuthProvider>
               </ConfigProvider>
             </ErrorHandlerProvider>
-          </StyleProvider>
-        </SwiftarrQueryClientProvider>
+          </SwiftarrQueryClientProvider>
+        </StyleProvider>
       </PaperProvider>
     </NavigationContainer>
   );
