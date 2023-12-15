@@ -39,9 +39,6 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
-    options: {
-      enabled: isLoggedIn,
-    },
   });
   const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();

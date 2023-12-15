@@ -29,7 +29,7 @@ export function useOpenQuery<
     console.log('[OpenQuery.tsx] Query disabled because OOBE not completed.');
   }
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
-    enabled: oobeCompleted,
+    enabled: oobeCompleted && !disruptionDetected,
     onError: error => {
       if (!disruptionDetected) {
         setErrorMessage(error);

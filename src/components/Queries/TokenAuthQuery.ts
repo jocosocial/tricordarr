@@ -7,6 +7,7 @@ import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs'
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
+import {shouldQueryEnable} from '../../libraries/Network/APIClient';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -32,7 +33,8 @@ export function useTokenAuthQuery<
       }
     },
     ...options,
-    enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
+    // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
+    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options.enabled),
   });
 }
 
@@ -77,7 +79,8 @@ export function useTokenAuthPaginationQuery<
         }
       },
       ...options,
-      enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
+      // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
+      enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
     },
   );
 }
