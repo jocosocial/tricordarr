@@ -36,9 +36,8 @@ export const DatePickerField = ({name, limitRange}: DatePickerFieldProps) => {
   const styles = StyleSheet.create({
     button: {
       ...commonStyles.roundedBorder,
-      ...commonStyles.flexRow,
+      ...commonStyles.flex,
       minHeight: 48,
-      ...commonStyles.alignItemsCenter,
     },
     text: {
       // paddingLeft: 8,
@@ -50,6 +49,8 @@ export const DatePickerField = ({name, limitRange}: DatePickerFieldProps) => {
     content: {
       ...commonStyles.flexRow,
       ...commonStyles.flex,
+      minHeight: 48,
+      justifyContent: 'flex-start',
     },
   });
 
