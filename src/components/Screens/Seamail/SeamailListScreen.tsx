@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
@@ -22,6 +22,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -30,8 +31,7 @@ type SeamailListScreenProps = NativeStackScreenProps<
 >;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const {asPrivilegedUser} = usePrivilege();
+  const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isFetched, isLoading} =
     useSeamailListQuery({
@@ -45,8 +45,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
+      fetchNextPage();
     }
   };
 
@@ -56,14 +55,17 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         type: FezListActions.set,
         fezList: data.pages.flatMap(p => p.fezzes),
       });
+    } else {
+      dispatchFezList({
+        type: FezListActions.set,
+        fezList: [],
+      });
     }
   }, [data, dispatchFezList]);
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
     refetch().finally(() => {
       refetchUserNotificationData();
-      setRefreshing(false);
     });
   }, [refetch, refetchUserNotificationData]);
 
@@ -142,6 +144,12 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   return (
     <AppView>
+      {(hasTwitarrTeam || hasModerator) && (
+        // For some reason, SegmentedButtons hates the flex in PaddedContentView.
+        <View style={[commonStyles.margin]}>
+          <SeamailAccountButtons />
+        </View>
+      )}
       {isFetched && fezList.length === 0 && (
         <View key={'noResults'} style={[commonStyles.paddingSmall]}>
           <Text>No Results</Text>
@@ -149,7 +157,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
       <SeamailFAB />

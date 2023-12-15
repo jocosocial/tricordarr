@@ -21,7 +21,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   const queryCache = SwiftarrQueryClient.getQueryCache();
   queryCache.config = {
-    onError: error => {
+    onError: (error, query) => {
       if (axios.isAxiosError(error)) {
         // console.log('LMAO', error);
         // console.log('RESP', error.response?.data);
@@ -31,13 +31,13 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         //   setErrorCount(errorCount + 1);
         // }
         // I think I was getting too clever. See how this goes for now.
-        console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered.');
+        console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
         setErrorCount(errorCount + 1);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data, query) => {
       if (errorCount !== 0) {
-        console.log('[SwiftarrQueryClientProvider.tsx] Resetting error count.');
+        console.log('[SwiftarrQueryClientProvider.tsx] Resetting error count via', query.queryKey);
         setErrorCount(0);
       }
     },

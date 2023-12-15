@@ -95,11 +95,12 @@ export function getAuthHeaders(
 export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
   const {data, headers} = await axios.get(queryKey[0], {
     responseType: 'arraybuffer',
-    // headers: {
-    // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
-    // May need to figure this out better.
-    // 'Cache-Control': 'no-cache',
-    // },
+    headers: {
+      // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
+      // May need to figure this out better.
+      // Not having this makes Axios pretend to respond, ignoring the React Query caching?
+      'Cache-Control': 'no-cache',
+    },
   });
   const contentType = headers['content-type'];
   const base64Data = Buffer.from(data, 'binary').toString('base64');

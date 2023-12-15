@@ -66,9 +66,7 @@ export const SeamailStack = () => {
         // This is here as a performance optimization.
         // The reason it renders in the component is that deep linking doesnt pass in the title
         // so it has to figure it out.
-        options={({route}) => ({
-          headerTitle: route.params.title,
-        })}
+        options={{title: 'Seamail Chat'}}
       />
       <Stack.Screen
         name={SeamailStackScreenComponents.seamailDetailsScreen}
