@@ -14,7 +14,7 @@ export const NotificationDataListener = () => {
   const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
-  const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
+  const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
