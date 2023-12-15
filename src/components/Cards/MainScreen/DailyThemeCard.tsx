@@ -1,5 +1,5 @@
 import {Card, Text} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
@@ -13,15 +13,16 @@ import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../
  * The site UI invents some themes for days that don't have them.
  */
 export const DailyThemeCard = () => {
-  const {data: dailyThemeData, refetch} = useDailyThemeQuery();
+  const {data: dailyThemeData} = useDailyThemeQuery();
   const {cruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
   const {commonStyles} = useStyles();
   const rootNavigation = useRootStack();
 
-  useEffect(() => {
-    refetch();
-  }, [cruiseDayIndex, refetch]);
+  // Pretty sure this isnt needed since the daily theme data doesnt change by day.
+  // useEffect(() => {
+  //   refetch();
+  // }, [cruiseDayIndex, refetch]);
 
   useEffect(() => {
     if (dailyThemeData) {
@@ -40,7 +41,7 @@ export const DailyThemeCard = () => {
     }
   }, [cruiseDayIndex, dailyThemeData]);
 
-  const onPress = () => {
+  const onPress = useCallback(() => {
     if (dailyTheme) {
       rootNavigation.navigate(RootStackComponents.rootContentScreen, {
         screen: BottomTabComponents.homeTab,
@@ -52,7 +53,7 @@ export const DailyThemeCard = () => {
         },
       });
     }
-  };
+  }, [dailyTheme, rootNavigation]);
 
   if (!dailyTheme) {
     return <></>;

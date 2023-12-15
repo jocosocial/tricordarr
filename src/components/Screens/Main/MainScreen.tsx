@@ -24,14 +24,14 @@ type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.main
 
 export const MainScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
-  const {refetch: refetchThemes, isFetching: isDailyThemeFetching} = useDailyThemeQuery();
-  const {refetch: refetchAnnouncements, isFetching: isAnnouncementsFetching} = useAnnouncementsQuery();
+  const {refetch: refetchThemes, isFetching: isDailyThemeFetching} = useDailyThemeQuery({enabled: false});
+  const {refetch: refetchAnnouncements, isFetching: isAnnouncementsFetching} = useAnnouncementsQuery({enabled: false});
   const {userNotificationData} = useUserNotificationData();
   const {refetch: refetchUserNotificationData, isFetching: isUserNotificationDataFetching} =
-    useUserNotificationDataQuery();
-  const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery();
-  const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery();
-  const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery();
+    useUserNotificationDataQuery({enabled: false});
+  const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery({enabled: false});
+  const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery({enabled: false});
+  const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery({enabled: false});
   const {isLoggedIn} = useAuth();
 
   const isRefreshing =

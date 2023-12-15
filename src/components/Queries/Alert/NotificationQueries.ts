@@ -5,8 +5,9 @@ import {useOpenQuery} from '../OpenQuery';
  * Retrieve info on the number of each type of notification supported by Swiftarr.
  * Login not required, but may respond differently if logged in.
  */
-export const useUserNotificationDataQuery = () => {
+export const useUserNotificationDataQuery = (options = {}) => {
   return useOpenQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
+    ...options,
   });
 };
