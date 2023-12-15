@@ -18,6 +18,7 @@ import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -31,6 +32,7 @@ export const MainScreen = ({navigation}: Props) => {
   const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery();
   const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery();
   const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery();
+  const {isLoggedIn} = useAuth();
 
   const isRefreshing =
     isUserNotificationDataFetching ||
@@ -44,9 +46,11 @@ export const MainScreen = ({navigation}: Props) => {
     refetchUserNotificationData();
     refetchThemes();
     refetchAnnouncements();
-    refetchFavorites();
-    refetchBlocks();
-    refetchMutes();
+    if (isLoggedIn) {
+      refetchFavorites();
+      refetchBlocks();
+      refetchMutes();
+    }
   };
 
   useEffect(() => {

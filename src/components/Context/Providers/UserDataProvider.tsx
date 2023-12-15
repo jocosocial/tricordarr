@@ -10,7 +10,7 @@ import {useSwiftarrQueryClient} from '../Contexts/SwiftarrQueryClientContext';
 export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
-  const {tokenData} = useAuth();
+  const {tokenData, isLoggedIn} = useAuth();
   const {data: profileQueryData, error: profileQueryError, refetch} = useUserProfileQuery();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
@@ -29,11 +29,11 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   }, [profileQueryData, profileQueryError, setErrorBanner, tokenData]);
 
   useEffect(() => {
-    if (!disruptionDetected && !profilePublicData) {
+    if (!disruptionDetected && !profilePublicData && isLoggedIn) {
       console.log('[UserDataProvider.tsx] Disruption cleared and ProfilePublicData missing. Attempting fix.');
       refetch();
     }
-  }, [disruptionDetected, profilePublicData, refetch]);
+  }, [disruptionDetected, isLoggedIn, profilePublicData, refetch]);
 
   return (
     <UserDataContext.Provider

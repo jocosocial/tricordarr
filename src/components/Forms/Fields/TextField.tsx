@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {KeyboardTypeOptions, StyleProp, TextStyle, View, ViewStyle} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
-import {FastField, useField, useFormikContext} from 'formik';
+import {FastField, Field, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 import {useAppTheme} from '../../../styles/Theme';
 
@@ -52,8 +52,10 @@ export const TextField = ({
     handleChange(name)(value);
   };
 
+  // Went back to Field from FastField due to SuggestedTextField modal.
+  // Hopefully that's not a bad thing.
   return (
-    <FastField name={name}>
+    <Field name={name}>
       {() => (
         <View style={viewStyle}>
           <TextInput
@@ -83,6 +85,6 @@ export const TextField = ({
           </HelperText>
         </View>
       )}
-    </FastField>
+    </Field>
   );
 };

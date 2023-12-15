@@ -5,3 +5,4 @@ Work Queue
 * Confirm against canonical API endpoints
 
 Nightly
+* lots of queries to start the app
