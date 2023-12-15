@@ -7,7 +7,7 @@ import {
   BottomTabComponents,
   MainStackComponents,
   RootStackComponents,
-  SettingsStackScreenComponents
+  SettingsStackScreenComponents,
 } from '../../libraries/Enums/Navigation';
 
 export const ConnectionDisruptedView = () => {

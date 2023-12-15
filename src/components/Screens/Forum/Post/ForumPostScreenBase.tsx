@@ -39,6 +39,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     hasPreviousPage,
     fetchPreviousPage,
     fetchNextPage,
+    isLoading,
   } = useForumPostSearchQuery(queryParams);
   const navigation = useForumStackNavigation();
   const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +117,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     }
   }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
-  if (!data) {
+  if (isLoading) {
     return <LoadingView />;
   }
 

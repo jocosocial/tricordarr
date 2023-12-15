@@ -6,7 +6,6 @@ import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {TimeDivider} from '../Dividers/TimeDivider';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
@@ -51,7 +50,10 @@ export const ForumThreadFlatList = ({
         </PaddedContentView>
       );
     }
-    return <Divider bold={true} />;
+    if (forumListData.length !== 0) {
+      return <Divider bold={true} />;
+    }
+    return null;
   };
   const renderListFooter = () => {
     if (hasNextPage) {
@@ -88,7 +90,6 @@ export const ForumThreadFlatList = ({
     <>
       <FlatList
         ref={flatListRef}
-        style={forumListData.length === 0 ? commonStyles.paddingHorizontal : undefined}
         refreshControl={refreshControl}
         data={forumListData}
         renderItem={({item}) => <ForumThreadListItem forumListData={item} />}

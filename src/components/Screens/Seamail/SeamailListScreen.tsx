@@ -23,6 +23,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -42,6 +43,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {isLoggedIn} = useAuth();
   const {refetchUserNotificationData} = useUserNotificationData();
   const {commonStyles} = useStyles();
+  const {profilePublicData} = useUserData();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -144,7 +146,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   return (
     <AppView>
-      {(hasTwitarrTeam || hasModerator) && (
+      {profilePublicData && (hasTwitarrTeam || hasModerator) && (
         // For some reason, SegmentedButtons hates the flex in PaddedContentView.
         <View style={[commonStyles.margin]}>
           <SeamailAccountButtons />

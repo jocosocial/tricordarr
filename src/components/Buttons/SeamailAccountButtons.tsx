@@ -82,6 +82,8 @@ export const SeamailAccountButtons = () => {
     userNotificationData?.newSeamailMessageCount,
   ]);
 
+  console.log(buttons);
+
   if (buttons.length > 0 && forUser) {
     return <SegmentedButtons value={forUser} onValueChange={setForUser} buttons={buttons} />;
   }

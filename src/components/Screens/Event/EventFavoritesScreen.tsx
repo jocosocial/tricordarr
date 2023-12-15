@@ -19,16 +19,15 @@ export const EventFavoritesScreen = () => {
   const {data, isFetching, refetch} = useEventFavoritesQuery();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
 
-  if (!data) {
+  if (isFetching) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
       <EventFlatList
-        scheduleItems={data}
+        scheduleItems={data || []}
         listRef={listRef}
-        scrollNowIndex={0}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         separator={'day'}
       />

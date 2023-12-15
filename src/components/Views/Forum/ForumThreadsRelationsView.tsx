@@ -13,6 +13,8 @@ import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum
 import {useIsFocused} from '@react-navigation/native';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {NoResultsView} from '../Static/NoResultsView';
+import {AppView} from '../AppView';
 
 export const ForumThreadsRelationsView = ({
   relationType,
@@ -32,9 +34,10 @@ export const ForumThreadsRelationsView = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isFetched,
   } = useForumRelationQuery(relationType, {
-    cat: categoryID,
-    sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
+    ...(categoryID ? {cat: categoryID} : undefined),
+    ...(forumSortOrder && forumSortOrder !== ForumSortOrder.event ? {sort: forumSortOrder} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
@@ -92,7 +95,8 @@ export const ForumThreadsRelationsView = ({
   }
 
   return (
-    <>
+    <AppView>
+      {isFetched && forumListData.length === 0 && <NoResultsView />}
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
@@ -101,6 +105,6 @@ export const ForumThreadsRelationsView = ({
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
-    </>
+    </AppView>
   );
 };
