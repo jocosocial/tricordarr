@@ -1,8 +1,8 @@
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
-import {useOpenQuery} from '../OpenQuery';
+import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 export const useDailyThemeQuery = (options = {}) => {
-  return useOpenQuery<DailyThemeData[]>({
+  return useTokenAuthQuery<DailyThemeData[]>({
     queryKey: ['/notification/dailythemes'],
     staleTime: 1000 * 60 * 5,
     ...options,

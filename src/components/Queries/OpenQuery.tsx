@@ -10,6 +10,7 @@ import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientCon
  * Clone of useQuery but dedicated for queries that can be performed without the user needing
  * to be logged in. Also does our error processing.
  * @param options
+ * @deprecated Use useTokenAuthQuery instead.
  */
 export function useOpenQuery<
   TQueryFnData = unknown,

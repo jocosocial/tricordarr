@@ -1,6 +1,5 @@
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import axios from 'axios';
-import {useOpenQuery} from '../OpenQuery';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface EventsQueryOptions {
@@ -14,7 +13,7 @@ interface EventsQueryOptions {
 }
 
 export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options = {}}: EventsQueryOptions) => {
-  return useOpenQuery<EventData[]>({
+  return useTokenAuthQuery<EventData[]>({
     queryKey: ['/events', {cruiseDay: cruiseDay, eventType: eventType}],
     queryFn: async () => {
       const queryParams = {
@@ -35,7 +34,7 @@ export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, o
 };
 
 export const useEventQuery = ({eventID}: {eventID: string}) => {
-  return useOpenQuery<EventData>({
+  return useTokenAuthQuery<EventData>({
     queryKey: [`/events/${eventID}`],
   });
 };

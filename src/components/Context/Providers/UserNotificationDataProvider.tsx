@@ -36,7 +36,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       console.log('[UserNotificationDataProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
     }
-  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker]);
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted]);
 
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.
