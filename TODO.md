@@ -5,8 +5,6 @@ Work Queue
 * Confirm against canonical API endpoints
 
 Nightly
-* cache buster
 * Setting for default lfg screen
 * Add help text to worker settings page
 * Yellow star user profile favorite 
-* calling notification/global 2x on app start

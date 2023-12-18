@@ -4,8 +4,10 @@ import {asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Net
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
 import axios from 'axios';
 import {Query} from '@tanstack/react-query';
+import {useConfig} from '../Contexts/ConfigContext';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
+  const {appConfig} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
@@ -66,6 +68,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
           dehydrateOptions: {
             shouldDehydrateQuery: shouldDehydrateQuery,
           },
+          buster: appConfig.apiClientConfig.cacheBuster,
         }}
         onSuccess={onSuccess}>
         {children}

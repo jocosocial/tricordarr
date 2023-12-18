@@ -10,6 +10,7 @@ export type PushNotificationConfig = {
 export interface APIClientConfig {
   defaultPageSize: number;
   canonicalHostnames: string[];
+  cacheBuster: string;
 }
 
 export interface ScheduleConfig {
@@ -76,6 +77,7 @@ const defaultAppConfig: AppConfig = {
   apiClientConfig: {
     defaultPageSize: 50,
     canonicalHostnames: ['joco.hollandamerica.com', 'twitarr.com'],
+    cacheBuster: new Date().toString(),
   },
 };
 

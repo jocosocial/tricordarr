@@ -94,14 +94,17 @@ function App(): JSX.Element {
    * when it would have been useful...
    *
    * ModalProvider needs UserRelationsProvider for blocks/mutes/favorites to mutate successfully.
+   * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
+   * ConfigProvider needs StyleProvider for the loading screen.
+   * StyleProvider needs PaperProvider for theming.
    */
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
       <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
         <StyleProvider>
-          <SwiftarrQueryClientProvider>
-            <ErrorHandlerProvider>
-              <ConfigProvider>
+          <ConfigProvider>
+            <SwiftarrQueryClientProvider>
+              <ErrorHandlerProvider>
                 <AuthProvider>
                   <UserDataProvider>
                     <PrivilegeProvider>
@@ -135,9 +138,9 @@ function App(): JSX.Element {
                     </PrivilegeProvider>
                   </UserDataProvider>
                 </AuthProvider>
-              </ConfigProvider>
-            </ErrorHandlerProvider>
-          </SwiftarrQueryClientProvider>
+              </ErrorHandlerProvider>
+            </SwiftarrQueryClientProvider>
+          </ConfigProvider>
         </StyleProvider>
       </PaperProvider>
     </NavigationContainer>
