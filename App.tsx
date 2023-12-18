@@ -51,6 +51,7 @@ import 'react-native-gesture-handler';
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/SwiftarrQueryClientProvider';
+import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -97,6 +98,7 @@ function App(): JSX.Element {
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
    * ConfigProvider needs StyleProvider for the loading screen.
    * StyleProvider needs PaperProvider for theming.
+   * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
    */
   return (
     <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
@@ -104,41 +106,43 @@ function App(): JSX.Element {
         <StyleProvider>
           <ConfigProvider>
             <SwiftarrQueryClientProvider>
-              <ErrorHandlerProvider>
-                <AuthProvider>
-                  <UserDataProvider>
-                    <PrivilegeProvider>
-                      <SocketProvider>
-                        <TwitarrProvider>
-                          <UserRelationsProvider>
-                            <UserNotificationDataProvider>
-                              <ModalProvider>
-                                <Portal.Host>
-                                  <HeaderButtonsProvider stackType={'native'}>
-                                    <CruiseProvider>
-                                      <DrawerProvider>
-                                        <FilterProvider>
-                                          <FeatureProvider>
-                                            <AppEventHandler />
-                                            <ForegroundService />
-                                            <NotificationDataListener />
-                                            <NotificationDataPoller />
-                                            <RootStackNavigator />
-                                          </FeatureProvider>
-                                        </FilterProvider>
-                                      </DrawerProvider>
-                                    </CruiseProvider>
-                                  </HeaderButtonsProvider>
-                                </Portal.Host>
-                              </ModalProvider>
-                            </UserNotificationDataProvider>
-                          </UserRelationsProvider>
-                        </TwitarrProvider>
-                      </SocketProvider>
-                    </PrivilegeProvider>
-                  </UserDataProvider>
-                </AuthProvider>
-              </ErrorHandlerProvider>
+              <LoadingProvider>
+                <ErrorHandlerProvider>
+                  <AuthProvider>
+                    <UserDataProvider>
+                      <PrivilegeProvider>
+                        <SocketProvider>
+                          <TwitarrProvider>
+                            <UserRelationsProvider>
+                              <UserNotificationDataProvider>
+                                <ModalProvider>
+                                  <Portal.Host>
+                                    <HeaderButtonsProvider stackType={'native'}>
+                                      <CruiseProvider>
+                                        <DrawerProvider>
+                                          <FilterProvider>
+                                            <FeatureProvider>
+                                              <AppEventHandler />
+                                              <ForegroundService />
+                                              <NotificationDataListener />
+                                              <NotificationDataPoller />
+                                              <RootStackNavigator />
+                                            </FeatureProvider>
+                                          </FilterProvider>
+                                        </DrawerProvider>
+                                      </CruiseProvider>
+                                    </HeaderButtonsProvider>
+                                  </Portal.Host>
+                                </ModalProvider>
+                              </UserNotificationDataProvider>
+                            </UserRelationsProvider>
+                          </TwitarrProvider>
+                        </SocketProvider>
+                      </PrivilegeProvider>
+                    </UserDataProvider>
+                  </AuthProvider>
+                </ErrorHandlerProvider>
+              </LoadingProvider>
             </SwiftarrQueryClientProvider>
           </ConfigProvider>
         </StyleProvider>
