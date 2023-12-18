@@ -7,4 +7,3 @@ Work Queue
 Nightly
 * Setting for default lfg screen
 * Add help text to worker settings page
-* Yellow star user profile favorite 

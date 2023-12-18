@@ -33,6 +33,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ErrorView} from '../../Views/Static/ErrorView';
+import {useAppTheme} from '../../../styles/Theme';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -50,6 +51,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
   const rootNavigation = useRootStack();
   const {isLoggedIn} = useAuth();
+  const theme = useAppTheme();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -200,7 +202,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
           <Text selectable={true} variant={'headlineMedium'}>
             {isFavorite && (
               <>
-                <AppIcon icon={'star'} />
+                <AppIcon color={theme.colors.twitarrYellow} icon={'star'} />
                 &nbsp;
               </>
             )}
