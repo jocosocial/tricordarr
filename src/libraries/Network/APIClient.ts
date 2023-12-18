@@ -116,15 +116,6 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
   };
 };
 
-// export const queryClientDefaultOptions = {
-//   queries: {
-//     queryFn: apiQueryV3,
-//     cacheTime: 1000 * 60 * 60 * 24, // 24 hours eventually, 15 mins for now
-//     retry: 2,
-//     staleTime: 0,
-//   },
-// };
-
 /**
  * React-Query Client.
  * https://tanstack.com/query/latest/docs/react/overview
@@ -134,7 +125,7 @@ export const SwiftarrQueryClient = new QueryClient();
 /**
  * This is here because it gets referenced in the settings.
  */
-export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
+export const defaultCacheTime = 1000 * 60 * 60 * 24 * 28; // 28 days === 4 weeks
 
 /**
  * React-Query Storage Persister.
