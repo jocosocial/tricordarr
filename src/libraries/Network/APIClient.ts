@@ -143,14 +143,14 @@ export const asyncStoragePersister = createAsyncStoragePersister({
   deserialize: superjson.parse,
 });
 
-export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boolean, oobeCompleted: boolean, optionEnable?: boolean) => {
+export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boolean, optionEnable?: boolean) => {
   let shouldEnable = false;
   if (optionEnable !== undefined) {
-    shouldEnable = optionEnable && isLoggedIn && oobeCompleted;
+    shouldEnable = optionEnable && isLoggedIn;
     // shouldEnable = optionEnable && isLoggedIn && !disruptionDetected;
   } else {
     // shouldEnable = isLoggedIn && !disruptionDetected;
-    shouldEnable = isLoggedIn && oobeCompleted;
+    shouldEnable = isLoggedIn;
   }
   // console.log('Query Should Enable', shouldEnable);
   return shouldEnable;
