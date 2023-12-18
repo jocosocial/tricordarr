@@ -1,13 +1,11 @@
 import React, {useEffect, useState, PropsWithChildren, useReducer} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
-import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useAuth} from '../Contexts/AuthContext';
 import {
   UserNotificationDataActions,
   userNotificationDataReducer,
 } from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import {useCruise} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
@@ -18,7 +16,6 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {hourlyUpdatingDate} = useCruise();
   const {appConfig} = useConfig();
 
   /**
@@ -51,18 +48,6 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       });
     }
   }, [data]);
-
-  /**
-   * Every hour on the hour trigger the refresh. In addition to refreshing the users notification
-   * data this also brings along a new server timestamp which is used in certain components.
-   */
-  useEffect(() => {
-    if (isLoggedIn) {
-      refetchUserNotificationData().then(() =>
-        console.log('[UserNotificationDataProvider.tsx] Refreshed UserNotificationData'),
-      );
-    }
-  }, [isLoggedIn, refetchUserNotificationData, hourlyUpdatingDate]);
 
   return (
     <UserNotificationDataContext.Provider

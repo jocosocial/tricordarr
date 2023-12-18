@@ -3,7 +3,8 @@ import {
   ErrorResponse,
   KeywordData,
   ProfilePublicData,
-  UserCreateData, UserHeader,
+  UserCreateData,
+  UserHeader,
   UserPasswordData,
   UserUsernameData,
 } from '../../../libraries/Structs/ControllerStructs';
@@ -12,9 +13,10 @@ import axios, {AxiosResponse} from 'axios';
 import {KeywordAction, KeywordType} from '../../../libraries/Types';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 
-export const useUserProfileQuery = () => {
+export const useUserProfileQuery = (options = {}) => {
   return useTokenAuthQuery<ProfilePublicData>({
     queryKey: ['/user/profile'],
+    ...options,
   });
 };
 

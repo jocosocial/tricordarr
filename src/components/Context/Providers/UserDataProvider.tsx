@@ -11,7 +11,7 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
   const {tokenData, isLoggedIn} = useAuth();
-  const {data: profileQueryData, error: profileQueryError, refetch} = useUserProfileQuery();
+  const {data: profileQueryData, error: profileQueryError, refetch} = useUserProfileQuery({enabled: false});
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   useEffect(() => {
