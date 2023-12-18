@@ -59,7 +59,6 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     });
   }, []);
 
-  // @TODO consider adding a listener to respond to socket onOpen events.
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchSocketState().finally(() => setRefreshing(false));
@@ -88,6 +87,15 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <PaddedContentView padTop={true}>
+          <Text style={commonStyles.marginBottomSmall}>
+            The background worker (which Android calls a Foreground Service) is necessary to enable push notifications in an off-grid environment.
+          </Text>
+          <Text>
+            Android Law(tm) currently requires the app to display a notification that this worker has started. You can safely dismiss the
+            notification and the worker will continue to run.
+          </Text>
+        </PaddedContentView>
         <Divider bold={true} />
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
@@ -98,7 +106,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
                 onPress={handleEnable}
                 style={commonStyles.paddingHorizontal}
                 helperText={
-                  'The background worker (which Android calls a Foreground Service) is necessary to enable push notifications in an off-grid environment.'
+                  'Use this to disable the worker if it is causing problems.'
                 }
                 value={enable}
               />
