@@ -8,12 +8,17 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {BooleanField} from '../../Forms/Fields/BooleanField';
+import {HelperText, SegmentedButtons, Text} from 'react-native-paper';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
+import {SegmentedButtonType} from '../../../libraries/Types';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
   const {setLfgHidePastFilter} = useFilter();
   const {commonStyles} = useStyles();
+  const [defaultScreen, setDefaultScreen] = useState(appConfig.schedule.defaultLfgScreen);
 
   const handleHidePastLfgs = () => {
     const newValue = !appConfig.schedule.hidePastLfgs;
@@ -26,6 +31,35 @@ export const LfgSettingsScreen = () => {
     });
     setHidePastLfgs(newValue);
     setLfgHidePastFilter(newValue);
+  };
+
+  const lfgDefaultButtons: SegmentedButtonType[] = [
+    {
+      value: LfgStackComponents.lfgFindScreen,
+      label: 'Find',
+      icon: AppIcons.lfgFind,
+    },
+    {
+      value: LfgStackComponents.lfgJoinedScreen,
+      label: 'Joined',
+      icon: AppIcons.lfgJoined,
+    },
+    {
+      value: LfgStackComponents.lfgOwnedScreen,
+      label: 'Owned',
+      icon: AppIcons.lfgOwned,
+    },
+  ];
+
+  const handleLfgDefaultScreen = (value: string) => {
+    updateAppConfig({
+      ...appConfig,
+      schedule: {
+        ...appConfig.schedule,
+        defaultLfgScreen: value as LfgStackComponents,
+      },
+    });
+    setDefaultScreen(value as LfgStackComponents);
   };
 
   return (
@@ -46,6 +80,13 @@ export const LfgSettingsScreen = () => {
               />
             </View>
           </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text style={commonStyles.marginBottomSmall}>Default LFG Screen</Text>
+          <SegmentedButtons buttons={lfgDefaultButtons} value={defaultScreen} onValueChange={handleLfgDefaultScreen} />
+          <HelperText style={commonStyles.onBackground} type={'info'}>
+            Changing this setting requires an app restart.
+          </HelperText>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

@@ -5,4 +5,3 @@ Work Queue
 * Confirm against canonical API endpoints
 
 Nightly
-* Setting for default lfg screen

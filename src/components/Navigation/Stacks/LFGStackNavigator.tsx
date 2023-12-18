@@ -12,13 +12,13 @@ import {LfgAddParticipantScreen} from '../../Screens/LFG/LfgAddParticipantScreen
 import {LfgChatScreen} from '../../Screens/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
-import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgEditScreen} from '../../Screens/LFG/LfgEditScreen';
 import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {DisabledView} from '../../Views/Static/DisabledView';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 export type LfgStackParamList = {
   LfgOwnedScreen: undefined;
@@ -47,13 +47,13 @@ export type LfgStackParamList = {
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<LfgStackParamList>();
-  const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
+  const {appConfig} = useConfig();
 
   return (
     <Stack.Navigator
-      initialRouteName={LfgStackComponents.lfgFindScreen}
+      initialRouteName={appConfig.schedule.defaultLfgScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={LfgStackComponents.lfgOwnedScreen}
@@ -73,10 +73,7 @@ export const LfgStackNavigator = () => {
       <Stack.Screen
         name={LfgStackComponents.lfgFindScreen}
         component={isDisabled ? DisabledView : LfgFindScreen}
-        options={{
-          title: 'Find Groups',
-          headerLeft: getLeftMainHeaderButtons,
-        }}
+        options={{title: 'Find Groups'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgScreen}

@@ -2,6 +2,7 @@ import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
+import {LfgStackComponents} from './Enums/Navigation';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -18,6 +19,7 @@ export interface ScheduleConfig {
   eventsShowOpenLfgs: boolean;
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
+  defaultLfgScreen: LfgStackComponents;
 }
 
 export interface AppConfig {
@@ -72,6 +74,7 @@ const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
+    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {

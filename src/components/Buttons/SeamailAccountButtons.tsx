@@ -7,23 +7,7 @@ import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {useAppTheme} from '../../styles/Theme';
 import {AppIcon} from '../Icons/AppIcon';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
-
-interface ButtonType {
-  value: string;
-  icon?: IconSource;
-  disabled?: boolean;
-  accessibilityLabel?: string;
-  checkedColor?: string;
-  uncheckedColor?: string;
-  onPress?: (event: GestureResponderEvent) => void;
-  label?: string;
-  showSelectedCheck?: boolean;
-  style?: StyleProp<ViewStyle>;
-  labelStyle?: StyleProp<TextStyle>;
-  testID?: string;
-}
+import {SegmentedButtonType} from '../../libraries/Types';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData} = useUserData();
@@ -31,10 +15,10 @@ export const SeamailAccountButtons = () => {
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam, asPrivilegedUser} = usePrivilege();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
   const theme = useAppTheme();
-  const [buttons, setButtons] = useState<ButtonType[]>([]);
+  const [buttons, setButtons] = useState<SegmentedButtonType[]>([]);
 
   useEffect(() => {
-    let tempButtons: ButtonType[] = [];
+    let tempButtons: SegmentedButtonType[] = [];
     if (hasModerator) {
       const moderatorIcon = userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
         ? () => <AppIcon size={18} icon={AppIcons.notification} color={theme.colors.error} />
