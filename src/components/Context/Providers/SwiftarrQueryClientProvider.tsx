@@ -51,7 +51,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   };
 
   const shouldDehydrateQuery = (query: Query) => {
-    const noHydrate = ['/notification/global', '/client/health'];
+    const noHydrate = ['/client/health'];
     return !noHydrate.includes(query.queryKey[0] as string);
   };
 

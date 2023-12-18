@@ -15,6 +15,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const {isLoading, isLoggedIn} = useAuth();
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
+  // For some reason this fires twice on startup. The prior data is read from the cache then fetched twice.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
