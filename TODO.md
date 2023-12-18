@@ -5,4 +5,5 @@ Work Queue
 * Confirm against canonical API endpoints
 
 Nightly
-* button to disable caching
+* network error + disruption = 3 warnings on load
+* disruption refresh indicators

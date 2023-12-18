@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
+import {defaultCacheTime} from './Network/APIClient';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -12,6 +13,9 @@ export interface APIClientConfig {
   defaultPageSize: number;
   canonicalHostnames: string[];
   cacheBuster: string;
+  cacheTime: number;
+  retry: number;
+  staleTime: number;
 }
 
 export interface ScheduleConfig {
@@ -81,6 +85,9 @@ const defaultAppConfig: AppConfig = {
     defaultPageSize: 50,
     canonicalHostnames: ['joco.hollandamerica.com', 'twitarr.com'],
     cacheBuster: new Date().toString(),
+    cacheTime: defaultCacheTime,
+    retry: 2, // 3 attempts total (initial, retry 1, retry 2)
+    staleTime: 0,
   },
 };
 

@@ -10,12 +10,15 @@ import {useAppTheme} from '../../../../styles/Theme';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {timeAgo} from '../../../../libraries/DateTime';
 import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import humanizeDuration from 'humanize-duration';
+import {defaultCacheTime} from '../../../../libraries/Network/APIClient';
 
 export const QuerySettingsScreen = () => {
   const [isOnline, setIsOnline] = useState(onlineManager.isOnline());
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
+  const [cacheTime, setCacheTime] = useState(queryClient.getDefaultOptions().queries?.cacheTime);
 
   const handleOnline = (value: boolean) => {
     onlineManager.setOnline(value);
@@ -29,9 +32,34 @@ export const QuerySettingsScreen = () => {
       apiClientConfig: {
         ...appConfig.apiClientConfig,
         cacheBuster: new Date().toString(),
-      }
+      },
     });
     queryClient.getQueryCache().clear();
+  };
+
+  const toggleCacheTime = () => {
+    if (cacheTime) {
+      // disable
+      updateAppConfig({
+        ...appConfig,
+        apiClientConfig: {
+          ...appConfig.apiClientConfig,
+          cacheTime: 0,
+        },
+      });
+      queryClient.getQueryCache().clear();
+      setCacheTime(0);
+    } else {
+      // enable
+      updateAppConfig({
+        ...appConfig,
+        apiClientConfig: {
+          ...appConfig.apiClientConfig,
+          cacheTime: defaultCacheTime,
+        },
+      });
+      setCacheTime(defaultCacheTime);
+    }
   };
 
   return (
@@ -48,12 +76,25 @@ export const QuerySettingsScreen = () => {
             </DataTable.Row>
             <DataTable.Row>
               <DataTable.Cell>Last Cache Bust</DataTable.Cell>
-              <DataTable.Cell><RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} /></DataTable.Cell>
+              <DataTable.Cell>
+                <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
+              </DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>Default Cache Time</DataTable.Cell>
+              <DataTable.Cell>{cacheTime !== undefined && humanizeDuration(cacheTime)}</DataTable.Cell>
             </DataTable.Row>
           </DataTable>
         </View>
         <PaddedContentView padTop={true}>
-          <PrimaryActionButton buttonText={'Bust Cache'} onPress={bustCache} buttonColor={theme.colors.twitarrNegativeButton} />
+          <PrimaryActionButton
+            buttonText={'Bust Cache'}
+            onPress={bustCache}
+            buttonColor={theme.colors.twitarrNegativeButton}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton buttonText={'Toggle Cache'} onPress={toggleCacheTime} />
         </PaddedContentView>
         {/*<PaddedContentView padTop={true}>*/}
         {/*  <PrimaryActionButton*/}

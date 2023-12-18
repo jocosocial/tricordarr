@@ -1,6 +1,6 @@
-import React, {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
-import {asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
+import {apiQueryV3, asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
 import axios from 'axios';
 import {Query} from '@tanstack/react-query';
@@ -9,6 +9,7 @@ import {useConfig} from '../Contexts/ConfigContext';
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
+
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
   const onSuccess = () => {
@@ -58,6 +59,21 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   };
 
   const disruptionDetected = errorCount >= 1;
+
+  useEffect(() => {
+    console.log('[SwiftarrQueryClientProvider.tsx] Configuring query client');
+    const currentOptions = SwiftarrQueryClient.getDefaultOptions();
+    SwiftarrQueryClient.setDefaultOptions({
+      ...currentOptions,
+      queries: {
+        ...currentOptions.queries,
+        cacheTime: appConfig.apiClientConfig.cacheTime,
+        staleTime: appConfig.apiClientConfig.staleTime,
+        retry: appConfig.apiClientConfig.retry,
+        queryFn: apiQueryV3,
+      },
+    });
+  }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);
 
   return (
     <SwiftarrQueryClientContext.Provider value={{errorCount, setErrorCount, disruptionDetected: disruptionDetected}}>
