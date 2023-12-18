@@ -2,14 +2,15 @@ import React, {useState, PropsWithChildren, useCallback, useEffect} from 'react'
 import {SocketContext} from '../Contexts/SocketContext';
 import {buildWebSocket} from '../../../libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {useUserData} from '../Contexts/UserDataContext';
 import {useConfig} from '../Contexts/ConfigContext';
+import {useAuth} from '../Contexts/AuthContext';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
-  const {profilePublicData} = useUserData();
+  const {isLoggedIn} = useAuth();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
   const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
   const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   // Socket Open
 
@@ -80,11 +81,11 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     console.log('[SocketProvider.tsx] Triggering openNotificationSocket useEffect.');
-    if (profilePublicData) {
+    if (isLoggedIn && oobeCompleted) {
       openNotificationSocket();
     }
     console.log('[SocketProvider.tsx] Finished openNotificationSocket useEffect.');
-  }, [openNotificationSocket, profilePublicData]);
+  }, [openNotificationSocket, isLoggedIn]);
 
   useEffect(() => {
     console.log('[SocketProvider.tsx] Triggering socket close useEffect.');

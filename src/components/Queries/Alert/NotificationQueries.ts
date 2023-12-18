@@ -8,7 +8,10 @@ import {useOpenQuery} from '../OpenQuery';
 export const useUserNotificationDataQuery = (options = {}) => {
   return useOpenQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
-    staleTime: 1000 * 10,
+    // staleTime: 1000 * 10,
+    cacheTime: 0,
+    staleTime: 0,
+    keepPreviousData: false,
     ...options,
   });
 };

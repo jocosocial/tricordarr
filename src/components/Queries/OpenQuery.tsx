@@ -26,7 +26,7 @@ export function useOpenQuery<
   const {disruptionDetected} = useSwiftarrQueryClient();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
   if (!oobeCompleted) {
-    console.log('[OpenQuery.tsx] Query disabled because OOBE not completed.');
+    console.log('[OpenQuery.tsx] Query disabled because OOBE not completed.', options.queryKey);
   }
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     enabled: oobeCompleted && !disruptionDetected,

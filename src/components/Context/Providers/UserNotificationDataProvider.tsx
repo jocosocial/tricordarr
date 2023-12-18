@@ -17,6 +17,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   // This is provided here for convenience.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   /**
    * Once the app has "started", figure out if we should enable the background worker.
@@ -26,7 +27,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       console.log('[UserNotificationDataProvider.tsx] App is still loading');
       return;
     }
-    if (isLoggedIn) {
+    if (isLoggedIn && oobeCompleted) {
       console.log('[UserNotificationDataProvider.tsx] User notifications can start.');
       console.log('[UserNotificationDataProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
       setEnableUserNotifications(appConfig.enableBackgroundWorker);

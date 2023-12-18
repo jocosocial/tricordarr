@@ -8,6 +8,7 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 import {shouldQueryEnable} from '../../libraries/Network/APIClient';
+import {useConfig} from '../Context/Contexts/ConfigContext';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -26,6 +27,12 @@ export function useTokenAuthQuery<
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
+  const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  if (!oobeCompleted) {
+    console.log('[TokenAuthQuery.tsx] Query disabled because OOBE not completed.', options.queryKey);
+  }
+
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     onError: error => {
       if (!disruptionDetected) {
@@ -34,7 +41,7 @@ export function useTokenAuthQuery<
     },
     ...options,
     // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
-    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options.enabled),
+    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, oobeCompleted, options.enabled),
   });
 }
 
@@ -56,6 +63,11 @@ export function useTokenAuthPaginationQuery<
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
+  const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  if (!oobeCompleted) {
+    console.log('[TokenAuthQuery.tsx] Query disabled because OOBE not completed.', endpoint);
+  }
   return useInfiniteQuery<TData, TError, TData>(
     [endpoint, queryParams],
     options?.queryFn
@@ -80,7 +92,7 @@ export function useTokenAuthPaginationQuery<
       },
       ...options,
       // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
-      enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+      enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, oobeCompleted, options?.enabled),
     },
   );
 }

@@ -11,7 +11,7 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
   const {tokenData, isLoggedIn} = useAuth();
-  const {data: profileQueryData, error: profileQueryError, refetch} = useUserProfileQuery({enabled: false});
+  const {data: profileQueryData, error: profileQueryError, refetch} = useUserProfileQuery();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   useEffect(() => {
@@ -28,12 +28,14 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
     }
   }, [profileQueryData, profileQueryError, setErrorBanner, tokenData]);
 
-  useEffect(() => {
-    if (!disruptionDetected && !profilePublicData && isLoggedIn) {
-      console.log('[UserDataProvider.tsx] Disruption cleared and ProfilePublicData missing. Attempting fix.');
-      refetch();
-    }
-  }, [disruptionDetected, isLoggedIn, profilePublicData, refetch]);
+  // @TODO this is sus. Fires in situations even if disruption was not detected. Don't need to refetch if
+  // data already exists.
+  // useEffect(() => {
+  //   if (!disruptionDetected && !profilePublicData && isLoggedIn) {
+  //     console.log('[UserDataProvider.tsx] Disruption cleared and ProfilePublicData missing. Attempting fix.');
+  //     refetch();
+  //   }
+  // }, [disruptionDetected, isLoggedIn, profilePublicData, refetch]);
 
   return (
     <UserDataContext.Provider
