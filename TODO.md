@@ -7,3 +7,4 @@ Work Queue
 Nightly
 * network error + disruption = 3 warnings on load
 * disruption refresh indicators
+* image queries still aggressively firing - honoring caching?

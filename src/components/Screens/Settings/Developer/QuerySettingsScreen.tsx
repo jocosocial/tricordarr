@@ -1,5 +1,5 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {DataTable, Text} from 'react-native-paper';
+import {DataTable, Divider, Text} from 'react-native-paper';
 import {View} from 'react-native';
 import React, {useState} from 'react';
 import {AppView} from '../../../Views/AppView';
@@ -12,6 +12,7 @@ import {timeAgo} from '../../../../libraries/DateTime';
 import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
 import {defaultCacheTime} from '../../../../libraries/Network/APIClient';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 
 export const QuerySettingsScreen = () => {
   const [isOnline, setIsOnline] = useState(onlineManager.isOnline());
@@ -19,6 +20,7 @@ export const QuerySettingsScreen = () => {
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
   const [cacheTime, setCacheTime] = useState(queryClient.getDefaultOptions().queries?.cacheTime);
+  const {errorCount, setErrorCount} = useSwiftarrQueryClient();
 
   const handleOnline = (value: boolean) => {
     onlineManager.setOnline(value);
@@ -62,6 +64,10 @@ export const QuerySettingsScreen = () => {
     }
   };
 
+  const triggerDisruption = () => {
+    setErrorCount(1);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -84,6 +90,10 @@ export const QuerySettingsScreen = () => {
               <DataTable.Cell>Default Cache Time</DataTable.Cell>
               <DataTable.Cell>{cacheTime !== undefined && humanizeDuration(cacheTime)}</DataTable.Cell>
             </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>Error Count</DataTable.Cell>
+              <DataTable.Cell>{errorCount}</DataTable.Cell>
+            </DataTable.Row>
           </DataTable>
         </View>
         <PaddedContentView padTop={true}>
@@ -94,7 +104,19 @@ export const QuerySettingsScreen = () => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <PrimaryActionButton buttonText={'Toggle Cache'} onPress={toggleCacheTime} />
+          <PrimaryActionButton
+            buttonText={'Toggle Cache Enable'}
+            onPress={toggleCacheTime}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+        <Divider bold={true} />
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Trigger Disruption'}
+            onPress={triggerDisruption}
+            buttonColor={theme.colors.twitarrNegativeButton}
+          />
         </PaddedContentView>
         {/*<PaddedContentView padTop={true}>*/}
         {/*  <PrimaryActionButton*/}

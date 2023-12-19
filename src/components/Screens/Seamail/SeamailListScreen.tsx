@@ -34,7 +34,7 @@ type SeamailListScreenProps = NativeStackScreenProps<
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
   const {fezList, dispatchFezList, setFez} = useTwitarr();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching, isFetched, isLoading} =
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
     useSeamailListQuery({
       forUser: asPrivilegedUser,
     });
@@ -71,11 +71,12 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     });
   }, [refetch, refetchUserNotificationData]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      onRefresh();
-    }
-  }, [asPrivilegedUser, onRefresh, isLoggedIn]);
+  // Why was this here?
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     onRefresh();
+  //   }
+  // }, [asPrivilegedUser, onRefresh, isLoggedIn]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -159,7 +160,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
       )}
       <SeamailFlatList
         fezList={fezList}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
       <SeamailFAB />
