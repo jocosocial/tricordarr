@@ -7,4 +7,5 @@ Work Queue
 Nightly
 * network error + disruption = 3 warnings on load
 * disruption refresh indicators
+  * unify all RefreshControls to isRefetching, all LoadingViews to isLoading
 * image queries still aggressively firing - honoring caching?

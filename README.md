@@ -69,3 +69,13 @@ https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-
 Icons
 -----
 Notification: trim yes padding 0
+
+Query
+-----
+`isLoading`: no cache and in flight
+* Return `<LoadingView />`
+
+`isRefetching`: Background refetch (excluding initial) and `refetch()`.
+* RefreshControl
+
+`refetch()` will refetch even if within the staleTime. Backgrounds will not because that's the point of staleTime.
