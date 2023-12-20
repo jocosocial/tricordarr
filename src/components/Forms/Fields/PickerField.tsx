@@ -4,7 +4,6 @@ import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFormikContext} from 'formik';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 
 interface PickerFieldProps {
   name: string;

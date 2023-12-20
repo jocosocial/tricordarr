@@ -1,27 +1,34 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {DataTable, Divider, Text} from 'react-native-paper';
-import {View} from 'react-native';
-import React, {useState} from 'react';
+import {RefreshControl, View} from 'react-native';
+import React from 'react';
 import {AppView} from '../../../Views/AppView';
-import {onlineManager, useQueryClient} from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {timeAgo} from '../../../../libraries/DateTime';
 import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
-import {defaultCacheTime, defaultStaleTime} from '../../../../libraries/Network/APIClient';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {QuerySettingsForm} from '../../../Forms/QuerySettingsForm';
 import {QuerySettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
+import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
+import {commonStyles} from '../../../../styles';
+import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 
 export const QuerySettingsScreen = () => {
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();
+  const {
+    refetch: refetchHealth,
+    isFetching: isFetchingHealth,
+  } = useHealthQuery({
+    enabled: false,
+  });
 
   const bustCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -36,7 +43,7 @@ export const QuerySettingsScreen = () => {
   };
 
   const triggerDisruption = () => {
-    setErrorCount(1);
+    setErrorCount(appConfig.apiClientConfig.disruptionThreshold + 1);
   };
 
   const initialValues: QuerySettingsFormValues = {
@@ -67,36 +74,19 @@ export const QuerySettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <PaddedContentView padTop={true}>
           <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>
-        <View>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>Query Client</DataTable.Title>
-            </DataTable.Header>
-            <DataTable.Row>
-              <DataTable.Cell>Last Cache Bust</DataTable.Cell>
-              <DataTable.Cell>
-                <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
-              </DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Default Cache Time</DataTable.Cell>
-              <DataTable.Cell>{humanizeDuration(appConfig.apiClientConfig.cacheTime)}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Default Stale Time</DataTable.Cell>
-              <DataTable.Cell>{humanizeDuration(appConfig.apiClientConfig.staleTime)}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Error Count</DataTable.Cell>
-              <DataTable.Cell>{errorCount}</DataTable.Cell>
-            </DataTable.Row>
-          </DataTable>
-        </View>
+        <Divider bold={true} />
         <PaddedContentView padTop={true}>
+          <Text>Cache Management</Text>
+          <DataTable style={commonStyles.marginBottomSmall}>
+            <SettingDataTableRow title={'Last Bust'}>
+              <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
+            </SettingDataTableRow>
+            <SettingDataTableRow title={'Item Count'} value={queryClient.getQueryCache().getAll().length.toString()} />
+          </DataTable>
           <PrimaryActionButton
             buttonText={'Bust Cache'}
             onPress={bustCache}
@@ -105,12 +95,29 @@ export const QuerySettingsScreen = () => {
         </PaddedContentView>
         <Divider bold={true} />
         <PaddedContentView padTop={true}>
+          <Text>Connection Disruption</Text>
+          <DataTable style={commonStyles.marginBottomSmall}>
+            <SettingDataTableRow title={'Error Count'} value={errorCount.toString()} />
+          </DataTable>
           <PrimaryActionButton
             buttonText={'Trigger Disruption'}
             onPress={triggerDisruption}
             buttonColor={theme.colors.twitarrNegativeButton}
+            style={commonStyles.marginBottom}
+          />
+          <PrimaryActionButton
+            buttonText={'Server Health Check'}
+            onPress={refetchHealth}
+            buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>
+        <Divider bold={true} />
+
+        {/*</PaddedContentView>*/}
+        {/*<Divider bold={true} />*/}
+        {/*<PaddedContentView padTop={true}>*/}
+
+        {/*</PaddedContentView>*/}
         {/*<PaddedContentView padTop={true}>*/}
         {/*  <PrimaryActionButton*/}
         {/*    buttonText={'Online'}*/}
