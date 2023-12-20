@@ -54,13 +54,14 @@ export function useTokenAuthPaginationQuery<
   pageSize: number = 50,
   options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
   queryParams?: Object,
+  queryKey?: QueryKey,
 ) {
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   return useInfiniteQuery<TData, TError, TData>(
-    [endpoint, queryParams],
+    queryKey ? queryKey : [endpoint, queryParams],
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: pageSize}}) => {

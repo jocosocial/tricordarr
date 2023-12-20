@@ -4,6 +4,7 @@ import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
+import {QueryKey} from '@tanstack/react-query';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -53,7 +54,8 @@ export const useSeamailListQuery = ({pageSize = 50, forUser, search, options = {
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
     type: [FezType.closed, FezType.open],
   };
-  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', pageSize, options, queryParams);
+  const queryKey: QueryKey = ['/fez/joined', queryParams, search];
+  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', pageSize, options, queryParams, queryKey);
 };
 
 export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {

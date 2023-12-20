@@ -23,12 +23,11 @@ export const SeamailSearchBar = ({setIsLoading}: SeamailSearchBarProps) => {
   });
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
-  // const navigation = useSeamailStack();
+
+  console.log(searchQuery, data);
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
-
   const onClear = () => setFezList([]);
-
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
