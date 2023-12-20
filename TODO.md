@@ -5,4 +5,7 @@ Work Queue
 * Confirm against canonical API endpoints
 
 Nightly
-* network error + disruption = 3 warnings on load
+* disrupted. tap here for more information in small text
+* https://github.com/callstack/react-native-slider
+  * make a generic field for it?
+* form for the API client values
