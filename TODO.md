@@ -9,4 +9,5 @@ Nightly
 * The aggressive avatar querying is also worth reconsidering
 * Can I do the generic use Nav push to cheat the stacks?
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
-* pageSize defaults to appConfig
+* seamail pagination is broken - repeating pages
+  * not all seamail?

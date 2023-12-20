@@ -36,18 +36,16 @@ export const useFezUpdateMutation = () => {
 };
 
 interface SeamailQueryProps {
-  pageSize?: number;
   fezID: string;
 }
 
 interface SeamailListQueryOptions {
-  pageSize?: number;
   forUser?: keyof typeof PrivilegedUserAccounts;
   search?: string;
   options?: {};
 }
 
-export const useSeamailListQuery = ({pageSize = 50, forUser, search, options = {}}: SeamailListQueryOptions) => {
+export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailListQueryOptions) => {
   const queryParams = {
     ...(search && {search: search}),
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
@@ -55,17 +53,16 @@ export const useSeamailListQuery = ({pageSize = 50, forUser, search, options = {
     type: [FezType.closed, FezType.open],
   };
   const queryKey: QueryKey = ['/fez/joined', queryParams, search];
-  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', pageSize, options, queryParams, queryKey);
+  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, queryParams, queryKey);
 };
 
-export const useSeamailQuery = ({pageSize = 50, fezID}: SeamailQueryProps) => {
-  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`, pageSize);
+export const useSeamailQuery = ({fezID}: SeamailQueryProps) => {
+  return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`);
 };
 
 interface LfgListQueryOptions {
   cruiseDay?: number;
   fezType?: keyof typeof FezType;
-  pageSize?: number;
   hidePast?: boolean;
   endpoint?: 'open' | 'joined' | 'owner';
   excludeFezType?: FezType[];
@@ -77,7 +74,6 @@ export const useLfgListQuery = ({
   fezType,
   excludeFezType = [FezType.open, FezType.closed],
   hidePast = false,
-  pageSize = 50,
   endpoint = 'open',
   options = {},
 }: LfgListQueryOptions) => {
@@ -89,7 +85,7 @@ export const useLfgListQuery = ({
     ...(hidePast !== undefined && {hidePast: hidePast}),
     ...(excludeFezType && {excludetype: excludeFezType}),
   };
-  return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, pageSize, options, queryParams);
+  return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, options, queryParams);
 };
 
 interface FezCancelMutationProps {

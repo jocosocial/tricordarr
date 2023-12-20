@@ -39,5 +39,5 @@ export enum ForumRelationQueryType {
 }
 
 export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumRelationQueryParams) => {
-  return useTokenAuthPaginationQuery<ForumSearchData>(`/forum/${relation}`, undefined, undefined, queryParams);
+  return useTokenAuthPaginationQuery<ForumSearchData>(`/forum/${relation}`, undefined, queryParams);
 };

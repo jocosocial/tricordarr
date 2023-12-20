@@ -55,6 +55,9 @@ export const QuerySettingsScreen = () => {
   };
 
   const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
+    if (values.defaultPageSize !== appConfig.apiClientConfig.defaultPageSize) {
+      queryClient.getQueryCache().clear();
+    }
     updateAppConfig({
       ...appConfig,
       apiClientConfig: {

@@ -2,6 +2,7 @@ import {PostSearchData} from '../../../libraries/Structs/ControllerStructs';
 import {WithPaginator} from '../Pagination';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 import axios, {AxiosResponse} from 'axios';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 export interface ForumPostSearchQueryParams {
   search?: string;
@@ -21,9 +22,10 @@ export interface ForumPostSearchQueryParams {
 // https://github.com/jocosocial/swiftarr/issues/235
 export interface PostSearchDataResponse extends PostSearchData, WithPaginator {}
 
-export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams = {}, pageSize = 50, options = {}) => {
-  return useTokenAuthPaginationQuery<PostSearchDataResponse>('/forum/post/search', pageSize, {
-    queryFn: async ({pageParam = {start: queryParams.start || 0, limit: pageSize}}) => {
+export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams = {}, options = {}) => {
+  const {appConfig} = useConfig();
+  return useTokenAuthPaginationQuery<PostSearchDataResponse>('/forum/post/search', {
+    queryFn: async ({pageParam = {start: queryParams.start || 0, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
       const {data: responseData} = await axios.get<PostSearchData, AxiosResponse<PostSearchData>>(
         '/forum/post/search',
         {

@@ -43,7 +43,6 @@ export function useTokenAuthQuery<
 // I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
 // Though maybe because I'm not returning the entire query response object (TQueryFnData)
 // then maybe it's OK? This is some meta voodoo.
-// @TODO make this accept a queryKey not an endpoint in the options
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator | FezData,
   // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
@@ -51,7 +50,6 @@ export function useTokenAuthPaginationQuery<
   // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
-  pageSize: number = 50,
   options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
   queryParams?: Object,
   queryKey?: QueryKey,
@@ -59,12 +57,13 @@ export function useTokenAuthPaginationQuery<
   const {isLoggedIn} = useAuth();
   const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
+  const {appConfig} = useConfig();
 
   return useInfiniteQuery<TData, TError, TData>(
     queryKey ? queryKey : [endpoint, queryParams],
     options?.queryFn
       ? options.queryFn
-      : async ({pageParam = {start: undefined, limit: pageSize}}) => {
+      : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
           const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
             params: {
               ...(pageParam.limit ? {limit: pageParam.limit} : undefined),

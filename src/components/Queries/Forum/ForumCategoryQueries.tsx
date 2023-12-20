@@ -3,6 +3,7 @@ import {CategoryData, ForumData} from '../../../libraries/Structs/ControllerStru
 import axios, {AxiosResponse} from 'axios';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>({
@@ -22,11 +23,13 @@ export interface ForumCategoryQueryParams {
 export interface CategoryDataQueryResponse extends CategoryData, WithPaginator {}
 
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
+  const {appConfig} = useConfig();
   return useTokenAuthPaginationQuery<CategoryDataQueryResponse>(
     `/forum/categories/${categoryId}`,
-    50,
     {
-      queryFn: async ({pageParam = {start: queryParams.start || 0, limit: 50}}): Promise<CategoryDataQueryResponse> => {
+      queryFn: async ({
+        pageParam = {start: queryParams.start || 0, limit: appConfig.apiClientConfig.defaultPageSize},
+      }): Promise<CategoryDataQueryResponse> => {
         const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
           `/forum/categories/${categoryId}`,
           {
