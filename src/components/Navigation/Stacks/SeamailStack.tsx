@@ -38,7 +38,9 @@ export type SeamailStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
-  SeamailSearchScreen: undefined;
+  SeamailSearchScreen: {
+    forUser?: string;
+  };
   SeamailHelpScreen: undefined;
 };
 
