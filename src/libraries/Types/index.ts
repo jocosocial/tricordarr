@@ -2,7 +2,7 @@
 import {EventType} from '../Enums/EventType';
 import {FezType} from '../Enums/FezType';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
+import {Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
 
 export interface KvObject {
   [key: string]: string | null;
@@ -60,4 +60,22 @@ export interface SegmentedButtonType {
   style?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   testID?: string;
+}
+
+// This came from the upstream.
+export interface FabGroupActionType {
+  icon: IconSource;
+  label?: string;
+  color?: string;
+  labelTextColor?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
+  containerStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
+  labelStyle?: StyleProp<TextStyle>;
+  labelMaxFontSizeMultiplier?: number;
+  onPress: (e: GestureResponderEvent) => void;
+  size?: 'small' | 'medium';
+  testID?: string;
+  rippleColor?: ColorValue;
 }

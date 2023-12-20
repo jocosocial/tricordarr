@@ -3,6 +3,7 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {GestureResponderEvent} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {FabGroupActionType} from '../../../libraries/Types';
 
 interface Props {
   icon: IconSource;
@@ -12,7 +13,7 @@ interface Props {
   backgroundColor?: string;
 }
 
-export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: Props) => {
+export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: Props): FabGroupActionType => {
   const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
 
