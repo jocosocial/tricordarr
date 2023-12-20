@@ -62,7 +62,7 @@ export const ConfigServerUrlScreen = () => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <PaddedContentView>
-          <Text variant={'bodyLarge'} style={[commonStyles.bold]}>
+          <Text variant={'bodyLarge'} style={[commonStyles.bold, commonStyles.marginBottomSmall]}>
             Warning: It is recommended to fully restart the app after changing this value.
           </Text>
           <SettingForm
@@ -82,8 +82,8 @@ export const ConfigServerUrlScreen = () => {
             <Text>Server Issue</Text>
             <Text style={[commonStyles.marginBottomSmall]}>VPN on your device</Text>
             <Text>
-              If you think this should work, press the button below to attempt a server health check. If the issue
-              persists, contact the JoCo Cruise Info Desk for assistance.
+              If you believe this should not be the case, press the button below to attempt a server health check. If the issue
+              persists for more than an hour, contact the JoCo Cruise Info Desk for assistance.
             </Text>
           </PaddedContentView>
         )}

@@ -42,6 +42,7 @@ export const ConnectionDisruptedView = () => {
   return (
     <TouchableOpacity style={styles.headerView} onPress={onPress}>
       <Text style={styles.headerText}>Connection Disrupted</Text>
+      <Text variant={'labelSmall'} style={commonStyles.errorContainer}>Tap here for more information</Text>
     </TouchableOpacity>
   );
 };
