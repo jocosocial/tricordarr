@@ -47,19 +47,13 @@ const helpContent = [
 ];
 
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez, dispatchFezList} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
   const {fezSocket} = useSocket();
-  const {refetch} = useSeamailQuery({fezID: route.params.fezID});
+  const {refetch, isRefetching} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
   const rootNavigation = useRootStack();
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -112,7 +106,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <TouchableOpacity onLongPress={() => Clipboard.setString(fez?.title)}>
             <TitleTag>Title</TitleTag>

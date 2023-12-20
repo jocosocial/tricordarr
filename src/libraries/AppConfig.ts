@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
-import {defaultCacheTime} from './Network/APIClient';
+import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -16,6 +16,7 @@ export interface APIClientConfig {
   cacheTime: number;
   retry: number;
   staleTime: number;
+  disruptionThreshold: number;
 }
 
 export interface ScheduleConfig {
@@ -87,7 +88,8 @@ const defaultAppConfig: AppConfig = {
     cacheBuster: new Date().toString(),
     cacheTime: defaultCacheTime,
     retry: 2, // 3 attempts total (initial, retry 1, retry 2)
-    staleTime: 0,
+    staleTime: defaultStaleTime,
+    disruptionThreshold: 10,
   },
 };
 

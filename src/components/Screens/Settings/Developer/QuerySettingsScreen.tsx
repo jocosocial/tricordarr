@@ -11,7 +11,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {timeAgo} from '../../../../libraries/DateTime';
 import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
-import {defaultCacheTime} from '../../../../libraries/Network/APIClient';
+import {defaultCacheTime, defaultStaleTime} from '../../../../libraries/Network/APIClient';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 
 export const QuerySettingsScreen = () => {
@@ -20,6 +20,7 @@ export const QuerySettingsScreen = () => {
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
   const [cacheTime, setCacheTime] = useState(queryClient.getDefaultOptions().queries?.cacheTime);
+  const [staleTime, setStaleTime] = useState(queryClient.getDefaultOptions().queries?.staleTime);
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();
 
   const handleOnline = (value: boolean) => {
@@ -64,6 +65,30 @@ export const QuerySettingsScreen = () => {
     }
   };
 
+  const toggleStaleTime = () => {
+    if (staleTime) {
+      // disable
+      updateAppConfig({
+        ...appConfig,
+        apiClientConfig: {
+          ...appConfig.apiClientConfig,
+          staleTime: 0,
+        },
+      });
+      setStaleTime(0);
+    } else {
+      // enable
+      updateAppConfig({
+        ...appConfig,
+        apiClientConfig: {
+          ...appConfig.apiClientConfig,
+          staleTime: defaultStaleTime,
+        },
+      });
+      setStaleTime(defaultStaleTime);
+    }
+  };
+
   const triggerDisruption = () => {
     setErrorCount(1);
   };
@@ -77,10 +102,6 @@ export const QuerySettingsScreen = () => {
               <DataTable.Title>Query Client</DataTable.Title>
             </DataTable.Header>
             <DataTable.Row>
-              <DataTable.Cell>Online</DataTable.Cell>
-              <DataTable.Cell>{String(isOnline)}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
               <DataTable.Cell>Last Cache Bust</DataTable.Cell>
               <DataTable.Cell>
                 <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
@@ -89,6 +110,10 @@ export const QuerySettingsScreen = () => {
             <DataTable.Row>
               <DataTable.Cell>Default Cache Time</DataTable.Cell>
               <DataTable.Cell>{cacheTime !== undefined && humanizeDuration(cacheTime)}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>Default Stale Time</DataTable.Cell>
+              <DataTable.Cell>{staleTime !== undefined && humanizeDuration(staleTime)}</DataTable.Cell>
             </DataTable.Row>
             <DataTable.Row>
               <DataTable.Cell>Error Count</DataTable.Cell>
@@ -103,10 +128,18 @@ export const QuerySettingsScreen = () => {
             buttonColor={theme.colors.twitarrNegativeButton}
           />
         </PaddedContentView>
-        <PaddedContentView>
+        <Divider bold={true} />
+        <PaddedContentView padTop={true}>
           <PrimaryActionButton
             buttonText={'Toggle Cache Enable'}
             onPress={toggleCacheTime}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'Toggle Stale Enable'}
+            onPress={toggleStaleTime}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

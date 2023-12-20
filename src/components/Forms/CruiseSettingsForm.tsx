@@ -27,7 +27,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
           <DatePickerField name={'startDate'} limitRange={false} />
-          <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} multiline={true} />
+          <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} />
           <TextField name={'portTimeZoneID'} label={'Port Time Zone ID'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting}

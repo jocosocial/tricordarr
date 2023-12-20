@@ -126,6 +126,7 @@ export const SwiftarrQueryClient = new QueryClient();
  * This is here because it gets referenced in the settings.
  */
 export const defaultCacheTime = 1000 * 60 * 60 * 24 * 28; // 28 days === 4 weeks
+export const defaultStaleTime = 1000 * 60; // 60 seconds
 
 /**
  * React-Query Storage Persister.

@@ -23,8 +23,6 @@ export const UserDataProvider = ({children}: PropsWithChildren) => {
       if (profileQueryError.response.status === 401) {
         setErrorBanner('You are not logged in (or your token is no longer valid). Please log in again.');
       }
-    } else if (tokenData && profileQueryError) {
-      setErrorBanner(profileQueryError.message);
     }
   }, [profileQueryData, profileQueryError, setErrorBanner, tokenData]);
 

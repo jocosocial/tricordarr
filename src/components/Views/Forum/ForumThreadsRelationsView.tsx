@@ -35,6 +35,7 @@ export const ForumThreadsRelationsView = ({
     hasNextPage,
     fetchNextPage,
     isFetched,
+    isRefetching,
   } = useForumRelationQuery(relationType, {
     ...(categoryID ? {cat: categoryID} : undefined),
     ...(forumSortOrder && forumSortOrder !== ForumSortOrder.event ? {sort: forumSortOrder} : undefined),
@@ -43,11 +44,6 @@ export const ForumThreadsRelationsView = ({
   const {forumListData, dispatchForumListData} = useTwitarr();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -85,7 +81,7 @@ export const ForumThreadsRelationsView = ({
       <View>
         <ScrollingContentView
           isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
+          refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}>
           <PaddedContentView padTop={true}>
             <Text>There aren't any forums matching these filters.</Text>
           </PaddedContentView>
@@ -101,7 +97,7 @@ export const ForumThreadsRelationsView = ({
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
@@ -23,13 +23,14 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const {
     data,
     refetch,
-    isLoading,
     hasPreviousPage,
     fetchPreviousPage,
     isFetchingPreviousPage,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    isRefetching,
+    isLoading,
   } = useForumCategoryQuery(props.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
   });
@@ -38,11 +39,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
   const isFocused = useIsFocused();
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  }, [refetch]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -83,17 +79,17 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     }
   }, [isFocused, data, forumListData, refetch]);
 
-  if (!data) {
+  if (isLoading) {
     return <LoadingView />;
   }
 
-  if (data.pages[0].numThreads === 0 && forumListData.length === 0) {
+  if (data?.pages[0].numThreads === 0 && forumListData.length === 0) {
     return (
       <>
         <View>
           <ScrollingContentView
             isStack={true}
-            refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
+            refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}>
             <PaddedContentView padTop={true}>
               <Text>There aren't any forums in this category yet.</Text>
             </PaddedContentView>
@@ -106,12 +102,12 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
 
   return (
     <>
-      <ListTitleView title={data.pages[0].title} />
+      <ListTitleView title={data?.pages[0].title} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />
