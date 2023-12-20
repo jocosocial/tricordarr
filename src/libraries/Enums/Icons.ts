@@ -92,4 +92,5 @@ export enum AppIcons {
   recent = 'history',
   text = 'text',
   forumEdit = 'playlist-edit',
+  altAccount = 'account-switch',
 }

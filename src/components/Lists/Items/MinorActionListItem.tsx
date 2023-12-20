@@ -3,16 +3,17 @@ import {AppIcon} from '../../Icons/AppIcon';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 
-interface MinorActionListItem {
+interface MinorActionListItemProps {
   title: string;
   icon: string;
   onPress: () => void;
+  description?: string;
 }
 
-export const MinorActionListItem = ({title, icon, onPress}: MinorActionListItem) => {
+export const MinorActionListItem = ({title, icon, onPress, description}: MinorActionListItemProps) => {
   const {commonStyles} = useStyles();
 
   const getIcon = () => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
 
-  return <List.Item title={title} left={getIcon} onPress={onPress} />;
+  return <List.Item title={title} left={getIcon} onPress={onPress} description={description} />;
 };

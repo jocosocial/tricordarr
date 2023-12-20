@@ -19,6 +19,8 @@ import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -33,6 +35,7 @@ export const MainScreen = ({navigation}: Props) => {
   const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery({enabled: false});
   const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery({enabled: false});
   const {isLoggedIn} = useAuth();
+  const {hasModerator} = usePrivilege();
 
   const isRefreshing =
     isUserNotificationDataFetching ||
@@ -72,6 +75,11 @@ export const MainScreen = ({navigation}: Props) => {
             <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
           )}
         </PaddedContentView>
+        {hasModerator && (
+          <PaddedContentView>
+            <ModeratorCard />
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
     </AppView>
   );

@@ -14,9 +14,9 @@ import {
   SettingsStackScreenComponents,
 } from '../../../../libraries/Enums/Navigation';
 import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
-import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
+import {Linking} from 'react-native';
 
 export const AccountManagementScreen = () => {
   const settingsNavigation = useSettingsStack();
@@ -60,6 +60,11 @@ export const AccountManagementScreen = () => {
                 title={'Change Password'}
                 icon={AppIcons.password}
                 onPress={() => settingsNavigation.push(SettingsStackScreenComponents.changePassword)}
+              />
+              <MinorActionListItem
+                title={'Create Alt Account'}
+                icon={AppIcons.altAccount}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/createAltAccount`)}
               />
             </ListSection>
           )}
