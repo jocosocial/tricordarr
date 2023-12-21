@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -54,7 +54,10 @@ export const ForumThreadSearchBar = () => {
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setEnable(false);
+  }
   const onClear = () => {
     setEnable(false);
     setForumList([]);
@@ -70,6 +73,7 @@ export const ForumThreadSearchBar = () => {
     } else {
       setEnable(true);
       refetch();
+      Keyboard.dismiss();
     }
   };
 
