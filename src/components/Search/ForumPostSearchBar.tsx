@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -36,7 +36,6 @@ export const ForumPostSearchBar = () => {
     {
       search: searchQuery,
     },
-    undefined,
     {
       enabled: queryEnable,
     },
@@ -54,7 +53,11 @@ export const ForumPostSearchBar = () => {
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setQueryEnable(false);
+  }
+
   const onClear = () => {
     dispatchForumPosts({
       type: ForumPostListActions.clear,
@@ -76,6 +79,7 @@ export const ForumPostSearchBar = () => {
       setQueryEnable(true);
       console.log('[ForumPostSearchBar.tsx] Refetching results');
       refetch();
+      Keyboard.dismiss();
     }
   };
 
@@ -109,13 +113,13 @@ export const ForumPostSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages && isFocused && queryEnable) {
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: data.pages.flatMap(p => p.posts),
       });
     }
-  }, [data, dispatchForumPosts, isFocused]);
+  }, [data, dispatchForumPosts, isFocused, queryEnable]);
 
   return (
     <>

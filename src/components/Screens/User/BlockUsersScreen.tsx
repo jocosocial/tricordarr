@@ -10,18 +10,16 @@ import {Linking, RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
+import {useUserBlockMutation, useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {ItalicText} from '../../Text/ItalicText';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export const BlockUsersScreen = () => {
-  const {blocks, refetchBlocks, setBlocks} = useUserRelations();
-  const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    refetchBlocks().then(() => setRefreshing(false));
-  };
+  const {blocks, setBlocks} = useUserRelations();
   const {hasModerator} = usePrivilege();
   const userBlockMutation = useUserBlockMutation();
+  const {isLoading, refetch, isRefetching} = useUserBlocksQuery();
 
   const handleUnblockUser = (userHeader: UserHeader) => {
     userBlockMutation.mutate(
@@ -51,9 +49,13 @@ export const BlockUsersScreen = () => {
     );
   };
 
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userBlockMutation.isLoading} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}

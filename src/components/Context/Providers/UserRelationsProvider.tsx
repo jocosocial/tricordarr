@@ -12,12 +12,12 @@ export const UserRelationsProvider = ({children}: PropsWithChildren) => {
 
   // We don't have a way in the API to determine who is blocked/muted/favorited on a per-user basis.
   // So the only way we can tell the user they've blocked/muted/favorited someone is by comparing
-  // to the pre-fetched list, fetched here. It probably doesn't update much beyond what the user does
-  // within the app, so it should be OK for now. Besides it doesn't impact what content the user
-  // receives via the various APIs. That is done at the API layer.
-  const {data: favoritesData, refetch: refetchFavorites} = useUserFavoritesQuery();
-  const {data: mutesData, refetch: refetchMutes} = useUserMutesQuery();
-  const {data: blocksData, refetch: refetchBlocks} = useUserBlocksQuery();
+  // to the pre-fetched list. This relies on the cached data until various other screens (such as UserProfileScreen)
+  // trigger either the initial load (first time) or background fetch (staleTime). Manual refetch available on
+  // the MainScreen.
+  const {data: favoritesData, refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
+  const {data: mutesData, refetch: refetchMutes} = useUserMutesQuery({enabled: false});
+  const {data: blocksData, refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
 
   useEffect(() => {
     if (favoritesData) {

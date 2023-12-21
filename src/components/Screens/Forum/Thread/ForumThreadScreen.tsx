@@ -34,6 +34,7 @@ import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useIsFocused} from '@react-navigation/native';
+import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -66,6 +67,9 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {hasModerator} = usePrivilege();
   const isFocused = useIsFocused();
   const [forumListItem, setForumListItem] = useState<ForumListData>();
+  // This is used deep in the FlatList to star posts by favorite users.
+  // Will trigger an initial load if the data is empty else a background refetch on staleTime.
+  const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -311,7 +315,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     );
   };
 
-  if (!data) {
+  if (!data || isLoading || isLoadingFavorites) {
     return <LoadingView />;
   }
 

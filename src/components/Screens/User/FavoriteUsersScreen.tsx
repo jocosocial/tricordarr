@@ -7,21 +7,17 @@ import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {Linking, RefreshControl} from 'react-native';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {UserFavoriteText} from '../../Text/UserRelationsText';
-import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries';
+import {useUserFavoriteMutation, useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {ItalicText} from '../../Text/ItalicText';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export const FavoriteUsersScreen = () => {
   const {favorites, refetchFavorites, setFavorites} = useUserRelations();
-  const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    refetchFavorites().then(() => setRefreshing(false));
-  };
-  const {hasModerator} = usePrivilege();
   const userFavoriteMutation = useUserFavoriteMutation();
+  const {isLoading, isRefetching, refetch} = useUserFavoritesQuery();
 
   const handleUnfavoriteUser = (userHeader: UserHeader) => {
     userFavoriteMutation.mutate(
@@ -51,9 +47,13 @@ export const FavoriteUsersScreen = () => {
     );
   };
 
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userFavoriteMutation.isLoading} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserFavoriteText />
         </PaddedContentView>

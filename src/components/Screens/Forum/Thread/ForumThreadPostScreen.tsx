@@ -36,6 +36,7 @@ import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {Button, Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useIsFocused} from '@react-navigation/native';
+import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -71,6 +72,9 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   const {commonStyles} = useStyles();
   const isFocused = useIsFocused();
   const [forumListItem, setForumListItem] = useState<ForumListData>();
+  // This is used deep in the FlatList to star posts by favorite users.
+  // Will trigger an initial load if the data is empty else a background refetch on staleTime.
+  const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -312,7 +316,7 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
     );
   };
 
-  if (!data) {
+  if (!data || isLoadingFavorites || isLoading) {
     return <LoadingView />;
   }
 

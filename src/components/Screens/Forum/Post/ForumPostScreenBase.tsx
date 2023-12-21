@@ -15,6 +15,7 @@ import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavi
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
+import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -47,6 +48,9 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
   const {setModalContent, setModalVisible} = useModal();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  // This is used deep in the FlatList to star posts by favorite users.
+  // Will trigger an initial load if the data is empty else a background refetch on staleTime.
+  const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -117,7 +121,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     }
   }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingFavorites) {
     return <LoadingView />;
   }
 
