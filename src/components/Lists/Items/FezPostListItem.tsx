@@ -64,7 +64,7 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
     <FlatListItemContent>
       {!messageOnRight && (
         <MessageAvatarContainerView onPress={onPress}>
-          <UserAvatarImage userID={fezPost.author.userID} small={true} />
+          <UserAvatarImage userHeader={fezPost.author} small={true} />
         </MessageAvatarContainerView>
       )}
       {messageOnRight && <MessageSpacerView />}

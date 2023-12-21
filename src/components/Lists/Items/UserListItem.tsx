@@ -27,7 +27,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: U
 
   const getAvatar = () => (
     <View style={[commonStyles.justifyCenter]}>
-      <UserAvatarImage userID={userHeader.userID} />
+      <UserAvatarImage userHeader={userHeader} />
     </View>
   );
 

@@ -40,7 +40,7 @@ export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListI
   return (
     <FlatListItemContent>
       <MessageAvatarContainerView onPress={handleAuthorAvatarPress}>
-        <UserAvatarImage userID={postData.author.userID} small={true} />
+        <UserAvatarImage userHeader={postData.author} small={true} />
       </MessageAvatarContainerView>
       <MessageViewContainer>
         <ForumPostMessageView postData={postData} showAuthor={true} enableShowInThread={enableShowInThread} />

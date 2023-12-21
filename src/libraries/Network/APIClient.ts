@@ -37,6 +37,7 @@ export async function configureAxios() {
     config.timeout = 5000;
     config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';
     // Return
+    // This logs even when the response is returned from cache.
     console.info(
       `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
       config.params,

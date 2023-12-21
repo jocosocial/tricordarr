@@ -5,18 +5,25 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {UserHeader} from '../../libraries/Structs/ControllerStructs';
 
 type UserAvatarImageProps = {
-  userID?: string;
+  userHeader?: UserHeader;
   small?: boolean;
   icon?: string;
 };
 
-export const UserAvatarImage = ({userID, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
+export const UserAvatarImage = ({userHeader, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const {data} = useImageQuery(`/image/user/thumb/${userID}`, !isDisabled);
+
+  const imagePath = userHeader
+    ? userHeader.userImage
+      ? `/image/thumb/${userHeader.userImage}`
+      : `/image/user/identicon/${userHeader.userID}`
+    : '';
+  const {data} = useImageQuery(imagePath, !isDisabled && !!imagePath);
 
   if (!data || isDisabled) {
     return <Avatar.Icon size={size} icon={icon} />;
