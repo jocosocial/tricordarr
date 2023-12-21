@@ -56,7 +56,7 @@ export const ForumPostSearchBar = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     setQueryEnable(false);
-  }
+  };
 
   const onClear = () => {
     dispatchForumPosts({
