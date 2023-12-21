@@ -66,8 +66,8 @@ export function useTokenAuthPaginationQuery<
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
           const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
             params: {
-              ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
-              ...(pageParam.start ? {start: pageParam.start} : undefined),
+              ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+              ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
               ...queryParams,
             },
           });
