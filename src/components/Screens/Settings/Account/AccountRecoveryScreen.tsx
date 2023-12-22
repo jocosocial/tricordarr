@@ -1,14 +1,14 @@
-import {AppView} from '../Views/AppView';
-import {ScrollingContentView} from '../Views/Content/ScrollingContentView';
+import {AppView} from '../../../Views/AppView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import React, {useState} from 'react';
-import {UserRecoveryForm} from '../Forms/UserRecoveryForm';
-import {UserRegistrationFormValues} from '../../libraries/Types/FormValues';
+import {UserRecoveryForm} from '../../../Forms/UserRecoveryForm';
+import {UserRegistrationFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {PaddedContentView} from '../Views/Content/PaddedContentView';
-import {useUserRecoveryMutation} from '../Queries/Auth/RecoveryQueries';
-import {TokenStringData} from '../../libraries/Structs/ControllerStructs';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {useUserRecoveryMutation} from '../../../Queries/Auth/RecoveryQueries';
+import {TokenStringData} from '../../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useNavigation} from '@react-navigation/native';
 
 export const AccountRecoveryScreen = () => {

@@ -7,7 +7,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {OobeStackNavigator} from './OobeStackNavigator';
-import {AccountRecoveryScreen} from '../../Screens/AccountRecoveryScreen';
+import {AccountRecoveryScreen} from '../../Screens/Settings/Account/AccountRecoveryScreen';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
