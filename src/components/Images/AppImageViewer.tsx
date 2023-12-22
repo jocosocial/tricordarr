@@ -95,8 +95,8 @@ export const AppImageViewer = ({
   const onRequestClose = () => setIsVisible(false);
 
   useEffect(() => {
-    setCurrentImageIndex(0);
-  }, [viewerImages]);
+    setCurrentImageIndex(initialIndex);
+  }, [viewerImages, initialIndex]);
 
   if (!viewerImages) {
     return <></>;
@@ -111,7 +111,6 @@ export const AppImageViewer = ({
       visible={isVisible}
       onRequestClose={onRequestClose}
       HeaderComponent={viewerHeader}
-      // animationType={'none'}
       FooterComponent={viewerFooter}
     />
   );
