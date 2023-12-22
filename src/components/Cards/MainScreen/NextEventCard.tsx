@@ -2,7 +2,6 @@ import React from 'react';
 import {View} from 'react-native';
 import {EventCard} from '../Schedule/EventCard';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {BottomTabComponents, EventStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 

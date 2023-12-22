@@ -22,6 +22,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {MainThemeView} from '../../Views/MainThemeView';
+import {MainNextEventView} from '../../Views/MainNextEventView';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -29,7 +30,6 @@ export const MainScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {refetch: refetchThemes, isFetching: isDailyThemeFetching} = useDailyThemeQuery({enabled: false});
   const {refetch: refetchAnnouncements, isFetching: isAnnouncementsFetching} = useAnnouncementsQuery({enabled: false});
-  const {userNotificationData} = useUserNotificationData();
   const {refetch: refetchUserNotificationData, isFetching: isUserNotificationDataFetching} =
     useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery({enabled: false});
@@ -73,11 +73,7 @@ export const MainScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <MainThemeView />
         <MainAnnouncementView />
-        {userNotificationData?.nextFollowedEventID && (
-          <PaddedContentView>
-            <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
-          </PaddedContentView>
-        )}
+        <MainNextEventView />
         {hasModerator && (
           <PaddedContentView>
             <ModeratorCard />
