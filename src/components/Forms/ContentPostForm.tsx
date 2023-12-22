@@ -8,11 +8,11 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {IconButton, Text} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
-import {ContentInsertMenuView} from '../Views/ContentInsertMenuView';
+import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
-import {ContentInsertPhotosView} from '../Views/ContentInsertPhotosView';
-import {PostLengthView} from '../Views/PostLengthView';
+import {ContentInsertPhotosView} from '../Views/Content/ContentInsertPhotosView';
+import {ContentPostLengthView} from '../Views/Content/ContentPostLengthView';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -138,7 +138,7 @@ export const ContentPostForm = ({
               withPrivilegeColors={true}
             />
           </View>
-          {dirty && <PostLengthView content={values.text} maxChars={maxLength} />}
+          {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
         </View>
       )}
     </Formik>

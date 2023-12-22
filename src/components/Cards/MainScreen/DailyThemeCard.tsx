@@ -1,8 +1,6 @@
 import {Card, Text} from 'react-native-paper';
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {APIImage} from '../../Images/APIImage';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
@@ -12,69 +10,41 @@ import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../
  * A card to display the daily theme object as returned from the API. If no object then no theme.
  * The site UI invents some themes for days that don't have them.
  */
-export const DailyThemeCard = () => {
-  const {data: dailyThemeData} = useDailyThemeQuery();
-  const {cruiseDayIndex} = useCruise();
-  const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
+export const DailyThemeCard = (props: {dailyTheme: DailyThemeData}) => {
   const {commonStyles} = useStyles();
   const rootNavigation = useRootStack();
 
-  // Pretty sure this isnt needed since the daily theme data doesnt change by day.
-  // useEffect(() => {
-  //   refetch();
-  // }, [cruiseDayIndex, refetch]);
-
-  useEffect(() => {
-    if (dailyThemeData) {
-      let noMatch = true;
-      dailyThemeData.every(dt => {
-        if (dt.cruiseDay === cruiseDayIndex) {
-          setDailyTheme(dt);
-          noMatch = false;
-          return false;
-        }
-        return true;
-      });
-      if (noMatch) {
-        setDailyTheme(undefined);
-      }
-    }
-  }, [cruiseDayIndex, dailyThemeData]);
-
-  const onPress = useCallback(() => {
-    if (dailyTheme) {
-      rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-        screen: BottomTabComponents.homeTab,
+  const onPress = () => {
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.dailyThemeScreen,
         params: {
-          screen: MainStackComponents.dailyThemeScreen,
-          params: {
-            dailyTheme: dailyTheme,
-          },
+          dailyTheme: props.dailyTheme,
         },
-      });
-    }
-  }, [dailyTheme, rootNavigation]);
-
-  if (!dailyTheme) {
-    return <></>;
-  }
+      },
+    });
+  };
 
   return (
-    <Card style={[commonStyles.marginBottom, commonStyles.twitarrNeutral]} onPress={onPress}>
+    <Card style={commonStyles.twitarrNeutral} onPress={onPress}>
       <Card.Title
         title={"Today's Theme:"}
-        subtitle={dailyTheme.title}
+        subtitle={props.dailyTheme.title}
         titleStyle={[commonStyles.onTwitarrButton, commonStyles.bold]}
         subtitleVariant={'bodyLarge'}
         subtitleStyle={[commonStyles.onTwitarrButton]}
       />
       <Card.Content style={[commonStyles.marginBottomSmall]}>
         <Text numberOfLines={3} style={[commonStyles.onTwitarrButton]}>
-          {dailyTheme.info}
+          {props.dailyTheme.info}
         </Text>
       </Card.Content>
-      {dailyTheme.image && (
-        <APIImage fullPath={`/image/full/${dailyTheme.image}`} thumbPath={`/image/thumb/${dailyTheme.image}`} />
+      {props.dailyTheme.image && (
+        <APIImage
+          fullPath={`/image/full/${props.dailyTheme.image}`}
+          thumbPath={`/image/thumb/${props.dailyTheme.image}`}
+        />
       )}
     </Card>
   );

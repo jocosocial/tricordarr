@@ -33,7 +33,7 @@ export const HeaderCard = () => {
   }
 
   return (
-    <Card style={[commonStyles.marginBottom]}>
+    <Card>
       <MainImageCardCover />
       <Card.Title
         titleVariant={'bodyLarge'}

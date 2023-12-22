@@ -21,6 +21,7 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {MainThemeView} from '../../Views/MainThemeView';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -69,12 +70,14 @@ export const MainScreen = ({navigation}: Props) => {
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <HeaderCard />
-          <DailyThemeCard />
-          <MainAnnouncementView />
-          {userNotificationData?.nextFollowedEventID && (
-            <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
-          )}
         </PaddedContentView>
+        <MainThemeView />
+        <MainAnnouncementView />
+        {userNotificationData?.nextFollowedEventID && (
+          <PaddedContentView>
+            <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
+          </PaddedContentView>
+        )}
         {hasModerator && (
           <PaddedContentView>
             <ModeratorCard />

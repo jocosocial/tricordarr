@@ -1,12 +1,12 @@
-import {ListSection} from '../Lists/ListSection';
+import {ListSection} from '../../Lists/ListSection';
 import {List} from 'react-native-paper';
 import {View} from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useFormikContext} from 'formik';
-import {PostContentData} from '../../libraries/Structs/ControllerStructs';
+import {PostContentData} from '../../../libraries/Structs/ControllerStructs';
 
 interface ContentInsertMenuViewProps {
   visible: boolean;

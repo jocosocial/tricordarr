@@ -4,6 +4,7 @@ import {AppConfig} from '../../../libraries/AppConfig';
 interface ConfigContextType {
   appConfig: AppConfig;
   updateAppConfig: (c: AppConfig) => void;
+  oobeCompleted: boolean;
 }
 
 export const ConfigContext = createContext(<ConfigContextType>{});

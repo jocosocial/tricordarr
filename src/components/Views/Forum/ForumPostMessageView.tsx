@@ -1,23 +1,23 @@
 import {Text} from 'react-native-paper';
 import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '../Text/RelativeTimeTag';
-import {PostData, UserHeader} from '../../libraries/Structs/ControllerStructs';
-import {ContentText} from '../Text/ContentText';
-import {ForumPostActionsMenu} from '../Menus/Forum/ForumPostActionsMenu';
-import {AppIcon} from '../Icons/AppIcon';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useAppTheme} from '../../styles/Theme';
-import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
+import {PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ContentText} from '../../Text/ContentText';
+import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu';
+import {AppIcon} from '../../Icons/AppIcon';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useAppTheme} from '../../../styles/Theme';
+import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {
   BottomTabComponents,
   ForumStackComponents,
   MainStackComponents,
   RootStackComponents,
-} from '../../libraries/Enums/Navigation';
-import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
-import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
+} from '../../../libraries/Enums/Navigation';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 
 interface ForumPostMessageViewProps {
   postData: PostData;

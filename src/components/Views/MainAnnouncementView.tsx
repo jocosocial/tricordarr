@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {useAnnouncementsQuery} from '../Queries/Alert/AnnouncementQueries';
 import {AnnouncementData} from '../../libraries/Structs/ControllerStructs';
 import {AnnouncementCard} from '../Cards/MainScreen/AnnouncementCard';
+import {PaddedContentView} from './Content/PaddedContentView';
 
 /**
  * A card to display an announcement from the API.
@@ -20,7 +21,9 @@ export const MainAnnouncementView = () => {
   return (
     <View>
       {announcements.map(a => (
-        <AnnouncementCard key={a.id} announcement={a} />
+        <PaddedContentView key={a.id}>
+          <AnnouncementCard announcement={a} />
+        </PaddedContentView>
       ))}
     </View>
   );

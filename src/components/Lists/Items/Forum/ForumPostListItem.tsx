@@ -7,7 +7,7 @@ import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {ContentPostImage} from '../../../Images/ContentPostImage';
-import {ForumPostMessageView} from '../../../Views/ForumPostMessageView';
+import {ForumPostMessageView} from '../../../Views/Forum/ForumPostMessageView';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {

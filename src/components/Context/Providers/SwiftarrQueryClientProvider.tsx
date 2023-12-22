@@ -7,7 +7,7 @@ import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
-  const {appConfig} = useConfig();
+  const {appConfig, oobeCompleted} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -58,7 +58,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     return !noHydrate.includes(query.queryKey[0] as string);
   };
 
-  const disruptionDetected = errorCount >= 1;
+  // Eeeek. I don't love this. But LoadingView uses AppView which is where we do the Disruption banner.
+  const disruptionDetected = oobeCompleted && errorCount >= appConfig.apiClientConfig.disruptionThreshold;
 
   useEffect(() => {
     console.log('[SwiftarrQueryClientProvider.tsx] Configuring query client');
