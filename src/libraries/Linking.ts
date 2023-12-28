@@ -68,6 +68,7 @@ const deepLinksConf = {
             ForumCategoriesScreen: 'forums',
             ForumCategoryScreen: 'forums/:categoryID',
             ForumThreadScreen: 'forum/:forumID',
+            ForumThreadPostScreen: 'forum/containingpost/:postID',
           },
         },
       },

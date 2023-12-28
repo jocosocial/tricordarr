@@ -1,5 +1,5 @@
 import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStructs';
-import {announcementsChannel, lfgChannel, seamailChannel, serviceChannel} from './Channels';
+import {announcementsChannel, forumChannel, lfgChannel, seamailChannel, serviceChannel} from './Channels';
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
 import {getAppConfig} from '../AppConfig';
@@ -37,6 +37,12 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       url = '/home';
       pressActionID = PressAction.home;
       title = 'Announcement';
+      break;
+    case NotificationTypeData.alertwordPost:
+      channel = forumChannel;
+      url = `/forum/containingpost/${notificationData.contentID}`;
+      pressActionID = PressAction.forum;
+      title = 'Forum Alert Word';
   }
 
   generateContentNotification(
