@@ -1,5 +1,5 @@
 import {UserAvatarImage} from '../Images/UserAvatarImage';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {TouchableOpacity} from 'react-native';
@@ -30,6 +30,21 @@ export const MainAccountMenu = () => {
         initial: false,
         params: {
           screen: SettingsStackScreenComponents.accountManagement,
+        },
+      },
+    });
+  };
+
+  const handleSettings = () => {
+    closeMenu();
+    rootNavigation.push(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.mainSettingsScreen,
+        // initial false needed here to enable the stack to popToTop on bottom button press.
+        initial: false,
+        params: {
+          screen: SettingsStackScreenComponents.settings,
         },
       },
     });
@@ -76,6 +91,8 @@ export const MainAccountMenu = () => {
       ) : (
         <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} />
       )}
+      <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />
+      <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </Menu>
   );

@@ -16,3 +16,7 @@ Nightly
 * forum actions menu access to forum settings, consider alert/etc here
 * Uploading new profile image doesnt refresh profile
   * neither does trashing it
+* expand the about tricordarr
+* fill in the rest of the CoC
+* Scroll up button hidden overlay full width blocking scroll.
+  * Make position better if no content post box?

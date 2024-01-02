@@ -2,7 +2,7 @@ import React from 'react';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SecretHeaderTitle} from './SecretHeaderTitle';
 import {useRootStack} from '../Stacks/RootStackNavigator';
-import {RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 
 export const OobeServerHeaderTitle = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -13,7 +13,12 @@ export const OobeServerHeaderTitle = () => {
       ...appConfig,
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
     });
-    rootNavigation.replace(RootStackComponents.rootContentScreen);
+    rootNavigation.replace(RootStackComponents.rootContentScreen, {
+      screen: BottomTabComponents.homeTab,
+      params: {
+        screen: MainStackComponents.mainScreen,
+      },
+    });
   };
 
   return <SecretHeaderTitle title={'Server URL'} onReveal={onReveal} />;

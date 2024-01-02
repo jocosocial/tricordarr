@@ -6,7 +6,6 @@ import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Naviga
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {HeaderCard} from '../../Cards/MainScreen/HeaderCard';
 import {MainAnnouncementView} from '../../Views/MainAnnouncementView';
 import {RefreshControl, View} from 'react-native';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
@@ -21,6 +20,8 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {MainThemeView} from '../../Views/MainThemeView';
 import {MainNextEventView} from '../../Views/MainNextEventView';
 import {MainAccountMenu} from '../../Menus/MainAccountMenu';
+import {MainHeaderView} from '../../Views/MainHeaderView';
+import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -63,21 +64,22 @@ export const MainScreen = ({navigation}: Props) => {
     );
   }, []);
 
+  const getTitle = useCallback(() => <TodayHeaderTitle />, []);
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: getLeftMainHeaderButtons,
       headerRight: getRightMainHeaderButtons,
+      headerTitle: getTitle,
     });
-  }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, navigation]);
+  }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, getTitle, navigation]);
 
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
-        <PaddedContentView padTop={true}>
-          <HeaderCard />
-        </PaddedContentView>
+        <MainHeaderView />
         <MainThemeView />
         <MainAnnouncementView />
         <MainNextEventView />

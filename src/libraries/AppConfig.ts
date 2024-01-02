@@ -45,6 +45,7 @@ export interface AppConfig {
   schedule: ScheduleConfig;
   portTimeZoneID: string;
   apiClientConfig: APIClientConfig;
+  enableEasterEgg: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -91,6 +92,7 @@ const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
   },
+  enableEasterEgg: false,
 };
 
 /**
