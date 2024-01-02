@@ -13,13 +13,6 @@ import axios, {AxiosResponse} from 'axios';
 import {KeywordAction, KeywordType} from '../../../libraries/Types';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 
-export const useUserProfileQuery = (options = {}) => {
-  return useTokenAuthQuery<ProfilePublicData>({
-    queryKey: ['/user/profile'],
-    ...options,
-  });
-};
-
 // The Keyword queries are a good example of the most recent pattern of designing queries and mutations.
 
 interface KeywordQueryProps {

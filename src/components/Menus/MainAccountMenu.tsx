@@ -35,6 +35,23 @@ export const MainAccountMenu = () => {
     });
   };
 
+  const handleProfile = () => {
+    closeMenu();
+    if (profilePublicData) {
+      rootNavigation.push(RootStackComponents.rootContentScreen, {
+        screen: BottomTabComponents.homeTab,
+        params: {
+          screen: MainStackComponents.userProfileScreen,
+          // initial false needed here to enable the stack to popToTop on bottom button press.
+          initial: false,
+          params: {
+            userID: profilePublicData.header.userID,
+          },
+        },
+      });
+    }
+  };
+
   const handleSettings = () => {
     closeMenu();
     rootNavigation.push(RootStackComponents.rootContentScreen, {
@@ -87,10 +104,14 @@ export const MainAccountMenu = () => {
       }
       onDismiss={closeMenu}>
       {isLoggedIn ? (
-        <Menu.Item leadingIcon={AppIcons.user} title={'Manage Account'} onPress={handleManage} />
+        <>
+          <Menu.Item leadingIcon={AppIcons.profile} title={'Your Profile'} onPress={handleProfile} />
+          <Menu.Item leadingIcon={AppIcons.user} title={'Manage Account'} onPress={handleManage} />
+        </>
       ) : (
         <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} />
       )}
+      <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
