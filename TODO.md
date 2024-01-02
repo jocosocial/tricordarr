@@ -8,7 +8,6 @@ Work Queue
 
 Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
-* unread alertword count
 * add settings to help
 * unfocused seamail does not trigger notification within app
   * push comes in via websocket just fine
