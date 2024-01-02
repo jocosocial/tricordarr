@@ -290,7 +290,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         // appears. I suspect it's related to the list not having rendered the next batch yet.
         onEndReachedThreshold={4}
       />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} displayPosition={'raised'} />}
       <ContentPostForm onSubmit={onSubmit} />
     </AppView>
   );

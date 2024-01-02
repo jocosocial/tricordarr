@@ -215,11 +215,11 @@ export const ForumPostFlatList = ({
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
       />
-      {showButton && (
+      {showButton && !hasNextPage && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          displayPosition={invertList ? 'bottom' : 'top'}
+          displayPosition={forumListData?.isLocked ? 'bottom' : 'raised'}
         />
       )}
     </>

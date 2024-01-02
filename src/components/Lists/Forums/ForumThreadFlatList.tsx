@@ -103,7 +103,7 @@ export const ForumThreadFlatList = ({
         onEndReachedThreshold={10}
       />
       {showButton && (
-        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'top'} />
+        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
       )}
     </>
   );

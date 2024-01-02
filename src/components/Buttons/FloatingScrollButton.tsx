@@ -8,7 +8,7 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
-  displayPosition?: 'top' | 'bottom';
+  displayPosition?: 'raised' | 'bottom';
 }
 
 /**
@@ -19,18 +19,18 @@ export const FloatingScrollButton = ({
   icon = AppIcons.scrollDown,
   displayPosition = 'bottom',
 }: FloatingScrollButtonProps) => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const style = {
     ...commonStyles.flexRow,
     ...commonStyles.justifyCenter,
     ...commonStyles.fullWidth,
     ...commonStyles.backgroundTransparent,
     ...commonStyles.positionAbsolute,
-    ...(displayPosition === 'bottom' ? {bottom: 64} : undefined), // this may not behave as expected
-    ...(displayPosition === 'top' ? {bottom: 64} : undefined), // this may not behave as expected
+    ...(displayPosition === 'bottom' ? {bottom: styleDefaults.marginSize} : undefined),
+    ...(displayPosition === 'raised' ? {bottom: 64} : undefined),
   };
   return (
-    <View style={style}>
+    <View style={style} pointerEvents={'box-none'}>
       <IconButton icon={icon} size={30} onPress={onPress} mode={'contained-tonal'} />
     </View>
   );

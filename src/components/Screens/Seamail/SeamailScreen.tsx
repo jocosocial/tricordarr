@@ -295,7 +295,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // End is Start, Start is End.
         onEndReached={handleLoadPrevious}
       />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} displayPosition={'raised'} />}
       <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );
