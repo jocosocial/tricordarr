@@ -11,4 +11,8 @@ Nightly
 * contenttext some kind of indicator for alert words. onpress take you to settings
   * get them from usernotificationdata
   * display notification badge counting unread alert words
-* forum mention notifications
+* add settings to help
+* unfocused seamail does not trigger notification within app
+  * push comes in via websocket just fine
+* seamaillistscreen not receiving notification socket messages
+* notificationsocket was not opened on oobe finish first launch

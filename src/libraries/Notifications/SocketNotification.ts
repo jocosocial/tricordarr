@@ -43,6 +43,13 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
       title = 'Forum Alert Word';
+      break;
+    case NotificationTypeData.forumMention:
+      channel = forumChannel;
+      url = `/forum/containingpost/${notificationData.contentID}`;
+      pressActionID = PressAction.forum;
+      title = 'Forum Mention';
+      break;
   }
 
   generateContentNotification(
