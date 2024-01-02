@@ -8,12 +8,10 @@ Work Queue
 Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
 * add settings to help
-* unfocused seamail does not trigger notification within app
-  * push comes in via websocket just fine
-* seamaillistscreen not receiving notification socket messages
-* notificationsocket was not opened on oobe finish first launch
 * fill in the rest of the CoC
 * Scroll up button hidden overlay full width blocking scroll.
   * Make position better if no content post box?
 * fgs healthcheck slider
   * will prolly have to restart the fgs for this to take effect. 10s-1m interval
+* Back to today from the login/logout in the account dropdown causes weird back button behavior
+* 10m stale time not good with things that get marked as read

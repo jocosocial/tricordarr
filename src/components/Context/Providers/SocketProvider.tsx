@@ -85,7 +85,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       openNotificationSocket();
     }
     console.log('[SocketProvider.tsx] Finished openNotificationSocket useEffect.');
-  }, [openNotificationSocket, isLoggedIn]);
+  }, [openNotificationSocket, isLoggedIn, oobeCompleted]);
 
   useEffect(() => {
     console.log('[SocketProvider.tsx] Triggering socket close useEffect.');

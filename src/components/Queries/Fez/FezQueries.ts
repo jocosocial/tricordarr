@@ -45,7 +45,7 @@ interface SeamailListQueryOptions {
   options?: {};
 }
 
-export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailListQueryOptions) => {
+export const useSeamailListQuery = ({forUser, search, options = {staleTime: 0}}: SeamailListQueryOptions) => {
   const queryParams = {
     ...(search && {search: search}),
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
