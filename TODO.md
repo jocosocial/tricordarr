@@ -14,4 +14,3 @@ Nightly
 * fgs healthcheck slider
   * will prolly have to restart the fgs for this to take effect. 10s-1m interval
 * Back to today from the login/logout in the account dropdown causes weird back button behavior
-* 10m stale time not good with things that get marked as read
