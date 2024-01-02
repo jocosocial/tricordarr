@@ -12,7 +12,6 @@ Nightly
   * push comes in via websocket just fine
 * seamaillistscreen not receiving notification socket messages
 * notificationsocket was not opened on oobe finish first launch
-* forum actions menu access to forum settings, consider alert/etc here
 * expand the about tricordarr
 * fill in the rest of the CoC
 * Scroll up button hidden overlay full width blocking scroll.

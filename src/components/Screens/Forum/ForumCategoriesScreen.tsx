@@ -21,6 +21,9 @@ import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -42,6 +45,16 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     refetch().then(() => refetchUserNotificationData().then(() => setRefreshing(false)));
   }, [refetch, refetchUserNotificationData]);
 
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ForumCategoriesScreenActionsMenu />
+        </HeaderButtons>
+      </View>
+    )
+  }, [])
+
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
     if (isFocused) {
@@ -56,6 +69,12 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       setForumData(undefined);
     }
   }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
