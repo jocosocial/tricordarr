@@ -15,3 +15,5 @@ Nightly
 * fill in the rest of the CoC
 * Scroll up button hidden overlay full width blocking scroll.
   * Make position better if no content post box?
+* fgs healthcheck slider
+  * will prolly have to restart the fgs for this to take effect. 10s-1m interval
