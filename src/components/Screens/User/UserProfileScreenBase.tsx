@@ -5,7 +5,6 @@ import {
   MainStackComponents,
   RootStackComponents,
   SeamailStackScreenComponents,
-  SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
@@ -79,7 +78,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
       return <></>;
     }
     if (data && data?.header.userID === profilePublicData?.header.userID) {
-      // I don't love the go back from account settings behavior.
       return (
         <View>
           <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
@@ -94,22 +92,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
                     params: {
                       user: data,
                     },
-                  },
-                })
-              }
-            />
-            <Item
-              title={'Settings'}
-              iconName={AppIcons.settings}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.homeTab,
-                  params: {
-                    screen: MainStackComponents.mainSettingsScreen,
-                    params: {
-                      screen: SettingsStackScreenComponents.accountManagement,
-                    },
-                    initial: false,
                   },
                 })
               }

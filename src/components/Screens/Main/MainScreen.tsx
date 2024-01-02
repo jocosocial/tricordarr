@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -6,14 +6,11 @@ import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Naviga
 import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {DailyThemeCard} from '../../Cards/MainScreen/DailyThemeCard';
 import {HeaderCard} from '../../Cards/MainScreen/HeaderCard';
 import {MainAnnouncementView} from '../../Views/MainAnnouncementView';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {NextEventCard} from '../../Cards/MainScreen/NextEventCard';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
@@ -23,6 +20,7 @@ import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {MainThemeView} from '../../Views/MainThemeView';
 import {MainNextEventView} from '../../Views/MainNextEventView';
+import {MainAccountMenu} from '../../Menus/MainAccountMenu';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -57,11 +55,20 @@ export const MainScreen = ({navigation}: Props) => {
     }
   };
 
+  const getRightMainHeaderButtons = useCallback(() => {
+    return (
+      <View>
+        <MainAccountMenu />
+      </View>
+    );
+  }, []);
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: getLeftMainHeaderButtons,
+      headerRight: getRightMainHeaderButtons,
     });
-  }, [getLeftMainHeaderButtons, navigation]);
+  }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, navigation]);
 
   return (
     <AppView>

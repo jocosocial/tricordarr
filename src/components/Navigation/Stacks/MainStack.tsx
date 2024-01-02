@@ -18,6 +18,7 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {DailyThemeScreen} from '../../Screens/Main/DailyThemeScreen';
 import {UsernameProfileScreen} from '../../Screens/User/UsernameProfileScreen';
+import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -48,6 +49,7 @@ export type MainStackParamList = {
   DailyThemeScreen: {
     dailyTheme: DailyThemeData;
   };
+  MainHelpScreen: undefined;
 };
 
 export const MainStack = () => {
@@ -109,6 +111,7 @@ export const MainStack = () => {
         component={DailyThemeScreen}
         options={{title: 'Daily Theme'}}
       />
+      <Stack.Screen name={MainStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
     </Stack.Navigator>
   );
 };

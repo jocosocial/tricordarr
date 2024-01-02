@@ -14,3 +14,5 @@ Nightly
 * seamaillistscreen not receiving notification socket messages
 * notificationsocket was not opened on oobe finish first launch
 * forum actions menu access to forum settings, consider alert/etc here
+* Uploading new profile image doesnt refresh profile
+  * neither does trashing it

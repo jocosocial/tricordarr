@@ -43,7 +43,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Section title={'User'} showDivider={false}>
                 <PaperDrawer.Item
                   label={'Your Profile'}
-                  icon={AppIcons.user}
+                  icon={AppIcons.profile}
                   onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
                 />
                 <PaperDrawer.Item
