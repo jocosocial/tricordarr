@@ -8,11 +8,10 @@ Work Queue
 
 Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
-* contenttext some kind of indicator for alert words. onpress take you to settings
-  * get them from usernotificationdata
-  * display notification badge counting unread alert words
+* unread alertword count
 * add settings to help
 * unfocused seamail does not trigger notification within app
   * push comes in via websocket just fine
 * seamaillistscreen not receiving notification socket messages
 * notificationsocket was not opened on oobe finish first launch
+* forum actions menu access to forum settings, consider alert/etc here
