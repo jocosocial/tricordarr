@@ -12,7 +12,6 @@ Nightly
   * push comes in via websocket just fine
 * seamaillistscreen not receiving notification socket messages
 * notificationsocket was not opened on oobe finish first launch
-* expand the about tricordarr
 * fill in the rest of the CoC
 * Scroll up button hidden overlay full width blocking scroll.
   * Make position better if no content post box?
