@@ -10,18 +10,11 @@ import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {BoldText} from '../../Text/BoldText';
 import {ConductView} from '../../Views/Static/ConductView';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen, NavigatorIDs.oobeStack>;
-
-export const OobeConductScreen = ({navigation}: Props) => {
+export const MainConductScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
         <ConductView />
-        <OobeButtonsView
-          leftOnPress={() => navigation.goBack()}
-          rightText={'I Agree'}
-          rightOnPress={() => navigation.push(OobeStackComponents.oobeAccountScreen)}
-        />
       </ScrollingContentView>
     </AppView>
   );

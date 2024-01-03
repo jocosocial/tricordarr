@@ -8,6 +8,7 @@ import {
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
+import {MainConductScreen} from '../components/Screens/Main/MainConductScreen';
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
@@ -38,6 +39,7 @@ const deepLinksConf = {
             UsernameProfileScreen: 'username/:username',
             UserDirectoryScreen: 'users',
             MapScreen: 'map',
+            MainConductScreen: 'codeOfConduct'
           },
         },
         SeamailTab: {

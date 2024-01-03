@@ -89,7 +89,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Code of Conduct'}
                 icon={AppIcons.codeofconduct}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/codeOfConduct`)}
+                onPress={() => handleDrawerNav('tricordarr://codeOfConduct')}
               />
               <PaperDrawer.Item
                 label={'About Twitarr (Service)'}

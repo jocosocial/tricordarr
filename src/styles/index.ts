@@ -196,9 +196,9 @@ export const commonStyles = StyleSheet.create({
     position: 'absolute',
   },
   navigationHeaderTitle: {
-    fontWeight: 'bold',
     fontSize: 20,
     lineHeight: undefined,
+    fontFamily: 'sans-serif-medium',
   },
   italics: {
     fontStyle: 'italic',

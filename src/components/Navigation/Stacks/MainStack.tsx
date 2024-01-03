@@ -20,6 +20,7 @@ import {DailyThemeScreen} from '../../Screens/Main/DailyThemeScreen';
 import {UsernameProfileScreen} from '../../Screens/User/UsernameProfileScreen';
 import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 import {MapScreen} from '../../Screens/Main/MapScreen';
+import {MainConductScreen} from '../../Screens/Main/MainConductScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -54,6 +55,7 @@ export type MainStackParamList = {
   MapScreen: {
     deckNumber?: number;
   };
+  MainConductScreen: undefined;
 };
 
 export const MainStack = () => {
@@ -117,6 +119,7 @@ export const MainStack = () => {
       />
       <Stack.Screen name={MainStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
       <Stack.Screen name={MainStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
+      <Stack.Screen name={MainStackComponents.conductScreen} component={MainConductScreen} options={{title: 'Code of Conduct'}} />
     </Stack.Navigator>
   );
 };
