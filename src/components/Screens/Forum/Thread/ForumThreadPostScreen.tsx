@@ -37,6 +37,7 @@ import {Button, Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -279,6 +280,7 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
       formikHelpers.setSubmitting(false);
       return;
     }
+    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
     postCreateMutation.mutate(
       {
         forumID: forumData.forumID,

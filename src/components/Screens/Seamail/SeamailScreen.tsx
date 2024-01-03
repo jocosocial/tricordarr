@@ -32,6 +32,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -143,6 +144,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {

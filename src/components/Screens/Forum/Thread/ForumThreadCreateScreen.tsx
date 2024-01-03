@@ -15,6 +15,7 @@ import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -42,6 +43,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
     // Forum doesn't take these params and keys off of the first post.
     postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
     postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
+    postFormRef.current.values.text = replaceMentionValues(postFormRef.current.values.text, ({name}) => `@${name}`)
     const forumData: ForumCreateData = {
       title: values.title,
       firstPost: postFormRef.current.values,
