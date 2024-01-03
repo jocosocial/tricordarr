@@ -10,7 +10,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const hourlyUpdatingDate = useDateTime('hour');
   // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
   let lateNightOffset = 0;
-  if (appConfig.enableLateDayFlip) {
+  if (appConfig.schedule.enableLateDayFlip) {
     lateNightOffset = 3 * 60 * 60 * 1000;
   }
   let adjustedDate = new Date(hourlyUpdatingDate.getTime() - lateNightOffset);

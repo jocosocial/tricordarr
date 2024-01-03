@@ -17,6 +17,9 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {DailyThemeScreen} from '../../Screens/Main/DailyThemeScreen';
+import {UsernameProfileScreen} from '../../Screens/User/UsernameProfileScreen';
+import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
+import {MapScreen} from '../../Screens/Main/MapScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -31,6 +34,9 @@ export type MainStackParamList = {
   UserProfileScreen: {
     userID: string;
   };
+  UsernameProfileScreen: {
+    username: string;
+  };
   UserDirectoryScreen: undefined;
   EditUserProfileScreen: {
     user: ProfilePublicData;
@@ -43,6 +49,10 @@ export type MainStackParamList = {
   };
   DailyThemeScreen: {
     dailyTheme: DailyThemeData;
+  };
+  MainHelpScreen: undefined;
+  MapScreen: {
+    deckNumber?: number;
   };
 };
 
@@ -81,6 +91,11 @@ export const MainStack = () => {
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
+        name={MainStackComponents.usernameProfileScreen}
+        component={isUsersDisabled ? DisabledView : UsernameProfileScreen}
+        options={{title: 'User Profile'}}
+      />
+      <Stack.Screen
         name={MainStackComponents.editUserProfileScreen}
         component={EditUserProfileScreen}
         options={{title: 'Edit Profile'}}
@@ -100,6 +115,8 @@ export const MainStack = () => {
         component={DailyThemeScreen}
         options={{title: 'Daily Theme'}}
       />
+      <Stack.Screen name={MainStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
+      <Stack.Screen name={MainStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
     </Stack.Navigator>
   );
 };

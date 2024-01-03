@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {CustomEmoji} from '../../libraries/Enums/Emoji';
@@ -7,11 +7,15 @@ import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
+import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
+import {useUserKeywordQuery} from '../Queries/User/UserQueries';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
   text: string;
   textVariant?: VariantProp<never>;
+  hashtagOnPress?: (tag: string) => void;
+  mentionOnPress?: (username: string) => void;
 }
 
 /**
@@ -19,35 +23,68 @@ interface ContentTextProps {
  * @TODO this may need cleaned up and refactored to be more generic with content views.
  * Right now it's just announcements.
  */
-export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) => {
+export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, mentionOnPress}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
 
-  const renderEmojiText = (line: string) => {
-    const tokens = line.split(/(:[\w-]+:)/g);
-    return tokens.map((token, tokenIndex) => {
-      if (CustomEmoji[token as keyof typeof CustomEmoji]) {
-        return <Emoji key={tokenIndex} emojiName={token as keyof typeof CustomEmoji} />;
-      }
-      return token;
-    });
-  };
+  const renderEmojiText = useCallback(
+    (
+      line: string,
+      hashtagOnPressFunction?: (tag: string) => void,
+      mentionOnPressFunction?: (username: string) => void,
+    ) => {
+      const tokens = line.split(/(:[\w-]+:)|([#@]\w+)/g);
+      return tokens.map((token, tokenIndex) => {
+        // console.log(token);
+        if (!token) {
+          return;
+        }
+        if (CustomEmoji[token as keyof typeof CustomEmoji]) {
+          return <Emoji key={tokenIndex} emojiName={token as keyof typeof CustomEmoji} />;
+        }
+        if (hashtagOnPressFunction && token.startsWith('#')) {
+          return (
+            <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => hashtagOnPressFunction(token)}>
+              {token}
+            </Text>
+          );
+        }
+        if (mentionOnPressFunction && token.startsWith('@')) {
+          return (
+            <Text key={tokenIndex} style={commonStyles.linkText} onPress={() => mentionOnPressFunction(token)}>
+              {token}
+            </Text>
+          );
+        }
+        // if (data?.keywords.includes(token)) {
+        //   return (
+        //     <Text key={tokenIndex} style={commonStyles.linkText}>{token}</Text>
+        //   );
+        // }
+        return token;
+      });
+    },
+    [commonStyles.linkText],
+  );
 
-  const renderContentText = () => {
-    const lines = text.split(/\r?\n|\r|\n/g);
-    return lines.map((line, lineIndex) => {
-      return (
-        <React.Fragment key={lineIndex}>
-          {renderEmojiText(line)}
-          {lineIndex < lines.length - 1 && '\n'}
-        </React.Fragment>
-      );
-    });
-  };
+  const renderContentText = useCallback(
+    (contentText: string) => {
+      const lines = contentText.split(/\r?\n|\r|\n/g);
+      return lines.map((line, lineIndex) => {
+        return (
+          <React.Fragment key={lineIndex}>
+            {renderEmojiText(line, hashtagOnPress, mentionOnPress)}
+            {lineIndex < lines.length - 1 && '\n'}
+          </React.Fragment>
+        );
+      });
+    },
+    [hashtagOnPress, mentionOnPress, renderEmojiText],
+  );
 
   // https://www.npmjs.com/package/@ronradtke/react-native-markdown-display
   const markdownStyle = StyleSheet.create({
     text: {
-      ...commonStyles.onTwitarrButton,
+      ...commonStyles.onBackground,
     },
     body: {
       fontSize: styleDefaults.fontSize,
@@ -63,7 +100,7 @@ export const ContentText = ({textStyle, text, textVariant}: ContentTextProps) =>
   return (
     <HyperlinkText>
       <Text variant={textVariant} style={textStyle}>
-        {renderContentText()}
+        {renderContentText(text)}
       </Text>
     </HyperlinkText>
   );

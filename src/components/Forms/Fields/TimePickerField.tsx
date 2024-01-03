@@ -38,12 +38,10 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
   const styles = StyleSheet.create({
     button: {
       ...commonStyles.roundedBorder,
-      ...commonStyles.flexRow,
+      ...commonStyles.flex,
       minHeight: 48,
-      ...commonStyles.alignItemsCenter,
     },
     text: {
-      // paddingLeft: 8,
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
@@ -52,6 +50,8 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
     content: {
       ...commonStyles.flexRow,
       ...commonStyles.flex,
+      minHeight: 48,
+      justifyContent: 'flex-start',
     },
   });
 

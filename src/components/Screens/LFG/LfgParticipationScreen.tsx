@@ -19,7 +19,6 @@ import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -51,7 +50,6 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const {refetch} = useSeamailQuery({fezID: route.params.fezID});
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
-  const {setErrorMessage} = useErrorHandler();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
   const bottomNav = useBottomTabNavigator();
@@ -80,9 +78,6 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
       {
         onSuccess: response => {
           setLfg(response.data);
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason || error);
         },
         onSettled: () => setRefreshing(false),
       },
@@ -125,14 +120,11 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           onSuccess: response => {
             setLfg(response.data);
           },
-          onError: error => {
-            setErrorMessage(error.response?.data.reason || error);
-          },
           onSettled: () => setRefreshing(false),
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, setErrorMessage, setLfg, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, setLfg, setModalContent, setModalVisible]);
 
   useEffect(() => {
     navigation.setOptions({

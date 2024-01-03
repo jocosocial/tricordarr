@@ -11,7 +11,6 @@ import {UserCreateForm} from '../../../Forms/UserCreateForm';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView';
 import {Text} from 'react-native-paper';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
 
@@ -20,7 +19,6 @@ export const RegisterScreen = () => {
   const loginMutation = useLoginQuery();
   const {signIn} = useAuth();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
-  const {setErrorMessage} = useErrorHandler();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -58,24 +56,13 @@ export const RegisterScreen = () => {
             },
           });
         },
-        onError: error => {
+        onSettled: () => {
           formikHelpers.setSubmitting(false);
           setRefreshing(false);
-          setErrorMessage(error.response?.data.reason || error);
         },
       });
     },
-    [
-      createMutation,
-      loginMutation,
-      onDismiss,
-      onPress,
-      setErrorMessage,
-      setModalContent,
-      setModalOnDismiss,
-      setModalVisible,
-      signIn,
-    ],
+    [createMutation, loginMutation, onDismiss, onPress, setModalContent, setModalOnDismiss, setModalVisible, signIn],
   );
 
   return (

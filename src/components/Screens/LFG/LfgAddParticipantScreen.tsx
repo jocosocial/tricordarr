@@ -8,7 +8,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
@@ -22,7 +21,6 @@ export type Props = NativeStackScreenProps<
 export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {lfg, setLfg} = useTwitarr();
-  const {setErrorMessage} = useErrorHandler();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -35,9 +33,6 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
         onSuccess: response => {
           setLfg(response.data);
           navigation.goBack();
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );

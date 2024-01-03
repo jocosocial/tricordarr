@@ -2,10 +2,11 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {
-  BottomTabComponents, MainStackComponents,
+  BottomTabComponents,
+  MainStackComponents,
   NavigatorIDs,
   RootStackComponents,
-  SeamailStackScreenComponents
+  SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -29,7 +30,6 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
@@ -47,20 +47,13 @@ const helpContent = [
 ];
 
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez, dispatchFezList} = useTwitarr();
   const {setModalContent, setModalVisible} = useModal();
   const {fezSocket} = useSocket();
-  const {refetch} = useSeamailQuery({fezID: route.params.fezID});
+  const {refetch, isRefetching} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
-  const {setErrorMessage} = useErrorHandler();
   const rootNavigation = useRootStack();
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
-  };
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -76,9 +69,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
             fez: response.data,
           });
           setFez(response.data);
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason);
         },
       },
     );
@@ -116,7 +106,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <TouchableOpacity onLongPress={() => Clipboard.setString(fez?.title)}>
             <TitleTag>Title</TitleTag>

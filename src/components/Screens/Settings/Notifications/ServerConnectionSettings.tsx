@@ -28,6 +28,7 @@ import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
 import {SettingSwitch} from '../../../Switches/SettingSwitch';
 import {Formik} from 'formik';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
+import {SliderField} from '../../../Forms/Fields/SliderField';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -45,6 +46,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   const [rawTime, setRawTime] = useState(false);
   const toggleRawTime = () => setRawTime(!rawTime);
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
+  const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -59,7 +61,6 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     });
   }, []);
 
-  // @TODO consider adding a listener to respond to socket onOpen events.
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchSocketState().finally(() => setRefreshing(false));
@@ -83,11 +84,33 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     setEnable(newValue);
   };
 
+  const handleHealthChange = (seconds: number) => {
+    const newValue = 1000 * seconds;
+    if (newValue !== appConfig.fgsWorkerHealthTimer) {
+      updateAppConfig({
+        ...appConfig,
+        fgsWorkerHealthTimer: newValue,
+      });
+      setFgsHealthTime(seconds);
+      stopForegroundServiceWorker().then(() => startForegroundServiceWorker());
+    }
+  }
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <PaddedContentView padTop={true}>
+          <Text style={commonStyles.marginBottomSmall}>
+            The background worker (which Android calls a Foreground Service) is necessary to enable push notifications
+            in an off-grid environment.
+          </Text>
+          <Text>
+            Android Law(tm) currently requires the app to display a notification that this worker has started. You can
+            safely dismiss the notification and the worker will continue to run.
+          </Text>
+        </PaddedContentView>
         <Divider bold={true} />
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
@@ -97,10 +120,19 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
                 style={commonStyles.paddingHorizontal}
-                helperText={
-                  'The background worker (which Android calls a Foreground Service) is necessary to enable push notifications in an off-grid environment.'
-                }
+                helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
+              />
+              <SliderField
+                name={'fgsWorkerHealthTimer'}
+                label={'Healthcheck Interval'}
+                value={fgsHealthTime}
+                minimumValue={10}
+                maximumValue={60}
+                step={10}
+                helperText={'Interval at which the app checks that the socket is open. Don\'t change this unless instructed to.'}
+                style={commonStyles.paddingHorizontal}
+                onValueChange={handleHealthChange}
               />
             </View>
           </Formik>

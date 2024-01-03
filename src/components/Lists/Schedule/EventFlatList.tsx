@@ -3,15 +3,15 @@ import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react'
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import useDateTime, {
+import {
   calcCruiseDayTime,
   getDayMarker,
   getTimeMarker,
   getTimeZoneOffset,
+  useRefreshingDate,
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
-import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
 import {BottomTabComponents, EventStackComponents, LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
@@ -19,12 +19,12 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
+import {EventCardListItem} from '../Items/Event/EventCardListItem';
 
-interface SeamailFlatListProps {
+interface EventFlatListProps {
   scheduleItems: (EventData | FezData)[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   listRef: React.RefObject<FlatList<EventData | FezData>>;
-  scrollNowIndex: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
@@ -70,11 +70,12 @@ export const EventFlatList = ({
   listHeader,
   listFooter,
   separator = 'time',
-}: SeamailFlatListProps) => {
+}: EventFlatListProps) => {
   const {commonStyles} = useStyles();
   const navigation = useEventStackNavigation();
   const {startDate, endDate} = useCruise();
-  const minutelyUpdatingDate = useDateTime('minute');
+  // const minutelyUpdatingDate = useDateTime('minute');
+  const minutelyUpdatingDate = useRefreshingDate();
   const {appConfig} = useConfig();
   const bottomNavigation = useBottomTabNavigator();
 
@@ -99,7 +100,7 @@ export const EventFlatList = ({
             />
           )}
           {'eventID' in item && (
-            <EventCard
+            <EventCardListItem
               eventData={item}
               onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: item.eventID})}
               marker={marker}

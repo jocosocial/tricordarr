@@ -12,6 +12,7 @@ import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {View} from 'react-native';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -24,6 +25,7 @@ export const ForumPostEditScreen = ({route, navigation}: Props) => {
   const {dispatchForumPosts} = useTwitarr();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
+    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
     postUpdateMutation.mutate(
       {
         postID: route.params.postData.postID.toString(),

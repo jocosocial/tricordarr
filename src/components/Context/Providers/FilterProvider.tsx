@@ -10,7 +10,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [eventFavoriteFilter, setEventFavoriteFilter] = useState(false);
   const [lfgCruiseDayFilter, setLfgCruiseDayFilter] = useState<number>();
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
-  const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.hidePastLfgs);
+  const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
   const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
 

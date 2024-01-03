@@ -2,6 +2,7 @@ import {Menu} from 'react-native-paper';
 import React from 'react';
 import {TextField, TextFieldProps} from './TextField';
 import {useField, useFormikContext} from 'formik';
+import {useModal} from '../../Context/Contexts/ModalContext';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -27,6 +28,7 @@ export const SuggestedTextField = ({
   const closeMenu = () => setVisible(false);
   const {setFieldValue} = useFormikContext();
   const [field, meta, helpers] = useField<string>(name);
+  const {modalVisible} = useModal();
 
   const handleSelect = (newValue: string) => {
     setFieldValue(name, newValue);
@@ -34,7 +36,7 @@ export const SuggestedTextField = ({
   };
 
   const handleOpen = () => {
-    if (field.value) {
+    if (field.value || modalVisible) {
       return;
     }
     openMenu();

@@ -7,12 +7,12 @@ import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
-import {useUserProfileQuery} from '../Queries/User/UserQueries';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import {APIImage} from '../Images/APIImage';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {useUserProfileQuery} from '../Queries/Users/UserProfileQueries';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -24,7 +24,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
   const {setErrorMessage} = useErrorHandler();
-  const userProfileQuery = useUserProfileQuery();
+  const userProfileQuery = useUserProfileQuery(user.header.userID);
   const {profilePublicData} = useUserData();
   const {getIsDisabled} = useFeature();
 
@@ -117,7 +117,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
         <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
           <IconButton icon={AppIcons.newImage} onPress={pickImage} />
           <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />
-          {profilePublicData?.header.userImage && <IconButton icon={AppIcons.delete} onPress={clearImage} />}
+          <IconButton icon={AppIcons.delete} onPress={clearImage} disabled={!profilePublicData?.header.userImage} />
         </View>
       )}
     </View>

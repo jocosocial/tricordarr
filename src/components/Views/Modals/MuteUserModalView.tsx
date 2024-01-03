@@ -1,7 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
@@ -27,7 +26,6 @@ const MuteUserModalContent = () => {
 
 export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
   const muteMutation = useUserMuteMutation();
-  const {setErrorMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const {mutes, setMutes} = useUserRelations();
@@ -42,9 +40,6 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
         onSuccess: () => {
           setMutes(mutes.concat([user]));
           setModalVisible(false);
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason);
         },
       },
     );

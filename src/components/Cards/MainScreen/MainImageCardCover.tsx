@@ -1,5 +1,5 @@
 import {Card} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 // @ts-ignore
 import DayImage from '../../../../assets/mainview_day.jpg';
 // @ts-ignore
@@ -23,7 +23,6 @@ export const MainImageCardCover = () => {
   const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
   const {setErrorMessage} = useErrorHandler();
-  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   // Default to local, but override with the server offset.
@@ -54,34 +53,32 @@ export const MainImageCardCover = () => {
     viewerIndex = 2;
   }
 
-  useEffect(() => {
-    setViewerImages([
-      {
-        dataURI: Image.resolveAssetSource(DayImage).uri,
-        mimeType: 'image/jpeg',
-        fileName: 'TwitarrDayImage.jpg',
-        base64: base64_encode(DayImage),
-      },
-      {
-        dataURI: Image.resolveAssetSource(HappyHourImage).uri,
-        mimeType: 'image/jpeg',
-        fileName: 'TwitarrHappyHourImage.jpg',
-        base64: base64_encode(HappyHourImage),
-      },
-      {
-        dataURI: Image.resolveAssetSource(SunsetImage).uri,
-        mimeType: 'image/jpeg',
-        fileName: 'TwitarrSunsetImage.jpg',
-        base64: base64_encode(SunsetImage),
-      },
-      {
-        dataURI: Image.resolveAssetSource(NightImage).uri,
-        mimeType: 'image/jpeg',
-        fileName: 'TwitarrNightImage.jpg',
-        base64: base64_encode(NightImage),
-      },
-    ]);
-  }, []);
+  const viewerImages: ImageQueryData[] = [
+    {
+      dataURI: Image.resolveAssetSource(DayImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrDayImage.jpg',
+      base64: base64_encode(DayImage),
+    },
+    {
+      dataURI: Image.resolveAssetSource(HappyHourImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrHappyHourImage.jpg',
+      base64: base64_encode(HappyHourImage),
+    },
+    {
+      dataURI: Image.resolveAssetSource(SunsetImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrSunsetImage.jpg',
+      base64: base64_encode(SunsetImage),
+    },
+    {
+      dataURI: Image.resolveAssetSource(NightImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrNightImage.jpg',
+      base64: base64_encode(NightImage),
+    },
+  ];
 
   const debugPress = () => {
     setErrorMessage(Image.resolveAssetSource(sourceImage).uri);

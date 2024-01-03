@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoSettings';
 import {ServerConnectionSettings} from '../../Screens/Settings/Notifications/ServerConnectionSettings';
-import {SettingsScreen} from '../../Screens/Settings/Developer/SettingsScreen';
+import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/Developer/TestErrorScreen';
@@ -29,6 +29,8 @@ import {LoadingSettingScreen} from '../../Screens/Settings/Developer/LoadingSett
 import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSettingsScreen';
 import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoSettingsScreen';
+import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
+import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -57,6 +59,8 @@ export type SettingsStackParamList = {
   RegisterScreen: undefined;
   CruiseSettingsScreen: undefined;
   UserInfoSettingsScreen: undefined;
+  AboutSettingsScreen: undefined;
+  QuerySettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -75,7 +79,11 @@ export const SettingsStack = () => {
         component={SettingsScreen}
         options={{title: 'Settings'}}
       />
-      <Stack.Screen name={SettingsStackScreenComponents.networkInfoSettings} component={NetworkInfoSettings} />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.networkInfoSettings}
+        component={NetworkInfoSettings}
+        options={{title: 'Network'}}
+      />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
         component={ServerConnectionSettings}
@@ -191,6 +199,16 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.userInfoSettingsScreen}
         component={UserInfoSettingsScreen}
         options={{title: 'User Info'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.aboutSettingsScreen}
+        component={AboutSettingsScreen}
+        options={{title: 'About'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.querySettingsScreen}
+        component={QuerySettingsScreen}
+        options={{title: 'Query Settings'}}
       />
     </Stack.Navigator>
   );

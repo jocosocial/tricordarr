@@ -1,15 +1,17 @@
 import React from 'react';
 import {Divider, Text} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
-import {ColorValue, View} from 'react-native';
+import {ColorValue, StyleProp, View, ViewStyle} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface LabelDividerProps {
   label?: string;
   color?: ColorValue;
+  wrapperStyle?: StyleProp<ViewStyle>;
+  dividerColor?: ColorValue;
 }
 
-export const LabelDivider = ({label = 'New', color = undefined}: LabelDividerProps) => {
+export const LabelDivider = ({label = 'New', color = undefined, wrapperStyle, dividerColor}: LabelDividerProps) => {
   const theme = useAppTheme();
   const styles = {
     wrapper: {
@@ -20,7 +22,7 @@ export const LabelDivider = ({label = 'New', color = undefined}: LabelDividerPro
       ...commonStyles.justifyCenter,
     },
     divider: {
-      backgroundColor: color ? color : theme.colors.error,
+      backgroundColor: dividerColor ? dividerColor : theme.colors.error,
       ...commonStyles.fullWidth,
     },
     text: {
@@ -28,7 +30,7 @@ export const LabelDivider = ({label = 'New', color = undefined}: LabelDividerPro
     },
   };
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, wrapperStyle]}>
       <View style={styles.container}>
         <Divider horizontalInset={true} bold={true} style={styles.divider} />
       </View>

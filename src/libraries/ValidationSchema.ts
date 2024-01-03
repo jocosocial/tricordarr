@@ -12,6 +12,10 @@ export const RecoveryKeyValidation = Yup.string()
   .max(7)
   .required('Six-character registration code is required.');
 
+export const AccountRecoveryValidation = Yup.string()
+  .min(6)
+  .required('Old password, registration code, or recovery key required.');
+
 export const PasswordValidation = Yup.string().min(6).max(50).required('Password cannot be empty.');
 
 export const KeywordValidation = Yup.string()
@@ -42,8 +46,8 @@ export const ForumPostTextValidation = Yup.string()
     return value.split(/\r\n|\r|\n/).length <= 25;
   });
 
-// This may need a if (__DEV__) block to enable local instances.
-export const ServerURLValidation = Yup.string()
+// Validator must square with the network_security_config.xml in effect for the particular build.
+const productionUrlValidation = Yup.string()
   .required('Server URL cannot be empty.')
   .lowercase('Lower-case only.')
   .url('Must be valid URL.')
@@ -55,3 +59,11 @@ export const ServerURLValidation = Yup.string()
     },
   })
   .strict();
+
+const developmentUrlValidation = Yup.string()
+  .required('Server URL cannot be empty.')
+  .lowercase('Lower-case only.')
+  .url('Must be valid URL.')
+  .strict();
+
+export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;

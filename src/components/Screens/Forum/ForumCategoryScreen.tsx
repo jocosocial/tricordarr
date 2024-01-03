@@ -6,17 +6,19 @@ import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ForumThreadFilterMenu} from '../../Menus/Forum/ForumThreadFilterMenu';
-import {ForumThreadSortMenu} from '../../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadScreenFilterMenu} from '../../Menus/Forum/ForumThreadScreenFilterMenu';
+import {ForumThreadScreenSortMenu} from '../../Menus/Forum/ForumThreadScreenSortMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ForumCategoryRelationsView} from '../../Views/Forum/ForumCategoryRelationsView';
-import {ForumCategoryBaseView} from '../../Views/Forum/ForumCategoryBaseView';
+import {ForumThreadsRelationsView} from '../../Views/Forum/ForumThreadsRelationsView';
+import {ForumThreadsCategoryView} from '../../Views/Forum/ForumThreadsCategoryView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {AppView} from '../../Views/AppView';
+import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -45,8 +47,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
-          <ForumThreadFilterMenu />
+          <ForumThreadScreenSortMenu />
+          <ForumThreadScreenFilterMenu />
           <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelp} />
         </HeaderButtons>
       </View>
@@ -69,7 +71,18 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData, clearPrivileges]);
 
   if (forumFilter) {
-    return <ForumCategoryRelationsView forumFilter={forumFilter} category={route.params.category} />;
+    return (
+      <AppView>
+        <ForumThreadsRelationsView
+          relationType={ForumFilter.toRelation(forumFilter)}
+          categoryID={route.params.categoryID}
+        />
+      </AppView>
+    );
   }
-  return <ForumCategoryBaseView category={route.params.category} />;
+  return (
+    <AppView>
+      <ForumThreadsCategoryView categoryID={route.params.categoryID} />
+    </AppView>
+  );
 };

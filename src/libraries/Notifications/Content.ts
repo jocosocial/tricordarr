@@ -68,6 +68,7 @@ export function generateContentNotification(
         pressAction: {
           id: pressActionID,
         },
+        smallIcon: 'ic_notification',
       },
     })
     .catch(e => {

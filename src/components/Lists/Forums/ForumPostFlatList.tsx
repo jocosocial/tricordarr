@@ -16,7 +16,7 @@ interface ForumPostFlatListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext: () => void;
-  handleLoadPrevious: () => void;
+  handleLoadPrevious?: () => void;
   itemSeparator?: 'time';
   invertList?: boolean;
   forumData?: ForumData;
@@ -45,7 +45,6 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
 }: ForumPostFlatListProps) => {
-  // const flatListRef = useRef<FlatList<PostData>>(null);
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
 
@@ -195,7 +194,7 @@ export const ForumPostFlatList = ({
       );
     }
     return <SpaceDivider />;
-  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, invertList]);
+  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, hasNextPage, invertList]);
 
   // https://github.com/facebook/react-native/issues/25239
   return (
@@ -212,14 +211,15 @@ export const ForumPostFlatList = ({
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
+        onEndReachedThreshold={10}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
       />
-      {showButton && (
+      {showButton && !hasNextPage && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          displayPosition={invertList ? 'bottom' : 'top'}
+          displayPosition={forumListData?.isLocked ? 'bottom' : 'raised'}
         />
       )}
     </>

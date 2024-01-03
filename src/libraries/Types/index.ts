@@ -1,6 +1,8 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
 import {EventType} from '../Enums/EventType';
 import {FezType} from '../Enums/FezType';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import {Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
 
 export interface KvObject {
   [key: string]: string | null;
@@ -32,7 +34,8 @@ export type ScheduleFilterSettings = {
   eventTypeFilter?: keyof typeof EventType;
   eventFavoriteFilter?: boolean;
   lfgTypeFilter?: keyof typeof FezType;
-  showLfgs?: boolean;
+  showJoinedLfgs?: boolean;
+  showOpenLfgs?: boolean;
 };
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
@@ -42,4 +45,37 @@ export interface ImageQueryData {
   mimeType: string;
   dataURI: string;
   fileName: string;
+}
+
+export interface SegmentedButtonType {
+  value: string;
+  icon?: IconSource;
+  disabled?: boolean;
+  accessibilityLabel?: string;
+  checkedColor?: string;
+  uncheckedColor?: string;
+  onPress?: (event: GestureResponderEvent) => void;
+  label?: string;
+  showSelectedCheck?: boolean;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  testID?: string;
+}
+
+// This came from the upstream.
+export interface FabGroupActionType {
+  icon: IconSource;
+  label?: string;
+  color?: string;
+  labelTextColor?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
+  containerStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
+  labelStyle?: StyleProp<TextStyle>;
+  labelMaxFontSizeMultiplier?: number;
+  onPress: (e: GestureResponderEvent) => void;
+  size?: 'small' | 'medium';
+  testID?: string;
+  rippleColor?: ColorValue;
 }

@@ -19,8 +19,11 @@ import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {ForumFAB} from '../../Buttons/FloatingActionButtons/ForumFAB';
+import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -30,7 +33,6 @@ export type Props = NativeStackScreenProps<
 
 export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
-  const {forumCategories, setForumCategories} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
@@ -43,11 +45,15 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     refetch().then(() => refetchUserNotificationData().then(() => setRefreshing(false)));
   }, [refetch, refetchUserNotificationData]);
 
-  useEffect(() => {
-    if (data) {
-      setForumCategories(data);
-    }
-  }, [data, setForumCategories]);
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ForumCategoriesScreenActionsMenu />
+        </HeaderButtons>
+      </View>
+    )
+  }, [])
 
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
@@ -64,11 +70,17 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     }
   }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
 
-  if (!data) {
+  if (isLoading) {
     return <LoadingView />;
   }
 
@@ -78,18 +90,20 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
-          <ListSection>
-            <List.Subheader>Forum Categories</List.Subheader>
-            {forumCategories.map((category, index) => {
-              return (
-                <React.Fragment key={category.categoryID}>
-                  {index === 0 && <Divider bold={true} />}
-                  <ForumCategoryListItem category={category} />
-                  <Divider bold={true} />
-                </React.Fragment>
-              );
-            })}
-          </ListSection>
+          {data && (
+            <ListSection>
+              <List.Subheader>Forum Categories</List.Subheader>
+              {data.map((category, index) => {
+                return (
+                  <React.Fragment key={category.categoryID}>
+                    {index === 0 && <Divider bold={true} />}
+                    <ForumCategoryListItem category={category} />
+                    <Divider bold={true} />
+                  </React.Fragment>
+                );
+              })}
+            </ListSection>
+          )}
           <ListSection>
             <List.Subheader>Personal Categories</List.Subheader>
             <Divider bold={true} />
@@ -134,7 +148,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumFAB openLabel={'Categories'} />
+      <ForumSearchFAB />
     </AppView>
   );
 };

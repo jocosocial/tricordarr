@@ -71,3 +71,11 @@ export interface CruiseSettingsFormValues {
   cruiseLength: string;
   portTimeZoneID: string;
 }
+
+export interface QuerySettingsFormValues {
+  defaultPageSize: number;
+  cacheTimeDays: number;
+  retry: number;
+  staleTimeMinutes: number;
+  disruptionThreshold: number;
+}

@@ -27,5 +27,9 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     return <LoadingView />;
   }
 
-  return <ConfigContext.Provider value={{appConfig, updateAppConfig}}>{children}</ConfigContext.Provider>;
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+
+  return (
+    <ConfigContext.Provider value={{appConfig, updateAppConfig, oobeCompleted}}>{children}</ConfigContext.Provider>
+  );
 };

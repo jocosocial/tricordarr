@@ -1,6 +1,6 @@
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {useMutation} from '@tanstack/react-query';
-import {ErrorResponse, FezData} from '../../../../libraries/Structs/ControllerStructs';
+import axios, {AxiosResponse} from 'axios';
+import {FezData} from '../../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../../TokenAuthMutation';
 
 interface ParticipantMutationProps {
   fezID: string;
@@ -12,8 +12,6 @@ const queryHandler = async ({fezID, userID, action}: ParticipantMutationProps): 
   return await axios.post(`/fez/${fezID}/user/${userID}/${action}`);
 };
 
-export const useFezParticipantMutation = (retry = 0) => {
-  return useMutation<AxiosResponse<FezData>, AxiosError<ErrorResponse>, ParticipantMutationProps>(queryHandler, {
-    retry: retry,
-  });
+export const useFezParticipantMutation = () => {
+  return useTokenAuthMutation(queryHandler);
 };

@@ -11,17 +11,15 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
+import {useUserMuteMutation, useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {ItalicText} from '../../Text/ItalicText';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export const MuteUsersScreen = () => {
-  const {mutes, refetchMutes, setMutes} = useUserRelations();
-  const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    refetchMutes().then(() => setRefreshing(false));
-  };
+  const {mutes, setMutes} = useUserRelations();
   const {hasModerator} = usePrivilege();
   const userMuteMutation = useUserMuteMutation();
+  const {isLoading, isRefetching, refetch} = useUserMutesQuery();
 
   const handleUnmuteUser = (userHeader: UserHeader) => {
     userMuteMutation.mutate(
@@ -51,9 +49,13 @@ export const MuteUsersScreen = () => {
     );
   };
 
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userMuteMutation.isLoading} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserMuteText />
           {hasModerator && <ModeratorMuteText />}

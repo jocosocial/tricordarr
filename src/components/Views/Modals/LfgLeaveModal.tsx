@@ -1,4 +1,3 @@
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
@@ -22,7 +21,6 @@ const ModalContent = ({fezData}: {fezData: FezData}) => {
 };
 
 export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
-  const {setErrorMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
@@ -36,13 +34,8 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: response => {
-          console.log('WPOWWWWWWWWWWWW');
-          console.log(response.data);
           setLfg(response.data);
           setModalVisible(false);
-        },
-        onError: error => {
-          setErrorMessage(error.response?.data.reason || error);
         },
       },
     );

@@ -25,6 +25,7 @@ export const authActionReducer = (prevState: AuthState, action: AuthActionsType)
       return {
         ...prevState,
         tokenData: action.tokenData,
+        isLoading: false,
       };
     }
     case AuthActions.signOut: {

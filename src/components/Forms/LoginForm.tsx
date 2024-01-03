@@ -9,6 +9,9 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
+import {useAppTheme} from '../../styles/Theme';
+import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents} from '../../libraries/Enums/Navigation';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
@@ -29,8 +32,11 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     inputContainer: [],
-    buttonContainer: [commonStyles.marginTopSmall],
+    buttonContainer: [commonStyles.marginTopSmall, commonStyles.marginBottom],
   };
+  const theme = useAppTheme();
+  const rootNavigation = useRootStack();
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
@@ -55,6 +61,12 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
             buttonText={'Login'}
+          />
+          <PrimaryActionButton
+            buttonText={'Forgot Password'}
+            onPress={() => rootNavigation.push(RootStackComponents.accountRecoveryScreen)}
+            viewStyle={styles.buttonContainer}
+            buttonColor={theme.colors.twitarrNeutralButton}
           />
         </View>
       )}

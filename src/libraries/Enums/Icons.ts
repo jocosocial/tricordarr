@@ -34,6 +34,7 @@ export enum AppIcons {
   help = 'help-circle',
   copy = 'content-copy',
   // Users
+  profile = 'account-details-outline',
   user = 'account',
   edituser = 'account-edit',
   group = 'account-group',
@@ -92,4 +93,6 @@ export enum AppIcons {
   recent = 'history',
   text = 'text',
   forumEdit = 'playlist-edit',
+  altAccount = 'account-switch',
+  decks = 'elevator',
 }

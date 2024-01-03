@@ -1,8 +1,10 @@
 import {AnnouncementData} from '../../../libraries/Structs/ControllerStructs';
-import {useOpenQuery} from '../OpenQuery';
+import {useTokenAuthQuery} from '../TokenAuthQuery';
 
-export const useAnnouncementsQuery = () => {
-  return useOpenQuery<AnnouncementData[]>({
+export const useAnnouncementsQuery = (options = {}) => {
+  return useTokenAuthQuery<AnnouncementData[]>({
     queryKey: ['/notification/announcements'],
+    staleTime: 1000 * 60,
+    ...options,
   });
 };

@@ -10,4 +10,5 @@ export enum PressAction {
   seamail = 'seamail',
   home = 'home',
   lfg = 'lfg',
+  forum = 'forum',
 }

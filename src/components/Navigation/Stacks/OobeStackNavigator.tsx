@@ -19,7 +19,7 @@ export type OobeStackParamList = {
   OobeAccountScreen: undefined;
   LoginScreen: undefined;
   OobeFinishScreen: undefined;
-  OobeRegisterScreen: undefined;
+  RegisterScreen: undefined;
   OobeNotificationsScreen: undefined;
 };
 

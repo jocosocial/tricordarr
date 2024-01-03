@@ -22,6 +22,5 @@ export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
     return <Avatar.Icon size={styleDefaults.avatarSize} icon={AppIcons.error} />;
   }
 
-  const avatarUserID = otherParticipants[0].userID ?? '';
-  return <UserAvatarImage userID={avatarUserID} />;
+  return <UserAvatarImage userHeader={otherParticipants[0]} />;
 };

@@ -17,6 +17,8 @@ import {HttpStatusCode} from 'axios';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeaderTitle';
 import {ServerURLValidation} from '../../../libraries/ValidationSchema';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
+import {useAppTheme} from '../../../styles/Theme';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
 
@@ -26,21 +28,17 @@ const validationSchema = Yup.object().shape({
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {setErrorMessage} = useErrorHandler();
   const {data: serverHealthData, refetch} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
+  const theme = useAppTheme();
 
   const onSave = (values: SettingFormValues, formikHelpers: FormikHelpers<SettingFormValues>) => {
-    try {
-      updateAppConfig({
-        ...appConfig,
-        serverUrl: values.settingValue,
-      });
-      refetch().then(() => formikHelpers.resetForm());
-    } catch (e) {
-      setErrorMessage(e);
-    }
+    updateAppConfig({
+      ...appConfig,
+      serverUrl: values.settingValue,
+    });
+    refetch().then(() => formikHelpers.resetForm());
   };
 
   useEffect(() => {
@@ -84,6 +82,13 @@ export const OobeServerScreen = ({navigation}: Props) => {
               the server URL is correct. If the issue persists go to the JoCo Cruise Info Desk for assistance.
             </Text>
           )}
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'Re-check server'}
+            onPress={refetch}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView

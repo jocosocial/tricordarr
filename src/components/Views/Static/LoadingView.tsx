@@ -3,11 +3,12 @@ import {View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {AppView} from '../AppView';
 
 export const LoadingView = () => {
   const {commonStyles} = useStyles();
   return (
-    <View>
+    <AppView>
       <ScrollingContentView>
         <ActivityIndicator />
         <View
@@ -20,6 +21,6 @@ export const LoadingView = () => {
           <Text>Loading...</Text>
         </View>
       </ScrollingContentView>
-    </View>
+    </AppView>
   );
 };

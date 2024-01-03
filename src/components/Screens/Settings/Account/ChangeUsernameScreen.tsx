@@ -11,8 +11,9 @@ import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {ChangeUsernameForm} from '../../../Forms/ChangeUsernameForm';
-import {useUserProfileQuery, useUserUsernameMutation} from '../../../Queries/User/UserQueries';
+import {useUserUsernameMutation} from '../../../Queries/User/UserQueries';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {useUserProfileQuery} from '../../../Queries/Users/UserProfileQueries';
 
 export const ChangeUsernameScreen = () => {
   const {profilePublicData} = useUserData();
@@ -20,12 +21,11 @@ export const ChangeUsernameScreen = () => {
   const {appConfig} = useConfig();
   const usernameMutation = useUserUsernameMutation();
   const {refetchUserNotificationData} = useUserNotificationData();
-  const {refetch: refetchProfilePublicData} = useUserProfileQuery();
+  const {refetch: refetchProfilePublicData} = useUserProfileQuery(profilePublicData?.header.userID);
 
   const {setInfoMessage} = useErrorHandler();
 
   const onSubmit = (values: ChangeUsernameFormValues, helper: FormikHelpers<ChangeUsernameFormValues>) => {
-    console.log(values);
     usernameMutation.mutate(
       {
         userUsernameData: values,

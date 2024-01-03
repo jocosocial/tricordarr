@@ -29,6 +29,7 @@ import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
 
@@ -137,6 +138,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       Keyboard.dismiss();
+      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
@@ -290,7 +292,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         // appears. I suspect it's related to the list not having rendered the next batch yet.
         onEndReachedThreshold={4}
       />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} displayPosition={'raised'} />}
       <ContentPostForm onSubmit={onSubmit} />
     </AppView>
   );

@@ -22,16 +22,22 @@ import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSea
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
 import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
-import {CategoryData, ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
+import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
+import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
-    category: CategoryData;
+    // category: CategoryData;
+    categoryID: string;
   };
   ForumThreadScreen: {
-    forumID?: string;
-    postID?: string;
+    forumID: string;
+  };
+  ForumThreadPostScreen: {
+    postID: string;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;
@@ -50,6 +56,12 @@ export type ForumStackParamList = {
   };
   ForumPostEditScreen: {
     postData: PostData;
+  };
+  ForumThreadUserScreen: {
+    user: UserHeader;
+  };
+  ForumPostHashtagScreen: {
+    hashtag: string;
   };
 };
 
@@ -82,6 +94,13 @@ export const ForumStackNavigator = () => {
       <Stack.Screen
         name={ForumStackComponents.forumThreadScreen}
         component={isDisabled ? DisabledView : ForumThreadScreen}
+        options={{
+          title: 'Forum',
+        }}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadPostScreen}
+        component={isDisabled ? DisabledView : ForumThreadPostScreen}
         options={{
           title: 'Forum',
         }}
@@ -145,6 +164,16 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostEditScreen}
         component={isDisabled ? DisabledView : ForumPostEditScreen}
         options={{title: 'Edit Post'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumThreadUserScreen}
+        component={isDisabled ? DisabledView : ForumThreadUserScreen}
+        options={{title: 'Forums by User'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostHashtagScreen}
+        component={isDisabled ? DisabledView : ForumPostHashtagScreen}
+        options={{title: 'Hashtag'}}
       />
     </Stack.Navigator>
   );

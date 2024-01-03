@@ -18,6 +18,7 @@ export async function displayTestNotification() {
       pressAction: {
         id: PressAction.default,
       },
+      smallIcon: 'ic_notification',
     },
   });
 }

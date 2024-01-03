@@ -4,10 +4,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {FlatList, RefreshControl} from 'react-native';
-import {useEventFavoriteQuery} from '../../Queries/Events/EventQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {EventFlatList} from '../../Lists/Schedule/EventFlatList';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -16,19 +16,18 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const EventFavoritesScreen = () => {
-  const {data, isFetching, refetch} = useEventFavoriteQuery();
+  const {data, isFetching, refetch} = useEventFavoritesQuery();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
 
-  if (!data) {
+  if (isFetching) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
       <EventFlatList
-        scheduleItems={data}
+        scheduleItems={data || []}
         listRef={listRef}
-        scrollNowIndex={0}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         separator={'day'}
       />

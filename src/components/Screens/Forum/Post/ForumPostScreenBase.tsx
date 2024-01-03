@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
-import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
+import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
@@ -14,10 +14,13 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ListTitleView} from '../../../Views/ListTitleView';
+import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
   refreshOnUserNotification?: boolean;
+  title?: string;
 }
 
 export const forumPostHelpText = [
@@ -27,7 +30,7 @@ export const forumPostHelpText = [
   'You can edit or delete your own forum posts.',
 ];
 
-export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: ForumPostScreenBaseProps) => {
+export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
   const {
     data,
     refetch,
@@ -37,6 +40,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
     hasPreviousPage,
     fetchPreviousPage,
     fetchNextPage,
+    isLoading,
   } = useForumPostSearchQuery(queryParams);
   const navigation = useForumStackNavigation();
   const [refreshing, setRefreshing] = useState(false);
@@ -44,6 +48,9 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
   const {setModalContent, setModalVisible} = useModal();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  // This is used deep in the FlatList to star posts by favorite users.
+  // Will trigger an initial load if the data is empty else a background refetch on staleTime.
+  const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -114,12 +121,13 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification}: Fo
     }
   }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
-  if (!data) {
+  if (isLoading || isLoadingFavorites) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
+      {title && <ListTitleView title={title} />}
       <ForumPostFlatList
         flatListRef={flatListRef}
         invertList={false}

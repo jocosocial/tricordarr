@@ -14,6 +14,7 @@ import {EventFavoritesScreen} from '../../Screens/Event/EventFavoritesScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
+import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
 
 export type EventStackParamList = {
   EventDayScreen: {
@@ -26,6 +27,9 @@ export type EventStackParamList = {
   };
   EventHelpScreen: undefined;
   EventFavoritesScreen: undefined;
+  EventYourDayScreen: {
+    cruiseDay: number;
+  };
 };
 
 export const EventStackNavigator = () => {
@@ -71,6 +75,11 @@ export const EventStackNavigator = () => {
         name={EventStackComponents.eventFavoritesScreen}
         component={EventFavoritesScreen}
         options={{title: 'Favorite Events'}}
+      />
+      <Stack.Screen
+        name={EventStackComponents.eventYourDayScreen}
+        component={EventYourDayScreen}
+        options={{title: 'Your Day'}}
       />
     </Stack.Navigator>
   );

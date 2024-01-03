@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {useForumPostSearchQuery} from '../Queries/Forum/ForumSearchQueries';
+import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
@@ -15,9 +15,11 @@ import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator'
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../Reducers/Forum/ForumPostListReducer';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
+import {useIsFocused} from '@react-navigation/native';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [queryEnable, setQueryEnable] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const {
     data,
@@ -29,33 +31,41 @@ export const ForumPostSearchBar = () => {
     isFetchingPreviousPage,
     isFetchingNextPage,
     isFetching,
+    remove,
   } = useForumPostSearchQuery(
     {
       search: searchQuery,
     },
-    undefined,
     {
-      enabled: false,
+      enabled: queryEnable,
     },
   );
   const {commonStyles} = useStyles();
-  // const [postList, setPostList] = useState<PostData[]>([]);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
   const flatListRef = useRef<FlatList<PostData>>(null);
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
-  const onClear = () =>
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setQueryEnable(false);
+  };
+
+  const onClear = () => {
     dispatchForumPosts({
       type: ForumPostListActions.clear,
     });
+    remove();
+    setQueryEnable(false);
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     refetch().then(() => setRefreshing(false));
@@ -64,19 +74,23 @@ export const ForumPostSearchBar = () => {
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
+      setQueryEnable(false);
     } else {
+      setQueryEnable(true);
+      console.log('[ForumPostSearchBar.tsx] Refetching results');
       refetch();
+      Keyboard.dismiss();
     }
   };
 
   const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
+    if (!isFetchingNextPage && hasNextPage && queryEnable) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };
   const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
+    if (!isFetchingPreviousPage && hasPreviousPage && queryEnable) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
     }
@@ -99,13 +113,13 @@ export const ForumPostSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused && queryEnable) {
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: data.pages.flatMap(p => p.posts),
       });
     }
-  }, [data, dispatchForumPosts]);
+  }, [data, dispatchForumPosts, isFocused, queryEnable]);
 
   return (
     <>

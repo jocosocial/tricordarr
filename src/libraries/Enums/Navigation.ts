@@ -48,6 +48,8 @@ export enum SettingsStackScreenComponents {
   registerScreen = 'RegisterScreen',
   cruiseSettingsScreen = 'CruiseSettingsScreen',
   userInfoSettingsScreen = 'UserInfoSettingsScreen',
+  aboutSettingsScreen = 'AboutSettingsScreen',
+  querySettingsScreen = 'QuerySettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -67,17 +69,21 @@ export enum MainStackComponents {
   mainSettingsScreen = 'MainSettingsScreen',
   aboutScreen = 'AboutScreen',
   userProfileScreen = 'UserProfileScreen',
+  usernameProfileScreen = 'UsernameProfileScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
   editUserProfileScreen = 'EditUserProfileScreen',
   userPrivateNoteScreen = 'UserPrivateNoteScreen',
   userRegCodeScreen = 'UserRegCodeScreen',
   dailyThemeScreen = 'DailyThemeScreen',
+  mainHelpScreen = 'MainHelpScreen',
+  mapScreen = 'MapScreen',
 }
 
 export enum RootStackComponents {
   oobeNavigator = 'OobeStackNavigator',
   rootContentScreen = 'RootContentScreen',
   lighterScreen = 'LighterScreen',
+  accountRecoveryScreen = 'AccountRecoveryScreen',
 }
 
 export enum OobeStackComponents {
@@ -98,6 +104,7 @@ export enum EventStackComponents {
   eventScreen = 'EventScreen',
   eventHelpScreen = 'EventHelpScreen',
   eventFavoritesScreen = 'EventFavoritesScreen',
+  eventYourDayScreen = 'EventYourDayScreen',
 }
 
 export enum LfgStackComponents {
@@ -130,4 +137,7 @@ export enum ForumStackComponents {
   forumThreadCreateScreen = 'ForumThreadCreateScreen',
   forumThreadEditScreen = 'ForumThreadEditScreen',
   forumPostEditScreen = 'ForumPostEditScreen',
+  forumThreadUserScreen = 'ForumThreadUserScreen',
+  forumThreadPostScreen = 'ForumThreadPostScreen',
+  forumPostHashtagScreen = 'ForumPostHashtagScreen',
 }

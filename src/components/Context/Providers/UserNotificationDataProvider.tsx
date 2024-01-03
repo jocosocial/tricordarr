@@ -1,26 +1,24 @@
 import React, {useEffect, useState, PropsWithChildren, useReducer} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
-import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useAuth} from '../Contexts/AuthContext';
 import {
   UserNotificationDataActions,
   userNotificationDataReducer,
 } from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import {useCruise} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
 // https://www.typescriptlang.org/docs/handbook/jsx.html
 export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
-  const {setErrorMessage} = useErrorHandler();
   const {isLoading, isLoggedIn} = useAuth();
   const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
+  // For some reason this fires twice on startup. The prior data is read from the cache then fetched twice.
   const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {hourlyUpdatingDate} = useCruise();
   const {appConfig} = useConfig();
+  const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   /**
    * Once the app has "started", figure out if we should enable the background worker.
@@ -30,16 +28,15 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       console.log('[UserNotificationDataProvider.tsx] App is still loading');
       return;
     }
-    if (isLoggedIn) {
+    if (isLoggedIn && oobeCompleted) {
       console.log('[UserNotificationDataProvider.tsx] User notifications can start.');
       console.log('[UserNotificationDataProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
       setEnableUserNotifications(appConfig.enableBackgroundWorker);
     } else {
       console.log('[UserNotificationDataProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
-      setErrorMessage('Twitarr notifications have been disabled.');
     }
-  }, [isLoggedIn, setErrorMessage, isLoading, appConfig.enableBackgroundWorker]);
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted]);
 
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.
@@ -53,16 +50,6 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       });
     }
   }, [data]);
-
-  /**
-   * Every hour on the hour trigger the refresh. In addition to refreshing the users notification
-   * data this also brings along a new server timestamp which is used in certain components.
-   */
-  useEffect(() => {
-    refetchUserNotificationData().then(() =>
-      console.log('[UserNotificationDataProvider.tsx] Refreshed UserNotificationData'),
-    );
-  }, [refetchUserNotificationData, hourlyUpdatingDate]);
 
   return (
     <UserNotificationDataContext.Provider

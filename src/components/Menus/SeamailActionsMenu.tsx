@@ -26,29 +26,10 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
   const [visible, setVisible] = React.useState(false);
   const seamailNavigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
-  const {hasModerator, hasTwitarrTeam, setAsModerator, setAsTwitarrTeam, asModerator, asTwitarrTeam} = usePrivilege();
-  const {profilePublicData} = useUserData();
+  const {hasModerator, hasTwitarrTeam} = usePrivilege();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
-  const postAsModerator = () => {
-    setAsTwitarrTeam(false);
-    setAsModerator(!asModerator);
-    closeMenu();
-  };
-
-  const postAsTwitarrTeam = () => {
-    setAsModerator(false);
-    setAsTwitarrTeam(!asTwitarrTeam);
-    closeMenu();
-  };
-
-  const postAsSelf = () => {
-    setAsModerator(false);
-    setAsTwitarrTeam(false);
-    closeMenu();
-  };
 
   const detailsAction = () => {
     seamailNavigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {fezID: fez.fezID});

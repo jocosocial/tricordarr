@@ -4,6 +4,7 @@ import {useAppState} from '@react-native-community/hooks';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -14,7 +15,8 @@ export const NotificationDataListener = () => {
   const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
-  const {refetch: refetchAnnouncements} = useAnnouncementsQuery();
+  const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
+  const {isLoggedIn} = useAuth();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -50,13 +52,17 @@ export const NotificationDataListener = () => {
     // when the app is running. At least for now...
     // This effect does have the effect of removing the handler twice when the app
     // goes to background. I think this is acceptable to ensure that the handler gets removed.
-    if (enableUserNotifications && appStateVisible === 'active') {
+    if (enableUserNotifications && appStateVisible === 'active' && isLoggedIn) {
       addHandler();
     } else {
       removeHandler();
     }
+    console.log(
+      '[NotificationDataListener.tsx] useEffect state is',
+      enableUserNotifications && appStateVisible === 'active' && isLoggedIn,
+    );
     return () => removeHandler();
-  }, [addHandler, appStateVisible, enableUserNotifications, removeHandler]);
+  }, [addHandler, appStateVisible, enableUserNotifications, removeHandler, isLoggedIn]);
 
   return null;
 };

@@ -34,6 +34,12 @@ Releasing
 ---------
 https://reactnative.dev/docs/signed-apk-android
 
+Edit android/app/build.gradle with appropriate version info.
+
+Version number plan:
+* Major = Cruise Year (1 == 2022, 2 == 2023, consider using the actual year?)
+* Minor = Release number to Play Store. Moves in lockstep with buildCode or whatever.
+
 ```
 cd android
 ./gradlew bundleRelease # To build AAB
@@ -53,3 +59,23 @@ rootNavigation.push(RootStackComponents.rootContentScreen, {
   },
 })
 ```
+
+Android Studio
+--------------
+Open the `android` directory in Android Studio instead of the project root. It behaves better.
+Might be able to mark a different one as Project Root?
+https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-in-android-studio
+
+Icons
+-----
+Notification: trim yes padding 0
+
+Query
+-----
+`isLoading`: no cache and in flight
+* Return `<LoadingView />`
+
+`isRefetching`: Background refetch (excluding initial) and `refetch()`.
+* RefreshControl
+
+`refetch()` will refetch even if within the staleTime. Backgrounds will not because that's the point of staleTime.

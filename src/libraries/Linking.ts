@@ -1,6 +1,6 @@
 import {LinkingOptions} from '@react-navigation/native';
 import {
-  EventStackComponents,
+  EventStackComponents, ForumStackComponents,
   LfgStackComponents,
   MainStackComponents,
   SeamailStackScreenComponents,
@@ -35,7 +35,9 @@ const deepLinksConf = {
               },
             },
             UserProfileScreen: 'user/:userID',
+            UsernameProfileScreen: 'username/:username',
             UserDirectoryScreen: 'users',
+            MapScreen: 'map',
           },
         },
         SeamailTab: {
@@ -59,6 +61,15 @@ const deepLinksConf = {
           screens: {
             EventDayScreen: 'events',
             EventScreen: 'event/:eventID',
+          },
+        },
+        ForumsTab: {
+          initialRouteName: ForumStackComponents.forumCategoriesScreen,
+          screens: {
+            ForumCategoriesScreen: 'forums',
+            ForumCategoryScreen: 'forums/:categoryID',
+            ForumThreadScreen: 'forum/:forumID',
+            ForumThreadPostScreen: 'forum/containingpost/:postID',
           },
         },
       },

@@ -14,6 +14,11 @@ import {configureAxios} from '../../../../libraries/Network/APIClient';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {ServerURLValidation} from '../../../../libraries/ValidationSchema';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
+import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
+import {RefreshControl} from 'react-native';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {useAppTheme} from '../../../../styles/Theme';
 
 const validationSchema = Yup.object().shape({
   settingValue: ServerURLValidation,
@@ -26,6 +31,15 @@ export const ConfigServerUrlScreen = () => {
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
+  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {
+    data: healthData,
+    refetch: refetchHealth,
+    isFetching: isFetchingHealth,
+  } = useHealthQuery({
+    enabled: false,
+  });
+  const theme = useAppTheme();
 
   const onSave = (values: SettingFormValues) => {
     const oldServerUrl = appConfig.serverUrl;
@@ -46,9 +60,9 @@ export const ConfigServerUrlScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <PaddedContentView>
-          <Text variant={'bodyLarge'} style={[commonStyles.bold]}>
+          <Text variant={'bodyLarge'} style={[commonStyles.bold, commonStyles.marginBottomSmall]}>
             Warning: It is recommended to fully restart the app after changing this value.
           </Text>
           <SettingForm
@@ -57,6 +71,31 @@ export const ConfigServerUrlScreen = () => {
             validationSchema={validationSchema}
             inputMode={'url'}
           />
+        </PaddedContentView>
+        {disruptionDetected && (
+          <PaddedContentView>
+            <Text style={[commonStyles.marginBottomSmall]}>
+              Connection disruption detected. This can happen for a number of reasons such as:
+            </Text>
+            <Text>Leaving the ship</Text>
+            <Text>Overcrowded or out-of-range WiFi</Text>
+            <Text>Server Issue</Text>
+            <Text style={[commonStyles.marginBottomSmall]}>VPN on your device</Text>
+            <Text>
+              If you believe this should not be the case, press the button below to attempt a server health check. If the issue
+              persists for more than an hour, contact the JoCo Cruise Info Desk for assistance.
+            </Text>
+          </PaddedContentView>
+        )}
+        <PaddedContentView>
+          <PrimaryActionButton
+            style={[commonStyles.marginBottom]}
+            buttonText={'Server Health Check'}
+            onPress={refetchHealth}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+          {healthData && <Text>{healthData.reason}</Text>}
+          {healthData === null && <Text>No Data</Text>}
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

@@ -39,6 +39,7 @@ export const getUrlForEvent = (
       case PressAction.worker: {
         return '/settings/serverconnectionsettingsscreen';
       }
+      // @TODO dedupe these into a single content press type
       case PressAction.seamail: {
         if (notification.id && notification.data) {
           notifee.cancelNotification(notification.id);
@@ -47,6 +48,13 @@ export const getUrlForEvent = (
         return;
       }
       case PressAction.lfg: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.forum: {
         if (notification.id && notification.data) {
           notifee.cancelNotification(notification.id);
           return `${notification.data.url}`;

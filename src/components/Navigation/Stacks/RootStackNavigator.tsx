@@ -7,11 +7,13 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {OobeStackNavigator} from './OobeStackNavigator';
+import {AccountRecoveryScreen} from '../../Screens/Settings/Account/AccountRecoveryScreen';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
   RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
   LighterScreen: undefined;
+  AccountRecoveryScreen: undefined;
 };
 
 export const RootStackNavigator = () => {
@@ -29,6 +31,11 @@ export const RootStackNavigator = () => {
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
       <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
       <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
+      <Stack.Screen
+        name={RootStackComponents.accountRecoveryScreen}
+        component={AccountRecoveryScreen}
+        options={{title: 'Recovery', headerShown: true}}
+      />
     </Stack.Navigator>
   );
 };

@@ -549,7 +549,7 @@ export interface CategoryData {
   isEventCategory: boolean;
   /// The number of threads in this category
   numThreads: number;
-  ///The threads in the category. Only populated for /categories/ID.
+  /// The threads in the category. Only populated for /categories/ID.
   forumThreads?: [ForumListData];
 }
 
@@ -663,4 +663,13 @@ export interface ForumCreateData {
   title: string;
   /// The first post in the forum.
   firstPost: PostContentData;
+}
+
+export interface UserRecoveryData {
+  /// The user's username.
+  username: string;
+  /// The string to use – any one of: password / registration key / recovery key.
+  recoveryKey: string;
+  /// The new password to set for the account.
+  newPassword: string;
 }

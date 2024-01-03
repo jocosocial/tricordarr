@@ -2,10 +2,30 @@ import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
+import {LfgStackComponents} from './Enums/Navigation';
+import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
 };
+
+export interface APIClientConfig {
+  defaultPageSize: number;
+  canonicalHostnames: string[];
+  cacheBuster: string;
+  cacheTime: number;
+  retry: number;
+  staleTime: number;
+  disruptionThreshold: number;
+}
+
+export interface ScheduleConfig {
+  eventsShowJoinedLfgs: boolean;
+  eventsShowOpenLfgs: boolean;
+  hidePastLfgs: boolean;
+  enableLateDayFlip: boolean;
+  defaultLfgScreen: LfgStackComponents;
+}
 
 export interface AppConfig {
   serverUrl: string;
@@ -22,10 +42,10 @@ export interface AppConfig {
   enableDeveloperOptions: boolean;
   cruiseStartDate: Date;
   cruiseLength: number;
-  unifiedSchedule: boolean;
-  hidePastLfgs: boolean;
-  enableLateDayFlip: boolean;
+  schedule: ScheduleConfig;
   portTimeZoneID: string;
+  apiClientConfig: APIClientConfig;
+  enableEasterEgg: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -55,10 +75,24 @@ const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
-  unifiedSchedule: true,
-  hidePastLfgs: true,
-  enableLateDayFlip: true,
+  schedule: {
+    hidePastLfgs: true,
+    enableLateDayFlip: true,
+    eventsShowJoinedLfgs: true,
+    eventsShowOpenLfgs: false,
+    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
+  },
   portTimeZoneID: 'America/New_York',
+  apiClientConfig: {
+    defaultPageSize: 50,
+    canonicalHostnames: ['joco.hollandamerica.com', 'twitarr.com'],
+    cacheBuster: new Date().toString(),
+    cacheTime: defaultCacheTime,
+    retry: 2, // 3 attempts total (initial, retry 1, retry 2)
+    staleTime: defaultStaleTime,
+    disruptionThreshold: 10,
+  },
+  enableEasterEgg: false,
 };
 
 /**

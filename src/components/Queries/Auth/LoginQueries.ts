@@ -1,8 +1,7 @@
-import {useMutation} from '@tanstack/react-query';
 import {getAuthHeaders} from '../../../libraries/Network/APIClient';
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse, TokenStringData} from '../../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
+import axios, {AxiosResponse} from 'axios';
+import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 interface LoginMutationProps {
   username: string;
@@ -14,12 +13,6 @@ const queryHandler = async ({username, password}: LoginMutationProps): Promise<A
   return await axios.post('/auth/login', {}, {headers: authHeaders});
 };
 
-export const useLoginQuery = (options = {}) => {
-  const {setErrorMessage} = useErrorHandler();
-  return useMutation<AxiosResponse<TokenStringData>, AxiosError<ErrorResponse>, LoginMutationProps>(queryHandler, {
-    onError: error => {
-      setErrorMessage(error.response?.data.reason || error.message);
-    },
-    ...options,
-  });
+export const useLoginQuery = () => {
+  return useTokenAuthMutation(queryHandler);
 };

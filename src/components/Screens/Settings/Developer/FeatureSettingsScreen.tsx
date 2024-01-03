@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {RefreshControl, ScrollView} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {useFeature} from '../../../Context/Contexts/FeatureContext';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -18,7 +19,7 @@ export const FeatureSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <Text>Notification Data</Text>
           <DataTable>
@@ -49,7 +50,7 @@ export const FeatureSettingsScreen = () => {
             })}
           </DataTable>
         </PaddedContentView>
-      </ScrollView>
+      </ScrollingContentView>
     </AppView>
   );
 };

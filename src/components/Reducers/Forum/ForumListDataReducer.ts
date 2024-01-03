@@ -6,7 +6,7 @@ export enum ForumListDataActions {
   updateThread = 'UPDATE_THREAD',
   updateRelations = 'UPDATE_RELATIONS',
   prependNewForumData = 'PREPEND_NEW_FORUM_DATA',
-  upsert = 'UPSERT', // update and move to the top
+  touch = 'TOUCH', // update and move to the top
   clear = 'CLEAR',
   markAsRead = 'MARK_AS_READ',
 }
@@ -24,7 +24,7 @@ export type ForumListDataActionsType =
       lastPostAt?: string;
       lastPoster?: UserHeader;
     }
-  | {type: ForumListDataActions.upsert; thread: ForumListData}
+  | {type: ForumListDataActions.touch; thread: ForumListData}
   | {type: ForumListDataActions.clear}
   | {type: ForumListDataActions.markAsRead; forumID: string};
 
@@ -66,8 +66,11 @@ const forumDataReducer = (threadList: ForumListData[], action: ForumListDataActi
       };
       return [newListData].concat(threadList);
     }
-    case ForumListDataActions.upsert: {
-      return [action.thread].concat(threadList.filter(fld => fld.forumID !== action.thread.forumID));
+    case ForumListDataActions.touch: {
+      if (action.thread.forumID in threadList.filter(fld => fld.forumID)) {
+        return [action.thread].concat(threadList.filter(fld => fld.forumID !== action.thread.forumID));
+      }
+      return threadList;
     }
     case ForumListDataActions.clear: {
       return [];

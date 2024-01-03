@@ -5,9 +5,10 @@ import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigato
 import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {ForumThreadSortMenu} from '../../../Menus/Forum/ForumThreadSortMenu';
-import {ForumCategoryRelationsView} from '../../../Views/Forum/ForumCategoryRelationsView';
+import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu';
+import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
 import {ForumFilter} from '../../../../libraries/Enums/ForumSortFilter';
+import {ForumRelationQueryType} from '../../../Queries/Forum/ForumRelationQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -20,7 +21,7 @@ export const ForumThreadOwnedScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
+          <ForumThreadScreenSortMenu />
         </HeaderButtons>
       </View>
     );
@@ -32,5 +33,5 @@ export const ForumThreadOwnedScreen = ({navigation}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  return <ForumCategoryRelationsView forumFilter={ForumFilter.owned} />;
+  return <ForumThreadsRelationsView relationType={ForumRelationQueryType.owner} />;
 };

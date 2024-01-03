@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {CategoryData, FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
@@ -9,6 +9,7 @@ import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
 import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
+import URLParse from 'url-parse';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fez, setFez] = useState<FezData>();
@@ -21,11 +22,17 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
-  const [forumCategories, setForumCategories] = useState<CategoryData[]>([]);
   const [forumData, setForumData] = useState<ForumData>();
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
-  const [forumThreadPosts, dispatchForumThreadPosts] = useForumPostListReducer([]);
+
+  const openAppUrl = (appUrl: string) => {
+    if (appUrl.includes('/fez')) {
+      appUrl = appUrl.replace('/fez', '/lfg');
+    }
+    console.log('[TwitarrProvider.tsx] Opening reformed URL', appUrl);
+    Linking.openURL(appUrl);
+  };
 
   /**
    * Open a Twitarr URL. This is would normally get covered by Android App Links
@@ -35,13 +42,15 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
    * @param url
    */
   const openWebUrl = (url: string) => {
+    const linkUrlObject = new URLParse(url);
     if (url.startsWith(appConfig.serverUrl)) {
       let appUrl = url.replace(appConfig.serverUrl, 'tricordarr:/');
-      if (appUrl.includes('/fez')) {
-        appUrl = appUrl.replace('/fez', '/lfg');
-      }
-      console.log('[TwitarrProvider.tsx] Opening reformed URL', appUrl);
-      Linking.openURL(appUrl);
+      openAppUrl(appUrl);
+      return;
+    } else if (appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)) {
+      // Apparently protocol includes the colon.
+      let appUrl = url.replace(`${linkUrlObject.protocol}//${linkUrlObject.hostname}`, 'tricordarr:/');
+      openAppUrl(appUrl);
       return;
     }
     Linking.openURL(url);
@@ -69,16 +78,12 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         lfgPostsData,
         dispatchLfgPostsData,
         openWebUrl,
-        forumCategories,
-        setForumCategories,
         forumData,
         setForumData,
         forumListData,
         dispatchForumListData,
         forumPosts,
         dispatchForumPosts,
-        forumThreadPosts,
-        dispatchForumThreadPosts,
       }}>
       {children}
     </TwitarrContext.Provider>

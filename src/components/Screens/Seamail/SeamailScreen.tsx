@@ -31,6 +31,8 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ListTitleView} from '../../Views/ListTitleView';
+import {useQueryClient} from '@tanstack/react-query';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -49,6 +51,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
   const {refetchUserNotificationData} = useUserNotificationData();
+  const queryClient = useQueryClient();
 
   const {
     data,
@@ -141,6 +144,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
@@ -202,11 +206,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // Mark as Read
   useEffect(() => {
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      console.info('Doing the fez thing');
       dispatchFezList({
         type: FezListActions.markAsRead,
         fezID: fez.fezID,
       });
+      // Allegedly this invalidates based on prefix, so this will have a side effect
+      // of invalidating LFGs too. Shouldn't be a big deal.
+      queryClient.invalidateQueries({queryKey: ['/fez/joined']});
       refetchUserNotificationData();
     }
   }, [dispatchFezList, fez, refetchUserNotificationData]);
@@ -291,7 +297,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // End is Start, Start is End.
         onEndReached={handleLoadPrevious}
       />
-      {showButton && <FloatingScrollButton onPress={scrollToBottom} />}
+      {showButton && <FloatingScrollButton onPress={scrollToBottom} displayPosition={'raised'} />}
       <ContentPostForm onSubmit={onSubmit} enablePhotos={false} />
     </AppView>
   );

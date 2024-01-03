@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -15,7 +15,8 @@ import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator'
 import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
-import {ForumThreadSortMenu} from '../Menus/Forum/ForumThreadSortMenu';
+import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
+import {useIsFocused} from '@react-navigation/native';
 
 export const ForumThreadSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -46,13 +47,17 @@ export const ForumThreadSearchBar = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setEnable(false);
+  }
   const onClear = () => {
     setEnable(false);
     setForumList([]);
@@ -68,6 +73,7 @@ export const ForumThreadSearchBar = () => {
     } else {
       setEnable(true);
       refetch();
+      Keyboard.dismiss();
     }
   };
 
@@ -88,7 +94,7 @@ export const ForumThreadSearchBar = () => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadSortMenu />
+          <ForumThreadScreenSortMenu />
           <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelpModal} />
         </HeaderButtons>
       </View>
@@ -102,10 +108,10 @@ export const ForumThreadSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       setForumList(data.pages.flatMap(p => p.forumThreads));
     }
-  }, [data]);
+  }, [data, isFocused]);
 
   return (
     <>

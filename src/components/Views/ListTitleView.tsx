@@ -3,7 +3,12 @@ import {View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 
-export const ListTitleView = ({title}: {title?: string}) => {
+interface ListTitleViewProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export const ListTitleView = ({title, subtitle}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
   if (!title) {
     return null;
@@ -12,6 +17,7 @@ export const ListTitleView = ({title}: {title?: string}) => {
     <View style={[commonStyles.flexRow, commonStyles.paddingVerticalSmall, commonStyles.paddingHorizontal]}>
       <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
         <Text style={[commonStyles.bold]}>{title}</Text>
+        {subtitle && <Text>{subtitle}</Text>}
       </View>
     </View>
   );

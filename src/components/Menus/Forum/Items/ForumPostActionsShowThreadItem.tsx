@@ -22,7 +22,7 @@ export const ForumPostActionsShowThreadItem = ({
     rootNavigation.push(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.forumsTab,
       params: {
-        screen: ForumStackComponents.forumThreadScreen,
+        screen: ForumStackComponents.forumThreadPostScreen,
         params: {
           postID: forumPost.postID.toString(),
         },

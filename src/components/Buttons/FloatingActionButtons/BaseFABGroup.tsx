@@ -5,25 +5,10 @@ import {useAppTheme} from '../../../styles/Theme';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {Animated, ColorValue, GestureResponderEvent, StyleProp, StyleSheet, TextStyle, ViewStyle} from 'react-native';
+import {FabGroupActionType} from '../../../libraries/Types';
 
 interface BaseFABProps {
-  // This came from the upstream.
-  actions: Array<{
-    icon: IconSource;
-    label?: string;
-    color?: string;
-    labelTextColor?: string;
-    accessibilityLabel?: string;
-    accessibilityHint?: string;
-    style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
-    containerStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
-    labelStyle?: StyleProp<TextStyle>;
-    labelMaxFontSizeMultiplier?: number;
-    onPress: (e: GestureResponderEvent) => void;
-    size?: 'small' | 'medium';
-    testID?: string;
-    rippleColor?: ColorValue;
-  }>;
+  actions: FabGroupActionType[];
   color?: string;
   backgroundColor?: string;
   openLabel?: string;

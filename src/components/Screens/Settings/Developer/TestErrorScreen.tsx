@@ -9,12 +9,29 @@ import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../../Views/Modals/HelpModalView';
+import {useQuery} from '@tanstack/react-query';
+import {RefreshControl} from 'react-native';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
+import axios from 'axios';
+import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();
   const {setErrorMessage, setErrorBanner, errorBanner, errorMessage} = useErrorHandler();
   const {commonStyles} = useStyles();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
+  const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useQuery(['/nonexistant'], {
+    enabled: false,
+    onError: error => {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error);
+      }
+    },
+  });
+  const {errorCount} = useSwiftarrQueryClient();
+  const {refetch: refetchSuccessQuery, isFetching: isFetchingSuccess} = useHealthQuery({
+    enabled: false,
+  });
 
   const onDismiss = () => console.log('O HAI');
   const onModal = () => {
@@ -25,7 +42,8 @@ export const TestErrorScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView
+        refreshControl={<RefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}>
         <PaddedContentView>
           <Text>Banner: {errorBanner}</Text>
           <PrimaryActionButton
@@ -48,6 +66,17 @@ export const TestErrorScreen = () => {
             onPress={onModal}
             style={[commonStyles.marginTopSmall]}
           />
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>{errorCount}</Text>
+          <PrimaryActionButton
+            buttonText={'Fail Query'}
+            onPress={refetchErrorQuery}
+            buttonColor={theme.colors.twitarrNegativeButton}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton buttonText={'Success Query'} onPress={refetchSuccessQuery} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

@@ -26,8 +26,10 @@ export const UserInfoSettingsScreen = () => {
     <AppView>
       <ScrollView>
         <View>
-          <Text>Profile Public Data</Text>
           <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Profile Public Data</DataTable.Title>
+            </DataTable.Header>
             <DataTable.Row>
               <DataTable.Cell>UserID</DataTable.Cell>
               <DataTable.Cell>{profilePublicData?.header.userID}</DataTable.Cell>
@@ -39,8 +41,10 @@ export const UserInfoSettingsScreen = () => {
           </DataTable>
         </View>
         <View>
-          <Text>Token Auth Data</Text>
           <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Token Auth Data</DataTable.Title>
+            </DataTable.Header>
             <DataTable.Row>
               <DataTable.Cell>UserID</DataTable.Cell>
               <DataTable.Cell>{tokenData?.userID}</DataTable.Cell>

@@ -44,10 +44,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
             />
           </PaddedContentView>
           <PaddedContentView>
-            <Text>
-              If you created an account during the pre-registration period or on a different device you can log in with
-              it below.
-            </Text>
+            <Text>If you already created an account this year you can log in with it below.</Text>
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton

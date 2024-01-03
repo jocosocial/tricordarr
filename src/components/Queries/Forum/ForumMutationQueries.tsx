@@ -1,4 +1,4 @@
-import {ErrorResponse, FezData, ForumCreateData, ForumData} from '../../../libraries/Structs/ControllerStructs';
+import {ErrorResponse, ForumCreateData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 

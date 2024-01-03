@@ -20,7 +20,7 @@ async function buildWebsocketURL(fezID?: string) {
   } else {
     wsUrl.replace('http', 'ws');
   }
-  console.log('[Websockets.ts] Websocket URL is', wsUrl);
+  // console.log('[Websockets.ts] Websocket URL is', wsUrl);
   return wsUrl;
 }
 

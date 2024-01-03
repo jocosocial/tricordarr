@@ -65,6 +65,16 @@ export const announcementsChannel: AndroidChannel = {
 };
 
 /**
+ * Notification channel for Seamail content.
+ */
+export const forumChannel: AndroidChannel = {
+  id: 'forums',
+  name: 'Forums',
+  groupId: contentChannelGroup.id,
+  description: 'Forum content from the Twitarr server.',
+};
+
+/**
  * Setup function to ensure that the channels and their groups exist.
  */
 export async function setupChannels() {
@@ -74,4 +84,5 @@ export async function setupChannels() {
   await notifee.createChannel(seamailChannel);
   await notifee.createChannel(lfgChannel);
   await notifee.createChannel(announcementsChannel);
+  await notifee.createChannel(forumChannel);
 }

@@ -154,6 +154,9 @@ export const commonStyles = StyleSheet.create({
     marginVertical: 0,
     marginHorizontal: 0,
   },
+  marginTopZero: {
+    marginTop: 0,
+  },
   paddingHorizontalZero: {
     paddingHorizontal: 0,
   },
@@ -231,5 +234,8 @@ export const commonStyles = StyleSheet.create({
   },
   overflowHidden: {
     overflow: 'hidden',
+  },
+  linkText: {
+    textDecorationLine: 'underline',
   },
 });

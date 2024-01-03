@@ -33,7 +33,7 @@ export const ScheduleLfgFilterMenu = () => {
 
   const clearFilters = () => {
     setLfgTypeFilter(undefined);
-    setLfgHidePastFilter(appConfig.hidePastLfgs);
+    setLfgHidePastFilter(appConfig.schedule.hidePastLfgs);
   };
 
   const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter;

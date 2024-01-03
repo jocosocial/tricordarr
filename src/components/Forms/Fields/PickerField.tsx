@@ -1,9 +1,8 @@
 import {Button, Divider, Menu} from 'react-native-paper';
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {AppIcon} from '../../Icons/AppIcon';
 import {useFormikContext} from 'formik';
 
 interface PickerFieldProps {
@@ -32,12 +31,10 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
   const styles = StyleSheet.create({
     button: {
       ...commonStyles.roundedBorder,
-      ...commonStyles.flexRow,
+      ...commonStyles.flex,
       minHeight: 48,
-      ...commonStyles.alignItemsCenter,
     },
     text: {
-      // paddingLeft: 8,
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
@@ -46,6 +43,8 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
     content: {
       ...commonStyles.flexRow,
       ...commonStyles.flex,
+      minHeight: 48,
+      justifyContent: 'flex-start',
     },
   });
 
@@ -54,16 +53,18 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
       visible={visible}
       onDismiss={closeMenu}
       anchor={
-        <Button
-          buttonColor={theme.colors.background}
-          textColor={theme.colors.onBackground}
-          labelStyle={styles.text}
-          contentStyle={styles.content}
-          style={styles.button}
-          onPress={openMenu}
-          mode={'outlined'}>
-          {label} ({getTitle(value)})
-        </Button>
+        <View>
+          <Button
+            buttonColor={theme.colors.background}
+            textColor={theme.colors.onBackground}
+            labelStyle={styles.text}
+            contentStyle={styles.content}
+            style={styles.button}
+            onPress={openMenu}
+            mode={'outlined'}>
+            {label} ({getTitle(value)})
+          </Button>
+        </View>
       }>
       {choices.map((item, index) => {
         return (

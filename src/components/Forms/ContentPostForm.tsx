@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
@@ -8,11 +8,13 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {IconButton, Text} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
-import {ContentInsertMenuView} from '../Views/ContentInsertMenuView';
+import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
-import {ContentInsertPhotosView} from '../Views/ContentInsertPhotosView';
-import {PostLengthView} from '../Views/PostLengthView';
+import {ContentInsertPhotosView} from '../Views/Content/ContentInsertPhotosView';
+import {ContentPostLengthView} from '../Views/Content/ContentPostLengthView';
+import {MentionInput} from 'react-native-controlled-mentions';
+import {ContentPostMentionSuggestionsView} from '../Views/ContentPostMentionSuggestionsView';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -81,6 +83,10 @@ export const ContentPostForm = ({
       ...commonStyles.justifyCenter,
       ...commonStyles.marginBottomSmall,
     },
+    inputWrapperViewSide: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.flexEnd,
+    },
   });
 
   const handleInsertPress = () => {
@@ -98,6 +104,7 @@ export const ContentPostForm = ({
   //
   // This uses the native TextInput rather than Paper since Paper's was way more
   // annoying to try and stylize for this use.
+  // At least I used to until I switched to the MentionsInput.
   return (
     <Formik
       innerRef={formRef}
@@ -116,29 +123,42 @@ export const ContentPostForm = ({
             maxPhotos={maxPhotos}
           />
           <View style={styles.formView}>
-            <IconButton
-              icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
-              onPress={handleInsertPress}
-            />
+            <View style={styles.inputWrapperViewSide}>
+              <IconButton
+                icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
+                onPress={handleInsertPress}
+              />
+            </View>
             <View style={styles.inputWrapperView}>
-              <TextInput
+              <MentionInput
                 underlineColorAndroid={'transparent'}
                 style={styles.input}
                 multiline={true}
                 onChangeText={handleChange('text')}
+                onChange={handleChange('text')}
                 onBlur={handleBlur('text')}
                 value={values.text}
+                partTypes={[
+                  {
+                    trigger: '@', // Should be a single character like '@' or '#'
+                    renderSuggestions: ContentPostMentionSuggestionsView,
+                    textStyle: commonStyles.bold, // The mention style in the input
+                  },
+                ]}
+
               />
               <ContentInsertPhotosView />
             </View>
-            <SubmitIconButton
-              disabled={!values.text}
-              submitting={overrideSubmitting || isSubmitting}
-              onPress={onPress || handleSubmit}
-              withPrivilegeColors={true}
-            />
+            <View style={styles.inputWrapperViewSide}>
+              <SubmitIconButton
+                disabled={!values.text}
+                submitting={overrideSubmitting || isSubmitting}
+                onPress={onPress || handleSubmit}
+                withPrivilegeColors={true}
+              />
+            </View>
           </View>
-          {dirty && <PostLengthView content={values.text} maxChars={maxLength} />}
+          {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
         </View>
       )}
     </Formik>

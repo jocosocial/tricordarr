@@ -262,3 +262,21 @@ export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => 
 
 // Formatter for relative time
 export const timeAgo = new TimeAgo('en-US');
+
+// ChatGPT based on the useDateTime above.
+// This only updates every n minutes, not on the nth minute.
+export const useRefreshingDate = (minutes: number = 5) => {
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Trigger a state refresh every 15 minutes
+      setLastRefresh(new Date());
+    }, minutes * 60 * 1000); // 15 minutes in milliseconds
+
+    // Clear the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [minutes]); // Empty dependency array ensures the effect runs only once on mount
+
+  return lastRefresh;
+};

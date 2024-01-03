@@ -24,6 +24,7 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -34,20 +35,16 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {isLoggedIn} = useAuth();
   const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,
-    excludeFezType: [FezType.open, FezType.closed],
     fezType: lfgTypeFilter,
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
-    options: {
-      enabled: isLoggedIn,
-    },
   });
   const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
-  const {closeFezSocket} = useSocket();
+  const {notificationSocket, closeFezSocket} = useSocket();
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -64,6 +61,43 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     );
   }, [isLoggedIn]);
 
+  const notificationHandler = useCallback(
+    (event: WebSocketMessageEvent) => {
+      const socketMessage = JSON.parse(event.data) as SocketNotificationData;
+      if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
+        if (lfgList.some(f => f.fezID === socketMessage.contentID)) {
+          dispatchLfgList({
+            type: FezListActions.incrementPostCount,
+            fezID: socketMessage.contentID,
+          });
+          dispatchLfgList({
+            type: FezListActions.moveToTop,
+            fezID: socketMessage.contentID,
+          });
+        } else {
+          // This is kinda a lazy way out, but it works.
+          // Not using onRefresh() so that we don't show the sudden refreshing circle.
+          // Hopefully that's a decent idea.
+          refetch();
+        }
+      }
+    },
+    [dispatchLfgList, lfgList, refetch],
+  );
+
+  useEffect(() => {
+    if (notificationSocket && isFocused) {
+      notificationSocket.addEventListener('message', notificationHandler);
+    } else if (notificationSocket && !isFocused) {
+      notificationSocket.removeEventListener('message', notificationHandler);
+    }
+    return () => {
+      if (notificationSocket) {
+        notificationSocket.removeEventListener('message', notificationHandler);
+      }
+    };
+  }, [isFocused, notificationHandler, notificationSocket]);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
@@ -75,13 +109,13 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   }, [closeFezSocket, getNavButtons, isFocused, navigation, setLfg]);
 
   useEffect(() => {
-    if (data && data.pages) {
+    if (data && data.pages && isFocused) {
       dispatchLfgList({
         type: FezListActions.set,
         fezList: data.pages.flatMap(p => p.fezzes),
       });
     }
-  }, [data, dispatchLfgList]);
+  }, [data, dispatchLfgList, isFocused]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

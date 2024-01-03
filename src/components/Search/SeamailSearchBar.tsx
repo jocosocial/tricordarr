@@ -1,40 +1,55 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {Searchbar, Text} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailListQuery} from '../Queries/Fez/FezQueries';
-import {View} from 'react-native';
-import {ListSection} from '../Lists/ListSection';
-import {SeamailListItem} from '../Lists/Items/SeamailListItem';
+import {Keyboard, RefreshControl, View} from 'react-native';
+import {SeamailFlatList} from '../Lists/Seamail/SeamailFlatList';
 
-interface SeamailSearchBarProps {
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-}
-
-export const SeamailSearchBar = ({setIsLoading}: SeamailSearchBarProps) => {
+export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const {setErrorMessage} = useErrorHandler();
-  const {data, refetch, isFetching, isFetched} = useSeamailListQuery({
+  const [queryEnable, setQueryEnable] = useState(false);
+  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, remove} = useSeamailListQuery({
     search: searchQuery,
     options: {
-      enabled: false,
+      enabled: queryEnable,
     },
   });
   const {commonStyles} = useStyles();
   const [fezList, setFezList] = useState<FezData[]>([]);
-  // const navigation = useSeamailStack();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
-
-  const onClear = () => setFezList([]);
-
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setQueryEnable(false);
+  };
+  const onClear = () => {
+    setFezList([]);
+    remove();
+    setQueryEnable(false);
+  };
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
     } else {
+      setQueryEnable(true);
       refetch();
+      Keyboard.dismiss();
     }
+  };
+
+  const handleLoadNext = () => {
+    if (!isFetchingNextPage && hasNextPage && queryEnable) {
+      setRefreshing(true);
+      fetchNextPage().finally(() => setRefreshing(false));
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch().then(() => setRefreshing(false));
   };
 
   useEffect(() => {
@@ -47,10 +62,6 @@ export const SeamailSearchBar = ({setIsLoading}: SeamailSearchBarProps) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    setIsLoading(isFetching);
-  }, [isFetching, setIsLoading]);
-
   return (
     <View>
       <Searchbar
@@ -62,18 +73,11 @@ export const SeamailSearchBar = ({setIsLoading}: SeamailSearchBarProps) => {
         onClearIconPress={onClear}
         style={[commonStyles.marginBottomSmall, commonStyles.marginHorizontal]}
       />
-      <ListSection>
-        {isFetched && fezList.length === 0 && (
-          <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
-            <Text>No Results</Text>
-          </View>
-        )}
-        {fezList.map((item, i) => (
-          <View key={i} style={[commonStyles.paddingVerticalSmall]}>
-            <SeamailListItem fez={item} />
-          </View>
-        ))}
-      </ListSection>
+      <SeamailFlatList
+        fezList={fezList}
+        refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
+        onEndReached={handleLoadNext}
+      />
     </View>
   );
 };

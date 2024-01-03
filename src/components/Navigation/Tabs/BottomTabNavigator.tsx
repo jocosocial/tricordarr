@@ -50,6 +50,14 @@ export const BottomTabNavigator = () => {
     return count;
   };
 
+  const getForumBadgeCount = () => {
+    let count = userNotificationData?.newForumMentionCount || 0;
+    userNotificationData?.alertWords.map(alertData => {
+      count += alertData.newForumMentionCount;
+    });
+    return count;
+  };
+
   return (
     <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
       <Tab.Screen
@@ -76,7 +84,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Forums',
           tabBarIcon: () => getIcon(AppIcons.forum),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newForumMentionCount),
+          tabBarBadge: getBadgeDisplayValue(getForumBadgeCount()),
         }}
       />
       <Tab.Screen
