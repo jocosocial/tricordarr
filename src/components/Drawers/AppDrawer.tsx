@@ -74,7 +74,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Deck Map'}
                 icon={AppIcons.map}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/map`)}
+                onPress={() => handleDrawerNav('tricordarr://map')}
               />
               <PaperDrawer.Item
                 label={'Time Zone Check'}

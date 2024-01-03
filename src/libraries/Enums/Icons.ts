@@ -94,4 +94,5 @@ export enum AppIcons {
   text = 'text',
   forumEdit = 'playlist-edit',
   altAccount = 'account-switch',
+  decks = 'elevator',
 }
