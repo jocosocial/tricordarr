@@ -22,7 +22,7 @@ export const MainAccountMenu = () => {
 
   const handleManage = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
         screen: MainStackComponents.mainSettingsScreen,
@@ -38,7 +38,7 @@ export const MainAccountMenu = () => {
   const handleProfile = () => {
     closeMenu();
     if (profilePublicData) {
-      rootNavigation.push(RootStackComponents.rootContentScreen, {
+      rootNavigation.navigate(RootStackComponents.rootContentScreen, {
         screen: BottomTabComponents.homeTab,
         params: {
           screen: MainStackComponents.userProfileScreen,
@@ -54,7 +54,7 @@ export const MainAccountMenu = () => {
 
   const handleSettings = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
         screen: MainStackComponents.mainSettingsScreen,
@@ -69,7 +69,7 @@ export const MainAccountMenu = () => {
 
   const handleLogin = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
         screen: MainStackComponents.mainSettingsScreen,
@@ -84,7 +84,7 @@ export const MainAccountMenu = () => {
 
   const handleHelp = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
+    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
         screen: MainStackComponents.mainHelpScreen,

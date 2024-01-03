@@ -9,4 +9,3 @@ Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
 * add settings to help
 * fill in the rest of the CoC
-* Back to today from the login/logout in the account dropdown causes weird back button behavior
