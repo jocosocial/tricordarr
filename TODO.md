@@ -7,4 +7,3 @@ Work Queue
 
 Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
-* add settings to help

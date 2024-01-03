@@ -3,7 +3,6 @@ import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {EventCard} from '../../Cards/Schedule/EventCard';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScheduleItemCardBase} from '../../Cards/Schedule/ScheduleItemCardBase';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -88,6 +87,16 @@ export const EventHelpScreen = () => {
             Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
             the <AppIcon icon={AppIcons.favorite} /> icon at the top of the event details screen. You can see all of
             your favorite events with a filter or with the floating action button.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+            LFG Integration
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
