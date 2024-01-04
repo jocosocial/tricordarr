@@ -132,16 +132,13 @@ export const getAppConfig = async () => {
   }
   let appConfig = JSON.parse(rawConfig) as AppConfig;
   // Certain keys should always be loaded from the app environment.
+  // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
   if (Config.OOBE_VERSION) {
     appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
   }
-  if (Config.CRUISE_START_DATE) {
-    const [year, month, day] = Config.CRUISE_START_DATE.split('-').map(Number);
-    // Because Javascript, Fools!
-    appConfig.cruiseStartDate = new Date(year, month - 1, day);
-  }
-  if (Config.CRUISE_LENGTH) {
-    appConfig.cruiseLength = Number(Config.CRUISE_LENGTH);
-  }
+  // Type conversions on a couple of keys. Barf.
+  appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+
+  // Ok now we're done
   return appConfig;
 };

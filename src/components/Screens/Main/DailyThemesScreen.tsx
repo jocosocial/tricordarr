@@ -7,9 +7,9 @@ import {RefreshControl} from 'react-native';
 import {DailyThemeCard} from '../../Cards/MainScreen/DailyThemeCard';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
-import {Text} from 'react-native-paper';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
+import {ListTitleView} from '../../Views/ListTitleView';
 
 export const DailyThemesScreen = () => {
   const {data, refetch, isLoading, isRefetching} = useDailyThemeQuery();
@@ -26,9 +26,11 @@ export const DailyThemesScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
         <PaddedContentView>
-          <Text>Today is day #{cruiseDayIndex}</Text>
+          <ListTitleView title={`Today is day #${cruiseDayIndex}`} />
         </PaddedContentView>
         {data?.map(dt => {
           return (

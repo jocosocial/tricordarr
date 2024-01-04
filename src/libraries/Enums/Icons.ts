@@ -95,5 +95,5 @@ export enum AppIcons {
   forumEdit = 'playlist-edit',
   altAccount = 'account-switch',
   decks = 'elevator',
-  dailyTheme = 'theme-light-dark',
+  dailyTheme = 'drama-masks',
 }
