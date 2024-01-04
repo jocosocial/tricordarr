@@ -5,6 +5,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {StorageKeys} from '../Storage';
 import {HttpStatusCode} from 'axios';
 import {LikeType} from '../Enums/LikeType';
+import pluralize from 'pluralize';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -386,6 +387,46 @@ export interface DailyThemeData {
   image?: string;
   /// Day of cruise, counted from `Settings.shared.cruiseStartDate`. 0 is embarkation day. Values could be negative (e.g. Day -1 is "Anticipation Day")
   cruiseDay: number;
+}
+
+export namespace DailyThemeData {
+  export const getThemeForDay = (cruiseDayIndex: number, cruiseLength: number, dailyThemeData?: DailyThemeData[]) => {
+    if (dailyThemeData) {
+      let todaysTheme: DailyThemeData | undefined;
+      dailyThemeData.every(dt => {
+        if (dt.cruiseDay === cruiseDayIndex) {
+          todaysTheme = dt;
+        }
+        return true;
+      });
+      // Default Themes
+      if (!todaysTheme) {
+        if (cruiseDayIndex >= cruiseLength - 1) {
+          todaysTheme = {
+            themeID: 'default_theme_after',
+            title: `${cruiseDayIndex - cruiseLength + 1} Days after Boat`,
+            info: "JoCo Cruise has ended. Hope you're enjoying being back in the real world.",
+            cruiseDay: cruiseDayIndex,
+          };
+        } else if (cruiseDayIndex < 0) {
+          todaysTheme = {
+            themeID: 'default_theme_before',
+            title: `${Math.abs(cruiseDayIndex)} ${pluralize('day', Math.abs(cruiseDayIndex))} before boat!`,
+            info: 'Soon™',
+            cruiseDay: cruiseDayIndex,
+          };
+        } else {
+          todaysTheme = {
+            themeID: 'default_theme_before',
+            title: `Cruise Day ${cruiseDayIndex + 1}: No Theme Day`,
+            info: 'A wise man once said, "A day without a theme is like a guitar ever-so-slightly out of tune. You can play it however you want, and it will be great, but someone out there will know that if only there was a theme, everything would be in tune."',
+            cruiseDay: cruiseDayIndex,
+          };
+        }
+      }
+      return todaysTheme;
+    }
+  };
 }
 
 export interface UserPasswordData {

@@ -4,7 +4,6 @@ Backlog
 * next lfg based on cached query data
 
 Work Queue
-* Math problem with cruise day when cruise is in future
 
 Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.

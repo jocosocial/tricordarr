@@ -7,25 +7,12 @@ import {DailyThemeCard} from '../Cards/MainScreen/DailyThemeCard';
 
 export const MainThemeView = () => {
   const {data: dailyThemeData} = useDailyThemeQuery();
-  const {cruiseDayIndex} = useCruise();
+  const {cruiseDayIndex, cruiseLength} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
 
   useEffect(() => {
-    if (dailyThemeData) {
-      let noMatch = true;
-      dailyThemeData.every(dt => {
-        if (dt.cruiseDay === cruiseDayIndex) {
-          setDailyTheme(dt);
-          noMatch = false;
-          return false;
-        }
-        return true;
-      });
-      if (noMatch) {
-        setDailyTheme(undefined);
-      }
-    }
-  }, [cruiseDayIndex, dailyThemeData]);
+    setDailyTheme(DailyThemeData.getThemeForDay(cruiseDayIndex, cruiseLength, dailyThemeData));
+  }, [cruiseDayIndex, cruiseLength, dailyThemeData]);
 
   if (!dailyTheme) {
     return <></>;
