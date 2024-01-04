@@ -160,11 +160,6 @@ export const SettingsScreen = ({navigation}: Props) => {
                   description={'Settings for the Twitarr API client.'}
                   navComponent={SettingsStackScreenComponents.querySettingsScreen}
                 />
-                <SettingsNavigationListItem
-                  title={'Daily Themes'}
-                  description={'View all daily themes configured in Twitarr.'}
-                  navComponent={SettingsStackScreenComponents.dailyThemeSettingsScreen}
-                />
               </ListSection>
             </>
           )}

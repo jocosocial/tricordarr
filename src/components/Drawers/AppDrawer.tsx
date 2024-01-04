@@ -55,19 +55,24 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
             )}
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               <PaperDrawer.Item
-                label={'Karaoke'}
-                icon={AppIcons.karaoke}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
-              />
-              <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/boardgames`)}
               />
               <PaperDrawer.Item
+                label={'Karaoke'}
+                icon={AppIcons.karaoke}
+                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
+              />
+              <PaperDrawer.Item
                 label={'Lighter'}
                 icon={AppIcons.lighter}
                 onPress={() => handleDrawerNav('tricordarr://lighter')}
+              />
+              <PaperDrawer.Item
+                label={'Daily Themes'}
+                icon={AppIcons.dailyTheme}
+                onPress={() => handleDrawerNav('tricordarr://dailyThemes')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>

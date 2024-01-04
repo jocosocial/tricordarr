@@ -79,6 +79,7 @@ export enum MainStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   mapScreen = 'MapScreen',
   conductScreen = 'MainConductScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
 }
 
 export enum RootStackComponents {
