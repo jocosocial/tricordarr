@@ -31,6 +31,7 @@ import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSetti
 import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoSettingsScreen';
 import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
+import {DailyThemeSettingsScreen} from '../../Screens/Settings/Developer/DailyThemeSettingsScreen';
 
 export type SettingsStackParamList = {
   SettingsScreen: undefined;
@@ -61,6 +62,7 @@ export type SettingsStackParamList = {
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;
   QuerySettingsScreen: undefined;
+  DailyThemeSettingsScreen: undefined;
 };
 
 export const SettingsStack = () => {
@@ -209,6 +211,11 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.querySettingsScreen}
         component={QuerySettingsScreen}
         options={{title: 'Query Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.dailyThemeSettingsScreen}
+        component={DailyThemeSettingsScreen}
+        options={{title: 'Daily Themes'}}
       />
     </Stack.Navigator>
   );

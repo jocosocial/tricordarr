@@ -6,11 +6,16 @@ import {APIImage} from '../../Images/APIImage';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 
+interface DailyThemeCardProps {
+  dailyTheme: DailyThemeData;
+  cardTitle?: string;
+}
+
 /**
  * A card to display the daily theme object as returned from the API. If no object then no theme.
  * The site UI invents some themes for days that don't have them.
  */
-export const DailyThemeCard = (props: {dailyTheme: DailyThemeData}) => {
+export const DailyThemeCard = (props: DailyThemeCardProps) => {
   const {commonStyles} = useStyles();
   const rootNavigation = useRootStack();
 
@@ -29,7 +34,7 @@ export const DailyThemeCard = (props: {dailyTheme: DailyThemeData}) => {
   return (
     <Card style={commonStyles.twitarrNeutral} onPress={onPress}>
       <Card.Title
-        title={"Today's Theme:"}
+        title={props.cardTitle || "Today's Theme:"}
         subtitle={props.dailyTheme.title}
         titleStyle={[commonStyles.onTwitarrButton, commonStyles.bold]}
         subtitleVariant={'bodyLarge'}
