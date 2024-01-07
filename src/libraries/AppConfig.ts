@@ -68,6 +68,8 @@ const defaultAppConfig: AppConfig = {
     incomingPhoneCall: false,
     phoneCallAnswered: false,
     phoneCallEnded: false,
+    moderatorForumMention: true,
+    twitarrTeamForumMention: true,
   },
   fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
   oobeCompletedVersion: 0,

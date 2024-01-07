@@ -42,6 +42,16 @@ export const contentNotificationCategories: ContentNotificationCategory[] = [
     disabled: true,
     description: 'Reminder that a followed event is starting SoonTM. At this time this feature is not available.',
   },
+  {
+    configKey: 'moderatorForumMention',
+    title: 'Moderator Forum Mentions',
+    description: 'Affects moderators only. New forum post was made [@]mentioning moderator.',
+  },
+  {
+    configKey: 'twitarrTeamForumMention',
+    title: 'TwitarrTeam Forum Mentions',
+    description: 'Affects twitarrteam only. New forum post was made [@]mentioning twitarrteam.',
+  },
 ];
 
 export function generateContentNotification(

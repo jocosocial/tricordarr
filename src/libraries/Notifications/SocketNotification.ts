@@ -44,6 +44,9 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.forum;
       title = 'Forum Alert Word';
       break;
+    // Be careful about this ordering!
+    case NotificationTypeData.twitarrTeamForumMention:
+    case NotificationTypeData.moderatorForumMention:
     case NotificationTypeData.forumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;

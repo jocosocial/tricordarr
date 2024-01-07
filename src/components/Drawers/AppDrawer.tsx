@@ -7,7 +7,6 @@ import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
 
@@ -23,9 +22,24 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     setDrawerOpen(false);
   };
 
-  const getModReportBadge = () => {
-    if (userNotificationData?.moderatorData?.openReportCount) {
-      return <Badge>{userNotificationData.moderatorData.openReportCount}</Badge>;
+  const getModBadge = () => {
+    let count = 0;
+    if (userNotificationData?.moderatorData) {
+      count += userNotificationData.moderatorData.openReportCount;
+      count += userNotificationData.moderatorData.newModeratorForumMentionCount;
+    }
+    if (count) {
+      return <Badge>{count}</Badge>;
+    }
+  };
+
+  const getTTBadge = () => {
+    let count = 0;
+    if (userNotificationData?.moderatorData) {
+      count += userNotificationData.moderatorData.newTTForumMentionCount;
+    }
+    if (count) {
+      return <Badge>{count}</Badge>;
     }
   };
 
@@ -123,7 +137,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
                   onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
-                  right={getModReportBadge}
+                  right={getModBadge}
                 />
               )}
               {hasTwitarrTeam && (
@@ -131,6 +145,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   label={'Server Admin'}
                   icon={AppIcons.twitarteam}
                   onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/admin`)}
+                  right={getTTBadge}
                 />
               )}
             </PaperDrawer.Section>

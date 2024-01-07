@@ -114,6 +114,13 @@ interface ModeratorNotificationData {
   /// The number of Seamails to @TwitarrTeam. Nil if user isn't a member of TwitarrTeam. This is in the Moderator struct because I didn't
   /// want to make *another* sub-struct for TwitarrTeam, just to hold one value.
   newTTSeamailMessageCount?: number;
+
+  /// Number of forum post @mentions the user has not read for @moderator.
+  newModeratorForumMentionCount: number;
+
+  /// Number of forum post @mentions the user has not read for @twitarrteam. Nil if the user isn't a member of TwitarrTeam.
+  /// This is in the Moderator struct because I didn't want to make *another* sub-struct for TwitarrTeam, just to hold two values.
+  newTTForumMentionCount: number;
 }
 
 export interface UserNotificationData {
