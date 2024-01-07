@@ -35,6 +35,7 @@ import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ForumPostAlertwordScreen} from './Post/ForumPostAlertwordScreen';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
+import {ListSubheader} from '../../Lists/ListSubheader';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -110,7 +111,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
         <View>
           {data && (
             <ListSection>
-              <List.Subheader>Forum Categories</List.Subheader>
+              <ListSubheader>Forum Categories</ListSubheader>
               {data.map((category, index) => {
                 return (
                   <React.Fragment key={category.categoryID}>
@@ -123,7 +124,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
             </ListSection>
           )}
           <ListSection>
-            <List.Subheader>Personal Categories</List.Subheader>
+            <ListSubheader>Personal Categories</ListSubheader>
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Favorite Forums'}
@@ -165,7 +166,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
             <Divider bold={true} />
           </ListSection>
           <ListSection>
-            <List.Subheader>Alert Keywords</List.Subheader>
+            <ListSubheader>Alert Keywords</ListSubheader>
             <Divider bold={true} />
             {keywordData?.keywords.map(alertWord => {
               return (

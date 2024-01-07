@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {Divider, List} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNavigationListItem';
 import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../Views/AppView';
@@ -14,6 +14,7 @@ import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTit
 import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {SettingsRegistrationListItem} from '../../Lists/Items/Settings/SettingsRegistrationListItem';
+import {ListSubheader} from '../../Lists/ListSubheader';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -38,7 +39,7 @@ export const SettingsScreen = ({navigation}: Props) => {
         <View>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Account</List.Subheader>
+            <ListSubheader>Account</ListSubheader>
             {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
             {!tokenData && <SettingsRegistrationListItem />}
             <SettingsNavigationListItem
@@ -49,7 +50,7 @@ export const SettingsScreen = ({navigation}: Props) => {
           </ListSection>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Notifications</List.Subheader>
+            <ListSubheader>Notifications</ListSubheader>
             <SettingsNavigationListItem
               title={'Push Notifications'}
               description={'Configure what events you wish to trigger a push notification.'}
@@ -68,7 +69,7 @@ export const SettingsScreen = ({navigation}: Props) => {
           </ListSection>
           <Divider bold={true} />
           <ListSection>
-            <List.Subheader>Content</List.Subheader>
+            <ListSubheader>Content</ListSubheader>
             <SettingsNavigationListItem
               title={'Alert Keywords'}
               description={'Manage keywords that will generate a notification.'}
@@ -109,7 +110,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <>
               <Divider bold={true} />
               <ListSection>
-                <List.Subheader>Developers</List.Subheader>
+                <ListSubheader>Developers</ListSubheader>
                 <SettingsNavigationListItem
                   title={'App Version'}
                   description={'Show detailed version information about this app.'}
