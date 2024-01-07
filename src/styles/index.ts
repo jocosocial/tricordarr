@@ -16,6 +16,9 @@ export const commonStyles = StyleSheet.create({
   marginHorizontal: {
     marginHorizontal: styleDefaults.marginSize,
   },
+  overscroll: {
+    marginBottom: styleDefaults.marginSize * 4,
+  },
   displayNone: {
     display: 'none',
   },
