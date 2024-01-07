@@ -2,13 +2,15 @@ import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs
 
 export enum UserNotificationDataActions {
   set = 'SET',
-  markSeamailRead = 'MARK_SEAMAIL_READ',
+  markAlertwordRead = 'MARK_ALERTWORD_READ',
+  removeAlertword = 'REMOVE_ALERTWORD',
   clear = 'CLEAR',
 }
 
 export type UserNotificationDataActionsType =
   | {type: UserNotificationDataActions.set; userNotificationData: UserNotificationData}
-  | {type: UserNotificationDataActions.markSeamailRead}
+  | {type: UserNotificationDataActions.markAlertwordRead; alertWord: string}
+  | {type: UserNotificationDataActions.removeAlertword; alertWord: string}
   | {type: UserNotificationDataActions.clear};
 
 export const userNotificationDataReducer = (
@@ -20,18 +22,36 @@ export const userNotificationDataReducer = (
     case UserNotificationDataActions.set: {
       return action.userNotificationData;
     }
-    // This is invalid because of idempotency issues. Disabling until it maybe comes back
-    // in some other fashion or use.
-    // case UserNotificationDataActions.markSeamailRead: {
-    //   const oldCount = currentData?.newSeamailMessageCount;
-    //   if (oldCount && oldCount > 0) {
-    //     return {
-    //       ...currentData,
-    //       newSeamailMessageCount: oldCount - 1,
-    //     };
-    //   }
-    //   return currentData;
-    // }
+    case UserNotificationDataActions.markAlertwordRead: {
+      if (!currentData) {
+        return undefined;
+      }
+      const newAlertWordData = currentData.alertWords.map(aw => {
+        if (aw.alertword === action.alertWord) {
+          return {
+            ...aw,
+            newForumMentionCount: 0,
+          };
+        }
+        return aw;
+      });
+      return {
+        ...currentData,
+        alertWords: newAlertWordData,
+      };
+    }
+    case UserNotificationDataActions.removeAlertword: {
+      if (!currentData) {
+        return undefined;
+      }
+      const newAlertWordData = currentData.alertWords.filter(aw => {
+        return aw.alertword !== action.alertWord;
+      });
+      return {
+        ...currentData,
+        alertWords: newAlertWordData,
+      };
+    }
     case UserNotificationDataActions.clear: {
       return undefined;
     }

@@ -12,6 +12,8 @@ import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer
 import {useIsFocused} from '@react-navigation/native';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -38,6 +40,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
   const flatListRef = useRef<FlatList<PostData>>(null);
+  const {dispatchUserNotificationData} = useUserNotificationData();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -58,8 +61,12 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
         type: ForumPostListActions.setList,
         postList: data.pages.flatMap(p => p.posts),
       });
+      dispatchUserNotificationData({
+        type: UserNotificationDataActions.markAlertwordRead,
+        alertWord: route.params.alertWord,
+      });
     }
-  }, [data, dispatchForumPosts, isFocused]);
+  }, [data, dispatchForumPosts, isFocused, dispatchUserNotificationData, route.params.alertWord]);
 
   return (
     <AppView>

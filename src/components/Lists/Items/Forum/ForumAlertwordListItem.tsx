@@ -7,6 +7,7 @@ import {Text} from 'react-native-paper';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
+import pluralize from 'pluralize';
 
 interface ForumAlertwordListItemProps {
   alertword: string;
@@ -17,8 +18,7 @@ export const ForumAlertwordListItem = (props: ForumAlertwordListItemProps) => {
   const {userNotificationData} = useUserNotificationData();
   const {commonStyles} = useStyles();
 
-  const undWords = userNotificationData?.alertWords.map(aw => aw.alertword) || []
-  console.log(userNotificationData?.alertWords);
+  const undWords = userNotificationData?.alertWords.map(aw => aw.alertword) || [];
   const getRight = () => {
     if (undWords.includes(props.alertword)) {
       const undWordData = userNotificationData?.alertWords.find(aw => aw.alertword === props.alertword);
@@ -27,7 +27,9 @@ export const ForumAlertwordListItem = (props: ForumAlertwordListItemProps) => {
       }
       return (
         <View style={commonStyles.flexRow}>
-          <Text variant={'bodyMedium'}>{undWordData.forumMentionCount} mentions</Text>
+          <Text variant={'bodyMedium'}>
+            {undWordData.forumMentionCount} {pluralize('match', undWordData.forumMentionCount)}
+          </Text>
           <View style={commonStyles.marginLeftSmall}>
             <ForumNewBadge unreadCount={undWordData.newForumMentionCount} />
           </View>
