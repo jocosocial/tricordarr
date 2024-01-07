@@ -10,5 +10,4 @@ Nightly
 * Wrong header image if und is unavailable. Default to local time
 * New coc
 * Forum category header colors - highlight more
-* No seamail report in closed
 * Don't allow background fetches of fez if seamail not focused. Wait until is focused then fetch
