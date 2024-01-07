@@ -3,14 +3,12 @@ import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {QueryKey, useQuery} from '@tanstack/react-query';
 import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
-import {useConfig} from '../Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 
 /**
  * Clone of useQuery but dedicated for queries that can be performed without the user needing
  * to be logged in. Also does our error processing.
  * @param options
- * @deprecated Use useTokenAuthQuery instead.
  */
 export function useOpenQuery<
   TQueryFnData = unknown,

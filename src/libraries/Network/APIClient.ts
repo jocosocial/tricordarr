@@ -21,7 +21,7 @@ export async function configureAxios() {
   axios.interceptors.request.use(async config => {
     // URL
     const {serverUrl, urlPrefix} = await getAppConfig();
-    if (config.url && !config.url.startsWith(`${serverUrl}${urlPrefix}`)) {
+    if (config.url && !config.url.startsWith(`${serverUrl}`)) {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }
     // Authentication
