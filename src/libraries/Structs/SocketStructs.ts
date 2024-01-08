@@ -52,6 +52,10 @@ export enum NotificationTypeData {
   phoneCallAnswered = 'phoneCallAnswered',
   /// Caller hung up while phone was rining, or other party ended the call in progress, or callee declined
   phoneCallEnded = 'phoneCallEnded',
+  /// A new or edited forum post that now @mentions @moderator.
+  moderatorForumMention = 'moderatorForumMention',
+  /// A new or edited forum post that now @mentions @twitarrteam.
+  twitarrTeamForumMention = 'twitarrTeamForumMention',
 }
 
 export interface PhoneSocketServerAddress {

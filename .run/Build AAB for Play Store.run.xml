@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="gradlew bundleRelease" type="ShConfigurationType">
+  <configuration default="false" name="Build AAB for Play Store" type="ShConfigurationType">
     <option name="SCRIPT_TEXT" value="./gradlew bundleRelease" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />

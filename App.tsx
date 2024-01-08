@@ -115,25 +115,25 @@ function App(): JSX.Element {
                           <TwitarrProvider>
                             <UserRelationsProvider>
                               <UserNotificationDataProvider>
-                                <ModalProvider>
-                                  <Portal.Host>
-                                    <HeaderButtonsProvider stackType={'native'}>
-                                      <CruiseProvider>
-                                        <DrawerProvider>
-                                          <FilterProvider>
-                                            <FeatureProvider>
+                                <FeatureProvider>
+                                  <ModalProvider>
+                                    <Portal.Host>
+                                      <HeaderButtonsProvider stackType={'native'}>
+                                        <CruiseProvider>
+                                          <DrawerProvider>
+                                            <FilterProvider>
                                               <AppEventHandler />
                                               <ForegroundService />
                                               <NotificationDataListener />
                                               <NotificationDataPoller />
                                               <RootStackNavigator />
-                                            </FeatureProvider>
-                                          </FilterProvider>
-                                        </DrawerProvider>
-                                      </CruiseProvider>
-                                    </HeaderButtonsProvider>
-                                  </Portal.Host>
-                                </ModalProvider>
+                                            </FilterProvider>
+                                          </DrawerProvider>
+                                        </CruiseProvider>
+                                      </HeaderButtonsProvider>
+                                    </Portal.Host>
+                                  </ModalProvider>
+                                </FeatureProvider>
                               </UserNotificationDataProvider>
                             </UserRelationsProvider>
                           </TwitarrProvider>

@@ -1,20 +1,20 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
-import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {OobeButtonsView} from '../../Views/OobeButtonsView';
-import {BoldText} from '../../Text/BoldText';
 import {ConductView} from '../../Views/Static/ConductView';
+import {useConductQuery} from '../../Queries/PublicQueries';
+import {RefreshControl} from 'react-native';
+import {LoadingView} from '../../Views/Static/LoadingView';
 
 export const MainConductScreen = () => {
+  const {data, refetch, isFetching} = useConductQuery();
+  if (!data) {
+    return <LoadingView />;
+  }
   return (
     <AppView>
-      <ScrollingContentView isStack={false}>
-        <ConductView />
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        <ConductView docs={[data.guidelines, data.codeofconduct, data.twitarrconduct]} />
       </ScrollingContentView>
     </AppView>
   );

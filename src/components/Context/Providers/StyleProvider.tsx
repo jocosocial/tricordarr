@@ -93,7 +93,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: theme.colors.onError,
     },
     surfaceVariant: {
-      color: theme.colors.onSurfaceVariant,
+      // I don't like the contrast with the current onSurfaceVariant.
+      color: theme.colors.onBackground,
       backgroundColor: theme.colors.surfaceVariant,
     },
     onImageViewer: {

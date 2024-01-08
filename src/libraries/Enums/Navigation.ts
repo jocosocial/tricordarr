@@ -50,6 +50,7 @@ export enum SettingsStackScreenComponents {
   userInfoSettingsScreen = 'UserInfoSettingsScreen',
   aboutSettingsScreen = 'AboutSettingsScreen',
   querySettingsScreen = 'QuerySettingsScreen',
+  dailyThemeSettingsScreen = 'DailyThemeSettingsScreen',
 }
 
 export enum SeamailStackScreenComponents {
@@ -78,6 +79,7 @@ export enum MainStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   mapScreen = 'MapScreen',
   conductScreen = 'MainConductScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
 }
 
 export enum RootStackComponents {
@@ -141,4 +143,5 @@ export enum ForumStackComponents {
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
+  forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
 }

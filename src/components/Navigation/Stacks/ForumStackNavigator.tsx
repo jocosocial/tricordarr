@@ -26,6 +26,7 @@ import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/Contro
 import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
 import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
 import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
+import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -47,6 +48,9 @@ export type ForumStackParamList = {
   ForumOwnedScreen: undefined;
   ForumRecentScreen: undefined;
   ForumPostSearchScreen: undefined;
+  ForumPostAlertwordScreen: {
+    alertWord: string;
+  };
   ForumThreadSearchScreen: undefined;
   ForumThreadCreateScreen: {
     categoryId: string;
@@ -174,6 +178,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostHashtagScreen}
         component={isDisabled ? DisabledView : ForumPostHashtagScreen}
         options={{title: 'Hashtag'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostAlertwordScreen}
+        component={ForumPostAlertwordScreen}
+        options={{title: 'Alert Keyword'}}
       />
     </Stack.Navigator>
   );

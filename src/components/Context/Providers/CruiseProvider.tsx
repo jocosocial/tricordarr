@@ -2,7 +2,7 @@ import React, {PropsWithChildren} from 'react';
 import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 import useDateTime, {getCruiseDay, getCruiseDays} from '../../../libraries/DateTime';
-import {differenceInCalendarDays} from 'date-fns';
+import {differenceInCalendarDays, differenceInDays} from 'date-fns';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -25,9 +25,11 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   let endDate = new Date(startDate.getTime());
   endDate.setDate(startDate.getDate() + cruiseLength - 1);
   // Day Index. Similar to the Swiftarr Site UI this is used to show "days before/days after" the sailing.
+  // There is a difference in behavior between differenceInDays and differenceInCalendarDays. IMO the latter
+  // is more accurate but that's not what we do in the Site UI / Swift lang. So we have to be a little weird.
   const cruiseDayIndex = differenceInCalendarDays(hourlyUpdatingDate, startDate);
-  const adjustedCruiseDayIndex = differenceInCalendarDays(adjustedDate, startDate);
-  // Days Since. @TODO has this been tested with pre-cruise?
+  const adjustedCruiseDayIndex = differenceInDays(adjustedDate, startDate);
+  // Days Since.
   const daysSince = cruiseDayIndex - cruiseLength;
   // Array of cruise day names and configs.
   const cruiseDays = getCruiseDays(startDate, cruiseLength);

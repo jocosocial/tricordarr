@@ -33,6 +33,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {FezMutedView} from '../../Views/Static/FezMutedView';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -215,7 +216,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       queryClient.invalidateQueries({queryKey: ['/fez/joined']});
       refetchUserNotificationData();
     }
-  }, [dispatchFezList, fez, refetchUserNotificationData]);
+  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData]);
 
   const renderHeader = () => {
     return (
@@ -264,8 +265,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // const fezPostData: FezPostData[] = [...fezPageData.pages.flatMap(page => page.members?.posts || [])].reverse();
   return (
     <AppView>
-      <PostAsUserBanner />
       <ListTitleView title={fez.title} />
+      <PostAsUserBanner />
+      {fez.members?.isMuted && <FezMutedView />}
       <FlatList
         ref={flatListRef}
         // I am not sure about the performance here. onScroll is great but fires A LOT.

@@ -14,7 +14,13 @@ export const ListTitleView = ({title, subtitle}: ListTitleViewProps) => {
     return null;
   }
   return (
-    <View style={[commonStyles.flexRow, commonStyles.paddingVerticalSmall, commonStyles.paddingHorizontal]}>
+    <View
+      style={[
+        commonStyles.flexRow,
+        commonStyles.paddingVerticalSmall,
+        commonStyles.paddingHorizontal,
+        commonStyles.surfaceVariant,
+      ]}>
       <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
         <Text style={[commonStyles.bold]}>{title}</Text>
         {subtitle && <Text>{subtitle}</Text>}

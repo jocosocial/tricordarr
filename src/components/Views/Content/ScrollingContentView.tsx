@@ -5,6 +5,9 @@ import {commonStyles} from '../../../styles';
 interface ScrollingContentViewProps {
   isStack?: boolean;
   refreshControl?: ReactElement;
+  // Put a big margin at the bottom in case there's a FAB covering up View contents
+  // that we care about.
+  overScroll?: boolean;
 }
 
 /**
@@ -15,11 +18,12 @@ export const ScrollingContentView = ({
   children,
   isStack = false,
   refreshControl,
+  overScroll = false,
 }: PropsWithChildren<ScrollingContentViewProps>) => {
   const style = {
     ...commonStyles.flex,
     ...(isStack ? null : commonStyles.marginTop),
-    ...commonStyles.marginBottom,
+    ...(overScroll ? commonStyles.overscroll : commonStyles.marginBottom),
   };
 
   return (

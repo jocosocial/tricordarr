@@ -1,11 +1,12 @@
 import React, {ReactNode} from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {FezPostData} from '../../libraries/Structs/ControllerStructs';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {ReportModalView} from '../Views/Modals/ReportModalView';
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import {FezType} from '../../libraries/Enums/FezType';
 
 interface FezPostActionsMenuProps {
   visible: boolean;
@@ -35,7 +36,9 @@ export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost}: FezPos
           closeMenu();
         }}
       />
-      {fez && <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />}
+      {fez && fez.fezType !== FezType.closed && (
+        <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
+      )}
     </Menu>
   );
 };

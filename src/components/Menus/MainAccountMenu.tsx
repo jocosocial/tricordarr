@@ -94,17 +94,17 @@ export const MainAccountMenu = () => {
     });
   };
 
+  const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;
+
   return (
     <Menu
       visible={isMenuVisible}
-      anchor={
-        <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
-          <UserAvatarImage userHeader={profilePublicData?.header} small={true} />
-        </TouchableOpacity>
-      }
+      anchor={<TouchableOpacity onPress={() => setIsMenuVisible(true)}>{getAvatarImage()}</TouchableOpacity>}
       onDismiss={closeMenu}>
-      {isLoggedIn ? (
+      {isLoggedIn && profilePublicData ? (
         <>
+          <Menu.Item leadingIcon={getAvatarImage} title={`Current User: ${profilePublicData.header.username}`} />
+          <Divider bold={true} />
           <Menu.Item leadingIcon={AppIcons.profile} title={'Your Profile'} onPress={handleProfile} />
           <Menu.Item leadingIcon={AppIcons.user} title={'Manage Account'} onPress={handleManage} />
         </>

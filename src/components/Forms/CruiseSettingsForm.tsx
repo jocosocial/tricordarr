@@ -26,8 +26,10 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
-          <DatePickerField name={'startDate'} limitRange={false} />
-          <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} />
+          <View style={[commonStyles.paddingVertical]}>
+            <DatePickerField name={'startDate'} limitRange={false} />
+          </View>
+          <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} keyboardType={'number-pad'} />
           <TextField name={'portTimeZoneID'} label={'Port Time Zone ID'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting}

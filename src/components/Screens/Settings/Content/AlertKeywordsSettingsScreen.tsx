@@ -12,12 +12,15 @@ import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
+import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
 
 export const AlertKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
+  const {dispatchUserNotificationData} = useUserNotificationData();
 
   const {data, refetch} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -32,7 +35,15 @@ export const AlertKeywordsSettingsScreen = () => {
         action: 'remove',
       },
       {
-        onSuccess: () => setKeywords(keywords.filter(kw => kw !== keyword)),
+        onSuccess: () => {
+          setKeywords(keywords.filter(kw => kw !== keyword));
+          dispatchUserNotificationData({
+            type: UserNotificationDataActions.removeAlertword,
+            alertWord: keyword,
+          });
+          // Cheating
+          refetch();
+        },
       },
     );
   };
@@ -48,6 +59,8 @@ export const AlertKeywordsSettingsScreen = () => {
         onSuccess: () => {
           setKeywords([keywords, values.keyword].flat());
           helpers.resetForm();
+          // Cheating
+          refetch();
         },
         onSettled: () => helpers.setSubmitting(false),
       },

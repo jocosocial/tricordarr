@@ -13,7 +13,14 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {
+  BottomTabComponents,
+  ForumStackComponents,
+  MainStackComponents,
+  NavigatorIDs,
+  RootStackComponents,
+  SettingsStackScreenComponents,
+} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
@@ -24,6 +31,11 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
+import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {ForumPostAlertwordScreen} from './Post/ForumPostAlertwordScreen';
+import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
+import {ListSubheader} from '../../Lists/ListSubheader';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -39,11 +51,17 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const isFocused = useIsFocused();
   const {dispatchForumPosts, dispatchForumListData, setForumData} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
+  const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
+    keywordType: 'alertwords',
+  });
+  const rootNavigation = useRootStack();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().then(() => refetchUserNotificationData().then(() => setRefreshing(false)));
-  }, [refetch, refetchUserNotificationData]);
+    refetch().then(() =>
+      refetchUserNotificationData().then(() => refetchKeywordData().then(() => setRefreshing(false))),
+    );
+  }, [refetch, refetchKeywordData, refetchUserNotificationData]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -52,8 +70,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           <ForumCategoriesScreenActionsMenu />
         </HeaderButtons>
       </View>
-    )
-  }, [])
+    );
+  }, []);
 
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
@@ -88,11 +106,12 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
+        overScroll={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           {data && (
             <ListSection>
-              <List.Subheader>Forum Categories</List.Subheader>
+              <ListSubheader>Forum Categories</ListSubheader>
               {data.map((category, index) => {
                 return (
                   <React.Fragment key={category.categoryID}>
@@ -105,7 +124,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
             </ListSection>
           )}
           <ListSection>
-            <List.Subheader>Personal Categories</List.Subheader>
+            <ListSubheader>Personal Categories</ListSubheader>
             <Divider bold={true} />
             <ForumCategoryListItemBase
               title={'Favorite Forums'}
@@ -145,6 +164,18 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
               description={'Posts that you have made in forums.'}
             />
             <Divider bold={true} />
+          </ListSection>
+          <ListSection>
+            <ListSubheader>Alert Keywords</ListSubheader>
+            <Divider bold={true} />
+            {keywordData?.keywords.map(alertWord => {
+              return (
+                <React.Fragment key={alertWord}>
+                  <ForumAlertwordListItem alertword={alertWord} />
+                  <Divider bold={true} />
+                </React.Fragment>
+              );
+            })}
           </ListSection>
         </View>
       </ScrollingContentView>

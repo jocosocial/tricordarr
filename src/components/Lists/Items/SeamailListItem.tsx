@@ -7,6 +7,8 @@ import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {AppIcon} from '../../Icons/AppIcon';
+import {AppIcons} from '../../../libraries/Enums/Icons';
 
 interface SeamailListItemProps {
   fez: FezData;
@@ -24,8 +26,8 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
     item: {
       ...commonStyles.paddingHorizontal,
     },
-    title: badgeCount ? commonStyles.bold : undefined,
-    description: badgeCount ? commonStyles.bold : undefined,
+    title: badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined,
+    description: badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined,
   };
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
@@ -37,7 +39,12 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
       title: fez.title,
       fezID: fez.fezID,
     });
-  const getTimeBadge = () => <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />;
+  const getRight = () => {
+    if (fez.members?.isMuted) {
+      return <AppIcon icon={AppIcons.mute} />;
+    }
+    return <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />;
+  };
 
   return (
     <List.Item
@@ -49,7 +56,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
       descriptionStyle={styles.description}
       onPress={onPress}
       left={getAvatar}
-      right={getTimeBadge}
+      right={getRight}
     />
   );
 };

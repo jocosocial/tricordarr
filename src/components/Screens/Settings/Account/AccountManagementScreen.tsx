@@ -1,5 +1,4 @@
 import React from 'react';
-import {List} from 'react-native-paper';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
@@ -8,19 +7,14 @@ import {ListSection} from '../../../Lists/ListSection';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem';
 import {useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  SettingsStackScreenComponents,
-} from '../../../../libraries/Enums/Navigation';
-import {useBottomTabNavigator} from '../../../Navigation/Tabs/BottomTabNavigator';
+import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
 import {Linking} from 'react-native';
+import {ListSubheader} from '../../../Lists/ListSubheader';
 
 export const AccountManagementScreen = () => {
   const settingsNavigation = useSettingsStack();
-  const bottomNav = useBottomTabNavigator();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
 
@@ -37,20 +31,7 @@ export const AccountManagementScreen = () => {
         <PaddedContentView padSides={false}>
           {profilePublicData && (
             <ListSection>
-              <MinorActionListItem
-                title={'View Profile'}
-                icon={AppIcons.user}
-                onPress={() =>
-                  bottomNav.navigate(BottomTabComponents.homeTab, {
-                    screen: MainStackComponents.userProfileScreen,
-                    params: {
-                      userID: profilePublicData.header.userID,
-                    },
-                    initial: false,
-                  })
-                }
-              />
-              <List.Subheader>Manage Your Account</List.Subheader>
+              <ListSubheader>Manage Your Account</ListSubheader>
               <MinorActionListItem
                 title={'Change Username'}
                 icon={AppIcons.edituser}
@@ -69,7 +50,7 @@ export const AccountManagementScreen = () => {
             </ListSection>
           )}
           <ListSection>
-            <List.Subheader>Log Out</List.Subheader>
+            <ListSubheader>Log Out</ListSubheader>
             <MinorActionListItem
               title={'Logout this device'}
               icon={AppIcons.logout}

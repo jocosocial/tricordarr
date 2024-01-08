@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainScreen} from '../../Screens/Main/MainScreen';
@@ -21,6 +21,7 @@ import {UsernameProfileScreen} from '../../Screens/User/UsernameProfileScreen';
 import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 import {MapScreen} from '../../Screens/Main/MapScreen';
 import {MainConductScreen} from '../../Screens/Main/MainConductScreen';
+import {DailyThemesScreen} from '../../Screens/Main/DailyThemesScreen';
 
 export type MainStackParamList = {
   MainScreen: undefined;
@@ -56,6 +57,7 @@ export type MainStackParamList = {
     deckNumber?: number;
   };
   MainConductScreen: undefined;
+  DailyThemesScreen: undefined;
 };
 
 export const MainStack = () => {
@@ -120,6 +122,11 @@ export const MainStack = () => {
       <Stack.Screen name={MainStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
       <Stack.Screen name={MainStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
       <Stack.Screen name={MainStackComponents.conductScreen} component={MainConductScreen} options={{title: 'Code of Conduct'}} />
+      <Stack.Screen
+        name={MainStackComponents.dailyThemesScreen}
+        component={DailyThemesScreen}
+        options={{title: 'Daily Themes'}}
+      />
     </Stack.Navigator>
   );
 };

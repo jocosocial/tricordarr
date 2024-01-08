@@ -39,7 +39,8 @@ const deepLinksConf = {
             UsernameProfileScreen: 'username/:username',
             UserDirectoryScreen: 'users',
             MapScreen: 'map',
-            MainConductScreen: 'codeOfConduct'
+            MainConductScreen: 'codeOfConduct',
+            DailyThemesScreen: 'dailyThemes',
           },
         },
         SeamailTab: {
