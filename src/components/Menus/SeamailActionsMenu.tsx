@@ -7,10 +7,14 @@ import {useModal} from '../Context/Contexts/ModalContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 import {PostAsModeratorMenuItem} from './Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from './Items/PostAsTwitarrTeamMenuItem';
+import {useFezMuteMutation} from '../Queries/Fez/FezMuteQueries';
+import {useStyles} from '../Context/Contexts/StyleContext';
+import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import {FezListActions} from '../Reducers/Fez/FezListReducers';
+import {useSeamailQuery} from '../Queries/Fez/FezQueries';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -27,6 +31,10 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
   const seamailNavigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
+  const muteMutation = useFezMuteMutation();
+  const {commonStyles} = useStyles();
+  const {dispatchFezList, setFez} = useTwitarr();
+  const {remove} = useSeamailQuery({fezID: fez.fezID});
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -36,12 +44,53 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
     closeMenu();
   };
 
+  const handleMute = () => {
+    if (!fez.members) {
+      return;
+    }
+    const action = fez.members.isMuted ? 'unmute' : 'mute';
+    muteMutation.mutate(
+      {
+        action: action,
+        fezID: fez.fezID,
+      },
+      {
+        onSuccess: () => {
+          if (fez.members) {
+            const newFezData: FezData = {
+              ...fez,
+              members: {
+                ...fez.members,
+                isMuted: !fez.members?.isMuted,
+              },
+            };
+            setFez(newFezData);
+            dispatchFezList({
+              type: FezListActions.updateFez,
+              fez: newFezData,
+            });
+            remove();
+          }
+        },
+        onSettled: () => closeMenu(),
+      },
+    );
+  };
+
   return (
     <Menu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}
+      {fez.members && (
+        <Menu.Item
+          leadingIcon={AppIcons.mute}
+          onPress={handleMute}
+          title={'Mute'}
+          style={fez.members.isMuted ? commonStyles.surfaceVariant : undefined}
+        />
+      )}
       {(hasModerator || hasTwitarrTeam) && (
         <>
           <Divider bold={true} />

@@ -207,6 +207,8 @@ export interface MembersOnlyData {
   paginator: Paginator;
   /// The FezPosts in the fez discussion. Methods that return arrays of Fezzes, or that add or remove users, do not populate this field (it will be nil).
   posts?: [FezPostData];
+  /// Whether user has muted the fez.
+  isMuted: boolean;
 }
 
 export interface FezData {
