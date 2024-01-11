@@ -6,8 +6,6 @@ Backlog
 
 
 Work Queue
-
-Nightly
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
 * Wrong header image if und is unavailable. Default to local time
 * first time changing healthcheck interval crashed the app
@@ -16,5 +14,13 @@ Nightly
 * Something to indicate you have no alertwords configured
 * If a forum has new divider showing, and TOU post, the new divider moves to weird places until you refresh
 * Event Help difference between all favorites screen and your day today
-* What is the user agent?
 * Default LFG tab to help screen. Add section to talk about the different views (find, joined, owned) and how to change the default in settings.
+* Daily themes screen padding with title
+* If app is backgrounded then main header date doesn't update.
+* Unread forum "sort"
+* Note about first post unread
+* Add team to user profile
+* Verify mention behavior
+* Pronoun display
+
+Nightly
