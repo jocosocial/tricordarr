@@ -151,15 +151,15 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
 /**
  * Returns a formatted string with the time and time zone.
  * @param dateTimeStr ISO time string.
- * @param timeZoneAbbrStr 3-letter abbreviation of the timezone. @TODO there is a hack in place for AST in App.ts.
+ * @param timeZoneID The common ID string of a timezone (such as "America/New_York")
  */
-export const getTimeMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
-  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('hh:mm A');
-  return `${formattedTime} ${timeZoneAbbrStr}`;
+export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
+  const formattedTime = getBoatTimeMoment(dateTimeStr, timeZoneID).format('hh:mm A');
+  return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
-export const getDayMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
-  return getBoatTimeMoment(dateTimeStr, timeZoneAbbrStr).format('dddd MMM Do');
+export const getDayMarker = (dateTimeStr: string, timeZoneID: string) => {
+  return getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd MMM Do');
 };
 
 /**
@@ -168,55 +168,44 @@ export const getDayMarker = (dateTimeStr: string, timeZoneAbbrStr: string) => {
  * do a False-y check on whether to render something or not.
  * @param startTimeStr Start ISO string.
  * @param endTimeStr End ISO string.
- * @param timeZoneAbbrStr 3-letter abbreviation of the timezone.
+ * @param timeZoneID 3-letter abbreviation of the timezone.
  * @param includeDay Include the day in the formatted string.
  */
 export const getDurationString = (
   startTimeStr?: string,
   endTimeStr?: string,
-  timeZoneAbbrStr?: string,
+  timeZoneID?: string,
   includeDay: boolean = false,
 ) => {
-  if (!startTimeStr || !endTimeStr || !timeZoneAbbrStr) {
+  if (!startTimeStr || !endTimeStr || !timeZoneID) {
     return '';
   }
   const endFormat = 'hh:mm A';
   const startFormat = includeDay ? 'ddd MMM D hh:mm A' : endFormat;
   const startDate = moment(startTimeStr);
   const endDate = moment(endTimeStr);
-  const startText = startDate.tz(timeZoneAbbrStr).format(startFormat);
-  const endText = endDate.tz(timeZoneAbbrStr).format(endFormat);
-  return `${startText} - ${endText} ${timeZoneAbbrStr}`;
+  const startText = startDate.tz(timeZoneID).format(startFormat);
+  const endText = endDate.tz(timeZoneID).format(endFormat);
+  return `${startText} - ${endText} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
-export const getEventTimeString = (startTimeStr?: string, timeZoneAbbrStr?: string) => {
-  if (!startTimeStr || !timeZoneAbbrStr) {
+export const getEventTimeString = (startTimeStr?: string, timeZoneID?: string) => {
+  if (!startTimeStr || !timeZoneID) {
     return '';
   }
   const startFormat = 'ddd MMM D hh:mm A';
   const startDate = moment(startTimeStr);
-  const text = startDate.tz(timeZoneAbbrStr).format(startFormat);
-  return `${text} ${timeZoneAbbrStr}`;
+  const text = startDate.tz(timeZoneID).format(startFormat);
+  return `${text} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
-export const getBoatTimeMoment = (dateTimeStr: string, timeZoneAbbrStr: string) => {
+export const getBoatTimeMoment = (dateTimeStr: string, timeZoneID: string) => {
   const date = moment(dateTimeStr);
-  return date.tz(timeZoneAbbrStr);
+  return date.tz(timeZoneID);
 };
 
-export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneAbbr: string, compareDateStr: string) => {
+export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneID: string, compareDateStr: string) => {
   let offset = 0;
-
-  // @TODO this is a hack until we can reveal the time zones via the API.
-  let compareTimeZoneID = 'America/New_York';
-  switch (compareTimeZoneAbbr) {
-    case 'AST':
-      compareTimeZoneID = 'America/Santo_Domingo';
-      break;
-    case 'EST':
-      compareTimeZoneID = 'America/New_York';
-      break;
-  }
 
   // Get the time in both time zones
   const originTime = moment(compareDateStr).tz(originTimeZoneID);
@@ -254,8 +243,8 @@ export const formatMinutesToHumanReadable = (minutes: number) => {
 };
 
 export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => {
-  if (fez.timeZone && fez.startTime) {
-    return getTimeZoneOffset(originTimeZoneID, fez.timeZone, fez.startTime);
+  if (fez.timeZoneID && fez.startTime) {
+    return getTimeZoneOffset(originTimeZoneID, fez.timeZoneID, fez.startTime);
   }
   return 0;
 };

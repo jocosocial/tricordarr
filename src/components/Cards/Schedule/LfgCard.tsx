@@ -57,7 +57,7 @@ export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = fa
       titleRight={getBadge}
       startTime={lfg.startTime}
       endTime={lfg.endTime}
-      timeZone={lfg.timeZone}
+      timeZoneID={lfg.timeZoneID}
       showDay={showDay}
       marker={marker}
     />

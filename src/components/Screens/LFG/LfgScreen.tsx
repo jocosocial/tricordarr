@@ -223,7 +223,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.time)}
-                  description={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZone, true)}
+                  description={getDurationString(lfg.startTime, lfg.endTime, lfg.timeZoneID, true)}
                   title={'Date'}
                 />
                 <DataFieldListItem

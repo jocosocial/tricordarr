@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {
@@ -166,7 +166,7 @@ export const EventScreen = ({navigation, route}: Props) => {
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.time)}
-                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
+                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
                 title={'Date'}
               />
               <DataFieldListItem

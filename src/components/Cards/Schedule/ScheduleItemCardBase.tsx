@@ -17,7 +17,7 @@ interface ScheduleItemCardBaseProps {
   titleRight?: () => ReactNode;
   startTime?: string;
   endTime?: string;
-  timeZone?: string;
+  timeZoneID?: string;
   showDay?: boolean;
   description?: string;
   onLongPress?: () => void;
@@ -35,7 +35,7 @@ export const ScheduleItemCardBase = ({
   titleRight,
   startTime,
   endTime,
-  timeZone,
+  timeZoneID,
   onLongPress,
   marker,
   description,
@@ -80,7 +80,7 @@ export const ScheduleItemCardBase = ({
     },
   });
 
-  const duration = getDurationString(startTime, endTime, timeZone, showDay);
+  const duration = getDurationString(startTime, endTime, timeZoneID, showDay);
 
   return (
     <Card mode={'contained'} style={cardStyle}>

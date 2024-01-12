@@ -54,7 +54,7 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
   const getDescription = () => (
     <View>
       {forumListData.eventTime && (
-        <Text variant={'bodyMedium'}>{getEventTimeString(forumListData.eventTime, forumListData.timeZone)}</Text>
+        <Text variant={'bodyMedium'}>{getEventTimeString(forumListData.eventTime, forumListData.timeZoneID)}</Text>
       )}
       <Text variant={'bodyMedium'}>
         {forumListData.postCount} {pluralize('post', forumListData.postCount)}
@@ -66,7 +66,9 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
       {forumListData.lastPostAt && (
         <Text variant={'bodyMedium'}>
           Last post <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumListData.lastPostAt)} />
-          {forumListData.lastPoster && <Text variant={'bodyMedium'}> by {UserHeader.getByline(forumListData.lastPoster)}</Text>}
+          {forumListData.lastPoster && (
+            <Text variant={'bodyMedium'}> by {UserHeader.getByline(forumListData.lastPoster)}</Text>
+          )}
         </Text>
       )}
     </View>

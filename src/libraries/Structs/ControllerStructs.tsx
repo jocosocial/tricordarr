@@ -234,6 +234,8 @@ export interface FezData {
   endTime?: string;
   /// The 3 letter abbreviation for the active time zone at the time and place where the fez is happening.
   timeZone?: string;
+  /// The timezone ID that the ship is going to be in when the fez occurs. Example: "America/New_York".
+  timeZoneID?: string;
   /// The location for the fez.
   location?: string;
   /// How many users are currently members of the fez. Can be larger than maxParticipants; which indicates a waitlist.
@@ -496,6 +498,8 @@ export interface EventData {
   endTime: string;
   /// The timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
   timeZone: string;
+  /// The timezone ID that the ship is going to be in when the event occurs. Example: "America/New_York".
+  timeZoneID: string;
   /// The location of the event.
   location: string;
   /// The event category.
@@ -590,6 +594,8 @@ export interface ForumListData {
   eventTime?: string;
   /// If this forum is for an Event on the schedule, the timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
   timeZone?: string;
+  /// If this forum is for an Event on the schedule, the timezone ID that the ship is going to be in when the event occurs. Example: "America/New_York".
+  timeZoneID?: string;
   /// If this forum is for an Event on the schedule, the ID of the event.
   eventID?: string;
 }

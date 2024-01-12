@@ -63,8 +63,6 @@ console.log('[App.tsx] Tricordarr start!');
 
 // Time and locale setup, used in various places within the app.
 TimeAgo.addDefaultLocale(en);
-// @TODO this timezone is a hack, until we figure out what to do about the API.
-moment.tz.link('AST|America/Santo_Domingo');
 registerTranslation('en', paperEn);
 
 // Configure network interceptors
