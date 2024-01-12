@@ -7,7 +7,6 @@ Backlog
 
 Work Queue
 * At 1AM EST with late flip on Tuesday, set clocks forward event was soon not now.
-* Wrong header image if und is unavailable. Default to local time
 * first time changing healthcheck interval crashed the app
   * subsequents are working
 * Tapping on a seamail notification when the app and seamail is already up and present didn't reload with the new message
@@ -16,7 +15,6 @@ Work Queue
 * Event Help difference between all favorites screen and your day today
 * Default LFG tab to help screen. Add section to talk about the different views (find, joined, owned) and how to change the default in settings.
 * Daily themes screen padding with title
-* If app is backgrounded then main header date doesn't update.
 * Verify mention behavior
 
 Nightly

@@ -23,11 +23,7 @@ export const HeaderCard = () => {
   return (
     <Card>
       <MainImageCardCover />
-      <Card.Title
-        titleVariant={'bodyLarge'}
-        titleStyle={[commonStyles.bold]}
-        title={formattedDate}
-      />
+      <Card.Title titleVariant={'bodyLarge'} titleStyle={[commonStyles.bold]} title={formattedDate} />
     </Card>
   );
 };
