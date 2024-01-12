@@ -29,7 +29,7 @@ export const DailyThemesScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
-        <PaddedContentView>
+        <PaddedContentView padSides={false}>
           <ListTitleView title={`Today is day #${cruiseDayIndex}`} />
         </PaddedContentView>
         {data?.map(dt => {
