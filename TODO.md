@@ -17,7 +17,6 @@ Work Queue
 * Default LFG tab to help screen. Add section to talk about the different views (find, joined, owned) and how to change the default in settings.
 * Daily themes screen padding with title
 * If app is backgrounded then main header date doesn't update.
-* Unread forum "sort"
 * Verify mention behavior
 
 Nightly
