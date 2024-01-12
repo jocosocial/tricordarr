@@ -2,7 +2,7 @@ import {Text} from 'react-native-paper';
 import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag';
 import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
 import {FezPostData} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';

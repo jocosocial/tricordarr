@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Badge} from 'react-native-paper';
 import {commonStyles} from '../../styles';
-import {RelativeTimeTag} from './RelativeTimeTag';
+import {RelativeTimeTag} from './Tags/RelativeTimeTag';
 
 export const SeamailTimeBadge = ({date, badgeCount}: {date: string; badgeCount: number}) => {
   const timeStyle = badgeCount ? [commonStyles.bold] : undefined;

@@ -4,7 +4,7 @@ import {commonStyles} from '../../../../styles';
 import {ForumListData, UserHeader} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
-import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
@@ -13,6 +13,7 @@ import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
 import {ForumThreadActionsMenu} from '../../../Menus/Forum/Items/ForumThreadActionsMenu';
+import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
@@ -61,13 +62,18 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
       </Text>
       <Text variant={'bodyMedium'}>
         Created <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumListData.createdAt)} /> by{' '}
-        {UserHeader.getByline(forumListData.creator)}
+        <UserBylineTag user={forumListData.creator} includePronoun={false} variant={'bodyMedium'} />
       </Text>
       {forumListData.lastPostAt && (
         <Text variant={'bodyMedium'}>
           Last post <RelativeTimeTag variant={'bodyMedium'} date={new Date(forumListData.lastPostAt)} />
           {forumListData.lastPoster && (
-            <Text variant={'bodyMedium'}> by {UserHeader.getByline(forumListData.lastPoster)}</Text>
+            <UserBylineTag
+              user={forumListData.lastPoster}
+              includePronoun={false}
+              variant={'bodyMedium'}
+              prefix={' by'}
+            />
           )}
         </Text>
       )}

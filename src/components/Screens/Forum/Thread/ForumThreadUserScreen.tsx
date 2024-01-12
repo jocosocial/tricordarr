@@ -13,8 +13,8 @@ import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
 import {useForumSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {ListTitleView} from '../../../Views/ListTitleView';
-import {UserHeader} from '../../../../libraries/Structs/ControllerStructs';
 import {useIsFocused} from '@react-navigation/native';
+import {getUserBylineString} from '../../../Text/Tags/UserBylineTag';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -88,7 +88,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
 
   return (
     <AppView>
-      <ListTitleView title={`Forums by ${UserHeader.getByline(route.params.user)}`} />
+      <ListTitleView title={getUserBylineString(route.params.user, false, true, 'Forums by')} />
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}

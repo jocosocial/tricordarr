@@ -15,6 +15,5 @@ Work Queue
 * Event Help difference between all favorites screen and your day today
 * Default LFG tab to help screen. Add section to talk about the different views (find, joined, owned) and how to change the default in settings.
 * Verify mention behavior
-* pronoun display only on seamail/fez/forum
 
 Nightly

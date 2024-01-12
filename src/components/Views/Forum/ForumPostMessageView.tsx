@@ -2,7 +2,7 @@ import {Text} from 'react-native-paper';
 import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '../../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag';
 import {PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../../Text/ContentText';
 import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu';
@@ -18,6 +18,7 @@ import {
 } from '../../../libraries/Enums/Navigation';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
+import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -102,9 +103,7 @@ export const ForumPostMessageView = ({
           {showAuthor && (
             <>
               <View>
-                <Text style={[styles.messageTextHeader, commonStyles.flexStart]}>
-                  {UserHeader.getByline(postData.author)}
-                </Text>
+                <UserBylineTag user={postData.author} style={[styles.messageTextHeader, commonStyles.flexStart]} />
               </View>
               {UserHeader.contains(favorites, postData.author) && (
                 <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />

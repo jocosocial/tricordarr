@@ -6,10 +6,12 @@ import {getDurationString} from '../../../libraries/DateTime';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
 import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
+import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 
 interface ScheduleItemCardBaseProps {
   title: string;
-  author?: string;
+  author?: UserHeader;
   participation?: string;
   location?: string;
   onPress?: () => void;
@@ -114,9 +116,7 @@ export const ScheduleItemCardBase = ({
                 </Text>
               )}
               {author && (
-                <Text style={styles.bodyText} variant={'bodyMedium'}>
-                  {author}
-                </Text>
+                <UserBylineTag style={styles.bodyText} variant={'bodyMedium'} user={author} prefix={'Hosted by:'} includePronoun={false} />
               )}
               {participation && (
                 <Text style={styles.bodyText} variant={'bodyMedium'}>

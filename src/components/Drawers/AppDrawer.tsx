@@ -9,6 +9,7 @@ import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
+import {useUserData} from '../Context/Contexts/UserDataContext';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
@@ -16,6 +17,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {userNotificationData} = useUserNotificationData();
   const {tokenData} = useAuth();
+  const {profilePublicData} = useUserData();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -56,7 +58,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
             {hasVerified && (
               <PaperDrawer.Section title={'User'} showDivider={false}>
                 <PaperDrawer.Item
-                  label={'Your Profile'}
+                  label={`Your Profile (${profilePublicData?.header.username})`}
                   icon={AppIcons.profile}
                   onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
                 />

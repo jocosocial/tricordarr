@@ -39,6 +39,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+import {getUserBylineString, UserBylineTag} from '../../Text/Tags/UserBylineTag';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -200,6 +201,8 @@ export const LfgScreen = ({navigation, route}: Props) => {
     );
   };
 
+  const getOwner = () => <UserBylineTag user={lfg.owner} />;
+
   return (
     <AppView>
       {lfg.cancelled && (
@@ -246,7 +249,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                 <DataFieldListItem
                   itemStyle={styles.item}
                   left={() => getIcon(AppIcons.user)}
-                  description={UserHeader.getByline(lfg.owner)}
+                  description={getUserBylineString(lfg.owner, true, true)}
                   title={'Owner'}
                   onPress={() =>
                     rootStackNavigation.push(RootStackComponents.rootContentScreen, {

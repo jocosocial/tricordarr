@@ -46,17 +46,6 @@ export interface UserHeader {
 }
 
 export namespace UserHeader {
-  // This is sorta based on https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift#L562
-  export function getByline(header: UserHeader, pronoun: boolean = true) {
-    if (header.displayName) {
-      if (header.preferredPronoun && pronoun) {
-        return `${header.displayName} @${header.username} (${header.preferredPronoun})`;
-      }
-      return `${header.displayName} (@${header.username})`;
-    }
-    return `@${header.username}`;
-  }
-
   export const contains = (headers: UserHeader[], header: UserHeader) => {
     return headers.map(h => h.userID).includes(header.userID);
   };

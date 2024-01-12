@@ -8,7 +8,7 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {QuerySettingsForm} from '../../../Forms/QuerySettingsForm';

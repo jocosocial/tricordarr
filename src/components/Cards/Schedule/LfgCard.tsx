@@ -1,7 +1,7 @@
 import React from 'react';
 import pluralize from 'pluralize';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase';
-import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
 import {Badge} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
@@ -51,7 +51,7 @@ export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = fa
         backgroundColor: theme.colors.outline,
       }}
       title={lfg.title}
-      author={`Hosted by: ${UserHeader.getByline(lfg.owner)}`}
+      author={lfg.owner}
       participation={lfg.members ? FezData.getParticipantLabel(lfg) : undefined}
       location={lfg.location}
       titleRight={getBadge}
