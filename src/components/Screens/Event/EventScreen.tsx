@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {
@@ -174,17 +174,7 @@ export const EventScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.map)}
                 description={eventData.location}
                 title={'Location'}
-                onPress={() =>
-                  rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                    screen: BottomTabComponents.homeTab,
-                    params: {
-                      screen: MainStackComponents.siteUIScreen,
-                      params: {
-                        resource: 'map',
-                      },
-                    },
-                  })
-                }
+                onPress={() => Linking.openURL('tricordarr://map')}
               />
               <DataFieldListItem
                 itemStyle={styles.item}
