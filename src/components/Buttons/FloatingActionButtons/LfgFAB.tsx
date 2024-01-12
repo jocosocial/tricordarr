@@ -37,6 +37,11 @@ export const LfgFAB = () => {
       label: 'Owned',
       onPress: () => handleNavigation(LfgStackComponents.lfgOwnedScreen),
     }),
+    FabGroupAction({
+      icon: AppIcons.help,
+      label: 'Help',
+      onPress: () => handleNavigation(LfgStackComponents.lfgHelpScreen),
+    }),
   ];
 
   return <BaseFABGroup actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} />;

@@ -96,4 +96,5 @@ export enum AppIcons {
   altAccount = 'account-switch',
   decks = 'elevator',
   dailyTheme = 'drama-masks',
+  forumUnread = 'message-badge',
 }

@@ -6,6 +6,7 @@ import {StorageKeys} from '../Storage';
 import {HttpStatusCode} from 'axios';
 import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
+import {DinnerTeam} from '../Enums/DinnerTeam';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -40,17 +41,11 @@ export interface UserHeader {
   displayName?: string;
   /// The user's avatar image.
   userImage?: string;
+  /// An optional preferred form of address.
+  preferredPronoun?: string;
 }
 
 export namespace UserHeader {
-  // This is sorta based on https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift#L562
-  export function getByline(header: UserHeader) {
-    if (header.displayName) {
-      return `${header.displayName} (@${header.username})`;
-    }
-    return `@${header.username}`;
-  }
-
   export const contains = (headers: UserHeader[], header: UserHeader) => {
     return headers.map(h => h.userID).includes(header.userID);
   };
@@ -61,8 +56,6 @@ export interface ProfilePublicData {
   header: UserHeader;
   /// An optional real world name of the user.
   realName: string;
-  /// An optional preferred pronoun or form of address.
-  preferredPronoun: string;
   /// An optional home location for the user.
   homeLocation: string;
   /// An optional cabin number for the user.
@@ -75,6 +68,8 @@ export interface ProfilePublicData {
   message: string;
   /// A UserNote owned by the visiting user, about the profile's user (see `UserNote`).
   note?: string;
+  /// An optional dinner team assignment.
+  dinnerTeam?: DinnerTeam;
 }
 
 export interface DisabledFeature {
@@ -228,6 +223,8 @@ export interface FezData {
   endTime?: string;
   /// The 3 letter abbreviation for the active time zone at the time and place where the fez is happening.
   timeZone?: string;
+  /// The timezone ID that the ship is going to be in when the fez occurs. Example: "America/New_York".
+  timeZoneID?: string;
   /// The location for the fez.
   location?: string;
   /// How many users are currently members of the fez. Can be larger than maxParticipants; which indicates a waitlist.
@@ -490,6 +487,8 @@ export interface EventData {
   endTime: string;
   /// The timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
   timeZone: string;
+  /// The timezone ID that the ship is going to be in when the event occurs. Example: "America/New_York".
+  timeZoneID: string;
   /// The location of the event.
   location: string;
   /// The event category.
@@ -510,7 +509,7 @@ export interface UserProfileUploadData {
   /// An optional real name of the user.
   realName: string;
   /// An optional preferred form of address.
-  preferredPronoun: string;
+  preferredPronoun?: string;
   /// An optional home location (e.g. city).
   homeLocation: string;
   /// An optional ship cabin number.
@@ -521,6 +520,8 @@ export interface UserProfileUploadData {
   message: string;
   /// An optional blurb about the user.
   about: string;
+  /// An optional dinner team assignment.
+  dinnerTeam?: DinnerTeam;
 }
 
 export interface NoteCreateData {
@@ -582,6 +583,8 @@ export interface ForumListData {
   eventTime?: string;
   /// If this forum is for an Event on the schedule, the timezone that the ship is going to be in when the event occurs. Delivered as an abbreviation e.g. "EST".
   timeZone?: string;
+  /// If this forum is for an Event on the schedule, the timezone ID that the ship is going to be in when the event occurs. Example: "America/New_York".
+  timeZoneID?: string;
   /// If this forum is for an Event on the schedule, the ID of the event.
   eventID?: string;
 }

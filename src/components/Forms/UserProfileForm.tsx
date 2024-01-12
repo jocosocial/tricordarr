@@ -11,9 +11,12 @@ import {TextField} from './Fields/TextField';
 import {
   EmailValidation,
   PasswordValidation,
-  RecoveryKeyValidation, RoomNumberValidation,
-  UsernameValidation
+  RecoveryKeyValidation,
+  RoomNumberValidation,
+  UsernameValidation,
 } from '../../libraries/ValidationSchema';
+import {PickerField} from './Fields/PickerField';
+import {DinnerTeam} from '../../libraries/Enums/DinnerTeam';
 
 interface UserProfileFormProps {
   onSubmit: (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => void;
@@ -31,6 +34,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
   const styles = {
     inputContainer: [],
     buttonContainer: [commonStyles.marginTopSmall],
+    pickerContainer: [commonStyles.marginBottom],
   };
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -42,12 +46,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             label={'Display Name'}
             autoCapitalize={'words'}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'realName'}
-            label={'Real Name'}
-            autoCapitalize={'words'}
-          />
+          <TextField viewStyle={styles.inputContainer} name={'realName'} label={'Real Name'} autoCapitalize={'words'} />
           <TextField
             viewStyle={styles.inputContainer}
             name={'preferredPronoun'}
@@ -66,11 +65,15 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             label={'Cabin Number'}
             autoCapitalize={'words'}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'email'}
-            label={'Email'}
+          <PickerField
+            viewStyle={styles.pickerContainer}
+            name={'dinnerTeam'}
+            label={'Dinner Team'}
+            value={values.dinnerTeam}
+            choices={['red', 'gold', 'sro', '']}
+            getTitle={value => DinnerTeam.getLabel(value as DinnerTeam)}
           />
+          <TextField viewStyle={styles.inputContainer} name={'email'} label={'Email'} />
           <TextField
             viewStyle={styles.inputContainer}
             name={'message'}

@@ -5,6 +5,7 @@ import {Pressable, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 import {UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {UserBylineTag} from '../Text/Tags/UserBylineTag';
 
 export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({keyword, onSuggestionPress}) => {
   const {data, isFetching} = useUserMatchQuery(keyword || '');
@@ -19,22 +20,21 @@ export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({
       <View style={commonStyles.marginVertical}>
         <ActivityIndicator />
       </View>
-    )
+    );
   }
 
   return (
     <View>
-      {data?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+      {data
+        ?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
         .map(one => (
           <Pressable
             key={one.userID}
             onPress={() => onSuggestionPress({id: one.userID, name: one.username})}
-            style={{padding: 12}}
-          >
-            <Text>{UserHeader.getByline(one)}</Text>
+            style={{padding: 12}}>
+            <UserBylineTag user={one} />
           </Pressable>
-        ))
-      }
+        ))}
     </View>
   );
 };

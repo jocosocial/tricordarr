@@ -11,7 +11,7 @@ import {
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
-import {TitleTag} from '../../Text/TitleTag';
+import {TitleTag} from '../../Text/Tags/TitleTag';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';

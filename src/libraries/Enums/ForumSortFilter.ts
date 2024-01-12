@@ -12,6 +12,7 @@ export enum ForumFilter {
   owned = 'owned',
   favorite = 'favorite',
   mute = 'mute',
+  unread = 'unread',
 }
 
 export namespace ForumFilter {
@@ -23,6 +24,8 @@ export namespace ForumFilter {
         return ForumRelationQueryType.owner;
       case ForumFilter.mute:
         return ForumRelationQueryType.mutes;
+      case ForumFilter.unread:
+        return ForumRelationQueryType.unread;
     }
   };
 }

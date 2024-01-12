@@ -20,7 +20,7 @@ export async function configureAxios() {
   // https://github.com/axios/axios/issues/3870
   axios.interceptors.request.use(async config => {
     // URL
-    const {serverUrl, urlPrefix} = await getAppConfig();
+    const {serverUrl, urlPrefix, apiClientConfig} = await getAppConfig();
     if (config.url && !config.url.startsWith(`${serverUrl}`)) {
       config.url = `${serverUrl}${urlPrefix}${config.url}`;
     }
@@ -29,12 +29,13 @@ export async function configureAxios() {
     if (rawTokenData && !config.headers.authorization) {
       const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
       config.headers.authorization = `Bearer ${tokenStringData.token}`;
+      config.headers['X-Swiftarr-User'] = tokenStringData.userID;
     }
     // Other Headers
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`;
     // Other Config
-    config.timeout = 5000;
+    config.timeout = apiClientConfig.requestTimeout;
     config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';
     // Return
     // This logs even when the response is returned from cache.

@@ -53,12 +53,13 @@ export const EventSearchBar = () => {
             onClearIconPress={onClear}
             style={[commonStyles.marginVerticalSmall]}
           />
-          {eventList.length > 0 && <TimeDivider label={getDayMarker(eventList[0].startTime, eventList[0].timeZone)} />}
+          {eventList.length > 0 && (
+            <TimeDivider label={getDayMarker(eventList[0].startTime, eventList[0].timeZoneID)} />
+          )}
         </>
       }
       scheduleItems={eventList}
       listRef={listRef}
-      scrollNowIndex={0}
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
       separator={'day'}
     />

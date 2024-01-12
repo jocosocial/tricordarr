@@ -36,6 +36,7 @@ export enum ForumRelationQueryType {
   favorites = 'favorites',
   mutes = 'mutes',
   recent = 'recent',
+  unread = 'unread',
 }
 
 export const useForumRelationQuery = (relation: ForumRelationQueryType, queryParams?: ForumRelationQueryParams) => {

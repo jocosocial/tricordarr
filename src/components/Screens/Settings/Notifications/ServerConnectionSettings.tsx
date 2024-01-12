@@ -24,7 +24,7 @@ import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
 import {SocketHealthcheckData} from '../../../../libraries/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../../libraries/Storage';
-import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import {SettingSwitch} from '../../../Switches/SettingSwitch';
 import {Formik} from 'formik';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';

@@ -99,6 +99,16 @@ export const EventHelpScreen = () => {
             There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
           </Text>
         </PaddedContentView>
+        <PaddedContentView>
+          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+            Your Day Today
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            The Your Day Today screen shows all of your favorite events and joined LFGs for the current day.
+          </Text>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

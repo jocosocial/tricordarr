@@ -20,21 +20,22 @@ import {encode as base64_encode} from 'base-64';
  * Display a pretty image in the app based on the time of day.
  */
 export const MainImageCardCover = () => {
-  const {userNotificationData} = useUserNotificationData();
+  // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
   const {setErrorMessage} = useErrorHandler();
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
-  if (userNotificationData) {
-    // Take the timestamp that the server gives us (UTC string), then apply the offset in milliseconds.
-    // This becomes a new relative date that should match what the user is really experiencing.
-    const serverTimestamp = Date.parse(userNotificationData.serverTime);
-    const relativeTimestamp = serverTimestamp + userNotificationData.serverTimeOffset * 1000;
-    const relativeDate = new Date(relativeTimestamp);
-    currentHour = relativeDate.getUTCHours();
-  }
+  // Disabling this to see how it goes by using the users calendar instead of the server time.
+  // if (userNotificationData) {
+  //   // Take the timestamp that the server gives us (UTC string), then apply the offset in milliseconds.
+  //   // This becomes a new relative date that should match what the user is really experiencing.
+  //   const serverTimestamp = Date.parse(userNotificationData.serverTime);
+  //   const relativeTimestamp = serverTimestamp + userNotificationData.serverTimeOffset * 1000;
+  //   const relativeDate = new Date(relativeTimestamp);
+  //   currentHour = relativeDate.getUTCHours();
+  // }
 
   // 9PM-5AM (21:00-05:00) Night
   // 6AM-3PM (06:00-15:00) Day

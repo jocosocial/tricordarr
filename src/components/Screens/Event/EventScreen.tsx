@@ -166,7 +166,7 @@ export const EventScreen = ({navigation, route}: Props) => {
               <DataFieldListItem
                 itemStyle={styles.item}
                 left={() => getIcon(AppIcons.time)}
-                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZone, true)}
+                description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
                 title={'Date'}
               />
               <DataFieldListItem
@@ -174,17 +174,7 @@ export const EventScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.map)}
                 description={eventData.location}
                 title={'Location'}
-                onPress={() =>
-                  rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                    screen: BottomTabComponents.homeTab,
-                    params: {
-                      screen: MainStackComponents.siteUIScreen,
-                      params: {
-                        resource: 'map',
-                      },
-                    },
-                  })
-                }
+                onPress={() => Linking.openURL('tricordarr://map')}
               />
               <DataFieldListItem
                 itemStyle={styles.item}

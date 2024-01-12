@@ -8,7 +8,7 @@ import {
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -33,6 +33,7 @@ import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ErrorView} from '../../Views/Static/ErrorView';
 import {useAppTheme} from '../../../styles/Theme';
+import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -188,7 +189,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
                 &nbsp;
               </>
             )}
-            {UserHeader.getByline(data.header)}
+            <UserBylineTag user={data.header} includePronoun={false} variant={'headlineMedium'} />
           </Text>
         </PaddedContentView>
         {data.note && (

@@ -85,11 +85,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
       for (let i = 0; i < itemList.length; i++) {
         // Creating a dedicated variable makes the parser happier.
         const scheduleItem = itemList[i];
-        if (!scheduleItem.startTime || !scheduleItem.timeZone) {
+        if (!scheduleItem.startTime || !scheduleItem.timeZoneID) {
           break;
         }
         const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), startDate, endDate);
-        const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, scheduleItem.timeZone, scheduleItem.startTime);
+        const tzOffset = getTimeZoneOffset(appConfig.portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
 
         if (
           nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
@@ -102,13 +102,13 @@ export const EventDayScreen = ({navigation, route}: Props) => {
       if (itemList.length > 0) {
         // Creating a dedicated variable makes the parser happier.
         const scheduleItem = itemList[itemList.length - 1];
-        if (!scheduleItem.startTime || !scheduleItem.timeZone) {
+        if (!scheduleItem.startTime || !scheduleItem.timeZoneID) {
           return itemList.length - 1;
         }
         const lastItemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), startDate, endDate);
         const lastItemTzOffset = getTimeZoneOffset(
           appConfig.portTimeZoneID,
-          scheduleItem.timeZone,
+          scheduleItem.timeZoneID,
           scheduleItem.startTime,
         );
         if (

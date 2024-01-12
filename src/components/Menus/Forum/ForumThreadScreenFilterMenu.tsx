@@ -56,6 +56,12 @@ export const ForumThreadScreenFilterMenu = () => {
         onPress={() => handleFilterSelection(ForumFilter.mute)}
         style={forumFilter === ForumFilter.mute ? activeStyle : undefined}
       />
+      <Menu.Item
+        title={'Unread'}
+        leadingIcon={AppIcons.forumUnread}
+        onPress={() => handleFilterSelection(ForumFilter.unread)}
+        style={forumFilter === ForumFilter.unread ? activeStyle : undefined}
+      />
     </Menu>
   );
 };

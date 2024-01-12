@@ -102,6 +102,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     return <LoadingView />;
   }
 
+  console.log(keywordData?.keywords)
+
   return (
     <AppView>
       <ScrollingContentView
@@ -168,14 +170,16 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Alert Keywords</ListSubheader>
             <Divider bold={true} />
-            {keywordData?.keywords.map(alertWord => {
+            {keywordData && keywordData.keywords.length > 0 ? keywordData.keywords.map(alertWord => {
               return (
                 <React.Fragment key={alertWord}>
                   <ForumAlertwordListItem alertword={alertWord} />
                   <Divider bold={true} />
                 </React.Fragment>
               );
-            })}
+            }) : (
+              <ForumCategoryListItemBase title={'No Keywords Configured'} description={'You can configure alert and mute keywords using the menu in the upper right.'} />
+            )}
           </ListSection>
         </View>
       </ScrollingContentView>

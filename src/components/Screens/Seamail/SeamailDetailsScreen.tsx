@@ -13,7 +13,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {TitleTag} from '../../Text/TitleTag';
+import {TitleTag} from '../../Text/Tags/TitleTag';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';

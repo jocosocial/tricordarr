@@ -6,7 +6,7 @@ import {SettingSwitch} from '../../../Switches/SettingSwitch';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {DataTable, Divider, Text} from 'react-native-paper';
 import {SocketControlView} from '../../../Views/SocketControlView';
-import {RelativeTimeTag} from '../../../Text/RelativeTimeTag';
+import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import {SocketHealthcheckData} from '../../../../libraries/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../../libraries/Storage';

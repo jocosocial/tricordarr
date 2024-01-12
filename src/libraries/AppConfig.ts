@@ -17,6 +17,7 @@ export interface APIClientConfig {
   retry: number;
   staleTime: number;
   disruptionThreshold: number;
+  requestTimeout: number;
 }
 
 export interface ScheduleConfig {
@@ -82,7 +83,7 @@ const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
+    defaultLfgScreen: LfgStackComponents.lfgHelpScreen,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
@@ -93,6 +94,7 @@ const defaultAppConfig: AppConfig = {
     retry: 2, // 3 attempts total (initial, retry 1, retry 2)
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
+    requestTimeout: 10000,
   },
   enableEasterEgg: false,
 };

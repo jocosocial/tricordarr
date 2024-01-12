@@ -38,7 +38,7 @@ const getItemMarker = (
   startDate: Date,
   endDate: Date,
 ): ScheduleCardMarkerType => {
-  if (!item.startTime || !item.endTime || !item.timeZone) {
+  if (!item.startTime || !item.endTime || !item.timeZoneID) {
     return;
   }
   const itemStartTime = parseISO(item.startTime);
@@ -46,7 +46,7 @@ const getItemMarker = (
   const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
   const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(nowDate, startDate, endDate);
-  const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZone, item.startTime);
+  const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZoneID, item.startTime);
   if (
     nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
     nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
@@ -120,7 +120,7 @@ export const EventFlatList = ({
     }
     const trailingIndex = leadingIndex + 1;
     const trailingItem = scheduleItems[trailingIndex];
-    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZone) {
+    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
     const leadingDate = new Date(leadingItem.startTime);
@@ -130,7 +130,7 @@ export const EventFlatList = ({
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZone)} />;
+    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
   };
 
   const renderSeparatorDay = ({leadingItem}: {leadingItem: EventData | FezData}) => {
@@ -140,7 +140,7 @@ export const EventFlatList = ({
     }
     const trailingIndex = leadingIndex + 1;
     const trailingItem = scheduleItems[trailingIndex];
-    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZone) {
+    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
     const leadingDate = new Date(leadingItem.startTime);
@@ -150,7 +150,7 @@ export const EventFlatList = ({
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }
-    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZone)} />;
+    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
   };
 
   const renderSeparatorNone = () => <SpaceDivider />;
@@ -160,13 +160,13 @@ export const EventFlatList = ({
       return <TimeDivider label={'No events today'} />;
     }
     const firstItem = scheduleItems[0];
-    if (!firstItem.startTime || !firstItem.timeZone) {
+    if (!firstItem.startTime || !firstItem.timeZoneID) {
       return <SpaceDivider />;
     }
 
-    let label = getTimeMarker(firstItem.startTime, firstItem.timeZone);
+    let label = getTimeMarker(firstItem.startTime, firstItem.timeZoneID);
     if (separator === 'day') {
-      label = getDayMarker(firstItem.startTime, firstItem.timeZone);
+      label = getDayMarker(firstItem.startTime, firstItem.timeZoneID);
     }
     return <TimeDivider label={label} />;
   };
