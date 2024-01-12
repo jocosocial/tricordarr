@@ -49,6 +49,11 @@ export const LfgSettingsScreen = () => {
       label: 'Owned',
       icon: AppIcons.lfgOwned,
     },
+    {
+      value: LfgStackComponents.lfgHelpScreen,
+      label: 'Help',
+      icon: AppIcons.help,
+    },
   ];
 
   const handleLfgDefaultScreen = (value: string) => {

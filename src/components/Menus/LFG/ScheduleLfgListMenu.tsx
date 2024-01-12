@@ -26,11 +26,6 @@ export const ScheduleLfgListMenu = () => {
         title={'Settings'}
         onPress={() => handleNavigation(LfgStackComponents.lfgSettingsScreen)}
       />
-      <Menu.Item
-        leadingIcon={AppIcons.help}
-        title={'Help'}
-        onPress={() => handleNavigation(LfgStackComponents.lfgHelpScreen)}
-      />
     </Menu>
   );
 };
