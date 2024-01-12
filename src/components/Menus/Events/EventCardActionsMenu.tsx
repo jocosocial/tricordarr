@@ -8,6 +8,9 @@ import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useEventFavoriteMutation, useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {getCruiseDay} from '../../../libraries/DateTime';
+import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {useEventsQuery} from '../../Queries/Events/EventQueries';
 
 interface EventCardActionsMenuProps {
   anchor: JSX.Element;
@@ -22,6 +25,11 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const {dispatchScheduleList} = useTwitarr();
   const {refetchUserNotificationData} = useUserNotificationData();
   const {data: favoritesData, refetch: refetchFavorites} = useEventFavoritesQuery({enabled: false});
+  const {appConfig} = useConfig();
+  const eventCruiseDay = getCruiseDay(new Date(props.eventData.startTime), appConfig.cruiseStartDate.getDay()) + 1;
+  const {refetch: refetchEvents} = useEventsQuery({
+    cruiseDay: eventCruiseDay,
+  });
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -47,6 +55,10 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
           });
           // Update the user notification data in case this was/is a favorite.
           refetchUserNotificationData();
+          // Update the event query so that any filters reflect correctly.
+          // Some day this should QueryClient.setQueryData for the appropriate
+          // query instead.
+          refetchEvents();
           // Update favorites
           if (favoritesData !== undefined) {
             refetchFavorites();
