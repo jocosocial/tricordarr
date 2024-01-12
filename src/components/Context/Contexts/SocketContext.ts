@@ -4,7 +4,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 interface SocketContextType {
   fezSocket?: ReconnectingWebSocket;
   setFezSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
-  openFezSocket: (fezID: string) => void;
+  openFezSocket: (fezID: string) => boolean;
   closeFezSocket: () => void;
   notificationSocket?: ReconnectingWebSocket;
   setNotificationSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
