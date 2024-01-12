@@ -280,7 +280,14 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
       formikHelpers.setSubmitting(false);
       return;
     }
-    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
+    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
+    // Mark as read if applicable.
+    if (forumListItem) {
+      setForumListItem({
+        ...forumListItem,
+        readCount: forumListItem.postCount,
+      });
+    }
     postCreateMutation.mutate(
       {
         forumID: forumData.forumID,
