@@ -18,9 +18,6 @@ Work Queue
 * Daily themes screen padding with title
 * If app is backgrounded then main header date doesn't update.
 * Unread forum "sort"
-* Note about first post unread
-* Add team to user profile
 * Verify mention behavior
-* Pronoun display
 
 Nightly

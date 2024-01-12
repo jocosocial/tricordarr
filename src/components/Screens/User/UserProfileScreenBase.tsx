@@ -188,7 +188,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
                 &nbsp;
               </>
             )}
-            {UserHeader.getByline(data.header)}
+            {UserHeader.getByline(data.header, false)}
           </Text>
         </PaddedContentView>
         {data.note && (

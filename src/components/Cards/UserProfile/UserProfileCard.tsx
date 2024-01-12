@@ -5,6 +5,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {Linking} from 'react-native';
+import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam';
 
 interface UserProfileCardProps {
   user: ProfilePublicData;
@@ -22,7 +23,10 @@ export const UserProfileCard = ({user}: UserProfileCardProps) => {
           )}
           {user.realName && <DataFieldListItem title={'Real Name'} description={user.realName} />}
           {user.header.username && <DataFieldListItem title={'Username'} description={user.header.username} />}
-          {user.preferredPronoun && <DataFieldListItem title={'Pronouns'} description={user.preferredPronoun} />}
+          {user.header.preferredPronoun && (
+            <DataFieldListItem title={'Pronouns'} description={user.header.preferredPronoun} />
+          )}
+          {user.dinnerTeam && <DataFieldListItem title={'Dinner Team'} description={DinnerTeam.getLabel(user.dinnerTeam)} />}
           {user.email && (
             <DataFieldListItem
               title={'Email'}

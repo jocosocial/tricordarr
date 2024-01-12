@@ -6,6 +6,7 @@ import {StorageKeys} from '../Storage';
 import {HttpStatusCode} from 'axios';
 import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
+import {DinnerTeam} from '../Enums/DinnerTeam';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -40,12 +41,17 @@ export interface UserHeader {
   displayName?: string;
   /// The user's avatar image.
   userImage?: string;
+  /// An optional preferred form of address.
+  preferredPronoun?: string;
 }
 
 export namespace UserHeader {
   // This is sorta based on https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift#L562
-  export function getByline(header: UserHeader) {
+  export function getByline(header: UserHeader, pronoun: boolean = true) {
     if (header.displayName) {
+      if (header.preferredPronoun && pronoun) {
+        return `${header.displayName} @${header.username} (${header.preferredPronoun})`;
+      }
       return `${header.displayName} (@${header.username})`;
     }
     return `@${header.username}`;
@@ -61,8 +67,6 @@ export interface ProfilePublicData {
   header: UserHeader;
   /// An optional real world name of the user.
   realName: string;
-  /// An optional preferred pronoun or form of address.
-  preferredPronoun: string;
   /// An optional home location for the user.
   homeLocation: string;
   /// An optional cabin number for the user.
@@ -75,6 +79,8 @@ export interface ProfilePublicData {
   message: string;
   /// A UserNote owned by the visiting user, about the profile's user (see `UserNote`).
   note?: string;
+  /// An optional dinner team assignment.
+  dinnerTeam?: DinnerTeam;
 }
 
 export interface DisabledFeature {
@@ -510,7 +516,7 @@ export interface UserProfileUploadData {
   /// An optional real name of the user.
   realName: string;
   /// An optional preferred form of address.
-  preferredPronoun: string;
+  preferredPronoun?: string;
   /// An optional home location (e.g. city).
   homeLocation: string;
   /// An optional ship cabin number.
@@ -521,6 +527,8 @@ export interface UserProfileUploadData {
   message: string;
   /// An optional blurb about the user.
   about: string;
+  /// An optional dinner team assignment.
+  dinnerTeam?: DinnerTeam;
 }
 
 export interface NoteCreateData {

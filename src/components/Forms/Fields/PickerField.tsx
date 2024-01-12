@@ -1,6 +1,6 @@
 import {Button, Divider, Menu} from 'react-native-paper';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFormikContext} from 'formik';
@@ -10,11 +10,11 @@ interface PickerFieldProps {
   label: string;
   value: number | string;
   choices: (number | string)[];
-  icon: string;
   getTitle: (value: number | string) => string;
+  viewStyle?: StyleProp<ViewStyle>;
 }
 
-export const PickerField = ({name, label, value, choices, icon, getTitle}: PickerFieldProps) => {
+export const PickerField = ({name, label, value, choices, getTitle, viewStyle}: PickerFieldProps) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
@@ -53,7 +53,7 @@ export const PickerField = ({name, label, value, choices, icon, getTitle}: Picke
       visible={visible}
       onDismiss={closeMenu}
       anchor={
-        <View>
+        <View style={viewStyle}>
           <Button
             buttonColor={theme.colors.background}
             textColor={theme.colors.onBackground}

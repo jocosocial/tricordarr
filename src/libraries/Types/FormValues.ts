@@ -1,4 +1,5 @@
 import {FezType} from '../Enums/FezType';
+import {DinnerTeam} from '../Enums/DinnerTeam';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -25,6 +26,7 @@ export interface UserProfileFormValues {
   email: string;
   message: string;
   about: string;
+  dinnerTeam: string;
 }
 
 export interface UserNoteFormValues {
