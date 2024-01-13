@@ -107,6 +107,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         //  After all that, the server still considers the message unread until you do a GET containing it
         //  So dynamically putting messages to the screen will help the local state but that's it.
         //  And confuse any other client applications.
+        console.log('[SeamailScreen.tsx] fezSocketMessageHandler performing refetch.')
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
         //   console.log('fezSocket appending', socketFezPostData);
@@ -145,7 +146,17 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
+      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
+      // Mark as read if applicable.
+      if (fez && fez.members) {
+        setFez({
+          ...fez,
+          members: {
+            ...fez.members,
+            readCount: fez.members.postCount,
+          },
+        });
+      }
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
@@ -164,7 +175,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         },
       );
     },
-    [fezPostMutation, route.params.fezID, dispatchFezPostsData, dispatchFezList],
+    [fez, fezPostMutation, route.params.fezID, setFez, dispatchFezPostsData, dispatchFezList],
   );
 
   // Initial set
@@ -183,8 +194,9 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   // with rendering.
   useEffect(() => {
     if (fez) {
-      openFezSocket(fez.fezID);
-      if (fezSocket) {
+      let newSocket = openFezSocket(fez.fezID);
+      if (fezSocket && newSocket) {
+        console.log(`[SeamailScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${fez.fezID}`);
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }

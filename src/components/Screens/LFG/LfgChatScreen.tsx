@@ -176,8 +176,9 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   // with rendering.
   useEffect(() => {
     if (lfg) {
-      openFezSocket(lfg.fezID);
-      if (fezSocket) {
+      let newSocket = openFezSocket(lfg.fezID);
+      if (fezSocket && newSocket) {
+        console.log(`[SeamailScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${lfg.fezID}`);
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
