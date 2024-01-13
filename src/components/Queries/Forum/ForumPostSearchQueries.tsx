@@ -17,6 +17,7 @@ export interface ForumPostSearchQueryParams {
   category?: string;
   start?: number;
   limit?: number;
+  creatorid?: string;
 }
 
 // https://github.com/jocosocial/swiftarr/issues/235
@@ -46,6 +47,7 @@ export const useForumPostSearchQuery = (queryParams: ForumPostSearchQueryParams 
               ...(queryParams.bookmarked ? {bookmarked: queryParams.bookmarked} : undefined),
               ...(queryParams.forum ? {forum: queryParams.forum} : undefined),
               ...(queryParams.category ? {category: queryParams.category} : undefined),
+              ...(queryParams.creatorid ? {creatorid: queryParams.creatorid} : undefined),
             },
           },
         );

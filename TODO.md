@@ -6,5 +6,6 @@ Backlog
 
 Work Queue
 * main app help content
+* theme color?
 
 Nightly
