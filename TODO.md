@@ -6,8 +6,5 @@ Backlog
 
 Work Queue
 * main app help content
-* your posts into a seamail vanish if you go back and open again.
-  * any post you make needs to mark the query as stale
-  * probably affects forum as well
 
 Nightly

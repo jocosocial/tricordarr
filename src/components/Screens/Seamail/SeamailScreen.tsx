@@ -171,11 +171,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
               type: FezListActions.addSelfPost,
               fezID: route.params.fezID,
             });
+            // Mark stale so that it refetches with your new posts
+            // Some day this should just update the query data.
+            queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
           },
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, dispatchFezPostsData, dispatchFezList],
+    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData, dispatchFezList],
   );
 
   // Initial set
