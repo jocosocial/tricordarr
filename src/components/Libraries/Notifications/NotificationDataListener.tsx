@@ -5,6 +5,7 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useQueryClient} from '@tanstack/react-query';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -17,6 +18,7 @@ export const NotificationDataListener = () => {
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
   const {isLoggedIn} = useAuth();
+  const queryClient = useQueryClient();
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -30,6 +32,10 @@ export const NotificationDataListener = () => {
       switch (notificationType) {
         case NotificationTypeData.announcement: {
           refetchAnnouncements();
+          break;
+        }
+        case NotificationTypeData.seamailUnreadMsg: {
+          queryClient.invalidateQueries({queryKey: [`/fez/${notificationData.contentID}`]});
           break;
         }
       }

@@ -32,7 +32,10 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
       hashtagOnPressFunction?: (tag: string) => void,
       mentionOnPressFunction?: (username: string) => void,
     ) => {
-      const tokens = line.split(/(:[\w-]+:)|([#@]\w+)/g);
+      // @TODO this is matching to much hashtag, but TBH that's not the end of the world.
+      const tokens = line.split(
+        /(:[\w-]+:)|((?<!\S)@[A-Za-z0-9]+(?:[-.+_][A-Za-z0-9]+)*)|((?<!\S)#[A-Za-z0-9]+(?!\\S))/g,
+      );
       return tokens.map((token, tokenIndex) => {
         // console.log(token);
         if (!token) {

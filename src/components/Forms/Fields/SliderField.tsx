@@ -20,6 +20,7 @@ interface SliderFieldProps {
   unit?: string;
   style?: StyleProp<ViewStyle>;
   onValueChange?: (value: number) => void;
+  onSlidingComplete?: (value: number) => void;
 }
 
 export const SliderField = (props: SliderFieldProps) => {
@@ -47,6 +48,7 @@ export const SliderField = (props: SliderFieldProps) => {
         onValueChange={onValueChange}
         step={props.step}
         thumbTintColor={theme.colors.onBackground}
+        onSlidingComplete={props.onSlidingComplete}
       />
       {props.helperText && (
         <HelperText style={commonStyles.onBackground} type={'info'}>

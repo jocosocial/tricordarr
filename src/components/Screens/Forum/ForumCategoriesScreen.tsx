@@ -102,8 +102,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     return <LoadingView />;
   }
 
-  console.log(keywordData?.keywords)
-
   return (
     <AppView>
       <ScrollingContentView

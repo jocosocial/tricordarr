@@ -130,9 +130,12 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
                 minimumValue={10}
                 maximumValue={60}
                 step={10}
-                helperText={'Interval at which the app checks that the socket is open. Don\'t change this unless instructed to.'}
+                unit={'second'}
+                helperText={
+                  "Interval at which the app checks that the socket is open. Don't change this unless instructed to."
+                }
                 style={commonStyles.paddingHorizontal}
-                onValueChange={handleHealthChange}
+                onSlidingComplete={handleHealthChange}
               />
             </View>
           </Formik>

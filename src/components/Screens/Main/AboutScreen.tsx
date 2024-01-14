@@ -2,7 +2,7 @@ import React from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Card, Text} from 'react-native-paper';
+import {Card, DataTable, Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 // @ts-ignore
 import grant from '../../../../assets/contributors/grant.jpg';
@@ -15,6 +15,7 @@ import tricordarr from '../../../../assets/PlayStore/tricordarr.jpg';
 import {ContributorCard} from '../../Cards/ContributorCard';
 import {HyperlinkText} from '../../Text/HyperlinkText';
 import {View} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 export const AboutScreen = () => {
   const {commonStyles} = useStyles();
@@ -22,6 +23,26 @@ export const AboutScreen = () => {
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
+          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>
+            Version
+          </Text>
+          <Card>
+            <Card.Content>
+              <DataTable>
+                <DataTable.Row>
+                  <DataTable.Cell>App Version</DataTable.Cell>
+                  <DataTable.Cell>{DeviceInfo.getVersion()}</DataTable.Cell>
+                </DataTable.Row>
+                <DataTable.Row>
+                  <DataTable.Cell>Build</DataTable.Cell>
+                  <DataTable.Cell>{DeviceInfo.getBuildNumber()}</DataTable.Cell>
+                </DataTable.Row>
+              </DataTable>
+            </Card.Content>
+          </Card>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>Background</Text>
           <ContributorCard imageSource={tricordarr} bodyText={'Tricordarr started as a proof-of-concept in the weeks before JoCo Cruise 2023 and evolved into a fully-featured showcase project for JoCo Cruise 2024. It is proof that any idea can become a reality with determination, vision, an AI co-pilot, and a seemingly unlimited supply of time.'} />
         </PaddedContentView>
         <PaddedContentView>

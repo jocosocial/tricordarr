@@ -14,19 +14,28 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // Socket Open
 
+  /**
+   * Open a Fez Socket for a given FezID. Only one Fez Socket can be open at a time.
+   * If sockets are disabled, then don't do anything. If a socket already
+   * exists and is open, then don't do anything. But otherwise, try building a new one.
+   * Returns a boolean whether a new socket was created or not.
+   */
   const openFezSocket = useCallback(
     (fezID: string) => {
       if (!appConfig.enableFezSocket) {
         console.log('[SocketProvider.tsx] FezSocket is disabled. Skipping open.');
-        return;
+        return false;
       }
       console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
+      let returnState = false;
       if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
         console.log('[SocketProvider.tsx] FezSocket already exists. Skipping buildWebSocket.');
       } else {
         buildWebSocket(fezID).then(ws => setFezSocket(ws));
+        returnState = true;
       }
       console.log(`[SocketProvider.tsx] FezSocket open complete! State: ${fezSocket?.readyState}`);
+      return returnState;
     },
     [appConfig.enableFezSocket, fezSocket],
   );

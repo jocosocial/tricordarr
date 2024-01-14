@@ -144,4 +144,5 @@ export enum ForumStackComponents {
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
   forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
+  forumPostUserScreen = 'ForumPostUserScreen',
 }

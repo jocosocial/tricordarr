@@ -11,8 +11,9 @@ import {
   BottomTabComponents,
   ForumStackComponents,
   LfgStackComponents,
-  RootStackComponents
+  RootStackComponents,
 } from '../../../libraries/Enums/Navigation';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface UserContentCardProps {
   user: ProfilePublicData;
@@ -23,6 +24,7 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
   const {profilePublicData} = useUserData();
   const rootNavigation = useRootStack();
   const isSelf = profilePublicData?.header.userID === user.header.userID;
+  const {hasModerator} = usePrivilege();
 
   const getIcon = (icon: string) => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
 
@@ -47,6 +49,24 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
               })
             }
           />
+          {hasModerator && (
+            <List.Item
+              title={'Forum Posts'}
+              left={() => getIcon(AppIcons.moderator)}
+              onPress={() =>
+                rootNavigation.push(RootStackComponents.rootContentScreen, {
+                  screen: BottomTabComponents.forumsTab,
+                  params: {
+                    screen: ForumStackComponents.forumPostUserScreen,
+                    initial: false,
+                    params: {
+                      user: user.header,
+                    },
+                  },
+                })
+              }
+            />
+          )}
           {isSelf && (
             <List.Item
               title={'LFGs'}
