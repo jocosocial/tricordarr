@@ -15,6 +15,7 @@ import {ContentInsertPhotosView} from '../Views/Content/ContentInsertPhotosView'
 import {ContentPostLengthView} from '../Views/Content/ContentPostLengthView';
 import {MentionInput} from 'react-native-controlled-mentions';
 import {ContentPostMentionSuggestionsView} from '../Views/ContentPostMentionSuggestionsView';
+import {MentionTextField} from './Fields/MentionTextField';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -130,23 +131,7 @@ export const ContentPostForm = ({
               />
             </View>
             <View style={styles.inputWrapperView}>
-              <MentionInput
-                underlineColorAndroid={'transparent'}
-                style={styles.input}
-                multiline={true}
-                onChangeText={handleChange('text')}
-                onChange={handleChange('text')}
-                onBlur={handleBlur('text')}
-                value={values.text}
-                partTypes={[
-                  {
-                    trigger: '@', // Should be a single character like '@' or '#'
-                    renderSuggestions: ContentPostMentionSuggestionsView,
-                    textStyle: commonStyles.bold, // The mention style in the input
-                  },
-                ]}
-
-              />
+              <MentionTextField name={'text'} style={styles.input} />
               <ContentInsertPhotosView />
             </View>
             <View style={styles.inputWrapperViewSide}>

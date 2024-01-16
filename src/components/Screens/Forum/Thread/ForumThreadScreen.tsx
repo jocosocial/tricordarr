@@ -274,6 +274,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   }, [dispatchForumListData, forumListItem]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+    formikHelpers.setSubmitting(true);
     if (!forumData) {
       setErrorMessage('Forum Data missing? This is definitely a bug.');
       formikHelpers.setSubmitting(false);
