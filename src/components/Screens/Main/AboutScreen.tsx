@@ -42,17 +42,43 @@ export const AboutScreen = () => {
           </Card>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>Background</Text>
-          <ContributorCard imageSource={tricordarr} bodyText={'Tricordarr started as a proof-of-concept in the weeks before JoCo Cruise 2023 and evolved into a fully-featured showcase project for JoCo Cruise 2024. It is proof that any idea can become a reality with determination, vision, an AI co-pilot, and a seemingly unlimited supply of time.'} />
+          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>
+            Background
+          </Text>
+          <ContributorCard
+            imageSource={tricordarr}
+            bodyText={
+              'Tricordarr started as a proof-of-concept in the weeks before JoCo Cruise 2023 and evolved into a fully-featured showcase project for JoCo Cruise 2024. It is proof that any idea can become a reality with determination, vision, an AI co-pilot, and a seemingly unlimited supply of time.'
+            }
+          />
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>Contributors</Text>
-          <ContributorCard imageSource={grant} bodyText={'Grant Cohoe (@grant) is the primary developer of this app. If you\'re looking for someone to shout at, it\'s him.'} />
-          <ContributorCard imageSource={hendu} bodyText={'Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration and many other bug fixes.'} />
-          <ContributorCard imageSource={cfry} bodyText={'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable.'} />
+          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>
+            Contributors
+          </Text>
+          <ContributorCard
+            imageSource={grant}
+            bodyText={
+              "Grant Cohoe (@grant) is the primary developer of this app. If you're looking for someone to shout at, it's him."
+            }
+          />
+          <ContributorCard
+            imageSource={hendu}
+            bodyText={
+              'Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration, many bug fixes, and plenty of PR tests & reviews.'
+            }
+          />
+          <ContributorCard
+            imageSource={cfry}
+            bodyText={
+              'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable. He also made the cool lighter video.'
+            }
+          />
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>Source Code</Text>
+          <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>
+            Source Code
+          </Text>
           <View style={commonStyles.marginBottomSmall}>
             <HyperlinkText>
               <>
@@ -70,7 +96,9 @@ export const AboutScreen = () => {
             </HyperlinkText>
           </View>
           <View style={commonStyles.marginBottomSmall}>
-            <Text>Keep in touch with us on the JoCo Cruise Discord in #twitarr! We're always looking for new contributors!</Text>
+            <Text>
+              Keep in touch with us on the JoCo Cruise Discord in #twitarr! We're always looking for new contributors!
+            </Text>
           </View>
         </PaddedContentView>
       </ScrollingContentView>

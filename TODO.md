@@ -9,7 +9,6 @@ Work Queue
 * theme color?
 
 Nightly
-* Credits Chall lighter and Dustin pr review
 * Multiline test field initial lines 2+. 
   * Private note, lfg description, profile about
 * Tap on announcement to go to detailed screen
