@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
@@ -114,37 +114,39 @@ export const ContentPostForm = ({
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, isSubmitting, dirty}) => (
-        <View style={styles.formContainer}>
-          {emojiPickerVisible && <EmojiPickerField />}
-          <ContentInsertMenuView
-            enablePhotos={enablePhotos}
-            visible={insertMenuVisible}
-            setVisible={setInsertMenuVisible}
-            setEmojiVisible={setEmojiPickerVisible}
-            maxPhotos={maxPhotos}
-          />
-          <View style={styles.formView}>
-            <View style={styles.inputWrapperViewSide}>
-              <IconButton
-                icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
-                onPress={handleInsertPress}
-              />
+        <ScrollView style={commonStyles.contentPostForm}>
+          <View style={{...styles.formContainer}}>
+            {emojiPickerVisible && <EmojiPickerField />}
+            <ContentInsertMenuView
+              enablePhotos={enablePhotos}
+              visible={insertMenuVisible}
+              setVisible={setInsertMenuVisible}
+              setEmojiVisible={setEmojiPickerVisible}
+              maxPhotos={maxPhotos}
+            />
+            <View style={styles.formView}>
+              <View style={styles.inputWrapperViewSide}>
+                <IconButton
+                  icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
+                  onPress={handleInsertPress}
+                />
+              </View>
+              <View style={styles.inputWrapperView}>
+                <MentionTextField name={'text'} style={styles.input} />
+                <ContentInsertPhotosView />
+              </View>
+              <View style={styles.inputWrapperViewSide}>
+                <SubmitIconButton
+                  disabled={!values.text}
+                  submitting={overrideSubmitting || isSubmitting}
+                  onPress={onPress || handleSubmit}
+                  withPrivilegeColors={true}
+                />
+              </View>
             </View>
-            <View style={styles.inputWrapperView}>
-              <MentionTextField name={'text'} style={styles.input} />
-              <ContentInsertPhotosView />
-            </View>
-            <View style={styles.inputWrapperViewSide}>
-              <SubmitIconButton
-                disabled={!values.text}
-                submitting={overrideSubmitting || isSubmitting}
-                onPress={onPress || handleSubmit}
-                withPrivilegeColors={true}
-              />
-            </View>
+            {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
           </View>
-          {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
-        </View>
+        </ScrollView>
       )}
     </Formik>
   );

@@ -241,4 +241,7 @@ export const commonStyles = StyleSheet.create({
   linkText: {
     textDecorationLine: 'underline',
   },
+  contentPostForm: {
+    minHeight: styleDefaults.marginSize * 4,
+  },
 });
