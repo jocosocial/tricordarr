@@ -9,3 +9,10 @@ Work Queue
 * theme color?
 
 Nightly
+* Credits Chall lighter and Dustin pr review
+* Multiline test field initial lines 2+. 
+  * Private note, lfg description, profile about
+* Tap on announcement to go to detailed screen
+* Deck map webview pdfs?
+* Seamaillistsfreen actions menu consistent with others - three dots
+* Content notification settings in each module settings?
