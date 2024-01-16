@@ -15,7 +15,7 @@ import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
+import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';

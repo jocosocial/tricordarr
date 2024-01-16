@@ -20,7 +20,8 @@ export const SeamailHelpScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text style={[commonStyles.marginBottomSmall]}>
-            Open: Allows you add or remove users later on. Added users will be able to read all past history.
+            Open: Allows you add or remove users later on. Added users will be able to read all past history. This is
+            the default type.
           </Text>
           <Text style={[commonStyles.marginBottomSmall]}>
             Closed: Cannot add or remove users later on. To start chatting with new users you'll need to create a new
@@ -38,7 +39,8 @@ export const SeamailHelpScreen = () => {
             You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is by design.
           </Text>
           <Text style={[commonStyles.marginBottomSmall]}>
-            Messages can be reported to the moderation team by long-pressing on the message and selecting Report.
+            Messages made in Open seamails can be reported to the moderation team by long-pressing on the message and
+            selecting Report.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
