@@ -26,6 +26,12 @@ interface UserProfileFormProps {
 const validationSchema = Yup.object().shape({
   email: EmailValidation,
   roomNumber: RoomNumberValidation,
+  displayName: Yup.string().optional().min(2).max(50),
+  realName: Yup.string().optional().min(2).max(50),
+  preferredPronoun: Yup.string().optional().min(2).max(50),
+  homeLocation: Yup.string().optional().min(2).max(50),
+  message: Yup.string().optional().min(4).max(80),
+  about: Yup.string().optional().min(4).max(400),
 });
 
 // https://formik.org/docs/guides/react-native
@@ -38,7 +44,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
   };
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting}) => (
+      {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
           <TextField
             viewStyle={styles.inputContainer}
@@ -89,7 +95,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             numberOfLines={3}
           />
           <PrimaryActionButton
-            disabled={isSubmitting}
+            disabled={!isValid || isSubmitting}
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
