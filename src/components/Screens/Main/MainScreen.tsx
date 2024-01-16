@@ -80,8 +80,8 @@ export const MainScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
         <MainHeaderView />
-        <MainThemeView />
         <MainAnnouncementView />
+        <MainThemeView />
         <MainNextEventView />
         {hasModerator && (
           <PaddedContentView>
