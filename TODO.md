@@ -10,5 +10,4 @@ Work Queue
 
 Nightly
 * Deck map webview pdfs?
-* Seamaillistsfreen actions menu consistent with others - three dots
 * Content notification settings in each module settings?

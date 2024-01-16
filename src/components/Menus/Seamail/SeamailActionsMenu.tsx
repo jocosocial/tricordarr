@@ -1,20 +1,20 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {SeamailStackScreenComponents} from '../../libraries/Enums/Navigation';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {FezData} from '../../libraries/Structs/ControllerStructs';
-import {useSeamailStack} from '../Navigation/Stacks/SeamailStack';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {HelpModalView} from '../../Views/Modals/HelpModalView';
+import {useModal} from '../../Context/Contexts/ModalContext';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
-import {PostAsModeratorMenuItem} from './Items/PostAsModeratorMenuItem';
-import {PostAsTwitarrTeamMenuItem} from './Items/PostAsTwitarrTeamMenuItem';
-import {useFezMuteMutation} from '../Queries/Fez/FezMuteQueries';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../Reducers/Fez/FezListReducers';
-import {useSeamailQuery} from '../Queries/Fez/FezQueries';
+import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
+import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
+import {useFezMuteMutation} from '../../Queries/Fez/FezMuteQueries';
+import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 
 interface SeamailActionsMenuProps {
   fez: FezData;

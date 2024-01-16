@@ -24,6 +24,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -106,15 +107,11 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(SeamailStackScreenComponents.seamailHelpScreen)}
-          />
+          <SeamailListActionsMenu />
         </HeaderButtons>
       </View>
     );
-  }, [navigation]);
+  }, []);
 
   useEffect(() => {
     if (notificationSocket) {

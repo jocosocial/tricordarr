@@ -1,11 +1,9 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {TextStyle, View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
-import {useModal} from '../../Context/Contexts/ModalContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {Text} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -42,14 +40,6 @@ const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
 
 export const UserRecoveryKeyModalView = ({userRecoveryKey, onPress}: UserRecoveryKeyModalViewProps) => {
   const theme = useAppTheme();
-  // const navigation = useNavigation();
-  // const {setModalVisible} = useModal();
-  //
-  // useEffect(() => {
-  //   if (!modalOnDismiss) {
-  //     setModalOnDismiss(onPress);
-  //   }
-  // }, [modalOnDismiss, onPress, setModalOnDismiss]);
 
   const cardActions = (
     <PrimaryActionButton

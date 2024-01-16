@@ -8,7 +8,7 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
-import {SeamailActionsMenu} from '../../Menus/SeamailActionsMenu';
+import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
