@@ -1,5 +1,12 @@
 import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStructs';
-import {announcementsChannel, forumChannel, lfgChannel, seamailChannel, serviceChannel} from './Channels';
+import {
+  announcementsChannel,
+  forumChannel,
+  krakentalkChannel,
+  lfgChannel,
+  seamailChannel,
+  serviceChannel,
+} from './Channels';
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
 import {getAppConfig} from '../AppConfig';
@@ -12,6 +19,8 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   let url = '';
   let pressActionID = PressAction.twitarrTab;
   let title = '';
+  let autoCancel = true;
+  let ongoing = false;
 
   // Do not generate a notification if the user has disabled that category.
   if (!appConfig.pushNotifications[notificationType]) {
@@ -53,6 +62,19 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.forum;
       title = 'Forum Mention';
       break;
+    case NotificationTypeData.incomingPhoneCall:
+      channel = krakentalkChannel;
+      pressActionID = PressAction.krakentalk;
+      url = `/phonecall/${notificationData.contentID}/from/${notificationData.caller?.userID}/${notificationData.caller?.username}`;
+      title = 'Incoming Call';
+      autoCancel = false;
+      ongoing = true;
+      break;
+    case NotificationTypeData.phoneCallEnded:
+      channel = krakentalkChannel;
+      pressActionID = PressAction.krakentalk;
+      title = 'Call Ended';
+      break;
   }
 
   generateContentNotification(
@@ -63,5 +85,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     notificationType,
     url,
     pressActionID,
+    autoCancel,
+    ongoing,
   );
 };

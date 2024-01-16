@@ -48,6 +48,7 @@ const deepLinksConf = {
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',
+            KrakenTalkReceiveScreen: 'phonecall/:callID/from/:callerUserID/:callerUsername',
           },
         },
         LfgTab: {

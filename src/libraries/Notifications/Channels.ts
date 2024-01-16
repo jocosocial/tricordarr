@@ -75,6 +75,16 @@ export const forumChannel: AndroidChannel = {
 };
 
 /**
+ * Notification channel for KrakenTalk calls.
+ */
+export const krakentalkChannel: AndroidChannel = {
+  id: 'krakentalk',
+  name: 'Krakentalk',
+  groupId: contentChannelGroup.id,
+  description: 'KrakenTalk calls through Twitarr.',
+};
+
+/**
  * Setup function to ensure that the channels and their groups exist.
  */
 export async function setupChannels() {
@@ -85,4 +95,5 @@ export async function setupChannels() {
   await notifee.createChannel(lfgChannel);
   await notifee.createChannel(announcementsChannel);
   await notifee.createChannel(forumChannel);
+  await notifee.createChannel(krakentalkChannel);
 }

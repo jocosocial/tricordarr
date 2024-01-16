@@ -61,6 +61,12 @@ export const getUrlForEvent = (
         }
         return;
       }
+      case PressAction.krakentalk: {
+        if (notification.id && notification.data) {
+          return `${notification.data.url}`;
+        }
+        return;
+      }
       case PressAction.home: {
         if (notification.id && notification.data) {
           notifee.cancelNotification(notification.id);
