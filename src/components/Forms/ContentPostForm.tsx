@@ -62,6 +62,9 @@ export const ContentPostForm = ({
   };
 
   const styles = StyleSheet.create({
+    formOuterContainer: {
+      maxHeight: 300, // this number seemed good so I went with it
+    },
     formContainer: {
       ...commonStyles.flexColumn,
     },
@@ -113,40 +116,42 @@ export const ContentPostForm = ({
       initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, dirty}) => (
-        <ScrollView style={commonStyles.contentPostForm}>
-          <View style={{...styles.formContainer}}>
-            {emojiPickerVisible && <EmojiPickerField />}
-            <ContentInsertMenuView
-              enablePhotos={enablePhotos}
-              visible={insertMenuVisible}
-              setVisible={setInsertMenuVisible}
-              setEmojiVisible={setEmojiPickerVisible}
-              maxPhotos={maxPhotos}
-            />
-            <View style={styles.formView}>
-              <View style={styles.inputWrapperViewSide}>
-                <IconButton
-                  icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
-                  onPress={handleInsertPress}
-                />
+      {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
+        <View style={styles.formOuterContainer}>
+          <ScrollView>
+            <View style={styles.formContainer}>
+              {emojiPickerVisible && <EmojiPickerField />}
+              <ContentInsertMenuView
+                enablePhotos={enablePhotos}
+                visible={insertMenuVisible}
+                setVisible={setInsertMenuVisible}
+                setEmojiVisible={setEmojiPickerVisible}
+                maxPhotos={maxPhotos}
+              />
+              <View style={styles.formView}>
+                <View style={styles.inputWrapperViewSide}>
+                  <IconButton
+                    icon={emojiPickerVisible || insertMenuVisible ? AppIcons.insertClose : AppIcons.insert}
+                    onPress={handleInsertPress}
+                  />
+                </View>
+                <View style={styles.inputWrapperView}>
+                  <MentionTextField name={'text'} style={styles.input} />
+                  <ContentInsertPhotosView />
+                </View>
+                <View style={styles.inputWrapperViewSide}>
+                  <SubmitIconButton
+                    disabled={!values.text || !isValid}
+                    submitting={overrideSubmitting || isSubmitting}
+                    onPress={onPress || handleSubmit}
+                    withPrivilegeColors={true}
+                  />
+                </View>
               </View>
-              <View style={styles.inputWrapperView}>
-                <MentionTextField name={'text'} style={styles.input} />
-                <ContentInsertPhotosView />
-              </View>
-              <View style={styles.inputWrapperViewSide}>
-                <SubmitIconButton
-                  disabled={!values.text}
-                  submitting={overrideSubmitting || isSubmitting}
-                  onPress={onPress || handleSubmit}
-                  withPrivilegeColors={true}
-                />
-              </View>
+              {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
             </View>
-            {dirty && <ContentPostLengthView content={values.text} maxChars={maxLength} />}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       )}
     </Formik>
   );
