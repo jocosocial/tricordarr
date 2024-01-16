@@ -126,7 +126,13 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
             right={<TextInput.Icon icon={AppIcons.info} onPress={handleMaxInfo} />}
             keyboardType={'numeric'}
           />
-          <TextField viewStyle={styles.inputContainer} name={'info'} label={'Event Info'} multiline={true} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'info'}
+            label={'Event Info'}
+            multiline={true}
+            numberOfLines={3}
+          />
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid}
             isLoading={isSubmitting}

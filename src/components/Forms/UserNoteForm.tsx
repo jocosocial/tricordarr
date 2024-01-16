@@ -32,6 +32,7 @@ export const UserNoteForm = ({onSubmit, initialValues}: UserNoteFormProps) => {
             label={'Note'}
             autoCapitalize={'sentences'}
             multiline={true}
+            numberOfLines={3}
           />
           <PrimaryActionButton
             disabled={!values.note || isSubmitting}

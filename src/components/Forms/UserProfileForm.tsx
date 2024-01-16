@@ -86,6 +86,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             label={'About'}
             autoCapitalize={'sentences'}
             multiline={true}
+            numberOfLines={3}
           />
           <PrimaryActionButton
             disabled={isSubmitting}
