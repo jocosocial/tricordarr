@@ -32,8 +32,8 @@ const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   location: InfoStringValidation,
   info: InfoStringValidation,
-  minCapacity: NumberValidation,
-  maxCapacity: NumberValidation,
+  minCapacity: NumberValidation.min(1).max(3),
+  maxCapacity: NumberValidation.min(1).max(3),
   fezType: FezTypeValidation,
   startDate: DateValidation,
 });
