@@ -16,6 +16,7 @@ import {SeamailHelpScreen} from '../../Screens/Seamail/SeamailHelpScreen';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
+import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = {
@@ -42,6 +43,11 @@ export type SeamailStackParamList = {
     forUser?: string;
   };
   SeamailHelpScreen: undefined;
+  KrakenTalkReceiveScreen: {
+    callID: string;
+    callerUserID: string;
+    callerUsername: string;
+  };
 };
 
 export const SeamailStack = () => {
@@ -99,6 +105,11 @@ export const SeamailStack = () => {
         name={SeamailStackScreenComponents.seamailHelpScreen}
         component={SeamailHelpScreen}
         options={{title: 'Seamail Help'}}
+      />
+      <Stack.Screen
+        name={SeamailStackScreenComponents.krakenTalkReceiveScreen}
+        component={KrakenTalkReceiveScreen}
+        options={{title: 'Incoming Call'}}
       />
     </Stack.Navigator>
   );

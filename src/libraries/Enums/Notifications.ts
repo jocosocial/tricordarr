@@ -11,4 +11,5 @@ export enum PressAction {
   home = 'home',
   lfg = 'lfg',
   forum = 'forum',
+  krakentalk = 'krakentalk',
 }

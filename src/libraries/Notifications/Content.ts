@@ -37,6 +37,21 @@ export const contentNotificationCategories: ContentNotificationCategory[] = [
     description: 'New forum post was made [@]mentioning you in the content.',
   },
   {
+    configKey: 'incomingPhoneCall',
+    title: 'Incoming Call',
+    description: 'Incoming KrakenTalk hailing frequencies.',
+  },
+  {
+    configKey: 'phoneCallAnswered',
+    title: 'Call Answered',
+    description: 'KrakenTalk hailing frequencies opened, possibly on another device.',
+  },
+  {
+    configKey: 'phoneCallEnded',
+    title: 'Call Ended',
+    description: 'KrakenTalk hailing frequencies closed.',
+  },
+  {
     configKey: 'followedEventStarting',
     title: 'Event Reminders',
     disabled: true,
@@ -62,6 +77,8 @@ export function generateContentNotification(
   type: string,
   url: string,
   pressActionID: string = PressAction.twitarrTab,
+  autoCancel: boolean = true,
+  ongoing: boolean = false,
 ) {
   console.log('Displaying notification with pressID', pressActionID);
   notifee
@@ -71,9 +88,10 @@ export function generateContentNotification(
       body: body,
       data: {type: type, url: url},
       android: {
+        ongoing: ongoing,
         channelId: channel.id,
         // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
-        autoCancel: true,
+        autoCancel: autoCancel,
         // https://notifee.app/react-native/docs/android/interaction
         pressAction: {
           id: pressActionID,
