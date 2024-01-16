@@ -113,7 +113,7 @@ export const ContentPostForm = ({
       initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({handleChange, handleBlur, handleSubmit, values, isSubmitting, dirty}) => (
+      {({handleSubmit, values, isSubmitting, dirty}) => (
         <ScrollView style={commonStyles.contentPostForm}>
           <View style={{...styles.formContainer}}>
             {emojiPickerVisible && <EmojiPickerField />}
