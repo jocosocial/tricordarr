@@ -2,10 +2,10 @@ import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStr
 import {
   announcementsChannel,
   forumChannel,
-  krakentalkChannel,
+  callsChannel,
   lfgChannel,
   seamailChannel,
-  serviceChannel,
+  serviceChannel, callMgmtChannel,
 } from './Channels';
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
@@ -63,7 +63,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       title = 'Forum Mention';
       break;
     case NotificationTypeData.incomingPhoneCall:
-      channel = krakentalkChannel;
+      channel = callsChannel;
       pressActionID = PressAction.krakentalk;
       url = `/phonecall/${notificationData.contentID}/from/${notificationData.caller?.userID}/${notificationData.caller?.username}`;
       title = 'Incoming Call';
@@ -71,7 +71,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       ongoing = true;
       break;
     case NotificationTypeData.phoneCallEnded:
-      channel = krakentalkChannel;
+      channel = callMgmtChannel;
       pressActionID = PressAction.krakentalk;
       title = 'Call Ended';
       break;

@@ -77,11 +77,24 @@ export const forumChannel: AndroidChannel = {
 /**
  * Notification channel for KrakenTalk calls.
  */
-export const krakentalkChannel: AndroidChannel = {
-  id: 'krakentalk',
-  name: 'Krakentalk',
+export const callsChannel: AndroidChannel = {
+  id: 'krakentalkcalls',
+  name: 'KrakenTalk Calls',
   groupId: contentChannelGroup.id,
   description: 'KrakenTalk calls through Twitarr.',
+  vibration: true,
+  // https://www.ny-engineers.com/blog/temporal-3-fire-alarm-systems
+  // https://notifee.app/react-native/docs/android/behaviour#vibration
+  // The 1's are needed because it seems the docs have it backwards and it goes delay-vibrate
+  // not vibrate-delay. They can't be 0's.
+  vibrationPattern: [1, 500, 500, 500, 500, 500, 1500, 500, 500, 500, 500, 500, 1500, 1],
+};
+
+export const callMgmtChannel: AndroidChannel = {
+  id: 'krakentalkmgmt',
+  name: 'KrakenTalk Call Management',
+  groupId: contentChannelGroup.id,
+  description: 'Signalling messages for KrakenTalk.',
 };
 
 /**
@@ -95,5 +108,6 @@ export async function setupChannels() {
   await notifee.createChannel(lfgChannel);
   await notifee.createChannel(announcementsChannel);
   await notifee.createChannel(forumChannel);
-  await notifee.createChannel(krakentalkChannel);
+  await notifee.createChannel(callsChannel);
+  await notifee.createChannel(callMgmtChannel);
 }

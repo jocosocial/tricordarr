@@ -1,5 +1,5 @@
 import notifee from '@notifee/react-native';
-import {serviceChannel} from './Channels';
+import {callsChannel, serviceChannel} from './Channels';
 import {PressAction} from '../Enums/Notifications';
 
 /**
@@ -11,7 +11,7 @@ export async function displayTestNotification() {
     title: 'Jonathan Coulton',
     body: "This was a triumph. I'm making a note here: HUGE SUCCESS. It's hard to overstate my satisfaction.",
     android: {
-      channelId: serviceChannel.id,
+      channelId: callsChannel.id,
       // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
       autoCancel: false,
       // https://notifee.app/react-native/docs/android/interaction
