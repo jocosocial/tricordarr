@@ -42,6 +42,8 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
       return 'Enable';
     } else if (permissionStatus === RESULTS.GRANTED) {
       return 'Already Enabled';
+    } else if (permissionStatus === RESULTS.UNAVAILABLE) {
+      return 'Unavailable';
     } else {
       return 'Unknown';
     }
@@ -71,6 +73,12 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
           )}
           {permissionStatus === RESULTS.BLOCKED && (
             <Text>No problem! You can always change your mind in the app settings.</Text>
+          )}
+          {permissionStatus === RESULTS.UNAVAILABLE && (
+            <Text>
+              Unavailable usually means your device does not require permission to send notifications. You can pick
+              exactly which kinds of notifications you want in the app settings.
+            </Text>
           )}
         </PaddedContentView>
       </ScrollingContentView>

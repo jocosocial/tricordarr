@@ -157,7 +157,9 @@ export async function stopForegroundServiceWorker() {
  */
 export async function startForegroundServiceWorker() {
   const notificationPermission = await checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-  if (notificationPermission !== RESULTS.GRANTED) {
+  // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
+  // We can safely assume that notifications are allowed and available if that is the case.
+  if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
     console.log('[Service.ts] Notification permission not allowed. Not starting FGS or socket.');
     return;
   }
