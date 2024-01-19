@@ -30,6 +30,7 @@ import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {guessDeckNumber} from '../../../libraries/Ship';
 
 const helpContent = [
   'Always check the official daily printed schedule to confirm event times/locations.',
@@ -143,6 +144,19 @@ export const EventScreen = ({navigation, route}: Props) => {
     },
   });
 
+  const handleLocation = () => {
+    if (!eventData) {
+      return;
+    }
+    const deck = guessDeckNumber(eventData.location);
+    let url = 'tricordarr://map';
+    if (deck) {
+      url = `${url}/${deck}`;
+    }
+    console.log(url);
+    Linking.openURL(url);
+  };
+
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
 
   if (!eventData) {
@@ -174,7 +188,7 @@ export const EventScreen = ({navigation, route}: Props) => {
                 left={() => getIcon(AppIcons.map)}
                 description={eventData.location}
                 title={'Location'}
-                onPress={() => Linking.openURL('tricordarr://map')}
+                onPress={handleLocation}
               />
               <DataFieldListItem
                 itemStyle={styles.item}

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {RefreshControl, StyleSheet, View} from 'react-native';
+import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   BottomTabComponents,
@@ -18,7 +18,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {AppIcon} from '../../Icons/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
-import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgMenu} from '../../Menus/LFG/ScheduleLfgMenu';
@@ -39,7 +39,8 @@ import {useIsFocused} from '@react-navigation/native';
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {getUserBylineString, UserBylineTag} from '../../Text/Tags/UserBylineTag';
+import {getUserBylineString} from '../../Text/Tags/UserBylineTag';
+import {guessDeckNumber} from '../../../libraries/Ship';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
 
@@ -201,8 +202,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
     );
   };
 
-  const getOwner = () => <UserBylineTag user={lfg.owner} />;
-
   return (
     <AppView>
       {lfg.cancelled && (
@@ -234,17 +233,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.map)}
                   description={lfg.location}
                   title={'Location'}
-                  onPress={() =>
-                    rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                      screen: BottomTabComponents.homeTab,
-                      params: {
-                        screen: MainStackComponents.siteUIScreen,
-                        params: {
-                          resource: 'map',
-                        },
-                      },
-                    })
-                  }
+                  onPress={() => {
+                    const deck = guessDeckNumber(lfg.location);
+                    let url = 'tricordarr://map';
+                    if (deck) {
+                      url = `${url}/${deck}`;
+                    }
+                    Linking.openURL(url);
+                  }}
                 />
                 <DataFieldListItem
                   itemStyle={styles.item}
