@@ -97,4 +97,5 @@ export enum AppIcons {
   decks = 'elevator',
   dailyTheme = 'drama-masks',
   forumUnread = 'message-badge',
+  circle = 'circle-medium',
 }
