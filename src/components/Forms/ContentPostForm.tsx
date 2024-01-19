@@ -118,7 +118,7 @@ export const ContentPostForm = ({
       validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
         <View style={styles.formOuterContainer}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'always'}>
             <View style={styles.formContainer}>
               {emojiPickerVisible && <EmojiPickerField />}
               <ContentInsertMenuView
