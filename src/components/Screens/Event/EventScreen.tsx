@@ -126,7 +126,7 @@ export const EventScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
+  }, [eventData, handleFavorite, rootStackNavigation, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
 
   useEffect(() => {
     navigation.setOptions({

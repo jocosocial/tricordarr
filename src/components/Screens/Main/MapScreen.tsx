@@ -11,6 +11,7 @@ import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {ShipDecks} from '../../../libraries/Ship';
 import {ListTitleView} from '../../Views/ListTitleView';
+import {MapIndicatorView} from '../../Views/MapIndicatorView';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mapScreen, NavigatorIDs.mainStack>;
 
@@ -62,9 +63,11 @@ export const MapScreen = ({navigation, route}: Props) => {
           title={`Deck ${shipDeck.number} - ${shipDeck.label}`}
           subtitle={shipDeck.roomStart ? `Staterooms ${shipDeck.roomStart} - ${shipDeck.roomEnd}` : undefined}
         />
+        <MapIndicatorView direction={'Forward'} />
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={shipDeck.imageSource} />
         </View>
+        <MapIndicatorView direction={'Aft'} />
       </ScrollingContentView>
     </AppView>
   );

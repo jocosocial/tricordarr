@@ -6,8 +6,11 @@ Backlog
 
 Work Queue
 * main app help content
-* theme color?
 
 Nightly
 * Deck map webview pdfs?
 * Content notification settings in each module settings?
+* OK actually try for pdf maps
+* Guess location from string
+  * Pass initial scroll position
+* Light up event notifications, default false and make changable in case we make it work
