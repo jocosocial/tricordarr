@@ -43,3 +43,21 @@ export const ShipDecks: DeckData[] = [
   {number: 10, label: 'Panorama', roomStart: 10001, roomEnd: 10046, imageSource: deck10},
   {number: 11, label: 'Observation', roomStart: 11001, roomEnd: 11010, imageSource: deck11},
 ];
+
+/**
+ * Guess the deck number from a location string.
+ * ChatGPT wrote this.
+ * @param location
+ */
+export const guessDeckNumber = (location?: string): number | undefined => {
+  if (!location) {
+    return undefined;
+  }
+  const match = location.match(/Deck (\d+)/);
+  if (match) {
+    // Extracted deck number from the regex match
+    return parseInt(match[1], 10);
+  }
+  // No deck number found.
+  return undefined;
+};

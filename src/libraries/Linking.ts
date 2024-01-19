@@ -38,7 +38,7 @@ const deepLinksConf = {
             UserProfileScreen: 'user/:userID',
             UsernameProfileScreen: 'username/:username',
             UserDirectoryScreen: 'users',
-            MapScreen: 'map',
+            MapScreen: 'map/:deckNumber?',
             MainConductScreen: 'codeOfConduct',
             DailyThemesScreen: 'dailyThemes',
           },

@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mapS
 export const MapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const [shipDeck, setShipDeck] = useState(
-    ShipDecks.find(dd => dd.number === route.params?.deckNumber) || ShipDecks[0],
+    ShipDecks.find(dd => dd.number === Number(route.params?.deckNumber)) || ShipDecks[0],
   );
 
   const getNavButtons = useCallback(() => {

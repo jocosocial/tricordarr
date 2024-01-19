@@ -6,15 +6,13 @@ import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
 import {PostContentData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
 import {ContentInsertPhotosView} from '../Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '../Views/Content/ContentPostLengthView';
-import {MentionInput} from 'react-native-controlled-mentions';
-import {ContentPostMentionSuggestionsView} from '../Views/ContentPostMentionSuggestionsView';
 import {MentionTextField} from './Fields/MentionTextField';
 
 interface ContentPostFormProps {
