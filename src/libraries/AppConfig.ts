@@ -65,7 +65,7 @@ const defaultAppConfig: AppConfig = {
     alertwordPost: true,
     twarrtMention: false,
     forumMention: true,
-    followedEventStarting: true,
+    followedEventStarting: false,
     incomingPhoneCall: true,
     phoneCallAnswered: true,
     phoneCallEnded: true,
