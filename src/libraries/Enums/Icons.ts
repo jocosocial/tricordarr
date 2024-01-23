@@ -98,4 +98,6 @@ export enum AppIcons {
   dailyTheme = 'drama-masks',
   forumUnread = 'message-badge',
   circle = 'circle-medium',
+  pin = 'pin',
+  unpin = 'pin-off',
 }

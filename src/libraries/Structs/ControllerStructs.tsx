@@ -627,6 +627,8 @@ export interface ForumData {
   posts: PostData[];
   /// If this forum is for an Event on the schedule, the ID of the event.
   eventID?: string;
+  /// If this forum is pinned or not.
+  isPinned?: boolean;
 }
 
 export interface PostData {
@@ -646,6 +648,8 @@ export interface PostData {
   userLike?: LikeType;
   /// The total number of `LikeType` reactions on the post.
   likeCount: number;
+  /// Whether the post has been pinned to the forum.
+  isPinned?: boolean;
 }
 
 export interface ForumSearchData {

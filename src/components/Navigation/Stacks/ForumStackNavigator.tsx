@@ -28,6 +28,7 @@ import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostS
 import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {ForumPostUserScreen} from '../../Screens/Forum/Post/ForumPostUserScreen';
+import {ForumPostPinnedScreen} from '../../Screens/Forum/Post/ForumPostPinnedScreen';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -70,6 +71,9 @@ export type ForumStackParamList = {
   };
   ForumPostUserScreen: {
     user: UserHeader;
+  };
+  ForumPostPinnedScreen: {
+    forumID: string;
   };
 };
 
@@ -192,6 +196,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostUserScreen}
         component={ForumPostUserScreen}
         options={{title: 'Posts by User'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumPostPinnedScreen}
+        component={ForumPostPinnedScreen}
+        options={{title: 'Pinned Posts'}}
       />
     </Stack.Navigator>
   );

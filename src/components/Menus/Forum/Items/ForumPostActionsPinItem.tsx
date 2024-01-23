@@ -1,25 +1,25 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useForumPostBookmarkMutation} from '../../../Queries/Forum/ForumPostBookmarkQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
+import {useForumPostPinMutation} from '../../../Queries/Forum/ForumPostPinQueries';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 
-interface ForumPostActionsFavoriteItemProps {
+interface ForumPostActionsPinItemProps {
   forumPost: PostData;
 }
 
-export const ForumPostActionsFavoriteItem = ({forumPost}: ForumPostActionsFavoriteItemProps) => {
-  const favoriteMutation = useForumPostBookmarkMutation();
+export const ForumPostActionsPinItem = ({forumPost}: ForumPostActionsPinItemProps) => {
+  const pinMutation = useForumPostPinMutation();
   const {dispatchForumPosts} = useTwitarr();
 
   const handleFavorite = () => {
-    favoriteMutation.mutate(
+    pinMutation.mutate(
       {
         postID: forumPost.postID.toString(),
-        action: forumPost.isBookmarked ? 'delete' : 'create',
+        action: forumPost.isPinned ? 'unpin' : 'pin',
       },
       {
         onSuccess: () => {
@@ -27,7 +27,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost}: ForumPostActionsFavori
             type: ForumPostListActions.updatePost,
             newPost: {
               ...forumPost,
-              isBookmarked: !forumPost.isBookmarked,
+              isPinned: !forumPost.isPinned,
             },
           });
         },
@@ -37,16 +37,16 @@ export const ForumPostActionsFavoriteItem = ({forumPost}: ForumPostActionsFavori
 
   const getIcon = () => (
     <StateLoadingIcon
-      isLoading={favoriteMutation.isLoading}
-      state={forumPost.isBookmarked}
-      iconTrue={AppIcons.unfavorite}
-      iconFalse={AppIcons.favorite}
+      isLoading={pinMutation.isLoading}
+      state={forumPost.isPinned}
+      iconTrue={AppIcons.unpin}
+      iconFalse={AppIcons.pin}
     />
   );
 
   return (
     <Menu.Item
-      title={forumPost.isBookmarked ? 'Unfavorite' : 'Favorite'}
+      title={forumPost.isPinned ? 'Unpin' : 'Pin'}
       dense={false}
       leadingIcon={getIcon}
       onPress={handleFavorite}

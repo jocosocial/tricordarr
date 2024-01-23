@@ -19,9 +19,10 @@ interface ForumPostListItemProps {
     updateProps: (select: 'leading' | 'trailing', newProps: any) => void;
   };
   enableShowInThread?: boolean;
+  enablePinnedPosts?: boolean;
 }
 
-export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListItemProps) => {
+export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts}: ForumPostListItemProps) => {
   const rootNavigation = useRootStack();
 
   const handleAuthorAvatarPress = () => {
@@ -43,7 +44,12 @@ export const ForumPostListItem = ({postData, enableShowInThread}: ForumPostListI
         <UserAvatarImage userHeader={postData.author} small={true} />
       </MessageAvatarContainerView>
       <MessageViewContainer>
-        <ForumPostMessageView postData={postData} showAuthor={true} enableShowInThread={enableShowInThread} />
+        <ForumPostMessageView
+          postData={postData}
+          showAuthor={true}
+          enableShowInThread={enableShowInThread}
+          enablePinnedPosts={enablePinnedPosts}
+        />
         {postData.images &&
           postData.images.map((image, index) => {
             return <ContentPostImage key={index} image={image} messageOnRight={false} />;

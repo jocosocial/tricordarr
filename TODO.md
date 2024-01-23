@@ -1,13 +1,13 @@
 Backlog
-* https://shopify.github.io/flash-list/
-* https://github.com/bluesky-social/social-app/blob/main/src/Navigation.tsx#L88
-* next lfg based on cached query data
-* Don't allow background fetches of fez if seamail not focused. Wait until is focused then fetch
+* Don't allow background fetches of fez of seamail not focused. Wait until is focused then fetch
+* Deck map webview pdfs?
 
 Work Queue
 * main app help content
+* Add pinned forum post and forums
+  * Viewing
+  * Pin/unpin
+* If app is backgrounded and seamail is open and you tap a seamail notification. It doesn't refetch
+* Does tapping conn lost notification work?
 
 Nightly
-* Deck map webview pdfs?
-* Content notification settings in each module settings?
-* OK actually try for pdf maps
