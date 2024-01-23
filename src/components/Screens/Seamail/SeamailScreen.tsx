@@ -34,6 +34,8 @@ import {ListTitleView} from '../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {FezMutedView} from '../../Views/Static/FezMutedView';
+import {useFocusEffect} from '@react-navigation/native';
+import {useAppState} from '@react-native-community/hooks';
 
 export type Props = NativeStackScreenProps<
   SeamailStackParamList,
@@ -53,6 +55,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {setErrorMessage} = useErrorHandler();
   const {refetchUserNotificationData} = useUserNotificationData();
   const queryClient = useQueryClient();
+  const appStateVisible = useAppState();
 
   const {
     data,
@@ -107,7 +110,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         //  After all that, the server still considers the message unread until you do a GET containing it
         //  So dynamically putting messages to the screen will help the local state but that's it.
         //  And confuse any other client applications.
-        console.log('[SeamailScreen.tsx] fezSocketMessageHandler performing refetch.')
+        console.log('[SeamailScreen.tsx] fezSocketMessageHandler performing refetch.');
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
         //   console.log('fezSocket appending', socketFezPostData);
@@ -232,6 +235,15 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       refetchUserNotificationData();
     }
   }, [dispatchFezList, fez, queryClient, refetchUserNotificationData]);
+
+  // Reload on so that when the user taps a Seamail notification while this screen is active in the background
+  // it will update with the latest data. This refetches a little aggressively when coming from the background
+  // so some day some debouncing should be implemented.
+  useEffect(() => {
+    if (appStateVisible === 'active') {
+      refetch();
+    }
+  }, [appStateVisible, refetch]);
 
   const renderHeader = () => {
     return (
