@@ -3,7 +3,6 @@ Backlog
 * Deck map webview pdfs?
 
 Work Queue
-* If app is backgrounded and seamail is open and you tap a seamail notification. It doesn't refetch
 * Does tapping conn lost notification work?
 
 Nightly
