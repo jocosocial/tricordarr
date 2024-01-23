@@ -18,7 +18,5 @@ export const ForumPostActionsReportItem = ({closeMenu, forumPost}: ForumPostActi
     setModalVisible(true);
   };
 
-  return (
-    <Menu.Item title={'Report'} dense={false} leadingIcon={AppIcons.report} onPress={handleReport} />
-  );
+  return <Menu.Item title={'Report'} dense={false} leadingIcon={AppIcons.report} onPress={handleReport} />;
 };

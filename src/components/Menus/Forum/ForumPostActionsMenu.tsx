@@ -13,6 +13,8 @@ import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThread
 import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -20,6 +22,7 @@ interface ForumPostActionsMenuProps {
   anchor: ReactNode;
   forumPost: PostData;
   enableShowInThread?: boolean;
+  enablePinnedPosts?: boolean;
 }
 
 export const ForumPostActionsMenu = ({
@@ -28,12 +31,14 @@ export const ForumPostActionsMenu = ({
   anchor,
   forumPost,
   enableShowInThread,
+  enablePinnedPosts,
 }: ForumPostActionsMenuProps) => {
   const {profilePublicData} = useUserData();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const rootNavigation = useRootStack();
   const forumNavigation = useForumStackNavigation();
+  const {hasModerator} = usePrivilege();
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
@@ -72,6 +77,12 @@ export const ForumPostActionsMenu = ({
       <ForumPostActionsDeleteItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />
       <ForumPostActionsFavoriteItem forumPost={forumPost} />
+      {enablePinnedPosts && (
+        <>
+          <ForumPostActionsPinItem forumPost={forumPost} />
+          <Divider bold={true} />
+        </>
+      )}
       <Divider bold={true} />
       <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />

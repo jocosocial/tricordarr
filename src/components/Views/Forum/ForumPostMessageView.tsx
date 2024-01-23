@@ -1,4 +1,3 @@
-import {Text} from 'react-native-paper';
 import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -25,6 +24,7 @@ interface ForumPostMessageViewProps {
   messageOnRight?: boolean;
   showAuthor?: boolean;
   enableShowInThread?: boolean;
+  enablePinnedPosts?: boolean;
 }
 
 /**
@@ -37,6 +37,7 @@ export const ForumPostMessageView = ({
   messageOnRight = false,
   showAuthor,
   enableShowInThread,
+  enablePinnedPosts,
 }: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -124,6 +125,7 @@ export const ForumPostMessageView = ({
           }
           forumPost={postData}
           enableShowInThread={enableShowInThread}
+          enablePinnedPosts={enablePinnedPosts}
         />
         <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween, commonStyles.alignItemsCenter]}>
           <View style={[commonStyles.flex0]}>
@@ -135,10 +137,11 @@ export const ForumPostMessageView = ({
               />
             )}
           </View>
-          <View style={[commonStyles.flex0]}>
+          <View style={[commonStyles.flex0, commonStyles.flexRow]}>
             {postData.isBookmarked && (
               <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={[commonStyles.flexEnd]} />
             )}
+            {postData.isPinned && <AppIcon icon={AppIcons.pin} style={[commonStyles.flexEnd]} />}
           </View>
         </View>
       </TouchableOpacity>

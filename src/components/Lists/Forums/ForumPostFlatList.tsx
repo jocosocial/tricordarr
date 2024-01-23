@@ -11,11 +11,13 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {LabelDivider} from '../Dividers/LabelDivider';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  handleLoadNext: () => void;
+  handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   itemSeparator?: 'time';
   invertList?: boolean;
@@ -47,6 +49,8 @@ export const ForumPostFlatList = ({
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
+  const {profilePublicData} = useUserData();
+  const {hasModerator} = usePrivilege();
 
   const styles = StyleSheet.create({
     postContainerView: {
@@ -87,13 +91,27 @@ export const ForumPostFlatList = ({
   );
 
   const renderItem = useCallback(
-    ({item, index}: {item: PostData; index: number}) => (
-      <View style={styles.postContainerView}>
-        {showNewDivider(index) && <LabelDivider label={'New'} />}
-        <ForumPostListItem postData={item} enableShowInThread={enableShowInThread} />
-      </View>
-    ),
-    [styles.postContainerView, showNewDivider, enableShowInThread],
+    ({item, index}: {item: PostData; index: number}) => {
+      const enablePinnedPosts = hasModerator || forumData?.creator.userID === profilePublicData?.header.userID;
+      return (
+        <View style={styles.postContainerView}>
+          {showNewDivider(index) && <LabelDivider label={'New'} />}
+          <ForumPostListItem
+            postData={item}
+            enableShowInThread={enableShowInThread}
+            enablePinnedPosts={enablePinnedPosts}
+          />
+        </View>
+      );
+    },
+    [
+      hasModerator,
+      forumData?.creator.userID,
+      profilePublicData?.header.userID,
+      styles.postContainerView,
+      showNewDivider,
+      enableShowInThread,
+    ],
   );
 
   const renderSeparator = useCallback(

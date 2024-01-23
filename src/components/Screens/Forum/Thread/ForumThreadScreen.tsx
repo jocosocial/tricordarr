@@ -166,6 +166,17 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
+          {forumData && (
+            <Item
+              title={'Pinned Posts'}
+              iconName={AppIcons.pin}
+              onPress={() =>
+                navigation.push(ForumStackComponents.forumPostPinnedScreen, {
+                  forumID: forumData.forumID,
+                })
+              }
+            />
+          )}
           {eventID && (
             <Item
               title={'Event'}
