@@ -19,6 +19,8 @@ interface ForumThreadFlatListProps {
   maintainViewPosition?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
+  pinnedThreads?: ForumListData[];
+  categoryID?: string;
 }
 
 export const ForumThreadFlatList = ({
@@ -28,12 +30,15 @@ export const ForumThreadFlatList = ({
   maintainViewPosition,
   hasNextPage,
   hasPreviousPage,
+  pinnedThreads = [],
+  categoryID,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlatList<ForumListData>>(null);
   const [showButton, setShowButton] = useState(false);
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
+
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
     // if (forumListData.length === 0) {
@@ -51,10 +56,26 @@ export const ForumThreadFlatList = ({
       );
     }
     if (forumListData.length !== 0) {
-      return <Divider bold={true} />;
+      if (!pinnedThreads || pinnedThreads.length === 0) {
+        return <Divider bold={true} />;
+      }
+      return (
+        <View>
+          {pinnedThreads.map(fld => {
+            return <ForumThreadListItem key={fld.forumID} forumListData={fld} categoryID={categoryID} />;
+          })}
+          <LabelDivider
+            label={'End of Pinned Threads'}
+            color={theme.colors.onBackground}
+            wrapperStyle={[commonStyles.marginTopZero, commonStyles.marginBottomSmall]}
+            dividerColor={theme.colors.outlineVariant}
+          />
+        </View>
+      );
     }
     return null;
   };
+
   const renderListFooter = () => {
     if (hasNextPage) {
       return (
@@ -79,20 +100,23 @@ export const ForumThreadFlatList = ({
     }
     return <SpaceDivider />;
   };
+
   const handleScrollButtonPress = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
+
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
+
   return (
     <>
       <FlatList
         ref={flatListRef}
         refreshControl={refreshControl}
         data={forumListData}
-        renderItem={({item}) => <ForumThreadListItem forumListData={item} />}
+        renderItem={({item}) => <ForumThreadListItem forumListData={item} categoryID={categoryID} />}
         onEndReached={handleLoadNext}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         keyExtractor={(item: ForumListData) => item.forumID}

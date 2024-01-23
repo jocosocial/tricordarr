@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
-import {ForumListData, UserHeader} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
@@ -17,9 +17,10 @@ import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
+  categoryID?: string;
 }
 
-export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) => {
+export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -39,7 +40,13 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
 
   const getRight = () => {
     const unreadCount = forumListData.postCount - forumListData.readCount;
-    if (unreadCount || forumListData.isFavorite || forumListData.isMuted || forumListData.isLocked) {
+    if (
+      unreadCount ||
+      forumListData.isFavorite ||
+      forumListData.isMuted ||
+      forumListData.isLocked ||
+      forumListData.isPinned
+    ) {
       return (
         <View style={styles.rightContainer}>
           <View style={styles.rightContent}>
@@ -47,6 +54,7 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
             {forumListData.isFavorite && <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />}
             {forumListData.isMuted && <AppIcon icon={AppIcons.mute} color={theme.colors.twitarrNegativeButton} />}
             {forumListData.isLocked && <AppIcon icon={AppIcons.locked} color={theme.colors.twitarrNegativeButton} />}
+            {forumListData.isPinned && <AppIcon icon={AppIcons.pin} />}
           </View>
         </View>
       );
@@ -98,6 +106,7 @@ export const ForumThreadListItem = ({forumListData}: ForumThreadListItemProps) =
       forumListData={forumListData}
       visible={menuVisible}
       setVisible={setMenuVisible}
+      categoryID={categoryID}
     />
   );
 };

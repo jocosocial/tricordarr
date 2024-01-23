@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
-import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
+import {useForumCategoryPinnedThreadsQuery, useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
@@ -34,6 +34,12 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   } = useForumCategoryQuery(props.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
   });
+  const {
+    data: pinnedThreads,
+    refetch: refetchPins,
+    isRefetching: isRefetchingPins,
+    isLoading: isLoadingPins,
+  } = useForumCategoryPinnedThreadsQuery(props.categoryID);
   const [refreshing, setRefreshing] = useState(false);
   const {forumListData, dispatchForumListData} = useTwitarr();
   const [isUserRestricted, setIsUserRestricted] = useState(false);
@@ -51,6 +57,11 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
     }
+  };
+
+  const onRefresh = () => {
+    refetch();
+    refetchPins();
   };
 
   useEffect(() => {
@@ -75,11 +86,12 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   useEffect(() => {
     if (isFocused && data && data.pages[0].numThreads !== forumListData.length) {
       setRefreshing(true);
+      refetchPins();
       refetch().then(() => setRefreshing(false));
     }
-  }, [isFocused, data, forumListData, refetch]);
+  }, [isFocused, data, forumListData, refetch, refetchPins]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingPins) {
     return <LoadingView />;
   }
 
@@ -89,7 +101,9 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         <View>
           <ScrollingContentView
             isStack={true}
-            refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}>
+            refreshControl={
+              <RefreshControl refreshing={refreshing || isRefetching || isRefetchingPins} onRefresh={onRefresh} />
+            }>
             <PaddedContentView padTop={true}>
               <Text>There aren't any forums in this category yet.</Text>
             </PaddedContentView>
@@ -107,9 +121,13 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing || isRefetching || isRefetchingPins} onRefresh={onRefresh} />
+        }
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
+        pinnedThreads={pinnedThreads}
+        categoryID={props.categoryID}
       />
       {!isUserRestricted && <ForumNewFAB categoryId={props.categoryID} />}
     </>

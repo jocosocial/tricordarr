@@ -587,6 +587,8 @@ export interface ForumListData {
   timeZoneID?: string;
   /// If this forum is for an Event on the schedule, the ID of the event.
   eventID?: string;
+  /// If this forum is pinned or not.
+  isPinned?: boolean;
 }
 
 export interface CategoryData {

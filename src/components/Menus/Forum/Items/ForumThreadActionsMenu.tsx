@@ -1,5 +1,5 @@
 import React, {Dispatch, ReactNode, SetStateAction, useCallback, useState} from 'react';
-import {ActivityIndicator, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {BottomTabComponents, EventStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
@@ -8,13 +8,17 @@ import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {AppIcon} from '../../../Icons/AppIcon';
+import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
+import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
+import {useForumPinMutation} from '../../../Queries/Forum/ForumPinMutations';
+import {useForumCategoryPinnedThreadsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 
 interface ForumThreadActionsMenuProps {
   anchor: ReactNode;
   forumListData: ForumListData;
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
+  categoryID?: string;
 }
 
 export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
@@ -24,6 +28,9 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
   const relationMutation = useForumRelationMutation();
   const {dispatchForumListData} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
+  const {hasModerator} = usePrivilege();
+  const pinMutation = useForumPinMutation();
+  const {refetch: refetchPins} = useForumCategoryPinnedThreadsQuery(props.categoryID ?? '');
 
   const closeMenu = useCallback(() => props.setVisible(false), [props]);
 
@@ -91,19 +98,55 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
     relationMutation,
   ]);
 
-  const getFavoriteIcon = () => {
-    if (refreshing) {
-      return <ActivityIndicator />;
-    }
-    return <AppIcon icon={props.forumListData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite} />;
+  const handlePin = () => {
+    pinMutation.mutate(
+      {
+        forumID: props.forumListData.forumID,
+        action: props.forumListData.isPinned ? 'unpin' : 'pin',
+      },
+      {
+        onSuccess: () => {
+          dispatchForumListData({
+            type: ForumListDataActions.updateThread,
+            newThread: {
+              ...props.forumListData,
+              isPinned: !props.forumListData.isPinned,
+            },
+          });
+          refetchPins();
+        },
+        onSettled: () => {
+          setRefreshing(false);
+          closeMenu();
+        },
+      },
+    );
   };
 
-  const getMuteIcon = () => {
-    if (refreshing) {
-      return <ActivityIndicator />;
-    }
-    return <AppIcon icon={props.forumListData.isMuted ? AppIcons.unmute : AppIcons.mute} />;
-  };
+  const getFavoriteIcon = () => (
+    <StateLoadingIcon
+      iconTrue={AppIcons.unfavorite}
+      iconFalse={AppIcons.favorite}
+      state={props.forumListData.isFavorite}
+      isLoading={refreshing}
+    />
+  );
+  const getMuteIcon = () => (
+    <StateLoadingIcon
+      iconTrue={AppIcons.unmute}
+      iconFalse={AppIcons.mute}
+      state={props.forumListData.isMuted}
+      isLoading={refreshing}
+    />
+  );
+  const getPinnedIcon = () => (
+    <StateLoadingIcon
+      iconTrue={AppIcons.unpin}
+      iconFalse={AppIcons.pin}
+      state={props.forumListData.isPinned}
+      isLoading={refreshing}
+    />
+  );
 
   return (
     <Menu visible={props.visible} onDismiss={closeMenu} anchor={props.anchor}>
@@ -138,6 +181,13 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
           leadingIcon={getMuteIcon}
           onPress={handleMute}
           disabled={props.forumListData.isFavorite}
+        />
+      )}
+      {hasModerator && props.categoryID && (
+        <Menu.Item
+          title={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
+          leadingIcon={getPinnedIcon}
+          onPress={handlePin}
         />
       )}
     </Menu>
