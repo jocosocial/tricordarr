@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 export const styleDefaults = {
   marginSize: 20,
   iconSize: 25,
+  IconSizeSmall: 20,
   avatarSize: 36,
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
