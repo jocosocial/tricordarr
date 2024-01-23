@@ -3,12 +3,10 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FAB, IconButton, Text} from 'react-native-paper';
-import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {BoldText} from '../../Text/BoldText';
-import {BaseFABGroup} from '../../Buttons/FloatingActionButtons/BaseFABGroup';
 import {useAppTheme} from '../../../styles/Theme';
 
 const SectionView = ({children}: PropsWithChildren) => {
@@ -24,7 +22,6 @@ const SectionContent = ({children}: PropsWithChildren) => {
 export const MainHelpScreen = () => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
-  const onStateChange = ({open}: {open: boolean}) => console.log({open});
 
   return (
     <AppView>
@@ -106,9 +103,7 @@ export const MainHelpScreen = () => {
               <IconButton icon={AppIcons.reload} />
             </View>
             <View style={commonStyles.flex}>
-              <Text>
-                Most screens have a typical pull-to-refresh ability. But some have a dedicated button.
-              </Text>
+              <Text>Most screens have a typical pull-to-refresh ability. But some have a dedicated button.</Text>
             </View>
           </SectionContent>
         </PaddedContentView>
@@ -122,10 +117,22 @@ export const MainHelpScreen = () => {
             </View>
             <View style={commonStyles.flex}>
               <Text>
-                Not all features of Twitarr have been implemented in this app. Those that aren't are outsourced
-                to an integrated browser with the Twitarr website. The first time you may need to log in since that
-                uses a different authentication method. You can also use the web view in the app as a dedicated
-                browser for Twitarr. You can access the webview directly in the Drawer.
+                Not all features of Twitarr have been implemented in this app. Those that aren't are outsourced to an
+                integrated browser with the Twitarr website. The first time you may need to log in since that uses a
+                different authentication method. You can also use the web view in the app as a dedicated browser for
+                Twitarr. You can access the webview directly in the Drawer.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Long Press</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View style={commonStyles.flex}>
+              <Text>
+                Most items in a list can be long-pressed to open a menu of additional context-specific actions.
               </Text>
             </View>
           </SectionContent>
