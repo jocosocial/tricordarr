@@ -12,6 +12,7 @@ import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Naviga
 import {ShipDecks} from '../../../libraries/Ship';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {MapIndicatorView} from '../../Views/MapIndicatorView';
+import FastImage from 'react-native-fast-image';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mapScreen, NavigatorIDs.mainStack>;
 
@@ -65,7 +66,7 @@ export const MapScreen = ({navigation, route}: Props) => {
         />
         <MapIndicatorView direction={'Forward'} />
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={shipDeck.imageSource} />
+          <FastImage style={styles.image} source={shipDeck.imageSource as number} />
         </View>
         <MapIndicatorView direction={'Aft'} />
       </ScrollingContentView>

@@ -21,6 +21,8 @@ import deck9 from '../../assets/map/deck9.png';
 import deck10 from '../../assets/map/deck10.png';
 // @ts-ignore
 import deck11 from '../../assets/map/deck11.png';
+// @ts-ignore
+import deck12 from '../../assets/map/deck12.png';
 
 export interface DeckData {
   number: number;
@@ -42,6 +44,7 @@ export const ShipDecks: DeckData[] = [
   {number: 9, label: 'Lido', imageSource: deck9},
   {number: 10, label: 'Panorama', roomStart: 10001, roomEnd: 10046, imageSource: deck10},
   {number: 11, label: 'Observation', roomStart: 11001, roomEnd: 11010, imageSource: deck11},
+  {number: 12, label: 'Sun', imageSource: deck12},
 ];
 
 /**
