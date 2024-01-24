@@ -72,7 +72,7 @@ const defaultAppConfig: AppConfig = {
     moderatorForumMention: true,
     twitarrTeamForumMention: true,
   },
-  fgsWorkerHealthTimer: 10000, // 10000 == 10 seconds
+  fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,
   oobeExpectedVersion: 0,
   enableDeveloperOptions: false,

@@ -7,24 +7,6 @@
     https://reactnative.dev/docs/0.63/removing-default-permissions
     -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <!--
-    The default notification permission behavior changed in Android 13.
-    https://developer.android.com/develop/ui/views/notifications/notification-permission
-     -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" android:required="true"/>
-    <!--
-    Foreground Services are a "normal" permission so the system grants it automatically.
-    But just to be safe I'm doing it here too.
-    -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <!--
-    Camera permission for taking pictures to upload to the service. Is non-essential.
-    -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <!--
-    Used to store images if the user wants to save them. Non-essential
-    -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
   <application
         android:usesCleartextTraffic="true"
