@@ -19,6 +19,10 @@
     Used to store images if the user wants to save them. Non-essential
     -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--
+    Used to extend the life of the background worker. Not-essential but certainly beneficial.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
       android:name=".MainApplication"

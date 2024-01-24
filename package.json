@@ -39,6 +39,7 @@
     "pluralize": "^8.0.0",
     "react": "18.2.0",
     "react-native": "0.72.7",
+    "react-native-battery-optimization-check": "^1.0.8",
     "react-native-bidirectional-infinite-scroll": "^0.3.3",
     "react-native-config": "^1.5.0",
     "react-native-controlled-mentions": "^2.2.5",

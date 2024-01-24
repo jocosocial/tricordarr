@@ -25,10 +25,10 @@ import {SocketHealthcheckData} from '../../../../libraries/Structs/SocketStructs
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../../libraries/Storage';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
-import {SettingSwitch} from '../../../Switches/SettingSwitch';
 import {Formik} from 'formik';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
 import {SliderField} from '../../../Forms/Fields/SliderField';
+import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView';
 
 type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -179,6 +179,8 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>
+        <Divider bold={true} />
+        <BatteryOptimizationSettingsView />
         <Divider bold={true} />
       </ScrollingContentView>
     </AppView>
