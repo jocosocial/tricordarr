@@ -47,6 +47,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
   const toggleRawTime = () => setRawTime(!rawTime);
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
+  const [fgsStartDate, setFgsStartDate] = useState<Date | undefined>();
 
   const fetchSocketState = useCallback(async () => {
     const ws = await getSharedWebSocket();
@@ -61,13 +62,26 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
     });
   }, []);
 
+  const fetchStart = async () => {
+    AsyncStorage.getItem(StorageKeys.FGS_START).then(item => {
+      if (item) {
+        const date = new Date(JSON.parse(item));
+        setFgsStartDate(date);
+      }
+    });
+  };
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchSocketState().finally(() => setRefreshing(false));
+    fetchSocketState()
+      .then(() => fetchStart())
+      .finally(() => setRefreshing(false));
   }, [fetchSocketState]);
 
   useEffect(() => {
-    fetchSocketState().catch(console.error);
+    fetchSocketState()
+      .then(() => fetchStart())
+      .catch(console.error);
   }, [fetchSocketState]);
 
   useBackHandler(() => {
@@ -94,7 +108,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
       setFgsHealthTime(seconds);
       stopForegroundServiceWorker().then(() => startForegroundServiceWorker());
     }
-  }
+  };
 
   return (
     <AppView>
@@ -112,7 +126,7 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <Divider bold={true} />
-        <PaddedContentView padSides={false}>
+        <PaddedContentView padSides={false} padBottom={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
               <BooleanField
@@ -139,6 +153,13 @@ export const ServerConnectionSettings = ({navigation}: Props) => {
               />
             </View>
           </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <DataTable>
+            <SettingDataTableRow title={'Previous Start'} onPress={() => toggleRawTime()}>
+              <RelativeTimeTag date={fgsStartDate} raw={rawTime} />
+            </SettingDataTableRow>
+          </DataTable>
         </PaddedContentView>
         <Divider bold={true} />
         <PaddedContentView padTop={true}>
