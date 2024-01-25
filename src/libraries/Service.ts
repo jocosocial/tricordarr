@@ -177,5 +177,6 @@ export async function startForegroundServiceWorker() {
 
   // This actually starts the worker. You should see a log message when the worker function
   // starts up (assuming the console.log is still in there).
+  await AsyncStorage.setItem(StorageKeys.FGS_START, JSON.stringify(new Date().toISOString()));
   await generateForegroundServiceNotification();
 }
