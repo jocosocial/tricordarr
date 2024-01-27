@@ -2,32 +2,24 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {BottomTabComponents, ForumStackComponents} from '../../../../libraries/Enums/Navigation';
-import {RootStackComponents, RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
 interface ForumPostActionsShowThreadItemProps {
   forumPost: PostData;
   closeMenu: () => void;
-  rootNavigation: NativeStackNavigationProp<RootStackParamList>;
+  navigation: NativeStackNavigationProp<CommonStackParamList>;
 }
 
 export const ForumPostActionsShowThreadItem = ({
   forumPost,
   closeMenu,
-  rootNavigation,
+  navigation,
 }: ForumPostActionsShowThreadItemProps) => {
   const onPress = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.forumsTab,
-      params: {
-        screen: ForumStackComponents.forumThreadPostScreen,
-        params: {
-          postID: forumPost.postID.toString(),
-        },
-        initial: false,
-      },
+    navigation.push(CommonStackComponents.forumThreadPostScreen, {
+      postID: forumPost.postID.toString(),
     });
   };
   return <Menu.Item dense={false} leadingIcon={AppIcons.forum} title={'View In Thread'} onPress={onPress} />;

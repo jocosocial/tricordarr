@@ -1,11 +1,6 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {
-  BottomTabComponents,
-  ForumStackComponents,
-  MainStackComponents,
-
-} from '../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -13,12 +8,12 @@ import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {ReactNode} from 'react';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -34,7 +29,7 @@ export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenu
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
-  const rootStackNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
   const forumStackNavigation = useForumStackNavigation();
 
   const openMenu = () => setVisible(true);
@@ -92,17 +87,10 @@ export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenu
             leadingIcon={AppIcons.moderator}
             title={'Moderate'}
             onPress={() => {
-              rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                screen: BottomTabComponents.homeTab,
-                params: {
-                  screen: MainStackComponents.siteUIScreen,
-                  params: {
-                    resource: 'forum',
-                    id: forumData.forumID,
-                    moderate: true,
-                  },
-                  initial: false,
-                },
+              commonNavigation.push(CommonStackComponents.siteUIScreen, {
+                resource: 'forum',
+                id: forumData.forumID,
+                moderate: true,
               });
               closeMenu();
             }}

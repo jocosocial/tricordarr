@@ -20,12 +20,8 @@ import {ForumPostSearchScreen} from '../../Screens/Forum/Post/ForumPostSearchScr
 import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSearchScreen';
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
-import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
-import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
-import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
+import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
-import {ForumPostPinnedScreen} from '../../Screens/Forum/Post/ForumPostPinnedScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
@@ -33,9 +29,6 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
     categoryID: string;
-  };
-  ForumThreadPostScreen: {
-    postID: string;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;
@@ -54,15 +47,6 @@ export type ForumStackParamList = CommonStackParamList & {
   };
   ForumThreadEditScreen: {
     forumData: ForumData;
-  };
-  ForumPostEditScreen: {
-    postData: PostData;
-  };
-  ForumPostHashtagScreen: {
-    hashtag: string;
-  };
-  ForumPostPinnedScreen: {
-    forumID: string;
   };
 };
 
@@ -90,13 +74,6 @@ export const ForumStackNavigator = () => {
         component={isDisabled ? DisabledView : ForumCategoryScreen}
         options={{
           title: 'Forums',
-        }}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumThreadPostScreen}
-        component={isDisabled ? DisabledView : ForumThreadPostScreen}
-        options={{
-          title: 'Forum',
         }}
       />
       <Stack.Screen
@@ -155,24 +132,9 @@ export const ForumStackNavigator = () => {
         options={{title: 'Edit Forum'}}
       />
       <Stack.Screen
-        name={ForumStackComponents.forumPostEditScreen}
-        component={isDisabled ? DisabledView : ForumPostEditScreen}
-        options={{title: 'Edit Post'}}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumPostHashtagScreen}
-        component={isDisabled ? DisabledView : ForumPostHashtagScreen}
-        options={{title: 'Hashtag'}}
-      />
-      <Stack.Screen
         name={ForumStackComponents.forumPostAlertwordScreen}
         component={ForumPostAlertwordScreen}
         options={{title: 'Alert Keyword'}}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumPostPinnedScreen}
-        component={ForumPostPinnedScreen}
-        options={{title: 'Pinned Posts'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

@@ -9,15 +9,8 @@ import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
-import {
-  BottomTabComponents,
-  ForumStackComponents,
-  MainStackComponents,
-
-} from '../../../libraries/Enums/Navigation';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -45,8 +38,7 @@ export const ForumPostMessageView = ({
   const closeMenu = () => setMenuVisible(false);
   const theme = useAppTheme();
   const {favorites} = useUserRelations();
-  const forumNavigation = useForumStackNavigation();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   const styles = {
     messageView: [
@@ -68,29 +60,21 @@ export const ForumPostMessageView = ({
 
   // Same as the button in the menu used in the menu
   const onPress = () => {
-    forumNavigation.push(ForumStackComponents.forumThreadPostScreen, {
+    commonNavigation.push(CommonStackComponents.forumThreadPostScreen, {
       postID: postData.postID.toString(),
     });
   };
 
   const hashtagOnPress = (tag: string) => {
-    forumNavigation.push(ForumStackComponents.forumPostHashtagScreen, {
+    commonNavigation.push(CommonStackComponents.forumPostHashtagScreen, {
       hashtag: tag,
     });
   };
 
   const mentionOnPress = (username: string) => {
     const strippedName = username.replace('@', '');
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.usernameProfileScreen,
-        // initial false needed here to enable the stack to popToTop on bottom button press.
-        initial: false,
-        params: {
-          username: strippedName,
-        },
-      },
+    commonNavigation.push(CommonStackComponents.usernameProfileScreen, {
+      username: strippedName,
     });
   };
 

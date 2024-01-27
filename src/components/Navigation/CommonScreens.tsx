@@ -4,7 +4,7 @@ import React from 'react';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
-import {ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
+import {PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
@@ -14,12 +14,19 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TwitarrView} from '../Views/TwitarrView';
 import {MapScreen} from '../Screens/Main/MapScreen';
 import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
-import {LighterScreen} from '../Screens/Main/LighterScreen';
 import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen';
 import {ForumThreadUserScreen} from '../Screens/Forum/Thread/ForumThreadUserScreen';
 import {EventScreen} from '../Screens/Event/EventScreen';
-import {ForumStackComponents} from '../../libraries/Enums/Navigation';
 import {ForumThreadScreen} from '../Screens/Forum/Thread/ForumThreadScreen';
+import {AlertKeywordsSettingsScreen} from '../Screens/Settings/Content/AlertKeywordsSettingsScreen';
+import {MuteKeywordsSettingsScreen} from '../Screens/Settings/Content/MuteKeywordsSettingsScreen';
+import {ForumThreadPostScreen} from '../Screens/Forum/Thread/ForumThreadPostScreen';
+import {ForumPostEditScreen} from '../Screens/Forum/Post/ForumPostEditScreen';
+import {SeamailCreateScreen} from '../Screens/Seamail/SeamailCreateScreen';
+import {ForumPostPinnedScreen} from '../Screens/Forum/Post/ForumPostPinnedScreen';
+import {ConfigServerUrlScreen} from '../Screens/Settings/Config/ConfigServerUrlScreen';
+import {ForumStackComponents} from '../../libraries/Enums/Navigation';
+import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -63,7 +70,6 @@ export type CommonStackParamList = {
     deckNumber?: number;
   };
   AccountRecoveryScreen: undefined;
-  LighterScreen: undefined;
   ForumThreadUserScreen: {
     user: UserHeader;
   };
@@ -76,6 +82,26 @@ export type CommonStackParamList = {
   ForumThreadScreen: {
     forumID: string;
   };
+  AlertKeywordsSettingsScreen: undefined;
+  MuteKeywordsSettingsScreen: undefined;
+  ForumThreadPostScreen: {
+    postID: string;
+  };
+  ForumPostEditScreen: {
+    postData: PostData;
+  };
+  SeamailCreateScreen?: {
+    initialUserHeader?: UserHeader;
+    initialAsModerator?: boolean;
+    initialAsTwitarrTeam?: boolean;
+  };
+  ForumPostPinnedScreen: {
+    forumID: string;
+  };
+  ConfigServerUrlScreen: undefined;
+  ForumPostHashtagScreen: {
+    hashtag: string;
+  };
 };
 
 export enum CommonStackComponents {
@@ -87,17 +113,25 @@ export enum CommonStackComponents {
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
-  lighterScreen = 'LighterScreen',
   forumThreadUserScreen = 'ForumThreadUserScreen',
   forumPostUserScreen = 'ForumPostUserScreen',
   eventScreen = 'EventScreen',
   forumThreadScreen = 'ForumThreadScreen',
+  alertKeywords = 'AlertKeywordsSettingsScreen',
+  muteKeywords = 'MuteKeywordsSettingsScreen',
+  forumThreadPostScreen = 'ForumThreadPostScreen',
+  forumPostEditScreen = 'ForumPostEditScreen',
+  seamailCreateScreen = 'SeamailCreateScreen',
+  forumPostPinnedScreen = 'ForumPostPinnedScreen',
+  configServerUrl = 'ConfigServerUrlScreen',
+  forumPostHashtagScreen = 'ForumPostHashtagScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
+  const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
 
   return (
     <>
@@ -137,7 +171,6 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         component={AccountRecoveryScreen}
         options={{title: 'Recovery'}}
       />
-      <Stack.Screen name={CommonStackComponents.lighterScreen} component={LighterScreen} />
       <Stack.Screen
         name={CommonStackComponents.forumPostUserScreen}
         component={isForumsDisabled ? DisabledView : ForumPostUserScreen}
@@ -155,6 +188,48 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{
           title: 'Forum',
         }}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.alertKeywords}
+        component={AlertKeywordsSettingsScreen}
+        options={{title: 'Alert Keywords'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.muteKeywords}
+        component={MuteKeywordsSettingsScreen}
+        options={{title: 'Mute Keywords'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadPostScreen}
+        component={isForumsDisabled ? DisabledView : ForumThreadPostScreen}
+        options={{
+          title: 'Forum',
+        }}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostEditScreen}
+        component={isForumsDisabled ? DisabledView : ForumPostEditScreen}
+        options={{title: 'Edit Post'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailCreateScreen}
+        component={isSeamailDisabled ? DisabledView : SeamailCreateScreen}
+        options={{title: 'New Seamail'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostPinnedScreen}
+        component={ForumPostPinnedScreen}
+        options={{title: 'Pinned Posts'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.configServerUrl}
+        component={ConfigServerUrlScreen}
+        options={{title: 'Server URL'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostHashtagScreen}
+        component={isForumsDisabled ? DisabledView : ForumPostHashtagScreen}
+        options={{title: 'Hashtag'}}
       />
     </>
   );

@@ -4,8 +4,7 @@ import {Text} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents, MainStackComponents} from '../../../libraries/Enums/Navigation';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 export const DisabledView = () => {
   const {commonStyles} = useStyles();
@@ -15,7 +14,7 @@ export const DisabledView = () => {
     contentContainer: [commonStyles.marginVerticalSmall, commonStyles.marginHorizontal],
   };
   const {appConfig} = useConfig();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   return (
     <AppView>
@@ -29,15 +28,7 @@ export const DisabledView = () => {
           <View style={styles.contentContainer}>
             <Text
               onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.homeTab,
-                  params: {
-                    screen: MainStackComponents.siteUIScreen,
-                    params: {
-                      timestamp: new Date().toISOString(),
-                    },
-                  },
-                })
+                commonNavigation.push(CommonStackComponents.siteUIScreen, {timestamp: new Date().toISOString()})
               }>
               You could also check {appConfig.serverUrl} to see if there is more information available.
             </Text>

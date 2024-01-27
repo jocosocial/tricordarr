@@ -4,11 +4,11 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import LighterVideo from '../../../../assets/RockBalladMode.mp4';
 import {AppView} from '../../Views/AppView';
 import VideoPlayer from 'react-native-video-controls';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {useNavigation} from '@react-navigation/native';
 
 export const LighterScreen = () => {
   const {commonStyles} = useStyles();
-  const rootNavigator = useRootStack();
+  const navigation = useNavigation();
 
   return (
     <AppView>
@@ -21,7 +21,7 @@ export const LighterScreen = () => {
         disableSeekbar={true}
         disablePlayPause={true}
         disableFullscreen={true}
-        onBack={() => rootNavigator.goBack()}
+        onBack={() => navigation.goBack()}
         // https://stackoverflow.com/questions/55076018/problem-why-react-native-video-does-not-play-video-in-full-screen
         resizeMode={'cover'}
       />

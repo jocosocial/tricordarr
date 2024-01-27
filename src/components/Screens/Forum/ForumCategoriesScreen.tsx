@@ -5,7 +5,7 @@ import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries'
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {Divider, List} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryListItem} from '../../Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryListItemBase';
@@ -13,13 +13,7 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {
-  BottomTabComponents,
-  ForumStackComponents,
-  MainStackComponents,
-  NavigatorIDs,
-  SettingsStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
@@ -31,17 +25,10 @@ import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategorie
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {ForumPostAlertwordScreen} from './Post/ForumPostAlertwordScreen';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumCategoriesScreen,
-  NavigatorIDs.forumStack
->;
-
+type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
@@ -53,7 +40,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
-  const rootNavigation = useRootStack();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -167,15 +153,20 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Alert Keywords</ListSubheader>
             <Divider bold={true} />
-            {keywordData && keywordData.keywords.length > 0 ? keywordData.keywords.map(alertWord => {
-              return (
-                <React.Fragment key={alertWord}>
-                  <ForumAlertwordListItem alertword={alertWord} />
-                  <Divider bold={true} />
-                </React.Fragment>
-              );
-            }) : (
-              <ForumCategoryListItemBase title={'No Keywords Configured'} description={'You can configure alert and mute keywords using the menu in the upper right.'} />
+            {keywordData && keywordData.keywords.length > 0 ? (
+              keywordData.keywords.map(alertWord => {
+                return (
+                  <React.Fragment key={alertWord}>
+                    <ForumAlertwordListItem alertword={alertWord} />
+                    <Divider bold={true} />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <ForumCategoryListItemBase
+                title={'No Keywords Configured'}
+                description={'You can configure alert and mute keywords using the menu in the upper right.'}
+              />
             )}
           </ListSection>
         </View>

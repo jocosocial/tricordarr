@@ -3,26 +3,16 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  BottomTabComponents,
-  NavigatorIDs,
-  SeamailStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {usePhoneCallDeclineMutation} from '../../Queries/PhoneCall/PhoneCallMutations';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useAppTheme} from '../../../styles/Theme';
 
-export type Props = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.krakenTalkReceiveScreen,
-  NavigatorIDs.seamailStack
->;
-export const KrakenTalkReceiveScreen = ({route}: Props) => {
+type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.krakenTalkReceiveScreen>;
+export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   const declineMutation = usePhoneCallDeclineMutation();
-  const rootNavigation = useRootStack();
   const theme = useAppTheme();
 
   const onDecline = () => {
@@ -32,19 +22,13 @@ export const KrakenTalkReceiveScreen = ({route}: Props) => {
   };
 
   const seamailCreateHandler = useCallback(() => {
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.seamailTab,
-      params: {
-        screen: SeamailStackScreenComponents.seamailCreateScreen,
-        params: {
-          initialUserHeader: {
-            userID: route.params.callerUserID,
-            username: route.params.callerUsername,
-          },
-        },
+    navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
+      initialUserHeader: {
+        userID: route.params.callerUserID,
+        username: route.params.callerUsername,
       },
-    });
-  }, [route, rootNavigation]);
+    })
+  }, [route, navigation]);
 
   return (
     <AppView>

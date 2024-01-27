@@ -4,21 +4,12 @@ import {useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {
-  BottomTabComponents,
-  EventStackComponents,
-  ForumStackComponents,
-  NavigatorIDs,
-
-} from '../../../../libraries/Enums/Navigation';
 import {ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
@@ -36,13 +27,9 @@ import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumThreadScreen,
-  NavigatorIDs.forumStack
->;
-
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
 export const ForumThreadScreen = ({route, navigation}: Props) => {
   const {
     data,
@@ -57,7 +44,6 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   } = useForumThreadQuery(route.params.forumID);
   const [refreshing, setRefreshing] = useState(false);
   const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
-  const rootNavigation = useRootStack();
   const {profilePublicData} = useUserData();
   const relationMutation = useForumRelationMutation();
   const theme = useAppTheme();
@@ -171,7 +157,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
               title={'Pinned Posts'}
               iconName={AppIcons.pin}
               onPress={() =>
-                navigation.push(ForumStackComponents.forumPostPinnedScreen, {
+                navigation.push(CommonStackComponents.forumPostPinnedScreen, {
                   forumID: forumData.forumID,
                 })
               }
@@ -181,18 +167,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
             <Item
               title={'Event'}
               iconName={AppIcons.events}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.scheduleTab,
-                  params: {
-                    screen: EventStackComponents.eventScreen,
-                    initial: false,
-                    params: {
-                      eventID: eventID,
-                    },
-                  },
-                })
-              }
+              onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: eventID})}
             />
           )}
           <Item
@@ -233,7 +208,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     handleMute,
     onRefresh,
     profilePublicData?.header.userID,
-    rootNavigation,
+    navigation,
     theme.colors.onSurfaceDisabled,
     theme.colors.twitarrNegativeButton,
     theme.colors.twitarrYellow,

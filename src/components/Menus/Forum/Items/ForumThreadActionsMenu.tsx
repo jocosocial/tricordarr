@@ -1,9 +1,7 @@
 import React, {Dispatch, ReactNode, SetStateAction, useCallback, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {BottomTabComponents, EventStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
@@ -12,6 +10,7 @@ import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {useForumPinMutation} from '../../../Queries/Forum/ForumPinMutations';
 import {useForumCategoryPinnedThreadsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
+import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
 
 interface ForumThreadActionsMenuProps {
   anchor: ReactNode;
@@ -23,7 +22,7 @@ interface ForumThreadActionsMenuProps {
 
 export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
   const {profilePublicData} = useUserData();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
   const eventID = props.forumListData.eventID;
   const relationMutation = useForumRelationMutation();
   const {dispatchForumListData} = useTwitarr();
@@ -156,15 +155,8 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
           leadingIcon={AppIcons.events}
           onPress={() => {
             closeMenu();
-            rootNavigation.push(RootStackComponents.rootContentScreen, {
-              screen: BottomTabComponents.scheduleTab,
-              params: {
-                screen: EventStackComponents.eventScreen,
-                initial: false,
-                params: {
-                  eventID: eventID,
-                },
-              },
+            commonNavigation.push(CommonStackComponents.eventScreen, {
+              eventID: eventID,
             });
           }}
         />

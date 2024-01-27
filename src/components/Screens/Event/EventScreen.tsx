@@ -5,14 +5,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
-import {
-  NavigatorIDs,
-  EventStackComponents,
-  BottomTabComponents,
-  MainStackComponents,
-  ForumStackComponents,
-} from '../../../libraries/Enums/Navigation';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -28,7 +20,6 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 

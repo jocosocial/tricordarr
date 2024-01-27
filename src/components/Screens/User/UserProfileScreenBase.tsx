@@ -1,9 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
-import {
-  BottomTabComponents,
-  SeamailStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
@@ -23,12 +19,10 @@ import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
 import {AppIcon} from '../../Icons/AppIcon';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ErrorView} from '../../Views/Static/ErrorView';
 import {useAppTheme} from '../../../styles/Theme';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
@@ -40,7 +34,6 @@ interface UserProfileScreenBaseProps {
   isLoading: boolean;
 }
 export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScreenBaseProps) => {
-  const navigation = useMainStack();
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -48,7 +41,6 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
-  const rootNavigation = useRootStack();
   const commonNavigation = useCommonStack();
   const {isLoggedIn} = useAuth();
   const theme = useAppTheme();
@@ -63,16 +55,10 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
 
   const seamailCreateHandler = useCallback(() => {
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.seamailTab,
-      params: {
-        screen: SeamailStackScreenComponents.seamailCreateScreen,
-        params: {
-          initialUserHeader: data?.header,
-        },
-      },
+    commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
+      initialUserHeader: data?.header,
     });
-  }, [data?.header, rootNavigation]);
+  }, [data?.header, commonNavigation]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -113,7 +99,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   ]);
 
   useEffect(() => {
-    navigation.setOptions({
+    commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
     // Reset the mute/block state before re-determining.
@@ -138,7 +124,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
         }
       });
     }
-  }, [blocks, favorites, getNavButtons, mutes, navigation, data]);
+  }, [blocks, favorites, getNavButtons, mutes, commonNavigation, data]);
 
   const styles = {
     listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],

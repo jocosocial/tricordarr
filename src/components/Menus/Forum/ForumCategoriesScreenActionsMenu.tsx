@@ -1,25 +1,11 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {
-  BottomTabComponents,
-  ForumStackComponents,
-  MainStackComponents,
-  SettingsStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {ForumData} from '../../../libraries/Structs/ControllerStructs';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {ReportModalView} from '../../Views/Modals/ReportModalView';
+import {Item} from 'react-navigation-header-buttons';
 import {ReactNode} from 'react';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
-import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
-import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 const helpContent = [
   'Forum Categories are broad containers for forum threads. There are two groupings of forum categories: Forum (for general topics, announcements, memes, etc) and Personal (for forums that relate specifically to you.)',
@@ -31,9 +17,7 @@ const helpContent = [
 export const ForumCategoriesScreenActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
-  const {profilePublicData} = useUserData();
-  const rootStackNavigation = useRootStack();
-  const forumStackNavigation = useForumStackNavigation();
+  const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -55,16 +39,7 @@ export const ForumCategoriesScreenActionsMenu = () => {
         leadingIcon={AppIcons.alertword}
         onPress={() => {
           closeMenu();
-          rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-            screen: BottomTabComponents.homeTab,
-            params: {
-              screen: MainStackComponents.mainSettingsScreen,
-              initial: false,
-              params: {
-                screen: SettingsStackScreenComponents.alertKeywords,
-              },
-            },
-          });
+          commonNavigation.push(CommonStackComponents.alertKeywords)
         }}
       />
       <Menu.Item
@@ -73,16 +48,7 @@ export const ForumCategoriesScreenActionsMenu = () => {
         leadingIcon={AppIcons.mute}
         onPress={() => {
           closeMenu();
-          rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-            screen: BottomTabComponents.homeTab,
-            params: {
-              screen: MainStackComponents.mainSettingsScreen,
-              initial: false,
-              params: {
-                screen: SettingsStackScreenComponents.muteKeywords,
-              },
-            },
-          });
+          commonNavigation.push(CommonStackComponents.muteKeywords)
         }}
       />
       <Divider bold={true} />

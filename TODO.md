@@ -16,3 +16,5 @@ Nightly
 
 * forumThreadScreen has way too many buttons when moderator and event. 
   * Refresh, pin, event, favorite, mute, menu. Eww
+
+* Common screens should never reference a navigator or screen other than something common
