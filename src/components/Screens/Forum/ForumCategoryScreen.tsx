@@ -29,6 +29,7 @@ export type Props = NativeStackScreenProps<
 const helpText = [
   'Muted forums appear at the end of this list.',
   'Favorited forums appear in the sort order, which by default is Most Recent Post first.',
+  'Moderators can pin forums to the category.',
 ];
 
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
