@@ -7,7 +7,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {DeckMapMenu} from '../../Menus/DeckMapMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {ShipDecks} from '../../../libraries/Ship';
 import {ListTitleView} from '../../Views/ListTitleView';

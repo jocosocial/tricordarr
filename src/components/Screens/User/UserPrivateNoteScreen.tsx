@@ -3,7 +3,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {UserNoteForm} from '../../Forms/UserNoteForm';
 import {UserNoteFormValues, UserProfileFormValues} from '../../../libraries/Types/FormValues';

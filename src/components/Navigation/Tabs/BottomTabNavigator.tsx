@@ -7,7 +7,7 @@ import {SeamailStackNavigator, SeamailStackParamList} from '../Stacks/SeamailSta
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {MainStack, MainStackParamList} from '../Stacks/MainStack';
+import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigator';
 import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
@@ -62,7 +62,7 @@ export const BottomTabNavigator = () => {
     <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
-        component={MainStack}
+        component={MainStackNavigator}
         options={{
           title: 'Today',
           tabBarIcon: () => getIcon('home-account'),

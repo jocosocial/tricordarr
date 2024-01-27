@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {RefreshControl, StyleSheet, View} from 'react-native';

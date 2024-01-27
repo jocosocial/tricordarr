@@ -29,6 +29,8 @@ import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagS
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {ForumPostUserScreen} from '../../Screens/Forum/Post/ForumPostUserScreen';
 import {ForumPostPinnedScreen} from '../../Screens/Forum/Post/ForumPostPinnedScreen';
+import {CommonScreens} from '../CommonScreens';
+import {MainStack} from './MainStackNavigator';
 
 export type ForumStackParamList = {
   ForumCategoriesScreen: undefined;
@@ -202,6 +204,7 @@ export const ForumStackNavigator = () => {
         component={ForumPostPinnedScreen}
         options={{title: 'Pinned Posts'}}
       />
+      {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
   );
 };

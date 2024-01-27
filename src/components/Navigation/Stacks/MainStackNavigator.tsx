@@ -1,13 +1,12 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {MainStackComponents, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainScreen} from '../../Screens/Main/MainScreen';
 import {TwitarrView} from '../../Views/TwitarrView';
 import {SettingsStack, SettingsStackParamList} from './SettingsStack';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
-import {UserProfileScreen} from '../../Screens/User/UserProfileScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 import {DailyThemeData, ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../../Screens/User/EditUserProfileScreen';
@@ -22,8 +21,9 @@ import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 import {MapScreen} from '../../Screens/Main/MapScreen';
 import {MainConductScreen} from '../../Screens/Main/MainConductScreen';
 import {DailyThemesScreen} from '../../Screens/Main/DailyThemesScreen';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 
-export type MainStackParamList = {
+export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
   SiteUIScreen: {
     resource?: string;
@@ -33,9 +33,6 @@ export type MainStackParamList = {
   };
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
   AboutScreen: undefined;
-  UserProfileScreen: {
-    userID: string;
-  };
   UsernameProfileScreen: {
     username: string;
   };
@@ -60,74 +57,79 @@ export type MainStackParamList = {
   DailyThemesScreen: undefined;
 };
 
-export const MainStack = () => {
+export const MainStack = createNativeStackNavigator<MainStackParamList>();
+
+export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<MainStackParamList>();
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
 
   return (
-    <Stack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
-      <Stack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Today'}} />
-      <Stack.Screen
+    <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
+      <MainStack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Today'}} />
+      <MainStack.Screen
         name={MainStackComponents.siteUIScreen}
         component={TwitarrView}
         options={{title: 'Twitarr Web UI'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.mainSettingsScreen}
         component={SettingsStack}
         options={{headerShown: false}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.aboutScreen}
         component={AboutScreen}
         options={{title: 'About Tricordarr'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.userDirectoryScreen}
         component={isUsersDisabled ? DisabledView : UserDirectoryScreen}
         options={{title: 'Directory'}}
       />
-      <Stack.Screen
-        name={MainStackComponents.userProfileScreen}
-        component={isUsersDisabled ? DisabledView : UserProfileScreen}
-        options={{title: 'User Profile'}}
-      />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.usernameProfileScreen}
         component={isUsersDisabled ? DisabledView : UsernameProfileScreen}
         options={{title: 'User Profile'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.editUserProfileScreen}
         component={EditUserProfileScreen}
         options={{title: 'Edit Profile'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.userPrivateNoteScreen}
         component={UserPrivateNoteScreen}
         options={{title: 'Private Note'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.userRegCodeScreen}
         component={UserRegCodeScreen}
         options={{title: 'Registration'}}
       />
-      <Stack.Screen
+      <MainStack.Screen
         name={MainStackComponents.dailyThemeScreen}
         component={DailyThemeScreen}
         options={{title: 'Daily Theme'}}
       />
-      <Stack.Screen name={MainStackComponents.mainHelpScreen} component={MainHelpScreen} options={{title: 'Help'}} />
-      <Stack.Screen name={MainStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
-      <Stack.Screen name={MainStackComponents.conductScreen} component={MainConductScreen} options={{title: 'Code of Conduct'}} />
-      <Stack.Screen
+      <MainStack.Screen
+        name={MainStackComponents.mainHelpScreen}
+        component={MainHelpScreen}
+        options={{title: 'Help'}}
+      />
+      <MainStack.Screen name={MainStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
+      <MainStack.Screen
+        name={MainStackComponents.conductScreen}
+        component={MainConductScreen}
+        options={{title: 'Code of Conduct'}}
+      />
+      <MainStack.Screen
         name={MainStackComponents.dailyThemesScreen}
         component={DailyThemesScreen}
         options={{title: 'Daily Themes'}}
       />
-    </Stack.Navigator>
+      {CommonScreens(MainStack)}
+    </MainStack.Navigator>
   );
 };
 

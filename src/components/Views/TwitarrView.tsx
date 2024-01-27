@@ -8,7 +8,7 @@ import {MainStackComponents, NavigatorIDs} from '../../libraries/Enums/Navigatio
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useConfig} from '../Context/Contexts/ConfigContext';
-import {MainStackParamList} from '../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../Navigation/Stacks/MainStackNavigator';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 

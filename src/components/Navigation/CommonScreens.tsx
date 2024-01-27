@@ -1,9 +1,9 @@
-import {SeamailStack} from '../components/Navigation/Stacks/SeamailStackNavigator';
-import {DisabledView} from '../components/Views/Static/DisabledView';
-import {UserProfileScreen} from '../components/Screens/User/UserProfileScreen';
+import {DisabledView} from '../Views/Static/DisabledView';
+import {UserProfileScreen} from '../Screens/User/UserProfileScreen';
 import React from 'react';
-import {SwiftarrFeature} from './Enums/AppFeatures';
-import {useFeature} from '../components/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {useFeature} from '../Context/Contexts/FeatureContext';
+import {MainStack} from './Stacks/MainStackNavigator';
 
 export type CommonStackParamList = {
   UserProfileScreen: {
@@ -15,7 +15,7 @@ export enum CommonComponents {
   userProfileScreen = 'UserProfileScreen',
 }
 
-export const CommonScreens = (Stack: typeof SeamailStack) => {
+export const CommonScreens = (Stack: typeof MainStack) => {
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
 

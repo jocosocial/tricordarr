@@ -15,6 +15,8 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
+import {CommonScreens} from '../CommonScreens';
+import {MainStack} from './MainStackNavigator';
 
 export type EventStackParamList = {
   EventDayScreen: {
@@ -81,6 +83,7 @@ export const EventStackNavigator = () => {
         component={EventYourDayScreen}
         options={{title: 'Your Day'}}
       />
+      {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
   );
 };
