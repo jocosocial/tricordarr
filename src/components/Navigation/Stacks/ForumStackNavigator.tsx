@@ -9,7 +9,6 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {ForumCategoriesScreen} from '../../Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '../../Screens/Forum/ForumCategoryScreen';
-import {ForumThreadScreen} from '../../Screens/Forum/Thread/ForumThreadScreen';
 import {ForumPostMentionScreen} from '../../Screens/Forum/Post/ForumPostMentionScreen';
 import {ForumPostSelfScreen} from '../../Screens/Forum/Post/ForumPostSelfScreen';
 import {ForumPostFavoriteScreen} from '../../Screens/Forum/Post/ForumPostFavoriteScreen';
@@ -22,12 +21,10 @@ import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSea
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
 import {ForumPostEditScreen} from '../../Screens/Forum/Post/ForumPostEditScreen';
-import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {ForumThreadUserScreen} from '../../Screens/Forum/Thread/ForumThreadUserScreen';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumThreadPostScreen} from '../../Screens/Forum/Thread/ForumThreadPostScreen';
 import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagScreen';
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
-import {ForumPostUserScreen} from '../../Screens/Forum/Post/ForumPostUserScreen';
 import {ForumPostPinnedScreen} from '../../Screens/Forum/Post/ForumPostPinnedScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
@@ -35,11 +32,7 @@ import {MainStack} from './MainStackNavigator';
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
-    // category: CategoryData;
     categoryID: string;
-  };
-  ForumThreadScreen: {
-    forumID: string;
   };
   ForumThreadPostScreen: {
     postID: string;
@@ -65,14 +58,8 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumPostEditScreen: {
     postData: PostData;
   };
-  ForumThreadUserScreen: {
-    user: UserHeader;
-  };
   ForumPostHashtagScreen: {
     hashtag: string;
-  };
-  ForumPostUserScreen: {
-    user: UserHeader;
   };
   ForumPostPinnedScreen: {
     forumID: string;
@@ -103,13 +90,6 @@ export const ForumStackNavigator = () => {
         component={isDisabled ? DisabledView : ForumCategoryScreen}
         options={{
           title: 'Forums',
-        }}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumThreadScreen}
-        component={isDisabled ? DisabledView : ForumThreadScreen}
-        options={{
-          title: 'Forum',
         }}
       />
       <Stack.Screen
@@ -180,11 +160,6 @@ export const ForumStackNavigator = () => {
         options={{title: 'Edit Post'}}
       />
       <Stack.Screen
-        name={ForumStackComponents.forumThreadUserScreen}
-        component={isDisabled ? DisabledView : ForumThreadUserScreen}
-        options={{title: 'Forums by User'}}
-      />
-      <Stack.Screen
         name={ForumStackComponents.forumPostHashtagScreen}
         component={isDisabled ? DisabledView : ForumPostHashtagScreen}
         options={{title: 'Hashtag'}}
@@ -193,11 +168,6 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostAlertwordScreen}
         component={ForumPostAlertwordScreen}
         options={{title: 'Alert Keyword'}}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumPostUserScreen}
-        component={ForumPostUserScreen}
-        options={{title: 'Posts by User'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostPinnedScreen}

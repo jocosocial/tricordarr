@@ -5,25 +5,20 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {
-  BottomTabComponents,
-  ForumStackComponents,
-  LfgStackComponents,
-
-} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface UserContentCardProps {
   user: ProfilePublicData;
 }
 
+/**
+ * This used to have a button to your owned LFGs. But doing that with the common screens pattern
+ * got super complicated and not worth it. Maybe some day.
+ */
 export const UserContentCard = ({user}: UserContentCardProps) => {
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
-  const rootNavigation = useRootStack();
-  const isSelf = profilePublicData?.header.userID === user.header.userID;
+  const commonNavigation = useCommonStack();
   const {hasModerator} = usePrivilege();
 
   const getIcon = (icon: string) => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
@@ -36,50 +31,13 @@ export const UserContentCard = ({user}: UserContentCardProps) => {
           <List.Item
             title={'Forums'}
             left={() => getIcon(AppIcons.forum)}
-            onPress={() =>
-              rootNavigation.push(RootStackComponents.rootContentScreen, {
-                screen: BottomTabComponents.forumsTab,
-                params: {
-                  screen: ForumStackComponents.forumThreadUserScreen,
-                  initial: false,
-                  params: {
-                    user: user.header,
-                  },
-                },
-              })
-            }
+            onPress={() => commonNavigation.push(CommonStackComponents.forumThreadUserScreen, {user: user.header})}
           />
           {hasModerator && (
             <List.Item
               title={'Forum Posts'}
               left={() => getIcon(AppIcons.moderator)}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.forumsTab,
-                  params: {
-                    screen: ForumStackComponents.forumPostUserScreen,
-                    initial: false,
-                    params: {
-                      user: user.header,
-                    },
-                  },
-                })
-              }
-            />
-          )}
-          {isSelf && (
-            <List.Item
-              title={'LFGs'}
-              left={() => getIcon(AppIcons.lfg)}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.lfgTab,
-                  params: {
-                    screen: LfgStackComponents.lfgOwnedScreen,
-                    initial: false,
-                  },
-                })
-              }
+              onPress={() => commonNavigation.push(CommonStackComponents.forumPostUserScreen, {user: user.header})}
             />
           )}
         </ListSection>

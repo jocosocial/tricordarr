@@ -8,7 +8,6 @@ import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
-import {EventScreen} from '../../Screens/Event/EventScreen';
 import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
 import {EventFavoritesScreen} from '../../Screens/Event/EventFavoritesScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
@@ -24,9 +23,6 @@ export type EventStackParamList = CommonStackParamList & {
   };
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
-  EventScreen: {
-    eventID: string;
-  };
   EventHelpScreen: undefined;
   EventFavoritesScreen: undefined;
   EventYourDayScreen: {
@@ -67,7 +63,6 @@ export const EventStackNavigator = () => {
         component={EventSettingsScreen}
         options={{title: 'Event Settings'}}
       />
-      <Stack.Screen name={EventStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
       <Stack.Screen
         name={EventStackComponents.eventHelpScreen}
         component={EventHelpScreen}

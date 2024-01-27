@@ -30,6 +30,7 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {guessDeckNumber} from '../../../libraries/Ship';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
 const helpContent = [
   'Always check the official daily printed schedule to confirm event times/locations.',
@@ -37,11 +38,7 @@ const helpContent = [
   'All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.',
 ];
 
-export type Props = NativeStackScreenProps<
-  EventStackParamList,
-  EventStackComponents.eventScreen,
-  NavigatorIDs.eventStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
 export const EventScreen = ({navigation, route}: Props) => {
   const {
@@ -56,7 +53,6 @@ export const EventScreen = ({navigation, route}: Props) => {
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const {setModalContent, setModalVisible} = useModal();
-  const rootStackNavigation = useRootStack();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
@@ -98,16 +94,8 @@ export const EventScreen = ({navigation, route}: Props) => {
                   iconName={AppIcons.forum}
                   onPress={() => {
                     if (eventData.forum) {
-                      rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                        screen: BottomTabComponents.forumsTab,
-                        params: {
-                          screen: ForumStackComponents.forumThreadScreen,
-                          // initial false needed here to enable the stack to popToTop on bottom button press.
-                          initial: false,
-                          params: {
-                            forumID: eventData.forum,
-                          },
-                        },
+                      navigation.push(CommonStackComponents.forumThreadScreen, {
+                        forumID: eventData.forum,
                       });
                     }
                   }}
@@ -126,7 +114,7 @@ export const EventScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, rootStackNavigation, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
+  }, [eventData, handleFavorite, navigation, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
 
   useEffect(() => {
     navigation.setOptions({
