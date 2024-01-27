@@ -14,6 +14,8 @@ import {APIImage} from '../../Images/APIImage';
 import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ContentPostImage} from '../../Images/ContentPostImage';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
+import {CommonComponents} from '../../../libraries/Navigation';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
@@ -30,7 +32,8 @@ interface FezPostListItemProps {
 export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const rootNavigation = useRootStack();
+  // const rootNavigation = useRootStack();
+  const seamailNavigation = useSeamailStack();
   const {commonStyles} = useStyles();
 
   let showAuthor = fez.participantCount > 2;
@@ -49,15 +52,18 @@ export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListIt
     fezPost.author.userID === profilePublicData?.header.userID || fezPost.author.username === asPrivilegedUser;
 
   const onPress = () => {
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.userProfileScreen,
-        params: {
-          userID: fezPost.author.userID,
-        },
-      },
+    seamailNavigation.push(CommonComponents.userProfileScreen, {
+      userID: fezPost.author.userID,
     });
+    // rootNavigation.navigate(RootStackComponents.rootContentScreen, {
+    //   screen: BottomTabComponents.homeTab,
+    //   params: {
+    //     screen: MainStackComponents.userProfileScreen,
+    //     params: {
+    //       userID: fezPost.author.userID,
+    //     },
+    //   },
+    // });
   };
 
   return (

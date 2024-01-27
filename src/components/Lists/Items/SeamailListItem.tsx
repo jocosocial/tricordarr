@@ -5,7 +5,7 @@ import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';

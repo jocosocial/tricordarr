@@ -1,19 +1,14 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
 import {UserProfileScreenBase} from './UserProfileScreenBase';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {CommonComponents, CommonStackParamList} from '../../../libraries/Navigation';
 
-export type Props = NativeStackScreenProps<
-  MainStackParamList,
-  MainStackComponents.userProfileScreen,
-  NavigatorIDs.mainStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonComponents.userProfileScreen>;
 
 export const UserProfileScreen = ({route}: Props) => {
   const {data, refetch, isLoading} = useUserProfileQuery(route.params.userID);

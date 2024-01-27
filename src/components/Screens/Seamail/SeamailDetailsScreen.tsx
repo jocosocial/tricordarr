@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {
   BottomTabComponents,
   MainStackComponents,

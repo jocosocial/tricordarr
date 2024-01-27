@@ -17,9 +17,10 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
+import {CommonScreens, CommonStackParamList} from '../../../libraries/Navigation';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
-export type SeamailStackParamList = {
+export type SeamailStackParamList = CommonStackParamList & {
   SeamailListScreen: undefined;
   SeamailScreen: {
     fezID: string;
@@ -50,16 +51,19 @@ export type SeamailStackParamList = {
   };
 };
 
-export const SeamailStack = () => {
+export const SeamailStack = createNativeStackNavigator<SeamailStackParamList>();
+
+export const SeamailStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<SeamailStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.seamail);
 
   return (
-    <Stack.Navigator initialRouteName={SeamailStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
-      <Stack.Screen
+    <SeamailStack.Navigator
+      initialRouteName={SeamailStackScreenComponents.seamailListScreen}
+      screenOptions={screenOptions}>
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailListScreen}
         component={isDisabled ? DisabledView : SeamailListScreen}
         options={{
@@ -67,7 +71,7 @@ export const SeamailStack = () => {
           title: 'Seamail',
         }}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailScreen}
         component={isDisabled ? DisabledView : SeamailScreen}
         // The simple headerTitle string below gets overwritten in the SeamailScreen component.
@@ -76,42 +80,43 @@ export const SeamailStack = () => {
         // so it has to figure it out.
         options={{title: 'Seamail Chat'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailDetailsScreen}
         component={SeamailDetailsScreen}
         options={() => ({title: 'Seamail Details'})}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailCreateScreen}
         component={isDisabled ? DisabledView : SeamailCreateScreen}
         options={{title: 'New Seamail'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.krakentalkCreateScreen}
         component={KrakenTalkCreateScreen}
         options={{title: 'New Call'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailAddParticipantScreen}
         component={SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailSearchScreen}
         component={SeamailSearchScreen}
         options={{title: 'Search Seamail'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailHelpScreen}
         component={SeamailHelpScreen}
         options={{title: 'Seamail Help'}}
       />
-      <Stack.Screen
+      <SeamailStack.Screen
         name={SeamailStackScreenComponents.krakenTalkReceiveScreen}
         component={KrakenTalkReceiveScreen}
         options={{title: 'Incoming Call'}}
       />
-    </Stack.Navigator>
+      {CommonScreens(SeamailStack)}
+    </SeamailStack.Navigator>
   );
 };
 

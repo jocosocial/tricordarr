@@ -5,7 +5,7 @@ import {FezPostData, PostContentData} from '../../../libraries/Structs/Controlle
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';

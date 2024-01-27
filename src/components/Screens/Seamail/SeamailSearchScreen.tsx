@@ -5,7 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
 

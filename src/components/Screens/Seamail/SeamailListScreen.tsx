@@ -11,7 +11,7 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useAppTheme} from '../../../styles/Theme';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {BaseFABGroup} from './BaseFABGroup';

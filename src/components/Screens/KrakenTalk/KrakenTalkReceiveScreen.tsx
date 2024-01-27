@@ -9,7 +9,7 @@ import {
   RootStackComponents,
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {usePhoneCallDeclineMutation} from '../../Queries/PhoneCall/PhoneCallMutations';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
