@@ -3,10 +3,8 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {UserNoteForm} from '../../Forms/UserNoteForm';
-import {UserNoteFormValues, UserProfileFormValues} from '../../../libraries/Types/FormValues';
+import {UserNoteFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '../../Queries/Users/UserNoteQueries';
@@ -14,12 +12,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  MainStackParamList,
-  MainStackComponents.userPrivateNoteScreen,
-  NavigatorIDs.mainStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userPrivateNoteScreen>;
 
 export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
   const createMutation = useUserNoteCreateMutation();

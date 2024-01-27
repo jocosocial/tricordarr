@@ -7,10 +7,9 @@ import {SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
 
 interface SeamailHeaderTitleProps {
   fezID: string;
-  title: string;
 }
 
-const SeamailHeaderTitle = ({fezID, title}: SeamailHeaderTitleProps) => {
+const SeamailHeaderTitle = ({fezID}: SeamailHeaderTitleProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<SeamailStackParamList>>();
   const onPress = () =>
     navigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {
@@ -21,5 +20,4 @@ const SeamailHeaderTitle = ({fezID, title}: SeamailHeaderTitleProps) => {
 
 // This exists to prevent defining the component during render, because the navigator
 // requires a () => Element not an Element. Because.... reasons?
-export const getSeamailHeaderTitle = (fezID: string, title: string) => () =>
-  <SeamailHeaderTitle fezID={fezID} title={title} />;
+export const getSeamailHeaderTitle = (fezID: string) => () => <SeamailHeaderTitle fezID={fezID} />;

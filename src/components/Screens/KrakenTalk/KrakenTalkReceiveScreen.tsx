@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
@@ -21,7 +21,7 @@ export type Props = NativeStackScreenProps<
   SeamailStackScreenComponents.krakenTalkReceiveScreen,
   NavigatorIDs.seamailStack
 >;
-export const KrakenTalkReceiveScreen = ({navigation, route}: Props) => {
+export const KrakenTalkReceiveScreen = ({route}: Props) => {
   const declineMutation = usePhoneCallDeclineMutation();
   const rootNavigation = useRootStack();
   const theme = useAppTheme();

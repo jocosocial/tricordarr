@@ -28,9 +28,10 @@ export const SeamailFAB = () => {
     FabGroupAction({
       icon: AppIcons.seamailSearch,
       label: 'Search',
-      onPress: () => navigation.push(SeamailStackScreenComponents.seamailSearchScreen, {
-        forUser: asPrivilegedUser,
-      }),
+      onPress: () =>
+        navigation.push(SeamailStackScreenComponents.seamailSearchScreen, {
+          forUser: asPrivilegedUser,
+        }),
     }),
   ];
 
