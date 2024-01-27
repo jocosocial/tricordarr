@@ -4,7 +4,7 @@ import {FezContentData, FezData, PostContentData} from '../../../libraries/Struc
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
-import {FormikHelpers, FormikProps} from 'formik';
+import {FormikProps} from 'formik';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -46,7 +46,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   // Handler for creating the Fez.
   const onFezSubmit = useCallback(
-    (values: FezContentData, formikHelpers: FormikHelpers<FezContentData>) => {
+    (values: FezContentData) => {
       setSubmitting(true);
       console.log('Doing the Fez submit!');
       console.log('Fez Values', values);
@@ -76,7 +76,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   // Handler for pushing the FezPost submit button.
   const onPostSubmit = useCallback(
-    (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
+    (values: PostContentData) => {
       if (newSeamail) {
         console.log('Doing the FezPost submit! to', newSeamail.fezID);
         console.log('FezPost Values', values);

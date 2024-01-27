@@ -34,7 +34,6 @@ import {ListTitleView} from '../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {FezMutedView} from '../../Views/Static/FezMutedView';
-import {useFocusEffect} from '@react-navigation/native';
 import {useAppState} from '@react-native-community/hooks';
 
 export type Props = NativeStackScreenProps<
@@ -213,7 +212,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     if (fez) {
       navigation.setOptions({
         headerRight: getNavButtons,
-        headerTitle: getSeamailHeaderTitle(fez.fezID, fez.title),
+        headerTitle: getSeamailHeaderTitle(fez.fezID),
       });
     } else {
       navigation.setOptions({

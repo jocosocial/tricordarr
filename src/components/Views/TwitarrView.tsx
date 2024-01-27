@@ -1,11 +1,10 @@
-import {WebView} from 'react-native-webview';
+import {WebView, WebViewNavigation} from 'react-native-webview';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from './AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useStyles} from '../Context/Contexts/StyleContext';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
@@ -19,7 +18,6 @@ export const TwitarrView = ({route, navigation}: Props) => {
   const [key, setKey] = useState('');
   const [handleGoBack, setHandleGoBack] = useState(false);
   const webViewRef = useRef<WebView>();
-  const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
 
   const handleBackButtonPress = () => {
@@ -32,7 +30,7 @@ export const TwitarrView = ({route, navigation}: Props) => {
     }
   };
 
-  const handleWebViewNavigationStateChange = newNavState => {
+  const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
     const {canGoBack} = newNavState;
     setHandleGoBack(canGoBack);
   };
