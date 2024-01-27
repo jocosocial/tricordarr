@@ -1,9 +1,9 @@
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
+import {BottomTabComponents, MainStackComponents} from '../../../../libraries/Enums/Navigation';
 import React from 'react';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 

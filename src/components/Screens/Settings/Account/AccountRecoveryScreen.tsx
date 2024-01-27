@@ -9,12 +9,14 @@ import {useUserRecoveryMutation} from '../../../Queries/Auth/RecoveryQueries';
 import {TokenStringData} from '../../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
-import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
-export const AccountRecoveryScreen = () => {
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.accountRecoveryScreen>;
+
+export const AccountRecoveryScreen = ({navigation}: Props) => {
   const recoveryMutation = useUserRecoveryMutation();
   const [tokenData, setTokenData] = useState<TokenStringData>();
-  const navigation = useNavigation();
   const onSubmit = (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => {
     recoveryMutation.mutate(
       {

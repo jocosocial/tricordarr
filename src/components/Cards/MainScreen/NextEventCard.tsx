@@ -2,8 +2,8 @@ import React from 'react';
 import {View} from 'react-native';
 import {EventCard} from '../Schedule/EventCard';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {BottomTabComponents, EventStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 export const NextEventCard = ({eventID}: {eventID: string}) => {
   const {data} = useEventQuery({eventID: eventID});

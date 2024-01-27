@@ -13,6 +13,8 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {TwitarrView} from '../Views/TwitarrView';
 import {MapScreen} from '../Screens/Main/MapScreen';
+import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
+import {LighterScreen} from '../Screens/Main/LighterScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -55,6 +57,8 @@ export type CommonStackParamList = {
   MapScreen: {
     deckNumber?: number;
   };
+  AccountRecoveryScreen: undefined;
+  LighterScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -65,6 +69,8 @@ export enum CommonStackComponents {
   usernameProfileScreen = 'UsernameProfileScreen',
   siteUIScreen = 'SiteUIScreen',
   mapScreen = 'MapScreen',
+  accountRecoveryScreen = 'AccountRecoveryScreen',
+  lighterScreen = 'LighterScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -103,7 +109,13 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         component={TwitarrView}
         options={{title: 'Twitarr Web UI'}}
       />
-      <MainStack.Screen name={CommonStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
+      <Stack.Screen name={CommonStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
+      <Stack.Screen
+        name={CommonStackComponents.accountRecoveryScreen}
+        component={AccountRecoveryScreen}
+        options={{title: 'Recovery'}}
+      />
+      <Stack.Screen name={CommonStackComponents.lighterScreen} component={LighterScreen} />
     </>
   );
 };

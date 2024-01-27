@@ -9,7 +9,6 @@ import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {
   NavigatorIDs,
   EventStackComponents,
-  RootStackComponents,
   BottomTabComponents,
   MainStackComponents,
   ForumStackComponents,
@@ -29,7 +28,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {guessDeckNumber} from '../../../libraries/Ship';
 
 const helpContent = [

@@ -2,11 +2,10 @@ import {Text} from 'react-native-paper';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../Navigation/Stacks/RootStackNavigator';
 import {
   BottomTabComponents,
   MainStackComponents,
-  RootStackComponents,
   SettingsStackScreenComponents,
 } from '../../libraries/Enums/Navigation';
 

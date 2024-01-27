@@ -6,12 +6,12 @@ import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {
   BottomTabComponents,
   ForumStackComponents,
   LfgStackComponents,
-  RootStackComponents,
+
 } from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 

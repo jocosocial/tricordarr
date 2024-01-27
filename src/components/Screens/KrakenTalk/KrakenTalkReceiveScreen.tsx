@@ -6,14 +6,13 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   BottomTabComponents,
   NavigatorIDs,
-  RootStackComponents,
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {usePhoneCallDeclineMutation} from '../../Queries/PhoneCall/PhoneCallMutations';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {useAppTheme} from '../../../styles/Theme';
 
 export type Props = NativeStackScreenProps<

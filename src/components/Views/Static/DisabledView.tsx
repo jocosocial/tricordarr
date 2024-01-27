@@ -4,8 +4,8 @@ import {Text} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, MainStackComponents} from '../../../libraries/Enums/Navigation';
 
 export const DisabledView = () => {
   const {commonStyles} = useStyles();

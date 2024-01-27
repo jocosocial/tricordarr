@@ -202,6 +202,23 @@ export const MainHelpScreen = () => {
             </View>
           </SectionContent>
         </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Report</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View>
+              <IconButton icon={AppIcons.report} />
+            </View>
+            <View style={commonStyles.flex}>
+              <Text>
+                Nearly all content can be reported to the moderators. Use this to report instances of violations of the
+                Code of Conduct or other potential misbehavior. The moderator team will follow up with you usually
+                within 24 hours.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

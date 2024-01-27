@@ -1,8 +1,8 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, ForumStackComponents} from '../../../libraries/Enums/Navigation';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useEventFavoriteMutation, useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';

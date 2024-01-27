@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {
   BottomTabComponents,
-  RootStackComponents,
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
@@ -29,7 +28,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ErrorView} from '../../Views/Static/ErrorView';
 import {useAppTheme} from '../../../styles/Theme';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';

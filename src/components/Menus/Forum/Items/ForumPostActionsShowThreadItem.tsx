@@ -2,8 +2,8 @@ import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {BottomTabComponents, ForumStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
-import {RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
+import {BottomTabComponents, ForumStackComponents} from '../../../../libraries/Enums/Navigation';
+import {RootStackComponents, RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface ForumPostActionsShowThreadItemProps {
