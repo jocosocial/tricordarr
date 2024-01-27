@@ -2,12 +2,7 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {
-  BottomTabComponents,
-  LfgStackComponents,
-  MainStackComponents,
-
-} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
@@ -15,7 +10,7 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {LfgCancelModal} from '../../Views/Modals/LfgCancelModal';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
@@ -23,17 +18,11 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
   const {profilePublicData} = useUserData();
-  const rootStackNavigation = useRootStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const menuAnchor = <Item title={'LFG Menu'} iconName={AppIcons.menu} onPress={openMenu} />;
-
-  const handleNavigation = (screen: LfgStackComponents) => {
-    navigation.push(screen);
-    closeMenu();
-  };
 
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -61,17 +50,10 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
           leadingIcon={AppIcons.moderator}
           title={'Moderate'}
           onPress={() => {
-            rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-              screen: BottomTabComponents.homeTab,
-              params: {
-                screen: MainStackComponents.siteUIScreen,
-                params: {
-                  resource: 'fez',
-                  id: fezData.fezID,
-                  moderate: true,
-                },
-                initial: false,
-              },
+            navigation.push(CommonStackComponents.siteUIScreen, {
+              resource: 'lfg',
+              id: fezData.fezID,
+              moderate: true,
             });
             closeMenu();
           }}
@@ -80,7 +62,10 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
-        onPress={() => handleNavigation(LfgStackComponents.lfgHelpScreen)}
+        onPress={() => {
+          navigation.push(LfgStackComponents.lfgHelpScreen);
+          closeMenu();
+        }}
       />
     </Menu>
   );

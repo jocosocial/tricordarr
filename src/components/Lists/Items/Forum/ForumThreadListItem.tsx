@@ -6,7 +6,6 @@ import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
@@ -14,6 +13,7 @@ import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
 import {ForumThreadActionsMenu} from '../../../Menus/Forum/Items/ForumThreadActionsMenu';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
+import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
@@ -87,7 +87,7 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       )}
     </View>
   );
-  const onPress = () => forumNavigation.push(ForumStackComponents.forumThreadScreen, {forumID: forumListData.forumID});
+  const onPress = () => forumNavigation.push(CommonStackComponents.forumThreadScreen, {forumID: forumListData.forumID});
 
   return (
     <ForumThreadActionsMenu

@@ -2,16 +2,11 @@ import {Text} from 'react-native-paper';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {RootStackComponents, useRootStack} from '../Navigation/Stacks/RootStackNavigator';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  SettingsStackScreenComponents,
-} from '../../libraries/Enums/Navigation';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
 
 export const ConnectionDisruptedView = () => {
   const {commonStyles} = useStyles();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   const styles = StyleSheet.create({
     headerView: {
@@ -26,16 +21,7 @@ export const ConnectionDisruptedView = () => {
   });
 
   const onPress = () => {
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainSettingsScreen,
-        params: {
-          screen: SettingsStackScreenComponents.configServerUrl,
-        },
-        initial: false,
-      },
-    });
+    commonNavigation.push(CommonStackComponents.configServerUrl);
   };
 
   return (

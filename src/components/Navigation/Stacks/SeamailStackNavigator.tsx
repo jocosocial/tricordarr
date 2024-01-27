@@ -30,11 +30,6 @@ export type SeamailStackParamList = CommonStackParamList & {
   SeamailDetailsScreen: {
     fezID: string;
   };
-  SeamailCreateScreen?: {
-    initialUserHeader?: UserHeader;
-    initialAsModerator?: boolean;
-    initialAsTwitarrTeam?: boolean;
-  };
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
@@ -85,11 +80,6 @@ export const SeamailStackNavigator = () => {
         name={SeamailStackScreenComponents.seamailDetailsScreen}
         component={SeamailDetailsScreen}
         options={() => ({title: 'Seamail Details'})}
-      />
-      <SeamailStack.Screen
-        name={SeamailStackScreenComponents.seamailCreateScreen}
-        component={isDisabled ? DisabledView : SeamailCreateScreen}
-        options={{title: 'New Seamail'}}
       />
       <SeamailStack.Screen
         name={SeamailStackScreenComponents.krakentalkCreateScreen}

@@ -1,22 +1,21 @@
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {BottomTabComponents, MainStackComponents} from '../../../../libraries/Enums/Navigation';
 import React from 'react';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {RootStackComponents, RootStackParamList} from '../../../Navigation/Stacks/RootStackNavigator';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
 interface ForumPostActionsModerateItemProps {
   closeMenu: () => void;
   forumPost: PostData;
-  rootNavigation: NativeStackNavigationProp<RootStackParamList>;
+  navigation: NativeStackNavigationProp<CommonStackParamList>;
 }
 
 export const ForumPostActionsModerateItem = ({
   forumPost,
   closeMenu,
-  rootNavigation,
+  navigation,
 }: ForumPostActionsModerateItemProps) => {
   const {hasModerator} = usePrivilege();
 
@@ -31,17 +30,10 @@ export const ForumPostActionsModerateItem = ({
       leadingIcon={AppIcons.moderator}
       onPress={() => {
         closeMenu();
-        rootNavigation.push(RootStackComponents.rootContentScreen, {
-          screen: BottomTabComponents.homeTab,
-          params: {
-            screen: MainStackComponents.siteUIScreen,
-            params: {
-              resource: 'forumpost',
-              id: forumPost.postID.toString(),
-              moderate: true,
-            },
-            initial: false,
-          },
+        navigation.push(CommonStackComponents.siteUIScreen, {
+          resource: 'forumpost',
+          id: forumPost.postID.toString(),
+          moderate: true,
         });
       }}
     />

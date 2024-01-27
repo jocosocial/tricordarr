@@ -8,14 +8,11 @@ import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/En
 import {TestErrorScreen} from '../../Screens/Settings/Developer/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {ConfigServerUrlScreen} from '../../Screens/Settings/Config/ConfigServerUrlScreen';
 import {SocketSettingsScreen} from '../../Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '../../Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {OobeSettingsScreen} from '../../Screens/Settings/Developer/OobeSettingsScreen';
 import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernameScreen';
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
-import {AlertKeywordsSettingsScreen} from '../../Screens/Settings/Content/AlertKeywordsSettingsScreen';
-import {MuteKeywordsSettingsScreen} from '../../Screens/Settings/Content/MuteKeywordsSettingsScreen';
 import {AccountManagementScreen} from '../../Screens/Settings/Account/AccountManagementScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
@@ -38,14 +35,11 @@ export type SettingsStackParamList = {
   ServerConnectionSettingsScreen: undefined;
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
-  ConfigServerUrlScreen: undefined;
   SocketSettingsScreen: undefined;
   PushNotificationSettingsScreen: undefined;
   OobeSettingsScreen: undefined;
   ChangePasswordScreen: undefined;
   ChangeUsernameScreen: undefined;
-  AlertKeywordsSettingsScreen: undefined;
-  MuteKeywordsSettingsScreen: undefined;
   AccountManagementScreen: undefined;
   LoginScreen: undefined;
   BlockUsersScreen: undefined;
@@ -99,11 +93,7 @@ export const SettingsStack = () => {
         component={TestErrorScreen}
         options={{title: 'Test Errors'}}
       />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.configServerUrl}
-        component={ConfigServerUrlScreen}
-        options={{title: 'Server URL'}}
-      />
+
       <Stack.Screen
         name={SettingsStackScreenComponents.socketSettings}
         component={SocketSettingsScreen}
@@ -128,16 +118,6 @@ export const SettingsStack = () => {
         name={SettingsStackScreenComponents.changePassword}
         component={ChangePasswordScreen}
         options={{title: 'Change Password'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.alertKeywords}
-        component={AlertKeywordsSettingsScreen}
-        options={{title: 'Alert Keywords'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.muteKeywords}
-        component={MuteKeywordsSettingsScreen}
-        options={{title: 'Mute Keywords'}}
       />
       <Stack.Screen name={SettingsStackScreenComponents.login} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen

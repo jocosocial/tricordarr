@@ -10,11 +10,8 @@ import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem';
 import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem';
 import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem';
 import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -36,15 +33,13 @@ export const ForumPostActionsMenu = ({
   const {profilePublicData} = useUserData();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
-  const rootNavigation = useRootStack();
-  const forumNavigation = useForumStackNavigation();
-  const {hasModerator} = usePrivilege();
+  const commonNavigation = useCommonStack();
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
       {enableShowInThread && (
         <>
-          <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} rootNavigation={rootNavigation} />
+          <ForumPostActionsShowThreadItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
           <Divider bold={true} />
         </>
       )}
@@ -66,7 +61,7 @@ export const ForumPostActionsMenu = ({
             title={'Edit'}
             onPress={() => {
               closeMenu();
-              forumNavigation.push(ForumStackComponents.forumPostEditScreen, {
+              commonNavigation.push(CommonStackComponents.forumPostEditScreen, {
                 postData: forumPost,
               });
             }}
@@ -86,7 +81,7 @@ export const ForumPostActionsMenu = ({
       <Divider bold={true} />
       <ForumPostActionsReportItem forumPost={forumPost} closeMenu={closeMenu} />
       <Divider bold={true} />
-      <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} rootNavigation={rootNavigation} />
+      <ForumPostActionsModerateItem forumPost={forumPost} closeMenu={closeMenu} navigation={commonNavigation} />
       <Divider bold={true} />
       <ForumPostActionsReactionItem forumPost={forumPost} />
     </Menu>
