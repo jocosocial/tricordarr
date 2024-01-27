@@ -7,15 +7,11 @@ import {MessageViewContainer} from '../../Views/MessageViewContainer';
 import {MessageSpacerView} from '../../Views/MessageSpacerView';
 import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../Views/Content/FlatListItemContent';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {APIImage} from '../../Images/APIImage';
-import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ContentPostImage} from '../../Images/ContentPostImage';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
-import {CommonComponents} from '../../../libraries/Navigation';
+import {CommonComponents} from '../../Navigation/CommonScreens';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {

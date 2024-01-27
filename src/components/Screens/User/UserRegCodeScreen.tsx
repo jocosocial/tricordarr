@@ -14,7 +14,7 @@ import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 
 export type Props = NativeStackScreenProps<
   MainStackParamList,

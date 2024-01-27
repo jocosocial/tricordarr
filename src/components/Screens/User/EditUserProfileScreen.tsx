@@ -6,7 +6,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {UserProfileForm} from '../../Forms/UserProfileForm';
 import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';

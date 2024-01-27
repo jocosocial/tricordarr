@@ -6,7 +6,7 @@ import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
-import {CommonComponents, CommonStackParamList} from '../../../libraries/Navigation';
+import {CommonComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonComponents.userProfileScreen>;
 

@@ -17,7 +17,8 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
-import {CommonScreens, CommonStackParamList} from '../../../libraries/Navigation';
+import {MainStack} from './MainStackNavigator';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = CommonStackParamList & {
@@ -51,7 +52,7 @@ export type SeamailStackParamList = CommonStackParamList & {
   };
 };
 
-export const SeamailStack = createNativeStackNavigator<SeamailStackParamList>();
+const SeamailStack = createNativeStackNavigator<SeamailStackParamList>();
 
 export const SeamailStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -115,7 +116,7 @@ export const SeamailStackNavigator = () => {
         component={KrakenTalkReceiveScreen}
         options={{title: 'Incoming Call'}}
       />
-      {CommonScreens(SeamailStack)}
+      {CommonScreens(SeamailStack as typeof MainStack)}
     </SeamailStack.Navigator>
   );
 };

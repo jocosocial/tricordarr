@@ -25,7 +25,7 @@ import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
 import {AppIcon} from '../../Icons/AppIcon';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {useMainStack} from '../../Navigation/Stacks/MainStack';
+import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';

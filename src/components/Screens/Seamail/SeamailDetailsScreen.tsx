@@ -1,13 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  NavigatorIDs,
-  RootStackComponents,
-  SeamailStackScreenComponents,
-} from '../../../libraries/Enums/Navigation';
+import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
@@ -32,13 +26,9 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {CommonComponents} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.seamailDetailsScreen,
-  NavigatorIDs.seamailStack
->;
+type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.seamailDetailsScreen>;
 
 const helpContent = [
   'Seamail titles cannot be modified.',
@@ -53,7 +43,6 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const {fezSocket} = useSocket();
   const {refetch, isRefetching} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
-  const rootNavigation = useRootStack();
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -141,17 +130,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
                   key={u.userID}
                   user={u}
                   fez={fez}
-                  onPress={() =>
-                    rootNavigation.push(RootStackComponents.rootContentScreen, {
-                      screen: BottomTabComponents.homeTab,
-                      params: {
-                        screen: MainStackComponents.userProfileScreen,
-                        params: {
-                          userID: u.userID,
-                        },
-                      },
-                    })
-                  }
+                  onPress={() => navigation.push(CommonComponents.userProfileScreen, {userID: u.userID})}
                 />
               ))}
           </ListSection>

@@ -4,94 +4,51 @@ import React, {useState} from 'react';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {TouchableOpacity} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  RootStackComponents,
-  SettingsStackScreenComponents,
-} from '../../libraries/Enums/Navigation';
-import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
+import {MainStackComponents, SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {useAuth} from '../Context/Contexts/AuthContext';
+import {useMainStack} from '../Navigation/Stacks/MainStackNavigator';
+import {CommonComponents} from '../Navigation/CommonScreens';
 
 export const MainAccountMenu = () => {
   const {profilePublicData} = useUserData();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const closeMenu = () => setIsMenuVisible(false);
-  const rootNavigation = useRootStack();
+  const mainNavigation = useMainStack();
   const {isLoggedIn} = useAuth();
 
   const handleManage = () => {
     closeMenu();
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainSettingsScreen,
-        // initial false needed here to enable the stack to popToTop on bottom button press.
-        initial: false,
-        params: {
-          screen: SettingsStackScreenComponents.accountManagement,
-        },
-      },
+    mainNavigation.push(MainStackComponents.mainSettingsScreen, {
+      screen: SettingsStackScreenComponents.accountManagement,
     });
   };
 
   const handleProfile = () => {
     closeMenu();
     if (profilePublicData) {
-      rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-        screen: BottomTabComponents.homeTab,
-        params: {
-          screen: MainStackComponents.userProfileScreen,
-          // initial false needed here to enable the stack to popToTop on bottom button press.
-          initial: false,
-          params: {
-            userID: profilePublicData.header.userID,
-          },
-        },
+      mainNavigation.push(CommonComponents.userProfileScreen, {
+        userID: profilePublicData.header.userID,
       });
     }
   };
 
   const handleSettings = () => {
     closeMenu();
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainSettingsScreen,
-        // initial false needed here to enable the stack to popToTop on bottom button press.
-        initial: false,
-        params: {
-          screen: SettingsStackScreenComponents.settings,
-        },
-      },
+    mainNavigation.push(MainStackComponents.mainSettingsScreen, {
+      screen: SettingsStackScreenComponents.settings,
     });
   };
 
   const handleLogin = () => {
     closeMenu();
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainSettingsScreen,
-        // initial false needed here to enable the stack to popToTop on bottom button press.
-        initial: false,
-        params: {
-          screen: SettingsStackScreenComponents.login,
-        },
-      },
+    mainNavigation.push(MainStackComponents.mainSettingsScreen, {
+      screen: SettingsStackScreenComponents.login,
     });
   };
 
   const handleHelp = () => {
     closeMenu();
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.mainHelpScreen,
-        // initial false needed here to enable the stack to popToTop on bottom button press.
-        initial: false,
-      },
-    });
+    mainNavigation.push(MainStackComponents.mainHelpScreen);
   };
 
   const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;
