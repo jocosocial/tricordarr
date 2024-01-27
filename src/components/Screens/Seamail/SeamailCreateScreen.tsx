@@ -8,7 +8,7 @@ import {FormikHelpers, FormikProps} from 'formik';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';

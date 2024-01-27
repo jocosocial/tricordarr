@@ -3,7 +3,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {AppIcon} from '../../Icons/AppIcon';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {SeamailStack, SeamailStackParamList} from '../Stacks/SeamailStack';
+import {SeamailStackNavigator, SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -71,7 +71,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.seamailTab}
-        component={SeamailStack}
+        component={SeamailStackNavigator}
         options={{
           title: 'Chat',
           tabBarIcon: () => getIcon('email'),

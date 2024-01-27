@@ -3,7 +3,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {NavHeaderTitle} from '../../Text/NavHeaderTitle';
 import React from 'react';
-import {SeamailStackParamList} from '../Stacks/SeamailStack';
+import {SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
 
 interface SeamailHeaderTitleProps {
   fezID: string;

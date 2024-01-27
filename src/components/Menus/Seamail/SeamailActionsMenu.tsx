@@ -5,7 +5,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';

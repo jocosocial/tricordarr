@@ -1,6 +1,6 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStack';
+import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';

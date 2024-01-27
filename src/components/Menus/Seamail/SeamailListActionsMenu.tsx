@@ -3,7 +3,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import * as React from 'react';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStack';
+import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 
 export const SeamailListActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
