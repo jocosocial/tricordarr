@@ -3,8 +3,8 @@ import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {APIImage} from '../../Images/APIImage';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents, MainStackComponents} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation';
+import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator';
 
 interface DailyThemeCardProps {
   dailyTheme: DailyThemeData;
@@ -17,17 +17,11 @@ interface DailyThemeCardProps {
  */
 export const DailyThemeCard = (props: DailyThemeCardProps) => {
   const {commonStyles} = useStyles();
-  const rootNavigation = useRootStack();
+  const mainNavigation = useMainStack();
 
   const onPress = () => {
-    rootNavigation.navigate(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.dailyThemeScreen,
-        params: {
-          dailyTheme: props.dailyTheme,
-        },
-      },
+    mainNavigation.push(MainStackComponents.dailyThemeScreen, {
+      dailyTheme: props.dailyTheme,
     });
   };
 

@@ -2,7 +2,6 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
 import {LfgHelpScreen} from '../../Screens/LFG/LfgHelpScreen';
 import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen';
 import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen';
@@ -23,7 +22,6 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
 export type LfgStackParamList = CommonStackParamList & {
-  LfgOwnedScreen: undefined;
   LfgHelpScreen: undefined;
   LfgJoinedScreen: undefined;
   LfgFindScreen: undefined;
@@ -57,11 +55,6 @@ export const LfgStackNavigator = () => {
     <Stack.Navigator
       initialRouteName={appConfig.schedule.defaultLfgScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
-      <Stack.Screen
-        name={LfgStackComponents.lfgOwnedScreen}
-        component={LfgOwnedScreen}
-        options={{title: 'Owned Groups'}}
-      />
       <Stack.Screen
         name={LfgStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}

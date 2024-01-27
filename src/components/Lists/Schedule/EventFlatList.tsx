@@ -20,6 +20,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {EventCardListItem} from '../Items/Event/EventCardListItem';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface EventFlatListProps {
   scheduleItems: (EventData | FezData)[];
@@ -72,7 +73,7 @@ export const EventFlatList = ({
   separator = 'time',
 }: EventFlatListProps) => {
   const {commonStyles} = useStyles();
-  const navigation = useEventStackNavigation();
+  const commonNavigation = useCommonStack();
   const {startDate, endDate} = useCruise();
   // const minutelyUpdatingDate = useDateTime('minute');
   const minutelyUpdatingDate = useRefreshingDate();
@@ -102,7 +103,7 @@ export const EventFlatList = ({
           {'eventID' in item && (
             <EventCardListItem
               eventData={item}
-              onPress={() => navigation.push(EventStackComponents.eventScreen, {eventID: item.eventID})}
+              onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
               marker={marker}
               setRefreshing={setRefreshing}
             />
@@ -110,7 +111,15 @@ export const EventFlatList = ({
         </>
       );
     },
-    [appConfig.portTimeZoneID, bottomNavigation, endDate, minutelyUpdatingDate, navigation, setRefreshing, startDate],
+    [
+      appConfig.portTimeZoneID,
+      bottomNavigation,
+      endDate,
+      minutelyUpdatingDate,
+      commonNavigation,
+      setRefreshing,
+      startDate,
+    ],
   );
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: EventData | FezData}) => {

@@ -2,12 +2,11 @@ import React from 'react';
 import {View} from 'react-native';
 import {EventCard} from '../Schedule/EventCard';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {BottomTabComponents, EventStackComponents} from '../../../libraries/Enums/Navigation';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 export const NextEventCard = ({eventID}: {eventID: string}) => {
   const {data} = useEventQuery({eventID: eventID});
-  const rootStackNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   return (
     <View>
@@ -16,18 +15,7 @@ export const NextEventCard = ({eventID}: {eventID: string}) => {
           eventData={data}
           hideFavorite={true}
           showDay={true}
-          onPress={() =>
-            rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-              screen: BottomTabComponents.scheduleTab,
-              params: {
-                screen: EventStackComponents.eventScreen,
-                params: {
-                  eventID: eventID,
-                },
-                initial: false,
-              },
-            })
-          }
+          onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: eventID})}
           titleHeader={'Your next event:'}
         />
       )}

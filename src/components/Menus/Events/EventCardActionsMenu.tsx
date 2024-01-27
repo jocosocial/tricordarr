@@ -1,8 +1,6 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {BottomTabComponents, ForumStackComponents} from '../../../libraries/Enums/Navigation';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useEventFavoriteMutation, useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
@@ -11,6 +9,7 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {getCruiseDay} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface EventCardActionsMenuProps {
   anchor: JSX.Element;
@@ -20,7 +19,7 @@ interface EventCardActionsMenuProps {
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const {dispatchScheduleList} = useTwitarr();
   const {refetchUserNotificationData} = useUserNotificationData();
@@ -76,16 +75,8 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const handleForumPress = () => {
     closeMenu();
     if (props.eventData.forum) {
-      rootNavigation.push(RootStackComponents.rootContentScreen, {
-        screen: BottomTabComponents.forumsTab,
-        params: {
-          screen: ForumStackComponents.forumThreadScreen,
-          // initial false needed here to enable the stack to popToTop on bottom button press.
-          initial: false,
-          params: {
-            forumID: props.eventData.forum,
-          },
-        },
+      commonNavigation.push(CommonStackComponents.forumThreadScreen, {
+        forumID: props.eventData.forum,
       });
     }
   };

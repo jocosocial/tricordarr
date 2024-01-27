@@ -94,7 +94,6 @@ export enum EventStackComponents {
   eventDayScreen = 'EventDayScreen',
   eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  eventScreen = 'EventScreen',
   eventHelpScreen = 'EventHelpScreen',
   eventFavoritesScreen = 'EventFavoritesScreen',
   eventYourDayScreen = 'EventYourDayScreen',
@@ -117,7 +116,6 @@ export enum LfgStackComponents {
 export enum ForumStackComponents {
   forumCategoriesScreen = 'ForumCategoriesScreen',
   forumCategoryScreen = 'ForumCategoryScreen',
-  forumThreadScreen = 'ForumThreadScreen',
   forumPostMentionScreen = 'ForumPostMentionScreen',
   forumPostSelfScreen = 'ForumPostSelfScreen',
   forumPostFavoriteScreen = 'ForumPostFavoriteScreen',
@@ -130,10 +128,8 @@ export enum ForumStackComponents {
   forumThreadCreateScreen = 'ForumThreadCreateScreen',
   forumThreadEditScreen = 'ForumThreadEditScreen',
   forumPostEditScreen = 'ForumPostEditScreen',
-  forumThreadUserScreen = 'ForumThreadUserScreen',
   forumThreadPostScreen = 'ForumThreadPostScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
   forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
-  forumPostUserScreen = 'ForumPostUserScreen',
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
 }

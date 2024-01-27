@@ -4,7 +4,7 @@ import React from 'react';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
-import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
+import {ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
@@ -15,6 +15,11 @@ import {TwitarrView} from '../Views/TwitarrView';
 import {MapScreen} from '../Screens/Main/MapScreen';
 import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
 import {LighterScreen} from '../Screens/Main/LighterScreen';
+import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen';
+import {ForumThreadUserScreen} from '../Screens/Forum/Thread/ForumThreadUserScreen';
+import {EventScreen} from '../Screens/Event/EventScreen';
+import {ForumStackComponents} from '../../libraries/Enums/Navigation';
+import {ForumThreadScreen} from '../Screens/Forum/Thread/ForumThreadScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -59,6 +64,18 @@ export type CommonStackParamList = {
   };
   AccountRecoveryScreen: undefined;
   LighterScreen: undefined;
+  ForumThreadUserScreen: {
+    user: UserHeader;
+  };
+  ForumPostUserScreen: {
+    user: UserHeader;
+  };
+  EventScreen: {
+    eventID: string;
+  };
+  ForumThreadScreen: {
+    forumID: string;
+  };
 };
 
 export enum CommonStackComponents {
@@ -71,11 +88,16 @@ export enum CommonStackComponents {
   mapScreen = 'MapScreen',
   accountRecoveryScreen = 'AccountRecoveryScreen',
   lighterScreen = 'LighterScreen',
+  forumThreadUserScreen = 'ForumThreadUserScreen',
+  forumPostUserScreen = 'ForumPostUserScreen',
+  eventScreen = 'EventScreen',
+  forumThreadScreen = 'ForumThreadScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
+  const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
 
   return (
     <>
@@ -91,17 +113,17 @@ export const CommonScreens = (Stack: typeof MainStack) => {
       />
       <Stack.Screen
         name={CommonStackComponents.editUserProfileScreen}
-        component={EditUserProfileScreen}
+        component={isUsersDisabled ? DisabledView : EditUserProfileScreen}
         options={{title: 'Edit Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userPrivateNoteScreen}
-        component={UserPrivateNoteScreen}
+        component={isUsersDisabled ? DisabledView : UserPrivateNoteScreen}
         options={{title: 'Private Note'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userRegCodeScreen}
-        component={UserRegCodeScreen}
+        component={isUsersDisabled ? DisabledView : UserRegCodeScreen}
         options={{title: 'Registration'}}
       />
       <Stack.Screen
@@ -116,6 +138,24 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{title: 'Recovery'}}
       />
       <Stack.Screen name={CommonStackComponents.lighterScreen} component={LighterScreen} />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostUserScreen}
+        component={isForumsDisabled ? DisabledView : ForumPostUserScreen}
+        options={{title: 'Posts by User'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadUserScreen}
+        component={isForumsDisabled ? DisabledView : ForumThreadUserScreen}
+        options={{title: 'Forums by User'}}
+      />
+      <Stack.Screen name={CommonStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadScreen}
+        component={isForumsDisabled ? DisabledView : ForumThreadScreen}
+        options={{
+          title: 'Forum',
+        }}
+      />
     </>
   );
 };
