@@ -67,18 +67,11 @@ export enum SeamailStackScreenComponents {
 
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
-  siteUIScreen = 'SiteUIScreen',
   mainSettingsScreen = 'MainSettingsScreen',
   aboutScreen = 'AboutScreen',
-  userProfileScreen = 'UserProfileScreen',
-  usernameProfileScreen = 'UsernameProfileScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
-  editUserProfileScreen = 'EditUserProfileScreen',
-  userPrivateNoteScreen = 'UserPrivateNoteScreen',
-  userRegCodeScreen = 'UserRegCodeScreen',
   dailyThemeScreen = 'DailyThemeScreen',
   mainHelpScreen = 'MainHelpScreen',
-  mapScreen = 'MapScreen',
   conductScreen = 'MainConductScreen',
   dailyThemesScreen = 'DailyThemesScreen',
 }

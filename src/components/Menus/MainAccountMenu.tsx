@@ -7,7 +7,7 @@ import {AppIcons} from '../../libraries/Enums/Icons';
 import {MainStackComponents, SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useMainStack} from '../Navigation/Stacks/MainStackNavigator';
-import {CommonComponents} from '../Navigation/CommonScreens';
+import {CommonStackComponents} from '../Navigation/CommonScreens';
 
 export const MainAccountMenu = () => {
   const {profilePublicData} = useUserData();
@@ -26,7 +26,7 @@ export const MainAccountMenu = () => {
   const handleProfile = () => {
     closeMenu();
     if (profilePublicData) {
-      mainNavigation.push(CommonComponents.userProfileScreen, {
+      mainNavigation.push(CommonStackComponents.userProfileScreen, {
         userID: profilePublicData.header.userID,
       });
     }

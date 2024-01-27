@@ -19,10 +19,10 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {CommonScreens} from '../CommonScreens';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
-export type LfgStackParamList = {
+export type LfgStackParamList = CommonStackParamList & {
   LfgOwnedScreen: undefined;
   LfgHelpScreen: undefined;
   LfgJoinedScreen: undefined;

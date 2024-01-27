@@ -2,12 +2,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  BottomTabComponents,
-  LfgStackComponents,
-  MainStackComponents,
-  NavigatorIDs,
-} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
@@ -26,17 +21,13 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  LfgStackParamList,
-  LfgStackComponents.lfgParticipationScreen,
-  NavigatorIDs.lfgStack
->;
+type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgParticipationScreen>;
 
 const helpContent = [
   "Don't just add random people to your LFG. It's not nice.",
@@ -52,7 +43,6 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
-  const bottomNav = useBottomTabNavigator();
   const membershipMutation = useFezMembershipMutation();
 
   const onRefresh = () => {
@@ -176,13 +166,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                 key={u.userID}
                 user={u}
                 fez={lfg}
-                onPress={() =>
-                  bottomNav.navigate(BottomTabComponents.homeTab, {
-                    screen: MainStackComponents.userProfileScreen,
-                    params: {userID: u.userID},
-                    initial: false,
-                  })
-                }
+                onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
               />
             ))}
           </ListSection>
@@ -208,13 +192,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
                     key={u.userID}
                     user={u}
                     fez={lfg}
-                    onPress={() =>
-                      bottomNav.navigate(BottomTabComponents.homeTab, {
-                        screen: MainStackComponents.userProfileScreen,
-                        params: {userID: u.userID},
-                        initial: false,
-                      })
-                    }
+                    onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
                   />
                 ))}
               </ListSection>
