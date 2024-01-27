@@ -11,8 +11,10 @@ import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {OobeNotificationsScreen} from '../../Screens/OOBE/OobeNotificationsScreen';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {MainStack} from './MainStackNavigator';
 
-export type OobeStackParamList = {
+export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
   OobeServerScreen: undefined;
   OobeConductScreen: undefined;
@@ -67,6 +69,7 @@ export const OobeStackNavigator = () => {
         component={OobeFinishScreen}
         options={{title: 'Finish'}}
       />
+      {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
   );
 };

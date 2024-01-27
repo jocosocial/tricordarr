@@ -10,8 +10,7 @@ import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
 import {useAppTheme} from '../../styles/Theme';
-import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
-import {RootStackComponents} from '../../libraries/Enums/Navigation';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
@@ -35,7 +34,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
     buttonContainer: [commonStyles.marginTopSmall, commonStyles.marginBottom],
   };
   const theme = useAppTheme();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -64,7 +63,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
           />
           <PrimaryActionButton
             buttonText={'Forgot Password'}
-            onPress={() => rootNavigation.push(RootStackComponents.accountRecoveryScreen)}
+            onPress={() => commonNavigation.push(CommonStackComponents.accountRecoveryScreen)}
             viewStyle={styles.buttonContainer}
             buttonColor={theme.colors.twitarrNeutralButton}
           />

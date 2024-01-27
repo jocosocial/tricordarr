@@ -1,9 +1,9 @@
 import React, {Dispatch, ReactNode, SetStateAction, useCallback, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {BottomTabComponents, EventStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
+import {BottomTabComponents, EventStackComponents} from '../../../../libraries/Enums/Navigation';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';

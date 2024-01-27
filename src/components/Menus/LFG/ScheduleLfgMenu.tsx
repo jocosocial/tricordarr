@@ -6,7 +6,7 @@ import {
   BottomTabComponents,
   LfgStackComponents,
   MainStackComponents,
-  RootStackComponents,
+
 } from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
@@ -15,7 +15,7 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {LfgCancelModal} from '../../Views/Modals/LfgCancelModal';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 
 export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);

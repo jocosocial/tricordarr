@@ -1,6 +1,9 @@
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
+ *
+ * @TODO start moving these out to the various navigators
+ * @TODO kill the navigatorIDs. THey aren't necessary.
  */
 export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
@@ -74,13 +77,6 @@ export enum MainStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   conductScreen = 'MainConductScreen',
   dailyThemesScreen = 'DailyThemesScreen',
-}
-
-export enum RootStackComponents {
-  oobeNavigator = 'OobeStackNavigator',
-  rootContentScreen = 'RootContentScreen',
-  lighterScreen = 'LighterScreen',
-  accountRecoveryScreen = 'AccountRecoveryScreen',
 }
 
 export enum OobeStackComponents {

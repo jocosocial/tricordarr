@@ -10,7 +10,7 @@ import {
   EventStackComponents,
   ForumStackComponents,
   NavigatorIDs,
-  RootStackComponents,
+
 } from '../../../../libraries/Enums/Navigation';
 import {ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
@@ -18,7 +18,7 @@ import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';

@@ -1,20 +1,20 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator';
-import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {OobeStackNavigator} from './OobeStackNavigator';
-import {AccountRecoveryScreen} from '../../Screens/Settings/Account/AccountRecoveryScreen';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
   RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
-  LighterScreen: undefined;
-  AccountRecoveryScreen: undefined;
 };
+
+export enum RootStackComponents {
+  oobeNavigator = 'OobeStackNavigator',
+  rootContentScreen = 'RootContentScreen',
+}
 
 export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -30,12 +30,6 @@ export const RootStackNavigator = () => {
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{...screenOptions, headerShown: false}}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
       <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
-      <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />
-      <Stack.Screen
-        name={RootStackComponents.accountRecoveryScreen}
-        component={AccountRecoveryScreen}
-        options={{title: 'Recovery', headerShown: true}}
-      />
     </Stack.Navigator>
   );
 };

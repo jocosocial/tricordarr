@@ -18,7 +18,6 @@ import {
   ForumStackComponents,
   MainStackComponents,
   NavigatorIDs,
-  RootStackComponents,
   SettingsStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -32,7 +31,7 @@ import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategorie
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
+import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ForumPostAlertwordScreen} from './Post/ForumPostAlertwordScreen';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
