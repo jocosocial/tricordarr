@@ -7,14 +7,13 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {DeckMapMenu} from '../../Menus/DeckMapMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {ShipDecks} from '../../../libraries/Ship';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {MapIndicatorView} from '../../Views/MapIndicatorView';
 import FastImage from 'react-native-fast-image';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mapScreen, NavigatorIDs.mainStack>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 
 export const MapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();

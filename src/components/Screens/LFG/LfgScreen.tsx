@@ -4,13 +4,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  BottomTabComponents,
-  LfgStackComponents,
-  MainStackComponents,
-  NavigatorIDs,
-  RootStackComponents,
-} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
@@ -36,13 +30,13 @@ import {useAppTheme} from '../../../styles/Theme';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
-import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {getUserBylineString} from '../../Text/Tags/UserBylineTag';
 import {guessDeckNumber} from '../../../libraries/Ship';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen, NavigatorIDs.lfgStack>;
+type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen>;
 
 export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useSeamailQuery({
@@ -57,7 +51,6 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {closeFezSocket, notificationSocket} = useSocket();
   const isFocused = useIsFocused();
-  const rootStackNavigation = useRootStack();
   const {hasModerator} = usePrivilege();
 
   const showChat =
@@ -247,17 +240,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.user)}
                   description={getUserBylineString(lfg.owner, true, true)}
                   title={'Owner'}
-                  onPress={() =>
-                    rootStackNavigation.push(RootStackComponents.rootContentScreen, {
-                      screen: BottomTabComponents.homeTab,
-                      params: {
-                        screen: MainStackComponents.userProfileScreen,
-                        params: {
-                          userID: lfg.owner.userID,
-                        },
-                      },
-                    })
-                  }
+                  onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: lfg.owner.userID})}
                 />
                 {lfg.members && (
                   <DataFieldListItem

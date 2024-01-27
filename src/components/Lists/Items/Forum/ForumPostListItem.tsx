@@ -4,10 +4,10 @@ import {UserAvatarImage} from '../../../Images/UserAvatarImage';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
 import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../../../libraries/Enums/Navigation';
-import {useRootStack} from '../../../Navigation/Stacks/RootStackNavigator';
 import {ContentPostImage} from '../../../Images/ContentPostImage';
 import {ForumPostMessageView} from '../../../Views/Forum/ForumPostMessageView';
+import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {
@@ -23,18 +23,11 @@ interface ForumPostListItemProps {
 }
 
 export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts}: ForumPostListItemProps) => {
-  const rootNavigation = useRootStack();
+  const forumNavigation = useForumStackNavigation();
 
   const handleAuthorAvatarPress = () => {
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.userProfileScreen,
-        params: {
-          userID: postData.author.userID,
-        },
-        initial: false,
-      },
+    forumNavigation.push(CommonStackComponents.userProfileScreen, {
+      userID: postData.author.userID,
     });
   };
 

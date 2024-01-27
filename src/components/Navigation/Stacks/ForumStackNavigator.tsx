@@ -29,10 +29,10 @@ import {ForumPostHashtagScreen} from '../../Screens/Forum/Post/ForumPostHashtagS
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {ForumPostUserScreen} from '../../Screens/Forum/Post/ForumPostUserScreen';
 import {ForumPostPinnedScreen} from '../../Screens/Forum/Post/ForumPostPinnedScreen';
-import {CommonScreens} from '../CommonScreens';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
-export type ForumStackParamList = {
+export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
     // category: CategoryData;

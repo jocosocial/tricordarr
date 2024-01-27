@@ -15,10 +15,10 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
-import {CommonScreens} from '../CommonScreens';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
-export type EventStackParamList = {
+export type EventStackParamList = CommonStackParamList & {
   EventDayScreen: {
     cruiseDay: number;
   };

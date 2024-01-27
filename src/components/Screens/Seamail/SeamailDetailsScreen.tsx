@@ -26,7 +26,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {CommonComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.seamailDetailsScreen>;
 
@@ -130,7 +130,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
                   key={u.userID}
                   user={u}
                   fez={fez}
-                  onPress={() => navigation.push(CommonComponents.userProfileScreen, {userID: u.userID})}
+                  onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {userID: u.userID})}
                 />
               ))}
           </ListSection>

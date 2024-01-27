@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {
   BottomTabComponents,
-  MainStackComponents,
   RootStackComponents,
   SeamailStackScreenComponents,
 } from '../../../libraries/Enums/Navigation';
@@ -34,6 +33,7 @@ import {useRootStack} from '../../Navigation/Stacks/RootStackNavigator';
 import {ErrorView} from '../../Views/Static/ErrorView';
 import {useAppTheme} from '../../../styles/Theme';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -50,6 +50,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   const [isBlocked, setIsBlocked] = useState(false);
   const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
   const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
   const {isLoggedIn} = useAuth();
   const theme = useAppTheme();
 
@@ -85,17 +86,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
             <Item
               title={'Edit'}
               iconName={AppIcons.edituser}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.homeTab,
-                  params: {
-                    screen: MainStackComponents.editUserProfileScreen,
-                    params: {
-                      user: data,
-                    },
-                  },
-                })
-              }
+              onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
             />
           </HeaderButtons>
         </View>
@@ -112,14 +103,14 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
       </View>
     );
   }, [
-    rootNavigation,
-    data,
-    isBlocked,
-    isFavorite,
     isLoggedIn,
-    isMuted,
+    data,
     profilePublicData?.header.userID,
     seamailCreateHandler,
+    isFavorite,
+    isMuted,
+    isBlocked,
+    commonNavigation,
   ]);
 
   useEffect(() => {
@@ -196,17 +187,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
           <PaddedContentView>
             <UserNoteCard
               user={data}
-              onPress={() =>
-                rootNavigation.push(RootStackComponents.rootContentScreen, {
-                  screen: BottomTabComponents.homeTab,
-                  params: {
-                    screen: MainStackComponents.userPrivateNoteScreen,
-                    params: {
-                      user: data,
-                    },
-                  },
-                })
-              }
+              onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
               onLongPress={() => {
                 if (data.note !== undefined) {
                   Clipboard.setString(data.note);

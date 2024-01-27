@@ -13,8 +13,7 @@ import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
 import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
-import {useRootStack} from '../Navigation/Stacks/RootStackNavigator';
-import {BottomTabComponents, MainStackComponents, RootStackComponents} from '../../libraries/Enums/Navigation';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -31,24 +30,17 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   const favoriteMutation = useUserFavoriteMutation();
   const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
-  const rootNavigation = useRootStack();
+  const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleModerate = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.siteUIScreen,
-        params: {
-          resource: 'userprofile',
-          id: profile.header.userID,
-          moderate: true,
-        },
-        initial: false,
-      },
+    commonNavigation.push(CommonStackComponents.siteUIScreen, {
+      resource: 'userprofile',
+      id: profile.header.userID,
+      moderate: true,
     });
   };
   const handleFavorite = () => {
@@ -87,26 +79,14 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
   };
   const handleRegCode = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.userRegCodeScreen,
-        params: {
-          userID: profile.header.userID,
-        },
-      },
+    commonNavigation.push(CommonStackComponents.userRegCodeScreen, {
+      userID: profile.header.userID,
     });
   };
   const handleNote = () => {
     closeMenu();
-    rootNavigation.push(RootStackComponents.rootContentScreen, {
-      screen: BottomTabComponents.homeTab,
-      params: {
-        screen: MainStackComponents.userPrivateNoteScreen,
-        params: {
-          user: profile,
-        },
-      },
+    commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {
+      user: profile,
     });
   };
 
