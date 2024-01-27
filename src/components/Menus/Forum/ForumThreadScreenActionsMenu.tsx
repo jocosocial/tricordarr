@@ -24,12 +24,15 @@ interface ForumThreadActionsMenuProps {
   forumData: ForumData;
 }
 
-const helpContent = ['Click/tap on a post to favorite, edit, or add a reaction.'];
+const helpContent = [
+  'Long press on a post to favorite, edit, or add a reaction.',
+  'Moderators or the forum creator can pin posts to the forum.',
+];
 
 export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
-  const {hasModerator, setAsModerator, setAsTwitarrTeam, hasTwitarrTeam, asTwitarrTeam, asModerator} = usePrivilege();
+  const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
   const rootStackNavigation = useRootStack();
   const forumStackNavigation = useForumStackNavigation();

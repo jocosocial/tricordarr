@@ -137,6 +137,71 @@ export const MainHelpScreen = () => {
             </View>
           </SectionContent>
         </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Favorite</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View>
+              <IconButton icon={AppIcons.favorite} />
+            </View>
+            <View style={commonStyles.flex}>
+              <Text>
+                Some items like events, forum posts, forum threads, and users can be "favorited" which just makes them a
+                bit easier to access.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Mute</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View>
+              <IconButton icon={AppIcons.mute} />
+            </View>
+            <View style={commonStyles.flex}>
+              <Text>
+                Seamail conversations can be muted to prevent generating notifications. Forum threads can sends them to
+                the bottom of the list so you don't see activity in them. Users can be muted so that you don't see
+                content from them.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Sort</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View>
+              <IconButton icon={AppIcons.sort} />
+            </View>
+            <View style={commonStyles.flex}>
+              <Text>
+                Some lists can be sorted by different criteria. Tap this icon to access a menu of sorting options.
+                Sometimes you can long press to go back to the default.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
+        <PaddedContentView>
+          <SectionView>
+            <BoldText>Filter</BoldText>
+          </SectionView>
+          <SectionContent>
+            <View>
+              <IconButton icon={AppIcons.filter} />
+            </View>
+            <View style={commonStyles.flex}>
+              <Text>
+                Some lists can be filtered. Tap this icon to access a menu of filtering options. You can long press the
+                filter icon to clear any active filters.
+              </Text>
+            </View>
+          </SectionContent>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
