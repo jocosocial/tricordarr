@@ -29,7 +29,9 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
-  const {refetch: refetchPins} = useForumCategoryPinnedThreadsQuery(props.categoryID ?? '');
+  const {refetch: refetchPins} = useForumCategoryPinnedThreadsQuery(props.categoryID ?? '', {
+    enabled: !!props.categoryID,
+  });
 
   const closeMenu = useCallback(() => props.setVisible(false), [props]);
 

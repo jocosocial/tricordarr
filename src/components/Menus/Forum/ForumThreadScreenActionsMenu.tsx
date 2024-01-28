@@ -111,11 +111,12 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
       <Menu.Item
         title={'Pinned Posts'}
         leadingIcon={AppIcons.pin}
-        onPress={() =>
+        onPress={() => {
+          closeMenu();
           commonNavigation.push(CommonStackComponents.forumPostPinnedScreen, {
             forumID: forumData.forumID,
-          })
-        }
+          });
+        }}
       />
       <Menu.Item
         title={'Favorite'}
