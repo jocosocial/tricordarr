@@ -4,7 +4,7 @@ import React from 'react';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
-import {FezData, PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
+import {FezData, ForumData, PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
@@ -34,6 +34,7 @@ import {LfgParticipationScreen} from '../Screens/LFG/LfgParticipationScreen';
 import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen';
 import {LfgChatScreen} from '../Screens/LFG/LfgChatScreen';
 import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
+import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -134,6 +135,9 @@ export type CommonStackParamList = {
   LfgEditScreen: {
     fez: FezData;
   };
+  ForumThreadEditScreen: {
+    forumData: ForumData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -165,6 +169,7 @@ export enum CommonStackComponents {
   lfgAddParticipantScreen = 'LfgAddParticipantScreen',
   lfgChatScreen = 'LfgChatScreen',
   lfgEditScreen = 'LfgEditScreen',
+  forumThreadEditScreen = 'ForumThreadEditScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -315,6 +320,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.lfgEditScreen}
         component={isLfgDisabled ? DisabledView : LfgEditScreen}
         options={{title: 'Edit'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumThreadEditScreen}
+        component={isForumsDisabled ? DisabledView : ForumThreadEditScreen}
+        options={{title: 'Edit Forum'}}
       />
     </>
   );
