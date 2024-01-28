@@ -97,13 +97,8 @@ export enum LfgStackComponents {
   lfgHelpScreen = 'LfgHelpScreen',
   lfgJoinedScreen = 'LfgJoinedScreen',
   lfgFindScreen = 'LfgFindScreen',
-  lfgScreen = 'LfgScreen',
-  lfgParticipationScreen = 'LfgParticipationScreen',
-  lfgAddParticipantScreen = 'LfgAddParticipantScreen',
-  lfgChatScreen = 'LfgChatScreen',
   lfgSettingsScreen = 'LfgSettingsScreen',
   lfgCreateScreen = 'LfgCreateScreen',
-  lfgEditScreen = 'LfgEditScreen',
 }
 
 export enum ForumStackComponents {

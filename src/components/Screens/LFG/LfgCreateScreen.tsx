@@ -12,6 +12,7 @@ import {addMinutes} from 'date-fns';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
@@ -24,14 +25,11 @@ export const LfgCreateScreen = ({navigation}: Props) => {
   const {startDate, adjustedCruiseDayToday} = useCruise();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    console.log(values);
     helpers.setSubmitting(true);
     let fezStartTime = new Date(values.startDate);
     fezStartTime.setHours(values.startTime.hours);
     fezStartTime.setMinutes(values.startTime.minutes);
-
     let fezEndTime = addMinutes(fezStartTime, Number(values.duration));
-    console.log('Start: ', fezStartTime, 'End: ', fezEndTime);
 
     fezMutation.mutate(
       {
@@ -49,7 +47,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          navigation.replace(LfgStackComponents.lfgScreen, {
+          navigation.replace(CommonStackComponents.lfgScreen, {
             fezID: response.data.fezID,
           });
         },

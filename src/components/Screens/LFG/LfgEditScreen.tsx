@@ -2,8 +2,6 @@ import React from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {LfgForm} from '../../Forms/LfgForm';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
@@ -15,9 +13,9 @@ import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgEditScreen, NavigatorIDs.lfgStack>;
-
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
   const {setLfg, dispatchLfgList} = useTwitarr();

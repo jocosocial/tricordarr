@@ -2,7 +2,6 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
@@ -24,10 +23,9 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgParticipationScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
 const helpContent = [
   "Don't just add random people to your LFG. It's not nice.",
@@ -156,7 +154,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           <ListSection>
             {manageUsers && !isFull && (
               <FezParticipantAddItem
-                onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
+                onPress={() => navigation.push(CommonStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
               />
             )}
             {!isMember && !isFull && <FezParticipantAddItem onPress={handleJoin} title={'Join this LFG'} />}
@@ -180,7 +178,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
               <ListSection>
                 {manageUsers && (
                   <FezParticipantAddItem
-                    onPress={() => navigation.push(LfgStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
+                    onPress={() => navigation.push(CommonStackComponents.lfgAddParticipantScreen, {fezID: lfg.fezID})}
                   />
                 )}
                 {!isMember && !isWaitlist && isFull && (

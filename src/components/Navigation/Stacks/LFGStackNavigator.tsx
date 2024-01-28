@@ -5,14 +5,8 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LfgHelpScreen} from '../../Screens/LFG/LfgHelpScreen';
 import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen';
 import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen';
-import {LfgScreen} from '../../Screens/LFG/LfgScreen';
-import {LfgParticipationScreen} from '../../Screens/LFG/LfgParticipationScreen';
-import {LfgAddParticipantScreen} from '../../Screens/LFG/LfgAddParticipantScreen';
-import {LfgChatScreen} from '../../Screens/LFG/LfgChatScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {LfgEditScreen} from '../../Screens/LFG/LfgEditScreen';
 import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
@@ -20,28 +14,15 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
+import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
 
 export type LfgStackParamList = CommonStackParamList & {
   LfgHelpScreen: undefined;
   LfgJoinedScreen: undefined;
   LfgFindScreen: undefined;
-  LfgScreen: {
-    fezID: string;
-  };
-  LfgParticipationScreen: {
-    fezID: string;
-  };
-  LfgAddParticipantScreen: {
-    fezID: string;
-  };
-  LfgChatScreen: {
-    fezID: string;
-  };
+  LfgOwnedScreen: undefined;
   LfgSettingsScreen: undefined;
   LfgCreateScreen: undefined;
-  LfgEditScreen: {
-    fez: FezData;
-  };
 };
 
 export const LfgStackNavigator = () => {
@@ -71,31 +52,15 @@ export const LfgStackNavigator = () => {
         options={{title: 'Find Groups'}}
       />
       <Stack.Screen
-        name={LfgStackComponents.lfgScreen}
-        component={isDisabled ? DisabledView : LfgScreen}
-        options={{title: 'Looking For Group'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgParticipationScreen}
-        component={LfgParticipationScreen}
-        options={{title: 'Participation'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgAddParticipantScreen}
-        component={LfgAddParticipantScreen}
-        options={{title: 'Add Participant'}}
-      />
-      <Stack.Screen
-        name={LfgStackComponents.lfgChatScreen}
-        component={isDisabled ? DisabledView : LfgChatScreen}
-        options={{title: 'LFG Chat'}}
+        name={LfgStackComponents.lfgOwnedScreen}
+        component={isDisabled ? DisabledView : LfgOwnedScreen}
+        options={{title: 'Your Groups'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgSettingsScreen}
         component={LfgSettingsScreen}
         options={{title: 'LFG Settings'}}
       />
-      <Stack.Screen name={LfgStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
       <Stack.Screen
         name={LfgStackComponents.lfgCreateScreen}
         component={LfgCreateScreen}
