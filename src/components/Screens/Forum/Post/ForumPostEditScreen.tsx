@@ -1,31 +1,24 @@
 import {AppView} from '../../../Views/AppView';
 import React from 'react';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {ImageUploadData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
 import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
-import {View} from 'react-native';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumPostEditScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
 
 export const ForumPostEditScreen = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
   const {dispatchForumPosts} = useTwitarr();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
-    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
+    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
     postUpdateMutation.mutate(
       {
         postID: route.params.postData.postID.toString(),

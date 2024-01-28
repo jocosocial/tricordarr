@@ -4,20 +4,15 @@ import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import React, {useRef} from 'react';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {useForumThreadPinnedPostsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {TimeDivider} from '../../../Lists/Dividers/TimeDivider';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumPostPinnedScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
 
 export const ForumPostPinnedScreen = ({route}: Props) => {
   const {data, refetch, isFetching} = useForumThreadPinnedPostsQuery(route.params.forumID);

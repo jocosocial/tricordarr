@@ -4,14 +4,12 @@ import {Card, Text} from 'react-native-paper';
 import React from 'react';
 import {useRegCodeForUserQuery} from '../../Queries/Admin/RegCodeQueries';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userRegCodeScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 
 export const UserRegCodeScreen = ({route, navigation}: Props) => {
   const {data} = useRegCodeForUserQuery({userID: route.params.userID});

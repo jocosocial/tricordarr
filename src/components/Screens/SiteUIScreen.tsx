@@ -2,7 +2,7 @@ import {WebView, WebViewNavigation} from 'react-native-webview';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
-import {AppView} from './AppView';
+import {AppView} from '../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useConfig} from '../Context/Contexts/ConfigContext';
@@ -12,7 +12,7 @@ import {CommonStackComponents, CommonStackParamList} from '../Navigation/CommonS
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
-export const TwitarrView = ({route, navigation}: Props) => {
+export const SiteUIScreen = ({route, navigation}: Props) => {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [key, setKey] = useState('');
@@ -88,8 +88,8 @@ export const TwitarrView = ({route, navigation}: Props) => {
       setIsLoading(false);
     };
 
-    if (route?.params?.timestamp !== key) {
-      setKey(route?.params?.timestamp);
+    if (route?.params?.timestamp !== key && route.params.timestamp) {
+      setKey(route.params.timestamp);
       setHandleGoBack(false);
     }
 

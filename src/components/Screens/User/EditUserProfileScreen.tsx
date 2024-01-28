@@ -1,24 +1,19 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {UserProfileForm} from '../../Forms/UserProfileForm';
 import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useUserProfileMutation} from '../../Queries/User/UserProfileQueries';
 import {useQueryClient} from '@tanstack/react-query';
 import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  MainStackParamList,
-  MainStackComponents.editUserProfileScreen,
-  NavigatorIDs.mainStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.editUserProfileScreen>;
 
 export const EditUserProfileScreen = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();

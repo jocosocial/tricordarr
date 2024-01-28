@@ -23,18 +23,8 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type SeamailStackParamList = CommonStackParamList & {
   SeamailListScreen: undefined;
-  SeamailScreen: {
-    fezID: string;
-    title: string;
-  };
-  SeamailDetailsScreen: {
-    fezID: string;
-  };
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
-  };
-  SeamailAddParticipantScreen: {
-    fez: FezData;
   };
   SeamailSearchScreen: {
     forUser?: string;
@@ -68,28 +58,9 @@ export const SeamailStackNavigator = () => {
         }}
       />
       <SeamailStack.Screen
-        name={SeamailStackScreenComponents.seamailScreen}
-        component={isDisabled ? DisabledView : SeamailScreen}
-        // The simple headerTitle string below gets overwritten in the SeamailScreen component.
-        // This is here as a performance optimization.
-        // The reason it renders in the component is that deep linking doesnt pass in the title
-        // so it has to figure it out.
-        options={{title: 'Seamail Chat'}}
-      />
-      <SeamailStack.Screen
-        name={SeamailStackScreenComponents.seamailDetailsScreen}
-        component={SeamailDetailsScreen}
-        options={() => ({title: 'Seamail Details'})}
-      />
-      <SeamailStack.Screen
         name={SeamailStackScreenComponents.krakentalkCreateScreen}
         component={KrakenTalkCreateScreen}
         options={{title: 'New Call'}}
-      />
-      <SeamailStack.Screen
-        name={SeamailStackScreenComponents.seamailAddParticipantScreen}
-        component={SeamailAddParticipantScreen}
-        options={{title: 'Add Participant'}}
       />
       <SeamailStack.Screen
         name={SeamailStackScreenComponents.seamailSearchScreen}

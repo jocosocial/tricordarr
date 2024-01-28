@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {LoadingView} from '../../../Views/Static/LoadingView';
@@ -15,12 +13,9 @@ import {useForumSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useIsFocused} from '@react-navigation/native';
 import {getUserBylineString} from '../../../Text/Tags/UserBylineTag';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumThreadUserScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
 
 export const ForumThreadUserScreen = ({route}: Props) => {
   const {
