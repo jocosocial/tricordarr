@@ -10,9 +10,3 @@ Nightly
 * Make contentsettibgs part of that - events and lfg
 
 * Forums->Category->Forum->Profile->Forums->Back generated error with pinned forums category ID being empty
-
-* audit all new common stack usage
-  * Ensure that every navigation call uses the new common pattern
-
-* forumThreadScreen has way too many buttons when moderator and event. 
-  * Refresh, pin, event, favorite, mute, menu. Eww
