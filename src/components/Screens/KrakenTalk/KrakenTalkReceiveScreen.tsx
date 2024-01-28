@@ -9,6 +9,7 @@ import {usePhoneCallDeclineMutation} from '../../Queries/PhoneCall/PhoneCallMuta
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useAppTheme} from '../../../styles/Theme';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
@@ -22,7 +23,7 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   };
 
   const seamailCreateHandler = useCallback(() => {
-    navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
+    navigation.push(CommonStackComponents.seamailCreateScreen, {
       initialUserHeader: {
         userID: route.params.callerUserID,
         username: route.params.callerUsername,

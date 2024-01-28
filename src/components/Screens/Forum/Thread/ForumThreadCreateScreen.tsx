@@ -16,6 +16,7 @@ import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -64,7 +65,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
             postCount: 1,
             readCount: 1,
           });
-          navigation.replace(ForumStackComponents.forumThreadScreen, {
+          navigation.replace(CommonStackComponents.forumThreadScreen, {
             forumID: response.data.forumID,
           });
         },

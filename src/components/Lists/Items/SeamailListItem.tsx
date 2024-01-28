@@ -4,11 +4,11 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 interface SeamailListItemProps {
   fez: FezData;
@@ -35,7 +35,7 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
 
   const getAvatar = () => <FezAvatarImage fez={fez} />;
   const onPress = () =>
-    navigation.push(SeamailStackScreenComponents.seamailScreen, {
+    navigation.push(CommonStackComponents.seamailScreen, {
       title: fez.title,
       fezID: fez.fezID,
     });

@@ -28,8 +28,9 @@ import {CruiseSettingsScreen} from '../../Screens/Settings/Developer/CruiseSetti
 import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoSettingsScreen';
 import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
+import {CommonStackParamList} from '../CommonScreens';
 
-export type SettingsStackParamList = {
+export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
   NetworkInfoSettingsScreen: undefined;
   ServerConnectionSettingsScreen: undefined;
