@@ -73,8 +73,9 @@ export const useForumThreadPinnedPostsQuery = (forumID: string) => {
   });
 };
 
-export const useForumCategoryPinnedThreadsQuery = (categoryID: string) => {
+export const useForumCategoryPinnedThreadsQuery = (categoryID: string, options = {}) => {
   return useTokenAuthQuery<ForumListData[]>({
     queryKey: [`/forum/categories/${categoryID}/pinnedforums`],
+    ...options,
   });
 };
