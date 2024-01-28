@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -10,7 +9,6 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {ReactNode} from 'react';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
@@ -30,7 +28,6 @@ export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenu
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
   const commonNavigation = useCommonStack();
-  const forumStackNavigation = useForumStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -54,7 +51,7 @@ export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenu
             leadingIcon={AppIcons.forumEdit}
             onPress={() => {
               closeMenu();
-              forumStackNavigation.push(ForumStackComponents.forumThreadEditScreen, {
+              commonNavigation.push(CommonStackComponents.forumThreadEditScreen, {
                 forumData: forumData,
               });
             }}

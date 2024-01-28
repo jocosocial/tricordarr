@@ -45,9 +45,6 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumThreadCreateScreen: {
     categoryId: string;
   };
-  ForumThreadEditScreen: {
-    forumData: ForumData;
-  };
 };
 
 export const ForumStackNavigator = () => {
@@ -125,11 +122,6 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumThreadCreateScreen}
         component={isDisabled ? DisabledView : ForumThreadCreateScreen}
         options={{title: 'New Forum'}}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumThreadEditScreen}
-        component={isDisabled ? DisabledView : ForumThreadEditScreen}
-        options={{title: 'Edit Forum'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostAlertwordScreen}
