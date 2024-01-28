@@ -13,6 +13,11 @@ export const ModeratorCard = () => {
 
   const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`);
 
+  const interactionCount =
+    (userNotificationData?.moderatorData?.openReportCount || 0) +
+    (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount || 0) +
+    (userNotificationData?.moderatorData?.newModeratorForumMentionCount || 0);
+
   return (
     <Card style={[commonStyles.marginBottom]}>
       <TouchableRipple onPress={onPress}>
@@ -22,10 +27,25 @@ export const ModeratorCard = () => {
               <AppIcon icon={AppIcons.moderator} />
               <Text style={[commonStyles.bold]}>&nbsp;Moderator Summary</Text>
             </View>
-            <Text>
-              {userNotificationData?.moderatorData?.openReportCount} open{' '}
-              {pluralize('report', userNotificationData?.moderatorData?.openReportCount)}
-            </Text>
+            {interactionCount ? (
+              <>
+                <Text>
+                  {userNotificationData?.moderatorData?.openReportCount} open{' '}
+                  {pluralize('report', userNotificationData?.moderatorData?.openReportCount)}
+                </Text>
+                <Text>
+                  {userNotificationData?.moderatorData?.newModeratorSeamailMessageCount} new{' '}
+                  {pluralize('message', userNotificationData?.moderatorData?.newModeratorSeamailMessageCount)}
+                </Text>
+                <Text>
+                  {userNotificationData?.moderatorData?.newModeratorForumMentionCount} new{' '}
+                  {pluralize('mention', userNotificationData?.moderatorData?.newModeratorForumMentionCount)}
+                </Text>
+              </>
+            ) : (
+              <Text>No new interactions</Text>
+            )}
+
           </Card.Content>
         </View>
       </TouchableRipple>
