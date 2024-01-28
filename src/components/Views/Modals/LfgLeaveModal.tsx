@@ -9,6 +9,8 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ModalContent = ({fezData}: {fezData: FezData}) => {
   const {commonStyles} = useStyles();
@@ -24,7 +26,8 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
-  const {setLfg} = useTwitarr();
+  const {setLfg, dispatchLfgList} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const onSubmit = () => {
     membershipMutation.mutate(
@@ -36,6 +39,13 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: response => {
           setLfg(response.data);
           setModalVisible(false);
+          dispatchLfgList({
+            type: FezListActions.updateFez,
+            fez: response.data,
+          });
+          queryClient.invalidateQueries({queryKey: ['/fez/open']});
+          queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+          queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
         },
       },
     );
