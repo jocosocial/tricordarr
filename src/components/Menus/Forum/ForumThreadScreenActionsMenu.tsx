@@ -8,13 +8,19 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
-import {ReactNode} from 'react';
+import {Dispatch, ReactNode, SetStateAction, useCallback} from 'react';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {useAppTheme} from '../../../styles/Theme';
+import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
+  setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
+  setRefreshing: Dispatch<SetStateAction<boolean>>;
 }
 
 const helpContent = [
@@ -22,12 +28,15 @@ const helpContent = [
   'Moderators or the forum creator can pin posts to the forum.',
 ];
 
-export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefreshing}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
   const commonNavigation = useCommonStack();
+  const theme = useAppTheme();
+  const {dispatchForumListData} = useTwitarr();
+  const relationMutation = useForumRelationMutation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -38,11 +47,85 @@ export const ForumThreadScreenActionsMenu = ({forumData}: ForumThreadActionsMenu
     setModalVisible(true);
   };
 
+  const handleFavorite = useCallback(() => {
+    if (forumData) {
+      setRefreshing(true);
+      relationMutation.mutate(
+        {
+          forumID: forumData.forumID,
+          relationType: 'favorite',
+          action: forumData.isFavorite ? 'delete' : 'create',
+        },
+        {
+          onSuccess: () => {
+            setForumData({
+              ...forumData,
+              isFavorite: !forumData.isFavorite,
+            });
+            dispatchForumListData({
+              type: ForumListDataActions.updateRelations,
+              forumID: forumData.forumID,
+              isMuted: forumData.isMuted,
+              isFavorite: !forumData.isFavorite,
+            });
+          },
+          onSettled: () => setRefreshing(false),
+        },
+      );
+    }
+  }, [dispatchForumListData, forumData, relationMutation, setForumData, setRefreshing]);
+
+  const handleMute = useCallback(() => {
+    if (forumData) {
+      setRefreshing(true);
+      relationMutation.mutate(
+        {
+          forumID: forumData.forumID,
+          relationType: 'mute',
+          action: forumData.isMuted ? 'delete' : 'create',
+        },
+        {
+          onSuccess: () => {
+            setForumData({
+              ...forumData,
+              isMuted: !forumData.isMuted,
+            });
+            dispatchForumListData({
+              type: ForumListDataActions.updateRelations,
+              forumID: forumData.forumID,
+              isMuted: !forumData.isMuted,
+              isFavorite: forumData.isFavorite,
+            });
+          },
+          onSettled: () => setRefreshing(false),
+        },
+      );
+    }
+  }, [dispatchForumListData, forumData, relationMutation, setForumData, setRefreshing]);
+
   return (
     <Menu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      <Menu.Item
+        title={'Pinned Posts'}
+        leadingIcon={AppIcons.pin}
+        onPress={() =>
+          commonNavigation.push(CommonStackComponents.forumPostPinnedScreen, {
+            forumID: forumData.forumID,
+          })
+        }
+      />
+      <Menu.Item
+        title={'Favorite'}
+        leadingIcon={AppIcons.favorite}
+        onPress={handleFavorite}
+        disabled={forumData.isMuted}
+      />
+      {forumData.creator.userID !== profilePublicData?.header.userID && (
+        <Menu.Item title={'Mute'} leadingIcon={AppIcons.mute} onPress={handleMute} disabled={forumData.isFavorite} />
+      )}
       {forumData.creator.userID === profilePublicData?.header.userID && (
         <>
           <Menu.Item
