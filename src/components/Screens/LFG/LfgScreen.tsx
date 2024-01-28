@@ -33,6 +33,8 @@ import {NotificationTypeData, SocketNotificationData} from '../../../libraries/S
 import {getUserBylineString} from '../../Text/Tags/UserBylineTag';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
@@ -43,13 +45,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const {setModalVisible, setModalContent} = useModal();
-  const {lfg, setLfg} = useTwitarr();
+  const {lfg, setLfg, dispatchLfgList} = useTwitarr();
   const membershipMutation = useFezMembershipMutation();
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
   const {closeFezSocket, notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const {hasModerator} = usePrivilege();
+  const queryClient = useQueryClient();
 
   const showChat =
     hasModerator ||
@@ -92,6 +95,14 @@ export const LfgScreen = ({navigation, route}: Props) => {
         {
           onSuccess: response => {
             setLfg(response.data);
+            // This only does part of what we need
+            dispatchLfgList({
+              type: FezListActions.updateFez,
+              fez: response.data,
+            });
+            queryClient.invalidateQueries({queryKey: ['/fez/open']});
+            queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+            queryClient.invalidateQueries({queryKey: [`/fez/${lfg.fezID}`]});
           },
           onSettled: () => {
             setRefreshing(false);
@@ -99,7 +110,16 @@ export const LfgScreen = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, setLfg, setModalContent, setModalVisible]);
+  }, [
+    dispatchLfgList,
+    lfg,
+    membershipMutation,
+    profilePublicData,
+    queryClient,
+    setLfg,
+    setModalContent,
+    setModalVisible,
+  ]);
 
   const getNavButtons = useCallback(() => {
     return (
