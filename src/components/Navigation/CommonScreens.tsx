@@ -4,14 +4,14 @@ import React from 'react';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
-import {PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
+import {FezData, PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
 import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {TwitarrView} from '../Views/TwitarrView';
+import {SiteUIScreen} from '../Screens/SiteUIScreen';
 import {MapScreen} from '../Screens/Main/MapScreen';
 import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
 import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen';
@@ -25,8 +25,10 @@ import {ForumPostEditScreen} from '../Screens/Forum/Post/ForumPostEditScreen';
 import {SeamailCreateScreen} from '../Screens/Seamail/SeamailCreateScreen';
 import {ForumPostPinnedScreen} from '../Screens/Forum/Post/ForumPostPinnedScreen';
 import {ConfigServerUrlScreen} from '../Screens/Settings/Config/ConfigServerUrlScreen';
-import {ForumStackComponents} from '../../libraries/Enums/Navigation';
 import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScreen';
+import {SeamailAddParticipantScreen} from '../Screens/Seamail/SeamailAddParticipantScreen';
+import {SeamailScreen} from '../Screens/Seamail/SeamailScreen';
+import {SeamailDetailsScreen} from '../Screens/Seamail/SeamailDetailsScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -102,6 +104,16 @@ export type CommonStackParamList = {
   ForumPostHashtagScreen: {
     hashtag: string;
   };
+  SeamailScreen: {
+    fezID: string;
+    title: string;
+  };
+  SeamailDetailsScreen: {
+    fezID: string;
+  };
+  SeamailAddParticipantScreen: {
+    fez: FezData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -125,6 +137,9 @@ export enum CommonStackComponents {
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
+  seamailScreen = 'SeamailScreen',
+  seamailDetailsScreen = 'SeamailDetailsScreen',
+  seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -162,7 +177,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
       />
       <Stack.Screen
         name={CommonStackComponents.siteUIScreen}
-        component={TwitarrView}
+        component={SiteUIScreen}
         options={{title: 'Twitarr Web UI'}}
       />
       <Stack.Screen name={CommonStackComponents.mapScreen} component={MapScreen} options={{title: 'Deck Map'}} />
@@ -230,6 +245,25 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.forumPostHashtagScreen}
         component={isForumsDisabled ? DisabledView : ForumPostHashtagScreen}
         options={{title: 'Hashtag'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailScreen}
+        component={isSeamailDisabled ? DisabledView : SeamailScreen}
+        // The simple headerTitle string below gets overwritten in the SeamailScreen component.
+        // This is here as a performance optimization.
+        // The reason it renders in the component is that deep linking doesnt pass in the title
+        // so it has to figure it out.
+        options={{title: 'Seamail Chat'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailDetailsScreen}
+        component={isSeamailDisabled ? DisabledView : SeamailDetailsScreen}
+        options={() => ({title: 'Seamail Details'})}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailAddParticipantScreen}
+        component={isSeamailDisabled ? DisabledView : SeamailAddParticipantScreen}
+        options={{title: 'Add Participant'}}
       />
     </>
   );

@@ -8,19 +8,14 @@ import {FormikProps} from 'formik';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.seamailCreateScreen,
-  NavigatorIDs.seamailStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
 export const SeamailCreateScreen = ({navigation, route}: Props) => {
@@ -85,7 +80,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           {
             onSuccess: () => {
               setSubmitting(false);
-              navigation.replace(SeamailStackScreenComponents.seamailScreen, {
+              navigation.replace(CommonStackComponents.seamailScreen, {
                 fezID: newSeamail.fezID,
                 title: newSeamail.title,
               });

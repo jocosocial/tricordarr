@@ -1,14 +1,9 @@
 import React from 'react';
 import {ForumPostScreenBase} from './ForumPostScreenBase';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumPostHashtagScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostHashtagScreen>;
 
 export const ForumPostHashtagScreen = (props: Props) => {
   return (

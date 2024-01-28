@@ -5,7 +5,6 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {SettingForm} from '../../../Forms/SettingForm';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {SettingFormValues} from '../../../../libraries/Types/FormValues';
-import {useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
@@ -19,14 +18,17 @@ import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 import {RefreshControl} from 'react-native';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
 const validationSchema = Yup.object().shape({
   settingValue: ServerURLValidation,
 });
 
-export const ConfigServerUrlScreen = () => {
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.configServerUrl>;
+
+export const ConfigServerUrlScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const navigation = useSettingsStack();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();

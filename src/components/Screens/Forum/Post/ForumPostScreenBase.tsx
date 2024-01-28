@@ -11,11 +11,11 @@ import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
+import {useCommonStack} from '../../../Navigation/CommonScreens';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -42,7 +42,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     fetchNextPage,
     isLoading,
   } = useForumPostSearchQuery(queryParams);
-  const navigation = useForumStackNavigation();
+  const commonNavigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
@@ -93,10 +93,10 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   }, [onRefresh, refreshOnUserNotification, userNotificationData?.newForumMentionCount]);
 
   useEffect(() => {
-    navigation.setOptions({
+    commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+  }, [getNavButtons, commonNavigation]);
 
   // useEffect(() => {
   // if (!isFocused) {

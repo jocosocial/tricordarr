@@ -4,8 +4,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {SpaceDivider} from '../../Lists/Dividers/SpaceDivider';
 import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
@@ -35,12 +33,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {FezMutedView} from '../../Views/Static/FezMutedView';
 import {useAppState} from '@react-native-community/hooks';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.seamailScreen,
-  NavigatorIDs.seamailStack
->;
+export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
 
 export const SeamailScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);

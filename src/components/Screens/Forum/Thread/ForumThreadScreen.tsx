@@ -27,7 +27,7 @@ import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
 export const ForumThreadScreen = ({route, navigation}: Props) => {

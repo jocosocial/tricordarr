@@ -55,10 +55,7 @@ export enum SettingsStackScreenComponents {
 
 export enum SeamailStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
-  seamailScreen = 'SeamailScreen',
-  seamailDetailsScreen = 'SeamailDetailsScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
-  seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
   seamailSearchScreen = 'SeamailSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',

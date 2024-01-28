@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -26,9 +25,9 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.seamailDetailsScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailDetailsScreen>;
 
 const helpContent = [
   'Seamail titles cannot be modified.',
