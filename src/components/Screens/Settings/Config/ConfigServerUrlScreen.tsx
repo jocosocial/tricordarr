@@ -84,8 +84,8 @@ export const ConfigServerUrlScreen = ({navigation}: Props) => {
             <Text>Server Issue</Text>
             <Text style={[commonStyles.marginBottomSmall]}>VPN on your device</Text>
             <Text>
-              If you believe this should not be the case, press the button below to attempt a server health check. If the issue
-              persists for more than an hour, contact the JoCo Cruise Info Desk for assistance.
+              If you believe this should not be the case, press the button below to attempt a server health check. If
+              the issue persists for more than an hour, contact the JoCo Cruise Info Desk for assistance.
             </Text>
           </PaddedContentView>
         )}
