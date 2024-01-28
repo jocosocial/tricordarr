@@ -10,6 +10,7 @@ import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {check as checkPermission, PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
 import {useStyles} from '../../Context/Contexts/StyleContext';
+import {BatteryOptimizationSettingsView} from '../../Views/Settings/BatteryOptimizationSettingsView';
 
 type Props = NativeStackScreenProps<
   OobeStackParamList,
@@ -81,6 +82,7 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
             </Text>
           )}
         </PaddedContentView>
+        {permissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
