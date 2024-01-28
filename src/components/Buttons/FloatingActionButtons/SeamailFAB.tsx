@@ -6,6 +6,7 @@ import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
 import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {BaseFABGroup} from './BaseFABGroup';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 export const SeamailFAB = () => {
   const theme = useAppTheme();
@@ -20,7 +21,7 @@ export const SeamailFAB = () => {
       icon: AppIcons.seamailCreate,
       label: 'New Seamail',
       onPress: () =>
-        navigation.push(SeamailStackScreenComponents.seamailCreateScreen, {
+        navigation.push(CommonStackComponents.seamailCreateScreen, {
           initialAsModerator: asModerator,
           initialAsTwitarrTeam: asTwitarrTeam,
         }),

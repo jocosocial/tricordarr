@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
@@ -118,7 +117,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
             {manageUsers && (
               <FezParticipantAddItem
                 onPress={() => {
-                  navigation.push(SeamailStackScreenComponents.seamailAddParticipantScreen, {fez: fez});
+                  navigation.push(CommonStackComponents.seamailAddParticipantScreen, {fez: fez});
                 }}
               />
             )}

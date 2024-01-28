@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -15,6 +14,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
@@ -40,7 +40,7 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
   const closeMenu = () => setVisible(false);
 
   const detailsAction = () => {
-    seamailNavigation.push(SeamailStackScreenComponents.seamailDetailsScreen, {fezID: fez.fezID});
+    seamailNavigation.push(CommonStackComponents.seamailDetailsScreen, {fezID: fez.fezID});
     closeMenu();
   };
 

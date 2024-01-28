@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {Divider} from 'react-native-paper';
+import {Divider, List} from 'react-native-paper';
 import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNavigationListItem';
 import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../Views/AppView';
@@ -15,6 +15,7 @@ import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginLis
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {SettingsRegistrationListItem} from '../../Lists/Items/Settings/SettingsRegistrationListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,
@@ -45,7 +46,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
-              navComponent={SettingsStackScreenComponents.configServerUrl}
+              navComponent={CommonStackComponents.configServerUrl}
             />
           </ListSection>
           <Divider bold={true} />
@@ -73,12 +74,12 @@ export const SettingsScreen = ({navigation}: Props) => {
             <SettingsNavigationListItem
               title={'Alert Keywords'}
               description={'Manage keywords that will generate a notification.'}
-              navComponent={SettingsStackScreenComponents.alertKeywords}
+              navComponent={CommonStackComponents.alertKeywords}
             />
             <SettingsNavigationListItem
               title={'Mute Keywords'}
               description={'Manage keywords that will mute content.'}
-              navComponent={SettingsStackScreenComponents.muteKeywords}
+              navComponent={CommonStackComponents.muteKeywords}
             />
             <SettingsNavigationListItem
               title={'Blocked Users'}
