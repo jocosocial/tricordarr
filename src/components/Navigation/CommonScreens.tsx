@@ -29,6 +29,11 @@ import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScre
 import {SeamailAddParticipantScreen} from '../Screens/Seamail/SeamailAddParticipantScreen';
 import {SeamailScreen} from '../Screens/Seamail/SeamailScreen';
 import {SeamailDetailsScreen} from '../Screens/Seamail/SeamailDetailsScreen';
+import {LfgScreen} from '../Screens/LFG/LfgScreen';
+import {LfgParticipationScreen} from '../Screens/LFG/LfgParticipationScreen';
+import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen';
+import {LfgChatScreen} from '../Screens/LFG/LfgChatScreen';
+import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -114,6 +119,21 @@ export type CommonStackParamList = {
   SeamailAddParticipantScreen: {
     fez: FezData;
   };
+  LfgScreen: {
+    fezID: string;
+  };
+  LfgParticipationScreen: {
+    fezID: string;
+  };
+  LfgAddParticipantScreen: {
+    fezID: string;
+  };
+  LfgChatScreen: {
+    fezID: string;
+  };
+  LfgEditScreen: {
+    fez: FezData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -140,6 +160,11 @@ export enum CommonStackComponents {
   seamailScreen = 'SeamailScreen',
   seamailDetailsScreen = 'SeamailDetailsScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
+  lfgScreen = 'LfgScreen',
+  lfgParticipationScreen = 'LfgParticipationScreen',
+  lfgAddParticipantScreen = 'LfgAddParticipantScreen',
+  lfgChatScreen = 'LfgChatScreen',
+  lfgEditScreen = 'LfgEditScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -147,6 +172,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
   const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
+  const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
 
   return (
     <>
@@ -264,6 +290,31 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.seamailAddParticipantScreen}
         component={isSeamailDisabled ? DisabledView : SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgScreen}
+        component={isLfgDisabled ? DisabledView : LfgScreen}
+        options={{title: 'Looking For Group'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgParticipationScreen}
+        component={isLfgDisabled ? DisabledView : LfgParticipationScreen}
+        options={{title: 'Participation'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgAddParticipantScreen}
+        component={isLfgDisabled ? DisabledView : LfgAddParticipantScreen}
+        options={{title: 'Add Participant'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgChatScreen}
+        component={isLfgDisabled ? DisabledView : LfgChatScreen}
+        options={{title: 'LFG Chat'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgEditScreen}
+        component={isLfgDisabled ? DisabledView : LfgEditScreen}
+        options={{title: 'Edit'}}
       />
     </>
   );

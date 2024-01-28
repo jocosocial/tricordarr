@@ -1,6 +1,5 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
@@ -10,13 +9,9 @@ import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQuerie
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  LfgStackParamList,
-  LfgStackComponents.lfgAddParticipantScreen,
-  NavigatorIDs.lfgStack
->;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
 
 export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();

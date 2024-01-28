@@ -7,11 +7,9 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
-import {FezType} from '../../../libraries/Enums/FezType';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../Menus/LFG/ScheduleLfgFilterMenu';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/LFG/ScheduleLfgCruiseDayFilterMenu';
 import {ScheduleLfgListMenu} from '../../Menus/LFG/ScheduleLfgListMenu';
@@ -25,6 +23,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -141,7 +140,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
               <LfgCard
                 showDay={true}
                 lfg={lfg}
-                onPress={() => navigation.push(LfgStackComponents.lfgScreen, {fezID: lfg.fezID})}
+                onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: lfg.fezID})}
               />
             </View>
           ))}

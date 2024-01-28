@@ -12,13 +12,10 @@ import {
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
-import {BottomTabComponents, EventStackComponents, LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
-import {useBottomTabNavigator} from '../../Navigation/Tabs/BottomTabNavigator';
 import {EventCardListItem} from '../Items/Event/EventCardListItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
@@ -78,7 +75,6 @@ export const EventFlatList = ({
   // const minutelyUpdatingDate = useDateTime('minute');
   const minutelyUpdatingDate = useRefreshingDate();
   const {appConfig} = useConfig();
-  const bottomNavigation = useBottomTabNavigator();
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderListItem = useCallback(
@@ -90,10 +86,8 @@ export const EventFlatList = ({
             <LfgCard
               lfg={item}
               onPress={() =>
-                bottomNavigation.navigate(BottomTabComponents.lfgTab, {
-                  screen: LfgStackComponents.lfgScreen,
-                  params: {fezID: item.fezID},
-                  initial: false,
+                commonNavigation.push(CommonStackComponents.lfgScreen, {
+                  fezID: item.fezID,
                 })
               }
               marker={marker}
@@ -111,15 +105,7 @@ export const EventFlatList = ({
         </>
       );
     },
-    [
-      appConfig.portTimeZoneID,
-      bottomNavigation,
-      endDate,
-      minutelyUpdatingDate,
-      commonNavigation,
-      setRefreshing,
-      startDate,
-    ],
+    [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, commonNavigation, setRefreshing, startDate],
   );
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: EventData | FezData}) => {

@@ -4,7 +4,6 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
@@ -27,16 +26,15 @@ import pluralize from 'pluralize';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {getUserBylineString} from '../../Text/Tags/UserBylineTag';
 import {guessDeckNumber} from '../../../libraries/Ship';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
 export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useSeamailQuery({
@@ -111,7 +109,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
             <Item
               title={'Chat'}
               iconName={AppIcons.chat}
-              onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
+              onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
             />
           )}
           {lfg && <ScheduleLfgMenu fezData={lfg} />}
@@ -248,7 +246,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     left={() => getIcon(AppIcons.group)}
                     description={FezData.getParticipantLabel(lfg)}
                     title={'Participation'}
-                    onPress={() => navigation.push(LfgStackComponents.lfgParticipationScreen, {fezID: lfg?.fezID})}
+                    onPress={() => navigation.push(CommonStackComponents.lfgParticipationScreen, {fezID: lfg?.fezID})}
                   />
                 )}
                 {showChat && (
@@ -257,7 +255,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     left={() => getIcon(AppIcons.chat)}
                     description={getChatDescription}
                     title={'Chat'}
-                    onPress={() => navigation.push(LfgStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
+                    onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
                   />
                 )}
                 <DataFieldListItem
@@ -304,7 +302,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
           <PaddedContentView>
             <PrimaryActionButton
               buttonText={'Edit'}
-              onPress={() => navigation.push(LfgStackComponents.lfgEditScreen, {fez: lfg})}
+              onPress={() => navigation.push(CommonStackComponents.lfgEditScreen, {fez: lfg})}
               buttonColor={theme.colors.twitarrNeutralButton}
             />
           </PaddedContentView>

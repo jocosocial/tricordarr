@@ -3,7 +3,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -28,10 +27,10 @@ import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {FezPostListItem} from '../../Lists/Items/FezPostListItem';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgChatScreen, NavigatorIDs.lfgStack>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgChatScreen>;
 
 // @TODO this could really use some dedup with the SeamailScreen.
 export const LfgChatScreen = ({route, navigation}: Props) => {
@@ -138,7 +137,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
       Keyboard.dismiss();
-      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`)
+      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
