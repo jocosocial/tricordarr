@@ -4,12 +4,11 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
 import React from 'react';
-import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {useForumPostDeleteMutation} from '../../Queries/Forum/ForumPostMutations';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -20,11 +19,16 @@ const ModalContent = () => {
   );
 };
 
-export const ForumPostDeleteModalView = ({postData}: {postData: PostData}) => {
+interface Props {
+  postData: PostData;
+  forumData?: ForumData;
+}
+
+export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const deleteMutation = useForumPostDeleteMutation();
-  const {dispatchForumPosts} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const onSubmit = () => {
     deleteMutation.mutate(
@@ -32,11 +36,18 @@ export const ForumPostDeleteModalView = ({postData}: {postData: PostData}) => {
         postID: postData.postID.toString(),
       },
       {
-        onSuccess: () => {
-          dispatchForumPosts({
-            type: ForumPostListActions.deletePost,
-            oldPost: postData,
-          });
+        onSuccess: async () => {
+          await Promise.all([
+            queryClient.invalidateQueries([`/forum/post/${postData.postID}`]),
+            queryClient.invalidateQueries(['/forum/post/search']),
+            queryClient.invalidateQueries([`/forum/post/${postData.postID}/forum`]),
+          ]);
+          if (forumData) {
+            await Promise.all([
+              queryClient.invalidateQueries([`/forum/${forumData.forumID}`]),
+              queryClient.invalidateQueries([`/forum/${forumData.forumID}/pinnedposts`]),
+            ])
+          }
           setModalVisible(false);
         },
       },

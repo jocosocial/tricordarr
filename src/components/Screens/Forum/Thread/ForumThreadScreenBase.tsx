@@ -9,15 +9,12 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
@@ -52,23 +49,22 @@ export const ForumThreadScreenBase = ({
 }: ForumThreadScreenBaseProps) => {
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
-  const {forumPosts, dispatchForumPosts} = useTwitarr();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {hasModerator} = usePrivilege();
-  const isFocused = useIsFocused();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
+  const [forumPosts, setForumPosts] = useState<PostData[]>([]);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
-  };
+  }, [refetch]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -122,15 +118,11 @@ export const ForumThreadScreenBase = ({
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages) {
       const postListData = data.pages.flatMap(fd => fd.posts);
-      console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts.');
-      dispatchForumPosts({
-        type: ForumPostListActions.setList,
-        postList: invertList ? postListData.reverse() : postListData,
-      });
+      setForumPosts(invertList ? postListData.reverse() : postListData);
     }
-  }, [data, dispatchForumPosts, isFocused, invertList]);
+  }, [data, setForumPosts, invertList]);
 
   useEffect(() => {
     if (data?.pages[0]) {
@@ -156,11 +148,7 @@ export const ForumThreadScreenBase = ({
         postData: values,
       },
       {
-        onSuccess: async response => {
-          dispatchForumPosts({
-            type: ForumPostListActions.prependPost,
-            newPost: response.data,
-          });
+        onSuccess: async () => {
           if (data.pages[0]) {
             await Promise.all([
               queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),

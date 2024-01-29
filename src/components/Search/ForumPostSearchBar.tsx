@@ -7,15 +7,13 @@ import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {forumPostHelpText} from '../Screens/Forum/Post/ForumPostScreenBase';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../Reducers/Forum/ForumPostListReducer';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
 import {useIsFocused} from '@react-navigation/native';
+import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -41,7 +39,7 @@ export const ForumPostSearchBar = () => {
     },
   );
   const {commonStyles} = useStyles();
-  const {forumPosts, dispatchForumPosts} = useTwitarr();
+  const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
@@ -59,9 +57,7 @@ export const ForumPostSearchBar = () => {
   };
 
   const onClear = () => {
-    dispatchForumPosts({
-      type: ForumPostListActions.clear,
-    });
+    setForumPosts([]);
     remove();
     setQueryEnable(false);
   };
@@ -114,12 +110,9 @@ export const ForumPostSearchBar = () => {
 
   useEffect(() => {
     if (data && data.pages && isFocused && queryEnable) {
-      dispatchForumPosts({
-        type: ForumPostListActions.setList,
-        postList: data.pages.flatMap(p => p.posts),
-      });
+      setForumPosts(data.pages.flatMap(p => p.posts))
     }
-  }, [data, dispatchForumPosts, isFocused, queryEnable]);
+  }, [data, setForumPosts, isFocused, queryEnable]);
 
   return (
     <>
