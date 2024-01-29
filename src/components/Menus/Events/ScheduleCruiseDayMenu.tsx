@@ -29,7 +29,6 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
 
   const navigateToday = () => {
     if (route.params.cruiseDay === adjustedCruiseDayToday) {
-      console.log('Navigating to same day.');
       scrollToNow();
       return;
     }

@@ -43,8 +43,6 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const onFezSubmit = useCallback(
     (values: FezContentData) => {
       setSubmitting(true);
-      console.log('Doing the Fez submit!');
-      console.log('Fez Values', values);
       fezMutation.mutate(
         {fezContentData: values},
         {
@@ -73,8 +71,6 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const onPostSubmit = useCallback(
     (values: PostContentData) => {
       if (newSeamail) {
-        console.log('Doing the FezPost submit! to', newSeamail.fezID);
-        console.log('FezPost Values', values);
         fezPostMutation.mutate(
           {fezID: newSeamail.fezID, postContentData: values},
           {
@@ -88,7 +84,6 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           },
         );
       } else {
-        console.error('Seamail is empty?');
         setErrorMessage('Seamail is empty?');
         setSubmitting(false);
       }

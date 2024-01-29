@@ -124,18 +124,8 @@ export const EventDayScreen = ({navigation, route}: Props) => {
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
-      console.warn('ListRef is undefined or no items, not scrolling.');
       return;
     }
-    console.log(
-      'Scrolling to index',
-      scrollNowIndex,
-      'length',
-      scheduleList.length,
-      scheduleList[scrollNowIndex]?.title,
-      'at',
-      scheduleList[scrollNowIndex]?.startTime,
-    );
     if (scrollNowIndex === 0) {
       listRef.current.scrollToOffset({offset: 0});
     } else if (scrollNowIndex === scheduleList.length - 1) {
@@ -197,7 +187,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
           eventList.push(event);
         }
       });
-      console.log('Dispatching', eventData?.length, 'events', lfgList.length, 'LFGs');
       setScheduleList(eventList);
     },
     [setScheduleList, eventData, lfgJoinedData, lfgOpenData],
@@ -240,8 +229,6 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     navigation.navigate(EventStackComponents.eventDayScreen, {
       cruiseDay: route.params.cruiseDay + 1,
     });
-
-  console.log('Item count', scheduleList.length, 'Now index', scrollNowIndex);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

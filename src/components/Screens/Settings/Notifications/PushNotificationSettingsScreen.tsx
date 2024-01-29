@@ -44,7 +44,6 @@ export const PushNotificationSettingsScreen = () => {
   };
 
   const handleEnable = () => {
-    console.log('Requesting Permission!');
     requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
       setPermissionStatus(status);
       if (status === RESULTS.GRANTED) {

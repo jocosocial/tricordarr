@@ -87,7 +87,6 @@ export function getAuthHeaders(
   const authHeaders = {
     authorization: `${authScheme} ${encodedCredentials}`,
   };
-  // console.log('Authentication Headers:', authHeaders);
   return authHeaders;
 }
 
@@ -151,6 +150,5 @@ export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boole
     shouldEnable = isLoggedIn && !disruptionDetected;
     // shouldEnable = isLoggedIn;
   }
-  // console.log('Query Should Enable', shouldEnable);
   return shouldEnable;
 };

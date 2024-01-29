@@ -98,7 +98,6 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         //  And confuse any other client applications.
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-        //   console.log('fezSocket appending', socketFezPostData);
         //   dispatchFezPostsData({
         //     type: FezPostsActions.appendPost,
         //     fezPostData: socketFezPostData,
@@ -175,7 +174,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
     if (lfg) {
       let newSocket = openFezSocket(lfg.fezID);
       if (fezSocket && newSocket) {
-        console.log(`[SeamailScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${lfg.fezID}`);
+        console.log(`[LfgChatScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${lfg.fezID}`);
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }

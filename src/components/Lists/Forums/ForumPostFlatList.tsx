@@ -67,7 +67,6 @@ export const ForumPostFlatList = ({
 
   const handleScroll = (event: any) => {
     // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    // console.log(event.nativeEvent.contentOffset.y);
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 

@@ -16,11 +16,6 @@ export const ForegroundService = () => {
       console.log('[ForegroundService.tsx] Conditions for foreground service not met. Not starting FGS.');
       return;
     }
-    // if (!isLoggedIn || !enableUserNotifications) {
-    //   console.log(`[FGS] user not logged in ${isLoggedIn} or notifications disabled ${enableUserNotifications}`);
-    //   stopFgsWorker();
-    //   return;
-    // }
 
     console.log(`[ForegroundService.tsx] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`);
     if (isLoggedIn && enableUserNotifications) {

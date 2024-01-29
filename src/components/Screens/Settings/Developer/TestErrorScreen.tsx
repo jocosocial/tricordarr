@@ -33,7 +33,7 @@ export const TestErrorScreen = () => {
     enabled: false,
   });
 
-  const onDismiss = () => console.log('O HAI');
+  const onDismiss = () => console.log('[TestErrorScreen.tsx] Modal dismissed.');
   const onModal = () => {
     setModalContent(<HelpModalView text={'This is a test'} />);
     setModalVisible(true);

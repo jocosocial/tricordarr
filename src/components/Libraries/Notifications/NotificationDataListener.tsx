@@ -22,7 +22,7 @@ export const NotificationDataListener = () => {
 
   const wsMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
-      console.log(`[NotificationDataListener] wsMessageHandler received data from server: ${event.data}`);
+      console.log(`[NotificationDataListener.tsx] wsMessageHandler received data from server: ${event.data}`);
       const notificationData = JSON.parse(event.data) as SocketNotificationData;
       const notificationType = SocketNotificationData.getType(notificationData);
       // Always refetch the UserNotificationData when we got a socket event.

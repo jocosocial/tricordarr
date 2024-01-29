@@ -22,14 +22,12 @@ const InnerForm = () => {
   const {values} = useFormikContext<ForumThreadValues>();
   const {setAsModerator, setAsTwitarrTeam, hasModerator, hasTwitarrTeam} = usePrivilege();
   useEffect(() => {
-    console.log(values);
     if (values.postAsModerator !== undefined) {
       setAsModerator(values.postAsModerator);
     }
     if (values.postAsTwitarrTeam !== undefined) {
       setAsTwitarrTeam(values.postAsTwitarrTeam);
     }
-    // return () => clearPrivileges();
   }, [values, setAsModerator, setAsTwitarrTeam]);
 
   return (
