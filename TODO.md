@@ -6,7 +6,6 @@ Work Queue
 
 Nightly
 * Move reload buttons into the actions menu like in events
-* Don't render moderator card until we have the data
 
 * State Issues
   * Pinning a post needs to invalidate the Forum query so that use effect doesn't rewrite local state
