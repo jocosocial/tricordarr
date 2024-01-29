@@ -6,14 +6,16 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ListSection} from '../../../Lists/ListSection';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem';
-import {useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
+import {SettingsStackParamList, useSettingsStack} from '../../../Navigation/Stacks/SettingsStack';
 import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
-import {Linking} from 'react-native';
 import {ListSubheader} from '../../../Lists/ListSubheader';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 
-export const AccountManagementScreen = () => {
+type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
+export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
@@ -45,7 +47,9 @@ export const AccountManagementScreen = () => {
               <MinorActionListItem
                 title={'Create Alt Account'}
                 icon={AppIcons.altAccount}
-                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/createAltAccount`)}
+                onPress={() => navigation.push(CommonStackComponents.siteUIScreen, {
+                  resource: 'createAltAccount',
+                })}
               />
             </ListSection>
           )}

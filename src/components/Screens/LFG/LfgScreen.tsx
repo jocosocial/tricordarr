@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {ListSection} from '../../Lists/ListSection';
@@ -246,11 +246,9 @@ export const LfgScreen = ({navigation, route}: Props) => {
                   title={'Location'}
                   onPress={() => {
                     const deck = guessDeckNumber(lfg.location);
-                    let url = 'tricordarr://map';
-                    if (deck) {
-                      url = `${url}/${deck}`;
-                    }
-                    Linking.openURL(url);
+                    navigation.push(CommonStackComponents.mapScreen, {
+                      deckNumber: deck,
+                    })
                   }}
                 />
                 <DataFieldListItem

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -6,7 +6,7 @@ import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
-import {Linking, RefreshControl} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -14,8 +14,13 @@ import {useUserBlockMutation, useUserBlocksQuery} from '../../Queries/Users/User
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export const BlockUsersScreen = () => {
+type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.blockUsers>;
+export const BlockUsersScreen = ({navigation}: Props) => {
   const {blocks, setBlocks} = useUserRelations();
   const {hasModerator} = usePrivilege();
   const userBlockMutation = useUserBlockMutation();
@@ -55,7 +60,10 @@ export const BlockUsersScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userBlockMutation.isLoading} onRefresh={refetch} />}>
+      <ScrollingContentView
+        refreshControl={
+          <RefreshControl refreshing={isRefetching || userBlockMutation.isLoading} onRefresh={refetch} />
+        }>
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}
@@ -71,7 +79,9 @@ export const BlockUsersScreen = () => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unblock}
-              onPress={() => Linking.openURL(`tricordarr://user/${relatedUserHeader.userID}`)}
+              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {
+                userID: relatedUserHeader.userID,
+              })}
               buttonOnPress={handleUnblockUser}
             />
           ))}

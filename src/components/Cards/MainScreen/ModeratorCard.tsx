@@ -5,13 +5,17 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import pluralize from 'pluralize';
-import {Linking, View} from 'react-native';
+import {View} from 'react-native';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 
 export const ModeratorCard = () => {
   const {userNotificationData} = useUserNotificationData();
   const {commonStyles} = useStyles();
+  const commonNavigation = useCommonStack();
 
-  const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`);
+  const onPress = () => commonNavigation.push(CommonStackComponents.siteUIScreen, {
+    resource: 'moderator'
+  });
 
   if (!userNotificationData?.moderatorData) {
     return <></>;

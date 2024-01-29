@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -6,16 +6,21 @@ import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
-import {Linking, RefreshControl} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {UserFavoriteText} from '../../Text/UserRelationsText';
 import {useUserFavoriteMutation, useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export const FavoriteUsersScreen = () => {
-  const {favorites, refetchFavorites, setFavorites} = useUserRelations();
+type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.favoriteUsers>;
+export const FavoriteUsersScreen = ({navigation}: Props) => {
+  const {favorites, setFavorites} = useUserRelations();
   const userFavoriteMutation = useUserFavoriteMutation();
   const {isLoading, isRefetching, refetch} = useUserFavoritesQuery();
 
@@ -68,7 +73,9 @@ export const FavoriteUsersScreen = () => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unfavorite}
-              onPress={() => Linking.openURL(`tricordarr://user/${relatedUserHeader.userID}`)}
+              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {
+                userID: relatedUserHeader.userID,
+              })}
               buttonOnPress={handleUnfavoriteUser}
             />
           ))}

@@ -7,6 +7,5 @@ Backlog
 * Drawer can only call linking. No navigation available. Is there a way?
 
 Work Queue
-* Audit linking usage
 
 Nightly
