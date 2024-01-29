@@ -184,20 +184,24 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
               disabled={forumData.isFavorite}
             />
           )}
-          <ForumThreadScreenActionsMenu forumData={forumData} />
+          <ForumThreadScreenActionsMenu
+            forumData={forumData}
+            invalidationQueryKey={[`/forum/post/${route.params.postID}/forum`]}
+          />
         </HeaderButtons>
       </View>
     );
   }, [
     forumData,
-    handleFavorite,
-    handleMute,
     onRefresh,
-    profilePublicData?.header.userID,
-    navigation,
+    theme.colors.twitarrYellow,
     theme.colors.onSurfaceDisabled,
     theme.colors.twitarrNegativeButton,
-    theme.colors.twitarrYellow,
+    handleFavorite,
+    profilePublicData?.header.userID,
+    handleMute,
+    route.params.postID,
+    navigation,
   ]);
 
   useEffect(() => {
