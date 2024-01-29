@@ -1,9 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
-import {useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumData, ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
@@ -25,19 +23,21 @@ import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../../Navigation/CommonScreens';
-import {InfiniteData} from '@tanstack/react-query';
+import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
+import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<QueryObserverResult>;
   isLoading: boolean;
-  fetchNextPage: () => Promise<void>;
-  fetchPreviousPage: () => Promise<void>;
+  fetchNextPage: () => Promise<QueryObserverResult>;
+  fetchPreviousPage: () => Promise<QueryObserverResult>;
   isFetchingNextPage: boolean;
   isFetchingPreviousPage: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
+  getListHeader?: () => ReactNode;
+  invertList?: boolean;
 }
 export const ForumThreadScreenBase = ({
   data,
@@ -49,6 +49,8 @@ export const ForumThreadScreenBase = ({
   isFetchingPreviousPage,
   hasNextPage,
   hasPreviousPage,
+  getListHeader,
+  invertList,
 }: ForumThreadScreenBaseProps) => {
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
@@ -69,7 +71,7 @@ export const ForumThreadScreenBase = ({
     setRefreshing(true);
     refetch().then(() => {
       if (forumListItem) {
-        console.log('[ForumThreadScreen.tsx] Marking local ForumListItem as read.');
+        console.log('[ForumThreadScreenBase.tsx] Marking local ForumListItem as read.');
         setForumListItem({
           ...forumListItem,
           readCount: forumListItem.postCount,
@@ -131,7 +133,7 @@ export const ForumThreadScreenBase = ({
       console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts.');
       dispatchForumPosts({
         type: ForumPostListActions.setList,
-        postList: postListData.reverse(),
+        postList: invertList ? postListData.reverse() : postListData,
       });
       // This is a hack to get around unread counts on first load.
       // The spread operator is to ensure a copy of the object that doesn't update with the list
@@ -142,7 +144,7 @@ export const ForumThreadScreenBase = ({
         setForumListItem(item ? {...item} : undefined);
       }
     }
-  }, [data, dispatchForumPosts, isFocused, setForumListItem, forumListData, forumListItem]);
+  }, [data, dispatchForumPosts, isFocused, setForumListItem, forumListData, forumListItem, invertList]);
 
   useEffect(() => {
     if (forumListItem) {
@@ -220,11 +222,11 @@ export const ForumThreadScreenBase = ({
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-        invertList={true}
+        invertList={invertList}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
-        getListHeader={undefined}
+        getListHeader={getListHeader}
         flatListRef={flatListRef}
         forumListData={forumListItem}
         hasNextPage={hasNextPage}
