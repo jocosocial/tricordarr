@@ -29,6 +29,7 @@ export const ForumThreadScreen = ({route}: Props) => {
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
       invertList={true}
+      forumListData={route.params.forumListData}
     />
   );
 };

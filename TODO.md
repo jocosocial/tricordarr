@@ -1,30 +1,12 @@
 Backlog
 * Consider prototyping usersettings here. Store filter and sort preferences
   * Make contentsettibgs part of that - events and lfg
+* Swiftarr doesnt display the new marker for forums.
+  * I'm somewhat cheating this by passing in the ForumListData from the item.
+  * We don't have access to that from other flows.
 
 Work Queue
 
 Nightly
 * Anything in the drawer needs to move to common. Including all of settings :(
   * access from any root screen of a tab
-
-* State Issues
-  * Forum mark as read is now happening all the time, regardless of whether its been read or not
-    * pass in the entire ForumListData? Do a search or something in the ForumThreadScreenBase?
-    * The latter would solve the case of coming in from a post.
-    * generates lots of excess queries
-
-```
-SMOOTH LIKE BUTTAH
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await Promise.all([refetch(), refetchPins()]);
-    setRefreshing(false);
-  };
-  
-  Dont need to key off of the various isRefetchings
-  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-
-```
-
-We dont show the new banner in forums. Likely because of ForumData and ForumListData. Resolve this.

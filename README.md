@@ -60,6 +60,17 @@ rootNavigation.push(RootStackComponents.rootContentScreen, {
 })
 ```
 
+Refresh
+-------
+To refresh without glitches:
+```
+const onRefresh = async () => {
+  setRefreshing(true);
+  await Promise.all([refetch(), refetchPins()]);
+  setRefreshing(false);
+};
+```
+
 Android Studio
 --------------
 Open the `android` directory in Android Studio instead of the project root. It behaves better.

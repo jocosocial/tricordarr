@@ -2,7 +2,7 @@ import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {AppView} from '../../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {ForumData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumData, ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -33,6 +33,7 @@ interface ForumThreadScreenBaseProps {
   hasPreviousPage?: boolean;
   getListHeader?: () => ReactNode;
   invertList?: boolean;
+  forumListData?: ForumListData;
 }
 export const ForumThreadScreenBase = ({
   data,
@@ -46,6 +47,7 @@ export const ForumThreadScreenBase = ({
   hasPreviousPage,
   getListHeader,
   invertList,
+  forumListData,
 }: ForumThreadScreenBaseProps) => {
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
@@ -125,14 +127,20 @@ export const ForumThreadScreenBase = ({
   }, [data, setForumPosts, invertList]);
 
   useEffect(() => {
-    if (data?.pages[0]) {
-      console.log(`[ForumThreadScreen.tsx] Marking forum ${data.pages[0].forumID} as read.`);
+    if (data && data.pages[0]) {
+      if (forumListData && forumListData.readCount === forumListData.postCount) {
+        console.log(`[ForumThreadScreenBase.tsx] Forum ${data.pages[0].forumID} has already been read.`);
+        return;
+      }
+      console.log(`[ForumThreadScreenBase.tsx] Marking forum ${data.pages[0].forumID} as read.`);
       queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]);
       queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]);
-      queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
       queryClient.invalidateQueries(['/forum/search']);
+      if (data.pages[0].isPinned) {
+        queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+      }
     }
-  }, [data?.pages, queryClient]);
+  }, [data?.pages[0], queryClient, forumListData]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
@@ -153,9 +161,11 @@ export const ForumThreadScreenBase = ({
             await Promise.all([
               queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
               queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
-              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]),
               queryClient.invalidateQueries(['/forum/search']),
             ]);
+            if (data.pages[0].isPinned) {
+              await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+            }
           }
           formikHelpers.resetForm();
           // https://github.com/jocosocial/swiftarr/issues/237
