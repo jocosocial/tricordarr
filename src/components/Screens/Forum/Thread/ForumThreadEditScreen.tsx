@@ -10,12 +10,15 @@ import {useForumRenameMutation} from '../../../Queries/Forum/ForumMutationQuerie
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;
 
 export const ForumThreadEditScreen = ({route, navigation}: Props) => {
   const editMutation = useForumRenameMutation();
-  const {forumListData, dispatchForumListData, setForumData} = useTwitarr();
+  const {forumListData, dispatchForumListData} = useTwitarr();
+  const queryClient = useQueryClient();
+
   const onSubmit = (values: ForumThreadValues, helpers: FormikHelpers<ForumThreadValues>) => {
     editMutation.mutate(
       {
@@ -23,7 +26,7 @@ export const ForumThreadEditScreen = ({route, navigation}: Props) => {
         name: values.title,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           const listDataItem = forumListData.find(fdl => fdl.forumID === route.params.forumData.forumID);
           if (listDataItem) {
             dispatchForumListData({
@@ -34,10 +37,7 @@ export const ForumThreadEditScreen = ({route, navigation}: Props) => {
               },
             });
           }
-          setForumData({
-            ...route.params.forumData,
-            title: values.title,
-          });
+          await queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`])
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

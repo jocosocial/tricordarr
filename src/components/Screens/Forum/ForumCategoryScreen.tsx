@@ -36,7 +36,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();
   const {setModalVisible, setModalContent} = useModal();
   const isFocused = useIsFocused();
-  const {dispatchForumPosts, setForumData} = useTwitarr();
+  const {dispatchForumPosts} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
 
   const handleHelp = useCallback(() => {
@@ -63,13 +63,12 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
       dispatchForumPosts({
         type: ForumPostListActions.clear,
       });
-      setForumData(undefined);
       clearPrivileges();
     }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, setForumData, clearPrivileges]);
+  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, clearPrivileges]);
 
   if (forumFilter) {
     return (
