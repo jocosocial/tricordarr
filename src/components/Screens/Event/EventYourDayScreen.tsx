@@ -12,7 +12,10 @@ import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFilterSettings} from '../../../libraries/Types';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
+import {HeaderButtons} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
+import {ScheduleYourCruiseDayMenu} from '../../Menus/Events/ScheduleYourCruiseDayMenu';
+import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 
 export type Props = NativeStackScreenProps<
@@ -46,6 +49,7 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
   const listRef = useRef<FlatList<EventData | FezData>>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
+  const {isLoggedIn} = useAuth();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -73,6 +77,25 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
     [setScheduleList, eventData, lfgJoinedData],
   );
 
+  const getNavButtons = useCallback(() => {
+    if (!isLoggedIn) {
+      return <></>;
+    }
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ScheduleYourCruiseDayMenu route={route} />
+        </HeaderButtons>
+      </View>
+    );
+  }, [isLoggedIn, route]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
+
   useEffect(() => {
     const filterSettings: ScheduleFilterSettings = {
       showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
@@ -87,20 +110,8 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <View style={commonStyles.flex}>
-        <ScheduleDayHeaderView
-          selectedCruiseDay={route.params.cruiseDay}
-          navigatePreviousDay={() =>
-            navigation.navigate(EventStackComponents.eventYourDayScreen, {
-              cruiseDay: route.params.cruiseDay - 1,
-            })
-          }
-          navigateNextDay={() =>
-            navigation.navigate(EventStackComponents.eventYourDayScreen, {
-              cruiseDay: route.params.cruiseDay + 1,
-            })
-          }
-        />
         <View style={commonStyles.flex}>
+          <ScheduleDayHeaderView selectedCruiseDay={route.params.cruiseDay} hideDayButtons={true} />
           <EventFlatList
             listRef={listRef}
             scheduleItems={scheduleList}
@@ -109,7 +120,6 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
           />
         </View>
       </View>
-      <EventFAB />
     </AppView>
   );
 };

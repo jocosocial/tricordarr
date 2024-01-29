@@ -8,36 +8,37 @@ import {EventStackParamList, useEventStackNavigation} from '../../Navigation/Sta
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp} from '@react-navigation/native';
 import {CruiseDayMenuItem} from '../Items/CruiseDayMenuItem';
+import {useAppTheme} from '../../../styles/Theme';
 
 interface ScheduleCruiseDayMenuProps {
-  scrollToNow: () => void;
-  route: RouteProp<EventStackParamList, EventStackComponents.eventDayScreen>;
+  route: RouteProp<EventStackParamList, EventStackComponents.eventYourDayScreen>;
 }
 
-export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
+export const ScheduleYourCruiseDayMenu = ({route}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const navigation = useEventStackNavigation();
+  const theme = useAppTheme();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: newCruiseDay});
+    navigation.navigate(EventStackComponents.eventYourDayScreen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
-  const navigateToday = () => {
-    if (route.params.cruiseDay === adjustedCruiseDayToday) {
-      console.log('Navigating to same day.');
-      scrollToNow();
-      return;
-    }
-    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
-  };
+  const handleCruiseDayToday = () =>
+    navigation.navigate(EventStackComponents.eventYourDayScreen, {cruiseDay: adjustedCruiseDayToday});
 
   const menuAnchor = (
-    <Item title={'Cruise Day'} iconName={AppIcons.cruiseDay} onPress={navigateToday} onLongPress={openMenu} />
+    <Item
+      title={'Cruise Day'}
+      iconName={AppIcons.cruiseDay}
+      color={route.params.cruiseDay !== adjustedCruiseDayToday ? theme.colors.twitarrNeutralButton : undefined}
+      onPress={openMenu}
+      onLongPress={handleCruiseDayToday}
+    />
   );
 
   return (
