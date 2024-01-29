@@ -3,7 +3,6 @@ import {FezData, FezPostData, ForumListData, PostData} from '../../../libraries/
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 import {ForumPostListActionsType} from '../../Reducers/Forum/ForumPostListReducer';
-import {ForumListDataActionsType} from '../../Reducers/Forum/ForumListDataReducer';
 
 interface TwitarrContextType {
   fez?: FezData;
@@ -21,8 +20,6 @@ interface TwitarrContextType {
   lfgPostsData: FezPostData[];
   dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
   openWebUrl: (url: string) => void;
-  forumListData: ForumListData[];
-  dispatchForumListData: Dispatch<ForumListDataActionsType>;
   forumPosts: PostData[];
   dispatchForumPosts: Dispatch<ForumPostListActionsType>;
 }

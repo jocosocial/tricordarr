@@ -9,3 +9,19 @@ Nightly
 * State Issues
   * Shared forum post state gets weird when going deep in the navigation state. Maybe missing an is focused. Even reload didn't fix it
   * going back from forum to category triggers refresh
+
+
+```
+SMOOTH LIKE BUTTAH
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetch(), refetchPins()]);
+    setRefreshing(false);
+  };
+  
+  Dont need to key off of the various isRefetchings
+  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
+```
+
+We dont show the new banner in forums. Likely because of ForumData and ForumListData. Resolve this.

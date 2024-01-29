@@ -5,12 +5,12 @@ import React, {useRef} from 'react';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {TimeDivider} from '../../../Lists/Dividers/TimeDivider';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '../../../Queries/Forum/ForumThreadQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
 

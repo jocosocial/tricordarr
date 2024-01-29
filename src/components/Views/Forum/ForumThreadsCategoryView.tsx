@@ -4,15 +4,14 @@ import {useForumCategoryPinnedThreadsQuery, useForumCategoryQuery} from '../../Q
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {PaddedContentView} from '../Content/PaddedContentView';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
 import {ForumNewFAB} from '../../Buttons/FloatingActionButtons/ForumNewFAB';
 import {useIsFocused} from '@react-navigation/native';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 
 interface ForumCategoryBaseViewProps {
   categoryID: string;
@@ -29,7 +28,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-    isRefetching,
     isLoading,
   } = useForumCategoryQuery(props.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
@@ -41,7 +39,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     isLoading: isLoadingPins,
   } = useForumCategoryPinnedThreadsQuery(props.categoryID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumListData, dispatchForumListData} = useTwitarr();
+  const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
   const isFocused = useIsFocused();
@@ -59,17 +57,15 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     }
   };
 
-  const onRefresh = () => {
-    refetch();
-    refetchPins();
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetch(), refetchPins()]);
+    setRefreshing(false);
   };
 
   useEffect(() => {
     if (data && data.pages && isFocused) {
-      dispatchForumListData({
-        type: ForumListDataActions.setList,
-        threadList: data.pages.flatMap(p => p.forumThreads || []),
-      });
+      setForumListData(data.pages.flatMap(p => p.forumThreads || []))
 
       const categoryData = data.pages[0];
       if (hasModerator) {
@@ -78,18 +74,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
       }
     }
-  }, [data, dispatchForumListData, hasModerator, isFocused]);
-
-  // Refresh if user goes back to the category so that it triggers the useEffect above to
-  // load the correct list data. Theres a race condition because the effect above wants
-  // to set the list to the query data result, but the query is now out of date.
-  useEffect(() => {
-    if (isFocused && data && data.pages[0].numThreads !== forumListData.length) {
-      setRefreshing(true);
-      refetchPins();
-      refetch().then(() => setRefreshing(false));
-    }
-  }, [isFocused, data, forumListData, refetch, refetchPins]);
+  }, [data, setForumListData, hasModerator, isFocused]);
 
   if (isLoading || isLoadingPins) {
     return <LoadingView />;
@@ -102,7 +87,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
           <ScrollingContentView
             isStack={true}
             refreshControl={
-              <RefreshControl refreshing={refreshing || isRefetching || isRefetchingPins} onRefresh={onRefresh} />
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <PaddedContentView padTop={true}>
               <Text>There aren't any forums in this category yet.</Text>
@@ -122,7 +107,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={
-          <RefreshControl refreshing={refreshing || isRefetching || isRefetchingPins} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}

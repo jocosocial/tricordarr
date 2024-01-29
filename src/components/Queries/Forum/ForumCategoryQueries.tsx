@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
-import {CategoryData, ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosResponse} from 'axios';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
@@ -54,23 +54,6 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
     },
     queryParams,
   );
-};
-
-export const useForumThreadQuery = (forumID?: string, postID?: string) => {
-  if (!forumID && !postID) {
-    throw new Error('Invalid usage of useForumThreadQuery()');
-  }
-  let endpoint = `/forum/${forumID}`;
-  if (postID) {
-    endpoint = `/forum/post/${postID}/forum`;
-  }
-  return useTokenAuthPaginationQuery<ForumData>(endpoint);
-};
-
-export const useForumThreadPinnedPostsQuery = (forumID: string) => {
-  return useTokenAuthQuery<PostData[]>({
-    queryKey: [`/forum/${forumID}/pinnedposts`],
-  });
 };
 
 export const useForumCategoryPinnedThreadsQuery = (categoryID: string, options = {}) => {

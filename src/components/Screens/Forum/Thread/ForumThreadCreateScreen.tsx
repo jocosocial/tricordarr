@@ -11,12 +11,11 @@ import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useForumCreateMutation} from '../../../Queries/Forum/ForumMutationQueries';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -30,8 +29,8 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const forumCreateMutation = useForumCreateMutation();
-  const {dispatchForumListData} = useTwitarr();
   const {profilePublicData} = useUserData();
+  const queryClient = useQueryClient();
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     setSubmitting(true);
@@ -55,16 +54,12 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
         categoryId: route.params.categoryId,
       },
       {
-        onSuccess: response => {
-          dispatchForumListData({
-            type: ForumListDataActions.prependNewForumData,
-            forumData: response.data,
-            createdAt: new Date().toISOString(),
-            lastPostAt: new Date().toISOString(),
-            lastPoster: profilePublicData?.header,
-            postCount: 1,
-            readCount: 1,
-          });
+        onSuccess: async response => {
+          await Promise.all([
+            queryClient.invalidateQueries([`/forum/${response.data.forumID}`]),
+            queryClient.invalidateQueries([`/forum/categories/${response.data.categoryID}`]),
+            queryClient.invalidateQueries(['/forum/search']),
+          ]);
           navigation.replace(CommonStackComponents.forumThreadScreen, {
             forumID: response.data.forumID,
           });

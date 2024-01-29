@@ -3,14 +3,13 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
-import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {useForumPinMutation} from '../../../Queries/Forum/ForumPinMutations';
 import {useForumCategoryPinnedThreadsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface ForumThreadActionsMenuProps {
   anchor: ReactNode;
@@ -25,15 +24,19 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
   const commonNavigation = useCommonStack();
   const eventID = props.forumListData.eventID;
   const relationMutation = useForumRelationMutation();
-  const {dispatchForumListData} = useTwitarr();
   const [refreshing, setRefreshing] = useState(false);
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const {refetch: refetchPins} = useForumCategoryPinnedThreadsQuery(props.categoryID ?? '', {
     enabled: !!props.categoryID,
   });
+  const queryClient = useQueryClient();
 
   const closeMenu = useCallback(() => props.setVisible(false), [props]);
+  let invalidationQueryKeys = [[`/forum/${props.forumListData.forumID}`], ['/forum/search']];
+  if (props.categoryID) {
+    invalidationQueryKeys.push([`/forum/categories/${props.categoryID}`]);
+  }
 
   const handleFavorite = useCallback(() => {
     setRefreshing(true);
@@ -44,13 +47,11 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
         action: props.forumListData.isFavorite ? 'delete' : 'create',
       },
       {
-        onSuccess: () => {
-          dispatchForumListData({
-            type: ForumListDataActions.updateRelations,
-            forumID: props.forumListData.forumID,
-            isMuted: props.forumListData.isMuted,
-            isFavorite: !props.forumListData.isFavorite,
+        onSuccess: async () => {
+          const invalidations = invalidationQueryKeys.map(key => {
+            return queryClient.invalidateQueries(key);
           });
+          await Promise.all(invalidations);
         },
         onSettled: () => {
           setRefreshing(false);
@@ -60,7 +61,7 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
     );
   }, [
     closeMenu,
-    dispatchForumListData,
+    queryClient,
     props.forumListData.forumID,
     props.forumListData.isFavorite,
     props.forumListData.isMuted,
@@ -76,13 +77,11 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
         action: props.forumListData.isMuted ? 'delete' : 'create',
       },
       {
-        onSuccess: () => {
-          dispatchForumListData({
-            type: ForumListDataActions.updateRelations,
-            forumID: props.forumListData.forumID,
-            isMuted: !props.forumListData.isMuted,
-            isFavorite: props.forumListData.isFavorite,
+        onSuccess: async () => {
+          const invalidations = invalidationQueryKeys.map(key => {
+            return queryClient.invalidateQueries(key);
           });
+          await Promise.all(invalidations);
         },
         onSettled: () => {
           setRefreshing(false);
@@ -92,7 +91,7 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
     );
   }, [
     closeMenu,
-    dispatchForumListData,
+    queryClient,
     props.forumListData.forumID,
     props.forumListData.isFavorite,
     props.forumListData.isMuted,
@@ -106,15 +105,16 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
         action: props.forumListData.isPinned ? 'unpin' : 'pin',
       },
       {
-        onSuccess: () => {
-          dispatchForumListData({
-            type: ForumListDataActions.updateThread,
-            newThread: {
-              ...props.forumListData,
-              isPinned: !props.forumListData.isPinned,
-            },
+        onSuccess: async () => {
+          const invalidations = invalidationQueryKeys.map(key => {
+            return queryClient.invalidateQueries(key);
           });
-          refetchPins();
+          await Promise.all(
+            [
+              invalidations,
+              queryClient.invalidateQueries([`/forum/categories/${props.categoryID}/pinnedforums`]),
+            ].flat(),
+          );
         },
         onSettled: () => {
           setRefreshing(false);

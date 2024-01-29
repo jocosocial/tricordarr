@@ -1,11 +1,11 @@
 import React from 'react';
-import {useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import {ForumThreadScreenBase} from './ForumThreadScreenBase';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {Button, Text} from 'react-native-paper';
+import {useForumThreadQuery} from '../../../Queries/Forum/ForumThreadQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 
@@ -19,7 +19,6 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     hasNextPage,
-    hasPreviousPage,
   } = useForumThreadQuery(undefined, route.params.postID);
   const {commonStyles} = useStyles();
 
