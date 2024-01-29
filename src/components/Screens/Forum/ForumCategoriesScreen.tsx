@@ -35,7 +35,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
-  const {dispatchForumPosts, dispatchForumListData, setForumData} = useTwitarr();
+  const {dispatchForumPosts, dispatchForumListData} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -69,9 +69,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
         type: ForumListDataActions.clear,
       });
       clearPrivileges();
-      setForumData(undefined);
     }
-  }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused, setForumData]);
+  }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

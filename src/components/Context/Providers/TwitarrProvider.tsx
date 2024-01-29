@@ -18,7 +18,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
-  const [forumData, setForumData] = useState<ForumData>();
   const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
 
@@ -70,8 +69,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         lfgPostsData,
         dispatchLfgPostsData,
         openWebUrl,
-        forumData,
-        setForumData,
         forumListData,
         dispatchForumListData,
         forumPosts,

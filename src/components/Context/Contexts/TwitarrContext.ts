@@ -1,5 +1,5 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {FezData, FezPostData, ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezPostData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 import {ForumPostListActionsType} from '../../Reducers/Forum/ForumPostListReducer';
@@ -21,8 +21,6 @@ interface TwitarrContextType {
   lfgPostsData: FezPostData[];
   dispatchLfgPostsData: Dispatch<FezPostsActionsType>;
   openWebUrl: (url: string) => void;
-  forumData: ForumData | undefined;
-  setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
   forumListData: ForumListData[];
   dispatchForumListData: Dispatch<ForumListDataActionsType>;
   forumPosts: PostData[];
