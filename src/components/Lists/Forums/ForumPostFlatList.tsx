@@ -100,6 +100,7 @@ export const ForumPostFlatList = ({
             postData={item}
             enableShowInThread={enableShowInThread}
             enablePinnedPosts={enablePinnedPosts}
+            forumData={forumData}
           />
         </View>
       );
@@ -111,6 +112,7 @@ export const ForumPostFlatList = ({
       styles.postContainerView,
       showNewDivider,
       enableShowInThread,
+      forumData,
     ],
   );
 

@@ -2,7 +2,7 @@ import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag';
-import {PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../../Text/ContentText';
 import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu';
 import {AppIcon} from '../../Icons/AppIcon';
@@ -18,6 +18,7 @@ interface ForumPostMessageViewProps {
   showAuthor?: boolean;
   enableShowInThread?: boolean;
   enablePinnedPosts?: boolean;
+  forumData?: ForumData;
 }
 
 /**
@@ -31,6 +32,7 @@ export const ForumPostMessageView = ({
   showAuthor,
   enableShowInThread,
   enablePinnedPosts,
+  forumData,
 }: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -110,6 +112,7 @@ export const ForumPostMessageView = ({
           forumPost={postData}
           enableShowInThread={enableShowInThread}
           enablePinnedPosts={enablePinnedPosts}
+          forumData={forumData}
         />
         <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween, commonStyles.alignItemsCenter]}>
           <View style={[commonStyles.flex0]}>

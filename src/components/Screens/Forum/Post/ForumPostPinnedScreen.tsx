@@ -5,7 +5,7 @@ import React, {useRef} from 'react';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useForumThreadPinnedPostsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
+import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {TimeDivider} from '../../../Lists/Dividers/TimeDivider';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -16,6 +16,7 @@ type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.
 
 export const ForumPostPinnedScreen = ({route}: Props) => {
   const {data, refetch, isFetching} = useForumThreadPinnedPostsQuery(route.params.forumID);
+  const {data: forumData} = useForumThreadQuery(route.params.forumID);
   const {commonStyles} = useStyles();
   const flatListRef = useRef<FlatList<PostData>>(null);
 
@@ -42,6 +43,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
           postList={data}
           invertList={false}
           enableShowInThread={true}
+          forumData={forumData?.pages[0]}
         />
       </View>
     </AppView>

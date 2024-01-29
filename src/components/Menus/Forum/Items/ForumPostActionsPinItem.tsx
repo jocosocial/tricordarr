@@ -1,35 +1,37 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
+import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {useForumPostPinMutation} from '../../../Queries/Forum/ForumPostPinQueries';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface ForumPostActionsPinItemProps {
   forumPost: PostData;
+  forumData?: ForumData;
 }
 
-export const ForumPostActionsPinItem = ({forumPost}: ForumPostActionsPinItemProps) => {
+export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => {
   const pinMutation = useForumPostPinMutation();
-  const {dispatchForumPosts} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const handleFavorite = () => {
     pinMutation.mutate(
       {
-        postID: forumPost.postID.toString(),
-        action: forumPost.isPinned ? 'unpin' : 'pin',
+        postID: props.forumPost.postID.toString(),
+        action: props.forumPost.isPinned ? 'unpin' : 'pin',
       },
       {
-        onSuccess: () => {
-          dispatchForumPosts({
-            type: ForumPostListActions.updatePost,
-            newPost: {
-              ...forumPost,
-              isPinned: !forumPost.isPinned,
-            },
-          });
+        onSuccess: async () => {
+          if (props.forumData) {
+            await Promise.all([
+              queryClient.invalidateQueries([`/forum/${props.forumData.forumID}`]),
+              queryClient.invalidateQueries([`/forum/${props.forumData.forumID}/pinnedposts`]),
+              queryClient.invalidateQueries([`/forum/post/${props.forumPost.postID}/forum`]),
+            ]);
+          } else {
+            await queryClient.invalidateQueries([`/forum/post/${props.forumPost.postID}/forum`]);
+          }
         },
       },
     );
@@ -38,7 +40,7 @@ export const ForumPostActionsPinItem = ({forumPost}: ForumPostActionsPinItemProp
   const getIcon = () => (
     <StateLoadingIcon
       isLoading={pinMutation.isLoading}
-      state={forumPost.isPinned}
+      state={props.forumPost.isPinned}
       iconTrue={AppIcons.unpin}
       iconFalse={AppIcons.pin}
     />
@@ -46,7 +48,7 @@ export const ForumPostActionsPinItem = ({forumPost}: ForumPostActionsPinItemProp
 
   return (
     <Menu.Item
-      title={forumPost.isPinned ? 'Unpin' : 'Pin'}
+      title={props.forumPost.isPinned ? 'Unpin' : 'Pin'}
       dense={false}
       leadingIcon={getIcon}
       onPress={handleFavorite}
