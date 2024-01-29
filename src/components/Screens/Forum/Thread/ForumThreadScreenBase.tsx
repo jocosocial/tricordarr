@@ -2,18 +2,16 @@ import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {AppView} from '../../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {ForumData, ForumListData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostContentData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {ForumLockedView} from '../../../Views/Static/ForumLockedView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ListTitleView} from '../../../Views/ListTitleView';
-import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostQueries';
@@ -24,7 +22,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
-import {InfiniteData, QueryObserverResult} from '@tanstack/react-query';
+import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -54,32 +52,23 @@ export const ForumThreadScreenBase = ({
 }: ForumThreadScreenBaseProps) => {
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
-  const {forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
-  const {profilePublicData} = useUserData();
+  const {forumPosts, dispatchForumPosts} = useTwitarr();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
   const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {hasModerator} = usePrivilege();
   const isFocused = useIsFocused();
-  const [forumListItem, setForumListItem] = useState<ForumListData>();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
+  const queryClient = useQueryClient();
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    refetch().then(() => {
-      if (forumListItem) {
-        console.log('[ForumThreadScreenBase.tsx] Marking local ForumListItem as read.');
-        setForumListItem({
-          ...forumListItem,
-          readCount: forumListItem.postCount,
-        });
-      }
-      setRefreshing(false);
-    });
-  }, [forumListItem, refetch]);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -113,7 +102,12 @@ export const ForumThreadScreenBase = ({
           )}
           <ForumThreadScreenActionsMenu
             forumData={data.pages[0]}
-            invalidationQueryKey={[`/forum/${data.pages[0].forumID}`]}
+            invalidationQueryKeys={[
+              [`/forum/${data.pages[0].forumID}`],
+              [`/forum/categories/${data.pages[0].categoryID}`],
+              [`/forum/categories/${data.pages[0].categoryID}/pinnedforums`],
+              ['/forum/search'],
+            ]}
             onRefresh={onRefresh}
           />
         </HeaderButtons>
@@ -135,26 +129,18 @@ export const ForumThreadScreenBase = ({
         type: ForumPostListActions.setList,
         postList: invertList ? postListData.reverse() : postListData,
       });
-      // This is a hack to get around unread counts on first load.
-      // The spread operator is to ensure a copy of the object that doesn't update with the list
-      // when the mark-as-read action occurs.
-      // Only works if you came from ForumCategoriesScreen.
-      if (!forumListItem) {
-        let item = forumListData.find(fdl => fdl.forumID === data.pages[0].forumID);
-        setForumListItem(item ? {...item} : undefined);
-      }
     }
-  }, [data, dispatchForumPosts, isFocused, setForumListItem, forumListData, forumListItem, invertList]);
+  }, [data, dispatchForumPosts, isFocused, invertList]);
 
   useEffect(() => {
-    if (forumListItem) {
-      console.log(`[ForumThreadScreen.tsx] Marking forum ${forumListItem.forumID} as read.`);
-      dispatchForumListData({
-        type: ForumListDataActions.markAsRead,
-        forumID: forumListItem.forumID,
-      });
+    if (data?.pages[0]) {
+      console.log(`[ForumThreadScreen.tsx] Marking forum ${data.pages[0].forumID} as read.`);
+      queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]);
+      queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]);
+      queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+      queryClient.invalidateQueries(['/forum/search']);
     }
-  }, [dispatchForumListData, forumListItem]);
+  }, [data?.pages, queryClient]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
@@ -164,35 +150,24 @@ export const ForumThreadScreenBase = ({
       return;
     }
     values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
-    // Mark as read if applicable.
-    if (forumListItem) {
-      setForumListItem({
-        ...forumListItem,
-        readCount: forumListItem.postCount,
-      });
-    }
     postCreateMutation.mutate(
       {
         forumID: data.pages[0].forumID,
         postData: values,
       },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           dispatchForumPosts({
             type: ForumPostListActions.prependPost,
             newPost: response.data,
           });
-          if (forumListItem) {
-            dispatchForumListData({
-              type: ForumListDataActions.touch,
-              thread: {
-                ...forumListItem,
-                postCount: forumListItem.postCount + 1,
-                readCount: forumListItem.readCount + 1,
-                lastPostAt: new Date().toISOString(),
-                lastPoster: profilePublicData?.header,
-              },
-            });
+          if (data.pages[0]) {
+            await Promise.all([
+              queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
+              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
+              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]),
+              queryClient.invalidateQueries(['/forum/search']),
+            ]);
           }
           formikHelpers.resetForm();
           // https://github.com/jocosocial/swiftarr/issues/237
@@ -228,7 +203,6 @@ export const ForumThreadScreenBase = ({
         maintainViewPosition={true}
         getListHeader={getListHeader}
         flatListRef={flatListRef}
-        forumListData={forumListItem}
         hasNextPage={hasNextPage}
       />
       {(!data.pages[0].isLocked || hasModerator) && (

@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumListDataActions} from '../../../Reducers/Forum/ForumListDataReducer';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
@@ -11,9 +9,9 @@ import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
 import {useForumSearchQuery} from '../../../Queries/Forum/ForumSearchQueries';
 import {ListTitleView} from '../../../Views/ListTitleView';
-import {useIsFocused} from '@react-navigation/native';
 import {getUserBylineString} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
 
@@ -32,9 +30,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
     creatorid: route.params.user.userID,
   });
   const [refreshing, setRefreshing] = useState(false);
-  // const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
-  const {forumListData, dispatchForumListData} = useTwitarr();
-  const isFocused = useIsFocused();
+  const [forumListData, setForumListData] = useState<ForumListData[]>([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -55,13 +51,10 @@ export const ForumThreadUserScreen = ({route}: Props) => {
   };
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
-      dispatchForumListData({
-        type: ForumListDataActions.setList,
-        threadList: data.pages.flatMap(p => p.forumThreads || []),
-      });
+    if (data && data.pages) {
+      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
     }
-  }, [data, dispatchForumListData, isFocused]);
+  }, [data, setForumListData]);
 
   if (!data) {
     return <LoadingView />;

@@ -5,7 +5,6 @@ import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
-import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
 import {useForumPostListReducer} from '../../Reducers/Forum/ForumPostListReducer';
 import URLParse from 'url-parse';
 
@@ -18,7 +17,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
-  const [forumListData, dispatchForumListData] = useForumListDataReducer([]);
   const [forumPosts, dispatchForumPosts] = useForumPostListReducer([]);
 
   const openAppUrl = (appUrl: string) => {
@@ -69,8 +67,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         lfgPostsData,
         dispatchLfgPostsData,
         openWebUrl,
-        forumListData,
-        dispatchForumListData,
         forumPosts,
         dispatchForumPosts,
       }}>

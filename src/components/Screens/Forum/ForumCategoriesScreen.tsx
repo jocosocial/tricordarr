@@ -18,7 +18,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
@@ -35,7 +34,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
-  const {dispatchForumPosts, dispatchForumListData} = useTwitarr();
+  const {dispatchForumPosts} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -65,12 +64,9 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       dispatchForumPosts({
         type: ForumPostListActions.clear,
       });
-      dispatchForumListData({
-        type: ForumListDataActions.clear,
-      });
       clearPrivileges();
     }
-  }, [clearPrivileges, dispatchForumListData, dispatchForumPosts, isFocused]);
+  }, [clearPrivileges, dispatchForumPosts, isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

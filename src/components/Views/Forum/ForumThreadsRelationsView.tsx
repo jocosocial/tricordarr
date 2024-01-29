@@ -1,11 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {PaddedContentView} from '../Content/PaddedContentView';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
@@ -15,6 +13,7 @@ import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NoResultsView} from '../Static/NoResultsView';
 import {AppView} from '../AppView';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 
 export const ForumThreadsRelationsView = ({
   relationType,
@@ -35,13 +34,12 @@ export const ForumThreadsRelationsView = ({
     hasNextPage,
     fetchNextPage,
     isFetched,
-    isRefetching,
   } = useForumRelationQuery(relationType, {
     ...(categoryID ? {cat: categoryID} : undefined),
     ...(forumSortOrder && forumSortOrder !== ForumSortOrder.event ? {sort: forumSortOrder} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
-  const {forumListData, dispatchForumListData} = useTwitarr();
+  const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
 
@@ -58,14 +56,17 @@ export const ForumThreadsRelationsView = ({
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     if (data && data.pages && isFocused) {
-      dispatchForumListData({
-        type: ForumListDataActions.setList,
-        threadList: data.pages.flatMap(p => p.forumThreads || []),
-      });
+      setForumListData(data.pages.flatMap(p => p.forumThreads || []))
     }
-  }, [data, dispatchForumListData, isFocused]);
+  }, [data, setForumListData, isFocused]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -81,7 +82,7 @@ export const ForumThreadsRelationsView = ({
       <View>
         <ScrollingContentView
           isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}>
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <PaddedContentView padTop={true}>
             <Text>There aren't any forums matching these filters.</Text>
           </PaddedContentView>
@@ -97,7 +98,7 @@ export const ForumThreadsRelationsView = ({
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing || isRefetching} onRefresh={refetch} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
       />

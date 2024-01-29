@@ -11,8 +11,6 @@ import {ReactNode, useCallback, useState} from 'react';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
 import {FavoriteMenuItem} from '../Items/FavoriteMenuItem';
 import {MuteMenuItem} from '../Items/MuteMenuItem';
@@ -23,7 +21,7 @@ import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
-  invalidationQueryKey: QueryKey;
+  invalidationQueryKeys: QueryKey[];
   onRefresh: () => void;
 }
 
@@ -32,13 +30,12 @@ const helpContent = [
   'Moderators or the forum creator can pin posts to the forum.',
 ];
 
-export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, onRefresh}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKeys, onRefresh}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
   const commonNavigation = useCommonStack();
-  const {dispatchForumListData} = useTwitarr();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
@@ -62,14 +59,11 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, o
           action: forumData.isFavorite ? 'delete' : 'create',
         },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries(invalidationQueryKey);
-            dispatchForumListData({
-              type: ForumListDataActions.updateRelations,
-              forumID: forumData.forumID,
-              isMuted: forumData.isMuted,
-              isFavorite: !forumData.isFavorite,
+          onSuccess: async () => {
+            const invalidations = invalidationQueryKeys.map(key => {
+              return queryClient.invalidateQueries(key);
             });
+            await Promise.all(invalidations);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -78,7 +72,7 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, o
         },
       );
     }
-  }, [dispatchForumListData, forumData, invalidationQueryKey, queryClient, relationMutation]);
+  }, [forumData, invalidationQueryKeys, queryClient, relationMutation]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -90,14 +84,11 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, o
           action: forumData.isMuted ? 'delete' : 'create',
         },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries(invalidationQueryKey);
-            dispatchForumListData({
-              type: ForumListDataActions.updateRelations,
-              forumID: forumData.forumID,
-              isMuted: !forumData.isMuted,
-              isFavorite: forumData.isFavorite,
+          onSuccess: async () => {
+            const invalidations = invalidationQueryKeys.map(key => {
+              return queryClient.invalidateQueries(key);
             });
+            await Promise.all(invalidations);
           },
           onSettled: () => {
             setRefreshing(false);
@@ -106,7 +97,7 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, o
         },
       );
     }
-  }, [dispatchForumListData, forumData, invalidationQueryKey, queryClient, relationMutation]);
+  }, [forumData, invalidationQueryKeys, queryClient, relationMutation]);
 
   return (
     <Menu
