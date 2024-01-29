@@ -27,6 +27,5 @@ export async function displayTestNotification() {
  * Cancel a test notification.
  */
 export async function cancelTestNotification() {
-  console.log('CANCELING AT return::onPress');
   await notifee.cancelNotification('abc123');
 }

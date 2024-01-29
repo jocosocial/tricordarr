@@ -37,7 +37,6 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
         /(:[\w-]+:)|((?<!\S)@[A-Za-z0-9]+(?:[-.+_][A-Za-z0-9]+)*)|((?<!\S)#[A-Za-z0-9]+(?!\\S))/g,
       );
       return tokens.map((token, tokenIndex) => {
-        // console.log(token);
         if (!token) {
           return;
         }

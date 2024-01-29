@@ -25,7 +25,6 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
       webViewRef.current?.goBack();
       return true;
     } catch (err) {
-      console.log('[handleBackButtonPress] Error : ', err.message);
       return false;
     }
   };

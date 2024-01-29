@@ -19,7 +19,7 @@ export const AppEventHandler = () => {
       const {notification, pressAction} = event.detail;
       const url = getUrlForEvent(event.type, notification, pressAction);
       if (url) {
-        console.log('[handleForegroundEvent] responding to url', url);
+        console.log('[AppEventHandler.tsx] handleForegroundEvent responding to url', url);
         linkTo(url);
       }
     };
@@ -37,17 +37,17 @@ export const AppEventHandler = () => {
   notifee.onBackgroundEvent(async (event: Event) => {
     const {notification, pressAction} = event.detail;
     const url = getUrlForEvent(event.type, notification, pressAction) || 'tricordarr://hometab';
-    console.log('[onBackgroundEvent] responding to event', event.type, 'with url', url);
+    console.log('[AppEventHandler.tsx] onBackgroundEvent responding to event', event.type, 'with url', url);
 
     // When I made notification permissions optional, I started seeing EventType.DELIVERED events make
     // it in here. This caused the app to launch whenever a notification was received which is unacceptable.
     // Limiting the actions that can trigger the app made it better.
     if (event.type === EventType.ACTION_PRESS || event.type === EventType.PRESS) {
       const linkingUrl = `tricordarr:/${url}`;
-      console.log('[onBackgroundEvent] launching url', linkingUrl);
+      console.log('[AppEventHandler.tsx] onBackgroundEvent launching url', linkingUrl);
       await Linking.openURL(linkingUrl); // url starts with a /, so only add one.
     } else {
-      console.log('[onBackgroundEvent] event was not a respondable action. Skipping...');
+      console.log('[AppEventHandler.tsx] onBackgroundEvent event was not a respondable action. Skipping...');
     }
   });
 

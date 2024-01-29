@@ -105,7 +105,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         console.log('[SeamailScreen.tsx] fezSocketMessageHandler performing refetch.');
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
-        //   console.log('fezSocket appending', socketFezPostData);
         //   dispatchFezPostsData({
         //     type: FezPostsActions.appendPost,
         //     fezPostData: socketFezPostData,

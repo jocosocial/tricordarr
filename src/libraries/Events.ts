@@ -13,7 +13,7 @@ export const getUrlForEvent = (
   if (!notification || !pressAction) {
     return;
   }
-  console.log('Got press action:', pressAction);
+  console.log('[Events.ts] Got press action:', pressAction);
   // PRESS != ACTION_PRESS. We'll process those some other day.
   if (type === EventType.PRESS) {
     switch (pressAction.id) {

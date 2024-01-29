@@ -139,7 +139,6 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
   }
   // To avoid confusion, the term "cruiseday" refers to "the nth day of the cruise" (1st, 2nd, 8th...).
   cruiseDay += 1;
-  // console.log(new Date().getHours() - 3, adjustedDate.getHours());
 
   return {
     // .getHours() and .getMinutes() return in local time.

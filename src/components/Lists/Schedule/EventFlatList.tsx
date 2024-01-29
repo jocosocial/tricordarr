@@ -173,7 +173,6 @@ export const EventFlatList = ({
     highestMeasuredFrameIndex: number;
     averageItemLength: number;
   }) => {
-    console.info('Scroll Error Occurred', info);
     const itemHeight = 106;
     const separatorHeight = 44;
     listRef.current?.scrollToOffset({
@@ -188,10 +187,6 @@ export const EventFlatList = ({
       return item.eventID;
     }
   };
-
-  // const initialIndex = getInitialScrollindex();
-  // console.log('Initial scroll index is ', initialIndex, scheduleItems[initialIndex]?.title);
-  console.log('EventFlatList is rendering');
 
   let ItemSeparatorComponent = renderSeparatorTime;
   switch (separator) {
