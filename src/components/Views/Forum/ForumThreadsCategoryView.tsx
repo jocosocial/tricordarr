@@ -10,7 +10,6 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
 import {ForumNewFAB} from '../../Buttons/FloatingActionButtons/ForumNewFAB';
-import {useIsFocused} from '@react-navigation/native';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 
 interface ForumCategoryBaseViewProps {
@@ -42,7 +41,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const isFocused = useIsFocused();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -64,7 +62,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   };
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages) {
       setForumListData(data.pages.flatMap(p => p.forumThreads || []))
 
       const categoryData = data.pages[0];
@@ -74,7 +72,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         setIsUserRestricted(categoryData.isEventCategory || categoryData.isRestricted);
       }
     }
-  }, [data, setForumListData, hasModerator, isFocused]);
+  }, [data, setForumListData, hasModerator]);
 
   if (isLoading || isLoadingPins) {
     return <LoadingView />;

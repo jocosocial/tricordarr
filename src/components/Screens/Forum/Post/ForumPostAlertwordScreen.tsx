@@ -7,7 +7,6 @@ import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
-import {useIsFocused} from '@react-navigation/native';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
@@ -35,7 +34,6 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   });
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
-  const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {dispatchUserNotificationData} = useUserNotificationData();
@@ -54,14 +52,14 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   };
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
       dispatchUserNotificationData({
         type: UserNotificationDataActions.markAlertwordRead,
         alertWord: route.params.alertWord,
       });
     }
-  }, [data, setForumPosts, isFocused, dispatchUserNotificationData, route.params.alertWord]);
+  }, [data, setForumPosts, dispatchUserNotificationData, route.params.alertWord]);
 
   return (
     <AppView>

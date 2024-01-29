@@ -13,7 +13,6 @@ Nightly
     * pass in the entire ForumListData? Do a search or something in the ForumThreadScreenBase?
     * The latter would solve the case of coming in from a post.
     * generates lots of excess queries
-  * Remove a bunch of the now useless isFocused calls
 
 ```
 SMOOTH LIKE BUTTAH

@@ -7,7 +7,6 @@ import {ForumListData} from '../../libraries/Structs/ControllerStructs';
 import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {forumPostHelpText} from '../Screens/Forum/Post/ForumPostScreenBase';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
@@ -16,7 +15,7 @@ import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
-import {useIsFocused} from '@react-navigation/native';
+import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
 
 export const ForumThreadSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -47,7 +46,6 @@ export const ForumThreadSearchBar = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
-  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -108,10 +106,10 @@ export const ForumThreadSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages) {
       setForumList(data.pages.flatMap(p => p.forumThreads));
     }
-  }, [data, isFocused]);
+  }, [data]);
 
   return (
     <>
