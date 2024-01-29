@@ -4,7 +4,14 @@ import React from 'react';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
-import {FezData, ForumData, PostData, ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
+import {
+  FezData,
+  ForumData,
+  ForumListData,
+  PostData,
+  ProfilePublicData,
+  UserHeader
+} from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
@@ -89,6 +96,7 @@ export type CommonStackParamList = {
   };
   ForumThreadScreen: {
     forumID: string;
+    forumListData?: ForumListData;
   };
   AlertKeywordsSettingsScreen: undefined;
   MuteKeywordsSettingsScreen: undefined;

@@ -87,7 +87,11 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       )}
     </View>
   );
-  const onPress = () => forumNavigation.push(CommonStackComponents.forumThreadScreen, {forumID: forumListData.forumID});
+  const onPress = () =>
+    forumNavigation.push(CommonStackComponents.forumThreadScreen, {
+      forumID: forumListData.forumID,
+      forumListData: forumListData,
+    });
 
   return (
     <ForumThreadActionsMenu
