@@ -1,26 +1,28 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
-import {Dispatch, ReactNode, SetStateAction, useCallback} from 'react';
+import {ReactNode, useCallback, useState} from 'react';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {useAppTheme} from '../../../styles/Theme';
 import {ForumListDataActions} from '../../Reducers/Forum/ForumListDataReducer';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
+import {FavoriteMenuItem} from '../Items/FavoriteMenuItem';
+import {MuteMenuItem} from '../Items/MuteMenuItem';
+import {QueryKey, useQueryClient} from '@tanstack/react-query';
+import {ModerateMenuItem} from '../Items/ModerateMenuItem';
+import {HelpMenuItem} from '../Items/HelpMenuItem';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
-  setForumData: Dispatch<SetStateAction<ForumData | undefined>>;
-  setRefreshing: Dispatch<SetStateAction<boolean>>;
+  invalidationQueryKey: QueryKey;
 }
 
 const helpContent = [
@@ -28,15 +30,16 @@ const helpContent = [
   'Moderators or the forum creator can pin posts to the forum.',
 ];
 
-export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefreshing}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {profilePublicData} = useUserData();
   const commonNavigation = useCommonStack();
-  const theme = useAppTheme();
   const {dispatchForumListData} = useTwitarr();
   const relationMutation = useForumRelationMutation();
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -58,10 +61,7 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
         },
         {
           onSuccess: () => {
-            setForumData({
-              ...forumData,
-              isFavorite: !forumData.isFavorite,
-            });
+            queryClient.invalidateQueries(invalidationQueryKey);
             dispatchForumListData({
               type: ForumListDataActions.updateRelations,
               forumID: forumData.forumID,
@@ -69,11 +69,14 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
               isFavorite: !forumData.isFavorite,
             });
           },
-          onSettled: () => setRefreshing(false),
+          onSettled: () => {
+            setRefreshing(false);
+            closeMenu();
+          },
         },
       );
     }
-  }, [dispatchForumListData, forumData, relationMutation, setForumData, setRefreshing]);
+  }, [dispatchForumListData, forumData, invalidationQueryKey, queryClient, relationMutation]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -86,10 +89,7 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
         },
         {
           onSuccess: () => {
-            setForumData({
-              ...forumData,
-              isMuted: !forumData.isMuted,
-            });
+            queryClient.invalidateQueries(invalidationQueryKey);
             dispatchForumListData({
               type: ForumListDataActions.updateRelations,
               forumID: forumData.forumID,
@@ -97,11 +97,14 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
               isFavorite: forumData.isFavorite,
             });
           },
-          onSettled: () => setRefreshing(false),
+          onSettled: () => {
+            setRefreshing(false);
+            closeMenu();
+          },
         },
       );
     }
-  }, [dispatchForumListData, forumData, relationMutation, setForumData, setRefreshing]);
+  }, [dispatchForumListData, forumData, invalidationQueryKey, queryClient, relationMutation]);
 
   return (
     <Menu
@@ -118,14 +121,20 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
           });
         }}
       />
-      <Menu.Item
-        title={'Favorite'}
-        leadingIcon={AppIcons.favorite}
+      <Divider bold={true} />
+      <FavoriteMenuItem
         onPress={handleFavorite}
         disabled={forumData.isMuted}
+        isFavorite={forumData.isFavorite}
+        refreshing={refreshing}
       />
       {forumData.creator.userID !== profilePublicData?.header.userID && (
-        <Menu.Item title={'Mute'} leadingIcon={AppIcons.mute} onPress={handleMute} disabled={forumData.isFavorite} />
+        <MuteMenuItem
+          onPress={handleMute}
+          disabled={forumData.isFavorite}
+          isMuted={forumData.isMuted}
+          refreshing={refreshing}
+        />
       )}
       {forumData.creator.userID === profilePublicData?.header.userID && (
         <>
@@ -163,31 +172,16 @@ export const ForumThreadScreenActionsMenu = ({forumData, setForumData, setRefres
       {hasModerator && (
         <>
           <PostAsModeratorMenuItem closeMenu={closeMenu} />
-          <Menu.Item
-            dense={false}
-            leadingIcon={AppIcons.moderator}
-            title={'Moderate'}
-            onPress={() => {
-              commonNavigation.push(CommonStackComponents.siteUIScreen, {
-                resource: 'forum',
-                id: forumData.forumID,
-                moderate: true,
-              });
-              closeMenu();
-            }}
+          <ModerateMenuItem
+            closeMenu={closeMenu}
+            resourceID={forumData.forumID}
+            resource={'forum'}
+            navigation={commonNavigation}
           />
           <Divider bold={true} />
         </>
       )}
-      <Menu.Item
-        leadingIcon={AppIcons.help}
-        title={'Help'}
-        onPress={() => {
-          closeMenu();
-          setModalContent(<HelpModalView text={helpContent} />);
-          setModalVisible(true);
-        }}
-      />
+      <HelpMenuItem helpContent={helpContent} closeMenu={closeMenu} />
     </Menu>
   );
 };

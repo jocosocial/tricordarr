@@ -41,7 +41,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID);
   const [refreshing, setRefreshing] = useState(false);
-  const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
+  const {forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
   const {profilePublicData} = useUserData();
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
@@ -83,10 +83,10 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   const getNavButtons = useCallback(() => {
     // Typescript struggles
-    if (!forumData) {
+    if (!data?.pages[0]) {
       return <></>;
     }
-    const eventID = forumData?.eventID;
+    const eventID = data.pages[0].eventID;
 
     return (
       <View>
@@ -100,14 +100,13 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
             />
           )}
           <ForumThreadScreenActionsMenu
-            forumData={forumData}
-            setForumData={setForumData}
-            setRefreshing={setRefreshing}
+            forumData={data.pages[0]}
+            invalidationQueryKey={[`/forum/${route.params.forumID}`]}
           />
         </HeaderButtons>
       </View>
     );
-  }, [setForumData, forumData, onRefresh, navigation]);
+  }, [data?.pages, navigation, onRefresh, route.params.forumID]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -118,12 +117,11 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     if (data && data.pages && isFocused) {
       const postListData = data.pages.flatMap(fd => fd.posts);
-      console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts and ForumData.');
+      console.log('[ForumThreadScreen.tsx] Setting ForumThreadPosts.');
       dispatchForumPosts({
         type: ForumPostListActions.setList,
         postList: postListData.reverse(),
       });
-      setForumData(data.pages[0]);
       // This is a hack to get around unread counts on first load.
       // The spread operator is to ensure a copy of the object that doesn't update with the list
       // when the mark-as-read action occurs.
@@ -133,16 +131,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         setForumListItem(item ? {...item} : undefined);
       }
     }
-  }, [
-    data,
-    dispatchForumPosts,
-    setForumData,
-    isFocused,
-    setForumListItem,
-    forumListData,
-    forumListItem,
-    // forumListDataUser,
-  ]);
+  }, [data, dispatchForumPosts, isFocused, setForumListItem, forumListData, forumListItem]);
 
   useEffect(() => {
     if (forumListItem) {
@@ -156,7 +145,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
-    if (!forumData) {
+    if (!data?.pages[0]) {
       setErrorMessage('Forum Data missing? This is definitely a bug.');
       formikHelpers.setSubmitting(false);
       return;
@@ -171,7 +160,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
     }
     postCreateMutation.mutate(
       {
-        forumID: forumData.forumID,
+        forumID: data.pages[0].forumID,
         postData: values,
       },
       {
@@ -213,15 +202,15 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
   return (
     <AppView>
       <PostAsUserBanner />
-      <ListTitleView title={forumData?.title} />
-      {forumData?.isLocked && <ForumLockedView />}
+      <ListTitleView title={data.pages[0].title} />
+      {data.pages[0].isLocked && <ForumLockedView />}
       <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
         invertList={true}
-        forumData={forumData}
+        forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         maintainViewPosition={true}
         getListHeader={undefined}
@@ -229,7 +218,7 @@ export const ForumThreadScreen = ({route, navigation}: Props) => {
         forumListData={forumListItem}
         hasNextPage={hasNextPage}
       />
-      {(!forumData?.isLocked || hasModerator) && (
+      {(!data.pages[0].isLocked || hasModerator) && (
         <ContentPostForm
           onSubmit={onPostSubmit}
           formRef={postFormRef}

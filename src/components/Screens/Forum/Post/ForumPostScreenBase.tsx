@@ -16,6 +16,7 @@ import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {useCommonStack} from '../../../Navigation/CommonScreens';
+import {useIsFocused} from '@react-navigation/native';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -51,6 +52,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
+  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -109,7 +111,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   // }, [isFocused]);
 
   useEffect(() => {
-    if (data) {
+    if (data && isFocused) {
       console.log('[ForumPostScreenBase.tsx] Setting ForumPosts.');
       dispatchForumPosts({
         type: ForumPostListActions.setList,
