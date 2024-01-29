@@ -2,14 +2,9 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
-import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
-import {useEventFavoriteMutation, useEventFavoritesQuery} from '../../Queries/Events/EventFavoriteQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {getCruiseDay} from '../../../libraries/DateTime';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useEventsQuery} from '../../Queries/Events/EventQueries';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface EventCardActionsMenuProps {
   anchor: JSX.Element;
@@ -21,14 +16,7 @@ interface EventCardActionsMenuProps {
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
   const eventFavoriteMutation = useEventFavoriteMutation();
-  const {dispatchScheduleList} = useTwitarr();
-  const {refetchUserNotificationData} = useUserNotificationData();
-  const {data: favoritesData, refetch: refetchFavorites} = useEventFavoritesQuery({enabled: false});
-  const {appConfig} = useConfig();
-  const eventCruiseDay = getCruiseDay(new Date(props.eventData.startTime), appConfig.cruiseStartDate.getDay()) + 1;
-  const {refetch: refetchEvents} = useEventsQuery({
-    cruiseDay: eventCruiseDay,
-  });
+  const queryClient = useQueryClient();
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -44,24 +32,15 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         action: props.eventData.isFavorite ? 'unfavorite' : 'favorite',
       },
       {
-        onSuccess: () => {
-          dispatchScheduleList({
-            type: ScheduleListActions.updateEvent,
-            newEvent: {
-              ...props.eventData,
-              isFavorite: !props.eventData.isFavorite,
-            },
-          });
-          // Update the user notification data in case this was/is a favorite.
-          refetchUserNotificationData();
-          // Update the event query so that any filters reflect correctly.
-          // Some day this should QueryClient.setQueryData for the appropriate
-          // query instead.
-          refetchEvents();
-          // Update favorites
-          if (favoritesData !== undefined) {
-            refetchFavorites();
-          }
+        onSuccess: async () => {
+          // If this is too slow to reload, a setQueryData here may be in order.
+          await Promise.all([
+            queryClient.invalidateQueries(['/events']),
+            queryClient.invalidateQueries([`/events/${props.eventData.eventID}`]),
+            queryClient.invalidateQueries(['/events/favorites']),
+            // Update the user notification data in case this was/is a favorite.
+            queryClient.invalidateQueries(['/notification/global']),
+          ]);
         },
         onSettled: () => {
           if (props.setRefreshing) {

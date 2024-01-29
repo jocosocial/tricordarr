@@ -3,8 +3,6 @@ import {FezData, ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
 import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
-import {useEventListReducer} from '../../Reducers/Schedule/EventListReducer';
-import {useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import {useForumListDataReducer} from '../../Reducers/Forum/ForumListDataReducer';
@@ -16,8 +14,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const [fezList, dispatchFezList] = useFezListReducer([]);
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer();
   const [searchString, setSearchString] = useState('');
-  const [eventList, dispatchEventList] = useEventListReducer([]);
-  const [scheduleList, dispatchScheduleList] = useScheduleListReducer([]);
   const [lfgList, dispatchLfgList] = useFezListReducer([]);
   const [lfg, setLfg] = useState<FezData>();
   const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
@@ -67,10 +63,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
         dispatchFezPostsData,
         searchString,
         setSearchString,
-        eventList,
-        dispatchEventList,
-        scheduleList,
-        dispatchScheduleList,
         lfgList,
         dispatchLfgList,
         lfg,
