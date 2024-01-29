@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
@@ -17,7 +16,6 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
@@ -34,7 +32,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {refetchUserNotificationData} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
-  const {dispatchForumPosts} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -60,13 +57,9 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
     if (isFocused) {
-      console.log('[ForumCategoriesScreen.tsx] Clearing ForumPosts, ForumList, and ForumData');
-      dispatchForumPosts({
-        type: ForumPostListActions.clear,
-      });
       clearPrivileges();
     }
-  }, [clearPrivileges, dispatchForumPosts, isFocused]);
+  }, [clearPrivileges, isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

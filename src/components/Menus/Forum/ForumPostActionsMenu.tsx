@@ -65,15 +65,16 @@ export const ForumPostActionsMenu = ({
               closeMenu();
               commonNavigation.push(CommonStackComponents.forumPostEditScreen, {
                 postData: forumPost,
+                forumData: forumData,
               });
             }}
           />
           <Divider bold={true} />
         </>
       )}
-      <ForumPostActionsDeleteItem forumPost={forumPost} closeMenu={closeMenu} />
+      <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       <Divider bold={true} />
-      <ForumPostActionsFavoriteItem forumPost={forumPost} />
+      <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} />
       {enablePinnedPosts && (
         <>
           <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} />

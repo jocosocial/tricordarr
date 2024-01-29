@@ -97,6 +97,7 @@ export type CommonStackParamList = {
   };
   ForumPostEditScreen: {
     postData: PostData;
+    forumData?: ForumData;
   };
   SeamailCreateScreen?: {
     initialUserHeader?: UserHeader;

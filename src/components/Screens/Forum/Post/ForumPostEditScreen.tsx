@@ -4,18 +4,17 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ImageUploadData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostMutations';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
 
 export const ForumPostEditScreen = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
-  const {dispatchForumPosts} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
     values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
@@ -25,11 +24,17 @@ export const ForumPostEditScreen = ({route, navigation}: Props) => {
         postContentData: values,
       },
       {
-        onSuccess: response => {
-          dispatchForumPosts({
-            type: ForumPostListActions.updatePost,
-            newPost: response.data,
-          });
+        onSuccess: async () => {
+          await Promise.all([
+            queryClient.invalidateQueries([`/forum/post/${route.params.postData.postID}`]),
+            queryClient.invalidateQueries(['/forum/post/search']),
+            queryClient.invalidateQueries([`/forum/post/${route.params.postData.postID}/forum`]),
+          ]);
+          if (route.params.forumData) {
+            await Promise.all([
+              queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`]),
+            ]);
+          }
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

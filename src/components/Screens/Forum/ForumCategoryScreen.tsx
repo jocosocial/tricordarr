@@ -14,8 +14,6 @@ import {ForumThreadsCategoryView} from '../../Views/Forum/ForumThreadsCategoryVi
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useIsFocused} from '@react-navigation/native';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {AppView} from '../../Views/AppView';
 import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
@@ -36,7 +34,6 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();
   const {setModalVisible, setModalContent} = useModal();
   const isFocused = useIsFocused();
-  const {dispatchForumPosts} = useTwitarr();
   const {clearPrivileges} = usePrivilege();
 
   const handleHelp = useCallback(() => {
@@ -59,16 +56,12 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
     if (isFocused) {
-      console.log('[ForumCategoryScreen.tsx] Clearing ForumPosts and ForumData');
-      dispatchForumPosts({
-        type: ForumPostListActions.clear,
-      });
       clearPrivileges();
     }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, getNavButtons, navigation, dispatchForumPosts, clearPrivileges]);
+  }, [isFocused, getNavButtons, navigation, clearPrivileges]);
 
   if (forumFilter) {
     return (
