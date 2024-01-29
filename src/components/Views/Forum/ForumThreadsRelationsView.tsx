@@ -8,7 +8,6 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries';
-import {useIsFocused} from '@react-navigation/native';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {NoResultsView} from '../Static/NoResultsView';
@@ -40,7 +39,6 @@ export const ForumThreadsRelationsView = ({
   });
   const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
-  const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
 
   const handleLoadNext = () => {
@@ -63,10 +61,10 @@ export const ForumThreadsRelationsView = ({
   };
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
+    if (data && data.pages) {
       setForumListData(data.pages.flatMap(p => p.forumThreads || []))
     }
-  }, [data, setForumListData, isFocused]);
+  }, [data, setForumListData]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

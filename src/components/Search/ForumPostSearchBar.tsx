@@ -12,7 +12,6 @@ import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
-import {useIsFocused} from '@react-navigation/native';
 import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
 
 export const ForumPostSearchBar = () => {
@@ -44,7 +43,6 @@ export const ForumPostSearchBar = () => {
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useForumStackNavigation();
   const flatListRef = useRef<FlatList<PostData>>(null);
-  const isFocused = useIsFocused();
 
   const handleHelpModal = useCallback(() => {
     setModalContent(<HelpModalView text={forumPostHelpText} />);
@@ -109,10 +107,10 @@ export const ForumPostSearchBar = () => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages && isFocused && queryEnable) {
+    if (data && data.pages && queryEnable) {
       setForumPosts(data.pages.flatMap(p => p.posts))
     }
-  }, [data, setForumPosts, isFocused, queryEnable]);
+  }, [data, setForumPosts, queryEnable]);
 
   return (
     <>
