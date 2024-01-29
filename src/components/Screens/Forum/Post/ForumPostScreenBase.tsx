@@ -6,17 +6,15 @@ import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import {useModal} from '../../../Context/Contexts/ModalContext';
-import {HelpModalView} from '../../../Views/Modals/HelpModalView';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {useCommonStack} from '../../../Navigation/CommonScreens';
 import {useIsFocused} from '@react-navigation/native';
+import {ForumPostScreenBaseActionsMenu} from '../../../Menus/Forum/ForumPostScreenBaseActionsMenu';
+import {HeaderButtons} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -24,13 +22,10 @@ interface ForumPostScreenBaseProps {
   title?: string;
 }
 
-export const forumPostHelpText = [
-  'Long-press a post to favorite, edit, or add a reaction.',
-  'Tapping on a post will take you to the posts forum to see it in context.',
-  'Favoriting a post will save it to an easily accessible Personal Category on the Forums page.',
-  'You can edit or delete your own forum posts.',
-];
-
+/**
+ * Used for screens listing posts such as Favorites, Hashtags, Mentions, By User, By Self.
+ * Not used for Post Search
+ */
 export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
   const {
     data,
@@ -47,17 +42,11 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   const [refreshing, setRefreshing] = useState(false);
   const {forumPosts, dispatchForumPosts} = useTwitarr();
   const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
-  const {setModalContent, setModalVisible} = useModal();
   const flatListRef = useRef<FlatList<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
   const isFocused = useIsFocused();
-
-  const handleHelpModal = useCallback(() => {
-    setModalContent(<HelpModalView text={forumPostHelpText} />);
-    setModalVisible(true);
-  }, [setModalContent, setModalVisible]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -68,12 +57,11 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
-          <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelpModal} />
+          <ForumPostScreenBaseActionsMenu onReload={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [handleHelpModal, onRefresh]);
+  }, [onRefresh]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -121,7 +109,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     if (userNotificationData?.newForumMentionCount) {
       refetchUserNotificationData();
     }
-  }, [data, dispatchForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
+  }, [data, dispatchForumPosts, isFocused, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
   if (isLoading || isLoadingFavorites) {
     return <LoadingView />;

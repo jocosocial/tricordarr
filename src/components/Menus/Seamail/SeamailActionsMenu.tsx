@@ -15,10 +15,12 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
 interface SeamailActionsMenuProps {
   fez: FezData;
   enableDetails?: boolean;
+  onRefresh: () => void;
 }
 
 const helpContent = [
@@ -26,7 +28,7 @@ const helpContent = [
   'Press the title to easily access details.',
 ];
 
-export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMenuProps) => {
+export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const seamailNavigation = useSeamailStack();
   const {setModalContent, setModalVisible} = useModal();
@@ -82,6 +84,8 @@ export const SeamailActionsMenu = ({fez, enableDetails = true}: SeamailActionsMe
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
+      <Divider bold={true} />
       {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}
       {fez.members && (
         <Menu.Item

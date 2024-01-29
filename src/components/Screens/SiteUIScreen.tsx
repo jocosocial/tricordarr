@@ -9,6 +9,7 @@ import {useConfig} from '../Context/Contexts/ConfigContext';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {CommonStackComponents, CommonStackParamList} from '../Navigation/CommonScreens';
+import {ReloadMenuItem} from '../Menus/Items/ReloadMenuItem';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
@@ -61,7 +62,7 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
               setKey(String(Date.now()));
             }}
           />
-          <Item title={'Reload'} iconName={AppIcons.reload} onPress={() => webViewRef.current?.reload()} />
+          <ReloadMenuItem onReload={() => webViewRef.current?.reload()} />
         </HeaderButtons>
       </View>
     ),

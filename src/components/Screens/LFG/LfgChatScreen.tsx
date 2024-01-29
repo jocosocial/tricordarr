@@ -11,9 +11,8 @@ import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
 import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
@@ -72,8 +71,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
-          <SeamailActionsMenu fez={lfg} enableDetails={false} />
+          <SeamailActionsMenu fez={lfg} enableDetails={false} onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
