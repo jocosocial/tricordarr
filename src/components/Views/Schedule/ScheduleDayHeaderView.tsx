@@ -11,6 +11,7 @@ interface ScheduleDayHeaderViewProps {
   navigateNextDay?: () => void;
   selectedCruiseDay: number;
   disableDayButtons?: boolean;
+  hideDayButtons?: boolean;
 }
 
 export const ScheduleDayHeaderView = ({
@@ -18,6 +19,7 @@ export const ScheduleDayHeaderView = ({
   navigateNextDay,
   selectedCruiseDay,
   disableDayButtons,
+  hideDayButtons = false,
 }: ScheduleDayHeaderViewProps) => {
   const {commonStyles} = useStyles();
   const {cruiseDays, adjustedCruiseDayToday, cruiseLength} = useCruise();
@@ -30,6 +32,7 @@ export const ScheduleDayHeaderView = ({
     headerTextContainer: {
       ...commonStyles.flexGrow,
       ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
     },
     headerView: {
       ...commonStyles.flexRow,
@@ -39,22 +42,26 @@ export const ScheduleDayHeaderView = ({
 
   return (
     <View style={styles.headerView}>
-      <IconButton
-        icon={AppIcons.back}
-        onPress={navigatePreviousDay}
-        disabled={disableDayButtons || selectedCruiseDay === 1}
-      />
+      {!hideDayButtons && (
+        <IconButton
+          icon={AppIcons.back}
+          onPress={navigatePreviousDay}
+          disabled={disableDayButtons || selectedCruiseDay === 1}
+        />
+      )}
       <View style={styles.headerTextContainer}>
         <Text style={styles.headerText}>
           {format(cruiseDays[selectedCruiseDay - 1].date, 'eeee LLLL do')}
           {adjustedCruiseDayToday === selectedCruiseDay ? ' (Today)' : ''}
         </Text>
       </View>
-      <IconButton
-        icon={AppIcons.forward}
-        onPress={navigateNextDay}
-        disabled={disableDayButtons || selectedCruiseDay === cruiseLength}
-      />
+      {!hideDayButtons && (
+        <IconButton
+          icon={AppIcons.forward}
+          onPress={navigateNextDay}
+          disabled={disableDayButtons || selectedCruiseDay === cruiseLength}
+        />
+      )}
     </View>
   );
 };
