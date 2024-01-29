@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Text, TouchableRipple} from 'react-native-paper';
+import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcon} from '../../Icons/AppIcon';
@@ -13,10 +13,14 @@ export const ModeratorCard = () => {
 
   const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`);
 
+  if (!userNotificationData?.moderatorData) {
+    return <></>;
+  }
+
   const interactionCount =
-    (userNotificationData?.moderatorData?.openReportCount || 0) +
-    (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount || 0) +
-    (userNotificationData?.moderatorData?.newModeratorForumMentionCount || 0);
+    userNotificationData.moderatorData.openReportCount +
+    userNotificationData.moderatorData.newModeratorSeamailMessageCount +
+    userNotificationData.moderatorData.newModeratorForumMentionCount;
 
   return (
     <Card style={[commonStyles.marginBottom]}>
@@ -30,22 +34,21 @@ export const ModeratorCard = () => {
             {interactionCount ? (
               <>
                 <Text>
-                  {userNotificationData?.moderatorData?.openReportCount} open{' '}
-                  {pluralize('report', userNotificationData?.moderatorData?.openReportCount)}
+                  {userNotificationData.moderatorData.openReportCount} open{' '}
+                  {pluralize('report', userNotificationData.moderatorData.openReportCount)}
                 </Text>
                 <Text>
-                  {userNotificationData?.moderatorData?.newModeratorSeamailMessageCount} new{' '}
-                  {pluralize('message', userNotificationData?.moderatorData?.newModeratorSeamailMessageCount)}
+                  {userNotificationData.moderatorData.newModeratorSeamailMessageCount} new{' '}
+                  {pluralize('message', userNotificationData.moderatorData.newModeratorSeamailMessageCount)}
                 </Text>
                 <Text>
-                  {userNotificationData?.moderatorData?.newModeratorForumMentionCount} new{' '}
-                  {pluralize('mention', userNotificationData?.moderatorData?.newModeratorForumMentionCount)}
+                  {userNotificationData.moderatorData.newModeratorForumMentionCount} new{' '}
+                  {pluralize('mention', userNotificationData.moderatorData.newModeratorForumMentionCount)}
                 </Text>
               </>
             ) : (
               <Text>No new interactions</Text>
             )}
-
           </Card.Content>
         </View>
       </TouchableRipple>
