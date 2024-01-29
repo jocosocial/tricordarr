@@ -4,6 +4,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
 export const EventActionsMenu = ({onRefresh}: {onRefresh: () => void}) => {
   const [visible, setVisible] = useState(false);
@@ -21,14 +22,7 @@ export const EventActionsMenu = ({onRefresh}: {onRefresh: () => void}) => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
-        title={'Reload'}
-        leadingIcon={AppIcons.reload}
-        onPress={() => {
-          closeMenu();
-          onRefresh();
-        }}
-      />
+      <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}

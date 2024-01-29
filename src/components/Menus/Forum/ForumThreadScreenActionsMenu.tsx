@@ -19,10 +19,12 @@ import {MuteMenuItem} from '../Items/MuteMenuItem';
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {ModerateMenuItem} from '../Items/ModerateMenuItem';
 import {HelpMenuItem} from '../Items/HelpMenuItem';
+import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
   invalidationQueryKey: QueryKey;
+  onRefresh: () => void;
 }
 
 const helpContent = [
@@ -30,7 +32,7 @@ const helpContent = [
   'Moderators or the forum creator can pin posts to the forum.',
 ];
 
-export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey, onRefresh}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
@@ -122,6 +124,7 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKey}: 
         }}
       />
       <Divider bold={true} />
+      <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <FavoriteMenuItem
         onPress={handleFavorite}
         disabled={forumData.isMuted}

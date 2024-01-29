@@ -13,7 +13,6 @@ import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
@@ -26,7 +25,7 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
@@ -78,8 +77,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
-          <SeamailActionsMenu fez={fez} />
+          <SeamailActionsMenu fez={fez} onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );

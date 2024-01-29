@@ -12,8 +12,6 @@ import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScreenActionsMenu';
-import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
-import {useAppTheme} from '../../../../styles/Theme';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ListTitleView} from '../../../Views/ListTitleView';
@@ -49,8 +47,6 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const {forumData, setForumData, forumPosts, dispatchForumPosts, forumListData, dispatchForumListData} = useTwitarr();
   const {profilePublicData} = useUserData();
-  const relationMutation = useForumRelationMutation();
-  const theme = useAppTheme();
   const startScreenAtBottom = !route.params.postID;
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
@@ -82,62 +78,6 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
     }
   };
 
-  const handleFavorite = useCallback(() => {
-    if (forumData) {
-      setRefreshing(true);
-      relationMutation.mutate(
-        {
-          forumID: forumData.forumID,
-          relationType: 'favorite',
-          action: forumData.isFavorite ? 'delete' : 'create',
-        },
-        {
-          onSuccess: () => {
-            setForumData({
-              ...forumData,
-              isFavorite: !forumData.isFavorite,
-            });
-            dispatchForumListData({
-              type: ForumListDataActions.updateRelations,
-              forumID: forumData.forumID,
-              isMuted: forumData.isMuted,
-              isFavorite: !forumData.isFavorite,
-            });
-          },
-          onSettled: () => setRefreshing(false),
-        },
-      );
-    }
-  }, [dispatchForumListData, forumData, relationMutation, setForumData]);
-
-  const handleMute = useCallback(() => {
-    if (forumData) {
-      setRefreshing(true);
-      relationMutation.mutate(
-        {
-          forumID: forumData.forumID,
-          relationType: 'mute',
-          action: forumData.isMuted ? 'delete' : 'create',
-        },
-        {
-          onSuccess: () => {
-            setForumData({
-              ...forumData,
-              isMuted: !forumData.isMuted,
-            });
-            dispatchForumListData({
-              type: ForumListDataActions.updateRelations,
-              forumID: forumData.forumID,
-              isMuted: !forumData.isMuted,
-              isFavorite: forumData.isFavorite,
-            });
-          },
-          onSettled: () => setRefreshing(false),
-        },
-      );
-    }
-  }, [dispatchForumListData, forumData, relationMutation, setForumData]);
-
   const getNavButtons = useCallback(() => {
     // Typescript struggles
     if (!forumData) {
@@ -148,7 +88,6 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Reload'} iconName={AppIcons.reload} onPress={onRefresh} />
           {eventID && (
             <Item
               title={'Event'}
@@ -156,53 +95,15 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
               onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: eventID})}
             />
           )}
-          <Item
-            title={'Favorite'}
-            color={
-              forumData.isFavorite
-                ? theme.colors.twitarrYellow
-                : forumData.isMuted
-                ? theme.colors.onSurfaceDisabled
-                : undefined
-            }
-            iconName={AppIcons.favorite}
-            onPress={handleFavorite}
-            disabled={forumData.isMuted}
-          />
-          {forumData.creator.userID !== profilePublicData?.header.userID && (
-            <Item
-              title={'Mute'}
-              color={
-                forumData.isMuted
-                  ? theme.colors.twitarrNegativeButton
-                  : forumData.isFavorite
-                  ? theme.colors.onSurfaceDisabled
-                  : undefined
-              }
-              iconName={AppIcons.mute}
-              onPress={handleMute}
-              disabled={forumData.isFavorite}
-            />
-          )}
           <ForumThreadScreenActionsMenu
             forumData={forumData}
             invalidationQueryKey={[`/forum/post/${route.params.postID}/forum`]}
+            onRefresh={onRefresh}
           />
         </HeaderButtons>
       </View>
     );
-  }, [
-    forumData,
-    onRefresh,
-    theme.colors.twitarrYellow,
-    theme.colors.onSurfaceDisabled,
-    theme.colors.twitarrNegativeButton,
-    handleFavorite,
-    profilePublicData?.header.userID,
-    handleMute,
-    route.params.postID,
-    navigation,
-  ]);
+  }, [forumData, onRefresh, route.params.postID, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
