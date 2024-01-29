@@ -21,8 +21,6 @@ import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../librar
 import {ScheduleEventFilterMenu} from '../../Menus/Events/ScheduleEventFilterMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {ScheduleListActions} from '../../Reducers/Schedule/ScheduleListReducer';
 import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
@@ -78,7 +76,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
-  const {scheduleList, dispatchScheduleList} = useTwitarr();
+  const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
 
   const getScrollIndex = useCallback(
     (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {
@@ -200,13 +198,9 @@ export const EventDayScreen = ({navigation, route}: Props) => {
         }
       });
       console.log('Dispatching', eventData?.length, 'events', lfgList.length, 'LFGs');
-      dispatchScheduleList({
-        type: ScheduleListActions.setList,
-        eventList: eventList,
-        fezList: lfgList,
-      });
+      setScheduleList(eventList);
     },
-    [dispatchScheduleList, eventData, lfgJoinedData, lfgOpenData],
+    [setScheduleList, eventData, lfgJoinedData, lfgOpenData],
   );
 
   useEffect(() => {
@@ -216,7 +210,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    console.log('ScheduleDayScreen::useEffect::dispatchScheduleList');
+    console.log('[EventDayScreen.tsx] Starting buildScheduleList useEffect.');
     const filterSettings: ScheduleFilterSettings = {
       eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
       eventFavoriteFilter: eventFavoriteFilter,
@@ -228,12 +222,8 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     appConfig.schedule.eventsShowJoinedLfgs,
     appConfig.schedule.eventsShowOpenLfgs,
     buildScheduleList,
-    dispatchScheduleList,
-    eventData,
     eventFavoriteFilter,
     eventTypeFilter,
-    lfgJoinedData,
-    lfgOpenData,
   ]);
 
   useEffect(() => {

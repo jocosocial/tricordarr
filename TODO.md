@@ -5,6 +5,7 @@ Backlog
 Work Queue
 
 Nightly
+* Events screen is fetching more days than its supposed to.
 
 * State Issues
   * Pinning a post needs to invalidate the Forum query so that use effect doesn't rewrite local state

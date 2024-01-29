@@ -1,16 +1,7 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {
-  EventData,
-  FezData,
-  FezPostData,
-  ForumData,
-  ForumListData,
-  PostData,
-} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezPostData, ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
-import {EventListActionsType} from '../../Reducers/Schedule/EventListReducer';
-import {ScheduleListActionsType} from '../../Reducers/Schedule/ScheduleListReducer';
 import {ForumPostListActionsType} from '../../Reducers/Forum/ForumPostListReducer';
 import {ForumListDataActionsType} from '../../Reducers/Forum/ForumListDataReducer';
 
@@ -23,10 +14,6 @@ interface TwitarrContextType {
   dispatchFezPostsData: Dispatch<FezPostsActionsType>;
   searchString: string;
   setSearchString: Dispatch<SetStateAction<string>>;
-  eventList: EventData[];
-  dispatchEventList: Dispatch<EventListActionsType>;
-  scheduleList: (EventData | FezData)[];
-  dispatchScheduleList: Dispatch<ScheduleListActionsType>;
   lfgList: FezData[];
   dispatchLfgList: Dispatch<FezListActionsType>;
   lfg?: FezData;

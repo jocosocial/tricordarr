@@ -12,7 +12,6 @@ import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ScheduleFilterSettings} from '../../../libraries/Types';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {ScheduleListActions, useScheduleListReducer} from '../../Reducers/Schedule/ScheduleListReducer';
 import {EventFAB} from '../../Buttons/FloatingActionButtons/EventFAB';
 import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView';
 
@@ -46,7 +45,7 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();
   const listRef = useRef<FlatList<EventData | FezData>>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [scheduleList, dispatchScheduleList] = useScheduleListReducer([]);
+  const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -69,13 +68,9 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
           eventList.push(event);
         }
       });
-      dispatchScheduleList({
-        type: ScheduleListActions.setList,
-        eventList: eventList,
-        fezList: lfgList,
-      });
+      setScheduleList(eventList);
     },
-    [dispatchScheduleList, eventData, lfgJoinedData],
+    [setScheduleList, eventData, lfgJoinedData],
   );
 
   useEffect(() => {
@@ -83,14 +78,7 @@ export const EventYourDayScreen = ({navigation, route}: Props) => {
       showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
     };
     buildScheduleList(filterSettings);
-  }, [
-    appConfig.schedule.eventsShowJoinedLfgs,
-    appConfig.schedule.eventsShowOpenLfgs,
-    buildScheduleList,
-    dispatchScheduleList,
-    eventData,
-    lfgJoinedData,
-  ]);
+  }, [appConfig.schedule.eventsShowJoinedLfgs, appConfig.schedule.eventsShowOpenLfgs, buildScheduleList]);
 
   if ((appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) || isEventLoading) {
     return <LoadingView />;
