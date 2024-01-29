@@ -4,9 +4,9 @@ Backlog
 * Swiftarr doesnt display the new marker for forums.
   * I'm somewhat cheating this by passing in the ForumListData from the item.
   * We don't have access to that from other flows.
+* Drawer can only call linking. No navigation available. Is there a way?
 
 Work Queue
+* Audit linking usage
 
 Nightly
-* Anything in the drawer needs to move to common. Including all of settings :(
-  * access from any root screen of a tab
