@@ -1,5 +1,5 @@
 import React from 'react';
-import {PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {UserAvatarImage} from '../../../Images/UserAvatarImage';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
 import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';
@@ -20,9 +20,10 @@ interface ForumPostListItemProps {
   };
   enableShowInThread?: boolean;
   enablePinnedPosts?: boolean;
+  forumData?: ForumData;
 }
 
-export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts}: ForumPostListItemProps) => {
+export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts, forumData}: ForumPostListItemProps) => {
   const forumNavigation = useForumStackNavigation();
 
   const handleAuthorAvatarPress = () => {
@@ -42,6 +43,7 @@ export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPos
           showAuthor={true}
           enableShowInThread={enableShowInThread}
           enablePinnedPosts={enablePinnedPosts}
+          forumData={forumData}
         />
         {postData.images &&
           postData.images.map((image, index) => {

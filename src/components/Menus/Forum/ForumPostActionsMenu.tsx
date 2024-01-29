@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -20,6 +20,7 @@ interface ForumPostActionsMenuProps {
   forumPost: PostData;
   enableShowInThread?: boolean;
   enablePinnedPosts?: boolean;
+  forumData?: ForumData;
 }
 
 export const ForumPostActionsMenu = ({
@@ -29,6 +30,7 @@ export const ForumPostActionsMenu = ({
   forumPost,
   enableShowInThread,
   enablePinnedPosts,
+  forumData,
 }: ForumPostActionsMenuProps) => {
   const {profilePublicData} = useUserData();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
@@ -74,7 +76,7 @@ export const ForumPostActionsMenu = ({
       <ForumPostActionsFavoriteItem forumPost={forumPost} />
       {enablePinnedPosts && (
         <>
-          <ForumPostActionsPinItem forumPost={forumPost} />
+          <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} />
           <Divider bold={true} />
         </>
       )}
