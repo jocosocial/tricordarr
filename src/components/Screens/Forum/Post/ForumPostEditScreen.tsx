@@ -4,12 +4,12 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ImageUploadData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
-import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostQueries';
 import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
 import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostMutations';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
 

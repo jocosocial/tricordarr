@@ -3,13 +3,13 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
-import {useForumRelationMutation} from '../../../Queries/Forum/ForumRelationQueries';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
-import {useForumPinMutation} from '../../../Queries/Forum/ForumPinMutations';
+import {useForumPinMutation} from '../../../Queries/Forum/ForumThreadPinMutations';
 import {useForumCategoryPinnedThreadsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
+import {useForumRelationMutation} from '../../../Queries/Forum/ForumThreadRelationMutations';
 
 interface ForumThreadActionsMenuProps {
   anchor: ReactNode;

@@ -14,7 +14,6 @@ import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostQueries';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
@@ -23,6 +22,7 @@ import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries'
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
+import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;

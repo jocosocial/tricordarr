@@ -10,7 +10,7 @@ import {ForumCreateData, PostContentData} from '../../../../libraries/Structs/Co
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
-import {useForumCreateMutation} from '../../../Queries/Forum/ForumMutationQueries';
+import {useForumCreateMutation} from '../../../Queries/Forum/ForumThreadMutationQueries';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';

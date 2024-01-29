@@ -7,7 +7,7 @@ import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu';
 import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
-import {ForumRelationQueryType} from '../../../Queries/Forum/ForumRelationQueries';
+import {ForumRelationQueryType} from '../../../Queries/Forum/ForumThreadRelationQueries';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,

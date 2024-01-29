@@ -11,13 +11,13 @@ import {ReactNode, useCallback, useState} from 'react';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {useForumRelationMutation} from '../../Queries/Forum/ForumRelationQueries';
 import {FavoriteMenuItem} from '../Items/FavoriteMenuItem';
 import {MuteMenuItem} from '../Items/MuteMenuItem';
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {ModerateMenuItem} from '../Items/ModerateMenuItem';
 import {HelpMenuItem} from '../Items/HelpMenuItem';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;

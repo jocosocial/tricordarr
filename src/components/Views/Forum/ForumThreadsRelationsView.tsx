@@ -7,7 +7,7 @@ import {PaddedContentView} from '../Content/PaddedContentView';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumRelationQueries';
+import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries';
 import {useIsFocused} from '@react-navigation/native';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
