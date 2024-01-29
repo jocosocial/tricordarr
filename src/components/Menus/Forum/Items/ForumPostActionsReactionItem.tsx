@@ -1,4 +1,4 @@
-import {useForumPostReactionMutation} from '../../../Queries/Forum/ForumPostBookmarkQueries';
+import {useForumPostReactionMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations';
 import {PostData, PostDetailData} from '../../../../libraries/Structs/ControllerStructs';
 import {LikeType} from '../../../../libraries/Enums/LikeType';
 import {ActivityIndicator, Text} from 'react-native-paper';

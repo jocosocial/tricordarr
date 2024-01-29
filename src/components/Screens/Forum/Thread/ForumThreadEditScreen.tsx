@@ -6,7 +6,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumThreadEditForm} from '../../../Forms/ForumThreadEditForm';
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useForumRenameMutation} from '../../../Queries/Forum/ForumMutationQueries';
+import {useForumRenameMutation} from '../../../Queries/Forum/ForumThreadMutationQueries';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 

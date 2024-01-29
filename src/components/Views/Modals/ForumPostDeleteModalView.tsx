@@ -8,8 +8,8 @@ import {PostData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useForumPostDeleteMutation} from '../../Queries/Forum/ForumPostQueries';
 import {ForumPostListActions} from '../../Reducers/Forum/ForumPostListReducer';
+import {useForumPostDeleteMutation} from '../../Queries/Forum/ForumPostMutations';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

@@ -1,7 +1,7 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useForumPostPinMutation} from '../../../Queries/Forum/ForumPostPinQueries';
+import {useForumPostPinMutation} from '../../../Queries/Forum/ForumPostPinMutations';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useQueryClient} from '@tanstack/react-query';
