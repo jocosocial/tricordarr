@@ -127,12 +127,9 @@ export const EventScreen = ({navigation, route}: Props) => {
       return;
     }
     const deck = guessDeckNumber(eventData.location);
-    let url = 'tricordarr://map';
-    if (deck) {
-      url = `${url}/${deck}`;
-    }
-    console.log(url);
-    Linking.openURL(url);
+    navigation.push(CommonStackComponents.mapScreen, {
+      deckNumber: deck,
+    });
   };
 
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
