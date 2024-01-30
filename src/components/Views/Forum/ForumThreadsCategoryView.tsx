@@ -34,7 +34,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const {
     data: pinnedThreads,
     refetch: refetchPins,
-    isRefetching: isRefetchingPins,
     isLoading: isLoadingPins,
   } = useForumCategoryPinnedThreadsQuery(props.categoryID);
   const [refreshing, setRefreshing] = useState(false);
@@ -63,7 +62,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      setForumListData(data.pages.flatMap(p => p.forumThreads || []))
+      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
 
       const categoryData = data.pages[0];
       if (hasModerator) {
@@ -84,9 +83,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         <View>
           <ScrollingContentView
             isStack={true}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <PaddedContentView padTop={true}>
               <Text>There aren't any forums in this category yet.</Text>
             </PaddedContentView>
@@ -104,9 +101,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
         pinnedThreads={pinnedThreads}

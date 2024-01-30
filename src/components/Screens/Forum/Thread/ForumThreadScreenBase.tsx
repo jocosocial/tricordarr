@@ -61,6 +61,8 @@ export const ForumThreadScreenBase = ({
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
   const queryClient = useQueryClient();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
+  // Needed for useEffect checking.
+  const forumData = data?.pages[0];
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -127,20 +129,20 @@ export const ForumThreadScreenBase = ({
   }, [data, setForumPosts, invertList]);
 
   useEffect(() => {
-    if (data && data.pages[0]) {
+    if (forumData) {
       if (forumListData && forumListData.readCount === forumListData.postCount) {
-        console.log(`[ForumThreadScreenBase.tsx] Forum ${data.pages[0].forumID} has already been read.`);
+        console.log(`[ForumThreadScreenBase.tsx] Forum ${forumData.forumID} has already been read.`);
         return;
       }
-      console.log(`[ForumThreadScreenBase.tsx] Marking forum ${data.pages[0].forumID} as read.`);
-      queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]);
-      queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]);
+      console.log(`[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} as read.`);
+      queryClient.invalidateQueries([`/forum/${forumData.forumID}`]);
+      queryClient.invalidateQueries([`/forum/categories/${forumData.categoryID}`]);
       queryClient.invalidateQueries(['/forum/search']);
-      if (data.pages[0].isPinned) {
-        queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+      if (forumData.isPinned) {
+        queryClient.invalidateQueries([`/forum/categories/${forumData.categoryID}/pinnedforums`]);
       }
     }
-  }, [data?.pages[0], queryClient, forumListData]);
+  }, [forumData, queryClient, forumListData]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
@@ -159,8 +161,7 @@ export const ForumThreadScreenBase = ({
         onSuccess: async () => {
           if (data.pages[0]) {
             await Promise.all([
-              queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
-              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
+              // queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
               queryClient.invalidateQueries(['/forum/search']),
             ]);
             if (data.pages[0].isPinned) {
@@ -169,10 +170,14 @@ export const ForumThreadScreenBase = ({
           }
           formikHelpers.resetForm();
           // https://github.com/jocosocial/swiftarr/issues/237
+          // https://github.com/jocosocial/swiftarr/issues/168
           // Refetch needed to "mark" the forum as read.
-          refetch().then(() => {
-            flatListRef.current?.scrollToOffset({offset: 0, animated: false});
-          });
+          await refetch();
+          await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]);
+          if (data.pages[0].isPinned) {
+            queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+          }
+          flatListRef.current?.scrollToOffset({offset: 0, animated: false});
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
