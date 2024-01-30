@@ -11,10 +11,11 @@ import {CruiseDayMenuItem} from '../Items/CruiseDayMenuItem';
 
 interface ScheduleCruiseDayMenuProps {
   scrollToNow: () => void;
-  route: RouteProp<EventStackParamList, EventStackComponents.eventDayScreen>;
+  screen: EventStackComponents.eventDayScreen | EventStackComponents.eventYourDayScreen;
+  route: RouteProp<EventStackParamList, EventStackComponents.eventDayScreen | EventStackComponents.eventYourDayScreen>;
 }
 
-export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMenuProps) => {
+export const ScheduleCruiseDayMenu = ({scrollToNow, route, screen}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const navigation = useEventStackNavigation();
@@ -23,7 +24,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
   const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
-    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: newCruiseDay});
+    navigation.navigate(screen, {cruiseDay: newCruiseDay});
     closeMenu();
   };
 
@@ -32,7 +33,7 @@ export const ScheduleCruiseDayMenu = ({scrollToNow, route}: ScheduleCruiseDayMen
       scrollToNow();
       return;
     }
-    navigation.navigate(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
+    navigation.navigate(screen, {cruiseDay: adjustedCruiseDayToday});
   };
 
   const menuAnchor = (
