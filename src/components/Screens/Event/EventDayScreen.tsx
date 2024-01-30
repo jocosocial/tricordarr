@@ -4,7 +4,7 @@ import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {EventStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator';
 import {ScheduleCruiseDayMenu} from '../../Menus/Events/ScheduleCruiseDayMenu';
 import {useEventsQuery} from '../../Queries/Events/EventQueries';
@@ -155,7 +155,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} />
+          <ScheduleCruiseDayMenu scrollToNow={scrollToNow} route={route} screen={EventStackComponents.eventDayScreen} />
           <ScheduleEventFilterMenu />
           <EventActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
