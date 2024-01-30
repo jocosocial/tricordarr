@@ -65,17 +65,8 @@ export const BottomTabNavigator = () => {
         component={MainStackNavigator}
         options={{
           title: 'Today',
-          tabBarIcon: () => getIcon('home-account'),
+          tabBarIcon: () => getIcon(AppIcons.home),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
-        }}
-      />
-      <Tab.Screen
-        name={BottomTabComponents.seamailTab}
-        component={SeamailStackNavigator}
-        options={{
-          title: 'Chat',
-          tabBarIcon: () => getIcon('email'),
-          tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
       <Tab.Screen
@@ -88,12 +79,12 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={BottomTabComponents.lfgTab}
-        component={LfgStackNavigator}
+        name={BottomTabComponents.seamailTab}
+        component={SeamailStackNavigator}
         options={{
-          title: 'LFG',
-          tabBarIcon: () => getIcon(AppIcons.lfg),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
+          title: 'Seamail',
+          tabBarIcon: () => getIcon(AppIcons.seamail),
+          tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
       <Tab.Screen
@@ -102,6 +93,15 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Events',
           tabBarIcon: () => getIcon(AppIcons.events),
+        }}
+      />
+      <Tab.Screen
+        name={BottomTabComponents.lfgTab}
+        component={LfgStackNavigator}
+        options={{
+          title: 'LFG',
+          tabBarIcon: () => getIcon(AppIcons.lfg),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}
       />
     </Tab.Navigator>
