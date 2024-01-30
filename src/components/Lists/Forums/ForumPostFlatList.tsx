@@ -238,7 +238,7 @@ export const ForumPostFlatList = ({
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          displayPosition={forumData?.isLocked ? 'bottom' : 'raised'}
+          displayPosition={forumData ? (forumData.isLocked ? 'bottom' : 'raised') : 'bottom'}
         />
       )}
     </>
