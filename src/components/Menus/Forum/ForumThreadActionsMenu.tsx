@@ -1,15 +1,14 @@
-import React, {Dispatch, ReactNode, SetStateAction, useCallback, useState} from 'react';
+import React, {Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../../libraries/Enums/Icons';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
-import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
-import {useForumPinMutation} from '../../../Queries/Forum/ForumThreadPinMutations';
-import {useForumCategoryPinnedThreadsQuery} from '../../../Queries/Forum/ForumCategoryQueries';
-import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
+import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {StateLoadingIcon} from '../../Icons/StateLoadingIcon';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
-import {useForumRelationMutation} from '../../../Queries/Forum/ForumThreadRelationMutations';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations';
+import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
 
 interface ForumThreadActionsMenuProps {
   anchor: ReactNode;
@@ -26,17 +25,16 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {hasModerator} = usePrivilege();
-  const pinMutation = useForumPinMutation();
-  const {refetch: refetchPins} = useForumCategoryPinnedThreadsQuery(props.categoryID ?? '', {
-    enabled: !!props.categoryID,
-  });
   const queryClient = useQueryClient();
 
   const closeMenu = useCallback(() => props.setVisible(false), [props]);
-  let invalidationQueryKeys = [[`/forum/${props.forumListData.forumID}`], ['/forum/search']];
-  if (props.categoryID) {
-    invalidationQueryKeys.push([`/forum/categories/${props.categoryID}`]);
-  }
+  const invalidationQueryKeys = useMemo(() => {
+    let keys = [[`/forum/${props.forumListData.forumID}`], ['/forum/search']];
+    if (props.categoryID) {
+      keys.push([`/forum/categories/${props.categoryID}`]);
+    }
+    return keys;
+  }, [props.categoryID, props.forumListData.forumID]);
 
   const handleFavorite = useCallback(() => {
     setRefreshing(true);
@@ -60,12 +58,12 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
       },
     );
   }, [
-    closeMenu,
-    queryClient,
+    relationMutation,
     props.forumListData.forumID,
     props.forumListData.isFavorite,
-    props.forumListData.isMuted,
-    relationMutation,
+    invalidationQueryKeys,
+    queryClient,
+    closeMenu,
   ]);
 
   const handleMute = useCallback(() => {
@@ -90,39 +88,13 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
       },
     );
   }, [
-    closeMenu,
-    queryClient,
-    props.forumListData.forumID,
-    props.forumListData.isFavorite,
-    props.forumListData.isMuted,
     relationMutation,
+    props.forumListData.forumID,
+    props.forumListData.isMuted,
+    invalidationQueryKeys,
+    queryClient,
+    closeMenu,
   ]);
-
-  const handlePin = () => {
-    pinMutation.mutate(
-      {
-        forumID: props.forumListData.forumID,
-        action: props.forumListData.isPinned ? 'unpin' : 'pin',
-      },
-      {
-        onSuccess: async () => {
-          const invalidations = invalidationQueryKeys.map(key => {
-            return queryClient.invalidateQueries(key);
-          });
-          await Promise.all(
-            [
-              invalidations,
-              queryClient.invalidateQueries([`/forum/categories/${props.categoryID}/pinnedforums`]),
-            ].flat(),
-          );
-        },
-        onSettled: () => {
-          setRefreshing(false);
-          closeMenu();
-        },
-      },
-    );
-  };
 
   const getFavoriteIcon = () => (
     <StateLoadingIcon
@@ -137,14 +109,6 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
       iconTrue={AppIcons.unmute}
       iconFalse={AppIcons.mute}
       state={props.forumListData.isMuted}
-      isLoading={refreshing}
-    />
-  );
-  const getPinnedIcon = () => (
-    <StateLoadingIcon
-      iconTrue={AppIcons.unpin}
-      iconFalse={AppIcons.pin}
-      state={props.forumListData.isPinned}
       isLoading={refreshing}
     />
   );
@@ -178,10 +142,14 @@ export const ForumThreadActionsMenu = (props: ForumThreadActionsMenuProps) => {
         />
       )}
       {hasModerator && props.categoryID && (
-        <Menu.Item
-          title={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
-          leadingIcon={getPinnedIcon}
-          onPress={handlePin}
+        <ForumThreadPinItem
+          isPinned={props.forumListData.isPinned}
+          refreshing={refreshing}
+          categoryID={props.categoryID}
+          forumID={props.forumListData.forumID}
+          closeMenu={closeMenu}
+          setRefreshing={setRefreshing}
+          invalidationQueryKeys={invalidationQueryKeys}
         />
       )}
     </Menu>

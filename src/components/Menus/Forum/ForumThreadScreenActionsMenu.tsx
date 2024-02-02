@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
@@ -18,6 +18,7 @@ import {ModerateMenuItem} from '../Items/ModerateMenuItem';
 import {HelpMenuItem} from '../Items/HelpMenuItem';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations';
+import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -30,7 +31,11 @@ const helpContent = [
   'Moderators or the forum creator can pin posts to the forum.',
 ];
 
-export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKeys, onRefresh}: ForumThreadActionsMenuProps) => {
+export const ForumThreadScreenActionsMenu = ({
+  forumData,
+  invalidationQueryKeys,
+  onRefresh,
+}: ForumThreadActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
@@ -171,6 +176,15 @@ export const ForumThreadScreenActionsMenu = ({forumData, invalidationQueryKeys, 
             resourceID={forumData.forumID}
             resource={'forum'}
             navigation={commonNavigation}
+          />
+          <ForumThreadPinItem
+            isPinned={forumData.isPinned}
+            refreshing={refreshing}
+            categoryID={forumData.categoryID}
+            forumID={forumData.forumID}
+            closeMenu={closeMenu}
+            setRefreshing={setRefreshing}
+            invalidationQueryKeys={invalidationQueryKeys}
           />
           <Divider bold={true} />
         </>

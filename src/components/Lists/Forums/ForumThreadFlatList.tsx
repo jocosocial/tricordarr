@@ -61,6 +61,12 @@ export const ForumThreadFlatList = ({
       }
       return (
         <View>
+          <LabelDivider
+            label={'Pinned Threads'}
+            color={theme.colors.onBackground}
+            wrapperStyle={[commonStyles.marginTopZero]}
+            dividerColor={theme.colors.outlineVariant}
+          />
           {pinnedThreads.map(fld => {
             return <ForumThreadListItem key={fld.forumID} forumListData={fld} categoryID={categoryID} />;
           })}
