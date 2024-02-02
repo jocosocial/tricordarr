@@ -11,7 +11,7 @@ import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
-import {ForumThreadActionsMenu} from '../../../Menus/Forum/Items/ForumThreadActionsMenu';
+import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 
