@@ -25,7 +25,12 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh: () => void}) 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
-      <HelpMenuItem icon={AppIcons.events} title={'Subscribe'} closeMenu={closeMenu} helpContent={['This action is not yet supported.']} />
+      <HelpMenuItem
+        icon={AppIcons.events}
+        title={'Subscribe'}
+        closeMenu={closeMenu}
+        helpContent={['This action is not yet supported. Use Sched instead.']}
+      />
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}
