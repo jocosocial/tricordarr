@@ -6,7 +6,11 @@ import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 
-export const EventFAB = () => {
+interface EventFABProps {
+  cruiseDay?: number;
+}
+
+export const EventFAB = (props: EventFABProps) => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
   const {adjustedCruiseDayToday} = useCruise();
@@ -21,7 +25,7 @@ export const EventFAB = () => {
   const handleYourDay = () => {
     // setEventFavoriteFilter(true);
     // navigation.push(EventStackComponents.eventDayScreen, {cruiseDay: adjustedCruiseDayToday});
-    navigation.push(EventStackComponents.eventYourDayScreen, {cruiseDay: adjustedCruiseDayToday});
+    navigation.push(EventStackComponents.eventYourDayScreen, {cruiseDay: props.cruiseDay || adjustedCruiseDayToday});
   };
 
   const actions = [

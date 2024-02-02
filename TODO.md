@@ -9,5 +9,4 @@ Backlog
 Work Queue
 
 Nightly
-* Your day today should follow the same day as viewing
 * Add ICS integration? Download via webview?
