@@ -259,7 +259,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
           />
         </View>
       </View>
-      <EventFAB />
+      <EventFAB cruiseDay={route.params.cruiseDay} />
     </AppView>
   );
 };
