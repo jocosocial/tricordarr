@@ -5,6 +5,7 @@ import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
+import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
 
 interface EventCardActionsMenuProps {
   anchor: JSX.Element;
@@ -68,6 +69,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         onPress={handleFavoritePress}
       />
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
+      <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
     </Menu>
   );
 };
