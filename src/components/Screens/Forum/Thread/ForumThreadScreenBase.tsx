@@ -159,28 +159,31 @@ export const ForumThreadScreenBase = ({
       },
       {
         onSuccess: async () => {
-          if (data.pages[0]) {
-            await Promise.all([
-              // queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
-              queryClient.invalidateQueries(['/forum/search']),
-            ]);
-            if (data.pages[0].isPinned) {
-              await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
-            }
-          }
           formikHelpers.resetForm();
           // https://github.com/jocosocial/swiftarr/issues/237
           // https://github.com/jocosocial/swiftarr/issues/168
           // Refetch needed to "mark" the forum as read.
           await refetch();
-          await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]);
-          if (data.pages[0].isPinned) {
-            queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+          if (data.pages[0]) {
+            await Promise.all([
+              // queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
+              queryClient.invalidateQueries(['/forum/search']),
+              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
+            ]);
+            if (data.pages[0].isPinned) {
+              await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
+            }
           }
-          flatListRef.current?.scrollToOffset({offset: 0, animated: false});
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
+          // This is absolutely a hack to get the forum to scroll to the bottom when "reloaded".
+          // maintainViewPosition is needed for pagination up and down. Maybe FlashList will fix this?
+          setTimeout(() => {
+            if (flatListRef.current) {
+              flatListRef.current.scrollToOffset({offset: 0, animated: false});
+            }
+          }, 2000);
         },
       },
     );
