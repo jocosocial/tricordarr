@@ -22,12 +22,7 @@ import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
-
-const helpContent = [
-  'Always check the official daily printed schedule to confirm event times/locations.',
-  'Favoriting an event adds it to your schedule and gives you reminder notifications.',
-  'All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.',
-];
+import {EventScreenActionsMenu} from '../../Menus/Events/EventScreenActionsMenu';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
@@ -92,16 +87,9 @@ export const EventScreen = ({navigation, route}: Props) => {
                   }}
                 />
               )}
+              <EventScreenActionsMenu event={eventData} />
             </>
-          )}
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => {
-              setModalContent(<HelpModalView text={helpContent} />);
-              setModalVisible(true);
-            }}
-          />
+        )}
         </HeaderButtons>
       </View>
     );

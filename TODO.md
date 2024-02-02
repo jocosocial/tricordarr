@@ -9,4 +9,3 @@ Backlog
 Work Queue
 
 Nightly
-* Add ICS integration? Download via webview?
