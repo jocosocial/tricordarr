@@ -5,8 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import React from 'react';
 import {HelpMenuItem} from '../Items/HelpMenuItem';
-import {useCommonStack} from '../../Navigation/CommonScreens';
-import {SiteUIMenuItem} from '../Items/SiteUIMenuItem';
+import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
 
 interface EventScreenActionsMenuProps {
   event: EventData;
@@ -29,7 +28,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <HelpMenuItem icon={AppIcons.download} title={'Download'} closeMenu={closeMenu} helpContent={['This action is not yet supported.']} />
+      <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       <HelpMenuItem closeMenu={closeMenu} helpContent={helpContent} />
     </Menu>
   );
