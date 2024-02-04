@@ -47,8 +47,8 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
 
   const getPinnedIcon = () => (
     <StateLoadingIcon
-      iconTrue={AppIcons.unpin}
-      iconFalse={AppIcons.pin}
+      iconTrue={AppIcons.moderator}
+      iconFalse={AppIcons.moderator}
       state={props.isPinned}
       isLoading={props.refreshing}
     />
