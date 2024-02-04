@@ -9,3 +9,6 @@ Backlog
 Work Queue
 
 Nightly
+* Next event didn't refresh when loading the app.
+  * Is user notification data loading on app background to foreground?
+  * No it isnt
