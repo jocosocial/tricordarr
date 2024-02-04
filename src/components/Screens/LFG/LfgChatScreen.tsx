@@ -9,7 +9,6 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -28,6 +27,7 @@ import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgChatScreen>;
 
@@ -42,7 +42,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const {dispatchLfgList, lfgPostsData, dispatchLfgPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
 
   const {
     data,

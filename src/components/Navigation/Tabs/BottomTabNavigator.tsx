@@ -1,7 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {AppIcon} from '../../Icons/AppIcon';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {SeamailStackNavigator, SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
@@ -11,6 +10,7 @@ import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigat
 import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -32,7 +32,7 @@ export type BottomTabParamList = {
 };
 
 export const BottomTabNavigator = () => {
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
   function getIcon(icon: string) {

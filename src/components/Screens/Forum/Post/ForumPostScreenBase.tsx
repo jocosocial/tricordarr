@@ -3,7 +3,6 @@ import {AppView} from '../../../Views/AppView';
 import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
@@ -12,6 +11,7 @@ import {useCommonStack} from '../../../Navigation/CommonScreens';
 import {ForumPostScreenBaseActionsMenu} from '../../../Menus/Forum/ForumPostScreenBaseActionsMenu';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
+import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -38,7 +38,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   const commonNavigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
-  const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
+  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const flatListRef = useRef<FlatList<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.

@@ -1,16 +1,16 @@
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
 import React from 'react';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {StyleSheet, View} from 'react-native';
 import {commonStyles} from '../../../../styles';
 import {Text} from 'react-native-paper';
 import pluralize from 'pluralize';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
+import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 export const ForumMentionsCategoryListItem = () => {
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const forumNavigation = useForumStackNavigation();
   const styles = StyleSheet.create({
     rightContainer: {

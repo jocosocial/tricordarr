@@ -6,7 +6,6 @@ import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
-import {UserNotificationDataActions} from '../../Reducers/Notification/UserNotificationDataReducer';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useLogoutMutation} from '../../Queries/Auth/LogoutQueries';
@@ -37,7 +36,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const settingsNavigation = useSettingsStack();
 
   const {setProfilePublicData} = useUserData();
-  const {setEnableUserNotifications, dispatchUserNotificationData} = useUserNotificationData();
+  const {setEnableUserNotifications} = useUserNotificationData();
   const {signOut} = useAuth();
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
@@ -52,9 +51,6 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const onLogout = () => {
     setEnableUserNotifications(false);
     setProfilePublicData(undefined);
-    dispatchUserNotificationData({
-      type: UserNotificationDataActions.clear,
-    });
     closeNotificationSocket();
     closeFezSocket();
     stopForegroundServiceWorker().then(() =>

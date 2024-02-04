@@ -2,7 +2,6 @@ import {
   CreatedUserData,
   ErrorResponse,
   KeywordData,
-  ProfilePublicData,
   UserCreateData,
   UserHeader,
   UserPasswordData,

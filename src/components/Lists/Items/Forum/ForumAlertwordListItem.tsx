@@ -2,12 +2,12 @@ import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
 import React from 'react';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {Text} from 'react-native-paper';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import pluralize from 'pluralize';
+import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 interface ForumAlertwordListItemProps {
   alertword: string;
@@ -15,7 +15,7 @@ interface ForumAlertwordListItemProps {
 
 export const ForumAlertwordListItem = (props: ForumAlertwordListItemProps) => {
   const navigation = useForumStackNavigation();
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
 
   const undWords = userNotificationData?.alertWords.map(aw => aw.alertword) || [];

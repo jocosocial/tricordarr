@@ -1,13 +1,13 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {SwiftarrClientApp, SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {FeatureContext} from '../Contexts/FeatureContext';
-import {useUserNotificationData} from '../Contexts/UserNotificationDataContext';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 export const FeatureProvider = ({children}: PropsWithChildren) => {
   // Default to disabling images since those queries can fire pretty quickly. Once the state updates
   // from UserNotificationData then the queries will all re-enable and function as expected.
   const [disabledFeatures, setDisabledFeatures] = useState<SwiftarrFeature[]>([SwiftarrFeature.images]);
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
 
   useEffect(() => {
     if (userNotificationData) {

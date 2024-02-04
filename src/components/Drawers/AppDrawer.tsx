@@ -7,15 +7,15 @@ import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
+import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
   const theme = useAppTheme();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const {tokenData} = useAuth();
   const {profilePublicData} = useUserData();
 
