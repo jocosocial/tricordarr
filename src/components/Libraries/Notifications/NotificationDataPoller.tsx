@@ -1,15 +1,15 @@
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useCallback, useEffect, useState} from 'react';
 import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
-  const [intervalId, setIntervalId] = useState<number>();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
 
-  const clearPollInterval = (id?: number) => {
+  const clearPollInterval = (id?: NodeJS.Timer) => {
     if (id === undefined) {
       console.log('[NotificationDataPoller.tsx] No interval ID, not clearing');
       return;

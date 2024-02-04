@@ -1,46 +1,43 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import React, {useState} from 'react';
+import React from 'react';
 import {AppView} from '../../../Views/AppView';
-import {BooleanField} from '../../../Forms/Fields/BooleanField';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {Formik} from 'formik';
-import {View} from 'react-native';
+import {FormikHelpers} from 'formik';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
-import humanizeDuration from 'humanize-duration';
+import {NotificationPollingSettingsForm} from '../../../Forms/NotificationPollingSettingsForm';
+import {NotificationPollingSettingsFormValues} from '../../../../libraries/Types/FormValues';
 
 export const NotificationPollerSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const [enable, setEnable] = useState(appConfig.enableNotificationPolling);
-  const {commonStyles} = useStyles();
 
-  const handleEnable = () => {
-    const newValue = !appConfig.enableNotificationPolling;
+  const handleSubmit = (
+    values: NotificationPollingSettingsFormValues,
+    helpers: FormikHelpers<NotificationPollingSettingsFormValues>,
+  ) => {
     updateAppConfig({
       ...appConfig,
-      enableNotificationPolling: newValue,
+      enableNotificationPolling: values.enableNotificationPolling,
+      notificationPollInterval: values.notificationPollIntervalMinutes * 60 * 1000,
     });
-    setEnable(newValue);
+    helpers.setSubmitting(false);
+    helpers.resetForm({
+      values: {
+        enableNotificationPolling: values.enableNotificationPolling,
+        notificationPollIntervalMinutes: values.notificationPollIntervalMinutes,
+      },
+    });
+  };
+
+  const initialValues: NotificationPollingSettingsFormValues = {
+    notificationPollIntervalMinutes: appConfig.notificationPollInterval / 1000 / 60,
+    enableNotificationPolling: appConfig.enableNotificationPolling,
   };
 
   return (
     <AppView>
       <ScrollingContentView>
-        <PaddedContentView padSides={false}>
-          <Formik initialValues={{}} onSubmit={() => {}}>
-            <View>
-              <BooleanField
-                name={'enableNotificationPolling'}
-                label={'Enable Notification Polling'}
-                style={commonStyles.paddingHorizontal}
-                onPress={handleEnable}
-                helperText={`Enable periodic (${humanizeDuration(
-                  appConfig.notificationPollInterval,
-                )}) notification data polling. This functionality is redundant with the WebSockets and Background Worker, but exists in the event those perform poorly.`}
-                value={enable}
-              />
-            </View>
-          </Formik>
+        <PaddedContentView>
+          <NotificationPollingSettingsForm onSubmit={handleSubmit} initialValues={initialValues} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

@@ -6,7 +6,6 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {useAppTheme} from '../../../styles/Theme';
 import pluralize from 'pluralize';
-import humanizeDuration from 'humanize-duration';
 
 interface SliderFieldProps {
   name: string;

@@ -54,7 +54,7 @@ const defaultAppConfig: AppConfig = {
   urlPrefix: '/api/v3',
   enableBackgroundWorker: true,
   notificationPollInterval: 120000, // 2 minutes
-  enableNotificationPolling: false,
+  enableNotificationPolling: true,
   enableNotificationSocket: true,
   enableFezSocket: true,
   pushNotifications: {
