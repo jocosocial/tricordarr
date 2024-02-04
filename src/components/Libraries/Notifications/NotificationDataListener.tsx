@@ -6,6 +6,7 @@ import {NotificationTypeData, SocketNotificationData} from '../../../libraries/S
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useQueryClient} from '@tanstack/react-query';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -13,7 +14,8 @@ import {useQueryClient} from '@tanstack/react-query';
  * This is NOT responsible for push notifications.
  */
 export const NotificationDataListener = () => {
-  const {enableUserNotifications, refetchUserNotificationData} = useUserNotificationData();
+  const {enableUserNotifications} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
@@ -40,7 +42,7 @@ export const NotificationDataListener = () => {
         }
       }
     },
-    [refetchAnnouncements, refetchUserNotificationData],
+    [queryClient, refetchAnnouncements, refetchUserNotificationData],
   );
 
   const addHandler = useCallback(() => {

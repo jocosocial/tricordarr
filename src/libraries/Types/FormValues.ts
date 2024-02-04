@@ -81,3 +81,8 @@ export interface QuerySettingsFormValues {
   staleTimeMinutes: number;
   disruptionThreshold: number;
 }
+
+export interface NotificationPollingSettingsFormValues {
+  notificationPollIntervalMinutes: number;
+  enableNotificationPolling: boolean;
+}
