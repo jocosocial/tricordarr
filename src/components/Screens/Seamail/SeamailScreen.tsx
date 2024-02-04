@@ -24,7 +24,6 @@ import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {LabelDivider} from '../../Lists/Dividers/LabelDivider';
 import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ListTitleView} from '../../Views/ListTitleView';
@@ -33,6 +32,7 @@ import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {FezMutedView} from '../../Views/Static/FezMutedView';
 import {useAppState} from '@react-native-community/hooks';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
 
@@ -46,7 +46,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const queryClient = useQueryClient();
   const appStateVisible = useAppState();
 

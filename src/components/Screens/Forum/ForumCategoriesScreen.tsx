@@ -8,7 +8,6 @@ import {Divider} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {ForumCategoryListItem} from '../../Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryListItemBase';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
@@ -24,12 +23,13 @@ import {HeaderButtons} from 'react-navigation-header-buttons';
 import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {isLoggedIn} = useAuth();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
@@ -37,11 +37,10 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     keywordType: 'alertwords',
   });
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    refetch().then(() =>
-      refetchUserNotificationData().then(() => refetchKeywordData().then(() => setRefreshing(false))),
-    );
+    await Promise.all([refetch(), refetchUserNotificationData(), refetchKeywordData()]);
+    setRefreshing(false);
   }, [refetch, refetchKeywordData, refetchUserNotificationData]);
 
   const getNavButtons = useCallback(() => {

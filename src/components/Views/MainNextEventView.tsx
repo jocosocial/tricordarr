@@ -1,10 +1,10 @@
-import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {PaddedContentView} from './Content/PaddedContentView';
 import {NextEventCard} from '../Cards/MainScreen/NextEventCard';
 import React from 'react';
+import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
 
 export const MainNextEventView = () => {
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
 
   if (!userNotificationData?.nextFollowedEventID) {
     return <></>;

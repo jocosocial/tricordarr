@@ -4,14 +4,14 @@ import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PrivilegedUserAccounts} from '../../libraries/Enums/UserAccessLevel';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
 import {useAppTheme} from '../../styles/Theme';
 import {AppIcon} from '../Icons/AppIcon';
 import {SegmentedButtonType} from '../../libraries/Types';
+import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
 
 export const SeamailAccountButtons = () => {
   const {profilePublicData} = useUserData();
-  const {userNotificationData} = useUserNotificationData();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam, asPrivilegedUser} = usePrivilege();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
   const theme = useAppTheme();

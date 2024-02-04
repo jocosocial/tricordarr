@@ -23,10 +23,7 @@ export const QuerySettingsScreen = () => {
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();
-  const {
-    refetch: refetchHealth,
-    isFetching: isFetchingHealth,
-  } = useHealthQuery({
+  const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
 
@@ -77,7 +74,9 @@ export const QuerySettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <PaddedContentView padTop={true}>
           <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
         </PaddedContentView>

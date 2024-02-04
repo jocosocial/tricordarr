@@ -8,10 +8,10 @@ import {useTokenAuthQuery} from '../TokenAuthQuery';
 export const useUserNotificationDataQuery = (options = {}) => {
   return useTokenAuthQuery<UserNotificationData>({
     queryKey: ['/notification/global'],
-    // staleTime: 1000 * 10,
-    cacheTime: 0,
-    staleTime: 0,
-    keepPreviousData: false,
+    staleTime: 1000 * 30,
+    // cacheTime: 0,
+    // staleTime: 0,
+    // keepPreviousData: false,
     ...options,
   });
 };

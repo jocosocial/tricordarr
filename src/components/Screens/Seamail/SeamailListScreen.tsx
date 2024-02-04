@@ -16,7 +16,6 @@ import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enu
 import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
@@ -24,6 +23,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
 type SeamailListScreenProps = NativeStackScreenProps<
   SeamailStackParamList,
@@ -41,7 +41,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
 

@@ -12,15 +12,14 @@ import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const AlertKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();
   const [refreshing, setIsRefreshing] = useState(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const {commonStyles} = useStyles();
-  const {dispatchUserNotificationData} = useUserNotificationData();
+  const queryClient = useQueryClient();
 
   const {data, refetch} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -35,14 +34,12 @@ export const AlertKeywordsSettingsScreen = () => {
         action: 'remove',
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setKeywords(keywords.filter(kw => kw !== keyword));
-          dispatchUserNotificationData({
-            type: UserNotificationDataActions.removeAlertword,
-            alertWord: keyword,
-          });
-          // Cheating
-          refetch();
+          await Promise.all([
+            queryClient.invalidateQueries(['/user/alertwords']),
+            queryClient.invalidateQueries(['/notification/global']),
+          ]);
         },
       },
     );
@@ -56,19 +53,20 @@ export const AlertKeywordsSettingsScreen = () => {
         action: 'add',
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setKeywords([keywords, values.keyword].flat());
           helpers.resetForm();
-          // Cheating
-          refetch();
+          await queryClient.invalidateQueries(['/user/alertwords']);
         },
         onSettled: () => helpers.setSubmitting(false),
       },
     );
   };
 
-  const onRefresh = () => {
-    refetch().then(() => setIsRefreshing(false));
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
   };
 
   useEffect(() => {

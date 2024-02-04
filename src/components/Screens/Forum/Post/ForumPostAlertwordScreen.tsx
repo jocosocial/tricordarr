@@ -9,8 +9,7 @@ import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigato
 import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import {UserNotificationDataActions} from '../../../Reducers/Notification/UserNotificationDataReducer';
+import {useQueryClient} from '@tanstack/react-query';
 
 export type Props = NativeStackScreenProps<
   ForumStackParamList,
@@ -36,7 +35,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const flatListRef = useRef<FlatList<PostData>>(null);
-  const {dispatchUserNotificationData} = useUserNotificationData();
+  const queryClient = useQueryClient();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -54,12 +53,9 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
-      dispatchUserNotificationData({
-        type: UserNotificationDataActions.markAlertwordRead,
-        alertWord: route.params.alertWord,
-      });
+      queryClient.invalidateQueries(['/notification/global']);
     }
-  }, [data, setForumPosts, dispatchUserNotificationData, route.params.alertWord]);
+  }, [data, setForumPosts, queryClient, route.params.alertWord]);
 
   return (
     <AppView>

@@ -1,11 +1,6 @@
-import React, {useEffect, useState, PropsWithChildren, useReducer} from 'react';
+import React, {useEffect, useState, PropsWithChildren} from 'react';
 import {UserNotificationDataContext} from '../Contexts/UserNotificationDataContext';
 import {useAuth} from '../Contexts/AuthContext';
-import {
-  UserNotificationDataActions,
-  userNotificationDataReducer,
-} from '../../Reducers/Notification/UserNotificationDataReducer';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {useConfig} from '../Contexts/ConfigContext';
 
 // https://www.carlrippon.com/typed-usestate-with-typescript/
@@ -13,10 +8,10 @@ import {useConfig} from '../Contexts/ConfigContext';
 export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   const [enableUserNotifications, setEnableUserNotifications] = useState<boolean | null>(null);
   const {isLoading, isLoggedIn} = useAuth();
-  const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
+  // const [userNotificationData, dispatchUserNotificationData] = useReducer(userNotificationDataReducer, undefined);
   // This is provided here for convenience.
   // For some reason this fires twice on startup. The prior data is read from the cache then fetched twice.
-  const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  // const {data, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
@@ -41,24 +36,24 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.
    */
-  useEffect(() => {
-    if (data) {
-      console.log('[UserNotificationDataProvider.tsx] Dispatch set UserNotificationData');
-      dispatchUserNotificationData({
-        type: UserNotificationDataActions.set,
-        userNotificationData: data,
-      });
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log('[UserNotificationDataProvider.tsx] Dispatch set UserNotificationData');
+  //     dispatchUserNotificationData({
+  //       type: UserNotificationDataActions.set,
+  //       userNotificationData: data,
+  //     });
+  //   }
+  // }, [data]);
 
   return (
     <UserNotificationDataContext.Provider
       value={{
-        userNotificationData,
-        dispatchUserNotificationData,
+        // userNotificationData,
+        // dispatchUserNotificationData,
         enableUserNotifications,
         setEnableUserNotifications,
-        refetchUserNotificationData,
+        // refetchUserNotificationData,
       }}>
       {children}
     </UserNotificationDataContext.Provider>

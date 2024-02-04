@@ -2,19 +2,20 @@ import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {useFeature} from '../../../Context/Contexts/FeatureContext';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
+import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const {userNotificationData, refetchUserNotificationData} = useUserNotificationData();
+  const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {disabledFeatures} = useFeature();
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    refetchUserNotificationData().then(() => setRefreshing(false));
+    await refetchUserNotificationData();
+    setRefreshing(false);
   };
 
   return (

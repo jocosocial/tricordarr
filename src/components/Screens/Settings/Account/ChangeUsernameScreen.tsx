@@ -12,15 +12,15 @@ import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {ChangeUsernameForm} from '../../../Forms/ChangeUsernameForm';
 import {useUserUsernameMutation} from '../../../Queries/User/UserQueries';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
 import {useUserProfileQuery} from '../../../Queries/Users/UserProfileQueries';
+import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 export const ChangeUsernameScreen = () => {
   const {profilePublicData} = useUserData();
   const navigation = useNavigation();
   const {appConfig} = useConfig();
   const usernameMutation = useUserUsernameMutation();
-  const {refetchUserNotificationData} = useUserNotificationData();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {refetch: refetchProfilePublicData} = useUserProfileQuery(profilePublicData?.header.userID);
 
   const {setInfoMessage} = useErrorHandler();

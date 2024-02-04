@@ -8,7 +8,6 @@ import NightImage from '../../../../assets/mainview_night.jpg';
 import SunsetImage from '../../../../assets/mainview_sunset.jpg';
 // @ts-ignore
 import HappyHourImage from '../../../../assets/mainview_happy.jpg';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
