@@ -2,12 +2,16 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useCallback, useEffect, useState} from 'react';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {useAppState} from '@react-native-community/hooks';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {appConfig} = useConfig();
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  const appState = useAppState();
+  const queryClient = useQueryClient();
 
   const clearPollInterval = (id?: NodeJS.Timer) => {
     if (id === undefined) {
@@ -50,6 +54,15 @@ export const NotificationDataPoller = () => {
     refetchUserNotificationData,
     startPollInterval,
   ]);
+
+  // When the app loads (either from nothing or from background) trigger a refresh of the notification
+  // data endpoint.
+  useEffect(() => {
+    if (appState === 'active') {
+      console.log('[NotificationDataPoller.tsx] Refreshing notification data');
+      queryClient.invalidateQueries(['/notification/global']);
+    }
+  }, [appState, refetchUserNotificationData]);
 
   return null;
 };
