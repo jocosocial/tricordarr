@@ -14,8 +14,7 @@ export const getUrlForEvent = (
     return;
   }
   console.log('[Events.ts] Got press action:', pressAction);
-  // PRESS != ACTION_PRESS. We'll process those some other day.
-  if (type === EventType.PRESS) {
+  if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
     switch (pressAction.id) {
       case PressAction.twitarrTab: {
         if (notification.id) {
@@ -71,7 +70,8 @@ export const getUrlForEvent = (
         if (notification.id && notification.data) {
           notifee.cancelNotification(notification.id);
           // SocketNotifications.ts sets the URL for these to `/home`.
-          return `${notification.data.url}`;
+          // return `${notification.data.url}`;
+          return '/home';
         }
       }
     }
