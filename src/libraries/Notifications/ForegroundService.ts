@@ -32,8 +32,16 @@ export async function generateForegroundServiceNotification(
         color: color,
         colorized: true,
         pressAction: {
-          id: PressAction.worker,
+          id: PressAction.home,
         },
+        actions: [
+          {
+            title: 'Settings',
+            pressAction: {
+              id: PressAction.worker
+            },
+          }
+        ],
         smallIcon: 'ic_notification',
       },
     });

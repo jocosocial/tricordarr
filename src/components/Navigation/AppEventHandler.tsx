@@ -36,7 +36,7 @@ export const AppEventHandler = () => {
   // The OS may kill the app at any time.
   notifee.onBackgroundEvent(async (event: Event) => {
     const {notification, pressAction} = event.detail;
-    const url = getUrlForEvent(event.type, notification, pressAction) || 'tricordarr://hometab';
+    const url = getUrlForEvent(event.type, notification, pressAction) || '/home';
     console.log('[AppEventHandler.tsx] onBackgroundEvent responding to event', event.type, 'with url', url);
 
     // When I made notification permissions optional, I started seeing EventType.DELIVERED events make
