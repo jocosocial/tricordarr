@@ -91,7 +91,7 @@ export const BottomTabNavigator = () => {
         name={BottomTabComponents.scheduleTab}
         component={EventStackNavigator}
         options={{
-          title: 'Events',
+          title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),
         }}
       />
