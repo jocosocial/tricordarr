@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -32,33 +32,23 @@ export const MainScreen = ({navigation}: Props) => {
   // The rest are here for pull-to-refetch.
   // The exception is UserNotificationData because that needs to more aggressively re-fire. But because I put it in
   // state rather than reference the query it rarely organically refetches.
-  const {refetch: refetchThemes, isFetching: isDailyThemeFetching} = useDailyThemeQuery({enabled: false});
-  const {refetch: refetchAnnouncements, isFetching: isAnnouncementsFetching} = useAnnouncementsQuery({enabled: false});
-  const {refetch: refetchFavorites, isFetching: isFavoritesFetching} = useUserFavoritesQuery({enabled: false});
-  const {refetch: refetchMutes, isFetching: isMutesFetching} = useUserMutesQuery({enabled: false});
-  const {refetch: refetchBlocks, isFetching: isBlocksFetching} = useUserBlocksQuery({enabled: false});
-  const {refetch: refetchUserNotificationData, isFetching: isUserNotificationDataFetching} =
-    useUserNotificationDataQuery({enabled: false});
+  const {refetch: refetchThemes} = useDailyThemeQuery({enabled: false});
+  const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
+  const {refetch: refetchFavorites} = useUserFavoritesQuery({enabled: false});
+  const {refetch: refetchMutes} = useUserMutesQuery({enabled: false});
+  const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const isRefreshing =
-    isUserNotificationDataFetching ||
-    isAnnouncementsFetching ||
-    isDailyThemeFetching ||
-    isFavoritesFetching ||
-    isMutesFetching ||
-    isBlocksFetching;
-
-  const onRefresh = () => {
-    refetchUserNotificationData();
-    refetchThemes();
-    refetchAnnouncements();
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetchUserNotificationData(), refetchThemes(), refetchAnnouncements()]);
     if (isLoggedIn) {
-      refetchFavorites();
-      refetchBlocks();
-      refetchMutes();
+      await Promise.all([refetchFavorites(), refetchBlocks(), refetchMutes()]);
     }
+    setRefreshing(false);
   };
 
   const getRightMainHeaderButtons = useCallback(() => {
@@ -78,19 +68,12 @@ export const MainScreen = ({navigation}: Props) => {
       headerTitle: getTitle,
     });
   }, [getLeftMainHeaderButtons, getRightMainHeaderButtons, getTitle, navigation]);
-  //
-  // useEffect(() => {
-  //   if (appState === 'active') {
-  //     console.log('We back');
-  //     refetchUserNotificationData();
-  //   }
-  // }, [appState, refetchUserNotificationData]);
 
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <MainHeaderView />
         <MainAnnouncementView />
         <MainThemeView />
