@@ -53,14 +53,23 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.forum;
       title = 'Forum Alert Word';
       break;
-    // Be careful about this ordering!
-    case NotificationTypeData.twitarrTeamForumMention:
-    case NotificationTypeData.moderatorForumMention:
     case NotificationTypeData.forumMention:
+      channel = forumChannel;
+      url = '/forumpost/mentions';
+      pressActionID = PressAction.forum;
+      title = 'Forum Mention';
+      break;
+    case NotificationTypeData.twitarrTeamForumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
-      title = 'Forum Mention';
+      title = 'TwitarrTeam Forum Mention';
+      break;
+    case NotificationTypeData.moderatorForumMention:
+      channel = forumChannel;
+      url = `/forum/containingpost/${notificationData.contentID}`;
+      pressActionID = PressAction.forum;
+      title = 'Moderator Forum Mention';
       break;
     case NotificationTypeData.incomingPhoneCall:
       channel = callsChannel;

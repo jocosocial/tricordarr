@@ -1,14 +1,13 @@
 import {LinkingOptions} from '@react-navigation/native';
 import {
-  EventStackComponents, ForumStackComponents,
+  EventStackComponents,
+  ForumStackComponents,
   LfgStackComponents,
   MainStackComponents,
   SeamailStackScreenComponents,
-  SettingsStackScreenComponents,
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
-import {MainConductScreen} from '../components/Screens/Main/MainConductScreen';
 
 /**
  * Route map of all routes necessary for deep linking. initialRouteName's should probably
@@ -75,6 +74,7 @@ const deepLinksConf = {
             ForumCategoryScreen: 'forums/:categoryID',
             ForumThreadScreen: 'forum/:forumID',
             ForumThreadPostScreen: 'forum/containingpost/:postID',
+            ForumPostMentionScreen: 'forumpost/mentions',
           },
         },
       },

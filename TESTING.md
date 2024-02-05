@@ -15,3 +15,6 @@ Cases
 ### Events
 * favorite event (should also update UND)
 * unfavorite event (should also update UND)
+
+### Forums
+* Mentioned notification opens the mentions page and clears the unread
