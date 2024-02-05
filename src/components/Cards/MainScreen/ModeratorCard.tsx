@@ -38,19 +38,19 @@ export const ModeratorCard = () => {
             </View>
             {interactionCount ? (
               <>
-                {userNotificationData.moderatorData.openReportCount && (
+                {!!userNotificationData.moderatorData.openReportCount && (
                   <Text>
                     {userNotificationData.moderatorData.openReportCount} open{' '}
                     {pluralize('report', userNotificationData.moderatorData.openReportCount)}
                   </Text>
                 )}
-                {userNotificationData.moderatorData.newModeratorSeamailMessageCount && (
+                {!!userNotificationData.moderatorData.newModeratorSeamailMessageCount && (
                   <Text>
                     {userNotificationData.moderatorData.newModeratorSeamailMessageCount} new{' '}
                     {pluralize('message', userNotificationData.moderatorData.newModeratorSeamailMessageCount)}
                   </Text>
                 )}
-                {userNotificationData.moderatorData.newModeratorForumMentionCount && (
+                {!!userNotificationData.moderatorData.newModeratorForumMentionCount && (
                   <Text>
                     {userNotificationData.moderatorData.newModeratorForumMentionCount} new{' '}
                     {pluralize('mention', userNotificationData.moderatorData.newModeratorForumMentionCount)}
