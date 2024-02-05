@@ -28,7 +28,8 @@ const deepLinksConf = {
             AboutScreen: 'about',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
             MainSettingsScreen: {
-              initialRouteName: SettingsStackScreenComponents.settings,
+              // Disable this to prevent doubling up on the SettingsScreen after going back.
+              // initialRouteName: SettingsStackScreenComponents.settings,
               screens: {
                 SettingsScreen: 'settings',
                 ServerConnectionSettingsScreen: 'settings/serverconnectionsettingsscreen',
