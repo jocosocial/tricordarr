@@ -10,34 +10,43 @@ import {TimeDivider} from '../Lists/Dividers/TimeDivider';
 import {getDayMarker} from '../../libraries/DateTime';
 
 export const EventSearchBar = () => {
+  const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
-  const {data, refetch, isFetching} = useEventsQuery({
+  const {data, refetch, isFetching, remove} = useEventsQuery({
     search: searchQuery,
     options: {
-      enabled: false,
+      enabled: queryEnable,
     },
   });
   const {commonStyles} = useStyles();
-  const [eventList, setEventList] = useState<EventData[]>([]);
   const listRef = useRef<FlatList<EventData | FezData>>(null);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
-  const onClear = () => setEventList([]);
+  const onChangeSearch = (query: string) => {
+    if (query !== searchQuery) {
+      setQueryEnable(false);
+      remove();
+    }
+    setSearchQuery(query);
+  };
+  const onClear = () => remove();
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
       setErrorMessage('Search string must be >2 characters');
+      setQueryEnable(false);
     } else {
-      refetch();
+      setQueryEnable(true);
     }
   };
 
+  // Clear search results when you go back or otherwise unmount this screen.
   useEffect(() => {
-    if (data) {
-      setEventList(data);
-    }
-  }, [data]);
+    return () => remove();
+  }, [remove]);
+
+  // Deal with some undefined issues below by defaulting to empty list.
+  const eventList = data || [];
 
   return (
     <EventFlatList
