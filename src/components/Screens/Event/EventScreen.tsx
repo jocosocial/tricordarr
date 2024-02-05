@@ -48,13 +48,20 @@ export const EventScreen = ({navigation, route}: Props) => {
           action: event.isFavorite ? 'unfavorite' : 'favorite',
         },
         {
-          onSuccess: () => {
-            queryClient.setQueryData([`/events/${event.eventID}`], () => {
-              return {
-                ...event,
-                isFavorite: !event.isFavorite,
-              };
-            });
+          onSuccess: async () => {
+            await Promise.all([
+              queryClient.invalidateQueries(['/events']),
+              queryClient.invalidateQueries([`/events/${event.eventID}`]),
+              queryClient.invalidateQueries(['/events/favorites']),
+              // Update the user notification data in case this was/is a favorite.
+              queryClient.invalidateQueries(['/notification/global']),
+            ]);
+            // queryClient.setQueryData([`/events/${event.eventID}`], () => {
+            //   return {
+            //     ...event,
+            //     isFavorite: !event.isFavorite,
+            //   };
+            // });
           },
         },
       );
