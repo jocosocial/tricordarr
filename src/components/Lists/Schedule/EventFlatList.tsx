@@ -3,12 +3,11 @@ import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react'
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {
+import useDateTime, {
   calcCruiseDayTime,
   getDayMarker,
   getTimeMarker,
   getTimeZoneOffset,
-  useRefreshingDate,
 } from '../../../libraries/DateTime';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
@@ -72,8 +71,8 @@ export const EventFlatList = ({
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const {startDate, endDate} = useCruise();
-  // const minutelyUpdatingDate = useDateTime('minute');
-  const minutelyUpdatingDate = useRefreshingDate();
+  const minutelyUpdatingDate = useDateTime('minute');
+  // const minutelyUpdatingDate = useRefreshingDate();
   const {appConfig} = useConfig();
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
