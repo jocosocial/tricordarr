@@ -6,6 +6,10 @@ I really should make some automated tests some day...
 Cases
 -----
 
+### OOBE Flow
+* Create account
+* Login
+
 ### User Management
 * Change Username
 * Change Password
@@ -18,3 +22,14 @@ Cases
 
 ### Forums
 * Mentioned notification opens the mentions page and clears the unread
+
+### Profile
+* Edit
+* Upload Photo
+* delete photo
+* change photo
+* profile link to forums
+* profile link to forum posts for moderators
+
+### Manage Account
+* change username
