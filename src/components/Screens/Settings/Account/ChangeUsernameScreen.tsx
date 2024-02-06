@@ -35,10 +35,12 @@ export const ChangeUsernameScreen = () => {
           refetchProfilePublicData().then(() =>
             refetchUserNotificationData().then(() => {
               setInfoMessage('Successfully changed username!');
-              helper.setSubmitting(false);
               navigation.goBack();
             }),
           );
+        },
+        onSettled: () => {
+          helper.setSubmitting(false);
         },
       },
     );
