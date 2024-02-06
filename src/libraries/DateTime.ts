@@ -251,8 +251,11 @@ export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => 
 // Formatter for relative time
 export const timeAgo = new TimeAgo('en-US');
 
-// ChatGPT based on the useDateTime above.
-// This only updates every n minutes, not on the nth minute.
+/**
+ * ChatGPT based on the useDateTime above.
+ * This only updates every n minutes, not on the nth minute.
+ * @deprecated
+ */
 export const useRefreshingDate = (minutes: number = 5) => {
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
