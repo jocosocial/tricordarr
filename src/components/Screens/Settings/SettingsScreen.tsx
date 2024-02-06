@@ -64,7 +64,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             />
             <SettingsNavigationListItem
               title={'Polling'}
-              description={'Configure periodic notification polling while the app is active.'}
+              description={'Configure periodic notification updates that happen while the app is running.'}
               navComponent={SettingsStackScreenComponents.notificationPollerSettingsScreen}
             />
           </ListSection>
