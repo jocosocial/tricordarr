@@ -67,7 +67,9 @@ export const NotificationDataListener = () => {
     }
     console.log(
       '[NotificationDataListener.tsx] useEffect state is',
-      enableUserNotifications && appStateVisible === 'active' && isLoggedIn,
+      enableUserNotifications,
+      appStateVisible,
+      isLoggedIn,
     );
     return () => removeHandler();
   }, [addHandler, appStateVisible, enableUserNotifications, removeHandler, isLoggedIn]);
