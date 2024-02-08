@@ -12,5 +12,3 @@ Backlog
 Work Queue
 
 Nightly
-* new announcement doesnt refetch announcements when app launches from background
-  * probably need to if visible refetch
