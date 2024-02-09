@@ -6,11 +6,13 @@ import {EventType} from '../../../libraries/Enums/EventType';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ViewStyle} from 'react-native';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
   const {eventTypeFilter, setEventTypeFilter, eventFavoriteFilter, setEventFavoriteFilter} = useFilter();
+  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -47,24 +49,23 @@ export const ScheduleEventFilterMenu = () => {
     />
   );
 
-  const activeStyle: ViewStyle = {backgroundColor: theme.colors.surfaceVariant};
-
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <Menu.Item
         title={'Your Events'}
         onPress={handleFavoriteSelection}
-        style={eventFavoriteFilter ? activeStyle : undefined}
+        style={eventFavoriteFilter ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={eventFavoriteFilter ? AppIcons.check : undefined}
       />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
-        const itemStyle = eventTypeFilter === eventType ? activeStyle : undefined;
         return (
           <Menu.Item
             key={eventType}
-            style={itemStyle}
+            style={eventTypeFilter === eventType ? commonStyles.surfaceVariant : undefined}
             title={EventType[eventType as keyof typeof EventType]}
             onPress={() => handleFilterSelection(eventType)}
+            trailingIcon={eventTypeFilter === eventType ? AppIcons.check : undefined}
           />
         );
       })}
