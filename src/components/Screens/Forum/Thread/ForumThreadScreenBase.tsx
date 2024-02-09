@@ -64,6 +64,7 @@ export const ForumThreadScreenBase = ({
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
+  const [maintainViewPosition, setMaintainViewPosition] = useState(true);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -179,13 +180,9 @@ export const ForumThreadScreenBase = ({
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
-          // This is absolutely a hack to get the forum to scroll to the bottom when "reloaded".
-          // maintainViewPosition is needed for pagination up and down. Maybe FlashList will fix this?
-          setTimeout(() => {
-            if (flatListRef.current) {
-              flatListRef.current.scrollToOffset({offset: 0, animated: false});
-            }
-          }, 2000);
+          // When you make a post, disable the "scroll lock" so that the screen includes your new post.
+          // This will get reset anyway whenever the screen is re-mounted.
+          setMaintainViewPosition(false);
         },
       },
     );
@@ -208,7 +205,7 @@ export const ForumThreadScreenBase = ({
         invertList={invertList}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
-        maintainViewPosition={true}
+        maintainViewPosition={maintainViewPosition}
         getListHeader={getListHeader}
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}

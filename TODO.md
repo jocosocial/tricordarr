@@ -13,6 +13,3 @@ Work Queue
 
 Nightly
 * Don't display pinned threads in the list. Header only
-
-* Thread from post isn't doing the scroll hack
-  * Maintain scroll based on state initial true but on post turn it off
