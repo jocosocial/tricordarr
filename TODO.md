@@ -12,3 +12,9 @@ Backlog
 Work Queue
 
 Nightly
+* Don't display pinned threads in the list. Header only
+
+* Change icon to checkbox or something on a menu item filter selected. Such as your events. More of a promeneant visual cue. Trailing icon
+
+* Thread from post isn't doing the scroll hack
+  * Maintain scroll based on state initial true but on post turn it off

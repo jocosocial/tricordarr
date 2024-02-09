@@ -109,17 +109,6 @@ export const ForumThreadScreenActionsMenu = ({
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item
-        title={'Pinned Posts'}
-        leadingIcon={AppIcons.pin}
-        onPress={() => {
-          closeMenu();
-          commonNavigation.push(CommonStackComponents.forumPostPinnedScreen, {
-            forumID: forumData.forumID,
-          });
-        }}
-      />
-      <Divider bold={true} />
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <FavoriteMenuItem
         onPress={handleFavorite}
