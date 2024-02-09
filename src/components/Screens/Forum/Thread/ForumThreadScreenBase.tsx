@@ -20,6 +20,7 @@ import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
+import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -100,6 +101,7 @@ export const ForumThreadScreenBase = ({
               onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: eventID})}
             />
           )}
+          <ForumThreadPinnedPostsItem forumID={data.pages[0].forumID} navigation={navigation} />
           <ForumThreadScreenActionsMenu
             forumData={data.pages[0]}
             invalidationQueryKeys={[
