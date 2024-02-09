@@ -4,15 +4,16 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ViewStyle} from 'react-native';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export const ScheduleLfgFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useAppTheme();
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();
+  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -48,7 +49,6 @@ export const ScheduleLfgFilterMenu = () => {
     />
   );
 
-  const activeStyle: ViewStyle = {backgroundColor: theme.colors.surfaceVariant};
   const filterableFezTypes = [
     FezType.activity,
     FezType.dining,
@@ -61,16 +61,21 @@ export const ScheduleLfgFilterMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item title={'Hide Past'} onPress={handleHidePast} style={lfgHidePastFilter ? activeStyle : undefined} />
+      <Menu.Item
+        title={'Hide Past'}
+        onPress={handleHidePast}
+        style={lfgHidePastFilter ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={lfgHidePastFilter ? AppIcons.check : undefined}
+      />
       <Divider bold={true} />
       {filterableFezTypes.map(fezType => {
-        const itemStyle = lfgTypeFilter === fezType ? activeStyle : undefined;
         return (
           <Menu.Item
             key={fezType}
-            style={itemStyle}
+            style={lfgTypeFilter === fezType ? commonStyles.surfaceVariant : undefined}
             title={FezType[fezType as keyof typeof FezType]}
             onPress={() => handleFilterSelection(fezType as keyof typeof FezType)}
+            trailingIcon={lfgTypeFilter === fezType ? AppIcons.check : undefined}
           />
         );
       })}

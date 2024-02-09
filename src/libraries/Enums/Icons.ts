@@ -100,4 +100,5 @@ export enum AppIcons {
   circle = 'circle-medium',
   pin = 'pin',
   unpin = 'pin-off',
+  check = 'check',
 }
