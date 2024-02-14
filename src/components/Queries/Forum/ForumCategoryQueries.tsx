@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
-import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosResponse} from 'axios';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
@@ -54,11 +54,4 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
     },
     queryParams,
   );
-};
-
-export const useForumCategoryPinnedThreadsQuery = (categoryID: string, options = {}) => {
-  return useTokenAuthQuery<ForumListData[]>({
-    queryKey: [`/forum/categories/${categoryID}/pinnedforums`],
-    ...options,
-  });
 };

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
-import {useForumCategoryPinnedThreadsQuery, useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
+import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../Static/LoadingView';
 import {Text} from 'react-native-paper';
@@ -31,11 +31,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   } = useForumCategoryQuery(props.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
   });
-  const {
-    data: pinnedThreads,
-    refetch: refetchPins,
-    isLoading: isLoadingPins,
-  } = useForumCategoryPinnedThreadsQuery(props.categoryID);
   const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
@@ -56,7 +51,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetch(), refetchPins()]);
+    await refetch();
     setRefreshing(false);
   };
 
@@ -73,7 +68,7 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     }
   }, [data, setForumListData, hasModerator]);
 
-  if (isLoading || isLoadingPins) {
+  if (isLoading) {
     return <LoadingView />;
   }
 
@@ -104,7 +99,6 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
-        pinnedThreads={pinnedThreads}
         categoryID={props.categoryID}
       />
       {!isUserRestricted && <ForumNewFAB categoryId={props.categoryID} />}
