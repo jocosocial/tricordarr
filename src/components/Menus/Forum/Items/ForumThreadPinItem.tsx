@@ -30,12 +30,7 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
           const invalidations = props.invalidationQueryKeys.map(key => {
             return queryClient.invalidateQueries(key);
           });
-          await Promise.all(
-            [
-              invalidations,
-              queryClient.invalidateQueries([`/forum/categories/${props.categoryID}/pinnedforums`]),
-            ].flat(),
-          );
+          await Promise.all([invalidations].flat());
         },
         onSettled: () => {
           props.setRefreshing(false);

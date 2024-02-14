@@ -108,7 +108,6 @@ export const ForumThreadScreenBase = ({
             invalidationQueryKeys={[
               [`/forum/${data.pages[0].forumID}`],
               [`/forum/categories/${data.pages[0].categoryID}`],
-              [`/forum/categories/${data.pages[0].categoryID}/pinnedforums`],
               ['/forum/search'],
             ]}
             onRefresh={onRefresh}
@@ -141,9 +140,6 @@ export const ForumThreadScreenBase = ({
       queryClient.invalidateQueries([`/forum/${forumData.forumID}`]);
       queryClient.invalidateQueries([`/forum/categories/${forumData.categoryID}`]);
       queryClient.invalidateQueries(['/forum/search']);
-      if (forumData.isPinned) {
-        queryClient.invalidateQueries([`/forum/categories/${forumData.categoryID}/pinnedforums`]);
-      }
     }
   }, [forumData, queryClient, forumListData]);
 
@@ -173,9 +169,6 @@ export const ForumThreadScreenBase = ({
               queryClient.invalidateQueries(['/forum/search']),
               queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
             ]);
-            if (data.pages[0].isPinned) {
-              await queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}/pinnedforums`]);
-            }
           }
         },
         onSettled: () => {
