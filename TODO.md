@@ -12,4 +12,3 @@ Backlog
 Work Queue
 
 Nightly
-* Don't display pinned threads in the list. Header only
