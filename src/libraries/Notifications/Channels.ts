@@ -98,6 +98,16 @@ export const callMgmtChannel: AndroidChannel = {
 };
 
 /**
+ * Notification channel for Event reminders.
+ */
+export const eventChannel: AndroidChannel = {
+  id: 'events',
+  name: 'Events',
+  groupId: contentChannelGroup.id,
+  description: 'Event content from the Twitarr server.',
+};
+
+/**
  * Setup function to ensure that the channels and their groups exist.
  */
 export async function setupChannels() {
@@ -110,4 +120,5 @@ export async function setupChannels() {
   await notifee.createChannel(forumChannel);
   await notifee.createChannel(callsChannel);
   await notifee.createChannel(callMgmtChannel);
+  await notifee.createChannel(eventChannel);
 }

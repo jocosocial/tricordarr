@@ -64,7 +64,7 @@ const deepLinksConf = {
           initialRouteName: EventStackComponents.eventDayScreen,
           screens: {
             EventDayScreen: 'events',
-            EventScreen: 'event/:eventID',
+            EventScreen: 'events/:eventID',
           },
         },
         ForumsTab: {

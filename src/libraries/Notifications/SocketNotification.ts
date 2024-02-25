@@ -1,11 +1,13 @@
 import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStructs';
 import {
   announcementsChannel,
-  forumChannel,
+  callMgmtChannel,
   callsChannel,
+  eventChannel,
+  forumChannel,
   lfgChannel,
   seamailChannel,
-  serviceChannel, callMgmtChannel,
+  serviceChannel,
 } from './Channels';
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
@@ -83,6 +85,12 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = callMgmtChannel;
       pressActionID = PressAction.krakentalk;
       title = 'Call Ended';
+      break;
+    case NotificationTypeData.followedEventStarting:
+      channel = eventChannel;
+      pressActionID = PressAction.event;
+      title = 'Event Starting SoonTM';
+      url = `/events/${notificationData.contentID}`;
       break;
   }
 
