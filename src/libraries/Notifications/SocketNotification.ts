@@ -89,7 +89,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     case NotificationTypeData.followedEventStarting:
       channel = eventChannel;
       pressActionID = PressAction.event;
-      title = 'Event Starting SoonTM';
+      title = 'Followed Event Starting';
       url = `/events/${notificationData.contentID}`;
       break;
   }
