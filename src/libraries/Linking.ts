@@ -60,7 +60,7 @@ const deepLinksConf = {
             LfgHelpScreen: 'lfg/faq',
           },
         },
-        EventsTab: {
+        ScheduleTab: {
           initialRouteName: EventStackComponents.eventDayScreen,
           screens: {
             EventDayScreen: 'events',
