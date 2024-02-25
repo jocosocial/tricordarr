@@ -34,6 +34,7 @@ export const BatteryOptimizationSettingsView = () => {
         By default, Android will apply battery optimization to all apps on your device. However this means the
         background worker which this app relies on can be shut down at almost any time, resulting in missed push
         notifications. You can disable Battery Optimization here to potentially get more reliable notifications.
+        Press the button below, then select "Allow" in the dialog that appears.
       </Text>
       <PrimaryActionButton
         buttonText={optEnabled ? 'Disable Optimization' : 'Already disabled'}
