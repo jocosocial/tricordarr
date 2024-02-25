@@ -53,9 +53,8 @@ export const contentNotificationCategories: ContentNotificationCategory[] = [
   },
   {
     configKey: 'followedEventStarting',
-    title: 'Event Reminders',
-    disabled: true,
-    description: 'Reminder that a followed event is starting SoonTM. At this time this feature is not available.',
+    title: 'Followed Event Reminders',
+    description: 'Reminder that a followed event is starting SoonTM.',
   },
   {
     configKey: 'moderatorForumMention',
