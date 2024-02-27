@@ -12,3 +12,4 @@ Backlog
 Work Queue
 
 Nightly
+* updating an LFG doesnt refresh itself, the list, usernotificationdata
