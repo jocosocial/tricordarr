@@ -7,18 +7,14 @@ import {NextLFGCard} from '../Cards/MainScreen/NextLFGCard';
 export const MainNextEventView = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
 
-  if (!userNotificationData?.nextJoinedLFGID) {
-    return <></>;
-  }
-
   return (
     <>
-      {userNotificationData.nextFollowedEventID && (
+      {userNotificationData?.nextFollowedEventID && (
         <PaddedContentView>
           <NextEventCard eventID={userNotificationData.nextFollowedEventID} />
         </PaddedContentView>
       )}
-      {userNotificationData.nextFollowedEventID && (
+      {userNotificationData?.nextJoinedLFGID && (
         <PaddedContentView>
           <NextLFGCard lfgID={userNotificationData.nextJoinedLFGID} />
         </PaddedContentView>
