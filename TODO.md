@@ -13,3 +13,4 @@ Work Queue
 
 Nightly
 * updating an LFG doesnt refresh itself, the list, usernotificationdata
+* Tricordarr somehow created an LFG with a second interval - this should always be 0
