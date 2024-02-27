@@ -55,6 +55,8 @@ export enum NotificationTypeData {
   moderatorForumMention = 'moderatorForumMention',
   /// A new or edited forum post that now @mentions @twitarrteam.
   twitarrTeamForumMention = 'twitarrTeamForumMention',
+  /// An LFG the user has joined is about to start.
+  joinedLFGStarting = 'joinedLFGStarting',
 }
 
 export interface PhoneSocketServerAddress {

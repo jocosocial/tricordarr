@@ -152,10 +152,14 @@ export interface UserNotificationData {
   newFezMessageCount?: number;
   /// The start time of the earliest event that the user has followed with a start time > now. nil if not logged in or no matching event.
   nextFollowedEventTime?: string;
-
-  /// The event ID of the the next future event the user has followed. This event's start time should always be == nextFollowedEventTime.
+  /// The event ID of the next future event the user has followed. This event's start time should always be == nextFollowedEventTime.
   /// If the user has favorited multiple events that start at the same time, this will be random among them.
   nextFollowedEventID?: string;
+  /// The start time of the earliest LFG that the user has joined with a start time > now. nil if not logged in or no matching LFG.
+  nextJoinedLFGTime?: string;
+  /// The LFG ID of the next future LFG the user has joined. This LFGs's start time should always be == nextJoinedLFGTime.
+  /// If the user has joined multiple LFGs that start at the same time, this will be random among them.
+  nextJoinedLFGID?: string;
 
   /// For each alertword the user has, this returns data on hit counts for that word.
   alertWords: UserNotificationAlertwordData[];

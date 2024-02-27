@@ -66,6 +66,7 @@ const defaultAppConfig: AppConfig = {
     twarrtMention: false,
     forumMention: true,
     followedEventStarting: true,
+    joinedLFGStarting: true,
     incomingPhoneCall: true,
     phoneCallAnswered: true,
     phoneCallEnded: true,

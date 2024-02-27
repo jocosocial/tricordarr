@@ -17,9 +17,10 @@ interface LfgCardProps {
   marker?: ScheduleCardMarkerType;
   showLfgIcon?: boolean;
   showDay?: boolean;
+  titleHeader?: string;
 }
 
-export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = false}: LfgCardProps) => {
+export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = false, titleHeader}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
   const {commonStyles} = useStyles();
@@ -60,6 +61,7 @@ export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = fa
       timeZoneID={lfg.timeZoneID}
       showDay={showDay}
       marker={marker}
+      titleHeader={titleHeader}
     />
   );
 };
