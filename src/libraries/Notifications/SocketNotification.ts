@@ -92,6 +92,12 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       title = 'Followed Event Starting';
       url = `/events/${notificationData.contentID}`;
       break;
+    case NotificationTypeData.joinedLFGStarting:
+      channel = lfgChannel;
+      pressActionID = PressAction.lfg;
+      title = 'Joined LFG Starting';
+      url = `/lfg/${notificationData.contentID}`;
+      break;
   }
 
   generateContentNotification(
