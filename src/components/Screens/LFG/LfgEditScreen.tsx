@@ -14,6 +14,7 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {
@@ -21,6 +22,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
   const {setLfg, dispatchLfgList} = useTwitarr();
   const {appConfig} = useConfig();
   const offset = getFezTimezoneOffset(route.params.fez, appConfig.portTimeZoneID);
+  const queryClient = useQueryClient();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     let fezStartTime = new Date(values.startDate);
@@ -52,6 +54,10 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
             fez: response.data,
           });
           navigation.goBack();
+          queryClient.invalidateQueries([`/fez/${route.params.fez.fezID}`]);
+          queryClient.invalidateQueries(['/fez/owner']);
+          queryClient.invalidateQueries(['/fez/joined']);
+          queryClient.invalidateQueries(['/notification/global']);
         },
         onSettled: () => helpers.setSubmitting(false),
       },
