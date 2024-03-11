@@ -187,7 +187,14 @@ export const EventDayScreen = ({navigation, route}: Props) => {
           eventList.push(event);
         }
       });
-      setScheduleList(eventList);
+      const combinedList = [eventList, lfgList].flat().sort((a, b) => {
+        if (a.startTime && b.startTime) {
+          return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+        }
+        // Return 0 if both startTime are undefined (order remains unchanged)
+        return 0;
+      });
+      setScheduleList(combinedList);
     },
     [setScheduleList, eventData, lfgJoinedData, lfgOpenData],
   );
