@@ -9,8 +9,12 @@
     <!--
     Foreground Services are a "normal" permission so the system grants it automatically.
     But just to be safe I'm doing it here too.
+    Android 14 changed the permissions with Forground Services a lot. See the <service />
+    below.
+    https://developer.android.com/develop/background-work/services/fg-service-types#data-sync
     -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
     <!--
     Camera permission for taking pictures to upload to the service. Is non-essential.
     -->
@@ -50,5 +54,14 @@
           <data android:scheme="tricordarr" />
         </intent-filter>
       </activity>
+
+      <!--
+      Beginning with Android 14 (API level 34), you must declare an appropriate service type
+      for each foreground service.
+      This also needs a corresponding permission above!
+      https://developer.android.com/develop/background-work/services/fg-service-types
+      https://notifee.app/react-native/docs/android/foreground-service
+      -->
+      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="dataSync" />
     </application>
 </manifest>
