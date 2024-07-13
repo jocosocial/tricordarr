@@ -28,6 +28,11 @@ export interface ScheduleConfig {
   defaultLfgScreen: LfgStackComponents;
 }
 
+export interface AccessibilityConfig {
+  useSystemTheme: boolean;
+  darkMode: boolean;
+}
+
 export interface AppConfig {
   serverUrl: string;
   urlPrefix: string;
@@ -47,6 +52,7 @@ export interface AppConfig {
   portTimeZoneID: string;
   apiClientConfig: APIClientConfig;
   enableEasterEgg: boolean;
+  accessibility: AccessibilityConfig;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -98,6 +104,10 @@ const defaultAppConfig: AppConfig = {
     requestTimeout: 10000,
   },
   enableEasterEgg: false,
+  accessibility: {
+    useSystemTheme: true,
+    darkMode: false,
+  },
 };
 
 /**

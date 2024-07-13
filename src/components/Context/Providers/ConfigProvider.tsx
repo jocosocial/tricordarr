@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {PropsWithChildren} from 'react';
 import {ConfigContext} from '../Contexts/ConfigContext';
 import {AppConfig, getAppConfig} from '../../../libraries/AppConfig';
-import {LoadingView} from '../../Views/Static/LoadingView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../libraries/Storage';
 
@@ -24,7 +23,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   };
 
   if (!appConfig) {
-    return <LoadingView />;
+    return <></>;
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
