@@ -9,7 +9,7 @@ Quick Start
 nvm install lts/hydrogen
 nvm use lts/hydrogen (v18.20.4)
 
-npm install # or npm clean-install
+yarn install --immutable --immutable-cache
 
 npx react-native start
 
@@ -32,7 +32,6 @@ you need `npm clean-install` for that.
 ```shell
 npx @rnx-kit/align-deps --requirements react-native@0.72
 ```
-
 
 Releasing
 ---------
