@@ -9,7 +9,7 @@ import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView
 import {FlatListItemContent} from '../../Views/Content/FlatListItemContent';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ContentPostImage} from '../../Images/ContentPostImage';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
+import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
@@ -27,7 +27,7 @@ interface FezPostListItemProps {
 export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
-  const seamailNavigation = useSeamailStack();
+  const seamailNavigation = useChatStack();
 
   let showAuthor = fez.participantCount > 2;
 

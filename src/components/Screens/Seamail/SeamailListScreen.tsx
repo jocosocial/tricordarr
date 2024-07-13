@@ -11,8 +11,8 @@ import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {ChatStackParamList} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
+import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
@@ -25,11 +25,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 
-type SeamailListScreenProps = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.seamailListScreen,
-  NavigatorIDs.seamailStack
->;
+type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();

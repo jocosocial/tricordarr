@@ -3,15 +3,15 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
+import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {ChatStackParamList} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {usePhoneCallDeclineMutation} from '../../Queries/PhoneCall/PhoneCallMutations';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useAppTheme} from '../../../styles/Theme';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<SeamailStackParamList, SeamailStackScreenComponents.krakenTalkReceiveScreen>;
+type Props = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   const declineMutation = usePhoneCallDeclineMutation();
   const theme = useAppTheme();

@@ -7,7 +7,6 @@
  */
 export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
-  seamailStack = 'SeamailStackNavigator',
   mainStack = 'MainStack',
   rootStack = 'RootStackNavigator',
   oobeStack = 'OobeStackNavigator',
@@ -53,7 +52,7 @@ export enum SettingsStackScreenComponents {
   dailyThemeSettingsScreen = 'DailyThemeSettingsScreen',
 }
 
-export enum SeamailStackScreenComponents {
+export enum ChatStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
   krakentalkCreateScreen = 'KrakenTalkCreateScreen',
   seamailSearchScreen = 'SeamailSearchScreen',

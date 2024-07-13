@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NavHeaderTitle} from '../../Text/NavHeaderTitle';
 import React from 'react';
-import {SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
+import {ChatStackParamList} from '../Stacks/ChatStackNavigator.tsx';
 import {CommonStackComponents} from '../CommonScreens';
 
 interface SeamailHeaderTitleProps {
@@ -10,7 +10,7 @@ interface SeamailHeaderTitleProps {
 }
 
 const SeamailHeaderTitle = ({fezID}: SeamailHeaderTitleProps) => {
-  const navigation = useNavigation<NativeStackNavigationProp<SeamailStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<ChatStackParamList>>();
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailDetailsScreen, {
       fezID: fezID,
