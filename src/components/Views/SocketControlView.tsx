@@ -7,12 +7,11 @@ import {useAppTheme} from '../../styles/Theme';
 
 interface SocketControlViewProps {
   title: string;
-  onOpen: () => void;
-  onClose: () => void;
+  onReset: () => void;
   disabled: boolean;
 }
 
-export const SocketControlView = ({title, onOpen, onClose, disabled}: SocketControlViewProps) => {
+export const SocketControlView = ({title, onReset, disabled}: SocketControlViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
@@ -30,15 +29,9 @@ export const SocketControlView = ({title, onOpen, onClose, disabled}: SocketCont
         }}>
         <PrimaryActionButton
           disabled={disabled}
-          buttonColor={theme.colors.twitarrPositiveButton}
-          buttonText={'Open'}
-          onPress={onOpen}
-        />
-        <PrimaryActionButton
-          disabled={disabled}
           buttonColor={theme.colors.twitarrNegativeButton}
-          buttonText={'Close'}
-          onPress={onClose}
+          buttonText={'Reset'}
+          onPress={onReset}
         />
       </View>
     </View>

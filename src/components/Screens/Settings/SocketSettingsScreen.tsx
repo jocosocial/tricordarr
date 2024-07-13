@@ -6,12 +6,7 @@ import {SettingSwitch} from '../../Switches/SettingSwitch';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {DataTable, Divider, Text} from 'react-native-paper';
 import {SocketControlView} from '../../Views/SocketControlView';
-import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag';
-import {SocketHealthcheckData} from '../../../libraries/Structs/SocketStructs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from '../../../libraries/Storage';
 import {RefreshControl} from 'react-native';
-import {commonStyles} from '../../../styles';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
 import {SettingDataTableRow} from '../../DataTables/SettingDataTableRow';
@@ -19,7 +14,10 @@ import {SettingDataTableRow} from '../../DataTables/SettingDataTableRow';
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [refreshing, setRefreshing] = useState(false);
-  const {openNotificationSocket, closeNotificationSocket, notificationSocket} = useSocket();
+  const {closeNotificationSocket, notificationSocket} = useSocket();
+  const [notificationSocketState, setNotificationSocketState] = useState(
+    WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState],
+  );
 
   async function toggleNotificationSocket() {
     updateAppConfig({
@@ -35,7 +33,11 @@ export const SocketSettingsScreen = () => {
     });
   }
 
-  const onRefresh = useCallback(() => {}, []);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setNotificationSocketState(WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]);
+    setRefreshing(false);
+  }, [notificationSocket, setNotificationSocketState, setRefreshing]);
 
   useEffect(() => {
     onRefresh();
@@ -47,10 +49,7 @@ export const SocketSettingsScreen = () => {
         <PaddedContentView>
           <Text variant={'titleMedium'}>Notification Socket Status</Text>
           <DataTable>
-            <SettingDataTableRow
-              title={'Socket State'}
-              value={WebSocketState[notificationSocket?.readyState as keyof typeof WebSocketState]}
-            />
+            <SettingDataTableRow title={'Socket State'} value={notificationSocketState} />
           </DataTable>
         </PaddedContentView>
         <Divider bold={true} />
@@ -79,9 +78,13 @@ export const SocketSettingsScreen = () => {
           <SocketControlView
             title={'Notification Socket'}
             disabled={!appConfig.enableNotificationSocket}
-            onOpen={openNotificationSocket}
-            onClose={closeNotificationSocket}
+            onReset={closeNotificationSocket}
           />
+          <Text variant={'bodyMedium'}>
+            This triggers a socket close and open. The socket can be disabled or more persistently closed by disabling
+            it above.
+          </Text>
+          <Text variant={'bodyMedium'}>You may need to refresh this screen for current state.</Text>
         </PaddedContentView>
         <Divider bold={true} />
       </ScrollingContentView>
