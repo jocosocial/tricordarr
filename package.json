@@ -68,14 +68,18 @@
     "reconnecting-websocket": "^4.4.0",
     "superjson": "^2.2.1",
     "url-parse": "^1.5.10",
+    "yarn": "^1.22.22",
     "yup": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@react-native/babel-preset": "^0.73.0",
     "@react-native/eslint-config": "^0.73.1",
     "@react-native/eslint-plugin": "^0.74.0",
+    "@react-native/metro-config": "^0.73.0",
+    "@react-native/typescript-config": "^0.73.1",
     "@tsconfig/react-native": "^2.0.2",
     "@types/base-64": "^1.0.0",
     "@types/humanize-duration": "^3.27.3",
@@ -92,10 +96,7 @@
     "prettier": "^2.8.8",
     "react-test-renderer": "18.2.0",
     "typescript": "5.0.4",
-    "uri-scheme": "^1.1.0",
-    "@react-native/babel-preset": "^0.73.0",
-    "@react-native/metro-config": "^0.73.0",
-    "@react-native/typescript-config": "^0.73.1"
+    "uri-scheme": "^1.1.0"
   },
   "jest": {
     "preset": "react-native"
