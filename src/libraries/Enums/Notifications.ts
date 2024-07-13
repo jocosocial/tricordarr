@@ -13,4 +13,5 @@ export enum PressAction {
   forum = 'forum',
   krakentalk = 'krakentalk',
   event = 'event',
+  contentSettings = 'contentSettings',
 }

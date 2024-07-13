@@ -38,6 +38,9 @@ export const getUrlForEvent = (
       case PressAction.worker: {
         return '/settings/serverconnectionsettingsscreen';
       }
+      case PressAction.contentSettings: {
+        return '/settings/pushnotifications';
+      }
       // @TODO dedupe these into a single content press type
       case PressAction.seamail: {
         if (notification.id && notification.data) {
