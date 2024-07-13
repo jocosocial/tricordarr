@@ -32,6 +32,7 @@ const deepLinksConf = {
               screens: {
                 SettingsScreen: 'settings',
                 ServerConnectionSettingsScreen: 'settings/serverconnectionsettingsscreen',
+                PushNotificationSettingsScreen: 'settings/pushnotifications',
                 LoginScreen: 'login',
               },
             },
