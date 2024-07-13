@@ -6,8 +6,8 @@ A [Twitarr](https://github.com/jocosocial/swiftarr) client.
 Quick Start
 -----------
 ```
-nvm install lts/gallium
-nvm use lts/fermium (v16.19.1)
+nvm install lts/hydrogen
+nvm use lts/hydrogen (v18.20.4)
 
 npm install # or npm clean-install
 
