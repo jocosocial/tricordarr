@@ -53,6 +53,7 @@ export interface AppConfig {
   apiClientConfig: APIClientConfig;
   enableEasterEgg: boolean;
   accessibility: AccessibilityConfig;
+  muteNotifications?: Date;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -153,6 +154,9 @@ export const getAppConfig = async () => {
   }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+  if (appConfig.muteNotifications) {
+    appConfig.muteNotifications = new Date(appConfig.muteNotifications);
+  }
 
   // Ok now we're done
   return appConfig;
