@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoSettings';
-import {ServerConnectionSettings} from '../../Screens/Settings/Notifications/ServerConnectionSettings';
+import {ServerConnectionSettingsScreen} from '../../Screens/Settings/Notifications/ServerConnectionSettingsScreen.tsx';
 import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
 import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
@@ -81,7 +81,7 @@ export const SettingsStack = () => {
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.serverConnectionSettings}
-        component={ServerConnectionSettings}
+        component={ServerConnectionSettingsScreen}
         options={{title: 'Background Connection'}}
       />
       <Stack.Screen

@@ -36,7 +36,7 @@ type Props = NativeStackScreenProps<
   NavigatorIDs.settingsStack
 >;
 
-export const ServerConnectionSettings = ({navigation}: Props) => {
+export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
