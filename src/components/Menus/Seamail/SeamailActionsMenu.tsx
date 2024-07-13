@@ -4,7 +4,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
+import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
@@ -30,7 +30,7 @@ const helpContent = [
 
 export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
-  const seamailNavigation = useSeamailStack();
+  const seamailNavigation = useChatStack();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();

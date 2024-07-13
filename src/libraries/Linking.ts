@@ -4,7 +4,7 @@ import {
   ForumStackComponents,
   LfgStackComponents,
   MainStackComponents,
-  SeamailStackScreenComponents,
+  ChatStackScreenComponents,
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
@@ -44,7 +44,7 @@ const deepLinksConf = {
           },
         },
         SeamailTab: {
-          initialRouteName: SeamailStackScreenComponents.seamailListScreen,
+          initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',

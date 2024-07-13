@@ -2,7 +2,7 @@ import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {SeamailStackNavigator, SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
+import {ChatStackNavigator, ChatStackParamList} from '../Stacks/ChatStackNavigator.tsx';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -25,7 +25,7 @@ function getBadgeDisplayValue(input: number | undefined) {
  */
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
-  SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
+  SeamailTab: NavigatorScreenParams<ChatStackParamList>;
   ScheduleTab: NavigatorScreenParams<EventStackParamList>;
   ForumsTab: NavigatorScreenParams<ForumStackParamList>;
   LfgTab: NavigatorScreenParams<LfgStackParamList>;
@@ -80,7 +80,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.seamailTab}
-        component={SeamailStackNavigator}
+        component={ChatStackNavigator}
         options={{
           title: 'Seamail',
           tabBarIcon: () => getIcon(AppIcons.seamail),
