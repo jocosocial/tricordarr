@@ -22,6 +22,7 @@ Notes
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * refetchPage can be passed to refetch to limit refetching
 * All dates from the API come in as ISO8601 strings
+* `adb logcat [| grep ReactNativeJS]` can get logs on the device
 
 Upgrading
 ---------
