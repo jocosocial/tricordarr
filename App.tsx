@@ -75,7 +75,7 @@ registerFgsWorker();
 const {LightTheme: navLightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
 const {DarkTheme: navDarkTheme} = adaptNavigationTheme({reactNavigationDark: DefaultTheme});
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const colorScheme = useColorScheme();
 
   setupChannels().catch(error => {
