@@ -36,13 +36,18 @@ export const SettingsScreen = ({navigation}: Props) => {
         <View>
           <Divider bold={true} />
           <ListSection>
-            <ListSubheader>Account</ListSubheader>
+            <ListSubheader>General</ListSubheader>
             {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
             {!tokenData && <SettingsRegistrationListItem />}
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={CommonStackComponents.configServerUrl}
+            />
+            <SettingsNavigationListItem
+              title={'Accessibility'}
+              description={'Theme and styling options for this app.'}
+              navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
           </ListSection>
           <Divider bold={true} />
