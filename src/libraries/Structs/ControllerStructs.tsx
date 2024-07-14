@@ -781,7 +781,7 @@ export interface PhotostreamUploadData {
   createdAt: string;
   /// The Schedule Event the photo was taken at, if any. ID must refer to an event that is currently happening--that is, an event that `/api/v3/photostream/placenames` returns.
   /// Either the eventID or locationName field must be non-nil.
-  eventID: string;
+  eventID?: string;
   /// Where the picture was taken. Valid values come from `/api/v3/photostream/placenames` and are transient. Names include titles of events currently happening..
-  locationName: string;
+  locationName?: string;
 }

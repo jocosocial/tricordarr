@@ -1,14 +1,8 @@
 import {Formik, FormikHelpers} from 'formik';
 import {PickerField} from '../Fields/PickerField.tsx';
 import React from 'react';
-import {FezFormValues, PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
+import {PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
 import * as Yup from 'yup';
-import {
-  DateValidation,
-  FezTypeValidation,
-  InfoStringValidation,
-  NumberValidation,
-} from '../../../libraries/ValidationSchema.ts';
 import {EventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
@@ -21,15 +15,16 @@ interface PhotostreamImageCreateFormProps {
   events: EventData[];
 }
 
-const validationSchema = Yup.object().shape({
-  // title: InfoStringValidation,
-  // location: InfoStringValidation,
-  // info: InfoStringValidation,
-  // minCapacity: NumberValidation.min(1).max(3),
-  // maxCapacity: NumberValidation.min(1).max(3),
-  // fezType: FezTypeValidation,
-  // startDate: DateValidation,
-});
+const validationSchema = Yup.object()
+  .shape({
+    locationName: Yup.string(),
+    eventData: Yup.object(),
+  })
+  .test('at-least-one', 'At least one of the fields must be provided', value => {
+    const {locationName, eventData} = value;
+    console.log('Testing Something', locationName, eventData, locationName !== undefined || eventData !== undefined);
+    return locationName !== undefined || eventData !== undefined;
+  });
 
 export const PhotostreamImageCreateForm = ({
   onSubmit,
@@ -39,7 +34,7 @@ export const PhotostreamImageCreateForm = ({
 }: PhotostreamImageCreateFormProps) => {
   const {commonStyles} = useStyles();
 
-  const getLocationTitle = (value: string | number | undefined) => {
+  const getLocationTitle = (value: string | undefined) => {
     if (value) {
       return value.toString();
     }
@@ -49,9 +44,6 @@ export const PhotostreamImageCreateForm = ({
   const getEventTitle = (e: EventData | undefined) => {
     return e ? e.title : 'None';
   };
-
-  const eventChoices = events.map(e => e.title);
-  console.log(eventChoices);
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -78,7 +70,7 @@ export const PhotostreamImageCreateForm = ({
             />
           </View>
           <PrimaryActionButton
-            disabled={isSubmitting || !isValid}
+            disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}
             viewStyle={[commonStyles.marginTopSmall]}
             onPress={handleSubmit}

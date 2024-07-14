@@ -1,17 +1,26 @@
 import React, {useState} from 'react';
-import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
-import {usePhotostreamLocationDataQuery} from '../../Queries/Photostream/PhotostreamQueries.tsx';
+import {
+  usePhotostreamImageUploadMutation,
+  usePhotostreamLocationDataQuery,
+} from '../../Queries/Photostream/PhotostreamQueries.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {RefreshControl} from 'react-native';
-import {PickerField} from '../../Forms/Fields/PickerField.tsx';
 import {PhotostreamImageCreateForm} from '../../Forms/Photostream/PhotostreamImageCreateForm.tsx';
-import {FezFormValues, PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
+import {PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {PhotostreamUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 
-export const PhotostreamImageCreateScreen = () => {
+export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
+
+export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();
   const [refreshing, setRefreshing] = useState(false);
+  const uploadMutation = usePhotostreamImageUploadMutation();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -19,11 +28,31 @@ export const PhotostreamImageCreateScreen = () => {
     setRefreshing(false);
   };
 
-  console.log(locationData);
   const onSubmit = (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
-    helpers.setSubmitting(false);
-    console.log(values);
+    const payload: PhotostreamUploadData = {
+      createdAt: new Date().toISOString(), // @TODO extract the date from the image
+      ...(values.locationName ? {locationName: values.locationName} : undefined),
+      ...(values.eventData ? {eventData: values.eventData.eventID} : undefined),
+      image: 'aaa',
+    };
+    uploadMutation.mutate(
+      {
+        imageUploadData: payload,
+      },
+      {
+        onSuccess: () => {
+          navigation.goBack();
+        },
+        onSettled: () => {
+          helpers.setSubmitting(false);
+        },
+      },
+    );
   };
+
+  if (!locationData) {
+    return <LoadingView />;
+  }
 
   return (
     <AppView>
@@ -32,7 +61,6 @@ export const PhotostreamImageCreateScreen = () => {
           initialValues={{
             locationName: undefined,
             eventData: undefined,
-            createdAt: new Date(),
           }}
           locations={locationData.locations}
           events={locationData.events}
