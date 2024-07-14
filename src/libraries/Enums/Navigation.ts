@@ -68,6 +68,7 @@ export enum MainStackComponents {
   conductScreen = 'MainConductScreen',
   dailyThemesScreen = 'DailyThemesScreen',
   photostreamScreen = 'PhotostreamScreen',
+  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
 }
 
 export enum OobeStackComponents {

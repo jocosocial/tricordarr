@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {FAB, Portal} from 'react-native-paper';
+import {FAB} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {Animated, ColorValue, GestureResponderEvent, StyleProp, StyleSheet, TextStyle, ViewStyle} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {FabGroupActionType} from '../../../libraries/Types';
 
 interface BaseFABProps {

@@ -4,6 +4,7 @@ import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControl} from 'react-native';
 import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';
+import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
 
 export const PhotostreamScreen = () => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} = usePhotostreamQuery();
@@ -33,6 +34,7 @@ export const PhotostreamScreen = () => {
         renderItem={({item}) => <PhotostreamListItem item={item} />}
         onEndReachedThreshold={5}
       />
+      <PhotostreamFAB />
     </AppView>
   );
 };
