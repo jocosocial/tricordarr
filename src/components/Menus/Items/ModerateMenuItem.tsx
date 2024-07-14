@@ -6,7 +6,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface ModerateMenuItemProps {
   closeMenu: () => void;
-  resource: 'forum'; // Add more here, make an enum?
+  resource: 'forum' | 'photostream';
   resourceID: string;
   navigation: NativeStackNavigationProp<CommonStackParamList>;
 }
