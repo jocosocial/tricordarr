@@ -16,6 +16,7 @@ import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 import {MainConductScreen} from '../../Screens/Main/MainConductScreen';
 import {DailyThemesScreen} from '../../Screens/Main/DailyThemesScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {PhotostreamScreen} from '../../Screens/Photostream/PhotostreamScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -28,6 +29,7 @@ export type MainStackParamList = CommonStackParamList & {
   MainHelpScreen: undefined;
   MainConductScreen: undefined;
   DailyThemesScreen: undefined;
+  PhotostreamScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -74,6 +76,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.dailyThemesScreen}
         component={DailyThemesScreen}
         options={{title: 'Daily Themes'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.photostreamScreen}
+        component={PhotostreamScreen}
+        options={{title: 'Photo Stream'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

@@ -11,12 +11,13 @@ import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
+import {APIFastImage} from './APIFastImage.tsx';
 
 interface APIImageProps {
   thumbPath: string;
   fullPath: string;
   style?: StyleProp<ImageStyle>;
-  mode?: 'cardcover' | 'image' | 'avatar';
+  mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
 }
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
@@ -105,6 +106,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageSource} />
         )}
+        {mode === 'scaledimage' && <APIFastImage image={imageSource} />}
       </TouchableOpacity>
     </>
   );

@@ -8,7 +8,6 @@
 export enum NavigatorIDs {
   settingsStack = 'SettingsStackNavigator',
   mainStack = 'MainStack',
-  rootStack = 'RootStackNavigator',
   oobeStack = 'OobeStackNavigator',
   eventStack = 'EventStackNavigator',
   lfgStack = 'LfgStackNavigator',
@@ -49,7 +48,6 @@ export enum SettingsStackScreenComponents {
   userInfoSettingsScreen = 'UserInfoSettingsScreen',
   aboutSettingsScreen = 'AboutSettingsScreen',
   querySettingsScreen = 'QuerySettingsScreen',
-  dailyThemeSettingsScreen = 'DailyThemeSettingsScreen',
 }
 
 export enum ChatStackScreenComponents {
@@ -69,6 +67,7 @@ export enum MainStackComponents {
   mainHelpScreen = 'MainHelpScreen',
   conductScreen = 'MainConductScreen',
   dailyThemesScreen = 'DailyThemesScreen',
+  photostreamScreen = 'PhotostreamScreen',
 }
 
 export enum OobeStackComponents {

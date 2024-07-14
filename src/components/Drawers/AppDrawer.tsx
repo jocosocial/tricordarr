@@ -71,6 +71,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
             )}
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               <PaperDrawer.Item
+                label={'Photo Stream'}
+                icon={AppIcons.photostream}
+                onPress={() => handleDrawerNav(`tricordarr://photostream`)}
+              />
+              <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
                 onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/boardgames`)}

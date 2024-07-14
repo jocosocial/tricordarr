@@ -42,6 +42,7 @@ const deepLinksConf = {
             MapScreen: 'map/:deckNumber?',
             MainConductScreen: 'codeOfConduct',
             DailyThemesScreen: 'dailyThemes',
+            PhotostreamScreen: 'photostream',
           },
         },
         SeamailTab: {
