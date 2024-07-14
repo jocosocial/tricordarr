@@ -1,6 +1,12 @@
-import {useTokenAuthPaginationQuery} from '../TokenAuthQuery.ts';
-import {PhotostreamListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery.ts';
+import {PhotostreamListData, PhotostreamLocationData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 export const usePhotostreamQuery = () => {
   return useTokenAuthPaginationQuery<PhotostreamListData>('/photostream');
+};
+
+export const usePhotostreamLocationDataQuery = () => {
+  return useTokenAuthQuery<PhotostreamLocationData>({
+    queryKey: ['/photostream/placenames'],
+  });
 };

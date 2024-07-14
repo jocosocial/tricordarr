@@ -5,16 +5,26 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFormikContext} from 'formik';
 
-interface PickerFieldProps {
+interface PickerFieldProps<TData> {
   name: string;
   label: string;
-  value: number | string;
-  choices: (number | string)[];
-  getTitle: (value: number | string) => string;
+  value: TData | undefined;
+  choices: TData[];
+  getTitle: (value: TData | undefined) => string;
   viewStyle?: StyleProp<ViewStyle>;
+  addUndefinedOption: boolean;
 }
 
-export const PickerField = ({name, label, value, choices, getTitle, viewStyle}: PickerFieldProps) => {
+// https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
+export const PickerField = <TData,>({
+  name,
+  label,
+  value,
+  choices,
+  getTitle,
+  viewStyle,
+  addUndefinedOption = false,
+}: PickerFieldProps<TData>) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
@@ -23,7 +33,7 @@ export const PickerField = ({name, label, value, choices, getTitle, viewStyle}: 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const handleSelect = (newValue: number | string) => {
+  const handleSelect = (newValue: TData | undefined) => {
     setFieldValue(name, newValue);
     closeMenu();
   };
@@ -74,6 +84,11 @@ export const PickerField = ({name, label, value, choices, getTitle, viewStyle}: 
           </React.Fragment>
         );
       })}
+      {addUndefinedOption && (
+        <React.Fragment>
+          <Menu.Item title={'None'} onPress={() => handleSelect(undefined)} />
+        </React.Fragment>
+      )}
     </Menu>
   );
 };

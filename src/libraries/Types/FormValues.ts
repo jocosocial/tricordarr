@@ -1,5 +1,6 @@
 import {FezType} from '../Enums/FezType';
 import {DinnerTeam} from '../Enums/DinnerTeam';
+import {EventData} from '../Structs/ControllerStructs.tsx';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -85,4 +86,11 @@ export interface QuerySettingsFormValues {
 export interface NotificationPollingSettingsFormValues {
   notificationPollIntervalMinutes: number;
   enableNotificationPolling: boolean;
+}
+
+export interface PhotostreamCreateFormValues {
+  createdAt: Date;
+  eventData?: EventData;
+  locationName?: string;
+  // @TODO image: string;
 }
