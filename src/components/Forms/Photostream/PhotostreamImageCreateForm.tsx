@@ -7,6 +7,7 @@ import {EventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {PhotostreamImageSelectionView} from '../../Views/Photostream/PhotostreamImageSelectionView.tsx';
 
 interface PhotostreamImageCreateFormProps {
   onSubmit: (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => void;
@@ -49,6 +50,7 @@ export const PhotostreamImageCreateForm = ({
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
+          <PhotostreamImageSelectionView />
           <View style={[commonStyles.paddingBottom]}>
             <PickerField<string>
               name={'locationName'}
