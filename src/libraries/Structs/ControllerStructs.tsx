@@ -556,7 +556,8 @@ export interface ImageUploadData {
   filename?: string;
   /// The image in `Data` format.
   /// Which in client land means a Base64-encoded string.
-  image?: string;
+  /// @TODO I am making this mandatory here. Swiftarr apparently does not?
+  image: string;
 }
 
 export interface ForumListData {
