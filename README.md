@@ -50,6 +50,10 @@ cd android
 ./gradlew assembleRelease # For an APK
 ```
 
+```
+ adb -s device-name-here install ~/Projects/jocosocial/tricordarr/android/app/build/outputs/apk/release/app-release.apk
+ ```
+
 Navigation
 ----------
 ```

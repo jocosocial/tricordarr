@@ -91,5 +91,5 @@ export interface NotificationPollingSettingsFormValues {
 export interface PhotostreamCreateFormValues {
   eventData?: EventData;
   locationName?: string;
-  // @TODO image: string;
+  image?: string;
 }

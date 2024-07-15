@@ -14,6 +14,7 @@ import {PhotostreamUploadData} from '../../../libraries/Structs/ControllerStruct
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
@@ -21,6 +22,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();
   const [refreshing, setRefreshing] = useState(false);
   const uploadMutation = usePhotostreamImageUploadMutation();
+  const queryClient = useQueryClient();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -29,11 +31,15 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   };
 
   const onSubmit = (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
+    if (!values.image) {
+      helpers.setSubmitting(false);
+      return;
+    }
     const payload: PhotostreamUploadData = {
       createdAt: new Date().toISOString(), // @TODO extract the date from the image
       ...(values.locationName ? {locationName: values.locationName} : undefined),
       ...(values.eventData ? {eventData: values.eventData.eventID} : undefined),
-      image: 'aaa',
+      image: values.image,
     };
     uploadMutation.mutate(
       {
@@ -41,6 +47,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries(['/photostream']);
           navigation.goBack();
         },
         onSettled: () => {
