@@ -51,9 +51,6 @@ export const PhotostreamImageSelectionView = () => {
     console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
-        cropping: true,
-        width: 2048,
-        height: 2048,
         includeBase64: true,
         mediaType: 'photo',
       });
