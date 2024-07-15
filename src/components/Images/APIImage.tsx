@@ -29,6 +29,10 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  * This also includes the AppImageViewer which is the "modal" component that appears when
  * you tap on an image that lets you zoom, download, and other stuff.
  *
+ * This shares a lot with AppImage.tsx and some day will likely be replaced by it.
+ * It is separate because we need a lot more logic around dynamically fetching the
+ * full size image then showing the AppImageViewer in a single press.
+ *
  * @param thumbPath URL path to the thumbnail of the image (ex: '/image/thumb/ABC123.jpg').
  * @param fullPath URL path the full file of the image (ex: '/image/full/ABC123.jpg').
  * @param style Custom style props for the image display component.
