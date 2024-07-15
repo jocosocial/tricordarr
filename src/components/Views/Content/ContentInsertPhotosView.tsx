@@ -26,11 +26,7 @@ export const ContentInsertPhotosView = () => {
   useEffect(() => {
     setViewerImages(
       values.images.map(img => {
-        return {
-          mimeType: 'image',
-          dataURI: `data:image;base64,${img.image}`,
-          fileName: 'New Image',
-        };
+        return ImageQueryData.fromData(img.image);
       }),
     );
   }, [values.images]);

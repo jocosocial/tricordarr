@@ -1,5 +1,5 @@
 import {AppImageViewer} from './AppImageViewer';
-import {Image, ImageStyle, StyleProp, TouchableOpacity} from 'react-native';
+import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, ImageURISource, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import React, {useEffect, useState} from 'react';
 import {useImageQuery} from '../Queries/ImageQuery';
@@ -11,17 +11,30 @@ import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {APIFastImage} from './APIFastImage.tsx';
+import {AppFastImage} from './AppFastImage.tsx';
+import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
 
 interface APIImageProps {
   thumbPath: string;
   fullPath: string;
-  style?: StyleProp<ImageStyle>;
+  style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
 }
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
 
+/**
+ * APIImage is for displaying an image from the Swiftarr API.
+ *
+ * This also includes the AppImageViewer which is the "modal" component that appears when
+ * you tap on an image that lets you zoom, download, and other stuff.
+ *
+ * @param thumbPath URL path to the thumbnail of the image (ex: '/image/thumb/ABC123.jpg').
+ * @param fullPath URL path the full file of the image (ex: '/image/full/ABC123.jpg').
+ * @param style Custom style props for the image display component.
+ * @param mode Underlying component to use for the image display.
+ * @constructor
+ */
 export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
   // The thumbnails Swiftarr generates are not animated.
@@ -94,20 +107,20 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   }
 
   // If we have already fetched the full resolution version, show that instead of the thumbnail.
-  const imageSource = fullImageQuery.data?.dataURI
+  const imageSource: ImageURISource = fullImageQuery.data?.dataURI
     ? {uri: fullImageQuery.data.dataURI}
     : {uri: thumbImageQuery.data.dataURI};
 
   return (
-    <>
+    <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity onPress={handleThumbPress}>
-        {mode === 'cardcover' && <Card.Cover style={style} source={imageSource} />}
+        {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />}
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageSource} />
         )}
-        {mode === 'scaledimage' && <APIFastImage image={imageSource} />}
+        {mode === 'scaledimage' && <AppFastImage image={imageSource} style={style as FastImageStyle} />}
       </TouchableOpacity>
-    </>
+    </View>
   );
 };

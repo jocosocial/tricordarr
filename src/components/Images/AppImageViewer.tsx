@@ -41,6 +41,7 @@ export const AppImageViewer = ({
         await saveImageToLocal(image);
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
+        console.error(error);
         setViewerMessage(error);
       }
     },
