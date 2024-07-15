@@ -54,6 +54,7 @@ export interface AppConfig {
   enableEasterEgg: boolean;
   accessibility: AccessibilityConfig;
   muteNotifications?: Date;
+  skipThumbnails: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -109,6 +110,7 @@ const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
+  skipThumbnails: false,
 };
 
 /**

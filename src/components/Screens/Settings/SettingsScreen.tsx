@@ -107,6 +107,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Settings for community organized events.'}
               navComponent={SettingsStackScreenComponents.lfgSettings}
             />
+            <SettingsNavigationListItem
+              title={'Image Settings'}
+              description={'Manage settings for images.'}
+              navComponent={SettingsStackScreenComponents.imageSettingsScreen}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

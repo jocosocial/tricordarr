@@ -13,6 +13,7 @@ import {useModal} from '../Context/Contexts/ModalContext';
 import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {AppFastImage} from './AppFastImage.tsx';
 import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface APIImageProps {
   thumbPath: string;
@@ -41,16 +42,21 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  */
 export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
+  const {appConfig} = useConfig();
   // The thumbnails Swiftarr generates are not animated.
   const isAnimated = animatedRegex.test(thumbPath);
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const thumbImageQuery = useImageQuery(isAnimated ? fullPath : thumbPath, !isDisabled);
-  const fullImageQuery = useImageQuery(fullPath, false);
+  const thumbImageQuery = useImageQuery(
+    isAnimated ? fullPath : thumbPath,
+    appConfig.skipThumbnails ? false : !isDisabled,
+  );
+  const fullImageQuery = useImageQuery(fullPath, appConfig.skipThumbnails ? !isDisabled : false);
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const [enableFullQuery, setEnableFullQuery] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
+  const [imageSource, setImageSource] = useState<ImageURISource>();
 
   const handleThumbPress = () => {
     if (fullImageQuery.data) {
@@ -81,6 +87,14 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
     setModalVisible(true);
   };
 
+  useEffect(() => {
+    if (fullImageQuery.data) {
+      setImageSource({uri: fullImageQuery.data.dataURI});
+    } else if (thumbImageQuery.data) {
+      setImageSource({uri: thumbImageQuery.data.dataURI});
+    }
+  }, [fullImageQuery.data, thumbImageQuery.data]);
+
   if (isDisabled) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
@@ -90,10 +104,12 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   }
 
   if (
-    thumbImageQuery.isLoading ||
-    thumbImageQuery.isFetching ||
-    fullImageQuery.isFetching ||
-    fullImageQuery.isRefetching
+    (appConfig.skipThumbnails && (fullImageQuery.isFetching || fullImageQuery.isRefetching)) ||
+    (!appConfig.skipThumbnails &&
+      (thumbImageQuery.isLoading ||
+        thumbImageQuery.isFetching ||
+        fullImageQuery.isFetching ||
+        fullImageQuery.isRefetching))
   ) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
@@ -102,18 +118,13 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
     );
   }
 
-  if (!thumbImageQuery.data) {
+  if (!imageSource) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
         <AppIcon icon={AppIcons.error} />
       </Card.Content>
     );
   }
-
-  // If we have already fetched the full resolution version, show that instead of the thumbnail.
-  const imageSource: ImageURISource = fullImageQuery.data?.dataURI
-    ? {uri: fullImageQuery.data.dataURI}
-    : {uri: thumbImageQuery.data.dataURI};
 
   return (
     <View>
