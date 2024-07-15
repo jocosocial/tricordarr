@@ -19,6 +19,7 @@ interface AppImageProps {
  * This also includes the AppImageViewer which is the "modal" component that appears when
  * you tap on an image that lets you zoom, download, and other stuff.
  *
+ * @param image The ImageQueryData that feeds this image.
  * @param style Custom style props for the image display component.
  * @param mode Underlying component to use for the image display.
  * @constructor
