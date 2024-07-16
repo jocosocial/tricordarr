@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.tsx';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
 import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';
 import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -18,6 +18,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
     usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
+  const [expandFab, setExpandFab] = useState(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -45,6 +46,14 @@ export const PhotostreamScreen = ({navigation}: Props) => {
     );
   }, [navigation]);
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (event.nativeEvent.contentOffset.y <= 150) {
+      setExpandFab(true);
+    } else {
+      setExpandFab(false);
+    }
+  };
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
@@ -62,8 +71,9 @@ export const PhotostreamScreen = ({navigation}: Props) => {
         data={streamList}
         renderItem={({item}) => <PhotostreamListItem item={item} />}
         onEndReachedThreshold={5}
+        onScroll={handleScroll}
       />
-      <PhotostreamFAB />
+      <PhotostreamFAB showLabel={expandFab} />
     </AppView>
   );
 };

@@ -10,9 +10,10 @@ interface BaseFABProps {
   color?: string;
   backgroundColor?: string;
   onPress: () => void;
+  label?: string;
 }
 
-export const BaseFAB = ({icon = 'plus', backgroundColor, color, onPress, style}: BaseFABProps) => {
+export const BaseFAB = ({icon = 'plus', backgroundColor, color, onPress, style, label}: BaseFABProps) => {
   const theme = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -31,6 +32,7 @@ export const BaseFAB = ({icon = 'plus', backgroundColor, color, onPress, style}:
       style={[styles.fab, style]}
       onPress={onPress}
       color={color ? color : theme.colors.inverseOnSurface}
+      label={label}
     />
   );
 };
