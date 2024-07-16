@@ -52,7 +52,7 @@ export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) =
         <TouchableOpacity onPress={onLocationPress}>
           <View style={styles.rowContainer}>
             <AppIcon icon={AppIcons.map} style={styles.icon} />
-            <Text>{props.image.location}</Text>
+            <Text variant={'labelMedium'}>{props.image.location}</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -60,7 +60,7 @@ export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) =
         <TouchableOpacity onPress={onEventPress}>
           <View style={styles.rowContainer}>
             <AppIcon icon={AppIcons.events} style={styles.icon} />
-            <Text>{props.image.event.title}</Text>
+            <Text variant={'labelMedium'}>{props.image.event.title}</Text>
           </View>
         </TouchableOpacity>
       )}
