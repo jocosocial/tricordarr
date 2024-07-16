@@ -43,8 +43,6 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
   const {enableUserNotifications} = useUserNotificationData();
   const {appConfig, updateAppConfig} = useConfig();
   const [healthData, setHealthData] = useState<SocketHealthcheckData | undefined>();
-  const [rawTime, setRawTime] = useState(false);
-  const toggleRawTime = () => setRawTime(!rawTime);
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
   const [fgsStartDate, setFgsStartDate] = useState<Date | undefined>();
@@ -156,8 +154,8 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <DataTable>
-            <SettingDataTableRow title={'Previous Start'} onPress={() => toggleRawTime()}>
-              <RelativeTimeTag date={fgsStartDate} raw={rawTime} />
+            <SettingDataTableRow title={'Previous Start'}>
+              <RelativeTimeTag date={fgsStartDate} />
             </SettingDataTableRow>
           </DataTable>
         </PaddedContentView>
@@ -172,8 +170,8 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
               title={'Socket State'}
               value={WebSocketState[socketState as keyof typeof WebSocketState]}
             />
-            <SettingDataTableRow onPress={() => toggleRawTime()} title={'Last Check'}>
-              <RelativeTimeTag date={healthData?.timestamp} raw={rawTime} />
+            <SettingDataTableRow title={'Last Check'}>
+              <RelativeTimeTag date={healthData?.timestamp} />
             </SettingDataTableRow>
             <SettingDataTableRow title={'Failed Count'} value={String(fgsFailedCounter)} />
           </DataTable>
