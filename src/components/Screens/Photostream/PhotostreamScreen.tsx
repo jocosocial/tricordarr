@@ -1,13 +1,22 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.tsx';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {FlatList, RefreshControl} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';
 import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
 
-export const PhotostreamScreen = () => {
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} = usePhotostreamQuery();
+export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
+
+export const PhotostreamScreen = ({navigation}: Props) => {
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
+    usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -21,6 +30,26 @@ export const PhotostreamScreen = () => {
       fetchNextPage();
     }
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const streamList = data?.pages.flatMap(p => p.photos);
 
