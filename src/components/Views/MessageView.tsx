@@ -20,10 +20,8 @@ interface MessageViewProps {
 export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: MessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
-  const [rawTime, setRawTime] = useState(false);
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
-  const toggleRawTime = () => setRawTime(!rawTime);
 
   const styles = {
     messageView: [
@@ -53,12 +51,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
           fezPost={fezPost}
         />
         {fezPost.timestamp && (
-          <RelativeTimeTag
-            date={new Date(fezPost.timestamp)}
-            style={styles.messageDateText}
-            variant={'labelSmall'}
-            raw={rawTime}
-          />
+          <RelativeTimeTag date={new Date(fezPost.timestamp)} style={styles.messageDateText} variant={'labelSmall'} />
         )}
       </TouchableOpacity>
     </View>
