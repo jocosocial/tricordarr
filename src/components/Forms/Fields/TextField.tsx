@@ -1,5 +1,13 @@
 import React, {ReactNode} from 'react';
-import {KeyboardTypeOptions, StyleProp, TextStyle, View, ViewStyle} from 'react-native';
+import {
+  KeyboardTypeOptions,
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInputFocusEventData,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 import {FastField, Field, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
@@ -23,6 +31,7 @@ export interface TextFieldProps {
   onChangeText?: (value: string) => void;
   innerTextStyle?: StyleProp<TextStyle>;
   infoText?: string;
+  onBlur?: (e?: NativeSyntheticEvent<TextInputFocusEventData>) => void;
 }
 
 export const TextField = ({
@@ -43,6 +52,7 @@ export const TextField = ({
   onChangeText,
   innerTextStyle,
   infoText,
+  onBlur,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -50,6 +60,13 @@ export const TextField = ({
 
   const handleValueChange = (value: string) => {
     handleChange(name)(value);
+  };
+
+  const handleBlurEvent = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    if (onBlur) {
+      onBlur(event);
+    }
+    return handleBlur(name);
   };
 
   // Went back to Field from FastField due to SuggestedTextField modal.
@@ -65,7 +82,7 @@ export const TextField = ({
             mode={mode}
             multiline={multiline}
             onChangeText={onChangeText || handleValueChange}
-            onBlur={handleBlur(name)}
+            onBlur={handleBlurEvent}
             value={field.value}
             error={!!meta.error && meta.touched}
             numberOfLines={numberOfLines}

@@ -11,6 +11,7 @@ import {TextField} from './Fields/TextField';
 import {PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
 import {useAppTheme} from '../../styles/Theme';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
+import {SecureTextField} from './Fields/SecureTextField.tsx';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;
@@ -47,13 +48,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'password'}
-            label={'Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
+          <SecureTextField name={'password'} label={'Password'} />
           <PrimaryActionButton
             disabled={!values.username || !values.password || isSubmitting}
             isLoading={isSubmitting}
