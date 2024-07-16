@@ -15,6 +15,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {useQueryClient} from '@tanstack/react-query';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
@@ -38,7 +39,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
     const payload: PhotostreamUploadData = {
       createdAt: new Date().toISOString(), // @TODO extract the date from the image
       ...(values.locationName ? {locationName: values.locationName} : undefined),
-      ...(values.eventData ? {eventData: values.eventData.eventID} : undefined),
+      ...(values.eventData ? {eventID: values.eventData.eventID} : undefined),
       image: values.image,
     };
     uploadMutation.mutate(
@@ -64,15 +65,13 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <PhotostreamImageCreateForm
-          initialValues={{
-            locationName: undefined,
-            eventData: undefined,
-          }}
-          locations={locationData.locations}
-          events={locationData.events}
-          onSubmit={onSubmit}
-        />
+        <PaddedContentView>
+          <PhotostreamImageCreateForm
+            locations={locationData.locations}
+            events={locationData.events}
+            onSubmit={onSubmit}
+          />
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

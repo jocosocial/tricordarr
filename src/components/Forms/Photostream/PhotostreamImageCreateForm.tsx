@@ -11,7 +11,7 @@ import {PhotostreamImageSelectionView} from '../../Views/Photostream/Photostream
 
 interface PhotostreamImageCreateFormProps {
   onSubmit: (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => void;
-  initialValues: PhotostreamCreateFormValues;
+  initialValues?: PhotostreamCreateFormValues;
   locations: string[];
   events: EventData[];
 }
@@ -23,13 +23,12 @@ const validationSchema = Yup.object()
   })
   .test('at-least-one', 'At least one of the fields must be provided', value => {
     const {locationName, eventData} = value;
-    console.log('Testing Something', locationName, eventData, locationName !== undefined || eventData !== undefined);
     return locationName !== undefined || eventData !== undefined;
   });
 
 export const PhotostreamImageCreateForm = ({
   onSubmit,
-  initialValues,
+  initialValues = {locationName: undefined, eventData: undefined},
   locations,
   events,
 }: PhotostreamImageCreateFormProps) => {

@@ -70,6 +70,7 @@ export enum MainStackComponents {
   dailyThemesScreen = 'DailyThemesScreen',
   photostreamScreen = 'PhotostreamScreen',
   photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
+  photostreamHelpScreen = 'PhotostreamHelpScreen',
 }
 
 export enum OobeStackComponents {
