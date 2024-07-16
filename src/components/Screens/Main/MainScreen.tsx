@@ -22,6 +22,7 @@ import {MainNextEventView} from '../../Views/MainNextEventView';
 import {MainAccountMenu} from '../../Menus/MainAccountMenu';
 import {MainHeaderView} from '../../Views/MainHeaderView';
 import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
+import {MainTimezoneWarningView} from '../../Views/MainTimezoneWarningView.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
 
@@ -75,6 +76,7 @@ export const MainScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <MainHeaderView />
+        <MainTimezoneWarningView />
         <MainAnnouncementView />
         <MainThemeView />
         <MainNextEventView />

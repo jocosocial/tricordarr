@@ -1,6 +1,11 @@
 import {QueryKey} from '@tanstack/query-core';
-import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
-import {UseInfiniteQueryOptions, UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
+import {
+  useInfiniteQuery,
+  useQuery,
+  UseInfiniteQueryOptions,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
