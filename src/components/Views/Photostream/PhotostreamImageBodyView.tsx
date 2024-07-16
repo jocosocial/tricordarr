@@ -29,10 +29,12 @@ export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) =
 
   return (
     <View style={styles.viewContainer}>
-      <View style={styles.rowContainer}>
-        <AppIcon icon={AppIcons.map} style={styles.icon} />
-        <Text>{props.image.location}</Text>
-      </View>
+      {props.image.location && (
+        <View style={styles.rowContainer}>
+          <AppIcon icon={AppIcons.map} style={styles.icon} />
+          <Text>{props.image.location}</Text>
+        </View>
+      )}
       {props.image.event && (
         <View style={styles.rowContainer}>
           <AppIcon icon={AppIcons.events} style={styles.icon} />
