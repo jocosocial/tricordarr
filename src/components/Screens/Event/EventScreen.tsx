@@ -17,7 +17,6 @@ import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQuerie
 import {useAppTheme} from '../../../styles/Theme';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
