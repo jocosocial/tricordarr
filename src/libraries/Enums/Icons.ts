@@ -103,4 +103,6 @@ export enum AppIcons {
   unpin = 'pin-off',
   check = 'check',
   photostream = 'image-multiple',
+  show = 'eye',
+  hide = 'eye-off',
 }

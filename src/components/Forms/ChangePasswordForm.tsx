@@ -9,6 +9,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {PasswordValidation} from '../../libraries/ValidationSchema';
+import {SecureTextField} from './Fields/SecureTextField.tsx';
 
 interface ChangePasswordFormProps {
   onSubmit: (values: ChangePasswordFormValues, helpers: FormikHelpers<ChangePasswordFormValues>) => void;
@@ -37,27 +38,9 @@ export const ChangePasswordForm = ({onSubmit}: ChangePasswordFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'currentPassword'}
-            label={'Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'newPassword'}
-            label={'New Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'newPasswordVerify'}
-            label={'Verify Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
+          <SecureTextField name={'currentPassword'} label={'Password'} />
+          <SecureTextField name={'newPassword'} label={'New Password'} />
+          <SecureTextField name={'newPasswordVerify'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={!values.currentPassword || !values.newPassword || !values.newPasswordVerify || isSubmitting}
             isLoading={isSubmitting}

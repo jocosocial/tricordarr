@@ -9,6 +9,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {AccountRecoveryValidation, PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
+import {SecureTextField} from './Fields/SecureTextField.tsx';
 
 interface UserCreateFormProps {
   onSubmit: (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => void;
@@ -56,20 +57,8 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
           />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'password'}
-            label={'New Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
-          <TextField
-            viewStyle={styles.inputContainer}
-            name={'passwordVerify'}
-            label={'Confirm Password'}
-            left={<TextInput.Icon icon={AppIcons.password} />}
-            secureTextEntry={true}
-          />
+          <SecureTextField name={'password'} label={'New Password'} />
+          <SecureTextField name={'passwordVerify'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={
               !values.username ||
