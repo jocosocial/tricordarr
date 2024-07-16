@@ -1,10 +1,13 @@
-import {StyleSheet, View} from 'react-native';
+import {Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Text} from 'react-native-paper';
 import React from 'react';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {guessDeckNumber} from '../../../libraries/Ship.ts';
 
 interface PhotostreamImageBodyViewProps {
   image: PhotostreamImageData;
@@ -12,6 +15,22 @@ interface PhotostreamImageBodyViewProps {
 
 export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) => {
   const {commonStyles} = useStyles();
+  const navigation = useMainStack();
+
+  const onEventPress = () => {
+    if (props.image.event) {
+      navigation.push(CommonStackComponents.eventScreen, {
+        eventID: props.image.event.eventID,
+      });
+    }
+  };
+
+  const onLocationPress = () => {
+    const deck = guessDeckNumber(props.image.location);
+    navigation.push(CommonStackComponents.mapScreen, {
+      deckNumber: deck,
+    });
+  };
 
   const styles = StyleSheet.create({
     viewContainer: {
@@ -30,16 +49,20 @@ export const PhotostreamImageBodyView = (props: PhotostreamImageBodyViewProps) =
   return (
     <View style={styles.viewContainer}>
       {props.image.location && (
-        <View style={styles.rowContainer}>
-          <AppIcon icon={AppIcons.map} style={styles.icon} />
-          <Text>{props.image.location}</Text>
-        </View>
+        <TouchableOpacity onPress={onLocationPress}>
+          <View style={styles.rowContainer}>
+            <AppIcon icon={AppIcons.map} style={styles.icon} />
+            <Text>{props.image.location}</Text>
+          </View>
+        </TouchableOpacity>
       )}
       {props.image.event && (
-        <View style={styles.rowContainer}>
-          <AppIcon icon={AppIcons.events} style={styles.icon} />
-          <Text>{props.image.event.title}</Text>
-        </View>
+        <TouchableOpacity onPress={onEventPress}>
+          <View style={styles.rowContainer}>
+            <AppIcon icon={AppIcons.events} style={styles.icon} />
+            <Text>{props.image.event.title}</Text>
+          </View>
+        </TouchableOpacity>
       )}
     </View>
   );
