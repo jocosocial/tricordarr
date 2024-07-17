@@ -54,8 +54,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text} variant={'labelLarge'}>
-            Version {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()}){'\n'}
-            {__DEV__ ? 'Development Build' : undefined}
+            Version {DeviceInfo.getVersion()} (Build {DeviceInfo.getBuildNumber()}){'\n'}
+            {__DEV__ ? 'Development Mode' : undefined}
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
