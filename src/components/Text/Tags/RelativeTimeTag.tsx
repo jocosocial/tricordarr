@@ -28,6 +28,7 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
   const onPress = () => {
     setShowRawTime(!showRawTime);
   };
+  const onLongPress = () => (date ? Clipboard.setString(date.toISOString()) : undefined);
 
   if (!date) {
     return <></>;
@@ -37,7 +38,7 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
   // style parameter is not what you think it is.
   const StylizedText = ({children}: PropsWithChildren) => {
     return (
-      <Text variant={variant} style={style}>
+      <Text variant={variant} style={style} onPress={onPress} onLongPress={onLongPress}>
         {children}
       </Text>
     );
@@ -45,17 +46,15 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
 
   if (showRawTime) {
     return (
-      <TouchableOpacity onPress={onPress} onLongPress={() => Clipboard.setString(date?.toISOString())}>
+      // <TouchableOpacity onPress={onPress} onLongPress={() => Clipboard.setString(date?.toISOString())}>
         <StylizedText>{date?.toISOString()}</StylizedText>
-      </TouchableOpacity>
+      // </TouchableOpacity>
     );
   }
 
   // https://github.com/catamphetamine/react-time-ago/issues/18
   // No, no. He's right. We is buggy.
   return (
-    <TouchableOpacity onPress={onPress} onLongPress={() => Clipboard.setString(date?.toString())}>
-      <ReactTimeAgo date={Date.parse(date.toString())} locale="en-US" component={StylizedText} />
-    </TouchableOpacity>
+    <ReactTimeAgo date={Date.parse(date.toString())} locale="en-US" component={StylizedText} />
   );
 };

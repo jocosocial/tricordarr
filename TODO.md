@@ -16,7 +16,6 @@ Nightly
 * Add mealtime images
 * Put event notification shutoff in the settings page with other events
 * Something weird happened when allowing battery
-* Relative time crashes with the bad date string
 * Apiimgae don't circle if refetching. Only if new
 * Long press image to download
 * Button to jump back up the photo list. Should be part of a generic flat list

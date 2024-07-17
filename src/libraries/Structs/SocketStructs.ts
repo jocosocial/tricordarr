@@ -91,5 +91,5 @@ export namespace SocketNotificationData {
  */
 export interface SocketHealthcheckData {
   result: boolean;
-  timestamp: Date;
+  timestamp: string;
 }

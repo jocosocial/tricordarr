@@ -171,7 +171,7 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
               value={WebSocketState[socketState as keyof typeof WebSocketState]}
             />
             <SettingDataTableRow title={'Last Check'}>
-              <RelativeTimeTag date={healthData?.timestamp} />
+              {healthData ? <RelativeTimeTag date={new Date(healthData.timestamp)} /> : <Text>Unknown</Text>}
             </SettingDataTableRow>
             <SettingDataTableRow title={'Failed Count'} value={String(fgsFailedCounter)} />
           </DataTable>

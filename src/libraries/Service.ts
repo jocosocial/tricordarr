@@ -31,8 +31,8 @@ const fgsWorkerHealthcheck = async () => {
   console.log('[Service.ts] Performing WebSocket Healthcheck');
   const ws = await getSharedWebSocket();
   const healthcheckResult: SocketHealthcheckData = {
-    result: await wsHealthcheck(ws),
-    timestamp: new Date(),
+    result: wsHealthcheck(ws),
+    timestamp: new Date().toISOString(),
   };
 
   // Store the healthcheck data
