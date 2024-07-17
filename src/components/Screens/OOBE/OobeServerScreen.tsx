@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SettingForm} from '../../Forms/SettingForm';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {SettingFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries';
@@ -19,6 +18,7 @@ import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeade
 import {ServerURLValidation} from '../../../libraries/ValidationSchema';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
+import {ServerHealthcheckResultView} from '../../Views/Settings/ServerHealthcheckResultView.tsx';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
 
@@ -70,18 +70,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          {serverHealthPassed && <Text>Server check passed!</Text>}
-          {!serverHealthPassed && serverHealthData?.error && (
-            <Text>
-              The Twitarr server is down. Try again later. Error: {serverHealthData.reason} ({serverHealthData.status})
-            </Text>
-          )}
-          {!serverHealthPassed && (
-            <Text>
-              Server check failed. Ensure your phone is on ship wifi, all VPNs and DNS interceptors are disabled, and
-              the server URL is correct. If the issue persists go to the JoCo Cruise Info Desk for assistance.
-            </Text>
-          )}
+          <ServerHealthcheckResultView serverHealthData={serverHealthData} serverHealthPassed={serverHealthPassed} />
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
