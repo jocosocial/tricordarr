@@ -1,7 +1,7 @@
 import {AppImageViewer} from './AppImageViewer';
-import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, ImageURISource, View} from 'react-native';
+import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
@@ -14,6 +14,8 @@ import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {AppFastImage} from './AppFastImage.tsx';
 import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {saveImageToLocal} from '../../libraries/Storage/ImageStorage.ts';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 
 interface APIImageProps {
   thumbPath: string;
@@ -56,7 +58,8 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const [enableFullQuery, setEnableFullQuery] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
-  const [imageSource, setImageSource] = useState<ImageURISource>();
+  const [imageQueryData, setImageQueryData] = useState<ImageQueryData>();
+  const {setInfoMessage} = useErrorHandler();
 
   const handleThumbPress = () => {
     if (fullImageQuery.data) {
@@ -87,11 +90,23 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
     setModalVisible(true);
   };
 
+  const saveImage = useCallback(async () => {
+    if (imageQueryData) {
+      try {
+        await saveImageToLocal(imageQueryData);
+        setInfoMessage('Saved to camera roll.');
+      } catch (error: any) {
+        console.error(error);
+        setInfoMessage(error);
+      }
+    }
+  }, [imageQueryData, setInfoMessage]);
+
   useEffect(() => {
     if (fullImageQuery.data) {
-      setImageSource({uri: fullImageQuery.data.dataURI});
+      setImageQueryData(fullImageQuery.data);
     } else if (thumbImageQuery.data) {
-      setImageSource({uri: thumbImageQuery.data.dataURI});
+      setImageQueryData(thumbImageQuery.data);
     }
   }, [fullImageQuery.data, thumbImageQuery.data]);
 
@@ -118,7 +133,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
     );
   }
 
-  if (!imageSource) {
+  if (!imageQueryData) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
         <AppIcon icon={AppIcons.error} />
@@ -129,12 +144,20 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity onPress={handleThumbPress}>
-        {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />}
-        {mode === 'image' && (
-          <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageSource} />
+      <TouchableOpacity onPress={handleThumbPress} onLongPress={saveImage}>
+        {mode === 'cardcover' && (
+          <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )}
-        {mode === 'scaledimage' && <AppFastImage image={imageSource} style={style as FastImageStyle} />}
+        {mode === 'image' && (
+          <Image
+            resizeMode={'cover'}
+            style={[commonStyles.headerImage, style]}
+            source={ImageQueryData.toImageSource(imageQueryData)}
+          />
+        )}
+        {mode === 'scaledimage' && (
+          <AppFastImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />
+        )}
       </TouchableOpacity>
     </View>
   );
