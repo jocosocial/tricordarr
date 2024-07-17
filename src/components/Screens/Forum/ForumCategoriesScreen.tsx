@@ -15,7 +15,7 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
-import {ForumSearchFAB} from '../../Buttons/FloatingActionButtons/ForumSearchFAB';
+import {ForumCategoriesFAB} from '../../Buttons/FloatingActionButtons/ForumCategoriesFAB.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -158,7 +158,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumSearchFAB />
+      <ForumCategoriesFAB />
     </AppView>
   );
 };
