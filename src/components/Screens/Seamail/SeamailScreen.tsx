@@ -155,7 +155,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         {fezID: route.params.fezID, postContentData: values},
         {
           onSuccess: response => {
-            formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
             dispatchFezPostsData({
               type: FezPostsActions.appendPost,
@@ -169,6 +168,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
             // Some day this should just update the query data.
             queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
           },
+          onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
