@@ -139,7 +139,6 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         {fezID: route.params.fezID, postContentData: values},
         {
           onSuccess: response => {
-            formikHelpers.setSubmitting(false);
             formikHelpers.resetForm();
             dispatchLfgPostsData({
               type: FezPostsActions.appendPost,
@@ -150,6 +149,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
               fezID: route.params.fezID,
             });
           },
+          onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },

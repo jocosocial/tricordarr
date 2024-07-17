@@ -31,9 +31,7 @@ export const ForumPostEditScreen = ({route, navigation}: Props) => {
             queryClient.invalidateQueries([`/forum/post/${route.params.postData.postID}/forum`]),
           ]);
           if (route.params.forumData) {
-            await Promise.all([
-              queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`]),
-            ]);
+            await Promise.all([queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`])]);
           }
           navigation.goBack();
         },
