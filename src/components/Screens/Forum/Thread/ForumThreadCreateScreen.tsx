@@ -11,7 +11,6 @@ import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useForumCreateMutation} from '../../../Queries/Forum/ForumThreadMutationQueries';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
@@ -29,7 +28,6 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const forumCreateMutation = useForumCreateMutation();
-  const {profilePublicData} = useUserData();
   const queryClient = useQueryClient();
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
@@ -59,6 +57,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
             queryClient.invalidateQueries([`/forum/${response.data.forumID}`]),
             queryClient.invalidateQueries([`/forum/categories/${response.data.categoryID}`]),
             queryClient.invalidateQueries(['/forum/search']),
+            queryClient.invalidateQueries(['/forum/categories']),
           ]);
           navigation.replace(CommonStackComponents.forumThreadScreen, {
             forumID: response.data.forumID,
