@@ -9,6 +9,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {UsernameValidation} from '../../libraries/ValidationSchema';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface ChangeUsernameFormProps {
   onSubmit: (values: ChangeUsernameFormValues, helpers: FormikHelpers<ChangeUsernameFormValues>) => void;
@@ -29,6 +30,7 @@ export const ChangeUsernameForm = ({onSubmit}: ChangeUsernameFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
+          <DirtyDetectionField />
           <TextField name={'username'} label={'Username'} left={<TextInput.Icon icon={AppIcons.user} />} />
           <PrimaryActionButton
             disabled={!values.username || isSubmitting}

@@ -10,6 +10,7 @@ import {UserChipsField} from './Fields/UserChipsField';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: FezContentData, formikBag: FormikHelpers<FezContentData>) => void;
@@ -38,6 +39,7 @@ const InnerSeamailCreateForm = ({initialUserHeader}: {initialUserHeader?: UserHe
 
   return (
     <PaddedContentView>
+      <DirtyDetectionField />
       <UserChipsField name={'initialUsers'} label={'Participants'} initialUserHeader={initialUserHeader} />
       <Text>Subject</Text>
       <TextField name={'title'} />

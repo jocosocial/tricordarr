@@ -8,6 +8,7 @@ import {View} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {ForumThreadValues} from '../../libraries/Types/FormValues';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface ForumThreadEditFormProps {
   forumData: ForumData;
@@ -27,6 +28,7 @@ export const ForumThreadEditForm = ({forumData, onSubmit}: ForumThreadEditFormPr
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
+          <DirtyDetectionField />
           <TextField name={'title'} label={'Title'} />
           <PrimaryActionButton
             disabled={isSubmitting || !isValid}

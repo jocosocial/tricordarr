@@ -16,6 +16,7 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type EventStackParamList = CommonStackParamList & {
   EventDayScreen: {
@@ -37,11 +38,18 @@ export const EventStackNavigator = () => {
   const {adjustedCruiseDayToday} = useCruise();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.schedule);
+  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
     <Stack.Navigator
       initialRouteName={EventStackComponents.eventDayScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+      screenOptions={{...screenOptions, headerShown: true}}
+      screenListeners={{
+        state: () => {
+          console.log('[EventStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Stack.Screen
         name={EventStackComponents.eventDayScreen}
         component={isDisabled ? DisabledView : EventDayScreen}

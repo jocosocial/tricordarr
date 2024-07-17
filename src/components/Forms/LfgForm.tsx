@@ -21,6 +21,7 @@ import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
 import {DatePickerField} from './Fields/DatePickerField';
 import {TimePickerField} from './Fields/TimePickerField';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -93,8 +94,9 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, isValid}) => (
+      {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
+          <DirtyDetectionField />
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
           <SuggestedTextField
             viewStyle={styles.inputContainer}

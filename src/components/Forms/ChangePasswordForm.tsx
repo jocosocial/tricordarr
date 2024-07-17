@@ -1,15 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {TextInput} from 'react-native-paper';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {ChangePasswordFormValues} from '../../libraries/Types/FormValues';
-import {AppIcons} from '../../libraries/Enums/Icons';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField';
 import {PasswordValidation} from '../../libraries/ValidationSchema';
 import {SecureTextField} from './Fields/SecureTextField.tsx';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface ChangePasswordFormProps {
   onSubmit: (values: ChangePasswordFormValues, helpers: FormikHelpers<ChangePasswordFormValues>) => void;
@@ -38,6 +36,7 @@ export const ChangePasswordForm = ({onSubmit}: ChangePasswordFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting}) => (
         <View>
+          <DirtyDetectionField />
           <SecureTextField name={'currentPassword'} label={'Password'} />
           <SecureTextField name={'newPassword'} label={'New Password'} />
           <SecureTextField name={'newPasswordVerify'} label={'Verify Password'} />

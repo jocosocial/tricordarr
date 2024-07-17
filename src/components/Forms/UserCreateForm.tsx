@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '../../libraries/ValidationSchema';
 import {SecureTextField} from './Fields/SecureTextField.tsx';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface UserCreateFormProps {
   onSubmit: (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => void;
@@ -41,6 +42,7 @@ export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
+          <DirtyDetectionField />
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}

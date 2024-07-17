@@ -17,6 +17,7 @@ import {
 } from '../../libraries/ValidationSchema';
 import {PickerField} from './Fields/PickerField';
 import {DinnerTeam} from '../../libraries/Enums/DinnerTeam';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface UserProfileFormProps {
   onSubmit: (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => void;
@@ -46,6 +47,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
+          <DirtyDetectionField />
           <TextField
             viewStyle={styles.inputContainer}
             name={'displayName'}

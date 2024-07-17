@@ -9,7 +9,7 @@ import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation
 import {ListSection} from '../../Lists/ListSection';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
 import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem';
 import {useAuth} from '../../Context/Contexts/AuthContext';

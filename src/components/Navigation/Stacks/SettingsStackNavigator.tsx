@@ -30,6 +30,7 @@ import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
 import {CommonStackParamList} from '../CommonScreens';
 import {ImageSettingsScreen} from '../../Screens/Settings/Content/ImageSettingsScreen.tsx';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
@@ -60,9 +61,10 @@ export type SettingsStackParamList = CommonStackParamList & {
   ImageSettingsScreen: undefined;
 };
 
-export const SettingsStack = () => {
+export const SettingsStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<SettingsStackParamList>();
+  const {setHasUnsavedWork} = useErrorHandler();
 
   // We don't put the title in the various Screens because we define it in the NavigationListItem
   // so we're always consistent between setting name and header title.
@@ -70,7 +72,13 @@ export const SettingsStack = () => {
     <Stack.Navigator
       id={NavigatorIDs.settingsStack}
       initialRouteName={SettingsStackScreenComponents.settings}
-      screenOptions={screenOptions}>
+      screenOptions={screenOptions}
+      screenListeners={{
+        state: () => {
+          console.log('[SettingsStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Stack.Screen
         name={SettingsStackScreenComponents.settings}
         component={SettingsScreen}
