@@ -119,12 +119,9 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   }
 
   if (
-    (appConfig.skipThumbnails && (fullImageQuery.isFetching || fullImageQuery.isRefetching)) ||
+    (appConfig.skipThumbnails && (fullImageQuery.isFetching || fullImageQuery.isLoading)) ||
     (!appConfig.skipThumbnails &&
-      (thumbImageQuery.isLoading ||
-        thumbImageQuery.isFetching ||
-        fullImageQuery.isFetching ||
-        fullImageQuery.isRefetching))
+      (thumbImageQuery.isLoading || thumbImageQuery.isFetching || fullImageQuery.isFetching))
   ) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
