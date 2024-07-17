@@ -8,6 +8,7 @@ import {CruiseSettingsFormValues} from '../../libraries/Types/FormValues';
 import * as Yup from 'yup';
 import {DateValidation, NumberValidation} from '../../libraries/ValidationSchema';
 import {DatePickerField} from './Fields/DatePickerField';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface CruiseSettingsFormProps {
   initialValues: CruiseSettingsFormValues;
@@ -26,6 +27,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid}) => (
         <View>
+          <DirtyDetectionField />
           <View style={[commonStyles.paddingVertical]}>
             <DatePickerField name={'startDate'} limitRange={false} />
           </View>

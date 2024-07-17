@@ -7,6 +7,7 @@ import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator
 import {OobeStackNavigator} from './OobeStackNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {CommonStackComponents} from '../CommonScreens';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
@@ -25,6 +26,7 @@ export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const {appConfig} = useConfig();
+  const {setHasUnsavedWork} = useErrorHandler();
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
@@ -32,7 +34,15 @@ export const RootStackNavigator = () => {
   }
 
   return (
-    <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{...screenOptions, headerShown: false}}>
+    <Stack.Navigator
+      initialRouteName={initialRouteName}
+      screenOptions={{...screenOptions, headerShown: false}}
+      screenListeners={{
+        state: () => {
+          console.log('[RootStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
       <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
       <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />

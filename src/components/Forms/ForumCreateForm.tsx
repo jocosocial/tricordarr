@@ -8,6 +8,7 @@ import {ForumThreadValues} from '../../libraries/Types/FormValues';
 import {BooleanField} from './Fields/BooleanField';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {AppIcons} from '../../libraries/Enums/Icons';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface ForumCreateFormProps {
   onSubmit: (values: ForumThreadValues, formikBag: FormikHelpers<ForumThreadValues>) => void;
@@ -32,6 +33,7 @@ const InnerForm = () => {
 
   return (
     <PaddedContentView>
+      <DirtyDetectionField />
       <TextField name={'title'} label={'Title'} />
       {hasModerator && (
         <BooleanField

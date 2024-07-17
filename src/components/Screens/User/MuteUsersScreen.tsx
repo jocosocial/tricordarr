@@ -15,7 +15,7 @@ import {useUserMuteMutation, useUserMutesQuery} from '../../Queries/Users/UserMu
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 

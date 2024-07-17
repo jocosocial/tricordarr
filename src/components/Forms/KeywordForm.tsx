@@ -7,6 +7,7 @@ import {TextField} from './Fields/TextField';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import * as Yup from 'yup';
 import {KeywordValidation} from '../../libraries/ValidationSchema';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 const validationSchema = Yup.object().shape({
   keyword: KeywordValidation,
@@ -26,6 +27,7 @@ export const KeywordForm = ({onSave}: KeywordFormProps) => {
     <Formik enableReinitialize initialValues={initialFormValues} onSubmit={onSave} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting}) => (
         <View>
+          <DirtyDetectionField />
           <TextField autoCapitalize={'none'} name={'keyword'} />
           <PrimaryActionButton
             onPress={handleSubmit}

@@ -1,8 +1,8 @@
 import React from 'react';
 import {Linking, StyleSheet} from 'react-native';
 import {Banner, Text} from 'react-native-paper';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
-import {useAppTheme} from '../../styles/Theme';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
+import {useAppTheme} from '../../styles/Theme.ts';
 
 export const ErrorBanner = () => {
   const {errorBanner, setErrorBanner} = useErrorHandler();

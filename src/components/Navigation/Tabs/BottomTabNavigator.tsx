@@ -11,6 +11,7 @@ import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavi
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -34,6 +35,7 @@ export type BottomTabParamList = {
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
+  const {setHasUnsavedWork} = useErrorHandler();
 
   function getIcon(icon: string) {
     return <AppIcon icon={icon} />;
@@ -59,7 +61,15 @@ export const BottomTabNavigator = () => {
   };
 
   return (
-    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
+    <Tab.Navigator
+      initialRouteName={BottomTabComponents.homeTab}
+      backBehavior={'history'}
+      screenListeners={{
+        state: () => {
+          console.log('[BottomTabNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
         component={MainStackNavigator}

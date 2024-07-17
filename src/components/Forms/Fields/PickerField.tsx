@@ -12,7 +12,7 @@ interface PickerFieldProps<TData> {
   choices: TData[];
   getTitle: (value: TData | undefined) => string;
   viewStyle?: StyleProp<ViewStyle>;
-  addUndefinedOption: boolean;
+  addUndefinedOption?: boolean;
 }
 
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/

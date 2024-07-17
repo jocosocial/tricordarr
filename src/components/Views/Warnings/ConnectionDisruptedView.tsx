@@ -1,8 +1,8 @@
 import {Text} from 'react-native-paper';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 export const ConnectionDisruptedView = () => {
   const {commonStyles} = useStyles();

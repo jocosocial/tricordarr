@@ -1,4 +1,4 @@
-import {Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Text} from 'react-native-paper';
