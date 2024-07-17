@@ -7,6 +7,15 @@ interface UnsavedChangesBannerProps {
   isVisible: boolean;
 }
 
+/**
+ * React Native Paper has a quirk where if you fill out a form and the keyboard is visible, tapping
+ * the button to submit the form dismisses the keyboard. It takes a second press to submit the form.
+ * I was worried that users might not realize their form hadn't submitted yet. So this Banner-esque
+ * view gets shown if there is unsaved work based on a trigger field in the form <DirtyDetectionField>.
+ * This gets cleared in response to navigation events in each Navigator.
+ * @param isVisible Show this view or not.
+ * @constructor
+ */
 export const UnsavedChangesView = ({isVisible = false}: UnsavedChangesBannerProps) => {
   const {commonStyles} = useStyles();
 

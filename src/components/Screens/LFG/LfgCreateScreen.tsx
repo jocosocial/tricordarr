@@ -13,7 +13,6 @@ import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
-import {UnsavedChangesView} from '../../Views/Warnings/UnsavedChangesView.tsx';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
