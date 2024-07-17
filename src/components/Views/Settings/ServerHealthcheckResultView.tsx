@@ -10,11 +10,13 @@ import {useAppTheme} from '../../../styles/Theme.ts';
 interface ServerHealthcheckResultViewProps {
   serverHealthPassed: boolean;
   serverHealthData?: HealthResponse;
+  isFetching: boolean;
 }
 
 export const ServerHealthcheckResultView = ({
   serverHealthPassed,
   serverHealthData,
+  isFetching,
 }: ServerHealthcheckResultViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
@@ -23,6 +25,11 @@ export const ServerHealthcheckResultView = ({
       ...commonStyles.alignItemsCenter,
     },
   });
+
+  if (isFetching) {
+    return <></>;
+  }
+
   return (
     <View style={styles.viewContainer}>
       {serverHealthPassed ? (

@@ -13,6 +13,7 @@ interface PickerFieldProps<TData> {
   getTitle: (value: TData | undefined) => string;
   viewStyle?: StyleProp<ViewStyle>;
   addUndefinedOption?: boolean;
+  onSelect?: (value: TData | undefined) => void;
 }
 
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
@@ -24,6 +25,7 @@ export const PickerField = <TData,>({
   getTitle,
   viewStyle,
   addUndefinedOption = false,
+  onSelect,
 }: PickerFieldProps<TData>) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -36,6 +38,9 @@ export const PickerField = <TData,>({
   const handleSelect = (newValue: TData | undefined) => {
     setFieldValue(name, newValue);
     closeMenu();
+    if (onSelect) {
+      onSelect(newValue);
+    }
   };
 
   const styles = StyleSheet.create({
