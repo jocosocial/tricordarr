@@ -51,7 +51,7 @@ const maximumHelpContent = ['Use 0 for unlimited'];
 
 const locationSuggestions = [
   'Atrium, Deck 1, Midship',
-  'Casino Bar, Deck 2, Forward',
+  'Gallery Bar, Deck 2, Forward',
   'Billboard Onboard, Deck 2, Forward',
   'Rolling Stone Lounge, Deck 2, Midship',
   'Pinnacle Bar, Deck 2, Midship',
