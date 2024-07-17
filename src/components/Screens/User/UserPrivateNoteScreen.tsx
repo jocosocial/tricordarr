@@ -3,7 +3,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {UserNoteForm} from '../../Forms/UserNoteForm';
+import {UserNoteForm} from '../../Forms/User/UserNoteForm.tsx';
 import {UserNoteFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';

@@ -2,21 +2,23 @@ import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
-import {UserRegistrationFormValues} from '../../libraries/Types/FormValues';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {UserRegistrationFormValues} from '../../../libraries/Types/FormValues.ts';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField';
-import {AccountRecoveryValidation, PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
-import {SecureTextField} from './Fields/SecureTextField.tsx';
+import {TextField} from '../Fields/TextField.tsx';
+import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '../../../libraries/ValidationSchema.ts';
+import {SecureTextField} from '../Fields/SecureTextField.tsx';
+import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface UserCreateFormProps {
   onSubmit: (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => void;
 }
 
 const validationSchema = Yup.object().shape({
-  verification: AccountRecoveryValidation,
+  // This is 7 for the space that often comes with a copy+paste from the emails.
+  verification: RecoveryKeyValidation,
   username: UsernameValidation,
   password: PasswordValidation,
   passwordVerify: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match.'),
@@ -30,7 +32,7 @@ const initialValues: UserRegistrationFormValues = {
 };
 
 // https://formik.org/docs/guides/react-native
-export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
+export const UserCreateForm = ({onSubmit}: UserCreateFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     inputContainer: [],
@@ -40,15 +42,14 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
+          <DirtyDetectionField />
           <TextField
             viewStyle={styles.inputContainer}
             name={'verification'}
-            label={'Verification'}
+            label={'Registration Code'}
             left={<TextInput.Icon icon={AppIcons.registrationCode} />}
-            autoCapitalize={'none'}
-            infoText={
-              'Can be one of: Registration Code (mailed to you before the cruise), Recovery Key (displayed when you created your account), Current Password.'
-            }
+            autoCapitalize={'characters'}
+            maxLength={7}
           />
           <TextField
             viewStyle={styles.inputContainer}
@@ -57,7 +58,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
             left={<TextInput.Icon icon={AppIcons.user} />}
             autoCapitalize={'none'}
           />
-          <SecureTextField name={'password'} label={'New Password'} />
+          <SecureTextField name={'password'} label={'Password'} />
           <SecureTextField name={'passwordVerify'} label={'Verify Password'} />
           <PrimaryActionButton
             disabled={
@@ -71,7 +72,7 @@ export const UserRecoveryForm = ({onSubmit}: UserCreateFormProps) => {
             isLoading={isSubmitting}
             viewStyle={styles.buttonContainer}
             onPress={handleSubmit}
-            buttonText={'Reset'}
+            buttonText={'Create'}
           />
         </View>
       )}

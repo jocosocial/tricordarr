@@ -11,7 +11,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
-import {QuerySettingsForm} from '../../../Forms/QuerySettingsForm';
+import {QuerySettingsForm} from '../../../Forms/Settings/QuerySettingsForm.tsx';
 import {QuerySettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';

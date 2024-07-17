@@ -10,7 +10,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {ChangeUsernameForm} from '../../../Forms/ChangeUsernameForm';
+import {ChangeUsernameForm} from '../../../Forms/User/ChangeUsernameForm.tsx';
 import {useUserUsernameMutation} from '../../../Queries/User/UserQueries';
 import {useUserProfileQuery} from '../../../Queries/Users/UserProfileQueries';
 import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';

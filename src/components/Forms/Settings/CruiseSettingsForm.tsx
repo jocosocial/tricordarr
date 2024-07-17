@@ -1,14 +1,14 @@
 import {View} from 'react-native';
-import {TextField} from './Fields/TextField';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
+import {TextField} from '../Fields/TextField.tsx';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {CruiseSettingsFormValues} from '../../libraries/Types/FormValues';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {CruiseSettingsFormValues} from '../../../libraries/Types/FormValues.ts';
 import * as Yup from 'yup';
-import {DateValidation, NumberValidation} from '../../libraries/ValidationSchema';
-import {DatePickerField} from './Fields/DatePickerField';
-import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
+import {DateValidation, NumberValidation} from '../../../libraries/ValidationSchema.ts';
+import {DatePickerField} from '../Fields/DatePickerField.tsx';
+import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface CruiseSettingsFormProps {
   initialValues: CruiseSettingsFormValues;

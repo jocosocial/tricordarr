@@ -2,7 +2,7 @@ import React from 'react';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {SettingForm} from '../../../Forms/SettingForm';
+import {SettingForm} from '../../../Forms/Settings/SettingForm.tsx';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {SettingFormValues} from '../../../../libraries/Types/FormValues';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
