@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {data: serverHealthData, refetch} = useHealthQuery();
+  const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const theme = useAppTheme();
@@ -77,6 +77,8 @@ export const OobeServerScreen = ({navigation}: Props) => {
             buttonText={'Re-check server'}
             onPress={refetch}
             buttonColor={theme.colors.twitarrNeutralButton}
+            isLoading={isFetching}
+            disabled={isFetching}
           />
         </PaddedContentView>
       </ScrollingContentView>
