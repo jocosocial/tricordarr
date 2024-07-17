@@ -105,4 +105,5 @@ export enum AppIcons {
   photostream = 'image-multiple',
   show = 'eye',
   hide = 'eye-off',
+  passed = 'check-circle-outline',
 }
