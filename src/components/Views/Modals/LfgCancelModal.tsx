@@ -11,6 +11,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useFezCancelMutation} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -33,6 +34,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
   const {setLfg, dispatchLfgList} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const onSubmit = () => {
     cancelMutation.mutate(
@@ -42,6 +44,10 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       {
         onSuccess: response => {
           setInfoMessage('Successfully canceled this LFG.');
+          queryClient.invalidateQueries(['/fez/owner']);
+          queryClient.invalidateQueries(['/fez/joined']);
+          queryClient.invalidateQueries(['/fez/open']);
+          queryClient.invalidateQueries(['/notification/global']);
           setLfg(response.data);
           dispatchLfgList({
             type: FezListActions.updateFez,
