@@ -2,7 +2,15 @@
 import {EventType} from '../Enums/EventType';
 import {FezType} from '../Enums/FezType';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
+import {
+  Animated,
+  ColorValue,
+  GestureResponderEvent,
+  ImageSourcePropType, ImageURISource,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 export interface KvObject {
   [key: string]: string | null;
@@ -56,6 +64,14 @@ export namespace ImageQueryData {
       fileName: `tricordarr-${new Date().getTime()}.jpg`,
       base64: data,
     };
+  };
+
+  export const toImageSource = (queryData: ImageQueryData): ImageSourcePropType => {
+    return {uri: queryData.dataURI};
+  };
+
+  export const toImageURISource = (queryData: ImageQueryData): ImageURISource => {
+    return {uri: queryData.dataURI};
   };
 }
 

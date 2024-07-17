@@ -16,7 +16,6 @@ Nightly
 * Put event notification shutoff in the settings page with other events
 * Something weird happened when allowing battery
 * Apiimgae don't circle if refetching. Only if new
-* Long press image to download
 * Button to jump back up the photo list. Should be part of a generic flat list
 * Sending photo report doesn't work
 * Separate image stale time setting
