@@ -4,7 +4,7 @@ import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Na
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {ForumCreateForm} from '../../../Forms/ForumCreateForm';
+import {ForumCreateForm} from '../../../Forms/Forum/ForumCreateForm.tsx';
 import {FormikHelpers, FormikProps} from 'formik';
 import {ForumCreateData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';

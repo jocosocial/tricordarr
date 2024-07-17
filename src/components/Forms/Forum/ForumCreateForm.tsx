@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react';
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {PaddedContentView} from '../Views/Content/PaddedContentView';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField';
-import {InfoStringValidation} from '../../libraries/ValidationSchema';
-import {ForumThreadValues} from '../../libraries/Types/FormValues';
-import {BooleanField} from './Fields/BooleanField';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
+import {TextField} from '../Fields/TextField.tsx';
+import {InfoStringValidation} from '../../../libraries/ValidationSchema.ts';
+import {ForumThreadValues} from '../../../libraries/Types/FormValues.ts';
+import {BooleanField} from '../Fields/BooleanField.tsx';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface ForumCreateFormProps {
   onSubmit: (values: ForumThreadValues, formikBag: FormikHelpers<ForumThreadValues>) => void;

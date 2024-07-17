@@ -2,16 +2,16 @@ import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
-import {LoginFormValues} from '../../libraries/Types/FormValues';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {LoginFormValues} from '../../../libraries/Types/FormValues.ts';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField';
-import {PasswordValidation, UsernameValidation} from '../../libraries/ValidationSchema';
-import {useAppTheme} from '../../styles/Theme';
-import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
-import {SecureTextField} from './Fields/SecureTextField.tsx';
+import {TextField} from '../Fields/TextField.tsx';
+import {PasswordValidation, UsernameValidation} from '../../../libraries/ValidationSchema.ts';
+import {useAppTheme} from '../../../styles/Theme.ts';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {SecureTextField} from '../Fields/SecureTextField.tsx';
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => void;

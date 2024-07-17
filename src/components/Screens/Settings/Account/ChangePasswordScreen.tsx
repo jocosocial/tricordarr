@@ -2,7 +2,7 @@ import React from 'react';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {ChangePasswordForm} from '../../../Forms/ChangePasswordForm';
+import {ChangePasswordForm} from '../../../Forms/User/ChangePasswordForm.tsx';
 import {ChangePasswordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';

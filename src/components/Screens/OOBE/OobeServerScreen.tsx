@@ -7,7 +7,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import * as Yup from 'yup';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SettingForm} from '../../Forms/SettingForm';
+import {SettingForm} from '../../Forms/Settings/SettingForm.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SettingFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';

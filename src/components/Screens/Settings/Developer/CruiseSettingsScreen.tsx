@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView} from 'react-native';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {CruiseSettingsForm} from '../../../Forms/CruiseSettingsForm';
+import {CruiseSettingsForm} from '../../../Forms/Settings/CruiseSettingsForm.tsx';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {CruiseSettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';

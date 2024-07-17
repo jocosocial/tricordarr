@@ -5,7 +5,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {UserProfileForm} from '../../Forms/UserProfileForm';
+import {UserProfileForm} from '../../Forms/User/UserProfileForm.tsx';
 import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useUserProfileMutation} from '../../Queries/User/UserProfileQueries';
