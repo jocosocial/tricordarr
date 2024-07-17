@@ -5,40 +5,40 @@ import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Naviga
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import * as Yup from 'yup';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SettingForm} from '../../Forms/Settings/SettingForm.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {SettingFormValues} from '../../../libraries/Types/FormValues';
+import {ServerUrlFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries';
 import {HttpStatusCode} from 'axios';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeaderTitle';
-import {ServerURLValidation} from '../../../libraries/ValidationSchema';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {useAppTheme} from '../../../styles/Theme';
 import {ServerHealthcheckResultView} from '../../Views/Settings/ServerHealthcheckResultView.tsx';
+import {ServerUrlSettingForm} from '../../Forms/Settings/ServerUrlSettingForm.tsx';
+import {RefreshControl} from 'react-native';
+import {ServerChoices} from '../../../libraries/Network/ServerChoices.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
-
-const validationSchema = Yup.object().shape({
-  settingValue: ServerURLValidation,
-});
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
-  const theme = useAppTheme();
 
-  const onSave = (values: SettingFormValues, formikHelpers: FormikHelpers<SettingFormValues>) => {
+  const onSave = (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     updateAppConfig({
       ...appConfig,
-      serverUrl: values.settingValue,
+      serverUrl: values.serverUrl,
     });
-    refetch().then(() => formikHelpers.resetForm());
+    refetch().then(() =>
+      formikHelpers.resetForm({
+        values: {
+          serverChoice: ServerChoices.fromUrl(values.serverUrl),
+          serverUrl: values.serverUrl,
+        },
+      }),
+    );
   };
 
   useEffect(() => {
@@ -57,35 +57,31 @@ export const OobeServerScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
         </PaddedContentView>
         <PaddedContentView>
-          <SettingForm
-            value={appConfig.serverUrl}
-            onSave={onSave}
-            validationSchema={validationSchema}
-            inputMode={'url'}
+          <ServerUrlSettingForm
+            onSubmit={onSave}
+            initialValues={{
+              serverChoice: ServerChoices.fromUrl(appConfig.serverUrl),
+              serverUrl: appConfig.serverUrl,
+            }}
           />
         </PaddedContentView>
         <PaddedContentView>
-          <ServerHealthcheckResultView serverHealthData={serverHealthData} serverHealthPassed={serverHealthPassed} />
-        </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonText={'Re-check server'}
-            onPress={refetch}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            isLoading={isFetching}
-            disabled={isFetching}
+          <ServerHealthcheckResultView
+            serverHealthData={serverHealthData}
+            serverHealthPassed={serverHealthPassed}
+            isFetching={isFetching}
           />
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
-        rightDisabled={!serverHealthPassed}
+        rightDisabled={!serverHealthPassed || isFetching}
       />
     </AppView>
   );

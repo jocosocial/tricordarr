@@ -32,6 +32,7 @@ export interface TextFieldProps {
   innerTextStyle?: StyleProp<TextStyle>;
   infoText?: string;
   onBlur?: (e?: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  disabled?: boolean;
 }
 
 export const TextField = ({
@@ -53,6 +54,7 @@ export const TextField = ({
   innerTextStyle,
   infoText,
   onBlur,
+  disabled,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -77,7 +79,7 @@ export const TextField = ({
         <View style={viewStyle}>
           <TextInput
             keyboardType={keyboardType}
-            textColor={theme.colors.onBackground} // @TODO this isnt working
+            textColor={disabled || isSubmitting ? theme.colors.onSurfaceDisabled : theme.colors.onBackground} // @TODO this isnt working
             label={label}
             mode={mode}
             multiline={multiline}
@@ -86,7 +88,7 @@ export const TextField = ({
             value={field.value}
             error={!!meta.error && meta.touched}
             numberOfLines={numberOfLines}
-            disabled={isSubmitting}
+            disabled={disabled || isSubmitting}
             left={left}
             right={right}
             secureTextEntry={secureTextEntry}
