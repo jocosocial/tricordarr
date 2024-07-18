@@ -11,6 +11,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
@@ -36,11 +37,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
-          />
+          <PhotostreamActionsMenu />
         </HeaderButtons>
       </View>
     );

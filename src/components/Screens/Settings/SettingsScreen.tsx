@@ -110,7 +110,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <SettingsNavigationListItem
               title={'Image Settings'}
               description={'Manage settings for images.'}
-              navComponent={SettingsStackScreenComponents.imageSettingsScreen}
+              navComponent={CommonStackComponents.imageSettingsScreen}
             />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
