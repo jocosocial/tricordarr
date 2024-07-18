@@ -17,4 +17,3 @@ Nightly
 * Something weird happened when allowing battery
 * Button to jump back up the photo list. Should be part of a generic flat list
 * Sending photo report doesn't work
-* Separate image stale time setting

@@ -48,7 +48,6 @@ export enum SettingsStackScreenComponents {
   userInfoSettingsScreen = 'UserInfoSettingsScreen',
   aboutSettingsScreen = 'AboutSettingsScreen',
   querySettingsScreen = 'QuerySettingsScreen',
-  imageSettingsScreen = 'ImageSettingsScreen',
 }
 
 export enum ChatStackScreenComponents {

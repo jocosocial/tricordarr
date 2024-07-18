@@ -29,7 +29,6 @@ import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoS
 import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
 import {CommonStackParamList} from '../CommonScreens';
-import {ImageSettingsScreen} from '../../Screens/Settings/Content/ImageSettingsScreen.tsx';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type SettingsStackParamList = CommonStackParamList & {
@@ -58,7 +57,6 @@ export type SettingsStackParamList = CommonStackParamList & {
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;
   QuerySettingsScreen: undefined;
-  ImageSettingsScreen: undefined;
 };
 
 export const SettingsStackNavigator = () => {
@@ -200,11 +198,6 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.querySettingsScreen}
         component={QuerySettingsScreen}
         options={{title: 'Query Settings'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.imageSettingsScreen}
-        component={ImageSettingsScreen}
-        options={{title: 'Image Settings'}}
       />
     </Stack.Navigator>
   );
