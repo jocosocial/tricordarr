@@ -4315,7 +4315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color@npm:^3.1.2, color@npm:^3.2.1":
+"color@npm:^3.1.2":
   version: 3.2.1
   resolution: "color@npm:3.2.1"
   dependencies:
@@ -9181,17 +9181,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper-dates@npm:^0.20.4":
-  version: 0.20.5
-  resolution: "react-native-paper-dates@npm:0.20.5"
+"react-native-paper-dates@npm:^0.22.19":
+  version: 0.22.19
+  resolution: "react-native-paper-dates@npm:0.22.19"
   dependencies:
-    color: ^3.2.1
+    color: ^4.2.3
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-paper: "*"
     react-native-vector-icons: "*"
-  checksum: dcd8082565a943b0ca662c911d23161ebef19f56a09969fd5e05e44e8422b6eac3fa956caf2e2e02cd120470e3d888a63c624c13dc0938456ac4fbb687c0d508
+  checksum: 08c3ae49066ee765d5c161195bec96264999f542a6ea4044c04fbdad27f55424f231f3972b4ba10face23a6f16a64dd7e137204857efae231c8772cd0fecde24
   languageName: node
   linkType: hard
 
@@ -10731,7 +10731,7 @@ __metadata:
     react-native-image-viewing: ^0.2.2
     react-native-mime-types: ^2.4.0
     react-native-paper: ^5.11.1
-    react-native-paper-dates: ^0.20.4
+    react-native-paper-dates: ^0.22.19
     react-native-permissions: ^3.6.1
     react-native-reanimated: ^3.6.0
     react-native-rename: ^3.2.12

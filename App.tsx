@@ -84,7 +84,6 @@ function App(): React.JSX.Element {
    *
    * ModalProvider needs UserRelationsProvider for blocks/mutes/favorites to mutate successfully.
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
-   * ConfigProvider needs StyleProvider for the loading screen.
    * StyleProvider needs PaperProvider for theming.
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
    */
