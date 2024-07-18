@@ -15,5 +15,4 @@ Nightly
 * Add mealtime images
 * Put event notification shutoff in the settings page with other events
 * Something weird happened when allowing battery
-* Button to jump back up the photo list. Should be part of a generic flat list
 * Sending photo report doesn't work
