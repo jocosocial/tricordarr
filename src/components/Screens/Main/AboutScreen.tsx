@@ -16,7 +16,6 @@ import {ContributorCard} from '../../Cards/ContributorCard';
 import {HyperlinkText} from '../../Text/HyperlinkText';
 import {View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import twitarrteam from '../../../../assets/contributors/twitarrteam.jpg';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard.tsx';
 
 export const AboutScreen = () => {
