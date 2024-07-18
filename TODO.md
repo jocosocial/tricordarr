@@ -13,6 +13,5 @@ Work Queue
 Nightly
 * Tricordarr somehow created an LFG with a second interval - this should always be 0
 * Add mealtime images
-* Put event notification shutoff in the settings page with other events
 * Something weird happened when allowing battery
 * Sending photo report doesn't work
