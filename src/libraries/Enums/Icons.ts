@@ -1,3 +1,4 @@
+// https://pictogrammers.com/library/mdi/
 export enum AppIcons {
   // Chat
   seamailCreate = 'email-plus',
@@ -101,4 +102,8 @@ export enum AppIcons {
   pin = 'pin',
   unpin = 'pin-off',
   check = 'check',
+  photostream = 'image-multiple',
+  show = 'eye',
+  hide = 'eye-off',
+  passed = 'check-circle-outline',
 }

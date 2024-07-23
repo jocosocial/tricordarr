@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -15,6 +15,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type LfgStackParamList = CommonStackParamList & {
   LfgHelpScreen: undefined;
@@ -31,11 +32,18 @@ export const LfgStackNavigator = () => {
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const {appConfig} = useConfig();
+  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
     <Stack.Navigator
       initialRouteName={appConfig.schedule.defaultLfgScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+      screenOptions={{...screenOptions, headerShown: true}}
+      screenListeners={{
+        state: () => {
+          console.log('[LFGStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Stack.Screen
         name={LfgStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}

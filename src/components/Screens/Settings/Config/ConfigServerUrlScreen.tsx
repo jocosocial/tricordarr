@@ -1,77 +1,85 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {SettingForm} from '../../../Forms/SettingForm';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {SettingFormValues} from '../../../../libraries/Types/FormValues';
+import {ServerUrlFormValues} from '../../../../libraries/Types/FormValues';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import * as Yup from 'yup';
 import {configureAxios} from '../../../../libraries/Network/APIClient';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
-import {ServerURLValidation} from '../../../../libraries/ValidationSchema';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 import {RefreshControl} from 'react-native';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
-import {useAppTheme} from '../../../../styles/Theme';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {ServerUrlSettingForm} from '../../../Forms/Settings/ServerUrlSettingForm.tsx';
+import {ServerChoices} from '../../../../libraries/Network/ServerChoices.ts';
+import {ServerHealthcheckResultView} from '../../../Views/Settings/ServerHealthcheckResultView.tsx';
+import {HttpStatusCode} from 'axios';
+import {FormikHelpers} from 'formik';
 
-const validationSchema = Yup.object().shape({
-  settingValue: ServerURLValidation,
-});
-
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.configServerUrl>;
-
-export const ConfigServerUrlScreen = ({navigation}: Props) => {
+export const ConfigServerUrlScreen = () => {
+  const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const {appConfig, updateAppConfig} = useConfig();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
-  const {
-    data: healthData,
-    refetch: refetchHealth,
-    isFetching: isFetchingHealth,
-  } = useHealthQuery({
-    enabled: false,
-  });
-  const theme = useAppTheme();
+  const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
 
-  const onSave = (values: SettingFormValues) => {
+  const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = appConfig.serverUrl;
     updateAppConfig({
       ...appConfig,
-      serverUrl: values.settingValue,
+      serverUrl: values.serverUrl,
     });
-    if (oldServerUrl !== values.settingValue) {
+    refetch().then(() =>
+      formikHelpers.resetForm({
+        values: {
+          serverChoice: ServerChoices.fromUrl(values.serverUrl),
+          serverUrl: values.serverUrl,
+        },
+      }),
+    );
+    if (oldServerUrl !== values.serverUrl) {
       signOut().then(() => {
         clearPrivileges();
         queryClient.clear();
-        configureAxios().then(() => navigation.goBack());
+        configureAxios();
       });
-    } else {
-      navigation.goBack();
     }
   };
 
+  useEffect(() => {
+    if (serverHealthData && serverHealthData.status === HttpStatusCode.Ok) {
+      setServerHealthPassed(true);
+    } else {
+      setServerHealthPassed(false);
+    }
+  }, [serverHealthData]);
+
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
-          <Text variant={'bodyLarge'} style={[commonStyles.bold, commonStyles.marginBottomSmall]}>
-            Warning: It is recommended to fully restart the app after changing this value.
-          </Text>
-          <SettingForm
-            value={appConfig.serverUrl}
-            onSave={onSave}
-            validationSchema={validationSchema}
-            inputMode={'url'}
+          <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <ServerUrlSettingForm
+            onSubmit={onSave}
+            initialValues={{
+              serverChoice: ServerChoices.fromUrl(appConfig.serverUrl),
+              serverUrl: appConfig.serverUrl,
+            }}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <ServerHealthcheckResultView
+            serverHealthData={serverHealthData}
+            serverHealthPassed={serverHealthPassed}
+            isFetching={isFetching}
           />
         </PaddedContentView>
         {disruptionDetected && (
@@ -89,16 +97,6 @@ export const ConfigServerUrlScreen = ({navigation}: Props) => {
             </Text>
           </PaddedContentView>
         )}
-        <PaddedContentView>
-          <PrimaryActionButton
-            style={[commonStyles.marginBottom]}
-            buttonText={'Server Health Check'}
-            onPress={refetchHealth}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
-          {healthData && <Text>{healthData.reason}</Text>}
-          {healthData === null && <Text>No Data</Text>}
-        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

@@ -29,6 +29,7 @@ export enum SwiftarrFeature {
   phone = 'phone',
   directphone = 'directphone',
   all = 'all',
+  photostream = 'photostream',
   /// For clients use. Clients need to be prepared for additional values to be added serverside. Those new values get decoded as 'unknown'.
   unknown = 'unknown',
 }

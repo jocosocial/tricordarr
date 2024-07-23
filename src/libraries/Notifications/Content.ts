@@ -101,6 +101,14 @@ export function generateContentNotification(
           id: pressActionID,
         },
         smallIcon: 'ic_notification',
+        actions: [
+          {
+            title: 'Settings',
+            pressAction: {
+              id: PressAction.contentSettings,
+            },
+          },
+        ],
       },
     })
     .catch(e => {

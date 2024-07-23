@@ -13,6 +13,7 @@ import {APIImage} from '../Images/APIImage';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useUserProfileQuery} from '../Queries/Users/UserProfileQueries';
+import {ImageButtons} from '../Buttons/ImageButtons.tsx';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -114,11 +115,13 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     <View>
       <APIImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
       {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
-        <View style={[commonStyles.flexRow, commonStyles.justifyCenter]}>
-          <IconButton icon={AppIcons.newImage} onPress={pickImage} />
-          <IconButton icon={AppIcons.newImageCamera} onPress={takeImage} />
-          <IconButton icon={AppIcons.delete} onPress={clearImage} disabled={!profilePublicData?.header.userImage} />
-        </View>
+        <ImageButtons
+          takeImage={takeImage}
+          clearImage={clearImage}
+          pickImage={pickImage}
+          style={commonStyles.justifyCenter}
+          disableDelete={!profilePublicData?.header.userImage}
+        />
       )}
     </View>
   );

@@ -21,6 +21,7 @@ import {FezTypePickerField} from './Fields/FezTypePickerField';
 import {SuggestedTextField} from './Fields/SuggestedTextField';
 import {DatePickerField} from './Fields/DatePickerField';
 import {TimePickerField} from './Fields/TimePickerField';
+import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -50,7 +51,7 @@ const maximumHelpContent = ['Use 0 for unlimited'];
 
 const locationSuggestions = [
   'Atrium, Deck 1, Midship',
-  'Casino Bar, Deck 2, Forward',
+  'Gallery Bar, Deck 2, Forward',
   'Billboard Onboard, Deck 2, Forward',
   'Rolling Stone Lounge, Deck 2, Midship',
   'Pinnacle Bar, Deck 2, Midship',
@@ -93,8 +94,9 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, isValid}) => (
+      {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
+          <DirtyDetectionField />
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
           <SuggestedTextField
             viewStyle={styles.inputContainer}

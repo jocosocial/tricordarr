@@ -30,6 +30,14 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     return;
   }
 
+  // Do not generate a notification if the user has muted notifications.
+  if (appConfig.muteNotifications) {
+    if (new Date() < appConfig.muteNotifications) {
+      console.log('[SocketNotification.ts] user has muted notifications.');
+      return;
+    }
+  }
+
   switch (notificationType) {
     case NotificationTypeData.seamailUnreadMsg:
       channel = seamailChannel;

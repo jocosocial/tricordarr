@@ -4,7 +4,7 @@ import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {FormikHelpers} from 'formik';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {NotificationPollingSettingsForm} from '../../../Forms/NotificationPollingSettingsForm';
+import {NotificationPollingSettingsForm} from '../../../Forms/Settings/NotificationPollingSettingsForm.tsx';
 import {NotificationPollingSettingsFormValues} from '../../../../libraries/Types/FormValues';
 
 export const NotificationPollerSettingsScreen = () => {

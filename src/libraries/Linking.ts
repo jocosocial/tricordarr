@@ -4,7 +4,7 @@ import {
   ForumStackComponents,
   LfgStackComponents,
   MainStackComponents,
-  SeamailStackScreenComponents,
+  ChatStackScreenComponents,
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
@@ -32,6 +32,7 @@ const deepLinksConf = {
               screens: {
                 SettingsScreen: 'settings',
                 ServerConnectionSettingsScreen: 'settings/serverconnectionsettingsscreen',
+                PushNotificationSettingsScreen: 'settings/pushnotifications',
                 LoginScreen: 'login',
               },
             },
@@ -41,10 +42,11 @@ const deepLinksConf = {
             MapScreen: 'map/:deckNumber?',
             MainConductScreen: 'codeOfConduct',
             DailyThemesScreen: 'dailyThemes',
+            PhotostreamScreen: 'photostream',
           },
         },
         SeamailTab: {
-          initialRouteName: SeamailStackScreenComponents.seamailListScreen,
+          initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
             SeamailTab: 'seamail',
             SeamailScreen: 'seamail/:fezID',

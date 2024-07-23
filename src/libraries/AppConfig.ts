@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
-import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
+import {defaultCacheTime, defaultStaleTime, defaultImageStaleTime} from './Network/APIClient';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -18,6 +18,7 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
+  imageStaleTime: number;
 }
 
 export interface ScheduleConfig {
@@ -26,6 +27,11 @@ export interface ScheduleConfig {
   hidePastLfgs: boolean;
   enableLateDayFlip: boolean;
   defaultLfgScreen: LfgStackComponents;
+}
+
+export interface AccessibilityConfig {
+  useSystemTheme: boolean;
+  darkMode: boolean;
 }
 
 export interface AppConfig {
@@ -47,6 +53,9 @@ export interface AppConfig {
   portTimeZoneID: string;
   apiClientConfig: APIClientConfig;
   enableEasterEgg: boolean;
+  accessibility: AccessibilityConfig;
+  muteNotifications?: Date;
+  skipThumbnails: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -96,8 +105,14 @@ const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
+    imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,
+  accessibility: {
+    useSystemTheme: true,
+    darkMode: false,
+  },
+  skipThumbnails: false,
 };
 
 /**
@@ -143,6 +158,9 @@ export const getAppConfig = async () => {
   }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+  if (appConfig.muteNotifications) {
+    appConfig.muteNotifications = new Date(appConfig.muteNotifications);
+  }
 
   // Ok now we're done
   return appConfig;

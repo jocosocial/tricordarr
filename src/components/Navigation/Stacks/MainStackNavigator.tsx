@@ -4,7 +4,7 @@ import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainScreen} from '../../Screens/Main/MainScreen';
-import {SettingsStack, SettingsStackParamList} from './SettingsStack';
+import {SettingsStackNavigator, SettingsStackParamList} from './SettingsStackNavigator.tsx';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
@@ -16,6 +16,10 @@ import {MainHelpScreen} from '../../Screens/Main/MainHelpScreen';
 import {MainConductScreen} from '../../Screens/Main/MainConductScreen';
 import {DailyThemesScreen} from '../../Screens/Main/DailyThemesScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {PhotostreamScreen} from '../../Screens/Photostream/PhotostreamScreen.tsx';
+import {PhotostreamImageCreateScreen} from '../../Screens/Photostream/PhotostreamImageCreateScreen.tsx';
+import {PhotostreamHelpScreen} from '../../Screens/Photostream/PhotostreamHelpScreen.tsx';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -28,6 +32,9 @@ export type MainStackParamList = CommonStackParamList & {
   MainHelpScreen: undefined;
   MainConductScreen: undefined;
   DailyThemesScreen: undefined;
+  PhotostreamScreen: undefined;
+  PhotostreamImageCreateScreen: undefined;
+  PhotostreamHelpScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -36,13 +43,22 @@ export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
+  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
-    <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
+    <MainStack.Navigator
+      initialRouteName={MainStackComponents.mainScreen}
+      screenOptions={screenOptions}
+      screenListeners={{
+        state: () => {
+          console.log('[MainStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <MainStack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Today'}} />
       <MainStack.Screen
         name={MainStackComponents.mainSettingsScreen}
-        component={SettingsStack}
+        component={SettingsStackNavigator}
         options={{headerShown: false}}
       />
       <MainStack.Screen
@@ -74,6 +90,21 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.dailyThemesScreen}
         component={DailyThemesScreen}
         options={{title: 'Daily Themes'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.photostreamScreen}
+        component={PhotostreamScreen}
+        options={{title: 'Photo Stream'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.photostreamImageCreateScreen}
+        component={PhotostreamImageCreateScreen}
+        options={{title: 'Upload'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.photostreamHelpScreen}
+        component={PhotostreamHelpScreen}
+        options={{title: 'Help'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

@@ -11,7 +11,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useLogoutMutation} from '../../Queries/Auth/LogoutQueries';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useSettingsStack} from '../../Navigation/Stacks/SettingsStack';
+import {useSettingsStack} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {stopForegroundServiceWorker} from '../../../libraries/Service';

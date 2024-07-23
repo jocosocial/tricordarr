@@ -1,11 +1,8 @@
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, RefreshControlProps, View} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useCallback} from 'react';
 import {Divider} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 
 interface SeamailFlatListProps {
   fezList: FezData[];

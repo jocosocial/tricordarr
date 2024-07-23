@@ -16,6 +16,7 @@ import {ContributorCard} from '../../Cards/ContributorCard';
 import {HyperlinkText} from '../../Text/HyperlinkText';
 import {View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import {OobeNoteCard} from '../../Cards/OobeNoteCard.tsx';
 
 export const AboutScreen = () => {
   const {commonStyles} = useStyles();
@@ -36,6 +37,10 @@ export const AboutScreen = () => {
                 <DataTable.Row>
                   <DataTable.Cell>Build</DataTable.Cell>
                   <DataTable.Cell>{DeviceInfo.getBuildNumber()}</DataTable.Cell>
+                </DataTable.Row>
+                <DataTable.Row>
+                  <DataTable.Cell>Android</DataTable.Cell>
+                  <DataTable.Cell>{DeviceInfo.getSystemVersion()}</DataTable.Cell>
                 </DataTable.Row>
               </DataTable>
             </Card.Content>
@@ -74,6 +79,7 @@ export const AboutScreen = () => {
               'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable. He also made the cool lighter video.'
             }
           />
+          <OobeNoteCard />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'titleLarge'} style={commonStyles.marginBottomSmall}>

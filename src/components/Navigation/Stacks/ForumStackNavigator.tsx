@@ -19,11 +19,10 @@ import {ForumThreadRecentScreen} from '../../Screens/Forum/Thread/ForumThreadRec
 import {ForumPostSearchScreen} from '../../Screens/Forum/Post/ForumPostSearchScreen';
 import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSearchScreen';
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
-import {ForumThreadEditScreen} from '../../Screens/Forum/Thread/ForumThreadEditScreen';
-import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
@@ -41,7 +40,9 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumPostAlertwordScreen: {
     alertWord: string;
   };
-  ForumThreadSearchScreen: undefined;
+  ForumThreadSearchScreen: {
+    categoryID?: string;
+  };
   ForumThreadCreateScreen: {
     categoryId: string;
   };
@@ -53,11 +54,18 @@ export const ForumStackNavigator = () => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.forums);
+  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
     <Stack.Navigator
       initialRouteName={ForumStackComponents.forumCategoriesScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+      screenOptions={{...screenOptions, headerShown: true}}
+      screenListeners={{
+        state: () => {
+          console.log('[ForumStackNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Stack.Screen
         name={ForumStackComponents.forumCategoriesScreen}
         component={isDisabled ? DisabledView : ForumCategoriesScreen}

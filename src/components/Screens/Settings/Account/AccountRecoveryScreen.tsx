@@ -1,7 +1,7 @@
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import React, {useState} from 'react';
-import {UserRecoveryForm} from '../../../Forms/UserRecoveryForm';
+import {UserRecoveryForm} from '../../../Forms/User/UserRecoveryForm.tsx';
 import {UserRegistrationFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';

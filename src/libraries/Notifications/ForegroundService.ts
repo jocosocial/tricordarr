@@ -38,9 +38,9 @@ export async function generateForegroundServiceNotification(
           {
             title: 'Settings',
             pressAction: {
-              id: PressAction.worker
+              id: PressAction.worker,
             },
-          }
+          },
         ],
         smallIcon: 'ic_notification',
       },

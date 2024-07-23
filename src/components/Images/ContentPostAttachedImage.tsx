@@ -1,7 +1,5 @@
 import React from 'react';
 import {ContentPostAttachment} from '../Views/Content/ContentPostAttachment';
-import {useImageQuery} from '../Queries/ImageQuery';
-import {ActivityIndicator} from 'react-native-paper';
 import {ImageUploadData} from '../../libraries/Structs/ControllerStructs';
 import {APIImage} from './APIImage';
 import {Image, StyleSheet} from 'react-native';

@@ -17,7 +17,11 @@ import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
 import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
 
-export const ForumThreadSearchBar = () => {
+interface Props {
+  categoryID?: string;
+}
+
+export const ForumThreadSearchBar = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
   const [enable, setEnable] = useState(false);
@@ -36,6 +40,7 @@ export const ForumThreadSearchBar = () => {
     {
       search: searchQuery,
       sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
+      category: props.categoryID,
     },
     {
       enabled: enable,

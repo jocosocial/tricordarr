@@ -3,14 +3,13 @@ import {AppView} from '../../Views/AppView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailStackParamList} from '../../Navigation/Stacks/SeamailStackNavigator';
-import {NavigatorIDs, SeamailStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {ChatStackParamList} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
+import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {NotImplementedView} from '../../Views/Static/NotImplementedView';
 
 type SeamailSearchScreenProps = NativeStackScreenProps<
-  SeamailStackParamList,
-  SeamailStackScreenComponents.seamailSearchScreen,
-  NavigatorIDs.seamailStack
+  ChatStackParamList,
+  ChatStackScreenComponents.seamailSearchScreen
 >;
 
 export const SeamailSearchScreen = ({route}: SeamailSearchScreenProps) => {

@@ -8,7 +8,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
 
 interface EventCardActionsMenuProps {
-  anchor: JSX.Element;
+  anchor: React.JSX.Element;
   eventData: EventData;
   menuVisible: boolean;
   setMenuVisible: Dispatch<SetStateAction<boolean>>;

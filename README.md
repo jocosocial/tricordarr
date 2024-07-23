@@ -6,10 +6,10 @@ A [Twitarr](https://github.com/jocosocial/swiftarr) client.
 Quick Start
 -----------
 ```
-nvm install lts/gallium
-nvm use lts/fermium (v16.19.1)
+nvm install lts/hydrogen
+nvm use lts/hydrogen (v18.20.4)
 
-npm install # or npm clean-install
+yarn install --immutable --immutable-cache
 
 npx react-native start
 
@@ -22,6 +22,7 @@ Notes
 * https://www.w3.org/Bugs/Public/show_bug.cgi?id=13104
 * refetchPage can be passed to refetch to limit refetching
 * All dates from the API come in as ISO8601 strings
+* `adb logcat [| grep ReactNativeJS]` can get logs on the device
 
 Upgrading
 ---------
@@ -29,6 +30,9 @@ The React Native upgrade process is miserable. Don't do it. Or if you do, at lea
 do it on a clean dedicated branch. `npm install` doesn't honor `package-lock.json`,
 you need `npm clean-install` for that.
 
+```shell
+npx @rnx-kit/align-deps --requirements react-native@0.72
+```
 
 Releasing
 ---------
@@ -45,6 +49,10 @@ cd android
 ./gradlew bundleRelease # To build AAB
 ./gradlew assembleRelease # For an APK
 ```
+
+```
+ adb -s device-name-here install ~/Projects/jocosocial/tricordarr/android/app/build/outputs/apk/release/app-release.apk
+ ```
 
 Navigation
 ----------

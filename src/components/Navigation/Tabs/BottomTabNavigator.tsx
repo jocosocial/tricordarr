@@ -2,7 +2,7 @@ import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {SeamailStackNavigator, SeamailStackParamList} from '../Stacks/SeamailStackNavigator';
+import {ChatStackNavigator, ChatStackParamList} from '../Stacks/ChatStackNavigator.tsx';
 import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -11,6 +11,7 @@ import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavi
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {
@@ -25,7 +26,7 @@ function getBadgeDisplayValue(input: number | undefined) {
  */
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
-  SeamailTab: NavigatorScreenParams<SeamailStackParamList>;
+  SeamailTab: NavigatorScreenParams<ChatStackParamList>;
   ScheduleTab: NavigatorScreenParams<EventStackParamList>;
   ForumsTab: NavigatorScreenParams<ForumStackParamList>;
   LfgTab: NavigatorScreenParams<LfgStackParamList>;
@@ -34,6 +35,7 @@ export type BottomTabParamList = {
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
+  const {setHasUnsavedWork} = useErrorHandler();
 
   function getIcon(icon: string) {
     return <AppIcon icon={icon} />;
@@ -59,7 +61,15 @@ export const BottomTabNavigator = () => {
   };
 
   return (
-    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
+    <Tab.Navigator
+      initialRouteName={BottomTabComponents.homeTab}
+      backBehavior={'history'}
+      screenListeners={{
+        state: () => {
+          console.log('[BottomTabNavigator.tsx] Clearing unsaved work.');
+          setHasUnsavedWork(false);
+        },
+      }}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
         component={MainStackNavigator}
@@ -80,7 +90,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.seamailTab}
-        component={SeamailStackNavigator}
+        component={ChatStackNavigator}
         options={{
           title: 'Seamail',
           tabBarIcon: () => getIcon(AppIcons.seamail),

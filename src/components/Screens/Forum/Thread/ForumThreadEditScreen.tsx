@@ -3,7 +3,7 @@ import React from 'react';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumThreadEditForm} from '../../../Forms/ForumThreadEditForm';
+import {ForumThreadEditForm} from '../../../Forms/Forum/ForumThreadEditForm.tsx';
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {useForumRenameMutation} from '../../../Queries/Forum/ForumThreadMutationQueries';

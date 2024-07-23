@@ -4,15 +4,12 @@
  */
 
 import React, {useEffect} from 'react';
-import {LogBox, useColorScheme} from 'react-native';
-import {adaptNavigationTheme, Portal, Provider as PaperProvider} from 'react-native-paper';
+import {LogBox} from 'react-native';
+import {Portal} from 'react-native-paper';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import {QueryClientProvider} from '@tanstack/react-query';
 import {setupChannels} from './src/libraries/Notifications/Channels';
-import {twitarrTheme, twitarrThemeDark} from './src/styles/Theme';
-import {configureAxios, SwiftarrQueryClient} from './src/libraries/Network/APIClient';
+import {configureAxios} from './src/libraries/Network/APIClient';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
@@ -25,11 +22,9 @@ import {UserRelationsProvider} from './src/components/Context/Providers/UserRela
 import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
-import {navigationLinking} from './src/libraries/Linking';
 import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
 import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
 import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
-import moment from 'moment-timezone';
 import {registerFgsWorker} from './src/libraries/Service';
 import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
 import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
@@ -52,6 +47,7 @@ import 'react-native-gesture-handler';
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/SwiftarrQueryClientProvider';
 import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
+import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -71,13 +67,7 @@ configureAxios();
 // Declare what the Foreground Service worker function should be.
 registerFgsWorker();
 
-// https://callstack.github.io/react-native-paper/docs/guides/theming
-const {LightTheme: navLightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
-const {DarkTheme: navDarkTheme} = adaptNavigationTheme({reactNavigationDark: DefaultTheme});
-
-function App(): JSX.Element {
-  const colorScheme = useColorScheme();
-
+function App(): React.JSX.Element {
   setupChannels().catch(error => {
     console.error('Error setting up notification channels:', error);
   });
@@ -94,58 +84,55 @@ function App(): JSX.Element {
    *
    * ModalProvider needs UserRelationsProvider for blocks/mutes/favorites to mutate successfully.
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
-   * ConfigProvider needs StyleProvider for the loading screen.
    * StyleProvider needs PaperProvider for theming.
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
    */
   return (
-    <NavigationContainer linking={navigationLinking} theme={colorScheme === 'dark' ? navDarkTheme : navLightTheme}>
-      <PaperProvider theme={colorScheme === 'dark' ? twitarrThemeDark : twitarrTheme}>
+    <ConfigProvider>
+      <AppNavigationThemeProvider>
         <StyleProvider>
-          <ConfigProvider>
-            <SwiftarrQueryClientProvider>
-              <LoadingProvider>
-                <ErrorHandlerProvider>
-                  <AuthProvider>
-                    <UserDataProvider>
-                      <PrivilegeProvider>
-                        <SocketProvider>
-                          <TwitarrProvider>
-                            <UserRelationsProvider>
-                              <UserNotificationDataProvider>
-                                <FeatureProvider>
-                                  <ModalProvider>
-                                    <Portal.Host>
-                                      <HeaderButtonsProvider stackType={'native'}>
-                                        <CruiseProvider>
-                                          <DrawerProvider>
-                                            <FilterProvider>
-                                              <AppEventHandler />
-                                              <ForegroundService />
-                                              <NotificationDataListener />
-                                              <NotificationDataPoller />
-                                              <RootStackNavigator />
-                                            </FilterProvider>
-                                          </DrawerProvider>
-                                        </CruiseProvider>
-                                      </HeaderButtonsProvider>
-                                    </Portal.Host>
-                                  </ModalProvider>
-                                </FeatureProvider>
-                              </UserNotificationDataProvider>
-                            </UserRelationsProvider>
-                          </TwitarrProvider>
-                        </SocketProvider>
-                      </PrivilegeProvider>
-                    </UserDataProvider>
-                  </AuthProvider>
-                </ErrorHandlerProvider>
-              </LoadingProvider>
-            </SwiftarrQueryClientProvider>
-          </ConfigProvider>
+          <SwiftarrQueryClientProvider>
+            <LoadingProvider>
+              <ErrorHandlerProvider>
+                <AuthProvider>
+                  <UserDataProvider>
+                    <PrivilegeProvider>
+                      <SocketProvider>
+                        <TwitarrProvider>
+                          <UserRelationsProvider>
+                            <UserNotificationDataProvider>
+                              <FeatureProvider>
+                                <ModalProvider>
+                                  <Portal.Host>
+                                    <HeaderButtonsProvider stackType={'native'}>
+                                      <CruiseProvider>
+                                        <DrawerProvider>
+                                          <FilterProvider>
+                                            <AppEventHandler />
+                                            <ForegroundService />
+                                            <NotificationDataListener />
+                                            <NotificationDataPoller />
+                                            <RootStackNavigator />
+                                          </FilterProvider>
+                                        </DrawerProvider>
+                                      </CruiseProvider>
+                                    </HeaderButtonsProvider>
+                                  </Portal.Host>
+                                </ModalProvider>
+                              </FeatureProvider>
+                            </UserNotificationDataProvider>
+                          </UserRelationsProvider>
+                        </TwitarrProvider>
+                      </SocketProvider>
+                    </PrivilegeProvider>
+                  </UserDataProvider>
+                </AuthProvider>
+              </ErrorHandlerProvider>
+            </LoadingProvider>
+          </SwiftarrQueryClientProvider>
         </StyleProvider>
-      </PaperProvider>
-    </NavigationContainer>
+      </AppNavigationThemeProvider>
+    </ConfigProvider>
   );
 }
 

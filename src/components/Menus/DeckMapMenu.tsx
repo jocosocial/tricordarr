@@ -35,6 +35,7 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
             title={`Deck ${deck.number} - ${deck.label}`}
             onPress={() => onPress(deck)}
             style={props.shipDeck.number === deck.number ? commonStyles.surfaceVariant : undefined}
+            titleStyle={props.shipDeck.number === deck.number ? commonStyles.bold : undefined}
           />
         );
       })}

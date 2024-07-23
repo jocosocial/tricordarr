@@ -11,7 +11,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
 import humanizeDuration from 'humanize-duration';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
-import {QuerySettingsForm} from '../../../Forms/QuerySettingsForm';
+import {QuerySettingsForm} from '../../../Forms/Settings/QuerySettingsForm.tsx';
 import {QuerySettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
@@ -49,6 +49,7 @@ export const QuerySettingsScreen = () => {
     retry: appConfig.apiClientConfig.retry,
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
+    imageStaleTimeHours: appConfig.apiClientConfig.imageStaleTime / 60 / 60 / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
@@ -64,6 +65,7 @@ export const QuerySettingsScreen = () => {
         retry: values.retry,
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
+        imageStaleTime: values.imageStaleTimeHours * 60 * 60 * 1000,
       },
     });
     helpers.setSubmitting(false);

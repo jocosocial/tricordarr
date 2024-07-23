@@ -4,7 +4,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
 import {commonStyles} from '../../../styles';
 import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
-import {useSeamailStack} from '../../Navigation/Stacks/SeamailStackNavigator';
+import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -16,7 +16,7 @@ interface SeamailListItemProps {
 
 export const SeamailListItem = ({fez}: SeamailListItemProps) => {
   const {profilePublicData} = useUserData();
-  const navigation = useSeamailStack();
+  const navigation = useChatStack();
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;

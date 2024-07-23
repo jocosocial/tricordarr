@@ -1,7 +1,7 @@
 import {AxiosError} from 'axios';
 import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {MutationFunction} from '@tanstack/query-core';
-import {UseMutationResult} from '@tanstack/react-query/src/types';
+import {UseMutationResult} from '@tanstack/react-query';
 import {useMutation, UseMutationOptions} from '@tanstack/react-query';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 

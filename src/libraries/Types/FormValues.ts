@@ -1,5 +1,7 @@
 import {FezType} from '../Enums/FezType';
 import {DinnerTeam} from '../Enums/DinnerTeam';
+import {EventData} from '../Structs/ControllerStructs.tsx';
+import {ServerUrlChoice} from '../Network/ServerChoices.ts';
 
 export interface SettingFormValues {
   settingValue: string;
@@ -80,9 +82,21 @@ export interface QuerySettingsFormValues {
   retry: number;
   staleTimeMinutes: number;
   disruptionThreshold: number;
+  imageStaleTimeHours: number;
 }
 
 export interface NotificationPollingSettingsFormValues {
   notificationPollIntervalMinutes: number;
   enableNotificationPolling: boolean;
+}
+
+export interface PhotostreamCreateFormValues {
+  eventData?: EventData;
+  locationName?: string;
+  image?: string;
+}
+
+export interface ServerUrlFormValues {
+  serverChoice: ServerUrlChoice;
+  serverUrl: string;
 }

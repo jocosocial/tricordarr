@@ -7,7 +7,7 @@ import {FormikHelpers} from 'formik';
 import {useUserCreateQuery} from '../../../Queries/User/UserQueries';
 import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
-import {UserCreateForm} from '../../../Forms/UserCreateForm';
+import {UserCreateForm} from '../../../Forms/User/UserCreateForm.tsx';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView';
 import {Text} from 'react-native-paper';

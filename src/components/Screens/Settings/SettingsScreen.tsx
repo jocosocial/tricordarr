@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {Divider, List} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNavigationListItem';
 import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {ListSection} from '../../Lists/ListSection';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStack';
+import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
 import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem';
 import {useAuth} from '../../Context/Contexts/AuthContext';
@@ -17,11 +17,7 @@ import {SettingsRegistrationListItem} from '../../Lists/Items/Settings/SettingsR
 import {ListSubheader} from '../../Lists/ListSubheader';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export type Props = NativeStackScreenProps<
-  SettingsStackParamList,
-  SettingsStackScreenComponents.settings,
-  NavigatorIDs.settingsStack
->;
+export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.settings>;
 
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();
@@ -40,13 +36,18 @@ export const SettingsScreen = ({navigation}: Props) => {
         <View>
           <Divider bold={true} />
           <ListSection>
-            <ListSubheader>Account</ListSubheader>
+            <ListSubheader>General</ListSubheader>
             {tokenData ? <SettingsAccountListItem /> : <SettingsLoginListItem />}
             {!tokenData && <SettingsRegistrationListItem />}
             <SettingsNavigationListItem
               title={'Server URL'}
               description={'URL of the Twitarr server.'}
               navComponent={CommonStackComponents.configServerUrl}
+            />
+            <SettingsNavigationListItem
+              title={'Accessibility'}
+              description={'Theme and styling options for this app.'}
+              navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
           </ListSection>
           <Divider bold={true} />
@@ -105,6 +106,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'LFG Settings'}
               description={'Settings for community organized events.'}
               navComponent={SettingsStackScreenComponents.lfgSettings}
+            />
+            <SettingsNavigationListItem
+              title={'Image Settings'}
+              description={'Manage settings for images.'}
+              navComponent={CommonStackComponents.imageSettingsScreen}
             />
           </ListSection>
           {appConfig.enableDeveloperOptions && (

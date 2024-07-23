@@ -4,14 +4,13 @@ import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Na
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {ForumCreateForm} from '../../../Forms/ForumCreateForm';
+import {ForumCreateForm} from '../../../Forms/Forum/ForumCreateForm.tsx';
 import {FormikHelpers, FormikProps} from 'formik';
 import {ForumCreateData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useForumCreateMutation} from '../../../Queries/Forum/ForumThreadMutationQueries';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
@@ -29,7 +28,6 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
   const forumCreateMutation = useForumCreateMutation();
-  const {profilePublicData} = useUserData();
   const queryClient = useQueryClient();
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
@@ -59,6 +57,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
             queryClient.invalidateQueries([`/forum/${response.data.forumID}`]),
             queryClient.invalidateQueries([`/forum/categories/${response.data.categoryID}`]),
             queryClient.invalidateQueries(['/forum/search']),
+            queryClient.invalidateQueries(['/forum/categories']),
           ]);
           navigation.replace(CommonStackComponents.forumThreadScreen, {
             forumID: response.data.forumID,

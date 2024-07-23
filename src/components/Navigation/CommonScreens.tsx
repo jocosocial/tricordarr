@@ -10,7 +10,7 @@ import {
   ForumListData,
   PostData,
   ProfilePublicData,
-  UserHeader
+  UserHeader,
 } from '../../libraries/Structs/ControllerStructs';
 import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
@@ -42,6 +42,9 @@ import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen';
 import {LfgChatScreen} from '../Screens/LFG/LfgChatScreen';
 import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
 import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen';
+import {AccessibilitySettingsScreen} from '../Screens/Settings/AccessibilitySettingsScreen.tsx';
+import {SettingsStackScreenComponents} from '../../libraries/Enums/Navigation.ts';
+import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -147,6 +150,8 @@ export type CommonStackParamList = {
   ForumThreadEditScreen: {
     forumData: ForumData;
   };
+  AccessibilitySettingsScreen: undefined;
+  ImageSettingsScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -179,6 +184,8 @@ export enum CommonStackComponents {
   lfgChatScreen = 'LfgChatScreen',
   lfgEditScreen = 'LfgEditScreen',
   forumThreadEditScreen = 'ForumThreadEditScreen',
+  accessibilitySettingsScreen = 'AccessibilitySettingsScreen',
+  imageSettingsScreen = 'ImageSettingsScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -334,6 +341,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.forumThreadEditScreen}
         component={isForumsDisabled ? DisabledView : ForumThreadEditScreen}
         options={{title: 'Edit Forum'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.accessibilitySettingsScreen}
+        component={AccessibilitySettingsScreen}
+        options={{title: 'Accessibility'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.imageSettingsScreen}
+        component={ImageSettingsScreen}
+        options={{title: 'Image Settings'}}
       />
     </>
   );

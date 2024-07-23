@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
-import {LoginForm} from '../../../Forms/LoginForm';
+import {LoginForm} from '../../../Forms/User/LoginForm.tsx';
 import {useNavigation} from '@react-navigation/native';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
