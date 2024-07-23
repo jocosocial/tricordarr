@@ -1,13 +1,12 @@
 import React from 'react';
 import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {UserAvatarImage} from '../../../Images/UserAvatarImage';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
-import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';
 import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
 import {ContentPostImage} from '../../../Images/ContentPostImage';
 import {ForumPostMessageView} from '../../../Views/Forum/ForumPostMessageView';
 import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
+import {ContentPostAvatar} from '../../../Views/Content/ContentPostAvatar.tsx';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {
@@ -23,7 +22,12 @@ interface ForumPostListItemProps {
   forumData?: ForumData;
 }
 
-export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts, forumData}: ForumPostListItemProps) => {
+export const ForumPostListItem = ({
+  postData,
+  enableShowInThread,
+  enablePinnedPosts,
+  forumData,
+}: ForumPostListItemProps) => {
   const forumNavigation = useForumStackNavigation();
 
   const handleAuthorAvatarPress = () => {
@@ -34,9 +38,7 @@ export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPos
 
   return (
     <FlatListItemContent>
-      <MessageAvatarContainerView onPress={handleAuthorAvatarPress}>
-        <UserAvatarImage userHeader={postData.author} small={true} />
-      </MessageAvatarContainerView>
+      <ContentPostAvatar userHeader={postData.author} onPress={handleAuthorAvatarPress} />
       <MessageViewContainer>
         <ForumPostMessageView
           postData={postData}
