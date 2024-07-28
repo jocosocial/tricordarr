@@ -239,7 +239,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       {fez.members?.isMuted && <FezMutedView />}
       <FezPostList
         fez={fez}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+        // https://github.com/facebook/react-native/issues/17553
+        // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
         handleLoadPrevious={handleLoadPrevious}
         data={fezPostsData}
         hasPrevious={hasPreviousPage}

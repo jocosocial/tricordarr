@@ -4,7 +4,7 @@ import {FezPostListItem} from './Items/FezPostListItem.tsx';
 import {PaddedContentView} from '../Views/Content/PaddedContentView.tsx';
 import React, {useRef, useState} from 'react';
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
-import {RefreshControlProps} from 'react-native';
+import {RefreshControl, RefreshControlProps, View} from 'react-native';
 import {SpaceDivider} from './Dividers/SpaceDivider.tsx';
 import {Text} from 'react-native-paper';
 
@@ -14,9 +14,10 @@ interface FezPostListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadPrevious?: () => void;
   hasPrevious?: boolean;
+  refreshing?: boolean;
 }
 
-export const FezPostList = ({data, fez, refreshControl, handleLoadPrevious, hasPrevious}: FezPostListProps) => {
+export const FezPostList = ({data, fez, refreshControl, handleLoadPrevious, hasPrevious, refreshing}: FezPostListProps) => {
   const listRef = useRef<FlashList<FezPostData>>(null);
   const [showButton, setShowButton] = useState(false);
 
@@ -59,7 +60,7 @@ export const FezPostList = ({data, fez, refreshControl, handleLoadPrevious, hasP
         renderItem={renderItem}
         onScroll={handleScroll}
         ItemSeparatorComponent={SpaceDivider}
-        refreshControl={refreshControl}
+        // refreshControl={refreshControl}
         keyExtractor={(item: FezPostData) => String(item.postID)}
         ListFooterComponent={renderHeader}
         onEndReached={handleLoadPrevious}
@@ -68,6 +69,12 @@ export const FezPostList = ({data, fez, refreshControl, handleLoadPrevious, hasP
         // maintainVisibleContentPosition did not help with any of the inverted
         // scroll positioning. The only quirk noticed so far is when you load
         // a conversation that has many unread messages.
+        // refreshing={true}
+        refreshControl={<RefreshControl refreshing={true} enabled={true} />}
+        // https://github.com/Shopify/flash-list/issues/860
+        showsVerticalScrollIndicator={false}
+        // onRefresh={() => console.log('wee')}
+        // refreshing={true}
       />
       {showButton && <FloatingScrollButton onPress={scrollToBottom} displayPosition={'raised'} />}
     </>
