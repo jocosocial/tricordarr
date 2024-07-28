@@ -44,9 +44,18 @@ export const EventHelpScreen = () => {
         <PaddedContentView>
           <ScheduleItemCardBase
             title={'Looking For Group Event'}
-            cardStyle={{backgroundColor: theme.colors.outline}}
+            cardStyle={{backgroundColor: theme.colors.twitarrGrey}}
             description={
               'Attendee organized event. These are available within Twitarr only. Sometimes participation is limited.'
+            }
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <ScheduleItemCardBase
+            title={'Personal Event'}
+            cardStyle={{backgroundColor: theme.colors.twitarrOrange}}
+            description={
+              'Private calendar entries created by you within the Twitarr system for you and your friends. Useful for a single-app schedule for your day.'
             }
           />
         </PaddedContentView>
@@ -105,9 +114,7 @@ export const EventHelpScreen = () => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
-            The Your Day Today screen shows all of your favorite events and joined LFGs for the current day.
-          </Text>
+          <Text>The Your Day Today screen shows all of your favorite events and joined LFGs for the current day.</Text>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

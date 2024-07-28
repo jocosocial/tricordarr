@@ -9,6 +9,7 @@ export class ServerChoices {
   static serverChoices: ServerUrlChoice[] = [
     {name: 'Production', serverUrl: 'https://twitarr.com'},
     {name: 'Beta', serverUrl: 'https://beta.twitarr.com'},
+    {name: 'Alpha', serverUrl: 'https://twitarr.apps.grantcohoe.com'},
     this.otherChoice,
   ];
 
