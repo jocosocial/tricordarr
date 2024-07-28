@@ -1,5 +1,5 @@
 import {useTokenAuthQuery} from './TokenAuthQuery.ts';
-import {PersonalEventData} from '../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, PersonalEventData} from '../../libraries/Structs/ControllerStructs.tsx';
 import axios from 'axios';
 
 interface PersonalEventsQueryOptions {
@@ -35,5 +35,11 @@ export const usePersonalEventsQuery = ({
       return responseData;
     },
     ...options,
+  });
+};
+
+export const usePersonalEventQuery = ({eventID}: {eventID: string}) => {
+  return useTokenAuthQuery<PersonalEventData>({
+    queryKey: [`/personalevents/${eventID}`],
   });
 };

@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useEventQuery} from '../../Queries/Events/EventQueries';
-import {Linking, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -17,7 +17,6 @@ import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQuerie
 import {useAppTheme} from '../../../styles/Theme';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {useModal} from '../../Context/Contexts/ModalContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
@@ -37,7 +36,6 @@ export const EventScreen = ({navigation, route}: Props) => {
   const eventFavoriteMutation = useEventFavoriteMutation();
   const theme = useAppTheme();
   const queryClient = useQueryClient();
-  const {setModalContent, setModalVisible} = useModal();
 
   const handleFavorite = useCallback(
     (event: EventData) => {
@@ -55,12 +53,6 @@ export const EventScreen = ({navigation, route}: Props) => {
               // Update the user notification data in case this was/is a favorite.
               queryClient.invalidateQueries(['/notification/global']),
             ]);
-            // queryClient.setQueryData([`/events/${event.eventID}`], () => {
-            //   return {
-            //     ...event,
-            //     isFavorite: !event.isFavorite,
-            //   };
-            // });
           },
         },
       );
@@ -95,11 +87,11 @@ export const EventScreen = ({navigation, route}: Props) => {
               )}
               <EventScreenActionsMenu event={eventData} />
             </>
-        )}
+          )}
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, navigation, setModalContent, setModalVisible, theme.colors.twitarrYellow]);
+  }, [eventData, handleFavorite, navigation, theme.colors.twitarrYellow]);
 
   useEffect(() => {
     navigation.setOptions({

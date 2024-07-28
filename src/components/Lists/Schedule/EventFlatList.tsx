@@ -105,7 +105,9 @@ export const EventFlatList = ({
           {'personalEventID' in item && (
             <PersonalEventCard
               eventData={item}
-              // onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
+              onPress={() =>
+                commonNavigation.push(CommonStackComponents.personalEventScreen, {eventID: item.personalEventID})
+              }
               marker={marker}
             />
           )}
