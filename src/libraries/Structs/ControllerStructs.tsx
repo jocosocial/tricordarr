@@ -785,3 +785,17 @@ export interface PhotostreamUploadData {
   /// Where the picture was taken. Valid values come from `/api/v3/photostream/placenames` and are transient. Names include titles of events currently happening..
   locationName?: string;
 }
+
+export interface PersonalEventData {
+  personalEventID: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+  timeZoneID: string;
+  location?: string;
+  lastUpdateTime: string;
+  owner: UserHeader;
+  participants: UserHeader[];
+}
