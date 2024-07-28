@@ -75,7 +75,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     isLoading: isPersonalEventLoading,
     refetch: refetchPersonalEvents,
   } = usePersonalEventsQuery({
-    cruiseDay: route.params.cruiseDay,
+    cruiseDay: route.params.cruiseDay - 1,
     options: {
       enabled: isLoggedIn,
     },

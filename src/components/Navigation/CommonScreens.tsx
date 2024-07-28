@@ -43,8 +43,8 @@ import {LfgChatScreen} from '../Screens/LFG/LfgChatScreen';
 import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
 import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen';
 import {AccessibilitySettingsScreen} from '../Screens/Settings/AccessibilitySettingsScreen.tsx';
-import {SettingsStackScreenComponents} from '../../libraries/Enums/Navigation.ts';
 import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScreen.tsx';
+import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -95,6 +95,9 @@ export type CommonStackParamList = {
     user: UserHeader;
   };
   EventScreen: {
+    eventID: string;
+  };
+  PersonalEventScreen: {
     eventID: string;
   };
   ForumThreadScreen: {
@@ -186,6 +189,7 @@ export enum CommonStackComponents {
   forumThreadEditScreen = 'ForumThreadEditScreen',
   accessibilitySettingsScreen = 'AccessibilitySettingsScreen',
   imageSettingsScreen = 'ImageSettingsScreen',
+  personalEventScreen = 'PersonalEventScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -351,6 +355,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.imageSettingsScreen}
         component={ImageSettingsScreen}
         options={{title: 'Image Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventScreen}
+        component={PersonalEventScreen}
+        options={{title: 'Personal Event'}}
       />
     </>
   );
