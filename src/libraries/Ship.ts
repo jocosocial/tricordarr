@@ -56,10 +56,21 @@ export const guessDeckNumber = (location?: string): number | undefined => {
   if (!location) {
     return undefined;
   }
-  const match = location.match(/Deck (\d+)/);
-  if (match) {
-    // Extracted deck number from the regex match
-    return parseInt(match[1], 10);
+  console.log('Matching Location', location);
+  // deckMatch typically catches Events that come from Sched.
+  const deckMatch = location.match(/deck (\d+)/i);
+  if (deckMatch) {
+    return parseInt(deckMatch[1], 10);
+  }
+  // roomMatch can catch room numbers that are entered by users.
+  const roomMatch = location.match(/(room|rm)? ?(\d{4,5})/i);
+  if (roomMatch) {
+    const roomNumberString = roomMatch[roomMatch.length - 1];
+    if (roomNumberString.length === 4) {
+      return parseInt(roomNumberString.substring(0, 1), 10);
+    } else if (roomNumberString.length === 5) {
+      return parseInt(roomNumberString.substring(0, 2), 10);
+    }
   }
   // No deck number found.
   return undefined;
