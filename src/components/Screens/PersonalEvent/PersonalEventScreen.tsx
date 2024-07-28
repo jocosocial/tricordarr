@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {RefreshControl, StyleSheet} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
@@ -14,6 +14,10 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {usePersonalEventQuery} from '../../Queries/PersonalEventQueries.tsx';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {EventScreenActionsMenu} from '../../Menus/Events/EventScreenActionsMenu.tsx';
+import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -47,6 +51,27 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
   };
 
   const getIcon = (icon: string) => <AppIcon icon={icon} style={styles.icon} />;
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          {eventData && (
+            <>
+              <HeaderEditButton iconName={AppIcons.eventEdit} onPress={() => console.log('woo')} />
+              <EventScreenActionsMenu event={eventData} />
+            </>
+          )}
+        </HeaderButtons>
+      </View>
+    );
+  }, [eventData, handleFavorite, navigation, theme.colors.twitarrYellow]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (!eventData) {
     return <LoadingView />;
