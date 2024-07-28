@@ -1,10 +1,7 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase';
-import {EventData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
-import {EventType} from '../../../libraries/Enums/EventType';
-import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {StyleSheet} from 'react-native';
 
@@ -30,7 +27,7 @@ export const PersonalEventCard = ({
 
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: theme.colors.jocoGreen,
+      backgroundColor: theme.colors.twitarrOrange,
     },
   });
 

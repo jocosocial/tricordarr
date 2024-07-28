@@ -9,7 +9,7 @@ import useDateTime, {
   getTimeMarker,
   getTimeZoneOffset,
 } from '../../../libraries/DateTime';
-import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {parseISO} from 'date-fns';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
@@ -17,11 +17,12 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {EventCardListItem} from '../Items/Event/EventCardListItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {PersonalEventCard} from '../../Cards/Schedule/PersonalEventCard.tsx';
 
 interface EventFlatListProps {
-  scheduleItems: (EventData | FezData)[];
+  scheduleItems: (EventData | FezData | PersonalEventData)[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlatList<EventData | FezData>>;
+  listRef: React.RefObject<FlatList<EventData | FezData | PersonalEventData>>;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
   separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
@@ -29,7 +30,7 @@ interface EventFlatListProps {
 }
 
 const getItemMarker = (
-  item: EventData | FezData,
+  item: EventData | FezData | PersonalEventData,
   portTimeZoneID: string,
   nowDate: Date,
   startDate: Date,
@@ -77,7 +78,7 @@ export const EventFlatList = ({
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderListItem = useCallback(
-    ({item}: {item: EventData | FezData}) => {
+    ({item}: {item: EventData | FezData | PersonalEventData}) => {
       const marker = getItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
       return (
         <>
@@ -99,6 +100,13 @@ export const EventFlatList = ({
               onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
               marker={marker}
               setRefreshing={setRefreshing}
+            />
+          )}
+          {'personalEventID' in item && (
+            <PersonalEventCard
+              eventData={item}
+              // onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
+              marker={marker}
             />
           )}
         </>
@@ -179,9 +187,11 @@ export const EventFlatList = ({
     });
   };
 
-  const keyExtractor = (item: EventData | FezData) => {
+  const keyExtractor = (item: EventData | FezData | PersonalEventData) => {
     if ('fezID' in item) {
       return item.fezID;
+    } else if ('personalEventID' in item) {
+      return item.personalEventID;
     } else {
       return item.eventID;
     }

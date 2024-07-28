@@ -14,7 +14,7 @@ import {parseISO} from 'date-fns';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
-import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
 import {CruiseDayTime, ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType';
 import useDateTime, {calcCruiseDayTime, getTimeZoneOffset} from '../../../libraries/DateTime';
@@ -26,6 +26,7 @@ import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView'
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu';
+import {usePersonalEventsQuery} from '../../Queries/PersonalEventQueries.tsx';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -69,17 +70,27 @@ export const EventDayScreen = ({navigation, route}: Props) => {
       enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs,
     },
   });
+  const {
+    data: personalEventData,
+    isLoading: isPersonalEventLoading,
+    refetch: refetchPersonalEvents,
+  } = usePersonalEventsQuery({
+    cruiseDay: route.params.cruiseDay,
+    options: {
+      enabled: isLoggedIn,
+    },
+  });
 
   const {commonStyles} = useStyles();
   const {startDate, endDate} = useCruise();
-  const listRef = useRef<FlatList<EventData | FezData>>(null);
+  const listRef = useRef<FlatList<EventData | FezData | PersonalEventData>>(null);
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
   const [refreshing, setRefreshing] = useState(false);
-  const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
+  const [scheduleList, setScheduleList] = useState<(EventData | FezData | PersonalEventData)[]>([]);
 
   const getScrollIndex = useCallback(
-    (nowDayTime: CruiseDayTime, itemList: (EventData | FezData)[]) => {
+    (nowDayTime: CruiseDayTime, itemList: (EventData | FezData | PersonalEventData)[]) => {
       for (let i = 0; i < itemList.length; i++) {
         // Creating a dedicated variable makes the parser happier.
         const scheduleItem = itemList[i];
@@ -137,16 +148,11 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     }
   }, [scheduleList, scrollNowIndex]);
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    refetchEvents().then(() => {
-      refetchLfgJoined().then(() => {
-        refetchLfgOpen().then(() => {
-          setRefreshing(false);
-        });
-      });
-    });
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen]);
+    await Promise.all([refetchEvents(), refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents()]);
+    setRefreshing(false);
+  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -187,7 +193,10 @@ export const EventDayScreen = ({navigation, route}: Props) => {
           eventList.push(event);
         }
       });
-      const combinedList = [eventList, lfgList].flat().sort((a, b) => {
+      // PersonalEvents don't have any filters or other nonsense.... YET!
+      let personalEventList = personalEventData || [];
+
+      const combinedList = [eventList, lfgList, personalEventList].flat().sort((a, b) => {
         if (a.startTime && b.startTime) {
           return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
         }
@@ -196,7 +205,7 @@ export const EventDayScreen = ({navigation, route}: Props) => {
       });
       setScheduleList(combinedList);
     },
-    [setScheduleList, eventData, lfgJoinedData, lfgOpenData],
+    [setScheduleList, eventData, lfgJoinedData, lfgOpenData, personalEventData],
   );
 
   useEffect(() => {
@@ -244,7 +253,8 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   if (
     (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) ||
     (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenLoading) ||
-    isEventLoading
+    isEventLoading ||
+    isPersonalEventLoading
   ) {
     return <LoadingView />;
   }
