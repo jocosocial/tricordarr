@@ -14,10 +14,10 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {usePersonalEventQuery} from '../../Queries/PersonalEventQueries.tsx';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {EventScreenActionsMenu} from '../../Menus/Events/EventScreenActionsMenu.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
+import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -59,13 +59,13 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
           {eventData && (
             <>
               <HeaderEditButton iconName={AppIcons.eventEdit} onPress={() => console.log('woo')} />
-              <EventScreenActionsMenu event={eventData} />
+              <PersonalEventScreenActionsMenu event={eventData} />
             </>
           )}
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, navigation, theme.colors.twitarrYellow]);
+  }, [eventData]);
 
   useEffect(() => {
     navigation.setOptions({

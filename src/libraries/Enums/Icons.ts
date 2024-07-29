@@ -106,6 +106,6 @@ export enum AppIcons {
   show = 'eye',
   hide = 'eye-off',
   passed = 'check-circle-outline',
-  eventEdit = 'calendar-edit-outline',
-  eventCreate = 'calendar-plus-outline',
+  eventEdit = 'calendar-edit', // I wanted -outline but it's not available in my version
+  eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
 }
