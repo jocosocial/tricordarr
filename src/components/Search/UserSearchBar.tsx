@@ -7,16 +7,19 @@ import {UserListItem} from '../Lists/Items/UserListItem';
 import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
 
 interface UserSearchBarProps {
-  userHeaders?: UserHeader[];
+  excludeHeaders?: UserHeader[];
   onPress: (user: UserHeader) => void;
   clearOnPress?: boolean;
+  dataHeaders?: UserHeader[];
+  useProvidedData?: boolean;
 }
 
 /**
  * Search widget to find a user and do something with them. Works on a partial search string. Displays
  * users as List.Items below the search bar.
+ * @param userHeaders Array of the UserHeaders that should be excluded from the search results.
  */
-export const UserSearchBar = ({userHeaders = [], onPress, clearOnPress = false}: UserSearchBarProps) => {
+export const UserSearchBar = ({excludeHeaders = [], onPress, clearOnPress = false}: UserSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {data} = useUserMatchQuery(searchQuery);
 
@@ -38,7 +41,7 @@ export const UserSearchBar = ({userHeaders = [], onPress, clearOnPress = false}:
           data
             // data (the search results) gets filtered to remove headers
             // that are already present (userHeaders.indexOf "exists")
-            .filter(user => userHeaders.map(p => p.userID).indexOf(user.userID) === -1)
+            .filter(user => excludeHeaders.map(p => p.userID).indexOf(user.userID) === -1)
             .flatMap(user => <UserListItem key={user.userID} userHeader={user} onPress={() => handlePress(user)} />)}
       </ListSection>
     </View>

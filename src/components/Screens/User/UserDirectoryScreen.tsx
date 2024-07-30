@@ -25,7 +25,7 @@ export const UserDirectoryScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <UserSearchBar
-            userHeaders={[]}
+            excludeHeaders={[]}
             onPress={user => navigation.push(CommonStackComponents.userProfileScreen, {
               userID: user.userID,
             })}

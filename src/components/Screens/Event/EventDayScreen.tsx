@@ -26,7 +26,7 @@ import {ScheduleDayHeaderView} from '../../Views/Schedule/ScheduleDayHeaderView'
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu';
-import {usePersonalEventsQuery} from '../../Queries/PersonalEventQueries.tsx';
+import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,

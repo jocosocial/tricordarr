@@ -69,7 +69,7 @@ export const BlockUsersScreen = ({navigation}: Props) => {
           {hasModerator && <ModeratorBlockText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar userHeaders={blocks} onPress={handleBlockUser} />
+          <UserSearchBar excludeHeaders={blocks} onPress={handleBlockUser} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {FastField, useField, useFormikContext} from 'formik';
+import {FastField, useField} from 'formik';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -13,15 +13,12 @@ interface UserChipsFieldProps {
   allowRemoveSelf?: boolean;
   label?: string;
   initialUserHeader?: UserHeader;
+  labelSubtext?: string;
 }
-export const UserChipsField = ({name, label, allowRemoveSelf = false, initialUserHeader}: UserChipsFieldProps) => {
+export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = false}: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
-  const [userHeaders, setUserHeaders] = useState<UserHeader[]>(
-    initialUserHeader ? [profilePublicData.header, initialUserHeader] : [profilePublicData.header],
-  );
-  const {setFieldValue} = useFormikContext();
-  const [field, meta, helpers] = useField<string[]>(name);
+  const [field, meta, helpers] = useField<UserHeader[]>(name);
 
   const styles = {
     parentContainer: [],
@@ -29,47 +26,48 @@ export const UserChipsField = ({name, label, allowRemoveSelf = false, initialUse
     chipContainer: [commonStyles.flexRow, commonStyles.flexStart, commonStyles.flexWrap, commonStyles.paddingTopSmall],
   };
 
-  const addUserHeader = (newUserHeader: UserHeader) => {
+  const addUserHeader = async (newUserHeader: UserHeader) => {
     // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
-    const existingIndex = userHeaders.findIndex(header => header.userID === newUserHeader.userID);
+    const existingIndex = field.value.findIndex(header => header.userID === newUserHeader.userID);
     if (existingIndex === -1) {
-      setUserHeaders(userHeaders.concat([newUserHeader]));
+      await helpers.setValue(field.value.concat([newUserHeader]));
     }
   };
 
-  const removeUserHeader = (user: UserHeader) => {
-    if (!allowRemoveSelf && user.userID === profilePublicData.header.userID) {
+  const removeUserHeader = async (user: UserHeader) => {
+    if (!allowRemoveSelf && user.userID === profilePublicData?.header.userID) {
       return;
     }
-    setUserHeaders(userHeaders.filter(header => header.userID !== user.userID));
+    await helpers.setValue(field.value.filter(header => header.userID !== user.userID));
   };
-
-  // https://stackoverflow.com/questions/62336340/cannot-update-a-component-while-rendering-a-different-component-warning
-  useEffect(() => {
-    if (field.value.length !== userHeaders.length) {
-      setFieldValue(
-        name,
-        userHeaders.flatMap(header => header.userID),
-      );
-    }
-  }, [field.value.length, name, setFieldValue, userHeaders]);
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   return (
     <FastField name={name}>
       {() => (
         <View style={styles.parentContainer}>
+          {label && (
+            <>
+              <View style={[commonStyles.paddingBottomSmall]}>
+                <Text>{label}</Text>
+              </View>
+              {labelSubtext && (
+                <View style={[commonStyles.paddingBottomSmall]}>
+                  <Text variant={'labelLarge'}>{labelSubtext}</Text>
+                </View>
+              )}
+            </>
+          )}
           <View style={styles.searchBarContainer}>
-            <UserSearchBar userHeaders={userHeaders} onPress={addUserHeader} />
+            <UserSearchBar excludeHeaders={field.value} onPress={addUserHeader} />
           </View>
-          {label && <Text>{label}</Text>}
           <View style={styles.chipContainer}>
-            {userHeaders.flatMap((user: UserHeader) => (
+            {field.value.flatMap((user: UserHeader) => (
               <UserChip
                 key={user.userID}
                 userHeader={user}
                 onClose={() => removeUserHeader(user)}
-                disabled={user.userID === profilePublicData.header.userID}
+                disabled={user.userID === profilePublicData?.header.userID}
               />
             ))}
           </View>

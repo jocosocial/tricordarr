@@ -1,6 +1,6 @@
 import {FezType} from '../Enums/FezType';
 import {DinnerTeam} from '../Enums/DinnerTeam';
-import {EventData} from '../Structs/ControllerStructs.tsx';
+import {EventData, UserHeader} from '../Structs/ControllerStructs.tsx';
 import {ServerUrlChoice} from '../Network/ServerChoices.ts';
 
 export interface SettingFormValues {
@@ -99,4 +99,17 @@ export interface PhotostreamCreateFormValues {
 export interface ServerUrlFormValues {
   serverChoice: ServerUrlChoice;
   serverUrl: string;
+}
+
+export interface PersonalEventFormValues {
+  title: string;
+  description?: string;
+  location?: string;
+  participants: UserHeader[];
+  startDate: Date;
+  duration: string;
+  startTime: {
+    hours: number;
+    minutes: number;
+  };
 }
