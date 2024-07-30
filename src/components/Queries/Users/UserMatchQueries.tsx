@@ -1,9 +1,9 @@
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 
-export const useUserMatchQuery = (searchQuery: string) => {
+export const useUserMatchQuery = (searchQuery: string, enabled: boolean = true) => {
   return useTokenAuthQuery<UserHeader[]>({
     queryKey: [`/users/match/allnames/${searchQuery}`],
-    enabled: searchQuery.length >= 2,
+    enabled: enabled && searchQuery.length >= 2,
   });
 };

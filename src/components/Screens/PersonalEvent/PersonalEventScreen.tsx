@@ -13,7 +13,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
-import {usePersonalEventQuery} from '../../Queries/PersonalEventQueries.tsx';
+import {usePersonalEventQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';

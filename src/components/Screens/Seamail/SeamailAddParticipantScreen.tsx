@@ -41,7 +41,7 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <UserSearchBar userHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
+          <UserSearchBar excludeHeaders={route.params.fez.members?.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

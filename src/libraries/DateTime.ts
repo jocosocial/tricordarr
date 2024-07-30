@@ -241,9 +241,18 @@ export const formatMinutesToHumanReadable = (minutes: number) => {
   return formattedString.trim();
 };
 
-export const getFezTimezoneOffset = (fez: FezData, originTimeZoneID: string) => {
-  if (fez.timeZoneID && fez.startTime) {
-    return getTimeZoneOffset(originTimeZoneID, fez.timeZoneID, fez.startTime);
+/**
+ * Calculate the number of minutes of offset exist between the events scheduled time
+ * and what the API reports the event to be at.
+ * This is a convenience wrapper since startTime and timeZoneID are optional on a number
+ * of objects from the API.
+ * @param originTimeZoneID The Port Time Zone ID such as "America/New_York".
+ * @param startTime String of the starting time of the event.
+ * @param timeZoneID Time zone of the event such as "America/New_York".
+ */
+export const getEventTimezoneOffset = (originTimeZoneID: string, startTime?: string, timeZoneID?: string) => {
+  if (startTime && timeZoneID) {
+    return getTimeZoneOffset(originTimeZoneID, timeZoneID, startTime);
   }
   return 0;
 };

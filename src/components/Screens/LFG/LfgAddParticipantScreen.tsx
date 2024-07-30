@@ -41,7 +41,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isLoading} />}>
         <PaddedContentView>
-          <UserSearchBar userHeaders={lfg.members.participants || []} onPress={onPress} />
+          <UserSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

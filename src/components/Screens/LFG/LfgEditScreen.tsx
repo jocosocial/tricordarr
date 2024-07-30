@@ -7,7 +7,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getFezTimezoneOffset} from '../../../libraries/DateTime';
+import {getEventTimezoneOffset} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
@@ -21,7 +21,11 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
   const {setLfg, dispatchLfgList} = useTwitarr();
   const {appConfig} = useConfig();
-  const offset = getFezTimezoneOffset(route.params.fez, appConfig.portTimeZoneID);
+  const offset = getEventTimezoneOffset(
+    appConfig.portTimeZoneID,
+    route.params.fez.startTime,
+    route.params.fez.timeZoneID,
+  );
   const queryClient = useQueryClient();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
