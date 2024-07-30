@@ -7,7 +7,7 @@ import {MainStack} from './Stacks/MainStackNavigator';
 import {
   FezData,
   ForumData,
-  ForumListData,
+  ForumListData, PersonalEventData,
   PostData,
   ProfilePublicData,
   UserHeader,
@@ -45,6 +45,7 @@ import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScre
 import {AccessibilitySettingsScreen} from '../Screens/Settings/AccessibilitySettingsScreen.tsx';
 import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScreen.tsx';
 import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
+import {PersonalEventEditScreen} from '../Screens/PersonalEvent/PersonalEventEditScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -155,6 +156,9 @@ export type CommonStackParamList = {
   };
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
+  PersonalEventEditScreen: {
+    personalEvent: PersonalEventData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -190,6 +194,7 @@ export enum CommonStackComponents {
   accessibilitySettingsScreen = 'AccessibilitySettingsScreen',
   imageSettingsScreen = 'ImageSettingsScreen',
   personalEventScreen = 'PersonalEventScreen',
+  personalEventEditScreen = 'PersonalEventEditScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -360,6 +365,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.personalEventScreen}
         component={PersonalEventScreen}
         options={{title: 'Personal Event'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.personalEventEditScreen}
+        component={PersonalEventEditScreen}
+        options={{title: 'Edit Personal Event'}}
       />
     </>
   );

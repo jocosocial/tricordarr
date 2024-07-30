@@ -58,14 +58,21 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
           {eventData && (
             <>
-              <HeaderEditButton iconName={AppIcons.eventEdit} onPress={() => console.log('woo')} />
+              <HeaderEditButton
+                iconName={AppIcons.eventEdit}
+                onPress={() =>
+                  navigation.push(CommonStackComponents.personalEventEditScreen, {
+                    personalEvent: eventData,
+                  })
+                }
+              />
               <PersonalEventScreenActionsMenu event={eventData} />
             </>
           )}
         </HeaderButtons>
       </View>
     );
-  }, [eventData]);
+  }, [eventData, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
