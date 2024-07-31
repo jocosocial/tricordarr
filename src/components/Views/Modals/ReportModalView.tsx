@@ -4,6 +4,7 @@ import {
   FezData,
   FezPostData,
   ForumData,
+  PersonalEventData,
   PhotostreamImageData,
   PostData,
   ProfilePublicData,
@@ -22,13 +23,22 @@ interface ReportModalViewProps {
   forum?: ForumData;
   forumPost?: PostData;
   photostreamImage?: PhotostreamImageData;
+  personalEvent?: PersonalEventData;
 }
 
-export const ReportModalView = ({profile, fezPost, fez, forumPost, forum, photostreamImage}: ReportModalViewProps) => {
+export const ReportModalView = ({
+  profile,
+  fezPost,
+  fez,
+  forumPost,
+  forum,
+  photostreamImage,
+  personalEvent,
+}: ReportModalViewProps) => {
   const reportMutation = useReportMutation();
   const [submitted, setSubmitted] = useState(false);
 
-  if (!profile && !fezPost && !fez && !forumPost && !forum && !photostreamImage) {
+  if (!profile && !fezPost && !fez && !forumPost && !forum && !photostreamImage && !personalEvent) {
     return <ReportModalErrorView />;
   }
 
@@ -53,6 +63,9 @@ export const ReportModalView = ({profile, fezPost, fez, forumPost, forum, photos
     } else if (photostreamImage) {
       contentID = photostreamImage.postID;
       contentType = ReportContentType.photostreamImage;
+    } else if (personalEvent) {
+      contentID = personalEvent.personalEventID;
+      contentType = ReportContentType.personalEvents;
     }
     reportMutation.mutate(
       {

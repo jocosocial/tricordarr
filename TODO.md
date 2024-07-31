@@ -1,14 +1,12 @@
 Tricordarr
 ----------
 * PersonalEvent
-  * Edit
-    * Add participants
-  * Delete
-  * Participants
+  * long press card for delete or report
 * dont show personals if an event filter is applied
 * add personalevent filter
 * add lfg filter
 * change "Your Events" to "Favorited Events"
+* cleared work can be done at the root stack navigator, remove from tabs and subs
 
 Swiftarr
 --------

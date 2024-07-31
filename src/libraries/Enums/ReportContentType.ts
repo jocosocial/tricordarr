@@ -5,4 +5,5 @@ export enum ReportContentType {
   forum = 'forum',
   forumPost = 'forum/post',
   photostreamImage = 'photostream',
+  personalEvents = 'personalevents',
 }

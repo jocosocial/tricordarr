@@ -1,14 +1,16 @@
 import axios, {AxiosResponse} from 'axios';
-import {PersonalEventContentData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezData, PersonalEventContentData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 
 interface PersonalEventCreateMutationProps {
   personalEventContentData: PersonalEventContentData;
 }
 
-interface PersonalEventUpdateMutationProps extends PersonalEventCreateMutationProps {
+interface PersonalEventDeleteMutationProps {
   personalEventID: string;
 }
+
+interface PersonalEventUpdateMutationProps extends PersonalEventCreateMutationProps, PersonalEventDeleteMutationProps {}
 
 const personalEventUpdateQueryHandler = async ({
   personalEventID,
@@ -29,4 +31,14 @@ const personalEventCreateQueryHandler = async ({
 
 export const usePersonalEventCreateMutation = () => {
   return useTokenAuthMutation(personalEventCreateQueryHandler);
+};
+
+const deleteQueryHandler = async ({
+  personalEventID,
+}: PersonalEventDeleteMutationProps): Promise<AxiosResponse<void>> => {
+  return await axios.delete(`/personalevents/${personalEventID}`);
+};
+
+export const usePersonalEventDeleteMutation = () => {
+  return useTokenAuthMutation(deleteQueryHandler);
 };

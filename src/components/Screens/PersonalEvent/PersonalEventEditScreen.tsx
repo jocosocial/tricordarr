@@ -40,7 +40,10 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries([`/personalevents/${route.params.personalEvent.personalEventID}`]);
+          await Promise.all([
+            queryClient.invalidateQueries([`/personalevents/${route.params.personalEvent.personalEventID}`]),
+            queryClient.invalidateQueries(['/personalevents']),
+          ]);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
