@@ -5,6 +5,7 @@ import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stac
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface EventFABProps {
   cruiseDay?: number;
@@ -15,7 +16,7 @@ export const EventFAB = (props: EventFABProps) => {
   const route = useEventStackRoute();
   const {adjustedCruiseDayToday} = useCruise();
 
-  const handleNavigation = (component: EventStackComponents) => {
+  const handleNavigation = (component: EventStackComponents | CommonStackComponents) => {
     if (route.name === component) {
       return;
     }
@@ -29,6 +30,11 @@ export const EventFAB = (props: EventFABProps) => {
   };
 
   const actions = [
+    FabGroupAction({
+      icon: AppIcons.new,
+      label: 'Create Personal Event',
+      onPress: () => handleNavigation(CommonStackComponents.personalEventCreateScreen),
+    }),
     FabGroupAction({
       icon: AppIcons.user,
       label: 'Your Day Today',

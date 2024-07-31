@@ -20,3 +20,13 @@ const personalEventUpdateQueryHandler = async ({
 export const usePersonalEventUpdateMutation = () => {
   return useTokenAuthMutation(personalEventUpdateQueryHandler);
 };
+
+const personalEventCreateQueryHandler = async ({
+  personalEventContentData,
+}: PersonalEventCreateMutationProps): Promise<AxiosResponse<PersonalEventData>> => {
+  return await axios.post('/personalevents/create', personalEventContentData);
+};
+
+export const usePersonalEventCreateMutation = () => {
+  return useTokenAuthMutation(personalEventCreateQueryHandler);
+};
