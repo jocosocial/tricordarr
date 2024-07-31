@@ -23,7 +23,6 @@ export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = fal
   const styles = {
     parentContainer: [],
     searchBarContainer: [commonStyles.marginBottomSmall],
-    chipContainer: [commonStyles.flexRow, commonStyles.flexStart, commonStyles.flexWrap, commonStyles.paddingTopSmall],
   };
 
   const addUserHeader = async (newUserHeader: UserHeader) => {
@@ -61,7 +60,7 @@ export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = fal
           <View style={styles.searchBarContainer}>
             <UserSearchBar excludeHeaders={field.value} onPress={addUserHeader} />
           </View>
-          <View style={styles.chipContainer}>
+          <View style={commonStyles.chipContainer}>
             {field.value.flatMap((user: UserHeader) => (
               <UserChip
                 key={user.userID}
