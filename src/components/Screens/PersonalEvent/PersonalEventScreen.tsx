@@ -105,13 +105,15 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
                 description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
                 title={'Date'}
               />
-              <DataFieldListItem
-                itemStyle={styles.item}
-                left={() => getIcon(AppIcons.map)}
-                description={eventData.location}
-                title={'Location'}
-                onPress={handleLocation}
-              />
+              {eventData.location && (
+                <DataFieldListItem
+                  itemStyle={styles.item}
+                  left={() => getIcon(AppIcons.map)}
+                  description={eventData.location}
+                  title={'Location'}
+                  onPress={handleLocation}
+                />
+              )}
               {eventData.description && (
                 <DataFieldListItem
                   itemStyle={styles.item}
@@ -120,7 +122,9 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
                   title={'Description'}
                 />
               )}
-              <UserChipsListItem users={eventData.participants} itemStyle={styles.item} title={'Participants'} />
+              {eventData.participants.length > 0 && (
+                <UserChipsListItem users={eventData.participants} itemStyle={styles.item} title={'Participants'} />
+              )}
             </ListSection>
           </PaddedContentView>
         )}

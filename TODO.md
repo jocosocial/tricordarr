@@ -3,7 +3,6 @@ Tricordarr
 * PersonalEvent
   * Edit
     * Add participants
-  * Create
   * Delete
   * Participants
 * dont show personals if an event filter is applied
