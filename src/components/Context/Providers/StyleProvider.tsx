@@ -100,6 +100,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     onImageViewer: {
       color: theme.colors.onImageViewer,
     },
+    chipContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.flexStart,
+      ...commonStyles.flexWrap,
+      ...commonStyles.paddingTopSmall,
+    },
   });
 
   const screenOptions = {

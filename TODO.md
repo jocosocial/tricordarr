@@ -2,11 +2,10 @@ Tricordarr
 ----------
 * PersonalEvent
   * Edit
-    * Ad
+    * Add participants
   * Create
   * Delete
   * Participants
-    * Need a generic chips view
 * dont show personals if an event filter is applied
 * add personalevent filter
 * add lfg filter

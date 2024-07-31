@@ -18,6 +18,7 @@ import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
 import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
+import {UserChipsListItem} from '../../Lists/Items/UserChipsListItem.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -119,6 +120,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
                   title={'Description'}
                 />
               )}
+              <UserChipsListItem users={eventData.participants} itemStyle={styles.item} title={'Participants'} />
             </ListSection>
           </PaddedContentView>
         )}
