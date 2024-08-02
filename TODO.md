@@ -8,7 +8,6 @@ Tricordarr
   * add personalevent filter to schedule
   * dont show personals if an event filter is applied
 * add lfg filter
-* change "Your Events" to "Favorited Events"
 * cleared work can be done at the root stack navigator, remove from tabs and subs
 * Add favorites, blocks, mutes to directory? Maybe just favorites
 * Map to tapable image
