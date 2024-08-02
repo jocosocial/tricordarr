@@ -50,6 +50,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
               base64: base64_encode(tricordarr),
             }}
             style={styles.image}
+            disableTouch={true}
           />
         </PaddedContentView>
         <PaddedContentView>

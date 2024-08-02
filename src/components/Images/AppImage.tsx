@@ -11,6 +11,7 @@ interface AppImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
   image: ImageQueryData;
+  disableTouch?: boolean;
 }
 
 /**
@@ -22,9 +23,10 @@ interface AppImageProps {
  * @param image The ImageQueryData that feeds this image.
  * @param style Custom style props for the image display component.
  * @param mode Underlying component to use for the image display.
+ * @param disableTouch Disable touching the image.
  * @constructor
  */
-export const AppImage = ({image, style, mode = 'cardcover'}: AppImageProps) => {
+export const AppImage = ({image, style, mode = 'cardcover', disableTouch = false}: AppImageProps) => {
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
@@ -39,7 +41,7 @@ export const AppImage = ({image, style, mode = 'cardcover'}: AppImageProps) => {
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity onPress={handlePress} disabled={disableTouch}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
