@@ -5,7 +5,6 @@ import {Item} from 'react-navigation-header-buttons';
 import {EventType} from '../../../libraries/Enums/EventType';
 import {useAppTheme} from '../../../styles/Theme';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 
 export const ScheduleEventFilterMenu = () => {
@@ -52,7 +51,7 @@ export const ScheduleEventFilterMenu = () => {
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <Menu.Item
-        title={'Your Events'}
+        title={'Favorited Events'}
         onPress={handleFavoriteSelection}
         style={eventFavoriteFilter ? commonStyles.surfaceVariant : undefined}
         trailingIcon={eventFavoriteFilter ? AppIcons.check : undefined}
