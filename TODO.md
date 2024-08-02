@@ -12,7 +12,6 @@ Tricordarr
 * change "Your Events" to "Favorited Events"
 * cleared work can be done at the root stack navigator, remove from tabs and subs
 * Add favorites, blocks, mutes to directory? Maybe just favorites
-* Title don't auto cap all words
 * Map to tapable image
 * Remove schedule subscribe
 
