@@ -1,7 +1,5 @@
 Tricordarr
 ----------
-* PersonalEvent
-  * Sort personal events to the top of each batch
 * Schedule
   * Your day as a button filter
 * User Profile
