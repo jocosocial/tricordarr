@@ -9,7 +9,6 @@ import {
 import {useAuth} from '../Context/Contexts/AuthContext';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 import {shouldQueryEnable} from '../../libraries/Network/APIClient';
@@ -30,15 +29,9 @@ export function useTokenAuthQuery<
   },
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
-  const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
-    onError: error => {
-      if (!disruptionDetected) {
-        setErrorMessage(error);
-      }
-    },
     ...options,
     // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options.enabled),
@@ -60,7 +53,6 @@ export function useTokenAuthPaginationQuery<
   queryKey?: QueryKey,
 ) {
   const {isLoggedIn} = useAuth();
-  const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
@@ -81,11 +73,6 @@ export function useTokenAuthPaginationQuery<
     {
       getNextPageParam: lastPage => getNextPageParam(lastPage),
       getPreviousPageParam: firstPage => getPreviousPageParam(firstPage),
-      onError: error => {
-        if (!disruptionDetected) {
-          setErrorMessage(error);
-        }
-      },
       ...options,
       // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
       enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),

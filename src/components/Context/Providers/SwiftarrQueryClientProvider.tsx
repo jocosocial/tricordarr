@@ -5,10 +5,12 @@ import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext
 import axios from 'axios';
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
+import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
+  const {setErrorMessage} = useErrorHandler();
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
@@ -20,6 +22,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       });
     });
   };
+
+  // Eeeek. I don't love this. But LoadingView uses AppView which is where we do the Disruption banner.
+  const disruptionDetected = oobeCompleted && errorCount >= appConfig.apiClientConfig.disruptionThreshold;
 
   const queryCache = SwiftarrQueryClient.getQueryCache();
   queryCache.config = {
@@ -33,6 +38,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         // I think I was getting too clever. See how this goes for now.
         console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
         setErrorCount(errorCount + 1);
+        // Moved
+        if (!disruptionDetected) {
+          setErrorMessage(error);
+        }
       }
     },
     onSuccess: (data, query) => {
@@ -55,9 +64,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     const noHydrate = ['/client/health'];
     return !noHydrate.includes(query.queryKey[0] as string);
   };
-
-  // Eeeek. I don't love this. But LoadingView uses AppView which is where we do the Disruption banner.
-  const disruptionDetected = oobeCompleted && errorCount >= appConfig.apiClientConfig.disruptionThreshold;
 
   useEffect(() => {
     console.log('[SwiftarrQueryClientProvider.tsx] Configuring query client');

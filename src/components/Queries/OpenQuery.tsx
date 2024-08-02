@@ -1,8 +1,7 @@
 import {AxiosError} from 'axios';
 import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {QueryKey, useQuery} from '@tanstack/react-query';
-import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 
 /**
@@ -20,16 +19,10 @@ export function useOpenQuery<
     initialData?: () => undefined;
   },
 ): UseQueryResult<TData, TError> {
-  const {setErrorMessage} = useErrorHandler();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     enabled: !disruptionDetected,
-    onError: error => {
-      if (!disruptionDetected) {
-        setErrorMessage(error);
-      }
-    },
     ...options,
   });
 }

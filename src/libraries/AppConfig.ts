@@ -112,7 +112,7 @@ const defaultAppConfig: AppConfig = {
     useSystemTheme: true,
     darkMode: false,
   },
-  skipThumbnails: false,
+  skipThumbnails: true,
 };
 
 /**
