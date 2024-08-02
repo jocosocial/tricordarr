@@ -58,6 +58,7 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
               name={'participants'}
               label={'Participants'}
               labelSubtext={'You can only add users that have favorited you.'}
+              searchFavorersOnly={true}
             />
           </View>
           <PrimaryActionButton

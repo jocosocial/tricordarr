@@ -70,6 +70,8 @@ export interface ProfilePublicData {
   note?: string;
   /// An optional dinner team assignment.
   dinnerTeam?: DinnerTeam;
+  /// Whether the requesting user has favorited this user.
+  isFavorite: boolean;
 }
 
 export interface DisabledFeature {

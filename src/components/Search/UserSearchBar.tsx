@@ -12,6 +12,7 @@ interface UserSearchBarProps {
   clearOnPress?: boolean;
   dataHeaders?: UserHeader[];
   useProvidedData?: boolean;
+  favorers?: boolean;
 }
 
 /**
@@ -19,9 +20,14 @@ interface UserSearchBarProps {
  * users as List.Items below the search bar.
  * @param userHeaders Array of the UserHeaders that should be excluded from the search results.
  */
-export const UserSearchBar = ({excludeHeaders = [], onPress, clearOnPress = false}: UserSearchBarProps) => {
+export const UserSearchBar = ({
+  excludeHeaders = [],
+  onPress,
+  clearOnPress = false,
+  favorers = false,
+}: UserSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {data} = useUserMatchQuery(searchQuery);
+  const {data} = useUserMatchQuery({searchQuery: searchQuery, favorers: favorers});
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 

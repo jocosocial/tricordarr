@@ -20,4 +20,3 @@ Swiftarr
 --------
 * Generate socket events for upcoming personal event
 * Download personal event handler
-* Add favoriting to site UI
