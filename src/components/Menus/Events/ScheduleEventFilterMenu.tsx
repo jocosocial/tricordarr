@@ -59,6 +59,8 @@ export const ScheduleEventFilterMenu = () => {
   const clearFilters = () => {
     setEventTypeFilter('');
     setEventFavoriteFilter(false);
+    setEventLfgFilter(false);
+    setEventPersonalFilter(false);
   };
 
   const anyActiveFilter = eventFavoriteFilter || eventTypeFilter || eventPersonalFilter || eventLfgFilter;
