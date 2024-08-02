@@ -17,7 +17,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {EventCardListItem} from '../Items/Event/EventCardListItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {PersonalEventCard} from '../../Cards/Schedule/PersonalEventCard.tsx';
+import {PersonalEventCardListItem} from '../Items/PersonalEvent/PersonalEventCardListItem.tsx';
 
 interface EventFlatListProps {
   scheduleItems: (EventData | FezData | PersonalEventData)[];
@@ -103,7 +103,7 @@ export const EventFlatList = ({
             />
           )}
           {'personalEventID' in item && (
-            <PersonalEventCard
+            <PersonalEventCardListItem
               eventData={item}
               onPress={() =>
                 commonNavigation.push(CommonStackComponents.personalEventScreen, {eventID: item.personalEventID})
