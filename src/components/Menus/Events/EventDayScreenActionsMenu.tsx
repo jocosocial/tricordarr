@@ -5,8 +5,6 @@ import {Item} from 'react-navigation-header-buttons';
 import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
-import {Linking} from 'react-native';
-import {HelpMenuItem} from '../Items/HelpMenuItem';
 
 export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh: () => void}) => {
   const [visible, setVisible] = useState(false);
@@ -25,12 +23,6 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh: () => void}) 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
-      <HelpMenuItem
-        icon={AppIcons.events}
-        title={'Subscribe'}
-        closeMenu={closeMenu}
-        helpContent={['This action is not yet supported. Use Sched instead.']}
-      />
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}

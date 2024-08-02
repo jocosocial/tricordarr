@@ -13,7 +13,6 @@ Tricordarr
 * cleared work can be done at the root stack navigator, remove from tabs and subs
 * Add favorites, blocks, mutes to directory? Maybe just favorites
 * Map to tapable image
-* Remove schedule subscribe
 
 Swiftarr
 --------
