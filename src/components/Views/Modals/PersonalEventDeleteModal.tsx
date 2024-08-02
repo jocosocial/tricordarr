@@ -17,7 +17,12 @@ const ModalContent = () => {
   return <Text style={[commonStyles.marginBottomSmall]}>You sure? There is no undo.</Text>;
 };
 
-export const PersonalEventDeleteModal = ({personalEvent}: {personalEvent: PersonalEventData}) => {
+interface PersonalEventDeleteModalProps {
+  personalEvent: PersonalEventData;
+  handleNavigation?: boolean;
+}
+
+export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true}: PersonalEventDeleteModalProps) => {
   const {setInfoMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
@@ -32,7 +37,9 @@ export const PersonalEventDeleteModal = ({personalEvent}: {personalEvent: Person
       },
       {
         onSuccess: async () => {
-          navigation.goBack();
+          if (handleNavigation) {
+            navigation.goBack();
+          }
           setModalVisible(false);
           setInfoMessage('Successfully deleted this event.');
           await queryClient.invalidateQueries(['/personalevents']);

@@ -45,7 +45,9 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
           <Menu.Item
             leadingIcon={AppIcons.delete}
             title={'Delete'}
-            onPress={() => handleModal(<PersonalEventDeleteModal personalEvent={props.eventData} />)}
+            onPress={() =>
+              handleModal(<PersonalEventDeleteModal personalEvent={props.eventData} handleNavigation={false} />)
+            }
           />
           <Divider bold={true} />
         </>

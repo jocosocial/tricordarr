@@ -69,7 +69,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
     maxCapacity: '2',
     info: '',
     startTime: {
-      hours: new Date().getHours() + 1,
+      hours: getApparentCruiseDate(startDate, adjustedCruiseDayToday).getHours() + 1,
       minutes: 0,
     },
   };

@@ -13,7 +13,6 @@ import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData, CruiseDayTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
-import {FezData} from './Structs/ControllerStructs';
 import TimeAgo from 'javascript-time-ago';
 
 const thresholdMap = {
