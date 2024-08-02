@@ -12,6 +12,10 @@ import {ListTitleView} from '../../Views/ListTitleView';
 import {MapIndicatorView} from '../../Views/MapIndicatorView';
 import FastImage from 'react-native-fast-image';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {AppFastImage} from '../../Images/AppFastImage.tsx';
+import tricordarr from '../../../../assets/PlayStore/tricordarr.jpg';
+import {encode as base64_encode} from 'base-64';
+import {AppImage} from '../../Images/AppImage.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 
@@ -65,7 +69,16 @@ export const MapScreen = ({navigation, route}: Props) => {
         />
         <MapIndicatorView direction={'Forward'} />
         <View style={styles.imageContainer}>
-          <FastImage style={styles.image} source={shipDeck.imageSource as number} />
+          <AppImage
+            mode={'scaledimage'}
+            image={{
+              dataURI: Image.resolveAssetSource(shipDeck.imageSource).uri,
+              mimeType: 'image/png',
+              fileName: `deck${shipDeck.number}.png`,
+              base64: base64_encode(shipDeck.imageSource as string),
+            }}
+            style={styles.image}
+          />
         </View>
         <MapIndicatorView direction={'Aft'} />
       </ScrollingContentView>

@@ -1,4 +1,4 @@
-import {ImageSourcePropType} from 'react-native';
+import {ImageSourcePropType, ImageURISource} from 'react-native';
 // @ts-ignore
 import deck1 from '../../assets/map/deck1.png';
 // @ts-ignore
@@ -29,7 +29,7 @@ export interface DeckData {
   label: string;
   roomStart?: number;
   roomEnd?: number;
-  imageSource: ImageSourcePropType;
+  imageSource: ImageURISource;
 }
 
 export const ShipDecks: DeckData[] = [
