@@ -15,7 +15,6 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {MainStack} from './MainStackNavigator';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {
@@ -41,18 +40,9 @@ export const ChatStackNavigator = () => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.seamail);
-  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
-    <ChatStack.Navigator
-      initialRouteName={ChatStackScreenComponents.seamailListScreen}
-      screenOptions={screenOptions}
-      screenListeners={{
-        state: () => {
-          console.log('[ChatStackNavigator.tsx] Clearing unsaved work.');
-          setHasUnsavedWork(false);
-        },
-      }}>
+    <ChatStack.Navigator initialRouteName={ChatStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
       <ChatStack.Screen
         name={ChatStackScreenComponents.seamailListScreen}
         component={isDisabled ? DisabledView : SeamailListScreen}

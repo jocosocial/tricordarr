@@ -22,7 +22,6 @@ import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCre
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
@@ -54,18 +53,11 @@ export const ForumStackNavigator = () => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.forums);
-  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
     <Stack.Navigator
       initialRouteName={ForumStackComponents.forumCategoriesScreen}
-      screenOptions={{...screenOptions, headerShown: true}}
-      screenListeners={{
-        state: () => {
-          console.log('[ForumStackNavigator.tsx] Clearing unsaved work.');
-          setHasUnsavedWork(false);
-        },
-      }}>
+      screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={ForumStackComponents.forumCategoriesScreen}
         component={isDisabled ? DisabledView : ForumCategoriesScreen}

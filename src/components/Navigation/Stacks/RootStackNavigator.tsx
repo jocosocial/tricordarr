@@ -6,7 +6,6 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator';
 import {OobeStackNavigator} from './OobeStackNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
-import {CommonStackComponents} from '../CommonScreens';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type RootStackParamList = {

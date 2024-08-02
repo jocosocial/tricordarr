@@ -13,7 +13,6 @@ import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {OobeNotificationsScreen} from '../../Screens/OOBE/OobeNotificationsScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;
@@ -29,18 +28,11 @@ export type OobeStackParamList = CommonStackParamList & {
 export const OobeStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<OobeStackParamList>();
-  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
     <Stack.Navigator
       initialRouteName={OobeStackComponents.oobeWelcomeScreen}
-      screenOptions={{...screenOptions, headerShown: true}}
-      screenListeners={{
-        state: () => {
-          console.log('[OobeStackNavigator.tsx] Clearing unsaved work.');
-          setHasUnsavedWork(false);
-        },
-      }}>
+      screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={OobeStackComponents.oobeWelcomeScreen}
         component={OobeWelcomeScreen}

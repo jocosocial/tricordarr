@@ -1,28 +1,14 @@
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {StyleSheet, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ScheduleLfgListMenu} from '../../Menus/LFG/ScheduleLfgListMenu';
-import {useAuth} from '../../Context/Contexts/AuthContext';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {StyleSheet} from 'react-native';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
-import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
 
-export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgHelpScreen, NavigatorIDs.lfgStack>;
-
-export const LfgHelpScreen = ({navigation}: Props) => {
+export const LfgHelpScreen = () => {
   const {commonStyles} = useStyles();
-  const {isLoggedIn} = useAuth();
-  const {getLeftMainHeaderButtons} = useDrawer();
-  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     title: {
@@ -33,30 +19,6 @@ export const LfgHelpScreen = ({navigation}: Props) => {
       ...commonStyles.marginBottomSmall,
     },
   });
-
-  const getNavButtons = useCallback(() => {
-    if (!isLoggedIn) {
-      return <></>;
-    }
-    return (
-      <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleLfgListMenu />
-        </HeaderButtons>
-      </View>
-    );
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: getNavButtons,
-    });
-    if (appConfig.schedule.defaultLfgScreen === LfgStackComponents.lfgHelpScreen) {
-      navigation.setOptions({
-        headerLeft: getLeftMainHeaderButtons,
-      });
-    }
-  }, [navigation, getNavButtons, appConfig.schedule.defaultLfgScreen, getLeftMainHeaderButtons]);
 
   return (
     <AppView>
