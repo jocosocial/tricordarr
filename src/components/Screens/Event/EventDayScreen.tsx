@@ -204,7 +204,10 @@ export const EventDayScreen = ({navigation, route}: Props) => {
         personalEventList = personalEventData || [];
       }
 
-      const combinedList = [eventList, lfgList, personalEventList].flat().sort((a, b) => {
+      // The order of the combinedList is important. In the event of a tie for start time, personalEvents should
+      // be listed first, followed by Events then LFGs. It's possible that LFGs should be second in the priority.
+      // Will see if any cases come up where that matters.
+      const combinedList = [personalEventList, eventList, lfgList].flat().sort((a, b) => {
         if (a.startTime && b.startTime) {
           return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
         }
