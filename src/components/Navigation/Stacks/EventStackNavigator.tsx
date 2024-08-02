@@ -14,9 +14,11 @@ import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
-import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {CommonScreens, CommonStackComponents, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {PersonalEventHelpScreen} from '../../Screens/PersonalEvent/PersonalEventHelpScreen.tsx';
+import {PersonalEventListScreen} from '../../Screens/PersonalEvent/PersonalEventListScreen.tsx';
 
 export type EventStackParamList = CommonStackParamList & {
   EventDayScreen: {
@@ -29,6 +31,8 @@ export type EventStackParamList = CommonStackParamList & {
   EventYourDayScreen: {
     cruiseDay: number;
   };
+  PersonalEventHelpScreen: undefined;
+  PersonalEventListScreen: undefined;
 };
 
 export const EventStackNavigator = () => {
@@ -85,6 +89,16 @@ export const EventStackNavigator = () => {
         name={EventStackComponents.eventYourDayScreen}
         component={EventYourDayScreen}
         options={{title: 'Your Day'}}
+      />
+      <Stack.Screen
+        name={EventStackComponents.personalEventHelpScreen}
+        component={PersonalEventHelpScreen}
+        options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={EventStackComponents.personalEventListScreen}
+        component={PersonalEventListScreen}
+        options={{title: 'Personal Events'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
