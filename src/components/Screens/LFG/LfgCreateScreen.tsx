@@ -13,6 +13,7 @@ import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {getApparentCruiseDate} from '../../../libraries/DateTime.ts';
 
 export type Props = NativeStackScreenProps<
   LfgStackParamList,
@@ -58,14 +59,11 @@ export const LfgCreateScreen = ({navigation}: Props) => {
     );
   };
 
-  const apparentCruiseDate = new Date(startDate);
-  apparentCruiseDate.setDate(startDate.getDate() + (adjustedCruiseDayToday - 1));
-
   const initialValues: FezFormValues = {
     title: '',
     location: '',
     fezType: FezType.activity,
-    startDate: apparentCruiseDate,
+    startDate: getApparentCruiseDate(startDate, adjustedCruiseDayToday),
     duration: '30',
     minCapacity: '2',
     maxCapacity: '2',
