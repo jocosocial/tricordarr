@@ -35,7 +35,7 @@ export type Props = NativeStackScreenProps<
 >;
 
 export const EventDayScreen = ({navigation, route}: Props) => {
-  const {eventTypeFilter, eventFavoriteFilter} = useFilter();
+  const {eventTypeFilter, eventFavoriteFilter, eventPersonalFilter, eventLfgFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {appConfig} = useConfig();
   const {
@@ -172,29 +172,37 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   const buildScheduleList = useCallback(
     (filterSettings: ScheduleFilterSettings) => {
       let lfgList: FezData[] = [];
-      if (!filterSettings.eventTypeFilter) {
+      if (
+        !filterSettings.eventTypeFilter &&
+        !filterSettings.eventFavoriteFilter &&
+        !filterSettings.eventPersonalFilter
+      ) {
         if (filterSettings.showJoinedLfgs && lfgJoinedData) {
           lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
         }
-        if (!filterSettings.eventFavoriteFilter) {
+        if (!filterSettings.eventFavoriteFilter || !filterSettings.eventPersonalFilter) {
           if (filterSettings.showOpenLfgs && lfgOpenData) {
             lfgOpenData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
           }
         }
       }
       let eventList: EventData[] = [];
-      eventData?.map(event => {
-        if (
-          (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
-          (filterSettings.eventFavoriteFilter && !event.isFavorite)
-        ) {
-          return;
-        } else {
-          eventList.push(event);
-        }
-      });
-      // PersonalEvents don't have any filters or other nonsense.... YET!
-      let personalEventList = personalEventData || [];
+      if (!(filterSettings.eventPersonalFilter || filterSettings.eventLfgFilter)) {
+        eventData?.map(event => {
+          if (
+            (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
+            (filterSettings.eventFavoriteFilter && !event.isFavorite)
+          ) {
+            return;
+          } else {
+            eventList.push(event);
+          }
+        });
+      }
+      let personalEventList: PersonalEventData[] = [];
+      if (!(filterSettings.eventTypeFilter || filterSettings.eventFavoriteFilter || filterSettings.eventLfgFilter)) {
+        personalEventList = personalEventData || [];
+      }
 
       const combinedList = [eventList, lfgList, personalEventList].flat().sort((a, b) => {
         if (a.startTime && b.startTime) {
@@ -221,6 +229,8 @@ export const EventDayScreen = ({navigation, route}: Props) => {
       eventFavoriteFilter: eventFavoriteFilter,
       showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
       showOpenLfgs: appConfig.schedule.eventsShowOpenLfgs,
+      eventPersonalFilter: eventPersonalFilter,
+      eventLfgFilter: eventLfgFilter,
     };
     buildScheduleList(filterSettings);
   }, [
@@ -228,7 +238,9 @@ export const EventDayScreen = ({navigation, route}: Props) => {
     appConfig.schedule.eventsShowOpenLfgs,
     buildScheduleList,
     eventFavoriteFilter,
+    eventPersonalFilter,
     eventTypeFilter,
+    eventLfgFilter,
   ]);
 
   useEffect(() => {

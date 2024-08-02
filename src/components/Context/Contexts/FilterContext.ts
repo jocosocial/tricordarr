@@ -17,6 +17,10 @@ interface ScheduleFilterContextType {
   setForumSortOrder: Dispatch<SetStateAction<ForumSortOrder | undefined>>;
   forumFilter?: ForumFilter;
   setForumFilter: Dispatch<SetStateAction<ForumFilter | undefined>>;
+  eventPersonalFilter: boolean;
+  setEventPersonalFilter: Dispatch<SetStateAction<boolean>>;
+  eventLfgFilter: boolean;
+  setEventLfgFilter: Dispatch<SetStateAction<boolean>>;
 }
 
 export const FilterContext = createContext(<ScheduleFilterContextType>{});

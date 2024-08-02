@@ -13,6 +13,8 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
   const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
+  const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
+  const [eventLfgFilter, setEventLfgFilter] = useState(false);
 
   return (
     <FilterContext.Provider
@@ -31,6 +33,10 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         setForumFilter,
         forumSortOrder,
         setForumSortOrder,
+        eventPersonalFilter,
+        setEventPersonalFilter,
+        eventLfgFilter,
+        setEventLfgFilter,
       }}>
       {children}
     </FilterContext.Provider>
