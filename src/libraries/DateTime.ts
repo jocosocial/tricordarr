@@ -280,3 +280,15 @@ export const useRefreshingDate = (minutes: number = 5) => {
 
   return lastRefresh;
 };
+
+/**
+ * Returns a Date() that pretends like we're on the sailing. Basically takes
+ * "today" and transposes it to the sailing week based on the cruise startDate.
+ * @param startDate Start Date() of the cruise.
+ * @param adjustedCruiseDayToday Day index of the cruise.
+ */
+export const getApparentCruiseDate = (startDate: Date, adjustedCruiseDayToday: number) => {
+  const apparentCruiseDate = new Date(startDate);
+  apparentCruiseDate.setDate(startDate.getDate() + (adjustedCruiseDayToday - 1));
+  return apparentCruiseDate;
+};

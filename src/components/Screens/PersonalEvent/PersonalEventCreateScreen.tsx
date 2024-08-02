@@ -10,11 +10,14 @@ import {FormikHelpers} from 'formik';
 import {addMinutes} from 'date-fns';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
+import {getApparentCruiseDate} from '../../../libraries/DateTime.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation}: Props) => {
   const createMutation = usePersonalEventCreateMutation();
   const queryClient = useQueryClient();
+  const {startDate, adjustedCruiseDayToday} = useCruise();
 
   const onSubmit = (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => {
     let eventStartTime = new Date(values.startDate);
@@ -47,7 +50,7 @@ export const PersonalEventCreateScreen = ({navigation}: Props) => {
   };
   const initialValues: PersonalEventFormValues = {
     title: '',
-    startDate: new Date(),
+    startDate: getApparentCruiseDate(startDate, adjustedCruiseDayToday),
     duration: '30',
     description: undefined,
     startTime: {

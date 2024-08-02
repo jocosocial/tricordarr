@@ -2,8 +2,6 @@ Tricordarr
 ----------
 * PersonalEvent
   * Sort personal events to the top of each batch
-  * Restrict date year to cruise year
-  * Default date for events should pick cruise day today. Lfg already does this!
   * add personalevent filter to schedule
   * dont show personals if an event filter is applied
 * add lfg filter
