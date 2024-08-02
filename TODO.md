@@ -5,10 +5,7 @@ Tricordarr
 * User Profile
   * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
 * Help
-  * LFG help in fab is inconsistent
-  * Codify certain design or structure decisions? like this.
   * More help to screens. You can easily do screenshots and demos. Example add user profile help
-* cleared work can be done at the root stack navigator, remove from tabs and subs
 * Add favorites, blocks, mutes to directory? Maybe just favorites
 * Map to tapable image
 * Add error code to network error snackbar

@@ -93,7 +93,7 @@ const defaultAppConfig: AppConfig = {
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
-    defaultLfgScreen: LfgStackComponents.lfgHelpScreen,
+    defaultLfgScreen: LfgStackComponents.lfgFindScreen,
   },
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {

@@ -19,7 +19,6 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {PhotostreamScreen} from '../../Screens/Photostream/PhotostreamScreen.tsx';
 import {PhotostreamImageCreateScreen} from '../../Screens/Photostream/PhotostreamImageCreateScreen.tsx';
 import {PhotostreamHelpScreen} from '../../Screens/Photostream/PhotostreamHelpScreen.tsx';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -43,18 +42,9 @@ export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
-  const {setHasUnsavedWork} = useErrorHandler();
 
   return (
-    <MainStack.Navigator
-      initialRouteName={MainStackComponents.mainScreen}
-      screenOptions={screenOptions}
-      screenListeners={{
-        state: () => {
-          console.log('[MainStackNavigator.tsx] Clearing unsaved work.');
-          setHasUnsavedWork(false);
-        },
-      }}>
+    <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
       <MainStack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Today'}} />
       <MainStack.Screen
         name={MainStackComponents.mainSettingsScreen}
