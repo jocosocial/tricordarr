@@ -43,9 +43,3 @@ export const usePersonalEventQuery = ({eventID}: {eventID: string}) => {
     queryKey: [`/personalevents/${eventID}`],
   });
 };
-
-export const usePersonalEventUsersQuery = () => {
-  return useTokenAuthQuery<UserHeader[]>({
-    queryKey: ['/personalevents/users'],
-  });
-};

@@ -14,8 +14,9 @@ interface UserChipsFieldProps {
   label?: string;
   initialUserHeader?: UserHeader;
   labelSubtext?: string;
+  searchFavorersOnly?: boolean;
 }
-export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = false}: UserChipsFieldProps) => {
+export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = false, searchFavorersOnly = false}: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const [field, meta, helpers] = useField<UserHeader[]>(name);
@@ -58,7 +59,7 @@ export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = fal
             </>
           )}
           <View style={styles.searchBarContainer}>
-            <UserSearchBar excludeHeaders={field.value} onPress={addUserHeader} />
+            <UserSearchBar excludeHeaders={field.value} onPress={addUserHeader} favorers={searchFavorersOnly} />
           </View>
           <View style={commonStyles.chipContainer}>
             {field.value.flatMap((user: UserHeader) => (
