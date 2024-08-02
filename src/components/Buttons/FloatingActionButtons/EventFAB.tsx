@@ -42,8 +42,13 @@ export const EventFAB = (props: EventFABProps) => {
     }),
     FabGroupAction({
       icon: AppIcons.favorite,
-      label: 'Favorites',
+      label: 'Favorite Events',
       onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
+    }),
+    FabGroupAction({
+      icon: AppIcons.personalEvent,
+      label: 'Personal Events',
+      onPress: () => handleNavigation(EventStackComponents.personalEventListScreen),
     }),
     FabGroupAction({
       icon: AppIcons.eventSearch,

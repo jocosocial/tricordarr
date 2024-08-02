@@ -3,23 +3,16 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import React from 'react';
-import {FezFormValues, PersonalEventFormValues} from '../../../libraries/Types/FormValues.ts';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {
-  usePersonalEventCreateMutation,
-  usePersonalEventUpdateMutation,
-} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
+import {PersonalEventFormValues} from '../../../libraries/Types/FormValues.ts';
+import {usePersonalEventCreateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {addMinutes} from 'date-fns';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation}: Props) => {
-  const {appConfig} = useConfig();
   const createMutation = usePersonalEventCreateMutation();
   const queryClient = useQueryClient();
 

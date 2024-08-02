@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, ReactElement} from 'react';
-import {ScrollView, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface ScrollingContentViewProps {
@@ -8,6 +8,7 @@ interface ScrollingContentViewProps {
   // Put a big margin at the bottom in case there's a FAB covering up View contents
   // that we care about.
   overScroll?: boolean;
+  onScroll?: ((event: NativeSyntheticEvent<NativeScrollEvent>) => void) | undefined;
 }
 
 /**
@@ -19,6 +20,7 @@ export const ScrollingContentView = ({
   isStack = false,
   refreshControl,
   overScroll = false,
+  onScroll,
 }: PropsWithChildren<ScrollingContentViewProps>) => {
   const style = {
     ...commonStyles.flex,
@@ -27,7 +29,7 @@ export const ScrollingContentView = ({
   };
 
   return (
-    <ScrollView refreshControl={refreshControl}>
+    <ScrollView refreshControl={refreshControl} onScroll={onScroll}>
       <View style={style}>{children}</View>
     </ScrollView>
   );
