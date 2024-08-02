@@ -35,7 +35,7 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />
+          <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} />
           <TextField
             viewStyle={styles.inputContainer}
             name={'description'}
