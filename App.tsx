@@ -86,14 +86,15 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
    * StyleProvider needs PaperProvider for theming.
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
+   * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback
    */
   return (
     <ConfigProvider>
       <AppNavigationThemeProvider>
         <StyleProvider>
-          <SwiftarrQueryClientProvider>
-            <LoadingProvider>
-              <ErrorHandlerProvider>
+          <ErrorHandlerProvider>
+            <SwiftarrQueryClientProvider>
+              <LoadingProvider>
                 <AuthProvider>
                   <UserDataProvider>
                     <PrivilegeProvider>
@@ -127,9 +128,9 @@ function App(): React.JSX.Element {
                     </PrivilegeProvider>
                   </UserDataProvider>
                 </AuthProvider>
-              </ErrorHandlerProvider>
-            </LoadingProvider>
-          </SwiftarrQueryClientProvider>
+              </LoadingProvider>
+            </SwiftarrQueryClientProvider>
+          </ErrorHandlerProvider>
         </StyleProvider>
       </AppNavigationThemeProvider>
     </ConfigProvider>
