@@ -1,8 +1,7 @@
-import {CruiseDayTime, ScheduleFilterSettings} from './Types';
+import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from './Types';
 import {InfiniteData} from '@tanstack/react-query';
 import {EventData, FezData, FezListData, PersonalEventData} from './Structs/ControllerStructs.tsx';
 import {EventType} from './Enums/EventType.ts';
-import {useCallback} from 'react';
 import {calcCruiseDayTime, getTimeZoneOffset} from './DateTime.ts';
 import {parseISO} from 'date-fns';
 
@@ -70,10 +69,31 @@ export const getScheduleScrollIndex = (
     const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
     const tzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
 
-    if (
-      nowDayTime.cruiseDay === itemStartDayTime.cruiseDay &&
-      nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes
-    ) {
+    if (nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes) {
+      // The current i index is the next event in the schedule. Put another way,
+      // it's the first upcoming event.
+
+      // We now want to go back in time and find the start of the next chunk of the schedule.
+      // So we recurse backwards until we find an element that doesn't share the same
+      // Separator ID as the first element before the current element. Confused? Yeah me too.
+      let previousMarkerID: string | undefined;
+      for (let r = 1; r < itemList.length - i; r++) {
+        const previousItem = itemList[i - r];
+        if (!previousItem || !previousItem.startTime || !previousItem.timeZoneID) {
+          break;
+        }
+        let separatorID = getScheduleListTimeSeparatorID(new Date(previousItem.startTime));
+        if (!previousMarkerID) {
+          previousMarkerID = separatorID;
+        } else {
+          if (separatorID !== previousMarkerID) {
+            // This is +1 because we've already advanced the loop to the next item
+            // but we wanted the previous one.
+            return i - r + 1;
+          }
+        }
+      }
+      // When in doubt, do current - 1.
       return i - 1;
     }
   }
@@ -96,3 +116,36 @@ export const getScheduleScrollIndex = (
   // List of zero or any other situation, just return 0 (start of list);
   return 0;
 };
+
+export const getScheduleItemMarker = (
+  item: EventData | FezData | PersonalEventData,
+  portTimeZoneID: string,
+  nowDate: Date,
+  startDate: Date,
+  endDate: Date,
+): ScheduleCardMarkerType => {
+  if (!item.startTime || !item.endTime || !item.timeZoneID) {
+    return;
+  }
+  const itemStartTime = parseISO(item.startTime);
+  const itemEndTime = parseISO(item.endTime);
+  const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
+  const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
+  const nowDayTime = calcCruiseDayTime(nowDate, startDate, endDate);
+  const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZoneID, item.startTime);
+  if (
+    nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+    nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&
+    nowDayTime.dayMinutes - tzOffset < eventEndDayTime.dayMinutes
+  ) {
+    return 'now';
+  } else if (
+    nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
+    nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes - 30 &&
+    nowDayTime.dayMinutes - tzOffset < eventStartDayTime.dayMinutes
+  ) {
+    return 'soon';
+  }
+};
+
+export const getScheduleListTimeSeparatorID = (date: Date) => `${date.getHours()}:${date.getMinutes()}`;

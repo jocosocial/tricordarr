@@ -9,6 +9,7 @@ import {CruiseDayData} from '../../../libraries/Types';
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;
   setCruiseDay: Dispatch<SetStateAction<number>>;
+  scrollToNow?: () => void;
 }
 
 export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
@@ -26,12 +27,18 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
   });
 
   const renderItem = ({item}: {item: CruiseDayData}) => {
-    return (<TouchableOpacity
-      key={item.cruiseDay}
-      style={styles.buttonContainer}
-      onPress={() => props.setCruiseDay(item.cruiseDay)}>
-      <ScheduleHeaderDayView cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
-    </TouchableOpacity>);
+    const onPress = () => {
+      if (item.cruiseDay === props.selectedCruiseDay && props.scrollToNow) {
+        props.scrollToNow();
+      } else {
+        props.setCruiseDay(item.cruiseDay);
+      }
+    };
+    return (
+      <TouchableOpacity key={item.cruiseDay} style={styles.buttonContainer} onPress={onPress}>
+        <ScheduleHeaderDayView cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -43,7 +50,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         estimatedItemSize={90}
         data={cruiseDays}
         initialScrollIndex={props.selectedCruiseDay - 1} // selectedCruiseDay is event-style 1-indexed.
-        extraData={props.selectedCruiseDay}
+        extraData={[props.selectedCruiseDay, props.scrollToNow]}
       />
     </View>
   );
