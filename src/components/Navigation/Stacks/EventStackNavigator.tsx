@@ -3,9 +3,7 @@ import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navi
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {EventDayScreen} from '../../Screens/Event/EventDayScreen';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
@@ -21,9 +19,6 @@ import {PersonalEventListScreen} from '../../Screens/PersonalEvent/PersonalEvent
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
 
 export type EventStackParamList = CommonStackParamList & {
-  EventDayScreen: {
-    cruiseDay: number;
-  };
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
   EventHelpScreen: undefined;
@@ -40,7 +35,6 @@ export const EventStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createNativeStackNavigator<EventStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
-  const {adjustedCruiseDayToday} = useCruise();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
@@ -48,17 +42,6 @@ export const EventStackNavigator = () => {
     <Stack.Navigator
       initialRouteName={EventStackComponents.scheduleDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
-      <Stack.Screen
-        name={EventStackComponents.eventDayScreen}
-        component={isDisabled ? DisabledView : EventDayScreen}
-        options={{
-          headerLeft: getLeftMainHeaderButtons,
-          title: 'Events',
-        }}
-        initialParams={{
-          cruiseDay: adjustedCruiseDayToday,
-        }}
-      />
       <Stack.Screen
         name={EventStackComponents.eventSearchScreen}
         component={EventSearchScreen}

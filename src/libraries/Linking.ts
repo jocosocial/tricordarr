@@ -63,9 +63,9 @@ const deepLinksConf = {
           },
         },
         ScheduleTab: {
-          initialRouteName: EventStackComponents.eventDayScreen,
+          initialRouteName: EventStackComponents.scheduleDayScreen,
           screens: {
-            EventDayScreen: 'events',
+            ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',
           },
         },

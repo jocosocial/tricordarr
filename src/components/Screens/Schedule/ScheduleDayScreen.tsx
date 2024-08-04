@@ -128,7 +128,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    console.log('[EventDayScreen.tsx] Starting buildScheduleList useEffect.');
+    console.log('[ScheduleDayScreen.tsx] Starting buildScheduleList useEffect.');
     const listData = buildScheduleList(
       scheduleFilterSettings,
       lfgJoinedData,
