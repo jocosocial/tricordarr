@@ -5,6 +5,8 @@ import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {ScheduleHeaderDayView} from './ScheduleHeaderDayView.tsx';
 import {getCruiseDayData} from '../../../libraries/DateTime.ts';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
+import {FlashList} from '@shopify/flash-list';
+import {CruiseDayData} from '../../../libraries/Types';
 
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;
@@ -19,20 +21,31 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       ...commonStyles.flexRow,
       ...commonStyles.paddingVerticalSmall,
       ...commonStyles.paddingHorizontalSmall,
+      // height: 60,
+      // width: 100,
+      // backgroundColor: 'pink',
     },
     buttonContainer: {
       ...commonStyles.paddingHorizontalSmall,
     },
   });
+
+  const renderItem = ({item}: {item: CruiseDayData}) => (
+    <View key={item.cruiseDay} style={styles.buttonContainer}>
+      <ScheduleHeaderDayView cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
+    </View>
+  );
+
   return (
     <View style={styles.view}>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {cruiseDays.map(cd => (
-          <View key={cd.cruiseDay} style={styles.buttonContainer}>
-            <ScheduleHeaderDayView cruiseDay={cd} isToday={cd.cruiseDay === props.selectedCruiseDay} />
-          </View>
-        ))}
-      </ScrollView>
+      <FlashList
+        renderItem={renderItem}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        estimatedItemSize={90}
+        data={cruiseDays}
+        initialScrollIndex={props.selectedCruiseDay - 1} // selectedCruiseDay is event-style 1-indexed.
+      />
     </View>
   );
 };

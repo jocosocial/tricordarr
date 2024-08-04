@@ -277,13 +277,13 @@ export const EventDayScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
+      <ScheduleHeaderView selectedCruiseDay={route.params.cruiseDay} />
       <View style={commonStyles.flex}>
         {/*<ScheduleDayHeaderView*/}
         {/*  navigateNextDay={navigateNextDay}*/}
         {/*  navigatePreviousDay={navigatePreviousDay}*/}
         {/*  selectedCruiseDay={route.params.cruiseDay}*/}
         {/*/>*/}
-        <ScheduleHeaderView selectedCruiseDay={route.params.cruiseDay} />
         <View style={commonStyles.flex}>
           <EventFlatList
             listRef={listRef}
