@@ -18,6 +18,7 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {PersonalEventHelpScreen} from '../../Screens/PersonalEvent/PersonalEventHelpScreen.tsx';
 import {PersonalEventListScreen} from '../../Screens/PersonalEvent/PersonalEventListScreen.tsx';
+import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
 
 export type EventStackParamList = CommonStackParamList & {
   EventDayScreen: {
@@ -32,6 +33,7 @@ export type EventStackParamList = CommonStackParamList & {
   };
   PersonalEventHelpScreen: undefined;
   PersonalEventListScreen: undefined;
+  ScheduleDayScreen: undefined;
 };
 
 export const EventStackNavigator = () => {
@@ -44,7 +46,7 @@ export const EventStackNavigator = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={EventStackComponents.eventDayScreen}
+      initialRouteName={EventStackComponents.scheduleDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={EventStackComponents.eventDayScreen}
@@ -91,6 +93,14 @@ export const EventStackNavigator = () => {
         name={EventStackComponents.personalEventListScreen}
         component={PersonalEventListScreen}
         options={{title: 'Personal Events'}}
+      />
+      <Stack.Screen
+        name={EventStackComponents.scheduleDayScreen}
+        component={isDisabled ? DisabledView : ScheduleDayScreen}
+        options={{
+          headerLeft: getLeftMainHeaderButtons,
+          title: 'Schedule',
+        }}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

@@ -92,6 +92,7 @@ export enum EventStackComponents {
   eventYourDayScreen = 'EventYourDayScreen',
   personalEventHelpScreen = 'PersonalEventHelpScreen',
   personalEventListScreen = 'PersonalEventListScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
 }
 
 export enum LfgStackComponents {

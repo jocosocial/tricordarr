@@ -1,6 +1,7 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ScheduleFilterSettings} from '../../../libraries/Types';
 
 interface ScheduleFilterContextType {
   eventTypeFilter: string;
@@ -21,6 +22,7 @@ interface ScheduleFilterContextType {
   setEventPersonalFilter: Dispatch<SetStateAction<boolean>>;
   eventLfgFilter: boolean;
   setEventLfgFilter: Dispatch<SetStateAction<boolean>>;
+  scheduleFilterSettings: ScheduleFilterSettings;
 }
 
 export const FilterContext = createContext(<ScheduleFilterContextType>{});
