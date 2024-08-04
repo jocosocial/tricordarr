@@ -6,8 +6,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator.tsx';
 import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {RefreshControl, View} from 'react-native';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {ScheduleEventFilterMenu} from '../../Menus/Events/ScheduleEventFilterMenu.tsx';
 import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu.tsx';
@@ -24,6 +24,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {buildScheduleList, getScheduleScrollIndex} from '../../../libraries/Schedule.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime.ts';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -31,7 +32,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
-  const listRef = useRef<FlatList<EventData | FezData | PersonalEventData>>(null);
+  const listRef = useRef<FlashList<EventData | FezData | PersonalEventData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData | PersonalEventData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const {appConfig} = useConfig();
@@ -99,6 +100,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     } else {
       listRef.current.scrollToIndex({
         index: scrollNowIndex,
+        // The viewOffset is so that we show the TimeSeparator in the view as well.
+        viewOffset: 40,
       });
     }
   }, [scheduleList, scrollNowIndex]);
@@ -110,13 +113,12 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Now'} onPress={scrollToNow} />
           <ScheduleEventFilterMenu />
           <EventDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh]);
+  }, [isLoggedIn, onRefresh, scrollToNow]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -139,7 +141,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   useEffect(() => {
     const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
     setScrollNowIndex(getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID));
-  }, [endDate, getScheduleScrollIndex, minutelyUpdatingDate, scheduleList, startDate]);
+  }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, scheduleList, startDate]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -156,13 +158,18 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScheduleHeaderView selectedCruiseDay={selectedCruiseDay} setCruiseDay={setSelectedCruiseDay} />
-      <View style={commonStyles.flex}>
+      <ScheduleHeaderView
+        selectedCruiseDay={selectedCruiseDay}
+        setCruiseDay={setSelectedCruiseDay}
+        scrollToNow={scrollToNow}
+      />
+      <View style={[commonStyles.flex, commonStyles.paddingHorizontal]}>
         <EventFlatList
           listRef={listRef}
           scheduleItems={scheduleList}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
           setRefreshing={setRefreshing}
+          initialScrollIndex={scrollNowIndex}
         />
       </View>
       <ScheduleFAB />
