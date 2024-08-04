@@ -27,6 +27,7 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu';
 import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
+import {ScheduleHeaderView} from '../../Views/Schedule/ScheduleHeaderView.tsx';
 
 export type Props = NativeStackScreenProps<
   EventStackParamList,
@@ -277,11 +278,12 @@ export const EventDayScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <View style={commonStyles.flex}>
-        <ScheduleDayHeaderView
-          navigateNextDay={navigateNextDay}
-          navigatePreviousDay={navigatePreviousDay}
-          selectedCruiseDay={route.params.cruiseDay}
-        />
+        {/*<ScheduleDayHeaderView*/}
+        {/*  navigateNextDay={navigateNextDay}*/}
+        {/*  navigatePreviousDay={navigatePreviousDay}*/}
+        {/*  selectedCruiseDay={route.params.cruiseDay}*/}
+        {/*/>*/}
+        <ScheduleHeaderView selectedCruiseDay={route.params.cruiseDay} />
         <View style={commonStyles.flex}>
           <EventFlatList
             listRef={listRef}

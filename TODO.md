@@ -2,6 +2,7 @@ Tricordarr
 ----------
 * Schedule
   * Your day as a button filter
+  * Should create PE take you back instead? Schedule or to personal view
 * User Profile
   * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
 * Help
@@ -13,4 +14,4 @@ Tricordarr
 Swiftarr
 --------
 * Generate socket events for upcoming personal event
-* Download personal event handler
+* Moderation views for personalevents

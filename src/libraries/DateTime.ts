@@ -99,14 +99,25 @@ export const getCruiseDays = (startDate: Date, cruiseLength: number) => {
     if (cruiseDayNameIndex > 6) {
       cruiseDayNameIndex -= 7;
     }
-    cruiseDays.push({
-      cruiseDay: i + 1,
-      date: addDays(startDate, i),
-    });
+    cruiseDays.push(getCruiseDayData(startDate, i + 1));
     cruiseDayNameIndex += 1;
   }
 
   return cruiseDays;
+};
+
+/**
+ * Get CruiseDayData for the current day. In Swiftarr we use cruiseday a bit inconsistently.
+ * Events and PersonalEvents index starting at 1 (embarkation day) whereas LFGs index starting
+ * at 0 (embarkation day). Regardless this should take a day index.
+ * @param startDate
+ * @param cruiseDayIndex 1-indexed (Event-style) index of the day of the week.
+ */
+export const getCruiseDayData = (startDate: Date, cruiseDayIndex: number): CruiseDayData => {
+  return {
+    cruiseDay: cruiseDayIndex,
+    date: addDays(startDate, cruiseDayIndex - 1),
+  };
 };
 
 /**
