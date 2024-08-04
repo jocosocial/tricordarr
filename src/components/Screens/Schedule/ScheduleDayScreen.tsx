@@ -102,6 +102,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         index: scrollNowIndex,
         // The viewOffset is so that we show the TimeSeparator in the view as well.
         viewOffset: 40,
+        animated: true,
       });
     }
   }, [scheduleList, scrollNowIndex]);
