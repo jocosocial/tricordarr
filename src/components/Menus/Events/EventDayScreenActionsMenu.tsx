@@ -6,7 +6,7 @@ import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigat
 import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
-export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh: () => void}) => {
+export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useEventStackNavigation();
 
@@ -22,7 +22,9 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh: () => void}) 
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
+      {onRefresh && (
+        <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
+      )}
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}

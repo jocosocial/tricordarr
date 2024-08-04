@@ -3,6 +3,8 @@ import {FilterContext} from '../Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../Contexts/ConfigContext';
 import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ScheduleFilterSettings} from '../../../libraries/Types';
+import {EventType} from '../../../libraries/Enums/EventType.ts';
 
 export const FilterProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -15,6 +17,15 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
   const [eventLfgFilter, setEventLfgFilter] = useState(false);
+
+  const scheduleFilterSettings: ScheduleFilterSettings = {
+    eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
+    eventFavoriteFilter: eventFavoriteFilter,
+    showJoinedLfgs: appConfig.schedule.eventsShowJoinedLfgs,
+    showOpenLfgs: appConfig.schedule.eventsShowOpenLfgs,
+    eventPersonalFilter: eventPersonalFilter,
+    eventLfgFilter: eventLfgFilter,
+  };
 
   return (
     <FilterContext.Provider
@@ -37,6 +48,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         setEventPersonalFilter,
         eventLfgFilter,
         setEventLfgFilter,
+        scheduleFilterSettings,
       }}>
       {children}
     </FilterContext.Provider>
