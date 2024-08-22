@@ -57,6 +57,11 @@ export const contentNotificationCategories: ContentNotificationCategory[] = [
     description: 'Reminder that a followed event is starting Soon™.',
   },
   {
+    configKey: 'personalEventStarting',
+    title: 'Personal Event Starting',
+    description: 'Reminder that a personal event is starting Soon™.',
+  },
+  {
     configKey: 'joinedLFGStarting',
     title: 'Joined LFG Reminders',
     description: 'Reminder that a joined LFG is starting Soon™.',

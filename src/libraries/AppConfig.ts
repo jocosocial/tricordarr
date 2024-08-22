@@ -81,6 +81,7 @@ const defaultAppConfig: AppConfig = {
     phoneCallEnded: true,
     moderatorForumMention: true,
     twitarrTeamForumMention: true,
+    personalEventStarting: true,
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,

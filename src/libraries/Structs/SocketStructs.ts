@@ -57,6 +57,8 @@ export enum NotificationTypeData {
   twitarrTeamForumMention = 'twitarrTeamForumMention',
   /// An LFG the user has joined is about to start.
   joinedLFGStarting = 'joinedLFGStarting',
+  /// A Personal Event the user has created or was added to is about to start.
+  personalEventStarting = 'personalEventStarting',
 }
 
 export interface PhoneSocketServerAddress {
