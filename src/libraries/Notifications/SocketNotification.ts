@@ -38,6 +38,8 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     }
   }
 
+  console.log('[SocketNotification.ts] Responding to message with type', notificationType);
+
   switch (notificationType) {
     case NotificationTypeData.seamailUnreadMsg:
       channel = seamailChannel;
@@ -105,6 +107,12 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       pressActionID = PressAction.lfg;
       title = 'Joined LFG Starting';
       url = `/lfg/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.personalEventStarting:
+      channel = eventChannel;
+      pressActionID = PressAction.personalEvent;
+      title = 'Personal Event Starting';
+      url = `/personalevents/${notificationData.contentID}`;
       break;
   }
 

@@ -67,6 +67,7 @@ const deepLinksConf = {
           screens: {
             ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',
+            PersonalEventScreen: 'personalevents/:eventID',
           },
         },
         ForumsTab: {
