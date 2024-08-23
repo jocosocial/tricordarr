@@ -3,6 +3,11 @@ Tricordarr
 * Schedule
   * Your day as a button filter
   * Should create PE take you back instead? Schedule or to personal view
+  * Pressing a schedule day button that needs loading unrenders the buttons and loses place. Use the refresh control instead
+  * Kill the personal and favorite dedicated screens. There's no point if they are filters
+  * Figure out how to bring back the scroll indicator on the schedule list.
+  * Add personal event setting to event settings
+  * Replace references to events with schedule. Specifically in help text for settings
 * User Profile
   * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
 * Help
@@ -12,8 +17,9 @@ Tricordarr
 * Empty photo stream is not intuitive
 * Saving cruise settings doesn't clear unsaved
 * Time zone warning on schedule screens. Consider a banner?
+* Default lfg to joined instead of help
+* Add day dividers to the lfg lists
+* Remove photostream share
 
 Swiftarr
 --------
-* Generate socket events for upcoming personal event
-* Moderation views for personalevents
