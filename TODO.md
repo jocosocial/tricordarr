@@ -9,9 +9,7 @@ Tricordarr
 * Empty photo stream is not intuitive
 * Saving cruise settings doesn't clear unsaved
 * Time zone warning on schedule screens. Consider a banner?
-* Default lfg to joined instead of help
 * Add day dividers to the lfg lists
-* Remove photostream share
 
 Swiftarr
 --------
