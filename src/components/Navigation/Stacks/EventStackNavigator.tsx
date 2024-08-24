@@ -7,27 +7,21 @@ import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
-import {EventFavoritesScreen} from '../../Screens/Event/EventFavoritesScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {EventYourDayScreen} from '../../Screens/Event/EventYourDayScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
-import {PersonalEventHelpScreen} from '../../Screens/PersonalEvent/PersonalEventHelpScreen.tsx';
-import {PersonalEventListScreen} from '../../Screens/PersonalEvent/PersonalEventListScreen.tsx';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
 
 export type EventStackParamList = CommonStackParamList & {
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
   EventHelpScreen: undefined;
-  EventFavoritesScreen: undefined;
   EventYourDayScreen: {
     cruiseDay: number;
   };
-  PersonalEventHelpScreen: undefined;
-  PersonalEventListScreen: undefined;
   ScheduleDayScreen: undefined;
 };
 
@@ -58,24 +52,9 @@ export const EventStackNavigator = () => {
         options={{title: 'Event Help'}}
       />
       <Stack.Screen
-        name={EventStackComponents.eventFavoritesScreen}
-        component={EventFavoritesScreen}
-        options={{title: 'Favorite Events'}}
-      />
-      <Stack.Screen
         name={EventStackComponents.eventYourDayScreen}
         component={EventYourDayScreen}
         options={{title: 'Your Day'}}
-      />
-      <Stack.Screen
-        name={EventStackComponents.personalEventHelpScreen}
-        component={PersonalEventHelpScreen}
-        options={{title: 'Help'}}
-      />
-      <Stack.Screen
-        name={EventStackComponents.personalEventListScreen}
-        component={PersonalEventListScreen}
-        options={{title: 'Personal Events'}}
       />
       <Stack.Screen
         name={EventStackComponents.scheduleDayScreen}

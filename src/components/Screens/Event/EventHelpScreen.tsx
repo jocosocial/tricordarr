@@ -114,7 +114,11 @@ export const EventHelpScreen = () => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>The Your Day Today screen shows all of your favorite events and joined LFGs for the current day.</Text>
+          <Text>
+            Press the <AppIcon icon={AppIcons.personalEvent} /> button on the schedule screen to view all of your events
+            for the day. This includes favorited events, personal events, and joined LFGs. Pressing the button again
+            will disengage the filters.
+          </Text>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

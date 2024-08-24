@@ -5,13 +5,17 @@ import {DateValidation, InfoStringValidation} from '../../libraries/ValidationSc
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 import {TextField} from './Fields/TextField.tsx';
 import React from 'react';
-import {View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
 import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
+import {TextInput} from 'react-native-paper';
+import {AppIcons} from '../../libraries/Enums/Icons.ts';
+import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
+import {useModal} from '../Context/Contexts/ModalContext.ts';
 
 interface PersonalEventFormProps {
   onSubmit: (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => void;
@@ -24,12 +28,24 @@ const validationSchema = Yup.object().shape({
   startDate: DateValidation,
 });
 
+const locationHelpContent = [
+  "Personal Events are not a reservation system. You can't claim a room or even a table by scheduling an event there.",
+];
+
 export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     inputContainer: [],
     buttonContainer: [commonStyles.marginTopSmall],
   };
+  const {setModalVisible, setModalContent} = useModal();
+
+  const handleLocationInfo = () => {
+    Keyboard.dismiss();
+    setModalContent(<HelpModalView title={'About Locations'} text={locationHelpContent} />);
+    setModalVisible(true);
+  };
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
@@ -43,7 +59,13 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
             multiline={true}
             numberOfLines={3}
           />
-          <TextField viewStyle={styles.inputContainer} name={'location'} label={'Location'} autoCapitalize={'words'} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'location'}
+            label={'Location'}
+            autoCapitalize={'words'}
+            right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
+          />
           <View style={[commonStyles.paddingBottom]}>
             <DatePickerField name={'startDate'} />
           </View>

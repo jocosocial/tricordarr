@@ -48,7 +48,6 @@ import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScre
 import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
 import {PersonalEventEditScreen} from '../Screens/PersonalEvent/PersonalEventEditScreen.tsx';
 import {PersonalEventCreateScreen} from '../Screens/PersonalEvent/PersonalEventCreateScreen.tsx';
-import {PersonalEventListScreen} from '../Screens/PersonalEvent/PersonalEventListScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from

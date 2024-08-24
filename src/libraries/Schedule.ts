@@ -23,10 +23,8 @@ export const buildScheduleList = (
 ): (FezData | EventData | PersonalEventData)[] => {
   let anyPersonalFilter =
     filterSettings.eventLfgFilter || filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
-  console.log('anyPersonal?', anyPersonalFilter);
-  console.log('Settings', filterSettings);
+
   let lfgList: FezData[] = [];
-  // if (!filterSettings.eventTypeFilter && !filterSettings.eventFavoriteFilter && !filterSettings.eventPersonalFilter) {
   if (filterSettings.eventLfgFilter || !anyPersonalFilter) {
     if (filterSettings.showJoinedLfgs && lfgJoinedData) {
       lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
@@ -37,8 +35,8 @@ export const buildScheduleList = (
       }
     }
   }
+
   let eventList: EventData[] = [];
-  // if (!(filterSettings.eventPersonalFilter || filterSettings.eventLfgFilter)) {
   if (filterSettings.eventFavoriteFilter || !anyPersonalFilter) {
     eventData?.map(event => {
       if (
@@ -51,8 +49,8 @@ export const buildScheduleList = (
       }
     });
   }
+
   let personalEventList: PersonalEventData[] = [];
-  // if (!(filterSettings.eventTypeFilter || filterSettings.eventFavoriteFilter || filterSettings.eventLfgFilter)) {
   if (filterSettings.eventPersonalFilter || !anyPersonalFilter) {
     personalEventList = personalEventData || [];
   }
