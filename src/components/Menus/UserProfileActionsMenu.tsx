@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ReactNode, useState} from 'react';
+import {ReactNode, useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {AppIcons} from '../../libraries/Enums/Icons';
@@ -17,17 +17,15 @@ import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
-  isFavorite: boolean;
   isMuted: boolean;
   isBlocked: boolean;
 }
 
-export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
+export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const favoriteMutation = useUserFavoriteMutation();
   const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
@@ -42,35 +40,6 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       id: profile.header.userID,
       moderate: true,
     });
-  };
-  const handleFavorite = () => {
-    if (isFavorite) {
-      favoriteMutation.mutate(
-        {
-          userID: profile.header.userID,
-          action: 'unfavorite',
-        },
-        {
-          onSuccess: () => {
-            setFavorites(favorites.filter(m => m.userID !== profile.header.userID));
-            closeMenu();
-          },
-        },
-      );
-    } else {
-      favoriteMutation.mutate(
-        {
-          userID: profile.header.userID,
-          action: 'favorite',
-        },
-        {
-          onSuccess: () => {
-            setFavorites(favorites.concat([profile.header]));
-            closeMenu();
-          },
-        },
-      );
-    }
   };
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -95,11 +64,6 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item
-        leadingIcon={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
-        title={isFavorite ? 'Unfavorite' : 'Favorite'}
-        onPress={handleFavorite}
-      />
       <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <Divider bold={true} />
       <Menu.Item
