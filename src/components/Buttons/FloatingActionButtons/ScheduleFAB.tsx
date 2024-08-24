@@ -24,16 +24,6 @@ export const ScheduleFAB = () => {
       onPress: () => handleNavigation(CommonStackComponents.personalEventCreateScreen),
     }),
     FabGroupAction({
-      icon: AppIcons.favorite,
-      label: 'Favorite Events',
-      onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
-    }),
-    FabGroupAction({
-      icon: AppIcons.personalEvent,
-      label: 'Personal Events',
-      onPress: () => handleNavigation(EventStackComponents.personalEventListScreen),
-    }),
-    FabGroupAction({
       icon: AppIcons.eventSearch,
       label: 'Search',
       onPress: () => handleNavigation(EventStackComponents.eventSearchScreen),

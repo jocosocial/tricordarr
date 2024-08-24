@@ -87,10 +87,7 @@ export enum EventStackComponents {
   eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
   eventHelpScreen = 'EventHelpScreen',
-  eventFavoritesScreen = 'EventFavoritesScreen',
   eventYourDayScreen = 'EventYourDayScreen',
-  personalEventHelpScreen = 'PersonalEventHelpScreen',
-  personalEventListScreen = 'PersonalEventListScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
 }
 
