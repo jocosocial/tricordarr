@@ -48,6 +48,7 @@ import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScre
 import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
 import {PersonalEventEditScreen} from '../Screens/PersonalEvent/PersonalEventEditScreen.tsx';
 import {PersonalEventCreateScreen} from '../Screens/PersonalEvent/PersonalEventCreateScreen.tsx';
+import {UserProfileHelpScreen} from '../Screens/User/UserProfileHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -162,6 +163,7 @@ export type CommonStackParamList = {
     personalEvent: PersonalEventData;
   };
   PersonalEventCreateScreen: undefined;
+  UserProfileHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -199,6 +201,7 @@ export enum CommonStackComponents {
   personalEventScreen = 'PersonalEventScreen',
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
+  userProfileHelpScreen = 'UserProfileHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -379,6 +382,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.personalEventCreateScreen}
         component={PersonalEventCreateScreen}
         options={{title: 'Create Personal Event'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userProfileHelpScreen}
+        component={UserProfileHelpScreen}
+        options={{title: 'Help'}}
       />
     </>
   );

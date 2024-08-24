@@ -8,7 +8,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {UserProfileActionsMenu} from '../../Menus/UserProfileActionsMenu';
+import {UserProfileActionsMenu} from '../../Menus/User/UserProfileActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
@@ -29,6 +29,7 @@ import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {HeaderProfileFavoriteButton} from '../../Buttons/HeaderButtons/HeaderProfileFavoriteButton.tsx';
 import {HeaderProfileSeamailButton} from '../../Buttons/HeaderButtons/HeaderProfileSeamailButton.tsx';
+import {UserProfileSelfActionsMenu} from '../../Menus/User/UserProfileSelfActionsMenu.tsx';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -66,6 +67,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
               iconName={AppIcons.edituser}
               onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
             />
+            <UserProfileSelfActionsMenu />
           </HeaderButtons>
         </View>
       );
