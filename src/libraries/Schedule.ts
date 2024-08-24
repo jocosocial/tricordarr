@@ -5,6 +5,15 @@ import {EventType} from './Enums/EventType.ts';
 import {calcCruiseDayTime, getTimeZoneOffset} from './DateTime.ts';
 import {parseISO} from 'date-fns';
 
+/**
+ * Assemble an array containing all items to display in a schedule list.
+ * This array should be ordered by start time.
+ * @param filterSettings
+ * @param lfgJoinedData
+ * @param lfgOpenData
+ * @param eventData
+ * @param personalEventData
+ */
 export const buildScheduleList = (
   filterSettings: ScheduleFilterSettings,
   lfgJoinedData?: InfiniteData<FezListData>,
@@ -12,8 +21,13 @@ export const buildScheduleList = (
   eventData?: EventData[],
   personalEventData?: PersonalEventData[],
 ): (FezData | EventData | PersonalEventData)[] => {
+  let anyPersonalFilter =
+    filterSettings.eventLfgFilter || filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
+  console.log('anyPersonal?', anyPersonalFilter);
+  console.log('Settings', filterSettings);
   let lfgList: FezData[] = [];
-  if (!filterSettings.eventTypeFilter && !filterSettings.eventFavoriteFilter && !filterSettings.eventPersonalFilter) {
+  // if (!filterSettings.eventTypeFilter && !filterSettings.eventFavoriteFilter && !filterSettings.eventPersonalFilter) {
+  if (filterSettings.eventLfgFilter || !anyPersonalFilter) {
     if (filterSettings.showJoinedLfgs && lfgJoinedData) {
       lfgJoinedData.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
     }
@@ -24,7 +38,8 @@ export const buildScheduleList = (
     }
   }
   let eventList: EventData[] = [];
-  if (!(filterSettings.eventPersonalFilter || filterSettings.eventLfgFilter)) {
+  // if (!(filterSettings.eventPersonalFilter || filterSettings.eventLfgFilter)) {
+  if (filterSettings.eventFavoriteFilter || !anyPersonalFilter) {
     eventData?.map(event => {
       if (
         (filterSettings.eventTypeFilter && event.eventType !== EventType[filterSettings.eventTypeFilter]) ||
@@ -37,7 +52,8 @@ export const buildScheduleList = (
     });
   }
   let personalEventList: PersonalEventData[] = [];
-  if (!(filterSettings.eventTypeFilter || filterSettings.eventFavoriteFilter || filterSettings.eventLfgFilter)) {
+  // if (!(filterSettings.eventTypeFilter || filterSettings.eventFavoriteFilter || filterSettings.eventLfgFilter)) {
+  if (filterSettings.eventPersonalFilter || !anyPersonalFilter) {
     personalEventList = personalEventData || [];
   }
 

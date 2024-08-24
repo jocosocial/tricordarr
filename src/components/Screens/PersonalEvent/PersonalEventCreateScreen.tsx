@@ -38,11 +38,9 @@ export const PersonalEventCreateScreen = ({navigation}: Props) => {
         },
       },
       {
-        onSuccess: async response => {
+        onSuccess: async () => {
           await queryClient.invalidateQueries(['/personalevents']);
-          navigation.replace(CommonStackComponents.personalEventScreen, {
-            eventID: response.data.personalEventID,
-          });
+          navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
       },
