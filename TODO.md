@@ -1,7 +1,7 @@
 Tricordarr
 ----------
 * User Profile
-  * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
+  * Previously broke initialUserHeader passing into new Seamail screen.
 * Help
   * More help to screens. You can easily do screenshots and demos. Example add user profile help
 * Add favorites, blocks, mutes to directory? Maybe just favorites

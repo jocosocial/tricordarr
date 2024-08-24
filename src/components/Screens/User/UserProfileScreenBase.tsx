@@ -27,6 +27,8 @@ import {ErrorView} from '../../Views/Static/ErrorView';
 import {useAppTheme} from '../../../styles/Theme';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {HeaderProfileFavoriteButton} from '../../Buttons/HeaderButtons/HeaderProfileFavoriteButton.tsx';
+import {HeaderProfileSeamailButton} from '../../Buttons/HeaderButtons/HeaderProfileSeamailButton.tsx';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -45,20 +47,11 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
   const {isLoggedIn} = useAuth();
   const theme = useAppTheme();
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    refetch()
-      .then(() => refetchFavorites())
-      .then(() => refetchMutes())
-      .then(() => refetchBlocks())
-      .finally(() => setRefreshing(false));
+    await Promise.all([refetch(), refetchFavorites(), refetchMutes(), refetchBlocks()]);
+    setRefreshing(false);
   }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
-
-  const seamailCreateHandler = useCallback(() => {
-    commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeader: data?.header,
-    });
-  }, [data?.header, commonNavigation]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -80,23 +73,17 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          {data && <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />}
           {data && (
-            <UserProfileActionsMenu profile={data} isFavorite={isFavorite} isMuted={isMuted} isBlocked={isBlocked} />
+            <>
+              <HeaderProfileSeamailButton profile={data} />
+              <HeaderProfileFavoriteButton profile={data} />
+              <UserProfileActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
+            </>
           )}
         </HeaderButtons>
       </View>
     );
-  }, [
-    isLoggedIn,
-    data,
-    profilePublicData?.header.userID,
-    seamailCreateHandler,
-    isFavorite,
-    isMuted,
-    isBlocked,
-    commonNavigation,
-  ]);
+  }, [isLoggedIn, data, profilePublicData?.header.userID, isMuted, isBlocked, commonNavigation]);
 
   useEffect(() => {
     commonNavigation.setOptions({
