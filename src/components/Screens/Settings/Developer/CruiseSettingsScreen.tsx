@@ -27,6 +27,13 @@ export const CruiseSettingsScreen = () => {
       cruiseStartDate: startDate,
     });
     helpers.setSubmitting(false);
+    helpers.resetForm({
+      values: {
+        portTimeZoneID: values.portTimeZoneID,
+        cruiseLength: values.cruiseLength,
+        startDate: values.startDate,
+      },
+    });
   };
   return (
     <AppView>
