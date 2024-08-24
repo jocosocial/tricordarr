@@ -64,6 +64,17 @@ export interface FezFormValues {
   };
 }
 
+export interface SeamailFormValues {
+  fezType: FezType;
+  info: string;
+  initialUsers: UserHeader[];
+  maxCapacity: number;
+  minCapacity: number;
+  title: string;
+  createdByTwitarrTeam: boolean;
+  createdByModerator: boolean;
+}
+
 export interface ForumThreadValues {
   title: string;
   postAsModerator?: boolean;

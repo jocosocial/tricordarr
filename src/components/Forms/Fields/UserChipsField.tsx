@@ -12,11 +12,16 @@ interface UserChipsFieldProps {
   name: string;
   allowRemoveSelf?: boolean;
   label?: string;
-  initialUserHeader?: UserHeader;
   labelSubtext?: string;
   searchFavorersOnly?: boolean;
 }
-export const UserChipsField = ({name, label, labelSubtext, allowRemoveSelf = false, searchFavorersOnly = false}: UserChipsFieldProps) => {
+export const UserChipsField = ({
+  name,
+  label,
+  labelSubtext,
+  allowRemoveSelf = false,
+  searchFavorersOnly = false,
+}: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const [field, meta, helpers] = useField<UserHeader[]>(name);
