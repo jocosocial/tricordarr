@@ -16,16 +16,15 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries.ts';
 import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
-import {EventFlatList} from '../../Lists/Schedule/EventFlatList.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {buildScheduleList, getScheduleScrollIndex} from '../../../libraries/Schedule.ts';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime.ts';
 import {FlashList} from '@shopify/flash-list';
 import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
+import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 
 type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -167,9 +166,9 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         scrollToNow={scrollToNow}
       />
       <View style={[commonStyles.flex]}>
-        <EventFlatList
+        <ScheduleFlatList
           listRef={listRef}
-          scheduleItems={scheduleList}
+          items={scheduleList}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
           setRefreshing={setRefreshing}
           initialScrollIndex={scrollNowIndex}
