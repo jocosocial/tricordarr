@@ -1,7 +1,7 @@
 import React from 'react';
 import {Divider, Text} from 'react-native-paper';
 import {useAppTheme} from '../../../styles/Theme';
-import {ColorValue, StyleProp, View, ViewStyle} from 'react-native';
+import {ColorValue, StyleProp, View, ViewStyle, StyleSheet} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface LabelDividerProps {
@@ -10,9 +10,9 @@ interface LabelDividerProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const TimeDivider = ({label = 'ASD', style}: LabelDividerProps) => {
+export const TimeDivider = ({label = '', style}: LabelDividerProps) => {
   const theme = useAppTheme();
-  const styles = {
+  const styles = StyleSheet.create({
     wrapper: {
       ...commonStyles.flexRow,
       ...commonStyles.paddingVerticalSmall,
@@ -34,10 +34,10 @@ export const TimeDivider = ({label = 'ASD', style}: LabelDividerProps) => {
     textWrapper: {
       ...commonStyles.marginRightSmall,
     },
-  };
+  });
   return (
     <View style={[styles.wrapper, style]}>
-      <View style={styles.textWrapper}>
+      <View style={label ? styles.textWrapper : undefined}>
         <Text style={styles.text} variant={'bodyLarge'}>
           {label}
         </Text>

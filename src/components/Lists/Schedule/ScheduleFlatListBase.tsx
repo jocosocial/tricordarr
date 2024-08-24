@@ -6,6 +6,7 @@ import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {RefreshControlProps} from 'react-native';
+import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
@@ -50,7 +51,32 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={label} />;
   }, [items, separator]);
 
-  const renderListFooter = () => <TimeDivider label={'End of List'} />;
+  const renderListFooter = () => {
+    if (items.length === 0) {
+      return <></>;
+    }
+    return <TimeDivider />;
+  };
+
+  const renderSeparatorTime = ({leadingItem}: {leadingItem: TItem}) => {
+    const leadingIndex = items.indexOf(leadingItem);
+    if (leadingIndex === undefined) {
+      return <TimeDivider label={'Leading Unknown?'} />;
+    }
+    const trailingIndex = leadingIndex + 1;
+    const trailingItem = items[trailingIndex];
+    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
+      return <SpaceDivider />;
+    }
+    const leadingDate = new Date(leadingItem.startTime);
+    const trailingDate = new Date(trailingItem.startTime);
+    const leadingTimeMarker = getScheduleListTimeSeparatorID(leadingDate);
+    const trailingTimeMarker = getScheduleListTimeSeparatorID(trailingDate);
+    if (leadingTimeMarker === trailingTimeMarker) {
+      return <SpaceDivider />;
+    }
+    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+  };
 
   const renderSeparatorDay = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);
@@ -72,10 +98,21 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
   };
 
+  const renderSeparatorNone = () => <SpaceDivider />;
+
+  let ItemSeparatorComponent = renderSeparatorTime;
+  switch (separator) {
+    case 'day':
+      ItemSeparatorComponent = renderSeparatorDay;
+      break;
+    case 'none':
+      ItemSeparatorComponent = renderSeparatorNone;
+  }
+
   return (
     <FlashList
       refreshControl={refreshControl}
-      ItemSeparatorComponent={renderSeparatorDay}
+      ItemSeparatorComponent={ItemSeparatorComponent}
       data={items}
       renderItem={renderItem}
       ListHeaderComponent={listHeader || renderListHeader}
