@@ -19,6 +19,7 @@ import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
+import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -120,6 +121,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <LFGFlatList
         items={lfgList}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
