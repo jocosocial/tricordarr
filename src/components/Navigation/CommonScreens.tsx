@@ -49,6 +49,10 @@ import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.
 import {PersonalEventEditScreen} from '../Screens/PersonalEvent/PersonalEventEditScreen.tsx';
 import {PersonalEventCreateScreen} from '../Screens/PersonalEvent/PersonalEventCreateScreen.tsx';
 import {UserProfileHelpScreen} from '../Screens/User/UserProfileHelpScreen.tsx';
+import {BlockUsersScreen} from '../Screens/User/BlockUsersScreen.tsx';
+import {MuteUsersScreen} from '../Screens/User/MuteUsersScreen.tsx';
+import {FavoriteUsersScreen} from '../Screens/User/FavoriteUsersScreen.tsx';
+import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -164,6 +168,10 @@ export type CommonStackParamList = {
   };
   PersonalEventCreateScreen: undefined;
   UserProfileHelpScreen: undefined;
+  BlockUsersScreen: undefined;
+  MuteUsersScreen: undefined;
+  FavoriteUsersScreen: undefined;
+  UserDirectoryHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -202,6 +210,10 @@ export enum CommonStackComponents {
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
   userProfileHelpScreen = 'UserProfileHelpScreen',
+  blockUsers = 'BlockUsersScreen',
+  muteUsers = 'MuteUsersScreen',
+  favoriteUsers = 'FavoriteUsersScreen',
+  userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -387,6 +399,26 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.userProfileHelpScreen}
         component={UserProfileHelpScreen}
         options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.blockUsers}
+        component={BlockUsersScreen}
+        options={{title: 'Blocked Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.muteUsers}
+        component={MuteUsersScreen}
+        options={{title: 'Muted Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.favoriteUsers}
+        component={FavoriteUsersScreen}
+        options={{title: 'Favorite Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userDirectoryHelpScreen}
+        component={UserDirectoryHelpScreen}
+        options={{title: 'Directory Help'}}
       />
     </>
   );

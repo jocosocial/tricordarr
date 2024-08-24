@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ReactNode, useCallback, useState} from 'react';
+import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
@@ -10,7 +10,6 @@ import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries.tsx';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries.tsx';
 import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
-import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
@@ -26,7 +25,7 @@ export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfil
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
+  const {mutes, setMutes, blocks, setBlocks} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
 

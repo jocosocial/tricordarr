@@ -15,9 +15,6 @@ import {ChangeUsernameScreen} from '../../Screens/Settings/Account/ChangeUsernam
 import {ChangePasswordScreen} from '../../Screens/Settings/Account/ChangePasswordScreen';
 import {AccountManagementScreen} from '../../Screens/Settings/Account/AccountManagementScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
-import {BlockUsersScreen} from '../../Screens/User/BlockUsersScreen';
-import {MuteUsersScreen} from '../../Screens/User/MuteUsersScreen';
-import {FavoriteUsersScreen} from '../../Screens/User/FavoriteUsersScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {FeatureSettingsScreen} from '../../Screens/Settings/Developer/FeatureSettingsScreen';
@@ -43,9 +40,6 @@ export type SettingsStackParamList = CommonStackParamList & {
   ChangeUsernameScreen: undefined;
   AccountManagementScreen: undefined;
   LoginScreen: undefined;
-  BlockUsersScreen: undefined;
-  MuteUsersScreen: undefined;
-  FavoriteUsersScreen: undefined;
   EventSettingsScreen: undefined;
   LfgSettingsScreen: undefined;
   FeatureSettingsScreen: undefined;
@@ -130,21 +124,6 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.accountManagement}
         component={AccountManagementScreen}
         options={{title: 'Account Management'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.blockUsers}
-        component={BlockUsersScreen}
-        options={{title: 'Blocked Users'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.muteUsers}
-        component={MuteUsersScreen}
-        options={{title: 'Muted Users'}}
-      />
-      <Stack.Screen
-        name={SettingsStackScreenComponents.favoriteUsers}
-        component={FavoriteUsersScreen}
-        options={{title: 'Favorite Users'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.eventSettings}
