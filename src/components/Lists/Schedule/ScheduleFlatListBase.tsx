@@ -50,7 +50,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={label} />;
   }, [items, separator]);
 
-  const renderListFooter = () => <TimeDivider label={'End'} />;
+  const renderListFooter = () => <TimeDivider label={'End of list'} />;
 
   const renderSeparatorDay = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);
