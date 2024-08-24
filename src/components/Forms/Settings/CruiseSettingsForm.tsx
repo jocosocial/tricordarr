@@ -25,7 +25,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
   const {commonStyles} = useStyles();
   return (
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, isSubmitting, isValid}) => (
+      {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
           <View style={[commonStyles.paddingVertical]}>
@@ -34,7 +34,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
           <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} keyboardType={'number-pad'} />
           <TextField name={'portTimeZoneID'} label={'Port Time Zone ID'} />
           <PrimaryActionButton
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}
             viewStyle={commonStyles.marginTopSmall}
             onPress={handleSubmit}
