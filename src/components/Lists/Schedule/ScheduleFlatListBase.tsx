@@ -7,20 +7,20 @@ import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {RefreshControlProps} from 'react-native';
 
-interface ScheduleFlatListBaseProps {
-  items: (EventData | FezData | PersonalEventData)[];
+interface ScheduleFlatListBaseProps<TItem> {
+  items: TItem[];
   separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   initialScrollIndex?: number;
   estimatedItemSize?: number;
-  listRef?: React.RefObject<FlashList<EventData | FezData | PersonalEventData>> | null;
-  renderItem: ({item}: {item: EventData | FezData | PersonalEventData}) => ReactElement;
-  keyExtractor: (item: EventData | FezData | PersonalEventData) => string;
+  listRef?: React.RefObject<FlashList<TItem>> | null;
+  renderItem: ({item}: {item: TItem}) => ReactElement;
+  keyExtractor: (item: TItem) => string;
 }
 
-export const ScheduleFlatListBase = ({
+export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
   items,
   separator,
   refreshControl,
@@ -31,7 +31,7 @@ export const ScheduleFlatListBase = ({
   listRef = null,
   renderItem,
   keyExtractor,
-}: ScheduleFlatListBaseProps) => {
+}: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 
   const renderListHeader = useCallback(() => {
@@ -52,7 +52,7 @@ export const ScheduleFlatListBase = ({
 
   const renderListFooter = () => <TimeDivider label={'End'} />;
 
-  const renderSeparatorDay = ({leadingItem}: {leadingItem: FezData}) => {
+  const renderSeparatorDay = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);
     if (leadingIndex === undefined) {
       return <TimeDivider label={'Leading Unknown?'} />;
