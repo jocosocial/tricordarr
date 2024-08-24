@@ -1,19 +1,19 @@
 import * as React from 'react';
 import {ReactNode, useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {ReportModalView} from '../Views/Modals/ReportModalView';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {MuteUserModalView} from '../Views/Modals/MuteUserModalView';
-import {useUserMuteMutation} from '../Queries/Users/UserMuteQueries';
-import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
-import {useUserBlockMutation} from '../Queries/Users/UserBlockQueries';
-import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
-import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries.tsx';
+import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries.tsx';
+import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
+import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries.tsx';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -57,6 +57,10 @@ export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfil
     commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {
       user: profile,
     });
+  };
+  const handleHelp = () => {
+    closeMenu();
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
   };
 
   return (
@@ -118,6 +122,8 @@ export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfil
           )}
         </>
       )}
+      <Divider bold={true} />
+      <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </Menu>
   );
 };
