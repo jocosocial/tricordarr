@@ -166,7 +166,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         setCruiseDay={setSelectedCruiseDay}
         scrollToNow={scrollToNow}
       />
-      <View style={[commonStyles.flex, commonStyles.paddingHorizontal]}>
+      <View style={[commonStyles.flex]}>
         <EventFlatList
           listRef={listRef}
           scheduleItems={scheduleList}

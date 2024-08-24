@@ -23,9 +23,10 @@ export const TimeDivider = ({label = 'ASD', style}: LabelDividerProps) => {
       ...commonStyles.justifyCenter,
     },
     divider: {
-      ...commonStyles.fullWidth,
+      // This used to be commonStyles.fullWidth. I don't know why I did that and not flex: 1
+      // which was commented out. Flex works with the EventFlatList.
+      flex: 1,
       backgroundColor: theme.colors.onBackground,
-      // flex: 1,
     },
     text: {
       ...commonStyles.bold,
