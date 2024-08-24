@@ -1,4 +1,4 @@
-import {RefreshControlProps, View} from 'react-native';
+import {RefreshControlProps} from 'react-native';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
