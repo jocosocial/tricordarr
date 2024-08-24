@@ -25,6 +25,7 @@ import {buildScheduleList, getScheduleScrollIndex} from '../../../libraries/Sche
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime.ts';
 import {FlashList} from '@shopify/flash-list';
+import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
 
 type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -114,12 +115,13 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <HeaderScheduleYourDayButton />
           <ScheduleEventFilterMenu />
           <EventDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh, scrollToNow]);
+  }, [isLoggedIn, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({
