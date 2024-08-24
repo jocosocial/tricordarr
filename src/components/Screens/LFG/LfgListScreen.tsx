@@ -24,6 +24,7 @@ import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -126,26 +127,31 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
 
   return (
     <AppView>
-      <ScrollingContentView
-        isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView padTop={true}>
-          {isFetched && lfgList.length === 0 && (
-            <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
-              <Text>No Results</Text>
-            </View>
-          )}
-          {lfgList.map((lfg, i) => (
-            <View key={i} style={[commonStyles.marginBottom]}>
-              <LfgCard
-                showDay={true}
-                lfg={lfg}
-                onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: lfg.fezID})}
-              />
-            </View>
-          ))}
-        </PaddedContentView>
-      </ScrollingContentView>
+      <LFGFlatList
+        items={lfgList}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        separator={'day'}
+      />
+      {/*<ScrollingContentView*/}
+      {/*  isStack={true}*/}
+      {/*  refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>*/}
+      {/*  <PaddedContentView padTop={true}>*/}
+      {/*    {isFetched && lfgList.length === 0 && (*/}
+      {/*      <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>*/}
+      {/*        <Text>No Results</Text>*/}
+      {/*      </View>*/}
+      {/*    )}*/}
+      {/*    {lfgList.map((lfg, i) => (*/}
+      {/*      <View key={i} style={[commonStyles.marginBottom]}>*/}
+      {/*        <LfgCard*/}
+      {/*          showDay={true}*/}
+      {/*          lfg={lfg}*/}
+      {/*          onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: lfg.fezID})}*/}
+      {/*        />*/}
+      {/*      </View>*/}
+      {/*    ))}*/}
+      {/*  </PaddedContentView>*/}
+      {/*</ScrollingContentView>*/}
       <LfgFAB />
     </AppView>
   );
