@@ -1,9 +1,9 @@
 import React, {Dispatch, SetStateAction, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {ScheduleHeaderDayView} from './ScheduleHeaderDayView.tsx';
+import {ScheduleHeaderDayButton} from '../../Buttons/ScheduleHeaderDayButton.tsx';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
-import {FlashList, ListRenderItem} from '@shopify/flash-list';
+import {FlashList} from '@shopify/flash-list';
 import {CruiseDayData} from '../../../libraries/Types';
 
 interface ScheduleHeaderViewProps {
@@ -24,7 +24,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       ...commonStyles.paddingHorizontalSmall,
     },
     buttonContainer: {
-      ...commonStyles.paddingHorizontalSmall,
+      ...commonStyles.paddingHorizontalTiny,
     },
   });
 
@@ -43,7 +43,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
     };
     return (
       <TouchableOpacity key={item.cruiseDay} style={styles.buttonContainer} onPress={onPress}>
-        <ScheduleHeaderDayView cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
+        <ScheduleHeaderDayButton cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
       </TouchableOpacity>
     );
   };

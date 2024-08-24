@@ -1,18 +1,17 @@
-import {CruiseDayData} from '../../../libraries/Types';
+import {CruiseDayData} from '../../libraries/Types';
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {format} from 'date-fns';
 import {Text} from 'react-native-paper';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../styles/Theme.ts';
 
 interface ScheduleHeaderDayViewProps {
   cruiseDay: CruiseDayData;
   isToday?: boolean;
-
 }
 
-export const ScheduleHeaderDayView = (props: ScheduleHeaderDayViewProps) => {
+export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const styles = StyleSheet.create({
@@ -38,7 +37,7 @@ export const ScheduleHeaderDayView = (props: ScheduleHeaderDayViewProps) => {
       <Text style={styles.dayText} variant={'titleLarge'}>
         {format(props.cruiseDay.date, 'EEE')}
       </Text>
-      <Text style={styles.dateText} variant={'bodyLarge'}>
+      <Text style={styles.dateText} variant={'bodyMedium'}>
         {format(props.cruiseDay.date, 'MMM dd')}
       </Text>
     </View>
