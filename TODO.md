@@ -1,7 +1,5 @@
 Tricordarr
 ----------
-* Schedule
-  * Figure out how to bring back the scroll indicator on the schedule list.
 * User Profile
   * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
 * Help

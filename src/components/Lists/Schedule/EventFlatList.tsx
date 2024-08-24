@@ -1,4 +1,4 @@
-import {RefreshControlProps} from 'react-native';
+import {RefreshControlProps, View} from 'react-native';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
@@ -40,6 +40,7 @@ export const EventFlatList = ({
   const minutelyUpdatingDate = useDateTime('minute');
   // const minutelyUpdatingDate = useRefreshingDate();
   const {appConfig} = useConfig();
+  const {commonStyles} = useStyles();
 
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderListItem = useCallback(
@@ -79,7 +80,7 @@ export const EventFlatList = ({
         </>
       );
     },
-    [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, commonNavigation, setRefreshing, startDate],
+    [appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate, setRefreshing, commonNavigation],
   );
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: EventData | FezData}) => {
@@ -172,8 +173,10 @@ export const EventFlatList = ({
       ref={listRef}
       keyExtractor={keyExtractor}
       estimatedItemSize={120}
-      showsVerticalScrollIndicator={false}
       initialScrollIndex={initialScrollIndex}
+      contentContainerStyle={{
+        ...commonStyles.paddingHorizontal,
+      }}
     />
   );
 };
