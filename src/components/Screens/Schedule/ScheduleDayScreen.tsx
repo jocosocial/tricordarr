@@ -150,14 +150,14 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     return <NotLoggedInView />;
   }
 
-  if (
+  // Returning the <LoadingView /> would lose the position tracking of the <ScheduleHeaderView />
+  // list, so we rely on the <RefreshControl /> spinner instead.
+  const isRefreshing =
     (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) ||
     (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenLoading) ||
     isEventLoading ||
-    isPersonalEventLoading
-  ) {
-    return <LoadingView />;
-  }
+    isPersonalEventLoading ||
+    refreshing;
 
   return (
     <AppView>
@@ -170,7 +170,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         <EventFlatList
           listRef={listRef}
           scheduleItems={scheduleList}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
           setRefreshing={setRefreshing}
           initialScrollIndex={scrollNowIndex}
         />
