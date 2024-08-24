@@ -25,6 +25,7 @@ import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime.ts';
 import {FlashList} from '@shopify/flash-list';
 import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
+import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 
 type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -160,6 +161,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}
         setCruiseDay={setSelectedCruiseDay}

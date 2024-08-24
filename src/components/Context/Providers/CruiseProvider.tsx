@@ -3,6 +3,7 @@ import {CruiseContext} from '../Contexts/CruiseContext';
 import {useConfig} from '../Contexts/ConfigContext';
 import useDateTime, {getCruiseDay, getCruiseDays} from '../../../libraries/DateTime';
 import {differenceInCalendarDays, differenceInDays} from 'date-fns';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
@@ -34,6 +35,13 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   // Array of cruise day names and configs.
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
 
+  // Figure out of the device is in the wrong time zone.
+  const {data: userNotificationData} = useUserNotificationDataQuery();
+  // .getTimezoneOffset() reports in minutes and from the opposite perspective
+  // as the server. Server says "you're -4" whereas device says "they're +4".
+  const deviceTimeOffset = new Date().getTimezoneOffset() * -60;
+  const showTimeZoneWarning = !!userNotificationData && deviceTimeOffset !== userNotificationData.serverTimeOffset;
+
   return (
     <CruiseContext.Provider
       value={{
@@ -47,6 +55,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
         cruiseDayToday,
         adjustedCruiseDayIndex,
         adjustedCruiseDayToday,
+        showTimeZoneWarning,
       }}>
       {children}
     </CruiseContext.Provider>

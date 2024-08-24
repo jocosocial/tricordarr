@@ -12,6 +12,7 @@ export interface CruiseContextType {
   cruiseDayToday: number;
   adjustedCruiseDayToday: number;
   adjustedCruiseDayIndex: number;
+  showTimeZoneWarning: boolean;
 }
 
 export const CruiseContext = createContext({} as CruiseContextType);
