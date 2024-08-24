@@ -3,8 +3,6 @@ Tricordarr
 * Schedule
   * Pressing a schedule day button that needs loading unrenders the buttons and loses place. Use the refresh control instead
   * Figure out how to bring back the scroll indicator on the schedule list.
-  * Add personal event setting to event settings
-  * Replace references to events with schedule. Specifically in help text for settings
 * User Profile
   * Favorite user to the head buttons out of the menu. Consider putting seamail in there?
 * Help
