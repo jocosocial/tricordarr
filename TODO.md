@@ -2,7 +2,6 @@ Tricordarr
 ----------
 * Schedule
   * Your day as a button filter
-  * Should create PE take you back instead? Schedule or to personal view
   * Pressing a schedule day button that needs loading unrenders the buttons and loses place. Use the refresh control instead
   * Kill the personal and favorite dedicated screens. There's no point if they are filters
   * Figure out how to bring back the scroll indicator on the schedule list.

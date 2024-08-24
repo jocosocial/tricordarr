@@ -28,22 +28,16 @@ export const ScheduleEventFilterMenu = () => {
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {
     setEventFavoriteFilter(!eventFavoriteFilter);
-    setEventLfgFilter(false);
-    setEventPersonalFilter(false);
     closeMenu();
   };
 
   const handlePersonalSelection = () => {
     setEventPersonalFilter(!eventPersonalFilter);
-    setEventLfgFilter(false);
-    setEventFavoriteFilter(false);
     closeMenu();
   };
 
   const handleLfgSelection = () => {
     setEventLfgFilter(!eventLfgFilter);
-    setEventFavoriteFilter(false);
-    setEventPersonalFilter(false);
     closeMenu();
   };
 
