@@ -1,5 +1,5 @@
 import {FlashList} from '@shopify/flash-list';
-import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
@@ -10,7 +10,7 @@ import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef?: React.RefObject<FlashList<EventData | FezData | PersonalEventData>> | null;
+  listRef?: React.RefObject<FlashList<FezData>> | null;
   separator?: 'day' | 'time' | 'none';
   listHeader?: ReactElement;
   listFooter?: ReactElement;
