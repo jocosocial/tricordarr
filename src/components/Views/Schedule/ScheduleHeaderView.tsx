@@ -55,7 +55,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         renderItem={renderItem}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        estimatedItemSize={90}
+        estimatedItemSize={75}
         data={cruiseDays}
         initialScrollIndex={props.selectedCruiseDay - 1} // selectedCruiseDay is event-style 1-indexed.
         extraData={[props.selectedCruiseDay, props.scrollToNow]}
