@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
@@ -11,13 +11,20 @@ import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
 import {getCalFeedFromUrl, getEventUid} from '../../../libraries/Schedule.ts';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries.tsx';
+import pluralize from 'pluralize';
 
 export const ScheduleImportScreen = () => {
   const {appConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
+  const [log, setLog] = useState<string[]>([]);
+
+  const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
+    setLog([]);
+    let successCount = 0,
+      skipCount = 0;
     await refetch();
     if (!twitarrEvents) {
       console.error('Unable to get events from Twitarr?');
@@ -25,31 +32,36 @@ export const ScheduleImportScreen = () => {
       return;
     }
     const schedUrl = `${appConfig.schedBaseUrl}/${values.username}.ics`;
-    // const response = await fetch(fullSchedUrl, {
-    //   method: 'GET',
-    //   headers: {
-    //     'User-Agent':
-    //       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    //   },
-    // });
-    // const icsData = await response.text();
     const schedEvents = await getCalFeedFromUrl(schedUrl);
 
     for (const schedEvent of schedEvents) {
       const schedEventUid = getEventUid(schedEvent.uid);
-      console.log(`Processing event ${schedEventUid} (${schedEvent.summary}).`);
       const twitarrEvent = twitarrEvents.find(e => e.uid === schedEventUid);
       if (!twitarrEvent) {
-        console.warn(`No match for event ${schedEventUid} (${schedEvent.summary}).`);
+        writeLog(`No match for event "${schedEvent.summary}" with UID ${schedEventUid}. Please favorite it manually.`);
         continue;
       }
-      const twitarrEventID = twitarrEvent.eventID;
-      eventFavoriteMutation.mutate({
-        eventID: twitarrEventID,
-        action: 'favorite',
-      });
+      if (twitarrEvent.isFavorite) {
+        skipCount += 1;
+        continue;
+      }
+      eventFavoriteMutation.mutate(
+        {
+          eventID: twitarrEvent.eventID,
+          action: 'favorite',
+        },
+        {
+          onSuccess: () => (successCount += 1),
+        },
+      );
     }
-
+    writeLog('');
+    if (successCount === 0) {
+      writeLog('Found no events to import. Check username and prerequisites above.')
+    } else {
+      writeLog(`Successfully imported ${successCount} ${pluralize('event', successCount)}.`);
+      writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)}.`);
+    }
     helpers.setSubmitting(false);
   };
 
@@ -79,6 +91,13 @@ export const ScheduleImportScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <SchedImportForm initialValues={{username: ''}} onSubmit={onSubmit} />
+        </PaddedContentView>
+        <PaddedContentView>
+          {log.map(line => (
+            <Text selectable={true} variant={'bodySmall'}>
+              {line}
+            </Text>
+          ))}
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
