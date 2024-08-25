@@ -85,6 +85,7 @@ export interface CruiseSettingsFormValues {
   startDate: Date;
   cruiseLength: string;
   portTimeZoneID: string;
+  schedBaseUrl: string;
 }
 
 export interface QuerySettingsFormValues {

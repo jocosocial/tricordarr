@@ -24,7 +24,11 @@ const validationSchema = Yup.object().shape({
 export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
   const {commonStyles} = useStyles();
   return (
-    <Formik initialValues={props.initialValues} onSubmit={props.onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={props.initialValues}
+      onSubmit={props.onSubmit}
+      validationSchema={validationSchema}
+      enableReinitialize={true}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
@@ -33,6 +37,7 @@ export const CruiseSettingsForm = (props: CruiseSettingsFormProps) => {
           </View>
           <TextField name={'cruiseLength'} label={'Cruise Length (in days)'} keyboardType={'number-pad'} />
           <TextField name={'portTimeZoneID'} label={'Port Time Zone ID'} />
+          <TextField name={'schedBaseUrl'} label={'Sched Base Url'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

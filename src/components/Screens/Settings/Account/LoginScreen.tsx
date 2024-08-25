@@ -12,12 +12,14 @@ import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
+import {useClientConfigMutation} from '../../../Queries/Client/ClientMutations.ts';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginQuery();
   const {signIn} = useAuth();
   const {appConfig} = useConfig();
+  const clientConfigMutation = useClientConfigMutation();
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
@@ -25,13 +27,14 @@ export const LoginScreen = () => {
         onSuccess: response => {
           signIn(response.data).then(() => {
             startForegroundServiceWorker();
+            clientConfigMutation.mutate();
             navigation.goBack();
           });
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, navigation, signIn],
+    [clientConfigMutation, loginMutation, navigation, signIn],
   );
 
   return (
