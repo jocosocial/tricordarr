@@ -49,7 +49,7 @@ export const QuerySettingsScreen = () => {
     retry: appConfig.apiClientConfig.retry,
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
-    imageStaleTimeHours: appConfig.apiClientConfig.imageStaleTime / 60 / 60 / 1000,
+    imageStaleTimeDays: appConfig.apiClientConfig.imageStaleTime / 24 / 60 / 60 / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
@@ -65,7 +65,7 @@ export const QuerySettingsScreen = () => {
         retry: values.retry,
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
-        imageStaleTime: values.imageStaleTimeHours * 60 * 60 * 1000,
+        imageStaleTime: values.imageStaleTimeDays * 24 * 60 * 60 * 1000,
       },
     });
     helpers.setSubmitting(false);
@@ -115,27 +115,6 @@ export const QuerySettingsScreen = () => {
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>
-        <Divider bold={true} />
-
-        {/*</PaddedContentView>*/}
-        {/*<Divider bold={true} />*/}
-        {/*<PaddedContentView padTop={true}>*/}
-
-        {/*</PaddedContentView>*/}
-        {/*<PaddedContentView padTop={true}>*/}
-        {/*  <PrimaryActionButton*/}
-        {/*    buttonText={'Online'}*/}
-        {/*    onPress={() => handleOnline(true)}*/}
-        {/*    buttonColor={theme.colors.twitarrPositiveButton}*/}
-        {/*  />*/}
-        {/*</PaddedContentView>*/}
-        {/*<PaddedContentView>*/}
-        {/*  <PrimaryActionButton*/}
-        {/*    buttonText={'Offline'}*/}
-        {/*    onPress={() => handleOnline(false)}*/}
-        {/*    buttonColor={theme.colors.twitarrNegativeButton}*/}
-        {/*  />*/}
-        {/*</PaddedContentView>*/}
       </ScrollingContentView>
     </AppView>
   );
