@@ -12,12 +12,15 @@ import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
 import {getCalFeedFromUrl, getEventUid} from '../../../libraries/Schedule.ts';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries.tsx';
 import pluralize from 'pluralize';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {VEvent} from 'node-ical';
 
 export const ScheduleImportScreen = () => {
   const {appConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
   const [log, setLog] = useState<string[]>([]);
+  const {setErrorMessage} = useErrorHandler();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
 
@@ -31,8 +34,15 @@ export const ScheduleImportScreen = () => {
       helpers.setSubmitting(false);
       return;
     }
-    const schedUrl = `${appConfig.schedBaseUrl}/${values.username}.ics`;
-    const schedEvents = await getCalFeedFromUrl(schedUrl);
+    let schedEvents: VEvent[] = [];
+    try {
+      const schedUrl = `${appConfig.schedBaseUrl}/${values.username}.ics`;
+      schedEvents = await getCalFeedFromUrl(schedUrl);
+    } catch (error) {
+      setErrorMessage(String(error));
+      helpers.setSubmitting(false);
+      return;
+    }
 
     for (const schedEvent of schedEvents) {
       const schedEventUid = getEventUid(schedEvent.uid);
@@ -56,8 +66,8 @@ export const ScheduleImportScreen = () => {
       );
     }
     writeLog('');
-    if (successCount === 0) {
-      writeLog('Found no events to import. Check username and prerequisites above.')
+    if (successCount === 0 && skipCount === 0) {
+      writeLog('Found no events to import. Check username and prerequisites above.');
     } else {
       writeLog(`Successfully imported ${successCount} ${pluralize('event', successCount)}.`);
       writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)}.`);
