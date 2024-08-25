@@ -13,12 +13,14 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
+import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.tsx';
 
 export type EventStackParamList = CommonStackParamList & {
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
   EventHelpScreen: undefined;
   ScheduleDayScreen: undefined;
+  ScheduleImportScreen: undefined;
 };
 
 export const EventStackNavigator = () => {
@@ -54,6 +56,11 @@ export const EventStackNavigator = () => {
           headerLeft: getLeftMainHeaderButtons,
           title: 'Schedule',
         }}
+      />
+      <Stack.Screen
+        name={EventStackComponents.scheduleImportScreen}
+        component={ScheduleImportScreen}
+        options={{title: 'Schedule Import'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

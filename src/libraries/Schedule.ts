@@ -4,6 +4,7 @@ import {EventData, FezData, FezListData, PersonalEventData} from './Structs/Cont
 import {EventType} from './Enums/EventType.ts';
 import {calcCruiseDayTime, getTimeZoneOffset} from './DateTime.ts';
 import {parseISO} from 'date-fns';
+import ical, {VEvent} from 'node-ical';
 
 /**
  * Assemble an array containing all items to display in a schedule list.
@@ -163,3 +164,21 @@ export const getScheduleItemMarker = (
 };
 
 export const getScheduleListTimeSeparatorID = (date: Date) => `${date.getHours()}:${date.getMinutes()}`;
+
+export const getCalFeedFromUrl = async (feedUrl: string) => {
+  const icalResponse = await ical.async.fromURL(feedUrl);
+  const events: VEvent[] = [];
+  for (const event of Object.values(icalResponse)) {
+    if (event.type === 'VEVENT') {
+      events.push(event);
+    }
+  }
+  return events;
+};
+
+export const getEventUid = (eventUid: string) => {
+  if (eventUid.includes('@')) {
+    return eventUid.split('@')[0];
+  }
+  return eventUid;
+};

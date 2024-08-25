@@ -22,9 +22,12 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void})
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      {onRefresh && (
-        <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
-      )}
+      {onRefresh && <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />}
+      <Menu.Item
+        title={'Import'}
+        leadingIcon={AppIcons.schedImport}
+        onPress={() => handleNavigation(EventStackComponents.scheduleImportScreen)}
+      />
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}
