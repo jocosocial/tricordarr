@@ -56,6 +56,7 @@ export interface AppConfig {
   accessibility: AccessibilityConfig;
   muteNotifications?: Date;
   skipThumbnails: boolean;
+  schedBaseUrl: string;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -114,6 +115,7 @@ const defaultAppConfig: AppConfig = {
     darkMode: false,
   },
   skipThumbnails: true,
+  schedBaseUrl: 'https://jococruise1970.sched.com',
 };
 
 /**

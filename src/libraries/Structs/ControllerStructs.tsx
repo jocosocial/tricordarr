@@ -816,3 +816,21 @@ export interface PersonalEventContentData {
   /// Users to invite to this PersonalEvent.
   participants: string[];
 }
+
+interface SwiftarrClientConfigV1 {
+  latestVersion: string;
+  oobeVersion: number;
+  cruiseStartDate: string;
+  cruiseLength: number;
+  portTimeZoneID: string;
+  schedBaseUrl: string;
+}
+
+export interface SwiftarrClientConfig {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+  };
+  spec: SwiftarrClientConfigV1;
+}
