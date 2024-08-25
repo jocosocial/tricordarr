@@ -6,7 +6,9 @@ import {EventType} from '../../../libraries/Enums/EventType';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface EventCardProps {
   eventData: EventData;
@@ -28,10 +30,40 @@ export const EventCard = ({
   hideFavorite = false,
 }: EventCardProps) => {
   const theme = useAppTheme();
+  const eventFavoriteMutation = useEventFavoriteMutation();
+  const queryClient = useQueryClient();
+
+  const onFavoritePress = () => {
+    eventFavoriteMutation.mutate({
+      eventID: eventData.eventID,
+      action: eventData.isFavorite ? 'unfavorite' : 'favorite',
+    }, {
+      onSuccess: async () => {
+        // If this is too slow to reload, a setQueryData here may be in order.
+        await Promise.all([
+          queryClient.invalidateQueries(['/events']),
+          queryClient.invalidateQueries([`/events/${eventData.eventID}`]),
+          queryClient.invalidateQueries(['/events/favorites']),
+          // Update the user notification data in case this was/is a favorite.
+          queryClient.invalidateQueries(['/notification/global']),
+        ]);
+      },
+    });
+  }
 
   const getFavorite = useCallback(() => {
     if (eventData.isFavorite && !hideFavorite) {
-      return <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />;
+      return (
+        <TouchableOpacity onPress={onFavoritePress}>
+          <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
+        </TouchableOpacity>
+      );
+    } else if (!hideFavorite) {
+      return (
+        <TouchableOpacity onPress={onFavoritePress}>
+          <AppIcon icon={AppIcons.toggleFavorite} />
+        </TouchableOpacity>
+      );
     }
   }, [eventData, hideFavorite, theme.colors.twitarrYellow]);
 
