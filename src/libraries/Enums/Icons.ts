@@ -27,6 +27,7 @@ export enum AppIcons {
   drawer = 'menu',
   favorite = 'star',
   unfavorite = 'star-off',
+  toggleFavorite = 'star-outline',
   block = 'cancel',
   unblock = 'check-circle',
   mute = 'volume-off',
