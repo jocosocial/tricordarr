@@ -1,5 +1,5 @@
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {HealthResponse} from '../../../libraries/Structs/ControllerStructs';
+import {HealthResponse, SwiftarrClientConfig} from '../../../libraries/Structs/ControllerStructs';
 import {AxiosError} from 'axios';
 
 export const useHealthQuery = (options = {}) => {
@@ -21,6 +21,13 @@ export const useHealthQuery = (options = {}) => {
         client.setQueryData(['/client/health'], () => response.response?.data);
       }
     },
+    ...options,
+  });
+};
+
+export const useClientConfigQuery = (options = {}) => {
+  return useQuery<SwiftarrClientConfig>({
+    queryKey: ['/../../public/clients/tricordarr.json'],
     ...options,
   });
 };

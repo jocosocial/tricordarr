@@ -7,13 +7,13 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {CruiseSettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
-import {useClientConfigMutation} from '../../../Queries/Client/ClientMutations.ts';
 import {useAppTheme} from '../../../../styles/Theme.ts';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
+import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.tsx';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const clientConfigMutation = useClientConfigMutation();
+  const {data, refetch} = useClientConfigQuery({enabled: false});
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -48,18 +48,26 @@ export const CruiseSettingsScreen = () => {
     });
   };
 
-  const reloadClientConfig = () => {
+  const reloadClientConfig = async () => {
     setRefreshing(true);
-    clientConfigMutation.mutate(undefined, {
-      onSettled: () => {
-        setRefreshing(false);
-      },
-    });
+    await refetch();
+    if (data) {
+      const [year, month, day] = data.spec.cruiseStartDate.split('-').map(Number);
+      updateAppConfig({
+        ...appConfig,
+        cruiseLength: data.spec.cruiseLength,
+        cruiseStartDate: new Date(year, month - 1, day),
+        oobeExpectedVersion: data.spec.oobeVersion,
+        portTimeZoneID: data.spec.portTimeZoneID,
+        schedBaseUrl: data.spec.schedBaseUrl,
+      });
+    }
+    setRefreshing(false);
   };
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
+      <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
         <PaddedContentView>
           <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
