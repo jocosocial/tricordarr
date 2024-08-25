@@ -166,7 +166,9 @@ export type CommonStackParamList = {
   PersonalEventEditScreen: {
     personalEvent: PersonalEventData;
   };
-  PersonalEventCreateScreen: undefined;
+  PersonalEventCreateScreen: {
+    cruiseDay?: number;
+  };
   UserProfileHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
