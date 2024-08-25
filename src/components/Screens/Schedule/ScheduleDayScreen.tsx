@@ -176,7 +176,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
           initialScrollIndex={scrollNowIndex}
         />
       </View>
-      <ScheduleFAB />
+      <ScheduleFAB selectedDay={selectedCruiseDay} />
     </AppView>
   );
 };
