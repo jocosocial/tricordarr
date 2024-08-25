@@ -125,3 +125,7 @@ export interface PersonalEventFormValues {
     minutes: number;
   };
 }
+
+export interface SchedImportFormValues {
+  username: string;
+}

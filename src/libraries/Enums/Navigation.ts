@@ -1,3 +1,5 @@
+import {ScheduleImportScreen} from '../../components/Screens/Schedule/ScheduleImportScreen.tsx';
+
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
@@ -85,6 +87,7 @@ export enum EventStackComponents {
   eventSettingsScreen = 'EventSettingsScreen',
   eventHelpScreen = 'EventHelpScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleImportScreen = 'ScheduleImportScreen',
 }
 
 export enum LfgStackComponents {
