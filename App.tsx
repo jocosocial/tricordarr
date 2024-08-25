@@ -48,6 +48,7 @@ import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/Vi
 import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/SwiftarrQueryClientProvider';
 import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
 import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -89,51 +90,53 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback
    */
   return (
-    <ConfigProvider>
-      <AppNavigationThemeProvider>
-        <StyleProvider>
-          <ErrorHandlerProvider>
-            <SwiftarrQueryClientProvider>
-              <LoadingProvider>
-                <AuthProvider>
-                  <UserDataProvider>
-                    <PrivilegeProvider>
-                      <SocketProvider>
-                        <TwitarrProvider>
-                          <UserRelationsProvider>
-                            <UserNotificationDataProvider>
-                              <FeatureProvider>
-                                <ModalProvider>
-                                  <Portal.Host>
-                                    <HeaderButtonsProvider stackType={'native'}>
-                                      <CruiseProvider>
-                                        <DrawerProvider>
-                                          <FilterProvider>
-                                            <AppEventHandler />
-                                            <ForegroundService />
-                                            <NotificationDataListener />
-                                            <NotificationDataPoller />
-                                            <RootStackNavigator />
-                                          </FilterProvider>
-                                        </DrawerProvider>
-                                      </CruiseProvider>
-                                    </HeaderButtonsProvider>
-                                  </Portal.Host>
-                                </ModalProvider>
-                              </FeatureProvider>
-                            </UserNotificationDataProvider>
-                          </UserRelationsProvider>
-                        </TwitarrProvider>
-                      </SocketProvider>
-                    </PrivilegeProvider>
-                  </UserDataProvider>
-                </AuthProvider>
-              </LoadingProvider>
-            </SwiftarrQueryClientProvider>
-          </ErrorHandlerProvider>
-        </StyleProvider>
-      </AppNavigationThemeProvider>
-    </ConfigProvider>
+    <GestureHandlerRootView>
+      <ConfigProvider>
+        <AppNavigationThemeProvider>
+          <StyleProvider>
+            <ErrorHandlerProvider>
+              <SwiftarrQueryClientProvider>
+                <LoadingProvider>
+                  <AuthProvider>
+                    <UserDataProvider>
+                      <PrivilegeProvider>
+                        <SocketProvider>
+                          <TwitarrProvider>
+                            <UserRelationsProvider>
+                              <UserNotificationDataProvider>
+                                <FeatureProvider>
+                                  <ModalProvider>
+                                    <Portal.Host>
+                                      <HeaderButtonsProvider stackType={'native'}>
+                                        <CruiseProvider>
+                                          <DrawerProvider>
+                                            <FilterProvider>
+                                              <AppEventHandler />
+                                              <ForegroundService />
+                                              <NotificationDataListener />
+                                              <NotificationDataPoller />
+                                              <RootStackNavigator />
+                                            </FilterProvider>
+                                          </DrawerProvider>
+                                        </CruiseProvider>
+                                      </HeaderButtonsProvider>
+                                    </Portal.Host>
+                                  </ModalProvider>
+                                </FeatureProvider>
+                              </UserNotificationDataProvider>
+                            </UserRelationsProvider>
+                          </TwitarrProvider>
+                        </SocketProvider>
+                      </PrivilegeProvider>
+                    </UserDataProvider>
+                  </AuthProvider>
+                </LoadingProvider>
+              </SwiftarrQueryClientProvider>
+            </ErrorHandlerProvider>
+          </StyleProvider>
+        </AppNavigationThemeProvider>
+      </ConfigProvider>
+    </GestureHandlerRootView>
   );
 }
 
