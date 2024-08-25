@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleProp, TextStyle, ViewStyle, StyleSheet} from 'react-native';
-import {Text} from 'react-native-paper';
+import {ActivityIndicator, Text} from 'react-native-paper';
 import {AppIcon} from '../Icons/AppIcon.tsx';
 import {RectButton} from 'react-native-gesture-handler';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
@@ -11,6 +11,7 @@ interface SwipeableButtonProps {
   text?: string;
   textStyle?: StyleProp<TextStyle>;
   style?: StyleProp<ViewStyle>;
+  refreshing?: boolean;
 }
 
 export const SwipeableButton = (props: SwipeableButtonProps) => {
@@ -29,7 +30,7 @@ export const SwipeableButton = (props: SwipeableButtonProps) => {
   });
   return (
     <RectButton style={styles.button} onPress={props.onPress}>
-      {props.iconName && <AppIcon icon={props.iconName} />}
+      {props.refreshing ? <ActivityIndicator /> : props.iconName && <AppIcon icon={props.iconName} />}
       {props.text && <Text style={styles.text}>{props.text}</Text>}
     </RectButton>
   );
