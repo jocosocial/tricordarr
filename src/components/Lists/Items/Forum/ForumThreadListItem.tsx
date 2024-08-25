@@ -11,7 +11,7 @@ import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
-import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
+// import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -120,7 +120,7 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
   // );
 
   return (
-    <ForumThreadListItemSwipeable>
+    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID}>
       <List.Item
         style={styles.item}
         title={forumListData.title}
