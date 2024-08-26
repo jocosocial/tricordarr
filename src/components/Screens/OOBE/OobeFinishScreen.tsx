@@ -1,11 +1,6 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  BottomTabComponents,
-  MainStackComponents,
-  NavigatorIDs,
-  OobeStackComponents
-} from '../../../libraries/Enums/Navigation';
+import {BottomTabComponents, MainStackComponents, OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -16,7 +11,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {startForegroundServiceWorker} from '../../../libraries/Service';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen, NavigatorIDs.oobeStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
 export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();

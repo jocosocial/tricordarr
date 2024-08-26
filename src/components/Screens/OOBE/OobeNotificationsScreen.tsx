@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -12,11 +12,7 @@ import {check as checkPermission, PERMISSIONS, request as requestPermission, RES
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BatteryOptimizationSettingsView} from '../../Views/Settings/BatteryOptimizationSettingsView';
 
-type Props = NativeStackScreenProps<
-  OobeStackParamList,
-  OobeStackComponents.oobeNotificationsScreen,
-  NavigatorIDs.oobeStack
->;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeNotificationsScreen>;
 
 export const OobeNotificationsScreen = ({navigation}: Props) => {
   const [permissionStatus, setPermissionStatus] = useState('');

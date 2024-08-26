@@ -6,16 +6,12 @@ import {useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQue
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useQueryClient} from '@tanstack/react-query';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumPostAlertwordScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;
 
 export const ForumPostAlertwordScreen = ({route}: Props) => {
   const {

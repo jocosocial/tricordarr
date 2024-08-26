@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
@@ -9,11 +9,7 @@ import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenS
 import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
 import {ForumRelationQueryType} from '../../../Queries/Forum/ForumThreadRelationQueries';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumFavoritesScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumFavoritesScreen>;
 
 export const ForumThreadFavoritesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {

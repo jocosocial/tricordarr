@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, NavigatorIDs} from '../../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
@@ -16,11 +16,7 @@ import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumThreadCreateScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
 
 export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
@@ -41,7 +37,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
     // Forum doesn't take these params and keys off of the first post.
     postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
     postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
-    postFormRef.current.values.text = replaceMentionValues(postFormRef.current.values.text, ({name}) => `@${name}`)
+    postFormRef.current.values.text = replaceMentionValues(postFormRef.current.values.text, ({name}) => `@${name}`);
     const forumData: ForumCreateData = {
       title: values.title,
       firstPost: postFormRef.current.values,
