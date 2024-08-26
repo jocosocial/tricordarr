@@ -44,7 +44,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       setRefreshing(false);
       swipeable.reset();
     },
-    [refetch],
+    [props.categoryID, queryClient, refetch],
   );
 
   const handleFavorite = useCallback(
@@ -127,22 +127,6 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
     swipeable: SwipeableMethods,
   ) => {
     return (
-      <SwipeableButton
-        text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
-        iconName={AppIcons.mute}
-        style={{backgroundColor: theme.colors.twitarrNegativeButton}}
-        onPress={() => handleMute(swipeable)}
-        refreshing={refreshing}
-      />
-    );
-  };
-
-  const renderRightPanel = (
-    progressAnimatedValue: SharedValue<number>,
-    dragAnimatedValue: SharedValue<number>,
-    swipeable: SwipeableMethods,
-  ) => {
-    return (
       <>
         {eventID && (
           <SwipeableButton
@@ -156,13 +140,43 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
             }}
             style={{backgroundColor: theme.colors.twitarrNeutralButton}}
             refreshing={refreshing}
+            textStyle={{color: theme.colors.onTwitarrNeutralButton}}
+            iconColor={theme.colors.onTwitarrNeutralButton}
           />
         )}
+        {hasModerator && props.categoryID && (
+          <SwipeableButton
+            text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
+            refreshing={refreshing}
+            onPress={() => handlePin(swipeable)}
+            iconName={AppIcons.moderator}
+            style={{backgroundColor: theme.colors.elevation.level1}}
+          />
+        )}
+      </>
+    );
+  };
+
+  const renderRightPanel = (
+    progressAnimatedValue: SharedValue<number>,
+    dragAnimatedValue: SharedValue<number>,
+    swipeable: SwipeableMethods,
+  ) => {
+    return (
+      <>
+        <SwipeableButton
+          text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
+          iconName={AppIcons.mute}
+          style={{backgroundColor: theme.colors.elevation.level2}}
+          onPress={() => handleMute(swipeable)}
+          refreshing={refreshing}
+        />
         <SwipeableButton
           text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
           iconName={AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
           refreshing={refreshing}
+          style={{backgroundColor: theme.colors.elevation.level1}}
         />
         <SwipeableButton
           // Ehhhhhh
@@ -170,15 +184,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           iconName={AppIcons.check}
           onPress={() => handleMarkAsRead(swipeable)}
           refreshing={refreshing}
+          style={{backgroundColor: theme.colors.elevation.level3}}
         />
-        {hasModerator && props.categoryID && (
-          <SwipeableButton
-            text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
-            refreshing={refreshing}
-            onPress={() => handlePin(swipeable)}
-            iconName={AppIcons.moderator}
-          />
-        )}
       </>
     );
   };
