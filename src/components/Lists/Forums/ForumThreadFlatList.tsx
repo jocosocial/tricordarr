@@ -1,4 +1,4 @@
-import {FlatList, RefreshControlProps, View} from 'react-native';
+import {RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
@@ -10,6 +10,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
+import {FlashList} from '@shopify/flash-list';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -33,7 +34,7 @@ export const ForumThreadFlatList = ({
   pinnedThreads = [],
   categoryID,
 }: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlatList<ForumListData>>(null);
+  const flatListRef = useRef<FlashList<ForumListData>>(null);
   const [showButton, setShowButton] = useState(false);
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
@@ -118,7 +119,7 @@ export const ForumThreadFlatList = ({
 
   return (
     <>
-      <FlatList
+      <FlashList
         ref={flatListRef}
         refreshControl={refreshControl}
         data={forumListData}
@@ -131,6 +132,7 @@ export const ForumThreadFlatList = ({
         ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
         onEndReachedThreshold={10}
+        estimatedItemSize={170}
       />
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
