@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {ActivityIndicator, List, Text} from 'react-native-paper';
+import React from 'react';
+import {List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
@@ -11,14 +11,8 @@ import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
-// import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
-import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
-import {RectButton} from 'react-native-gesture-handler';
-import {BoldText} from '../../../Text/BoldText.tsx';
-import {SharedValue} from 'react-native-reanimated';
-import {SwipeableButton} from '../../../Buttons/SwipeableButton.tsx';
 import {ForumThreadListItemSwipeable} from '../../../Swipeables/ForumThreadListItemSwipeable.tsx';
 
 interface ForumThreadListItemProps {
@@ -29,7 +23,6 @@ interface ForumThreadListItemProps {
 export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
-  const [menuVisible, setMenuVisible] = useState(false);
   const styles = StyleSheet.create({
     item: {
       backgroundColor: theme.colors.background,
@@ -98,27 +91,6 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       forumListData: forumListData,
     });
 
-  // return (
-  //   <ForumThreadActionsMenu
-  //     anchor={
-  //       <List.Item
-  //         style={styles.item}
-  //         title={forumListData.title}
-  //         titleStyle={styles.title}
-  //         titleNumberOfLines={0}
-  //         description={getDescription}
-  //         onPress={onPress}
-  //         right={getRight}
-  //         onLongPress={() => setMenuVisible(true)}
-  //       />
-  //     }
-  //     forumListData={forumListData}
-  //     visible={menuVisible}
-  //     setVisible={setMenuVisible}
-  //     categoryID={categoryID}
-  //   />
-  // );
-
   return (
     <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID}>
       <List.Item
@@ -129,7 +101,6 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
         description={getDescription}
         onPress={onPress}
         right={getRight}
-        onLongPress={() => setMenuVisible(true)}
       />
     </ForumThreadListItemSwipeable>
   );
