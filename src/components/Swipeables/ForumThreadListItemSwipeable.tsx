@@ -10,6 +10,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
 import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.tsx';
+import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.tsx';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   forumListData: ForumListData;
@@ -25,6 +26,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const eventID = props.forumListData.eventID;
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
+  const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
 
   const invalidationQueryKeys = useMemo(() => {
     let keys = [[`/forum/${props.forumListData.forumID}`], ['/forum/search']];
@@ -33,6 +35,17 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
     }
     return keys;
   }, [props.categoryID, props.forumListData.forumID]);
+
+  const handleMarkAsRead = useCallback(
+    async (swipeable: SwipeableMethods) => {
+      setRefreshing(true);
+      await refetch();
+      await queryClient.invalidateQueries([`/forum/categories/${props.categoryID}`]);
+      setRefreshing(false);
+      swipeable.reset();
+    },
+    [refetch],
+  );
 
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
@@ -149,6 +162,13 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
           iconName={AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
+          refreshing={refreshing}
+        />
+        <SwipeableButton
+          // Ehhhhhh
+          text={'Mark\n  as\nRead'}
+          iconName={AppIcons.check}
+          onPress={() => handleMarkAsRead(swipeable)}
           refreshing={refreshing}
         />
         {hasModerator && props.categoryID && (
