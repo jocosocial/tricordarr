@@ -37,6 +37,7 @@ export const ForumHelpScreen = () => {
             Favorited forums appear in the sort order, which by default is Most Recent Post first.
           </HelpParagraphText>
           <HelpParagraphText>Moderators can pin forums to the category.</HelpParagraphText>
+          <HelpParagraphText>You can favorite or mute a thread by swiping left or right on it.</HelpParagraphText>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
