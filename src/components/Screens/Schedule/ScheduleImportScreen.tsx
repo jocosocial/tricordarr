@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {HelpHeaderText} from '../../Text/HelpHeaderText.tsx';
+import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 import {Text} from 'react-native-paper';
 import {SchedImportForm} from '../../Forms/SchedImportForm.tsx';
 import {SchedImportFormValues} from '../../../libraries/Types/FormValues.ts';

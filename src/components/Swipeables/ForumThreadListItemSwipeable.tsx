@@ -167,6 +167,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
     <Swipeable
       renderRightActions={renderRightPanel}
       renderLeftActions={renderLeftPanel}
+      overshootFriction={8}
       overshootRight={false}
       overshootLeft={false}>
       {props.children}

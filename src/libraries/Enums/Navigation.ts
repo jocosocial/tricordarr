@@ -1,4 +1,5 @@
 import {ScheduleImportScreen} from '../../components/Screens/Schedule/ScheduleImportScreen.tsx';
+import {ForumHelpScreen} from '../../components/Screens/Forum/ForumHelpScreen.tsx';
 
 /**
  * These are used for Navigation TypeScript checking.
@@ -113,4 +114,5 @@ export enum ForumStackComponents {
   forumThreadSearchScreen = 'ForumThreadSearchScreen',
   forumThreadCreateScreen = 'ForumThreadCreateScreen',
   forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
+  forumHelpScreen = 'ForumHelpScreen',
 }
