@@ -39,6 +39,19 @@ export const ForumHelpScreen = () => {
           <HelpParagraphText>Moderators can pin forums to the category.</HelpParagraphText>
           <HelpParagraphText>You can favorite or mute a thread by swiping left or right on it.</HelpParagraphText>
         </PaddedContentView>
+        <PaddedContentView>
+          <HelpHeaderText>Posts</HelpHeaderText>
+        </PaddedContentView>
+        <PaddedContentView>
+          <HelpParagraphText>Long-press a post to favorite, edit, or add a reaction.</HelpParagraphText>
+          <HelpParagraphText>
+            Tapping on a post will take you to the posts forum to see it in context.
+          </HelpParagraphText>
+          <HelpParagraphText>
+            Favoriting a post will save it to an easily accessible Personal Category on the Forums page.
+          </HelpParagraphText>
+          <HelpParagraphText>You can edit or delete your own forum posts.</HelpParagraphText>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );
