@@ -87,6 +87,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Manage settings for images.'}
               navComponent={CommonStackComponents.imageSettingsScreen}
             />
+            <SettingsNavigationListItem
+              title={'Forum Settings'}
+              description={'Settings for Forum threads and categories.'}
+              navComponent={CommonStackComponents.forumSettingsScreen}
+            />
           </ListSection>
           {appConfig.enableDeveloperOptions && (
             <>

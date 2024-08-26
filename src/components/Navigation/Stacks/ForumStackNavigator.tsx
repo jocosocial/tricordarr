@@ -22,6 +22,7 @@ import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCre
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
+import {ForumHelpScreen} from '../../Screens/Forum/ForumHelpScreen.tsx';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
@@ -45,6 +46,7 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumThreadCreateScreen: {
     categoryId: string;
   };
+  ForumHelpScreen: undefined;
 };
 
 export const ForumStackNavigator = () => {
@@ -127,6 +129,11 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumPostAlertwordScreen}
         component={ForumPostAlertwordScreen}
         options={{title: 'Alert Keyword'}}
+      />
+      <Stack.Screen
+        name={ForumStackComponents.forumHelpScreen}
+        component={ForumHelpScreen}
+        options={{title: 'Forum Help'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

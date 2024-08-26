@@ -1,6 +1,6 @@
 import {Text} from 'react-native-paper';
 import React, {PropsWithChildren} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 export const HelpHeaderText = (props: PropsWithChildren) => {
   const {commonStyles} = useStyles();
