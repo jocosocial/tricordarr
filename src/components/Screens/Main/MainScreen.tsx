@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
@@ -24,7 +24,7 @@ import {MainHeaderView} from '../../Views/MainHeaderView';
 import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
 import {MainTimezoneWarningView} from '../../Views/MainTimezoneWarningView.tsx';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen, NavigatorIDs.mainStack>;
+type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
 export const MainScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();

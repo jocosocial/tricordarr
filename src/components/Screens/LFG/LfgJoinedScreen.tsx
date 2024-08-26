@@ -2,15 +2,11 @@ import React, {useEffect} from 'react';
 import {LfgListScreen} from './LfgListScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 
-export type Props = NativeStackScreenProps<
-  LfgStackParamList,
-  LfgStackComponents.lfgJoinedScreen,
-  NavigatorIDs.lfgStack
->;
+type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgJoinedScreen>;
 
 export const LfgJoinedScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();

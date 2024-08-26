@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -16,11 +16,7 @@ import {AppView} from '../../Views/AppView';
 import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {ForumCategoryScreenActionsMenu} from '../../Menus/Forum/ForumCategoryScreenActionsMenu.tsx';
 
-export type Props = NativeStackScreenProps<
-  ForumStackParamList,
-  ForumStackComponents.forumCategoryScreen,
-  NavigatorIDs.forumStack
->;
+type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();

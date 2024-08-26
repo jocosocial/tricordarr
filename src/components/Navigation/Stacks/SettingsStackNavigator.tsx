@@ -4,7 +4,7 @@ import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoS
 import {ServerConnectionSettingsScreen} from '../../Screens/Settings/Notifications/ServerConnectionSettingsScreen.tsx';
 import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
+import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/Developer/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -59,10 +59,7 @@ export const SettingsStackNavigator = () => {
   // We don't put the title in the various Screens because we define it in the NavigationListItem
   // so we're always consistent between setting name and header title.
   return (
-    <Stack.Navigator
-      id={NavigatorIDs.settingsStack}
-      initialRouteName={SettingsStackScreenComponents.settings}
-      screenOptions={screenOptions}>
+    <Stack.Navigator initialRouteName={SettingsStackScreenComponents.settings} screenOptions={screenOptions}>
       <Stack.Screen
         name={SettingsStackScreenComponents.settings}
         component={SettingsScreen}

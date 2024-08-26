@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
@@ -11,11 +11,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
 import {APIImage} from '../../Images/APIImage';
 
-export type Props = NativeStackScreenProps<
-  MainStackParamList,
-  MainStackComponents.dailyThemeScreen,
-  NavigatorIDs.mainStack
->;
+type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;
 
 export const DailyThemeScreen = ({route}: Props) => {
   const {refetch} = useDailyThemeQuery();

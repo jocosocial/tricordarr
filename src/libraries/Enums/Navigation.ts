@@ -1,21 +1,9 @@
-import {ScheduleImportScreen} from '../../components/Screens/Schedule/ScheduleImportScreen.tsx';
-import {ForumHelpScreen} from '../../components/Screens/Forum/ForumHelpScreen.tsx';
-
 /**
  * These are used for Navigation TypeScript checking.
  * https://reactnavigation.org/docs/typescript/
  *
  * @TODO start moving these out to the various navigators
- * @TODO kill the navigatorIDs. THey aren't necessary.
  */
-export enum NavigatorIDs {
-  settingsStack = 'SettingsStackNavigator',
-  mainStack = 'MainStack',
-  oobeStack = 'OobeStackNavigator',
-  eventStack = 'EventStackNavigator',
-  lfgStack = 'LfgStackNavigator',
-  forumStack = 'ForumStackNavigator',
-}
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',

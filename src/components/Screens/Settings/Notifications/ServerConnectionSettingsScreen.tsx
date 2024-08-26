@@ -15,7 +15,7 @@ import {fgsFailedCounter} from '../../../../libraries/Service';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 import {useAppTheme} from '../../../../styles/Theme';
 import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
@@ -30,11 +30,7 @@ import {BooleanField} from '../../../Forms/Fields/BooleanField';
 import {SliderField} from '../../../Forms/Fields/SliderField';
 import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView';
 
-type Props = NativeStackScreenProps<
-  SettingsStackParamList,
-  SettingsStackScreenComponents.serverConnectionSettings,
-  NavigatorIDs.settingsStack
->;
+type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
 
 export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
   const theme = useAppTheme();

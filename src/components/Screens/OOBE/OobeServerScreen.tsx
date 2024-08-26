@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -18,7 +18,7 @@ import {ServerUrlSettingForm} from '../../Forms/Settings/ServerUrlSettingForm.ts
 import {RefreshControl} from 'react-native';
 import {ServerChoices} from '../../../libraries/Network/ServerChoices.ts';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
