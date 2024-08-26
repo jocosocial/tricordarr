@@ -5,14 +5,12 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
-import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
+import {ForumStackComponents} from '../../libraries/Enums/Navigation.ts';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -40,14 +38,8 @@ export const ForumPostSearchBar = () => {
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {setModalContent, setModalVisible} = useModal();
-  const navigation = useForumStackNavigation();
+  const forumNavigation = useForumStackNavigation();
   const flatListRef = useRef<FlatList<PostData>>(null);
-
-  const handleHelpModal = useCallback(() => {
-    setModalContent(<HelpModalView text={forumPostHelpText} />);
-    setModalVisible(true);
-  }, [setModalContent, setModalVisible]);
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -94,21 +86,27 @@ export const ForumPostSearchBar = () => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelpModal} />
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              forumNavigation.push(ForumStackComponents.forumHelpScreen);
+            }}
+          />
         </HeaderButtons>
       </View>
     );
-  }, [handleHelpModal]);
+  }, [forumNavigation]);
 
   useEffect(() => {
-    navigation.setOptions({
+    forumNavigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+  }, [getNavButtons, forumNavigation]);
 
   useEffect(() => {
     if (data && data.pages && queryEnable) {
-      setForumPosts(data.pages.flatMap(p => p.posts))
+      setForumPosts(data.pages.flatMap(p => p.posts));
     }
   }, [data, setForumPosts, queryEnable]);
 
