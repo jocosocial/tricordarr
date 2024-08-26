@@ -42,24 +42,28 @@ export const ForumThreadScreenSortMenu = () => {
         leadingIcon={AppIcons.events}
         onPress={() => handleFilterSelection(ForumSortOrder.event)}
         style={forumSortOrder === ForumSortOrder.event ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={forumSortOrder === ForumSortOrder.event ? AppIcons.check : undefined}
       />
       <Menu.Item
         title={'Most Recent Post'}
         leadingIcon={AppIcons.recent}
         onPress={() => handleFilterSelection(ForumSortOrder.update)}
         style={forumSortOrder === ForumSortOrder.update ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={forumSortOrder === ForumSortOrder.update ? AppIcons.check : undefined}
       />
       <Menu.Item
         title={'Creation Time'}
         leadingIcon={AppIcons.new}
         onPress={() => handleFilterSelection(ForumSortOrder.create)}
         style={forumSortOrder === ForumSortOrder.create ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={forumSortOrder === ForumSortOrder.create ? AppIcons.check : undefined}
       />
       <Menu.Item
         title={'Title'}
         leadingIcon={AppIcons.text}
         onPress={() => handleFilterSelection(ForumSortOrder.title)}
         style={forumSortOrder === ForumSortOrder.title ? commonStyles.surfaceVariant : undefined}
+        trailingIcon={forumSortOrder === ForumSortOrder.title ? AppIcons.check : undefined}
       />
     </Menu>
   );
