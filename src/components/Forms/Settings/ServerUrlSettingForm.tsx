@@ -47,6 +47,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
               setFieldValue('serverUrl', v);
               setFieldValue('serverChoice', {name: 'Other', serverUrl: ''});
             }}
+            autoCapitalize={'none'}
           />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
