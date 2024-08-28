@@ -32,7 +32,8 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       ...commonStyles.marginLeftSmall,
     },
     rightContent: {
-      ...commonStyles.flexRow,
+      ...commonStyles.flexColumn,
+      ...commonStyles.alignItemsEnd,
     },
   });
 
