@@ -5,7 +5,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 export const HelpHeaderText = (props: PropsWithChildren) => {
   const {commonStyles} = useStyles();
   return (
-    <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+    <Text selectable={true} variant={'titleMedium'} style={[commonStyles.bold]}>
       {props.children}
     </Text>
   );

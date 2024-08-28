@@ -4,5 +4,9 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 export const HelpParagraphText = (props: PropsWithChildren) => {
   const {commonStyles} = useStyles();
-  return <Text style={[commonStyles.marginBottomSmall]}>{props.children}</Text>;
+  return (
+    <Text selectable={true} style={[commonStyles.marginBottomSmall]}>
+      {props.children}
+    </Text>
+  );
 };
