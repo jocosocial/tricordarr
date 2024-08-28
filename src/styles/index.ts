@@ -103,6 +103,9 @@ export const commonStyles = StyleSheet.create({
   alignItemsCenter: {
     alignItems: 'center',
   },
+  alignItemsEnd: {
+    alignItems: 'flex-end',
+  },
   paddingLeftSmall: {
     paddingLeft: styleDefaults.marginSize / 2,
   },
