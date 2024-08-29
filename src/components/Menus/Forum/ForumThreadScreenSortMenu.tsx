@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
@@ -65,6 +65,9 @@ export const ForumThreadScreenSortMenu = () => {
         style={forumSortOrder === ForumSortOrder.title ? commonStyles.surfaceVariant : undefined}
         trailingIcon={forumSortOrder === ForumSortOrder.title ? AppIcons.check : undefined}
       />
+      <Divider bold={true} />
+      <Menu.Item title={'Ascending'} leadingIcon={AppIcons.sortAscending} />
+      <Menu.Item title={'Descending'} leadingIcon={AppIcons.sortDescending} />
     </Menu>
   );
 };

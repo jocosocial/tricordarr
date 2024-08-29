@@ -111,4 +111,6 @@ export enum AppIcons {
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
   schedImport = 'calendar-import',
+  sortAscending = 'sort-ascending',
+  sortDescending = 'sort-descending',
 }
