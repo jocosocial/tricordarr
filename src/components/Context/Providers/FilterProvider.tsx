@@ -2,7 +2,7 @@ import React, {PropsWithChildren, useState} from 'react';
 import {FilterContext} from '../Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../Contexts/ConfigContext';
-import {ForumFilter, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumFilter, ForumSortDirection, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
 import {ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
 
@@ -17,6 +17,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
   const [eventLfgFilter, setEventLfgFilter] = useState(false);
+  const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection>();
 
   const scheduleFilterSettings: ScheduleFilterSettings = {
     eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
@@ -49,6 +50,8 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         eventLfgFilter,
         setEventLfgFilter,
         scheduleFilterSettings,
+        forumSortDirection,
+        setForumSortDirection,
       }}>
       {children}
     </FilterContext.Provider>

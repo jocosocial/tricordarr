@@ -8,6 +8,11 @@ export enum ForumSortOrder {
   title = 'title',
 }
 
+export enum ForumSortDirection {
+  ascending = 'ascending',
+  descending = 'descending',
+}
+
 export enum ForumFilter {
   owned = 'owned',
   favorite = 'favorite',
