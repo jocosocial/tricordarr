@@ -1,5 +1,5 @@
-import React from 'react';
-import {List, Text} from 'react-native-paper';
+import React, {Dispatch, SetStateAction} from 'react';
+import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
@@ -18,11 +18,23 @@ import {ForumThreadListItemSwipeable} from '../../../Swipeables/ForumThreadListI
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
   categoryID?: string;
+  enableSelection: boolean;
+  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+  onSelect: (item: ForumListData, selected: boolean) => void;
+  selected: boolean;
 }
 
-export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadListItemProps) => {
+export const ForumThreadListItem = ({
+  forumListData,
+  categoryID,
+  onSelect,
+  enableSelection = false,
+  selected = false,
+  setEnableSelection,
+}: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
+
   const styles = StyleSheet.create({
     item: {
       backgroundColor: theme.colors.background,
@@ -34,6 +46,10 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
     rightContent: {
       ...commonStyles.flexColumn,
       ...commonStyles.alignItemsEnd,
+    },
+    leftContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
     },
   });
 
@@ -86,11 +102,25 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       )}
     </View>
   );
+
   const onPress = () =>
     forumNavigation.push(CommonStackComponents.forumThreadScreen, {
       forumID: forumListData.forumID,
       forumListData: forumListData,
     });
+
+  const getLeft = () => {
+    return (
+      <View style={styles.leftContainer}>
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={() => onSelect(forumListData, selected)} />
+      </View>
+    );
+  };
+
+  const onLongPress = () => {
+    setEnableSelection(true);
+    onSelect(forumListData, true);
+  };
 
   return (
     <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID}>
@@ -102,6 +132,8 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
         description={getDescription}
         onPress={onPress}
         right={getRight}
+        left={enableSelection ? getLeft : undefined}
+        onLongPress={onLongPress}
       />
     </ForumThreadListItemSwipeable>
   );
