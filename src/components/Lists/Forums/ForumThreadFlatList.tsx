@@ -11,7 +11,6 @@ import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
 import {FlashList} from '@shopify/flash-list';
-import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -151,7 +150,6 @@ export const ForumThreadFlatList = ({
     );
   };
 
-
   return (
     <>
       <FlashList
@@ -173,7 +171,6 @@ export const ForumThreadFlatList = ({
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
       )}
-
     </>
   );
 };
