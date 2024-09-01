@@ -17,7 +17,7 @@ import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
 import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SiteUIScreen} from '../Screens/SiteUIScreen';
 import {MapScreen} from '../Screens/Main/MapScreen';
@@ -452,3 +452,5 @@ export const CommonScreens = (Stack: typeof MainStack) => {
 };
 
 export const useCommonStack = () => useNavigation<NativeStackNavigationProp<CommonStackParamList>>();
+
+export const useCommonRoute = () => useRoute<RouteProp<CommonStackParamList>>();

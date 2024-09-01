@@ -32,6 +32,7 @@ export function useTokenAuthQuery<
   const {disruptionDetected} = useSwiftarrQueryClient();
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+    // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
     ...options,
     // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options.enabled),

@@ -13,6 +13,8 @@ import {useQueryClient} from '@tanstack/react-query';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {Text} from 'react-native-paper';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {getInitialAppConfig} from '../../../libraries/AppConfig.ts';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -25,6 +27,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const {signOut} = useAuth();
+  const {updateAppConfig} = useConfig();
 
   const styles = {
     outerContainer: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.alignItemsCenter],
@@ -34,11 +37,16 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
 
   const toggleShowStack = () => setShowStack(!showStack);
 
-  const clearQueryCache = async () => {
-    queryClient.clear();
+  const fixAll = async () => {
     await signOut();
+    queryClient.clear();
+    updateAppConfig(getInitialAppConfig());
     props.resetError();
   };
+
+  const resetAppConfig = async () => {
+    updateAppConfig(getInitialAppConfig());
+  }
 
   return (
     <AppView>
@@ -68,9 +76,30 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
+            buttonColor={theme.colors.twitarrPositiveButton}
+            buttonText={'Fix it All'}
+            onPress={fixAll}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Query Cache'}
-            onPress={clearQueryCache}
+            onPress={() => queryClient.clear()}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonColor={theme.colors.twitarrNegativeButton}
+            buttonText={'Sign Out'}
+            onPress={async () => await signOut()}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonColor={theme.colors.twitarrNegativeButton}
+            buttonText={'Reset Config'}
+            onPress={resetAppConfig}
           />
         </PaddedContentView>
         <PaddedContentView>

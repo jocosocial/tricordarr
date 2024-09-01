@@ -121,7 +121,7 @@ const defaultAppConfig: AppConfig = {
 /**
  * Generates an AppConfig object from the defaults and React Native Config "env vars".
  */
-const getInitialAppConfig = () => {
+export const getInitialAppConfig = () => {
   let config = defaultAppConfig;
   if (Config.SERVER_URL) {
     config.serverUrl = Config.SERVER_URL;
