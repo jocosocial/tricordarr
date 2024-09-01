@@ -1,4 +1,3 @@
-import {HealthResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {Text} from 'react-native-paper';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -6,29 +5,26 @@ import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useAppTheme} from '../../../styles/Theme.ts';
+import {useHealthQuery} from '../../Queries/Client/ClientQueries.tsx';
+import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 
 interface ServerHealthcheckResultViewProps {
   serverHealthPassed: boolean;
-  serverHealthData?: HealthResponse;
-  isFetching: boolean;
 }
 
-export const ServerHealthcheckResultView = ({
-  serverHealthPassed,
-  serverHealthData,
-  isFetching,
-}: ServerHealthcheckResultViewProps) => {
+export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthcheckResultViewProps) => {
   const {commonStyles} = useStyles();
+  const {data: serverHealthData, dataUpdatedAt, errorUpdatedAt, isError, isSuccess} = useHealthQuery();
   const theme = useAppTheme();
+
   const styles = StyleSheet.create({
     viewContainer: {
       ...commonStyles.alignItemsCenter,
     },
   });
 
-  if (isFetching) {
-    return <></>;
-  }
+  // https://github.com/TanStack/query/discussions/1229
+  const updatedAt = isError ? new Date(errorUpdatedAt) : isSuccess ? new Date(dataUpdatedAt) : undefined;
 
   return (
     <View style={styles.viewContainer}>
@@ -47,6 +43,11 @@ export const ServerHealthcheckResultView = ({
         <Text>
           Server check failed. Ensure your phone is on ship wifi, all VPNs and DNS interceptors are disabled, and the
           server URL is correct. If the issue persists go to the JoCo Cruise Info Desk for assistance.
+        </Text>
+      )}
+      {updatedAt && (
+        <Text>
+          Checked <RelativeTimeTag date={updatedAt} />
         </Text>
       )}
     </View>

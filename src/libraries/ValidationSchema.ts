@@ -50,7 +50,7 @@ export const ForumPostTextValidation = Yup.string()
 const productionUrlValidation = Yup.string()
   .required('Server URL cannot be empty.')
   .lowercase('Lower-case only.')
-  .url('Must be valid URL.')
+  .url('Must be valid URL (including scheme prefix).')
   .test({
     name: 'startsWithHttps',
     message: 'Server URL must be secure (HTTPS).',
@@ -63,7 +63,7 @@ const productionUrlValidation = Yup.string()
 const developmentUrlValidation = Yup.string()
   .required('Server URL cannot be empty.')
   .lowercase('Lower-case only.')
-  .url('Must be valid URL.')
+  .url('Must be valid URL (including scheme prefix).')
   .strict();
 
 export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;

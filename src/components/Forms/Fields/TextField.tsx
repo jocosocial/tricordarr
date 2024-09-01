@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
-import {FastField, Field, useField, useFormikContext} from 'formik';
+import {Field, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 import {useAppTheme} from '../../../styles/Theme';
 
@@ -68,7 +68,7 @@ export const TextField = ({
     if (onBlur) {
       onBlur(event);
     }
-    return handleBlur(name);
+    return handleBlur(name)(event);
   };
 
   // Went back to Field from FastField due to SuggestedTextField modal.
@@ -86,7 +86,7 @@ export const TextField = ({
             onChangeText={onChangeText || handleValueChange}
             onBlur={handleBlurEvent}
             value={field.value}
-            error={!!meta.error && meta.touched}
+            error={!!meta.error}
             numberOfLines={numberOfLines}
             disabled={disabled || isSubmitting}
             left={left}
