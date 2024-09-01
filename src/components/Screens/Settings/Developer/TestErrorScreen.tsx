@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
@@ -22,16 +22,12 @@ export const TestErrorScreen = () => {
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useQuery(['/nonexistant'], {
     enabled: false,
-    onError: error => {
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error);
-      }
-    },
   });
   const {errorCount} = useSwiftarrQueryClient();
   const {refetch: refetchSuccessQuery, isFetching: isFetchingSuccess} = useHealthQuery({
     enabled: false,
   });
+  const [fault, setFault] = useState(false);
 
   const onDismiss = () => console.log('[TestErrorScreen.tsx] Modal dismissed.');
   const onModal = () => {
@@ -39,6 +35,12 @@ export const TestErrorScreen = () => {
     setModalVisible(true);
     setModalOnDismiss(onDismiss);
   };
+
+  const triggerCriticalFault = () => setFault(true);
+
+  if (fault) {
+    throw Error('Critical Fault');
+  }
 
   return (
     <AppView>
@@ -77,6 +79,13 @@ export const TestErrorScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton buttonText={'Success Query'} onPress={refetchSuccessQuery} />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'Trigger Critical Fault'}
+            buttonColor={theme.colors.twitarrNegativeButton}
+            onPress={triggerCriticalFault}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

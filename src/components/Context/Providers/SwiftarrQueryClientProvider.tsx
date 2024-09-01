@@ -29,19 +29,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const queryCache = SwiftarrQueryClient.getQueryCache();
   queryCache.config = {
     onError: (error, query) => {
-      if (axios.isAxiosError(error)) {
-        // Even 404's have responses.
-        // if (!error.response?.data.reason) {
-        //   console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered.');
-        //   setErrorCount(errorCount + 1);
-        // }
-        // I think I was getting too clever. See how this goes for now.
-        console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
-        setErrorCount(errorCount + 1);
-        // Moved
-        if (!disruptionDetected) {
-          setErrorMessage(error);
-        }
+      console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
+      setErrorCount(errorCount + 1);
+      if (!disruptionDetected) {
+        setErrorMessage(String(error));
       }
     },
     onSuccess: (data, query) => {

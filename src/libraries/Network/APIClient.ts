@@ -11,6 +11,15 @@ import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persist
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import superjson from 'superjson';
 
+// https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
+class BadResponseFormatError extends Error {
+  constructor (public response: AxiosResponse) {
+    const contentType = response.headers['content-type'];
+    const server = response.headers['server'];
+    super(`Malformed response. Got ${contentType} payload from server ${server}.`);
+  }
+}
+
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
  * configure various parameters of the HTTP request, from full URL to timeouts.
@@ -34,6 +43,8 @@ export async function configureAxios() {
     // Other Headers
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`;
+    // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
+    config.headers['Cache-Control'] = 'no-store';
     // Other Config
     config.timeout = apiClientConfig.requestTimeout;
     config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';
@@ -54,8 +65,14 @@ export async function configureAxios() {
  */
 export const apiQueryV3 = async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
   const mutableQueryKey = queryKey as string[];
-  const {data} = await axios.get(mutableQueryKey[0]);
-  return data;
+  const response = await axios.get(mutableQueryKey[0]);
+
+  // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
+  if (!response.headers["content-type"].startsWith("application/json")) {
+    throw new BadResponseFormatError(response);
+  }
+
+  return response.data;
 };
 
 /**
