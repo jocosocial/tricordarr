@@ -124,6 +124,11 @@ export const commonStyles = StyleSheet.create({
     paddingRight: styleDefaults.marginSize / 4,
     paddingHorizontal: styleDefaults.marginSize / 4,
   },
+  paddingHorizontalLarge: {
+    paddingLeft: styleDefaults.marginSize * 2,
+    paddingRight: styleDefaults.marginSize * 2,
+    paddingHorizontal: styleDefaults.marginSize * 2,
+  },
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,
   },
