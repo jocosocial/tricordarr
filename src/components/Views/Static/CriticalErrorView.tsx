@@ -15,6 +15,7 @@ import {Text} from 'react-native-paper';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {getInitialAppConfig} from '../../../libraries/AppConfig.ts';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -46,7 +47,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
 
   const resetAppConfig = async () => {
     updateAppConfig(getInitialAppConfig());
-  }
+  };
 
   return (
     <AppView>
@@ -112,7 +113,10 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         {showStack && (
           <PaddedContentView>
             <BoldText>Stack Trace:</BoldText>
-            <Text selectable={true} variant={'labelSmall'}>
+            <Text
+              selectable={true}
+              variant={'labelSmall'}
+              onLongPress={() => (props.error.stack ? Clipboard.setString(props.error.stack) : undefined)}>
               {props.error.stack}
             </Text>
           </PaddedContentView>
