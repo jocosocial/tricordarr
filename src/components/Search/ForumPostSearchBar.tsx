@@ -8,9 +8,8 @@ import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {PostData} from '../../libraries/Structs/ControllerStructs';
-import {ForumStackComponents} from '../../libraries/Enums/Navigation.ts';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 export const ForumPostSearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -38,7 +37,7 @@ export const ForumPostSearchBar = () => {
   const {commonStyles} = useStyles();
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const forumNavigation = useForumStackNavigation();
+  const commonNavigation = useCommonStack();
   const flatListRef = useRef<FlatList<PostData>>(null);
 
   const onChangeSearch = (query: string) => {
@@ -90,19 +89,19 @@ export const ForumPostSearchBar = () => {
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              forumNavigation.push(ForumStackComponents.forumHelpScreen);
+              commonNavigation.push(CommonStackComponents.forumHelpScreen);
             }}
           />
         </HeaderButtons>
       </View>
     );
-  }, [forumNavigation]);
+  }, [commonNavigation]);
 
   useEffect(() => {
-    forumNavigation.setOptions({
+    commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, forumNavigation]);
+  }, [getNavButtons, commonNavigation]);
 
   useEffect(() => {
     if (data && data.pages && queryEnable) {

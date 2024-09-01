@@ -3,8 +3,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 interface ForumPostScreenBaseActionsMenuProps {
   onReload: () => void;
@@ -12,7 +11,7 @@ interface ForumPostScreenBaseActionsMenuProps {
 
 export const ForumPostScreenBaseActionsMenu = (props: ForumPostScreenBaseActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
-  const forumNavigation = useForumStackNavigation();
+  const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -28,7 +27,7 @@ export const ForumPostScreenBaseActionsMenu = (props: ForumPostScreenBaseActions
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(ForumStackComponents.forumHelpScreen);
+          commonNavigation.push(CommonStackComponents.forumHelpScreen);
         }}
       />
     </Menu>

@@ -9,8 +9,8 @@ import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {ScheduleEventFilterMenu} from '../../Menus/Events/ScheduleEventFilterMenu.tsx';
-import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu.tsx';
+import {ScheduleEventFilterMenu} from '../../Menus/Schedule/ScheduleEventFilterMenu.tsx';
+import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScreenActionsMenu.tsx';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
@@ -117,7 +117,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <HeaderScheduleYourDayButton />
           <ScheduleEventFilterMenu />
-          <EventDayScreenActionsMenu onRefresh={onRefresh} />
+          <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );

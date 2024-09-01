@@ -15,7 +15,6 @@ import {FavoriteMenuItem} from '../Items/FavoriteMenuItem';
 import {MuteMenuItem} from '../Items/MuteMenuItem';
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {ModerateMenuItem} from '../Items/ModerateMenuItem';
-import {HelpMenuItem} from '../Items/HelpMenuItem';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations';
 import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
@@ -25,11 +24,6 @@ interface ForumThreadActionsMenuProps {
   invalidationQueryKeys: QueryKey[];
   onRefresh: () => void;
 }
-
-const helpContent = [
-  'Long press on a post to favorite, edit, or add a reaction.',
-  'Moderators or the forum creator can pin posts to the forum.',
-];
 
 export const ForumThreadScreenActionsMenu = ({
   forumData,
@@ -103,6 +97,11 @@ export const ForumThreadScreenActionsMenu = ({
       );
     }
   }, [forumData, invalidationQueryKeys, queryClient, relationMutation]);
+
+  const handleHelp = () => {
+    closeMenu();
+    commonNavigation.push(CommonStackComponents.forumHelpScreen);
+  };
 
   return (
     <Menu
@@ -178,7 +177,7 @@ export const ForumThreadScreenActionsMenu = ({
           <Divider bold={true} />
         </>
       )}
-      <HelpMenuItem helpContent={helpContent} closeMenu={closeMenu} />
+      <Menu.Item onPress={handleHelp} title={'Help'} leadingIcon={AppIcons.help} />
     </Menu>
   );
 };

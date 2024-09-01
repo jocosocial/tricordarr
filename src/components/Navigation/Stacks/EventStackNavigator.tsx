@@ -6,7 +6,6 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
-import {EventHelpScreen} from '../../Screens/Event/EventHelpScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
@@ -18,7 +17,6 @@ import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.
 export type EventStackParamList = CommonStackParamList & {
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
-  EventHelpScreen: undefined;
   ScheduleDayScreen: undefined;
   ScheduleImportScreen: undefined;
 };
@@ -43,11 +41,6 @@ export const EventStackNavigator = () => {
         name={EventStackComponents.eventSettingsScreen}
         component={EventSettingsScreen}
         options={{title: 'Schedule Settings'}}
-      />
-      <Stack.Screen
-        name={EventStackComponents.eventHelpScreen}
-        component={EventHelpScreen}
-        options={{title: 'Schedule Help'}}
       />
       <Stack.Screen
         name={EventStackComponents.scheduleDayScreen}

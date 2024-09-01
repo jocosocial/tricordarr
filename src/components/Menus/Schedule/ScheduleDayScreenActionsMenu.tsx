@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
-import {ReloadMenuItem} from '../Items/ReloadMenuItem';
+import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
-export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
+export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useEventStackNavigation();
 
@@ -15,7 +16,7 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void})
 
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (component: EventStackComponents) => {
+  const handleNavigation = (component: EventStackComponents | CommonStackComponents) => {
     navigation.push(component);
     closeMenu();
   };
@@ -36,7 +37,7 @@ export const EventDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void})
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}
-        onPress={() => handleNavigation(EventStackComponents.eventHelpScreen)}
+        onPress={() => handleNavigation(CommonStackComponents.scheduleHelpScreen)}
       />
     </Menu>
   );

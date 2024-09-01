@@ -74,7 +74,6 @@ export enum OobeStackComponents {
 export enum EventStackComponents {
   eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  eventHelpScreen = 'EventHelpScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
 }
@@ -102,5 +101,4 @@ export enum ForumStackComponents {
   forumThreadSearchScreen = 'ForumThreadSearchScreen',
   forumThreadCreateScreen = 'ForumThreadCreateScreen',
   forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
-  forumHelpScreen = 'ForumHelpScreen',
 }
