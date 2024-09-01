@@ -113,4 +113,7 @@ export enum AppIcons {
   schedImport = 'calendar-import',
   sortAscending = 'sort-ascending',
   sortDescending = 'sort-descending',
+  selectAll = 'select-all',
+  selectNone = 'select-remove',
+  selectInverse = 'select-inverse',
 }

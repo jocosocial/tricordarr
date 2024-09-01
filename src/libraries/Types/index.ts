@@ -109,3 +109,5 @@ export interface FabGroupActionType {
   testID?: string;
   rippleColor?: ColorValue;
 }
+
+export type FloatingButtonDisplayPosition = 'raised' | 'bottom';

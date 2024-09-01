@@ -1,7 +1,7 @@
 import {RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
-import {ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -11,6 +11,7 @@ import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
 import {FlashList} from '@shopify/flash-list';
+import {FloatingSelectionButtons} from '../../Buttons/SegmentedButtons/FloatingSelectionButtons.tsx';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -142,6 +143,8 @@ export const ForumThreadFlatList = ({
     );
   };
 
+  const keyExtractor = (item: ForumListData) => item.forumID;
+
   return (
     <>
       <FlashList
@@ -151,7 +154,7 @@ export const ForumThreadFlatList = ({
         renderItem={renderItem}
         onEndReached={handleLoadNext}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
-        keyExtractor={(item: ForumListData) => item.forumID}
+        keyExtractor={keyExtractor}
         ItemSeparatorComponent={renderSeparator}
         ListHeaderComponent={renderListHeader}
         ListFooterComponent={renderListFooter}
@@ -162,6 +165,15 @@ export const ForumThreadFlatList = ({
       />
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
+      )}
+      {enableSelection && (
+        <FloatingSelectionButtons<ForumListData>
+          keyExtractor={keyExtractor}
+          items={forumListData}
+          setEnableSelection={setEnableSelection}
+          setSelectedItems={setSelectedItems}
+          selectedItems={selectedItems}
+        />
       )}
     </>
   );

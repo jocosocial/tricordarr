@@ -20,7 +20,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
+import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
