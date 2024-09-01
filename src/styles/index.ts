@@ -261,4 +261,7 @@ export const commonStyles = StyleSheet.create({
   contentPostForm: {
     minHeight: styleDefaults.marginSize * 4,
   },
+  minHeightLarge: {
+    minHeight: styleDefaults.marginSize * 2,
+  },
 });
