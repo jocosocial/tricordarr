@@ -1,7 +1,7 @@
 import {RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -39,6 +39,8 @@ export const ForumThreadFlatList = ({
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
+  const [selectedItems, setSelectedItems] = useState<ForumListData[]>([]);
+  const [enableSelection, setEnableSelection] = useState<boolean>(false);
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -68,9 +70,7 @@ export const ForumThreadFlatList = ({
             wrapperStyle={[commonStyles.marginTopZero]}
             dividerColor={theme.colors.outlineVariant}
           />
-          {pinnedThreads.map(fld => {
-            return <ForumThreadListItem key={fld.forumID} forumListData={fld} categoryID={categoryID} />;
-          })}
+          {pinnedThreads.map(item => renderItem({item}))}
           <LabelDivider
             label={'End of Pinned Threads'}
             color={theme.colors.onBackground}
@@ -117,13 +117,38 @@ export const ForumThreadFlatList = ({
     setShowButton(event.nativeEvent.contentOffset.y > 450);
   };
 
+  const handleSelection = (item: ForumListData, selected: boolean) => {
+    if (selected) {
+      setSelectedItems(selectedItems.filter(i => i.forumID !== item.forumID));
+    } else {
+      setSelectedItems(selectedItems.concat(item));
+    }
+  };
+
+  const renderItem = ({item}: {item: ForumListData}) => {
+    let selected = false;
+    if (enableSelection) {
+      selected = !!selectedItems.find(i => i.forumID === item.forumID);
+    }
+    return (
+      <ForumThreadListItem
+        forumListData={item}
+        categoryID={categoryID}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        onSelect={handleSelection}
+        selected={selected}
+      />
+    );
+  };
+
   return (
     <>
       <FlashList
         ref={flatListRef}
         refreshControl={refreshControl}
         data={forumListData}
-        renderItem={({item}) => <ForumThreadListItem forumListData={item} categoryID={categoryID} />}
+        renderItem={renderItem}
         onEndReached={handleLoadNext}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         keyExtractor={(item: ForumListData) => item.forumID}
@@ -133,6 +158,7 @@ export const ForumThreadFlatList = ({
         onScroll={handleScroll}
         onEndReachedThreshold={10}
         estimatedItemSize={170}
+        extraData={[enableSelection]}
       />
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
