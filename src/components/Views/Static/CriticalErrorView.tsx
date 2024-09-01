@@ -114,7 +114,6 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           <PaddedContentView>
             <BoldText>Stack Trace:</BoldText>
             <Text
-              selectable={true}
               variant={'labelSmall'}
               onLongPress={() => (props.error.stack ? Clipboard.setString(props.error.stack) : undefined)}>
               {props.error.stack}
