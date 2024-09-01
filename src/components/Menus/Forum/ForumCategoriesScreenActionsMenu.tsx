@@ -3,13 +3,10 @@ import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation.ts';
 
 export const ForumCategoriesScreenActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
   const commonNavigation = useCommonStack();
-  const forumNavigation = useForumStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -52,7 +49,7 @@ export const ForumCategoriesScreenActionsMenu = () => {
         title={'Help'}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(ForumStackComponents.forumHelpScreen);
+          commonNavigation.push(CommonStackComponents.forumHelpScreen);
         }}
       />
     </Menu>

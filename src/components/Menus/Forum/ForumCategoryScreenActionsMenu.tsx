@@ -3,13 +3,10 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation.ts';
 
 export const ForumCategoryScreenActionsMenu = () => {
   const [visible, setVisible] = useState(false);
   const commonNavigation = useCommonStack();
-  const forumNavigation = useForumStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -32,7 +29,7 @@ export const ForumCategoryScreenActionsMenu = () => {
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          forumNavigation.push(ForumStackComponents.forumHelpScreen);
+          commonNavigation.push(CommonStackComponents.forumHelpScreen);
         }}
       />
     </Menu>

@@ -4,24 +4,24 @@ import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import React from 'react';
-import {HelpMenuItem} from '../Items/HelpMenuItem';
 import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 interface EventScreenActionsMenuProps {
   event: EventData;
 }
 
-const helpContent = [
-  'Always check the official daily printed schedule to confirm event times/locations.',
-  'Favoriting an event adds it to your schedule and gives you reminder notifications.',
-  'All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.',
-];
-
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
+  const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
+  const handleHelp = () => {
+    closeMenu();
+    commonNavigation.push(CommonStackComponents.scheduleHelpScreen);
+  };
 
   return (
     <Menu
@@ -29,7 +29,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
-      <HelpMenuItem closeMenu={closeMenu} helpContent={helpContent} />
+      <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
     </Menu>
   );
 };

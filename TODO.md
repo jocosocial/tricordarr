@@ -6,6 +6,9 @@ Tricordarr
 * event search is missing the important part
 * make generic `apiQueryV3()` and audit uses of raw `useQuery()`
   * if response is not the shape of the type then blow up
+* Improve changing server url behavior - 404's and 400's.
+* Add tls validation disable switch
+
 
 Swiftarr
 --------

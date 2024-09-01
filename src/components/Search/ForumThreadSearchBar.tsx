@@ -8,12 +8,11 @@ import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
-import {ForumStackComponents} from '../../libraries/Enums/Navigation.ts';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 interface Props {
   categoryID?: string;
@@ -47,7 +46,7 @@ export const ForumThreadSearchBar = (props: Props) => {
   const {commonStyles} = useStyles();
   const [forumList, setForumList] = useState<ForumListData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const forumNavigation = useForumStackNavigation();
+  const commonNavigation = useCommonStack();
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -94,19 +93,19 @@ export const ForumThreadSearchBar = (props: Props) => {
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => {
-              forumNavigation.push(ForumStackComponents.forumHelpScreen);
+              commonNavigation.push(CommonStackComponents.forumHelpScreen);
             }}
           />
         </HeaderButtons>
       </View>
     );
-  }, [forumNavigation]);
+  }, [commonNavigation]);
 
   useEffect(() => {
-    forumNavigation.setOptions({
+    commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, forumNavigation]);
+  }, [getNavButtons, commonNavigation]);
 
   useEffect(() => {
     if (data && data.pages) {

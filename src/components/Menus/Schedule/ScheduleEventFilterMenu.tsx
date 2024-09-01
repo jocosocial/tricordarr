@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {EventType} from '../../../libraries/Enums/EventType';
-import {useAppTheme} from '../../../styles/Theme';
-import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {useAppTheme} from '../../../styles/Theme.ts';
+import {useFilter} from '../../Context/Contexts/FilterContext.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);

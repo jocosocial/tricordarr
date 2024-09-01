@@ -1,27 +1,24 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {useAppTheme} from '../../../styles/Theme';
-import {ScheduleItemCardBase} from '../../Cards/Schedule/ScheduleItemCardBase';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {useAppTheme} from '../../../styles/Theme.ts';
+import {ScheduleItemCardBase} from '../../Cards/Schedule/ScheduleItemCardBase.tsx';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
+import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 
-export const EventHelpScreen = () => {
+export const ScheduleHelpScreen = () => {
   const theme = useAppTheme();
-  const {commonStyles} = useStyles();
   return (
     <AppView>
       <ScrollingContentView>
         <PaddedContentView>
-          <Text>Always confirm event times and locations as they are subject to change.</Text>
+          <HelpParagraphText>Always confirm event times and locations as they are subject to change.</HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
-            Event Types
-          </Text>
+          <HelpHeaderText>Event Types</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <ScheduleItemCardBase
@@ -60,65 +57,73 @@ export const EventHelpScreen = () => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+          <HelpHeaderText>
             Filtering
-          </Text>
+          </HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
+          <HelpParagraphText>
             You can filter events by using the filter menu icon <AppIcon icon={AppIcons.filter} /> at the top of the
             screen.
-          </Text>
-          <Text>
+          </HelpParagraphText>
+          <HelpParagraphText>
             If the icon is in blue <AppIcon color={theme.colors.twitarrNeutralButton} icon={AppIcons.filter} /> a filter
             is applied. Long-press to clear any applied filters, or press once to open the menu and select/deselect the
             filter you wish to apply.
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+          <HelpHeaderText>
             NowTM
-          </Text>
+          </HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
+          <HelpParagraphText>
             You can press the <AppIcon icon={AppIcons.events} /> icon at the top of the screen to jump the view to
             today. Pressing again will scroll down to "now".
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+          <HelpHeaderText>
             Favorite/Follow
-          </Text>
+          </HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
+          <HelpParagraphText>
             Favoriting an event adds it to a list of all of your favorites. Long press an event in the schedule or press
             the <AppIcon icon={AppIcons.favorite} /> icon at the top of the event details screen. You can see all of
             your favorite events with a filter or with the floating action button.
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+          <HelpHeaderText>Forums</HelpHeaderText>
+        </PaddedContentView>
+        <PaddedContentView>
+          <HelpParagraphText>
+            All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.
+          </HelpParagraphText>
+        </PaddedContentView>
+        <PaddedContentView>
+          <HelpHeaderText>
             LFG Integration
-          </Text>
+          </HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
+          <HelpParagraphText>
             There are optional settings to enable showing LFGs you've joined or that are open to you in the schedule.
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
+          <HelpHeaderText>
             Your Day Today
-          </Text>
+          </HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text>
+          <HelpParagraphText>
             Press the <AppIcon icon={AppIcons.personalEvent} /> button on the schedule screen to view all of your events
             for the day. This includes favorited events, personal events, and joined LFGs. Pressing the button again
             will disengage the filters.
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

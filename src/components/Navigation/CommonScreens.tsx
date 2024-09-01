@@ -54,6 +54,9 @@ import {MuteUsersScreen} from '../Screens/User/MuteUsersScreen.tsx';
 import {FavoriteUsersScreen} from '../Screens/User/FavoriteUsersScreen.tsx';
 import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.tsx';
 import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScreen.tsx';
+import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
+import {EventStackComponents} from '../../libraries/Enums/Navigation.ts';
+import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -176,6 +179,8 @@ export type CommonStackParamList = {
   FavoriteUsersScreen: undefined;
   UserDirectoryHelpScreen: undefined;
   ForumSettingsScreen: undefined;
+  ForumHelpScreen: undefined;
+  ScheduleHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -219,6 +224,8 @@ export enum CommonStackComponents {
   favoriteUsers = 'FavoriteUsersScreen',
   userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
   forumSettingsScreen = 'ForumSettingsScreen',
+  forumHelpScreen = 'ForumHelpScreen',
+  scheduleHelpScreen = 'ScheduleHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -429,6 +436,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.forumSettingsScreen}
         component={ForumSettingsScreen}
         options={{title: 'Forum Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumHelpScreen}
+        component={ForumHelpScreen}
+        options={{title: 'Forum Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleHelpScreen}
+        component={ScheduleHelpScreen}
+        options={{title: 'Schedule Help'}}
       />
     </>
   );
