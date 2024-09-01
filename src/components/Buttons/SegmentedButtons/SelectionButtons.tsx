@@ -1,13 +1,13 @@
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {View, StyleSheet} from 'react-native';
-import {SegmentedButtons} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {FloatingButtonDisplayPosition, SegmentedButtonType} from '../../../libraries/Types';
+import {SegmentedButtonType} from '../../../libraries/Types';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useIsFocused} from '@react-navigation/native';
+import {useAppTheme} from '../../../styles/Theme.ts';
 
-interface FloatingSelectionButtonsProps<TItem> {
-  displayPosition?: FloatingButtonDisplayPosition;
+interface SelectionButtonsProps<TItem> {
   items?: TItem[];
   keyExtractor: (item: TItem) => string;
   selectedItems?: TItem[];
@@ -15,34 +15,28 @@ interface FloatingSelectionButtonsProps<TItem> {
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
 }
 
-export const FloatingSelectionButtons = <TItem extends object>({
-  displayPosition = 'bottom',
+export const SelectionButtons = <TItem extends object>({
   items = [],
   keyExtractor,
   selectedItems = [],
   setSelectedItems,
   setEnableSelection,
-}: FloatingSelectionButtonsProps<TItem>) => {
+}: SelectionButtonsProps<TItem>) => {
   const {commonStyles} = useStyles();
+  const theme = useAppTheme();
   const isFocused = useIsFocused();
 
   const styles = StyleSheet.create({
-    outerContainer: {
+    button: {
+      ...commonStyles.onSurfaceVariant,
+    },
+    container: {
+      ...commonStyles.paddingHorizontal,
+      ...commonStyles.surfaceVariant,
       ...commonStyles.flexRow,
       ...commonStyles.justifyCenter,
-      ...commonStyles.fullWidth,
-      ...commonStyles.backgroundTransparent,
-      ...commonStyles.positionAbsolute,
-      ...(displayPosition === 'bottom' ? {bottom: 100} : undefined),
-      ...(displayPosition === 'raised' ? {bottom: 80} : undefined),
-    },
-    innerContainer: {
+      ...commonStyles.minHeightLarge,
       ...commonStyles.alignItemsCenter,
-      ...commonStyles.paddingHorizontalLarge,
-      flex: 1,
-    },
-    button: {
-      ...commonStyles.surfaceVariant,
     },
   });
 
@@ -97,17 +91,25 @@ export const FloatingSelectionButtons = <TItem extends object>({
 
   useEffect(() => {
     if (!isFocused) {
-      console.log('[FloatingSelectionButtons.tsx] Focus has been lost, clearing selection.');
+      console.log('[SelectionButtons.tsx] Focus has been lost, clearing selection.');
       setSelectedItems([]);
       setEnableSelection(false);
     }
   }, [isFocused, setEnableSelection, setSelectedItems]);
 
   return (
-    <View style={styles.outerContainer} pointerEvents={'box-none'}>
-      <View style={styles.innerContainer}>
-        <SegmentedButtons buttons={buttons} value={''} onValueChange={onValueChange} />
-      </View>
+    <View style={styles.container}>
+      {buttons.map((button, index) => (
+        <Button
+          key={index}
+          icon={button.icon}
+          mode={'text'}
+          style={button.style}
+          textColor={theme.colors.onBackground}
+          onPress={() => onValueChange(button.value)}>
+          {button.label}
+        </Button>
+      ))}
     </View>
   );
 };

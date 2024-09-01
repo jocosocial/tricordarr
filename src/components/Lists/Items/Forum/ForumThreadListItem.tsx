@@ -119,7 +119,7 @@ export const ForumThreadListItem = ({
 
   const onLongPress = () => {
     setEnableSelection(true);
-    onSelect(forumListData, true);
+    onSelect(forumListData, false);
   };
 
   return (

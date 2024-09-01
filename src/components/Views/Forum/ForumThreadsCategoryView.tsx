@@ -11,6 +11,8 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ListTitleView} from '../ListTitleView';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
+import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
 
 interface ForumCategoryBaseViewProps {
   categoryID: string;
@@ -35,6 +37,9 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
+  const [selectedItems, setSelectedItems] = useState<ForumListData[]>([]);
+  const [enableSelection, setEnableSelection] = useState<boolean>(false);
+  const forumNavigation = useForumStackNavigation();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -68,6 +73,14 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     }
   }, [data, setForumListData, hasModerator]);
 
+  useEffect(() => {
+    if (enableSelection) {
+      forumNavigation.setOptions({title: `Selected: ${selectedItems.length}`});
+    } else {
+      forumNavigation.setOptions({title: 'Forums'});
+    }
+  }, [enableSelection, forumNavigation, selectedItems.length]);
+
   if (isLoading) {
     return <LoadingView />;
   }
@@ -89,9 +102,22 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
     );
   }
 
+  const keyExtractor = (item: ForumListData) => item.forumID;
+
   return (
     <>
-      <ListTitleView title={data?.pages[0].title} />
+      {enableSelection ? (
+        <SelectionButtons<ForumListData>
+          keyExtractor={keyExtractor}
+          items={forumListData}
+          setEnableSelection={setEnableSelection}
+          setSelectedItems={setSelectedItems}
+          selectedItems={selectedItems}
+        />
+      ) : (
+        <ListTitleView title={data?.pages[0].title} />
+      )}
+
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
@@ -100,6 +126,11 @@ export const ForumThreadsCategoryView = (props: ForumCategoryBaseViewProps) => {
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
         categoryID={props.categoryID}
+        selectedItems={selectedItems}
+        setSelectedItems={setSelectedItems}
+        enableSelection={enableSelection}
+        setEnableSelection={setEnableSelection}
+        keyExtractor={keyExtractor}
       />
       {!isUserRestricted && <ForumCategoryFAB categoryId={props.categoryID} />}
     </>
