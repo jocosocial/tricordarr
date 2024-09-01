@@ -49,6 +49,7 @@ import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/Sw
 import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
 import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -98,37 +99,39 @@ function App(): React.JSX.Element {
               <SwiftarrQueryClientProvider>
                 <LoadingProvider>
                   <AuthProvider>
-                    <UserDataProvider>
-                      <PrivilegeProvider>
-                        <SocketProvider>
-                          <TwitarrProvider>
-                            <UserRelationsProvider>
-                              <UserNotificationDataProvider>
-                                <FeatureProvider>
-                                  <ModalProvider>
-                                    <Portal.Host>
-                                      <HeaderButtonsProvider stackType={'native'}>
-                                        <CruiseProvider>
-                                          <DrawerProvider>
-                                            <FilterProvider>
-                                              <AppEventHandler />
-                                              <ForegroundService />
-                                              <NotificationDataListener />
-                                              <NotificationDataPoller />
-                                              <RootStackNavigator />
-                                            </FilterProvider>
-                                          </DrawerProvider>
-                                        </CruiseProvider>
-                                      </HeaderButtonsProvider>
-                                    </Portal.Host>
-                                  </ModalProvider>
-                                </FeatureProvider>
-                              </UserNotificationDataProvider>
-                            </UserRelationsProvider>
-                          </TwitarrProvider>
-                        </SocketProvider>
-                      </PrivilegeProvider>
-                    </UserDataProvider>
+                    <CriticalErrorProvider>
+                      <UserDataProvider>
+                        <PrivilegeProvider>
+                          <SocketProvider>
+                            <TwitarrProvider>
+                              <UserRelationsProvider>
+                                <UserNotificationDataProvider>
+                                  <FeatureProvider>
+                                    <ModalProvider>
+                                      <Portal.Host>
+                                        <HeaderButtonsProvider stackType={'native'}>
+                                          <CruiseProvider>
+                                            <DrawerProvider>
+                                              <FilterProvider>
+                                                <AppEventHandler />
+                                                <ForegroundService />
+                                                <NotificationDataListener />
+                                                <NotificationDataPoller />
+                                                <RootStackNavigator />
+                                              </FilterProvider>
+                                            </DrawerProvider>
+                                          </CruiseProvider>
+                                        </HeaderButtonsProvider>
+                                      </Portal.Host>
+                                    </ModalProvider>
+                                  </FeatureProvider>
+                                </UserNotificationDataProvider>
+                              </UserRelationsProvider>
+                            </TwitarrProvider>
+                          </SocketProvider>
+                        </PrivilegeProvider>
+                      </UserDataProvider>
+                    </CriticalErrorProvider>
                   </AuthProvider>
                 </LoadingProvider>
               </SwiftarrQueryClientProvider>

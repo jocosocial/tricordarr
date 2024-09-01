@@ -50,6 +50,7 @@
     "react-native-device-info": "^10.12.0",
     "react-native-drawer-layout": "^3.2.1",
     "react-native-encrypted-storage": "^4.0.3",
+    "react-native-error-boundary": "^1.2.4",
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^2.18.1",

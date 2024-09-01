@@ -9245,6 +9245,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-error-boundary@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "react-native-error-boundary@npm:1.2.4"
+  peerDependencies:
+    "@types/react-native": ">=0.57.7"
+    react: ">=16.6.0"
+    react-native: ">=0.57.7"
+  peerDependenciesMeta:
+    "@types/react-native":
+      optional: true
+  checksum: c047da0b40b840941e2f9f1447a755b35d45957fbefe4f8e9e05156f0d84df4da46bf5df21fecc18272be1570a14452db80ab5c26aef1611c9488be932f84b1d
+  languageName: node
+  linkType: hard
+
 "react-native-fast-image@npm:^8.6.3":
   version: 8.6.3
   resolution: "react-native-fast-image@npm:8.6.3"
@@ -10931,6 +10945,7 @@ __metadata:
     react-native-device-info: ^10.12.0
     react-native-drawer-layout: ^3.2.1
     react-native-encrypted-storage: ^4.0.3
+    react-native-error-boundary: ^1.2.4
     react-native-fast-image: ^8.6.3
     react-native-fs: ^2.18.0
     react-native-gesture-handler: ^2.18.1
