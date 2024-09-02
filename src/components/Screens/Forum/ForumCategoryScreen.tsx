@@ -18,14 +18,9 @@ import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries.ts
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {Text} from 'react-native-paper';
-import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
-import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
-import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
+import {ForumThreadListView} from '../../Views/Forum/ForumThreadListView.tsx';
+import {ForumCategoryEmptyView} from '../../Views/Forum/ForumCategoryEmptyView.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -51,20 +46,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const {selectedItems, setSelectedItems, enableSelection, setEnableSelection} = useSelection<ForumListData>();
-
-  const handleLoadNext = () => {
-    if (!isFetchingNextPage && hasNextPage) {
-      setRefreshing(true);
-      fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
-    }
-  };
+  const {selectedItems, enableSelection} = useSelection<ForumListData>();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -129,22 +111,16 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
 
   if (data?.pages[0].numThreads === 0 && forumListData.length === 0) {
     return (
-      <>
-        <View>
-          <ScrollingContentView
-            isStack={true}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-            <PaddedContentView padTop={true}>
-              <Text>There aren't any forums in this category yet.</Text>
-            </PaddedContentView>
-          </ScrollingContentView>
-        </View>
-        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
-      </>
+      <AppView>
+        <ForumCategoryEmptyView
+          categoryID={route.params.categoryID}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
+          showFAB={!isUserRestricted}
+        />
+      </AppView>
     );
   }
-
-  const keyExtractor = (item: ForumListData) => item.forumID;
 
   if (forumFilter) {
     return (
@@ -158,28 +134,21 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }
   return (
     <AppView>
-      {enableSelection ? (
-        <SelectionButtons<ForumListData>
-          keyExtractor={keyExtractor}
-          items={forumListData}
-          setEnableSelection={setEnableSelection}
-          setSelectedItems={setSelectedItems}
-          selectedItems={selectedItems}
-        />
-      ) : (
-        <ListTitleView title={data?.pages[0].title} />
-      )}
-      <ForumThreadFlatList
-        forumListData={forumListData}
-        handleLoadNext={handleLoadNext}
-        handleLoadPrevious={handleLoadPrevious}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        hasNextPage={hasNextPage}
+      <ForumThreadListView
+        fetchPreviousPage={fetchPreviousPage}
+        fetchNextPage={fetchNextPage}
         hasPreviousPage={hasPreviousPage}
+        hasNextPage={hasNextPage}
+        forumListData={forumListData}
         categoryID={route.params.categoryID}
-        keyExtractor={keyExtractor}
+        isFetchingPreviousPage={isFetchingPreviousPage}
+        title={data?.pages[0].title}
+        isFetchingNextPage={isFetchingNextPage}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        setRefreshing={setRefreshing}
+        enableFAB={!isUserRestricted}
       />
-      {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
     </AppView>
   );
 };
