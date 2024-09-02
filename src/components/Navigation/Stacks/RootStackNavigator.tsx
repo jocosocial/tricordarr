@@ -7,6 +7,7 @@ import {BottomTabNavigator, BottomTabParamList} from '../Tabs/BottomTabNavigator
 import {OobeStackNavigator} from './OobeStackNavigator';
 import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
@@ -26,6 +27,7 @@ export const RootStackNavigator = () => {
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const {appConfig} = useConfig();
   const {setHasUnsavedWork} = useErrorHandler();
+  const {setEnableSelection, setSelectedItems} = useSelection();
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
@@ -38,8 +40,10 @@ export const RootStackNavigator = () => {
       screenOptions={{...screenOptions, headerShown: false}}
       screenListeners={{
         state: () => {
-          console.log('[RootStackNavigator.tsx] Clearing unsaved work.');
+          console.log('[RootStackNavigator.tsx] navigation state change handler.');
           setHasUnsavedWork(false);
+          setEnableSelection(false);
+          setSelectedItems([]);
         },
       }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />

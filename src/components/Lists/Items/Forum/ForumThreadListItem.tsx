@@ -109,10 +109,12 @@ export const ForumThreadListItem = ({
       forumListData: forumListData,
     });
 
+  const onSelectionPress = () => onSelect(forumListData, selected);
+
   const getLeft = () => {
     return (
       <View style={styles.leftContainer}>
-        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={() => onSelect(forumListData, selected)} />
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={onSelectionPress} />
       </View>
     );
   };
@@ -123,14 +125,14 @@ export const ForumThreadListItem = ({
   };
 
   return (
-    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID}>
+    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID} enabled={!enableSelection}>
       <List.Item
         style={styles.item}
         title={forumListData.title}
         titleStyle={styles.title}
         titleNumberOfLines={0}
         description={getDescription}
-        onPress={onPress}
+        onPress={enableSelection ? onSelectionPress : onPress}
         right={getRight}
         left={enableSelection ? getLeft : undefined}
         onLongPress={onLongPress}

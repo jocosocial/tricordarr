@@ -25,6 +25,7 @@ import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategor
 import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -50,8 +51,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const [selectedItems, setSelectedItems] = useState<ForumListData[]>([]);
-  const [enableSelection, setEnableSelection] = useState<boolean>(false);
+  const {selectedItems, setSelectedItems, enableSelection, setEnableSelection} = useSelection<ForumListData>();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -91,8 +91,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         <View>
           <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
             <Item iconName={AppIcons.favorite} title={'Favorite'} />
-            <Item iconName={AppIcons.mute} title={'Favorite'} />
-            <Item iconName={AppIcons.check} title={'Favorite'} />
+            <Item iconName={AppIcons.mute} title={'Mute'} />
+            <Item iconName={AppIcons.markAsRead} title={'Read'} />
           </HeaderButtons>
         </View>
       );
@@ -158,35 +158,28 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   }
   return (
     <AppView>
-      <>
-        {enableSelection ? (
-          <SelectionButtons<ForumListData>
-            keyExtractor={keyExtractor}
-            items={forumListData}
-            setEnableSelection={setEnableSelection}
-            setSelectedItems={setSelectedItems}
-            selectedItems={selectedItems}
-          />
-        ) : (
-          <ListTitleView title={data?.pages[0].title} />
-        )}
-
-        <ForumThreadFlatList
-          forumListData={forumListData}
-          handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          categoryID={route.params.categoryID}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-          enableSelection={enableSelection}
-          setEnableSelection={setEnableSelection}
+      {enableSelection ? (
+        <SelectionButtons<ForumListData>
           keyExtractor={keyExtractor}
+          items={forumListData}
+          setEnableSelection={setEnableSelection}
+          setSelectedItems={setSelectedItems}
+          selectedItems={selectedItems}
         />
-        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
-      </>
+      ) : (
+        <ListTitleView title={data?.pages[0].title} />
+      )}
+      <ForumThreadFlatList
+        forumListData={forumListData}
+        handleLoadNext={handleLoadNext}
+        handleLoadPrevious={handleLoadPrevious}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        categoryID={route.params.categoryID}
+        keyExtractor={keyExtractor}
+      />
+      {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
     </AppView>
   );
 };

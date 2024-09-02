@@ -50,6 +50,7 @@ import {LoadingProvider} from './src/components/Context/Providers/LoadingProvide
 import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
+import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -113,11 +114,13 @@ function App(): React.JSX.Element {
                                           <CruiseProvider>
                                             <DrawerProvider>
                                               <FilterProvider>
-                                                <AppEventHandler />
-                                                <ForegroundService />
-                                                <NotificationDataListener />
-                                                <NotificationDataPoller />
-                                                <RootStackNavigator />
+                                                <SelectionProvider>
+                                                  <AppEventHandler />
+                                                  <ForegroundService />
+                                                  <NotificationDataListener />
+                                                  <NotificationDataPoller />
+                                                  <RootStackNavigator />
+                                                </SelectionProvider>
                                               </FilterProvider>
                                             </DrawerProvider>
                                           </CruiseProvider>

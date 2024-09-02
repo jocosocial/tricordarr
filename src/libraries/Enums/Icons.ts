@@ -116,4 +116,5 @@ export enum AppIcons {
   selectAll = 'select-all',
   selectNone = 'select-remove',
   selectInverse = 'select-inverse',
+  markAsRead = 'read',
 }

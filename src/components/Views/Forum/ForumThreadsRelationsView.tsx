@@ -62,9 +62,11 @@ export const ForumThreadsRelationsView = ({
 
   useEffect(() => {
     if (data && data.pages) {
-      setForumListData(data.pages.flatMap(p => p.forumThreads || []))
+      setForumListData(data.pages.flatMap(p => p.forumThreads || []));
     }
   }, [data, setForumListData]);
+
+  const keyExtractor = (item: ForumListData) => item.forumID;
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -99,6 +101,7 @@ export const ForumThreadsRelationsView = ({
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
+        keyExtractor={keyExtractor}
       />
     </AppView>
   );

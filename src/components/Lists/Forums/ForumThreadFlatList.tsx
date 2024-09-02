@@ -1,6 +1,6 @@
 import {RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
-import React, {Dispatch, SetStateAction, useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -11,6 +11,7 @@ import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
 import {FlashList} from '@shopify/flash-list';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -22,10 +23,6 @@ interface ForumThreadFlatListProps {
   hasPreviousPage?: boolean;
   pinnedThreads?: ForumListData[];
   categoryID?: string;
-  selectedItems: ForumListData[];
-  setSelectedItems: Dispatch<SetStateAction<ForumListData[]>>;
-  enableSelection: boolean;
-  setEnableSelection: Dispatch<SetStateAction<boolean>>;
   keyExtractor: (item: ForumListData) => string;
 }
 
@@ -38,10 +35,6 @@ export const ForumThreadFlatList = ({
   hasPreviousPage,
   pinnedThreads = [],
   categoryID,
-  selectedItems,
-  setSelectedItems,
-  enableSelection,
-  setEnableSelection,
   keyExtractor,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlashList<ForumListData>>(null);
@@ -49,6 +42,7 @@ export const ForumThreadFlatList = ({
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
+  const {selectedItems, setSelectedItems, enableSelection, setEnableSelection} = useSelection<ForumListData>();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.

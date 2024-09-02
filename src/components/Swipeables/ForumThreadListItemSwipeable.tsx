@@ -15,6 +15,7 @@ import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.tsx';
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   forumListData: ForumListData;
   categoryID?: string;
+  enabled?: boolean;
 }
 
 export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeableProps) => {
@@ -192,6 +193,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   return (
     <Swipeable
+      enabled={props.enabled}
       renderRightActions={renderRightPanel}
       renderLeftActions={renderLeftPanel}
       overshootFriction={8}
