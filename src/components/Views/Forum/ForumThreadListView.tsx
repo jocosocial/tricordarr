@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
 import {ErrorResponse, ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ListTitleView} from '../ListTitleView.tsx';

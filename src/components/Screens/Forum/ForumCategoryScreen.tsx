@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
-import {RefreshControl, View} from 'react-native';
+import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {ForumThreadScreenFilterMenu} from '../../Menus/Forum/ForumThreadScreenFilterMenu';
@@ -132,6 +132,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
       </AppView>
     );
   }
+
   return (
     <AppView>
       <ForumThreadListView
