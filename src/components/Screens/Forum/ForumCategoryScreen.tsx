@@ -4,7 +4,7 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {View} from 'react-native';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {ForumThreadScreenFilterMenu} from '../../Menus/Forum/ForumThreadScreenFilterMenu';
 import {ForumThreadScreenSortMenu} from '../../Menus/Forum/ForumThreadScreenSortMenu';
 import {useFilter} from '../../Context/Contexts/FilterContext';
@@ -16,11 +16,12 @@ import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {ForumCategoryScreenActionsMenu} from '../../Menus/Forum/ForumCategoryScreenActionsMenu.tsx';
 import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries.tsx';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {ForumThreadListView} from '../../Views/Forum/ForumThreadListView.tsx';
-import {ForumCategoryEmptyView} from '../../Views/Forum/ForumCategoryEmptyView.tsx';
+import {ForumEmptyListView} from '../../Views/Forum/ForumEmptyListView.tsx';
+import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
+import {ForumSelectionHeaderButtons} from '../../Buttons/HeaderButtons/ForumSelectionHeaderButtons.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -71,11 +72,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     if (enableSelection) {
       return (
         <View>
-          <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-            <Item iconName={AppIcons.favorite} title={'Favorite'} />
-            <Item iconName={AppIcons.mute} title={'Mute'} />
-            <Item iconName={AppIcons.markAsRead} title={'Read'} />
-          </HeaderButtons>
+          <ForumSelectionHeaderButtons />
         </View>
       );
     }
@@ -112,12 +109,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   if (data?.pages[0].numThreads === 0 && forumListData.length === 0) {
     return (
       <AppView>
-        <ForumCategoryEmptyView
-          categoryID={route.params.categoryID}
-          onRefresh={onRefresh}
-          refreshing={refreshing}
-          showFAB={!isUserRestricted}
-        />
+        <ForumEmptyListView onRefresh={onRefresh} refreshing={refreshing} />
+        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
       </AppView>
     );
   }
@@ -129,6 +122,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
           relationType={ForumFilter.toRelation(forumFilter)}
           categoryID={route.params.categoryID}
         />
+        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
       </AppView>
     );
   }

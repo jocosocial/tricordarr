@@ -1,7 +1,7 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {RefreshControl} from 'react-native';
 import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
-import {ErrorResponse, ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ErrorResponse, ForumListData, ForumSearchData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ListTitleView} from '../ListTitleView.tsx';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
@@ -18,10 +18,14 @@ interface ForumThreadListViewProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;
   fetchNextPage: (
     options?: FetchNextPageOptions | undefined,
-  ) => Promise<InfiniteQueryObserverResult<CategoryDataQueryResponse, AxiosError<ErrorResponse, any>>>;
+  ) => Promise<
+    InfiniteQueryObserverResult<CategoryDataQueryResponse | ForumSearchData, AxiosError<ErrorResponse, any>>
+  >;
   fetchPreviousPage: (
     options?: FetchNextPageOptions | undefined,
-  ) => Promise<InfiniteQueryObserverResult<CategoryDataQueryResponse, AxiosError<ErrorResponse, any>>>;
+  ) => Promise<
+    InfiniteQueryObserverResult<CategoryDataQueryResponse | ForumSearchData, AxiosError<ErrorResponse, any>>
+  >;
   isFetchingNextPage: boolean;
   isFetchingPreviousPage: boolean;
   title?: string;

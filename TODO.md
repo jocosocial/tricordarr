@@ -6,6 +6,7 @@ Tricordarr
 * event search is missing the important part
 * make generic `apiQueryV3()` and audit uses of raw `useQuery()`
 * Improve changing server url behavior - 404's and 400's.
+* favoring a forum is not expiring favorite forums in a category results
 
 Swiftarr
 --------
