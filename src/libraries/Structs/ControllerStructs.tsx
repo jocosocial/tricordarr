@@ -7,6 +7,7 @@ import {HttpStatusCode} from 'axios';
 import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
 import {DinnerTeam} from '../Enums/DinnerTeam';
+import {QueryKey} from '@tanstack/react-query';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -595,6 +596,25 @@ export interface ForumListData {
   eventID?: string;
   /// If this forum is pinned or not.
   isPinned?: boolean;
+}
+
+export namespace ForumListData {
+  /**
+   * Returns an array of QueryKeys that would need invalidated when a Forum's
+   * state is known to have changed.
+   * @param categoryID Optional string of the category ID.
+   * @param forumID Optional string of the Forum ID.
+   */
+  export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes']];
+    if (forumID) {
+      queryKeys.push([`/forum/${forumID}`])
+    }
+    if (categoryID) {
+      queryKeys.push([`/forum/categories/${categoryID}`])
+    }
+    return queryKeys;
+  }
 }
 
 export interface CategoryData {
