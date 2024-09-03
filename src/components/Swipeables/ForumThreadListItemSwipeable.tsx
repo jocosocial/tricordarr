@@ -11,6 +11,7 @@ import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
 import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.tsx';
 import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.tsx';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   forumListData: ForumListData;
@@ -31,6 +32,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
+  const {appConfig} = useConfig();
 
   const invalidationQueryKeys = ForumListData.getForumCacheKeys(props.categoryID, props.forumListData.forumID);
 
@@ -192,8 +194,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   return (
     <Swipeable
       enabled={props.enabled}
-      renderRightActions={renderRightPanel}
-      renderLeftActions={renderLeftPanel}
+      renderRightActions={appConfig.userPreferences.reverseSwipeOrientation ? renderLeftPanel : renderRightPanel}
+      renderLeftActions={appConfig.userPreferences.reverseSwipeOrientation ? renderRightPanel : renderLeftPanel}
       overshootFriction={8}
       overshootRight={false}
       overshootLeft={false}>
