@@ -72,7 +72,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     if (enableSelection) {
       return (
         <View>
-          <ForumSelectionHeaderButtons />
+          <ForumSelectionHeaderButtons setRefreshing={setRefreshing} categoryID={route.params.categoryID} />
         </View>
       );
     }
@@ -85,7 +85,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [enableSelection]);
+  }, [enableSelection, route.params.categoryID]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.

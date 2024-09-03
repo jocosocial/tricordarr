@@ -608,13 +608,13 @@ export namespace ForumListData {
   export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
     let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes']];
     if (forumID) {
-      queryKeys.push([`/forum/${forumID}`])
+      queryKeys.push([`/forum/${forumID}`]);
     }
     if (categoryID) {
-      queryKeys.push([`/forum/categories/${categoryID}`])
+      queryKeys.push([`/forum/categories/${categoryID}`]);
     }
     return queryKeys;
-  }
+  };
 }
 
 export interface CategoryData {
