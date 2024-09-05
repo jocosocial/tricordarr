@@ -1,13 +1,16 @@
-import {Context, createContext, Dispatch, SetStateAction, useContext} from 'react';
+import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ForumListDataSelectionActionsType} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
-export interface SelectionContextType<TItem> {
-  selectedItems: TItem[];
-  setSelectedItems: Dispatch<SetStateAction<TItem[]>>;
+export interface SelectionContextType {
+  // selectedItems: TItem[];
+  // setSelectedItems: Dispatch<SetStateAction<TItem[]>>;
+  selectedForums: ForumListData[];
+  dispatchSelectedForums: Dispatch<ForumListDataSelectionActionsType>;
   enableSelection: boolean;
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
 }
 
-export const SelectionContext = createContext<SelectionContextType<unknown>>({} as SelectionContextType<unknown>);
+export const SelectionContext = createContext(<SelectionContextType>{});
 
-export const useSelection = <TItem>() =>
-  useContext<SelectionContextType<TItem>>(SelectionContext as Context<SelectionContextType<TItem>>);
+export const useSelection = () => useContext(SelectionContext);

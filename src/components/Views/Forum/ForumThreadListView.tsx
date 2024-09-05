@@ -49,7 +49,7 @@ export const ForumThreadListView = ({
   onRefresh,
   forumListData,
 }: ForumThreadListViewProps) => {
-  const {enableSelection, setEnableSelection, setSelectedItems, selectedItems} = useSelection<ForumListData>();
+  const {enableSelection} = useSelection();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -68,17 +68,7 @@ export const ForumThreadListView = ({
 
   return (
     <>
-      {enableSelection ? (
-        <SelectionButtons<ForumListData>
-          keyExtractor={keyExtractor}
-          items={forumListData}
-          setEnableSelection={setEnableSelection}
-          setSelectedItems={setSelectedItems}
-          selectedItems={selectedItems}
-        />
-      ) : (
-        <ListTitleView title={title} />
-      )}
+      {enableSelection ? <SelectionButtons items={forumListData} /> : <ListTitleView title={title} />}
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}

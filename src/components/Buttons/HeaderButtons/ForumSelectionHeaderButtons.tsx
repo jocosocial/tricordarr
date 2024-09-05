@@ -7,6 +7,7 @@ import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
+import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 interface ForumSelectionHeaderButtonsProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;
@@ -14,7 +15,7 @@ interface ForumSelectionHeaderButtonsProps {
 }
 
 export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsProps) => {
-  const {selectedItems, setEnableSelection, setSelectedItems} = useSelection<ForumListData>();
+  const {selectedForums, setEnableSelection, dispatchSelectedForums} = useSelection();
   const relationMutation = useForumRelationMutation();
   const queryClient = useQueryClient();
 
@@ -23,7 +24,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
 
     // https://stackoverflow.com/questions/70771324/how-to-handle-multiple-mutations-in-parallel-with-react-query
     const mutations: Promise<AxiosResponse<void, any>>[] = [];
-    selectedItems.forEach(i => {
+    selectedForums.forEach(i => {
       const relationStatus = relation === 'favorite' ? i.isFavorite : i.isMuted;
       const mutation = relationMutation.mutateAsync(
         {
@@ -40,10 +41,17 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
       mutations.push(mutation);
     });
     await Promise.allSettled(mutations);
+    selectedForums.forEach(i => {
+      dispatchSelectedForums({
+        type: ForumListDataSelectionActions.updateItem,
+        item: {
+          ...i,
+          ...(relation === 'favorite' ? {isFavorite: !i.isFavorite} : {isMuted: !i.isMuted}),
+        },
+      });
+    });
     const invalidationQueryKeys = ForumListData.getForumCacheKeys(props.categoryID);
     invalidationQueryKeys.forEach(key => queryClient.invalidateQueries(key));
-    setEnableSelection(false);
-    setSelectedItems([]);
     props.setRefreshing(false);
   };
 
