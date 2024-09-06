@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
@@ -37,7 +37,7 @@ export const ForumThreadListItem = ({
   const theme = useAppTheme();
   // const [selected, setSelected] = useState(false);
   const {setSelectedItems, selectedItems, enableSelection, setEnableSelection} = useSelection();
-  const [stateSelected, setStateSelected] = useState(selectedItems.includes(forumListData.forumID));
+  const selected = selectedItems.includes(forumListData.forumID);
 
   const styles = StyleSheet.create({
     item: {
@@ -126,13 +126,13 @@ export const ForumThreadListItem = ({
     } else {
       setSelectedItems(selectedItems.concat([forumListData.forumID]));
     }
-    setStateSelected(!stateSelected);
+    // setSelected(!selected);
   };
 
   const getLeft = () => {
     return (
       <View style={styles.leftContainer}>
-        <Checkbox status={stateSelected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
       </View>
     );
   };
@@ -141,12 +141,6 @@ export const ForumThreadListItem = ({
     setEnableSelection(true);
     handleSelection();
   };
-
-  useEffect(() => {
-    console.log('useEffect Running');
-    const selected = selectedItems.includes(forumListData.forumID);
-    setStateSelected(selected);
-  }, [forumListData.forumID, selectedItems]);
 
   console.log(`Rendering item ${forumListData.forumID}`);
 
