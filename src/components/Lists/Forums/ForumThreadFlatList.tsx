@@ -42,7 +42,7 @@ export const ForumThreadFlatList = ({
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
-  const {enableSelection, setEnableSelection, selectedForums} = useSelection();
+  const {enableSelection} = useSelection();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -137,13 +137,13 @@ export const ForumThreadFlatList = ({
         <ForumThreadListItem
           forumListData={item}
           categoryID={categoryID}
-          enableSelection={enableSelection}
-          setEnableSelection={setEnableSelection}
-          selected={selectedForums.some(i => i.forumID === item.forumID)}
+          // enableSelection={enableSelection}
+          // setEnableSelection={setEnableSelection}
+          // selected={selectedItems.some(i => i === item.forumID)}
         />
       );
     },
-    [categoryID, enableSelection, selectedForums, setEnableSelection],
+    [categoryID],
   );
 
   return (

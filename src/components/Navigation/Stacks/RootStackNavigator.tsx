@@ -28,7 +28,7 @@ export const RootStackNavigator = () => {
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const {appConfig} = useConfig();
   const {setHasUnsavedWork} = useErrorHandler();
-  const {setEnableSelection, dispatchSelectedForums} = useSelection();
+  const {setEnableSelection, setSelectedItems} = useSelection();
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
@@ -44,9 +44,10 @@ export const RootStackNavigator = () => {
           console.log('[RootStackNavigator.tsx] navigation state change handler.');
           setHasUnsavedWork(false);
           setEnableSelection(false);
-          dispatchSelectedForums({
-            type: ForumListDataSelectionActions.clear,
-          });
+          // dispatchSelectedForums({
+          //   type: ForumListDataSelectionActions.clear,
+          // });
+          setSelectedItems([]);
         },
       }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />

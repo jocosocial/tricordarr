@@ -3,8 +3,8 @@ import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ForumListDataSelectionActionsType} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 export interface SelectionContextType {
-  // selectedItems: TItem[];
-  // setSelectedItems: Dispatch<SetStateAction<TItem[]>>;
+  selectedItems: string[];
+  setSelectedItems: Dispatch<SetStateAction<string[]>>;
   selectedForums: ForumListData[];
   dispatchSelectedForums: Dispatch<ForumListDataSelectionActionsType>;
   enableSelection: boolean;

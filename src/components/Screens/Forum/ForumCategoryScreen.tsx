@@ -47,7 +47,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);
   const [isUserRestricted, setIsUserRestricted] = useState(false);
   const {hasModerator} = usePrivilege();
-  const {selectedForums, enableSelection} = useSelection();
+  const {selectedItems, enableSelection} = useSelection();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -96,11 +96,11 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
       headerRight: getNavButtons,
     });
     if (enableSelection) {
-      navigation.setOptions({title: `Selected: ${selectedForums.length}`});
+      navigation.setOptions({title: `Selected: ${selectedItems.length}`});
     } else {
       navigation.setOptions({title: 'Forums'});
     }
-  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedForums.length]);
+  }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedItems.length]);
 
   if (isLoading) {
     return <LoadingView />;
