@@ -20,24 +20,23 @@ import {ForumListDataSelectionActions} from '../../../Reducers/Forum/ForumListDa
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
   categoryID?: string;
-  // enableSelection: boolean;
-  // setEnableSelection: Dispatch<SetStateAction<boolean>>;
-  // selected: boolean;
+  enableSelection: boolean;
+  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+  selected: boolean;
 }
 
 export const ForumThreadListItem = ({
   forumListData,
   categoryID,
   // onSelect,
-  // enableSelection = false,
-  // selected = false,
-  // setEnableSelection,
+  enableSelection = false,
+  selected = false,
+  setEnableSelection,
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
   // const [selected, setSelected] = useState(false);
-  const {setSelectedItems, selectedItems, enableSelection, setEnableSelection} = useSelection();
-  const selected = selectedItems.includes(forumListData.forumID);
+  const {dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     item: {
@@ -116,16 +115,10 @@ export const ForumThreadListItem = ({
   };
 
   const handleSelection = () => {
-    // dispatchSelectedForums({
-    //   type: ForumListDataSelectionActions.select,
-    //   forumListData: forumListData,
-    // });
-    if (selectedItems.includes(forumListData.forumID)) {
-      // console.info('[ForumThreadListItem.tsx] already included');
-      setSelectedItems(selectedItems.filter(i => i !== forumListData.forumID));
-    } else {
-      setSelectedItems(selectedItems.concat([forumListData.forumID]));
-    }
+    dispatchSelectedForums({
+      type: ForumListDataSelectionActions.select,
+      forumListData: forumListData,
+    });
     // setSelected(!selected);
   };
 

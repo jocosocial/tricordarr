@@ -18,7 +18,7 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const isFocused = useIsFocused();
-  const {setSelectedItems, setEnableSelection, selectedItems} = useSelection();
+  const {dispatchSelectedForums, setEnableSelection, selectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     button: {
@@ -64,33 +64,29 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const onValueChange = (value: string) => {
     switch (value) {
       case 'none':
-        // dispatchSelectedForums({
-        //   type: ForumListDataSelectionActions.clear,
-        // });
-        setSelectedItems([]);
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.clear,
+        });
         break;
       case 'all':
-        // dispatchSelectedForums({
-        //   type: ForumListDataSelectionActions.set,
-        //   items: items,
-        // });
-        setSelectedItems(items.map(i => i.forumID));
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.set,
+          items: items,
+        });
         break;
       case 'inverse':
         const inverted = items.filter(
-          allItem => !selectedItems.some(selectedItem => selectedItem === allItem.forumID),
+          allItem => !selectedForums.some(selectedItem => selectedItem.forumID === allItem.forumID),
         );
-        // dispatchSelectedForums({
-        //   type: ForumListDataSelectionActions.set,
-        //   items: inverted,
-        // });
-        setSelectedItems(inverted.map(i => i.forumID));
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.set,
+          items: inverted,
+        });
         break;
       case 'cancel':
-        // dispatchSelectedForums({
-        //   type: ForumListDataSelectionActions.clear,
-        // });
-        setSelectedItems([]);
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.clear,
+        });
         setEnableSelection(false);
         break;
     }
@@ -99,13 +95,12 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   useEffect(() => {
     if (!isFocused) {
       console.log('[SelectionButtons.tsx] Focus has been lost, clearing selection.');
-      // dispatchSelectedForums({
-      //   type: ForumListDataSelectionActions.clear,
-      // });
-      setSelectedItems([]);
+      dispatchSelectedForums({
+        type: ForumListDataSelectionActions.clear,
+      });
       setEnableSelection(false);
     }
-  }, [setSelectedItems, isFocused, setEnableSelection]);
+  }, [dispatchSelectedForums, isFocused, setEnableSelection]);
 
   return (
     <View style={styles.container}>
