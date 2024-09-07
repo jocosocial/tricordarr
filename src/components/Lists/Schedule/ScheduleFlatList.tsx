@@ -29,6 +29,8 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
   separator = 'time',
   listRef,
   setRefreshing,
+  listFooter,
+  listHeader,
 }: ScheduleFlatListProps<TItem>) => {
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
@@ -95,6 +97,8 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
       separator={separator}
       estimatedItemSize={120}
       refreshControl={refreshControl}
+      listHeader={listHeader}
+      listFooter={listFooter}
     />
   );
 };
