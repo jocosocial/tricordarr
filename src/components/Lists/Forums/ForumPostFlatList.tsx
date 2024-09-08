@@ -1,5 +1,5 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
+import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {ReactNode, useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -13,6 +13,7 @@ import {Text} from 'react-native-paper';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {styleDefaults} from '../../../styles';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -65,9 +66,8 @@ export const ForumPostFlatList = ({
     },
   });
 
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
   };
 
   const handleScrollButtonPress = () => {
