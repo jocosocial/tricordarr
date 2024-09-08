@@ -13,9 +13,9 @@ import superjson from 'superjson';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
 class BadResponseFormatError extends Error {
-  constructor (public response: AxiosResponse) {
+  constructor(public response: AxiosResponse) {
     const contentType = response.headers['content-type'];
-    const server = response.headers['server'];
+    const server = response.headers.server;
     super(`Malformed response. Got ${contentType} payload from server ${server}.`);
   }
 }
@@ -68,7 +68,7 @@ export const apiQueryV3 = async ({queryKey}: QueryFunctionContext<QueryKey>): Pr
   const response = await axios.get(mutableQueryKey[0]);
 
   // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
-  if (!response.headers["content-type"].startsWith("application/json")) {
+  if (!response.headers['content-type'].startsWith('application/json')) {
     throw new BadResponseFormatError(response);
   }
 
@@ -169,4 +169,10 @@ export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boole
     // shouldEnable = isLoggedIn;
   }
   return shouldEnable;
+};
+
+export const markAsRead = async (url: string) => {
+  console.log('[APIClient.ts] marking URL as read', url);
+  const response = await axios.get(url);
+  console.log(response.status);
 };

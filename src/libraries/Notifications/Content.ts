@@ -86,22 +86,28 @@ export async function generateContentNotification(
   type: string,
   url: string,
   pressActionID: string = PressAction.twitarrTab,
-  autoCancel: boolean = true,
+  autoCancel: boolean = false,
   ongoing: boolean = false,
-  enableMarkAsRead: boolean = false,
+  markAsReadUrl?: string,
 ) {
-  console.log('Displaying notification with pressID', pressActionID);
+  console.log('[Content.ts] Displaying notification with pressID', pressActionID);
 
   let actions: AndroidAction[] = [settingsPressAction];
-  if (enableMarkAsRead) {
+  if (markAsReadUrl) {
     actions = [markAsReadPressAction, ...actions];
   }
+
+  const data = {
+    type: type,
+    url: url,
+    ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
+  };
 
   await notifee.displayNotification({
     id: id,
     title: title,
     body: body,
-    data: {type: type, url: url},
+    data: data,
     android: {
       ongoing: ongoing,
       channelId: channel.id,

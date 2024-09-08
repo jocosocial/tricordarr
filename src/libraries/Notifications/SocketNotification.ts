@@ -12,6 +12,7 @@ import {
 import {PressAction} from '../Enums/Notifications';
 import {generateContentNotification} from './Content';
 import {getAppConfig} from '../AppConfig';
+import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
 
 /**
  * Generate a Notifee notification from a WebSocket event. This usually means that something
@@ -27,9 +28,9 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   let url = '';
   let pressActionID = PressAction.twitarrTab;
   let title = '';
-  let autoCancel = true;
+  let autoCancel = false;
   let ongoing = false;
-  let enableMarkAsRead = false;
+  let markAsReadUrl: string | undefined;
 
   // Do not generate a notification if the user has disabled that category.
   if (!appConfig.pushNotifications[notificationType]) {
@@ -54,49 +55,45 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       url = `/seamail/${notificationData.contentID}`;
       pressActionID = PressAction.seamail;
       title = 'New Seamail';
-      enableMarkAsRead = true;
+      markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.fezUnreadMsg:
       channel = lfgChannel;
       url = `/lfg/${notificationData.contentID}/chat`;
       pressActionID = PressAction.lfg;
       title = 'New LFG Message';
-      enableMarkAsRead = true;
+      markAsReadUrl = `/fez/${notificationData.contentID}`;
       break;
     case NotificationTypeData.announcement:
       channel = announcementsChannel;
       url = '/home';
       pressActionID = PressAction.home;
       title = 'Announcement';
-      enableMarkAsRead = true;
+      markAsReadUrl = '/user/notification/global';
       break;
     case NotificationTypeData.alertwordPost:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
       title = 'Forum Alert Word';
-      enableMarkAsRead = true;
       break;
     case NotificationTypeData.forumMention:
       channel = forumChannel;
       url = '/forumpost/mentions';
       pressActionID = PressAction.forum;
       title = 'Forum Mention';
-      enableMarkAsRead = true;
       break;
     case NotificationTypeData.twitarrTeamForumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
       title = 'TwitarrTeam Forum Mention';
-      enableMarkAsRead = true;
       break;
     case NotificationTypeData.moderatorForumMention:
       channel = forumChannel;
       url = `/forum/containingpost/${notificationData.contentID}`;
       pressActionID = PressAction.forum;
       title = 'Moderator Forum Mention';
-      enableMarkAsRead = true;
       break;
     case NotificationTypeData.incomingPhoneCall:
       channel = callsChannel;
@@ -141,6 +138,102 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
     pressActionID,
     autoCancel,
     ongoing,
-    enableMarkAsRead,
+    markAsReadUrl,
   );
+};
+
+/**
+ * Determine a React Navigation URL based on a notification event. This is called from the
+ * AppEventHandler.tsx when the app receives a foreground or background socket event.
+ * Generally if you've made it here you're trying to trigger some navigation to take you
+ * somewhere useful based on event.
+ */
+export const getUrlForNotificationEvent = (
+  type: EventType,
+  notification?: Notification,
+  pressAction?: NotificationPressAction,
+): string | undefined => {
+  if (!notification || !pressAction) {
+    return;
+  }
+  console.log('[SocketNotification.ts] Got press action:', pressAction);
+  if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
+    switch (pressAction.id) {
+      case PressAction.twitarrTab: {
+        if (notification.id) {
+          notifee.cancelNotification(notification.id);
+          // The Webview won't reload if the route doesn't change, so we inject the current timestamp
+          // as a "key" to make Navigation / Webview think that the value has changed.
+          let url = `/twitarrtab/${Date.now()}`;
+          // Only build URLs for handled types
+          switch (notification.data?.type) {
+            case NotificationTypeData.seamailUnreadMsg:
+              url += notification.data.url;
+              break;
+            case NotificationTypeData.fezUnreadMsg:
+              url += notification.data.url;
+              break;
+          }
+          return url;
+        }
+        return;
+      }
+      case PressAction.worker: {
+        return '/settings/serverconnectionsettingsscreen';
+      }
+      case PressAction.contentSettings: {
+        return '/settings/pushnotifications';
+      }
+      // @TODO dedupe these into a single content press type
+      case PressAction.seamail: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.lfg: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.forum: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.krakentalk: {
+        if (notification.id && notification.data) {
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.event: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.personalEvent: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          return `${notification.data.url}`;
+        }
+        return;
+      }
+      case PressAction.home: {
+        if (notification.id && notification.data) {
+          notifee.cancelNotification(notification.id);
+          // SocketNotifications.ts sets the URL for these to `/home`.
+          // return `${notification.data.url}`;
+          return '/home';
+        }
+      }
+    }
+  }
 };
