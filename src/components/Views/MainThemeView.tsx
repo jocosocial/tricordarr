@@ -7,12 +7,12 @@ import {DailyThemeCard} from '../Cards/MainScreen/DailyThemeCard';
 
 export const MainThemeView = () => {
   const {data: dailyThemeData} = useDailyThemeQuery();
-  const {cruiseDayIndex, cruiseLength} = useCruise();
+  const {cruiseLength, adjustedCruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();
 
   useEffect(() => {
-    setDailyTheme(DailyThemeData.getThemeForDay(cruiseDayIndex, cruiseLength, dailyThemeData));
-  }, [cruiseDayIndex, cruiseLength, dailyThemeData]);
+    setDailyTheme(DailyThemeData.getThemeForDay(adjustedCruiseDayIndex, cruiseLength, dailyThemeData));
+  }, [adjustedCruiseDayIndex, cruiseLength, dailyThemeData]);
 
   if (!dailyTheme) {
     return <></>;

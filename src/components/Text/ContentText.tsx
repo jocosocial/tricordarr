@@ -7,8 +7,6 @@ import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
-import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
-import {useUserKeywordQuery} from '../Queries/User/UserQueries';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -87,6 +85,7 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
   const markdownStyle = StyleSheet.create({
     text: {
       ...commonStyles.onBackground,
+      ...(textStyle as TextStyle),
     },
     body: {
       fontSize: styleDefaults.fontSize,

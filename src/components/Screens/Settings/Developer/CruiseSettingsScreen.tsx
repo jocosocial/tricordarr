@@ -10,12 +10,17 @@ import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../../styles/Theme.ts';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
 import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.tsx';
+import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
+import {useCruise} from '../../../Context/Contexts/CruiseContext.ts';
+import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
+import {DataTable} from 'react-native-paper';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {data, refetch} = useClientConfigQuery({enabled: false});
   const theme = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
 
   const initialValues: CruiseSettingsFormValues = {
     portTimeZoneID: appConfig.portTimeZoneID,
@@ -68,6 +73,7 @@ export const CruiseSettingsScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
+        <ListSubheader>General</ListSubheader>
         <PaddedContentView>
           <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
@@ -77,6 +83,27 @@ export const CruiseSettingsScreen = () => {
             onPress={reloadClientConfig}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
+        </PaddedContentView>
+        <ListSubheader>Internal State</ListSubheader>
+        <PaddedContentView>
+          <DataTable>
+            <SettingDataTableRow title={'Cruise Day Today'} value={cruiseDayToday.toString()} reverseSplit={true} />
+            <SettingDataTableRow
+              title={'Adjusted Cruise Day Today'}
+              value={adjustedCruiseDayToday.toString()}
+              reverseSplit={true}
+            />
+            <SettingDataTableRow
+              title={'Cruise Day Index'}
+              value={cruiseDayIndex.toString()}
+              reverseSplit={true}
+            />
+            <SettingDataTableRow
+              title={'Adjusted Cruise Day Index'}
+              value={adjustedCruiseDayIndex.toString()}
+              reverseSplit={true}
+            />
+          </DataTable>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

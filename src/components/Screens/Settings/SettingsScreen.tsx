@@ -73,8 +73,8 @@ export const SettingsScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Content</ListSubheader>
             <SettingsNavigationListItem
-              title={'Event Settings'}
-              description={'Settings for official and shadow event schedule.'}
+              title={'Schedule Settings'}
+              description={'Settings related to the day and schedule.'}
               navComponent={SettingsStackScreenComponents.eventSettings}
             />
             <SettingsNavigationListItem

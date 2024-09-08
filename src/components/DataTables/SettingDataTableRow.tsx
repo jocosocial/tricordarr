@@ -1,14 +1,22 @@
 import React, {PropsWithChildren} from 'react';
 import {DataTable} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface SettingDataTableRowProps {
   title: string;
   value?: string;
   onPress?: () => void;
+  reverseSplit?: boolean;
 }
 
-export const SettingDataTableRow = ({title, value, onPress, children}: PropsWithChildren<SettingDataTableRowProps>) => {
+export const SettingDataTableRow = ({
+  title,
+  value,
+  onPress,
+  children,
+  reverseSplit = false,
+}: PropsWithChildren<SettingDataTableRowProps>) => {
   const {commonStyles} = useStyles();
   return (
     <DataTable.Row
@@ -18,8 +26,10 @@ export const SettingDataTableRow = ({title, value, onPress, children}: PropsWith
       }}
       key={title}
       onPress={onPress}>
-      <DataTable.Cell>{title}</DataTable.Cell>
-      <DataTable.Cell style={commonStyles.flex2}>
+      <DataTable.Cell style={reverseSplit ? commonStyles.flex2 : undefined}>{title}</DataTable.Cell>
+      <DataTable.Cell
+        style={reverseSplit ? undefined : commonStyles.flex2}
+        onLongPress={value ? () => Clipboard.setString(value) : undefined}>
         {value}
         {children}
       </DataTable.Cell>

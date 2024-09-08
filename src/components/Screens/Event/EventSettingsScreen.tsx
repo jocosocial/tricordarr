@@ -90,7 +90,7 @@ export const EventSettingsScreen = () => {
                   name={'enableLateDayFlip'}
                   label={'Enable Late-Night Day Flip'}
                   helperText={
-                    'Show the next days schedule after 3:00AM rather than after Midnight. For example: With this setting enabled (default), opening the schedule at 2:00AM on Thursday will show you Wednesdays schedule by default. If this setting is disabled, at 2:00AM on Thursday you would see Thursdays schedule by default.'
+                    'Show the next days schedule after 3:00AM rather than after Midnight. For example: With this setting enabled (default), opening the schedule at 2:00AM on Thursday will show you Wednesdays schedule by default. If this setting is disabled, at 2:00AM on Thursday you would see Thursdays schedule by default. This also affects the daily theme.'
                   }
                   onPress={handleEnableLateDayFlip}
                   value={enableLateDayFlip}
