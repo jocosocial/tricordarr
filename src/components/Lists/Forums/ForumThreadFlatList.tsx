@@ -1,6 +1,6 @@
-import {RefreshControlProps, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
-import React, {Dispatch, SetStateAction, useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -11,6 +11,8 @@ import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
 import {FlashList} from '@shopify/flash-list';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
+import {styleDefaults} from '../../../styles';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -22,11 +24,8 @@ interface ForumThreadFlatListProps {
   hasPreviousPage?: boolean;
   pinnedThreads?: ForumListData[];
   categoryID?: string;
-  selectedItems: ForumListData[];
-  setSelectedItems: Dispatch<SetStateAction<ForumListData[]>>;
-  enableSelection: boolean;
-  setEnableSelection: Dispatch<SetStateAction<boolean>>;
   keyExtractor: (item: ForumListData) => string;
+  onScrollThreshold?: (value: boolean) => void;
 }
 
 export const ForumThreadFlatList = ({
@@ -38,17 +37,15 @@ export const ForumThreadFlatList = ({
   hasPreviousPage,
   pinnedThreads = [],
   categoryID,
-  selectedItems,
-  setSelectedItems,
-  enableSelection,
-  setEnableSelection,
   keyExtractor,
+  onScrollThreshold,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlashList<ForumListData>>(null);
   const [showButton, setShowButton] = useState(false);
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
+  const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -120,35 +117,28 @@ export const ForumThreadFlatList = ({
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
 
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
-  };
-
-  const handleSelection = (item: ForumListData, selected: boolean) => {
-    if (selected) {
-      setSelectedItems(selectedItems.filter(i => i.forumID !== item.forumID));
-    } else {
-      setSelectedItems(selectedItems.concat(item));
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    let scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
+    setShowButton(scrollThresholdCondition);
+    if (onScrollThreshold) {
+      onScrollThreshold(scrollThresholdCondition);
     }
   };
 
-  const renderItem = ({item}: {item: ForumListData}) => {
-    let selected = false;
-    if (enableSelection) {
-      selected = !!selectedItems.find(i => i.forumID === item.forumID);
-    }
-    return (
-      <ForumThreadListItem
-        forumListData={item}
-        categoryID={categoryID}
-        enableSelection={enableSelection}
-        setEnableSelection={setEnableSelection}
-        onSelect={handleSelection}
-        selected={selected}
-      />
-    );
-  };
+  const renderItem = useCallback(
+    ({item}: {item: ForumListData}) => {
+      return (
+        <ForumThreadListItem
+          forumListData={item}
+          categoryID={categoryID}
+          enableSelection={enableSelection}
+          setEnableSelection={setEnableSelection}
+          selected={selectedForums.some(i => i.forumID === item.forumID)}
+        />
+      );
+    },
+    [categoryID, enableSelection, selectedForums, setEnableSelection],
+  );
 
   return (
     <>

@@ -9,9 +9,10 @@ import React from 'react';
 interface ForumFABProps {
   openLabel?: string;
   icon?: IconSource;
+  showLabel?: boolean;
 }
 
-export const ForumCategoriesFAB = ({openLabel = 'Forum Categories', icon}: ForumFABProps) => {
+export const ForumCategoriesFAB = ({openLabel = 'Forum Categories', icon, showLabel}: ForumFABProps) => {
   const navigation = useForumStackNavigation();
 
   const actions = [
@@ -27,5 +28,5 @@ export const ForumCategoriesFAB = ({openLabel = 'Forum Categories', icon}: Forum
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={openLabel} icon={icon || AppIcons.forum} />;
+  return <BaseFABGroup actions={actions} openLabel={openLabel} icon={icon || AppIcons.forum} showLabel={showLabel} />;
 };

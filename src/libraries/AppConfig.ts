@@ -34,6 +34,13 @@ export interface AccessibilityConfig {
   darkMode: boolean;
 }
 
+/**
+ * Some day this should be a part of Swiftarr.
+ */
+export interface UserPreferences {
+  reverseSwipeOrientation: boolean;
+}
+
 export interface AppConfig {
   serverUrl: string;
   urlPrefix: string;
@@ -57,6 +64,7 @@ export interface AppConfig {
   muteNotifications?: Date;
   skipThumbnails: boolean;
   schedBaseUrl: string;
+  userPreferences: UserPreferences;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -116,6 +124,9 @@ const defaultAppConfig: AppConfig = {
   },
   skipThumbnails: true,
   schedBaseUrl: 'https://jococruise1970.sched.com',
+  userPreferences: {
+    reverseSwipeOrientation: false,
+  },
 };
 
 /**

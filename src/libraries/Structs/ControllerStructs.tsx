@@ -7,6 +7,7 @@ import {HttpStatusCode} from 'axios';
 import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
 import {DinnerTeam} from '../Enums/DinnerTeam';
+import {QueryKey} from '@tanstack/react-query';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -597,6 +598,25 @@ export interface ForumListData {
   isPinned?: boolean;
 }
 
+export namespace ForumListData {
+  /**
+   * Returns an array of QueryKeys that would need invalidated when a Forum's
+   * state is known to have changed.
+   * @param categoryID Optional string of the category ID.
+   * @param forumID Optional string of the Forum ID.
+   */
+  export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes']];
+    if (forumID) {
+      queryKeys.push([`/forum/${forumID}`]);
+    }
+    if (categoryID) {
+      queryKeys.push([`/forum/categories/${categoryID}`]);
+    }
+    return queryKeys;
+  };
+}
+
 export interface CategoryData {
   /// The ID of the category.
   categoryID: string;
@@ -671,15 +691,11 @@ export interface ForumSearchData {
 export interface PostSearchData {
   /// The search query used to create these results.
   queryString: string;
-  /// The total number of posts in the result set. The actual # of results returned may be fewer than this, even if we return 'complete' results. This is due to additional filtering that
-  /// is done after the database query. See notes on `ContentFilterable.filterForMention(of:)`
-  totalPosts: number;
-  /// The index into totalPosts of the first post in the `posts` array. 0 is the index of the first result. This number is usually  a multiple of `limit` and indicates the page of results.
-  start: number;
-  /// The number of posts the server attempted to gather. posts.count may be less than this number if posts were filtered out by post-query filtering, or if start + limit > totalPosts.
-  limit: number;
   /// The posts in the forum.
   posts: PostData[];
+  /// Pagination into the results set. Because `/forum/post/search` filters the result set after the db query, `posts.count` could be less than `paginator.limit`
+  /// even if we're not at the end of the results. To get the next 'page' of results, be sure to add `limit` to `start`; don't add`posts.count`.
+  paginator: Paginator;
 }
 
 export interface PostDetailData {

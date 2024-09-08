@@ -11,37 +11,37 @@ import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
 import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.tsx';
 import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.tsx';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   forumListData: ForumListData;
   categoryID?: string;
+  enabled?: boolean;
 }
 
 export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeableProps) => {
   const theme = useAppTheme();
   const relationMutation = useForumRelationMutation();
   const queryClient = useQueryClient();
-  const [refreshing, setRefreshing] = useState(false);
+  const [muteRefreshing, setMuteRefreshing] = useState(false);
+  const [favoriteRefreshing, setFavoriteRefreshing] = useState(false);
+  const [readRefreshing, setReadRefreshing] = useState(false);
+  const [pinRefreshing, setPinRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
   const eventID = props.forumListData.eventID;
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
+  const {appConfig} = useConfig();
 
-  const invalidationQueryKeys = useMemo(() => {
-    let keys = [[`/forum/${props.forumListData.forumID}`], ['/forum/search']];
-    if (props.categoryID) {
-      keys.push([`/forum/categories/${props.categoryID}`]);
-    }
-    return keys;
-  }, [props.categoryID, props.forumListData.forumID]);
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(props.categoryID, props.forumListData.forumID);
 
   const handleMarkAsRead = useCallback(
     async (swipeable: SwipeableMethods) => {
-      setRefreshing(true);
+      setReadRefreshing(true);
       await refetch();
       await queryClient.invalidateQueries([`/forum/categories/${props.categoryID}`]);
-      setRefreshing(false);
+      setReadRefreshing(false);
       swipeable.reset();
     },
     [props.categoryID, queryClient, refetch],
@@ -49,7 +49,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   const handleFavorite = useCallback(
     (swipeable: SwipeableMethods) => {
-      setRefreshing(true);
+      setFavoriteRefreshing(true);
       relationMutation.mutate(
         {
           forumID: props.forumListData.forumID,
@@ -64,7 +64,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
             await Promise.all(invalidations);
           },
           onSettled: () => {
-            setRefreshing(false);
+            setFavoriteRefreshing(false);
             swipeable.reset();
           },
         },
@@ -75,7 +75,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   const handleMute = useCallback(
     (swipeable: SwipeableMethods) => {
-      setRefreshing(true);
+      setMuteRefreshing(true);
       relationMutation.mutate(
         {
           forumID: props.forumListData.forumID,
@@ -90,7 +90,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
             await Promise.all(invalidations);
           },
           onSettled: () => {
-            setRefreshing(false);
+            setMuteRefreshing(false);
             swipeable.reset();
           },
         },
@@ -100,7 +100,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   );
 
   const handlePin = (swipeable: SwipeableMethods) => {
-    setRefreshing(true);
+    setPinRefreshing(true);
     pinMutation.mutate(
       {
         forumID: props.forumListData.forumID,
@@ -114,7 +114,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
           await Promise.all([invalidations].flat());
         },
         onSettled: () => {
-          setRefreshing(false);
+          setPinRefreshing(false);
           swipeable.reset();
         },
       },
@@ -139,7 +139,6 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
               });
             }}
             style={{backgroundColor: theme.colors.twitarrNeutralButton}}
-            refreshing={refreshing}
             textStyle={{color: theme.colors.onTwitarrNeutralButton}}
             iconColor={theme.colors.onTwitarrNeutralButton}
           />
@@ -147,7 +146,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         {hasModerator && props.categoryID && (
           <SwipeableButton
             text={props.forumListData.isPinned ? 'Unpin' : 'Pin'}
-            refreshing={refreshing}
+            refreshing={pinRefreshing}
             onPress={() => handlePin(swipeable)}
             iconName={AppIcons.moderator}
             style={{backgroundColor: theme.colors.elevation.level1}}
@@ -166,24 +165,26 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       <>
         <SwipeableButton
           text={props.forumListData.isMuted ? 'Unmute' : 'Mute'}
-          iconName={AppIcons.mute}
+          iconName={props.forumListData.isMuted ? AppIcons.unmute : AppIcons.mute}
           style={{backgroundColor: theme.colors.elevation.level2}}
           onPress={() => handleMute(swipeable)}
-          refreshing={refreshing}
+          refreshing={muteRefreshing}
+          disabled={props.forumListData.isFavorite}
         />
         <SwipeableButton
           text={props.forumListData.isFavorite ? 'Unfavorite' : 'Favorite'}
-          iconName={AppIcons.favorite}
+          iconName={props.forumListData.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
           onPress={() => handleFavorite(swipeable)}
-          refreshing={refreshing}
+          refreshing={favoriteRefreshing}
           style={{backgroundColor: theme.colors.elevation.level1}}
+          disabled={props.forumListData.isMuted}
         />
         <SwipeableButton
           // Ehhhhhh
-          text={'Mark\n  as\nRead'}
+          text={'Mark\n   as\nRead'}
           iconName={AppIcons.check}
           onPress={() => handleMarkAsRead(swipeable)}
-          refreshing={refreshing}
+          refreshing={readRefreshing}
           style={{backgroundColor: theme.colors.elevation.level3}}
         />
       </>
@@ -192,8 +193,9 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   return (
     <Swipeable
-      renderRightActions={renderRightPanel}
-      renderLeftActions={renderLeftPanel}
+      enabled={props.enabled}
+      renderRightActions={appConfig.userPreferences.reverseSwipeOrientation ? renderLeftPanel : renderRightPanel}
+      renderLeftActions={appConfig.userPreferences.reverseSwipeOrientation ? renderRightPanel : renderLeftPanel}
       overshootFriction={8}
       overshootRight={false}
       overshootLeft={false}>

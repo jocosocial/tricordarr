@@ -39,18 +39,25 @@ export function useTokenAuthQuery<
   });
 }
 
-// I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
-// Though maybe because I'm not returning the entire query response object (TQueryFnData)
-// then maybe it's OK? This is some meta voodoo.
+/**
+ * I don't know if my overrides of the TQueryFnData with TData are a good thing or not.
+ * Though maybe because I'm not returning the entire query response object (TQueryFnData)
+ * then maybe it's OK? This is some meta voodoo.
+ * @param endpoint
+ * @param options
+ * @param queryParams
+ * @param queryKey Override the default queryKey. Use with caution.
+ */
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator | FezData,
   // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
+  TQueryParams = Object,
   TError extends Error = AxiosError<ErrorResponse>,
   // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
   options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
-  queryParams?: Object,
+  queryParams?: TQueryParams,
   queryKey?: QueryKey,
 ) {
   const {isLoggedIn} = useAuth();

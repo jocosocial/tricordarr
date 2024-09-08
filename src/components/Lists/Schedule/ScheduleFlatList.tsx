@@ -21,6 +21,7 @@ interface ScheduleFlatListProps<TItem> {
   listFooter?: ReactElement;
   initialScrollIndex?: number;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
+  onScrollThreshold?: (condition: boolean) => void;
 }
 
 export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEventData>({
@@ -29,6 +30,9 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
   separator = 'time',
   listRef,
   setRefreshing,
+  listFooter,
+  listHeader,
+  onScrollThreshold,
 }: ScheduleFlatListProps<TItem>) => {
   const commonNavigation = useCommonStack();
   const {appConfig} = useConfig();
@@ -95,6 +99,9 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
       separator={separator}
       estimatedItemSize={120}
       refreshControl={refreshControl}
+      listHeader={listHeader}
+      listFooter={listFooter}
+      onScrollThreshold={onScrollThreshold}
     />
   );
 };

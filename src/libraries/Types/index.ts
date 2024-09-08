@@ -6,15 +6,12 @@ import {
   Animated,
   ColorValue,
   GestureResponderEvent,
-  ImageSourcePropType, ImageURISource,
+  ImageSourcePropType,
+  ImageURISource,
   StyleProp,
   TextStyle,
   ViewStyle,
 } from 'react-native';
-
-export interface KvObject {
-  [key: string]: string | null;
-}
 
 export type StringOrError = string | Error;
 
@@ -109,5 +106,3 @@ export interface FabGroupActionType {
   testID?: string;
   rippleColor?: ColorValue;
 }
-
-export type FloatingButtonDisplayPosition = 'raised' | 'bottom';

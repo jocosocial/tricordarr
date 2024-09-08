@@ -1,30 +1,24 @@
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {SegmentedButtonType} from '../../../libraries/Types';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useIsFocused} from '@react-navigation/native';
 import {useAppTheme} from '../../../styles/Theme.ts';
+import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 
-interface SelectionButtonsProps<TItem> {
-  items?: TItem[];
-  keyExtractor: (item: TItem) => string;
-  selectedItems?: TItem[];
-  setSelectedItems: Dispatch<SetStateAction<TItem[]>>;
-  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+interface SelectionButtonsProps {
+  items?: ForumListData[];
 }
 
-export const SelectionButtons = <TItem extends object>({
-  items = [],
-  keyExtractor,
-  selectedItems = [],
-  setSelectedItems,
-  setEnableSelection,
-}: SelectionButtonsProps<TItem>) => {
+export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
   const isFocused = useIsFocused();
+  const {dispatchSelectedForums, setEnableSelection, selectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     button: {
@@ -70,20 +64,29 @@ export const SelectionButtons = <TItem extends object>({
   const onValueChange = (value: string) => {
     switch (value) {
       case 'none':
-        setSelectedItems([]);
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.clear,
+        });
         break;
       case 'all':
-        setSelectedItems(items);
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.set,
+          items: items,
+        });
         break;
       case 'inverse':
-        setSelectedItems(
-          items.filter(
-            allItem => !selectedItems.some(selectedItem => keyExtractor(selectedItem) === keyExtractor(allItem)),
-          ),
+        const inverted = items.filter(
+          allItem => !selectedForums.some(selectedItem => selectedItem.forumID === allItem.forumID),
         );
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.set,
+          items: inverted,
+        });
         break;
       case 'cancel':
-        setSelectedItems([]);
+        dispatchSelectedForums({
+          type: ForumListDataSelectionActions.clear,
+        });
         setEnableSelection(false);
         break;
     }
@@ -92,10 +95,12 @@ export const SelectionButtons = <TItem extends object>({
   useEffect(() => {
     if (!isFocused) {
       console.log('[SelectionButtons.tsx] Focus has been lost, clearing selection.');
-      setSelectedItems([]);
+      dispatchSelectedForums({
+        type: ForumListDataSelectionActions.clear,
+      });
       setEnableSelection(false);
     }
-  }, [isFocused, setEnableSelection, setSelectedItems]);
+  }, [dispatchSelectedForums, isFocused, setEnableSelection]);
 
   return (
     <View style={styles.container}>

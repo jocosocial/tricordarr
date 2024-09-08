@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {RefreshControl, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
@@ -24,6 +24,7 @@ import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {styleDefaults} from '../../../styles';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {
@@ -36,6 +37,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -52,6 +55,10 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       </View>
     );
   }, []);
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    onScrollThreshold(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
+  };
 
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
@@ -79,6 +86,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
+        onScroll={handleScroll}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           {data && (
@@ -158,7 +166,7 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumCategoriesFAB />
+      <ForumCategoriesFAB showLabel={showFabLabel} />
     </AppView>
   );
 };

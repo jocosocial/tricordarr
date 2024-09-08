@@ -8,6 +8,10 @@ export const styleDefaults = {
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
   fontSize: 16, // This is copied from styles/Theme.
+  // Arbitrary point at which things happen when scrolling a list.
+  // Things such as displaying a back-to-top button.
+  // 450 was originally roughly 8 messages @ 56 units per message.
+  listScrollThreshold: 450,
 };
 
 export const commonStyles = StyleSheet.create({

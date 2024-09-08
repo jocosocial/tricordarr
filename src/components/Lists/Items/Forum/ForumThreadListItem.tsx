@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
@@ -14,26 +14,29 @@ import {getEventTimeString} from '../../../../libraries/DateTime';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
 import {ForumThreadListItemSwipeable} from '../../../Swipeables/ForumThreadListItemSwipeable.tsx';
+import {useSelection} from '../../../Context/Contexts/SelectionContext.ts';
+import {ForumListDataSelectionActions} from '../../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
   categoryID?: string;
   enableSelection: boolean;
   setEnableSelection: Dispatch<SetStateAction<boolean>>;
-  onSelect: (item: ForumListData, selected: boolean) => void;
   selected: boolean;
 }
 
 export const ForumThreadListItem = ({
   forumListData,
   categoryID,
-  onSelect,
+  // onSelect,
   enableSelection = false,
   selected = false,
   setEnableSelection,
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
+  // const [selected, setSelected] = useState(false);
+  const {dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     item: {
@@ -75,6 +78,7 @@ export const ForumThreadListItem = ({
       );
     }
   };
+
   const getDescription = () => (
     <View>
       {forumListData.eventTime && (
@@ -103,34 +107,45 @@ export const ForumThreadListItem = ({
     </View>
   );
 
-  const onPress = () =>
+  const onPress = () => {
     forumNavigation.push(CommonStackComponents.forumThreadScreen, {
       forumID: forumListData.forumID,
       forumListData: forumListData,
     });
+  };
+
+  const handleSelection = () => {
+    dispatchSelectedForums({
+      type: ForumListDataSelectionActions.select,
+      forumListData: forumListData,
+    });
+    // setSelected(!selected);
+  };
 
   const getLeft = () => {
     return (
       <View style={styles.leftContainer}>
-        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={() => onSelect(forumListData, selected)} />
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
       </View>
     );
   };
 
   const onLongPress = () => {
     setEnableSelection(true);
-    onSelect(forumListData, false);
+    handleSelection();
   };
 
+  console.log(`Rendering item ${forumListData.forumID}`);
+
   return (
-    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID}>
+    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID} enabled={!enableSelection}>
       <List.Item
         style={styles.item}
         title={forumListData.title}
         titleStyle={styles.title}
         titleNumberOfLines={0}
         description={getDescription}
-        onPress={onPress}
+        onPress={enableSelection ? handleSelection : onPress}
         right={getRight}
         left={enableSelection ? getLeft : undefined}
         onLongPress={onLongPress}

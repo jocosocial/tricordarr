@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
@@ -39,6 +39,8 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const isFocused = useIsFocused();
   const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
   const {notificationSocket, closeFezSocket} = useSocket();
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -126,8 +128,9 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
         items={lfgList}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         separator={'day'}
+        onScrollThreshold={onScrollThreshold}
       />
-      <LfgFAB />
+      <LfgFAB showLabel={showFabLabel} />
     </AppView>
   );
 };
