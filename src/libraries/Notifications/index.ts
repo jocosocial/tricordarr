@@ -1,11 +1,11 @@
 import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
-import {PressAction} from './Enums/Notifications';
-import {NotificationTypeData} from './Structs/SocketStructs';
+import {PressAction} from '../Enums/Notifications.ts';
+import {NotificationTypeData} from '../Structs/SocketStructs.ts';
 
 /**
  * Determine a React Navigation URL based on a notification event.
  */
-export const getUrlForEvent = (
+export const getUrlForNotificationEvent = (
   type: EventType,
   notification?: Notification,
   pressAction?: NotificationPressAction,
@@ -13,7 +13,7 @@ export const getUrlForEvent = (
   if (!notification || !pressAction) {
     return;
   }
-  console.log('[Events.ts] Got press action:', pressAction);
+  console.log('[index.ts] Got press action:', pressAction);
   if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
     switch (pressAction.id) {
       case PressAction.twitarrTab: {
