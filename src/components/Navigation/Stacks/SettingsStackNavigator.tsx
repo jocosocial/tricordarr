@@ -125,7 +125,7 @@ export const SettingsStackNavigator = () => {
       <Stack.Screen
         name={SettingsStackScreenComponents.eventSettings}
         component={EventSettingsScreen}
-        options={{title: 'Event Settings'}}
+        options={{title: 'Schedule Settings'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.lfgSettings}
