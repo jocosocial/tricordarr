@@ -12,7 +12,8 @@ export const PhotostreamFAB = (props: PhotostreamFABProps) => {
   return (
     <BaseFAB
       onPress={() => mainStack.push(MainStackComponents.photostreamImageCreateScreen)}
-      label={props.showLabel ? 'New Post' : undefined}
+      label={'New Post'}
+      showLabel={props.showLabel}
     />
   );
 };

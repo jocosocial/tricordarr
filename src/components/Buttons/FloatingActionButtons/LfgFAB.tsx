@@ -5,7 +5,11 @@ import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
 import {BaseFABGroup} from './BaseFABGroup';
 
-export const LfgFAB = () => {
+interface LfgFABProps {
+  showLabel?: boolean;
+}
+
+export const LfgFAB = (props: LfgFABProps) => {
   const navigation = useLFGStackNavigation();
   const route = useLFGStackRoute();
 
@@ -39,5 +43,7 @@ export const LfgFAB = () => {
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} />;
+  return (
+    <BaseFABGroup actions={actions} openLabel={'Looking For Group'} icon={AppIcons.lfg} showLabel={props.showLabel} />
+  );
 };

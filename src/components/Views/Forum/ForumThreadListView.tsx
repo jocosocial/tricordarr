@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
 import {ErrorResponse, ForumListData, ForumSearchData} from '../../../libraries/Structs/ControllerStructs.tsx';
@@ -50,6 +50,8 @@ export const ForumThreadListView = ({
   forumListData,
 }: ForumThreadListViewProps) => {
   const {enableSelection} = useSelection();
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -78,8 +80,9 @@ export const ForumThreadListView = ({
         hasPreviousPage={hasPreviousPage}
         categoryID={categoryID}
         keyExtractor={keyExtractor}
+        onScrollThreshold={onScrollThreshold}
       />
-      {enableFAB && categoryID && <ForumCategoryFAB categoryId={categoryID} />}
+      {enableFAB && categoryID && <ForumCategoryFAB categoryId={categoryID} showLabel={showFabLabel} />}
     </>
   );
 };

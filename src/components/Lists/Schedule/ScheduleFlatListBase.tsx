@@ -5,8 +5,9 @@ import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {RefreshControlProps} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
+import {styleDefaults} from '../../../styles';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
@@ -19,6 +20,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   listRef?: React.RefObject<FlashList<TItem>> | null;
   renderItem: ({item}: {item: TItem}) => ReactElement;
   keyExtractor: (item: TItem) => string;
+  onScrollThreshold?: (condition: boolean) => void;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
@@ -32,6 +34,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   listRef = null,
   renderItem,
   keyExtractor,
+  onScrollThreshold,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 
@@ -109,6 +112,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
       ItemSeparatorComponent = renderSeparatorNone;
   }
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (onScrollThreshold) {
+      onScrollThreshold(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
+    }
+  };
+
   return (
     <FlashList
       refreshControl={refreshControl}
@@ -124,6 +133,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
       contentContainerStyle={{
         ...commonStyles.paddingHorizontal,
       }}
+      onScroll={handleScroll}
     />
   );
 };

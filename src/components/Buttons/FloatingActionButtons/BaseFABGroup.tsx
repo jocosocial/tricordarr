@@ -13,9 +13,17 @@ interface BaseFABProps {
   backgroundColor?: string;
   openLabel?: string;
   icon?: IconSource;
+  showLabel?: boolean;
 }
 
-export const BaseFABGroup = ({color, backgroundColor, openLabel, icon, actions = []}: BaseFABProps) => {
+export const BaseFABGroup = ({
+  color,
+  backgroundColor,
+  openLabel,
+  icon,
+  actions = [],
+  showLabel = true,
+}: BaseFABProps) => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const {open} = state;
@@ -35,7 +43,7 @@ export const BaseFABGroup = ({color, backgroundColor, openLabel, icon, actions =
       icon={icon ? icon : AppIcons.menu}
       color={color ? color : theme.colors.inverseOnSurface}
       fabStyle={styles.fabGroup}
-      label={open ? (openLabel ? openLabel : undefined) : undefined}
+      label={openLabel ? (open || showLabel ? openLabel : undefined) : undefined}
       actions={actions}
       onStateChange={onStateChange}
     />

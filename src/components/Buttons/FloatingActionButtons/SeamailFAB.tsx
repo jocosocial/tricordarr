@@ -8,7 +8,11 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export const SeamailFAB = () => {
+interface SeamailFABProps {
+  showLabel?: boolean;
+}
+
+export const SeamailFAB = (props: SeamailFABProps) => {
   const theme = useAppTheme();
   const navigation = useChatStack();
   const {asPrivilegedUser, asModerator, asTwitarrTeam} = usePrivilege();
@@ -43,6 +47,7 @@ export const SeamailFAB = () => {
       actions={actions}
       openLabel={'Seamail'}
       icon={AppIcons.seamail}
+      showLabel={props.showLabel}
     />
   );
 };

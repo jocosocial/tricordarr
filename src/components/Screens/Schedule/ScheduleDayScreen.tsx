@@ -40,6 +40,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const {
     data: eventData,
@@ -174,9 +176,10 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
           setRefreshing={setRefreshing}
           initialScrollIndex={scrollNowIndex}
+          onScrollThreshold={onScrollThreshold}
         />
       </View>
-      <ScheduleFAB selectedDay={selectedCruiseDay} />
+      <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
     </AppView>
   );
 };

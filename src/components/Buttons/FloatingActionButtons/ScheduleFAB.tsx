@@ -8,6 +8,7 @@ import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface ScheduleFABProps {
   selectedDay?: number;
+  showLabel?: boolean;
 }
 
 export const ScheduleFAB = (props: ScheduleFABProps) => {
@@ -40,5 +41,5 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} />;
+  return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} showLabel={props.showLabel} />;
 };
