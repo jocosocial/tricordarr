@@ -106,3 +106,8 @@ export interface FabGroupActionType {
   testID?: string;
   rippleColor?: ColorValue;
 }
+
+export interface PaginationQueryParams extends Object {
+  start?: number;
+  limit?: number;
+}

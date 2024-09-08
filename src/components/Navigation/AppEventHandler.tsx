@@ -4,7 +4,7 @@ import notifee, {Event, EventType} from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
 import {getUrlForNotificationEvent} from '../../libraries/Notifications/SocketNotification';
 import {PressAction} from '../../libraries/Enums/Notifications.ts';
-import {markAsRead} from '../../libraries/Network/APIClient.ts';
+import {apiGet} from '../../libraries/Network/APIClient.ts';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
 
 /**
@@ -38,7 +38,7 @@ export const AppEventHandler = () => {
       if (pressAction?.id === PressAction.markAsRead) {
         console.info('[AppEventHandler.tsx] handleForegroundEvent is marking as read.');
         if (notification?.data) {
-          await markAsRead(notification.data.markAsReadUrl.toString());
+          await apiGet({url: notification.data.markAsReadUrl.toString()});
           await refetchUserNotificationData();
         }
         return;
@@ -83,7 +83,7 @@ export const AppEventHandler = () => {
     if (pressAction?.id === PressAction.markAsRead) {
       console.info('[AppEventHandler.tsx] handleForegroundEvent is marking as read.');
       if (notification?.data) {
-        await markAsRead(notification.data.markAsReadUrl.toString());
+        await apiGet({url: notification.data.markAsReadUrl.toString()});
         await refetchUserNotificationData();
       }
       return;

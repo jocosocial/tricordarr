@@ -11,8 +11,9 @@ import axios, {AxiosError, AxiosResponse} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
 import {getNextPageParam, getPreviousPageParam, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
-import {shouldQueryEnable} from '../../libraries/Network/APIClient';
+import {apiGet, shouldQueryEnable} from '../../libraries/Network/APIClient';
 import {useConfig} from '../Context/Contexts/ConfigContext';
+import {PaginationQueryParams} from '../../libraries/Types';
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -25,7 +26,8 @@ export function useTokenAuthQuery<
   TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
-  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey'>,
+  // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
+  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey' | 'onError'>,
   queryParams?: TQueryParams,
   queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {
@@ -34,8 +36,13 @@ export function useTokenAuthQuery<
 
   return useQuery<TData, TError, TData>({
     queryKey: queryKey ? queryKey : [endpoint, queryParams],
-    // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
     ...options,
+    queryFn: options?.queryFn
+      ? options.queryFn
+      : async () => {
+          const response = await apiGet<TData, TQueryParams>({url: endpoint, queryParams: queryParams});
+          return response.data;
+        },
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
   });
 }
@@ -51,7 +58,8 @@ export function useTokenAuthQuery<
  */
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator | FezData,
-  TQueryParams = Object,
+  // @TODO this isn't working correctly. See unknown below
+  TQueryParams extends PaginationQueryParams = PaginationQueryParams,
   TError extends Error = AxiosError<ErrorResponse>,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -69,8 +77,17 @@ export function useTokenAuthPaginationQuery<
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
-          const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
-            params: {
+          // const {data: responseData} = await axios.get<TData, AxiosResponse<TData>>(endpoint, {
+          //   params: {
+          //     ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+          //     ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
+          //     ...queryParams,
+          //   },
+          // });
+          // return responseData;
+          const {data: responseData} = await apiGet<TData, unknown>({
+            url: endpoint,
+            queryParams: {
               ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
               ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
               ...queryParams,

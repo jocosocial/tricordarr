@@ -65,14 +65,26 @@ export async function configureAxios() {
  */
 export const apiQueryV3 = async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
   const mutableQueryKey = queryKey as string[];
-  const response = await axios.get(mutableQueryKey[0]);
+  const response = await apiGet<any, any>({url: mutableQueryKey[0]});
+  return response.data;
+};
+
+export interface apiGetProps<TQueryParams = object> {
+  url: string;
+  queryParams?: TQueryParams;
+}
+
+export const apiGet = async <TData, TQueryParams>(props: apiGetProps<TQueryParams>) => {
+  const response = await axios.get<TData, AxiosResponse<TData, TData>>(props.url, {
+    params: props.queryParams,
+  });
 
   // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
   if (!response.headers['content-type'].startsWith('application/json')) {
     throw new BadResponseFormatError(response);
   }
 
-  return response.data;
+  return response;
 };
 
 /**
@@ -169,9 +181,4 @@ export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boole
     // shouldEnable = isLoggedIn;
   }
   return shouldEnable;
-};
-
-export const markAsRead = async (url: string) => {
-  console.log('[APIClient.ts] marking URL as read', url);
-  await axios.get(url);
 };
