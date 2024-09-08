@@ -19,23 +19,24 @@ import {useConfig} from '../Context/Contexts/ConfigContext';
  * Some endpoints can be used without authentication such as the schedule.
  */
 export function useTokenAuthQuery<
-  TQueryFnData = unknown,
+  TData,
+  TQueryParams = Object,
   TError extends Error = AxiosError<ErrorResponse>,
-  TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  options: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'initialData'> & {
-    initialData?: () => undefined;
-  },
+  endpoint: string,
+  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey'>,
+  queryParams?: TQueryParams,
+  queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
   const {disruptionDetected} = useSwiftarrQueryClient();
 
-  return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+  return useQuery<TData, TError, TData>({
+    queryKey: queryKey ? queryKey : [endpoint, queryParams],
     // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
     ...options,
-    // enabled: options?.enabled !== undefined ? options.enabled && isLoggedIn : isLoggedIn,
-    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options.enabled),
+    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
   });
 }
 
@@ -50,15 +51,14 @@ export function useTokenAuthQuery<
  */
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator | FezData,
-  // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
   TQueryParams = Object,
   TError extends Error = AxiosError<ErrorResponse>,
-  // TQueryKey extends QueryKey = QueryKey,
+  TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
   options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
   queryParams?: TQueryParams,
-  queryKey?: QueryKey,
+  queryKey?: TQueryKey,
 ) {
   const {isLoggedIn} = useAuth();
   const {disruptionDetected} = useSwiftarrQueryClient();

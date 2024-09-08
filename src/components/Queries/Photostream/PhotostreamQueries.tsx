@@ -12,9 +12,7 @@ export const usePhotostreamQuery = () => {
 };
 
 export const usePhotostreamLocationDataQuery = () => {
-  return useTokenAuthQuery<PhotostreamLocationData>({
-    queryKey: ['/photostream/placenames'],
-  });
+  return useTokenAuthQuery<PhotostreamLocationData>('/photostream/placenames');
 };
 
 interface PhotostreamImageMutationProps {

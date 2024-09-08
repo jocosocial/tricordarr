@@ -6,12 +6,8 @@ import {useTokenAuthQuery} from '../TokenAuthQuery';
  * Login not required, but may respond differently if logged in.
  */
 export const useUserNotificationDataQuery = (options = {}) => {
-  return useTokenAuthQuery<UserNotificationData>({
-    queryKey: ['/notification/global'],
+  return useTokenAuthQuery<UserNotificationData>('/notification/global', {
     staleTime: 1000 * 30,
-    // cacheTime: 0,
-    // staleTime: 0,
-    // keepPreviousData: false,
     ...options,
   });
 };

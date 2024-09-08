@@ -17,8 +17,5 @@ export const useUserMuteMutation = () => {
 };
 
 export const useUserMutesQuery = (options = {}) => {
-  return useTokenAuthQuery<UserHeader[]>({
-    queryKey: ['/users/mutes'],
-    ...options,
-  });
+  return useTokenAuthQuery<UserHeader[]>('/users/mutes', options);
 };
