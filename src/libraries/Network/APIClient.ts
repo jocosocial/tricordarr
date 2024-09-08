@@ -173,6 +173,5 @@ export const shouldQueryEnable = (isLoggedIn: boolean, disruptionDetected: boole
 
 export const markAsRead = async (url: string) => {
   console.log('[APIClient.ts] marking URL as read', url);
-  const response = await axios.get(url);
-  console.log(response.status);
+  await axios.get(url);
 };
