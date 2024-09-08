@@ -44,21 +44,18 @@ export function useTokenAuthQuery<
 // then maybe it's OK? This is some meta voodoo.
 export function useTokenAuthPaginationQuery<
   TData extends WithPaginator | FezData,
-  // TQueryFnData extends AxiosResponse<TData> = AxiosResponse<TData>,
   TError extends Error = AxiosError<ErrorResponse>,
-  // TQueryKey extends QueryKey = QueryKey,
 >(
   endpoint: string,
   options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
   queryParams?: Object,
-  queryKey?: QueryKey,
 ) {
   const {isLoggedIn} = useAuth();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
   return useInfiniteQuery<TData, TError, TData>(
-    queryKey ? queryKey : [endpoint, queryParams],
+    [endpoint, queryParams],
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
