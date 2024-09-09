@@ -3,7 +3,7 @@ import {FezData, Paginator} from '../../libraries/Structs/ControllerStructs';
 /**
  * Tells useInfiniteQuery if there's a next page.
  */
-export const getNextPageParam = (page: WithPaginator | FezData) => {
+export const getNextPageParam = (page: WithPaginator | FezData): PaginationQueryParams | undefined => {
   let paginator;
   if ('fezID' in page && page.members) {
     paginator = page.members.paginator;
@@ -22,7 +22,7 @@ export const getNextPageParam = (page: WithPaginator | FezData) => {
 /**
  * Tells useInfiniteQuery if there's a previous page.
  */
-export const getPreviousPageParam = (page: WithPaginator | FezData) => {
+export const getPreviousPageParam = (page: WithPaginator | FezData): PaginationQueryParams | undefined => {
   let paginator;
   if ('fezID' in page && page.members) {
     paginator = page.members.paginator;
@@ -43,4 +43,13 @@ export const getPreviousPageParam = (page: WithPaginator | FezData) => {
  */
 export interface WithPaginator {
   paginator: Paginator;
+}
+
+export interface PaginationQueryParams {
+  start?: number;
+  limit?: number;
+}
+
+export interface PageParam extends PaginationQueryParams {
+  [key: string]: unknown;
 }
