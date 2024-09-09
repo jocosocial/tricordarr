@@ -2,7 +2,7 @@ import {AppImageViewer} from './AppImageViewer';
 import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useImageQuery} from '../Queries/ImageQuery';
+import {useImageQuery, useImageQueryV2} from '../Queries/ImageQuery';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
 import {AppIcon} from '../Icons/AppIcon';
@@ -48,11 +48,11 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   // The thumbnails Swiftarr generates are not animated.
   const isAnimated = animatedRegex.test(thumbPath);
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
-  const thumbImageQuery = useImageQuery(
+  const thumbImageQuery = useImageQueryV2(
     isAnimated ? fullPath : thumbPath,
     appConfig.skipThumbnails ? false : !isDisabled,
   );
-  const fullImageQuery = useImageQuery(fullPath, appConfig.skipThumbnails ? !isDisabled : false);
+  const fullImageQuery = useImageQueryV2(fullPath, appConfig.skipThumbnails ? !isDisabled : false);
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);

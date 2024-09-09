@@ -4,6 +4,7 @@ import {APIImage} from '../../Images/APIImage.tsx';
 import {View} from 'react-native';
 import {PhotostreamImageHeaderView} from '../../Views/Photostream/PhotostreamImageHeaderView.tsx';
 import {PhotostreamImageBodyView} from '../../Views/Photostream/PhotostreamImageBodyView.tsx';
+import {AppCachedImage} from '../../Images/AppCachedImage.tsx';
 
 interface PhotostreamListItemProps {
   item: PhotostreamImageData;
@@ -14,11 +15,12 @@ export const PhotostreamListItem = ({item}: PhotostreamListItemProps) => {
     <View>
       <PhotostreamImageHeaderView image={item} />
       <View>
-        <APIImage
-          mode={'scaledimage'}
-          thumbPath={`/image/thumb/${item.image}`}
-          fullPath={`/image/full/${item.image}`}
-        />
+        {/*<APIImage*/}
+        {/*  mode={'scaledimage'}*/}
+        {/*  thumbPath={`/image/thumb/${item.image}`}*/}
+        {/*  fullPath={`/image/full/${item.image}`}*/}
+        {/*/>*/}
+        <AppCachedImage image={item.image} />
       </View>
       <PhotostreamImageBodyView image={item} />
     </View>

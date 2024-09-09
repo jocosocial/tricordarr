@@ -51,6 +51,7 @@ import {AppNavigationThemeProvider} from './src/components/Context/Providers/App
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
 import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
+import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -69,6 +70,9 @@ configureAxios();
 
 // Declare what the Foreground Service worker function should be.
 registerFgsWorker();
+
+// Set up image caching
+configureImageCache();
 
 function App(): React.JSX.Element {
   setupChannels().catch(error => {
