@@ -1,7 +1,7 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {DataTable, Divider, Text} from 'react-native-paper';
 import {RefreshControl, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -9,7 +9,6 @@ import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
-import humanizeDuration from 'humanize-duration';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {QuerySettingsForm} from '../../../Forms/Settings/QuerySettingsForm.tsx';
 import {QuerySettingsFormValues} from '../../../../libraries/Types/FormValues';
@@ -17,6 +16,9 @@ import {FormikHelpers} from 'formik';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
 import {commonStyles} from '../../../../styles';
 import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
+import {ListSection} from '../../../Lists/ListSection.tsx';
+import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
+import {CacheManager} from '@georstat/react-native-image-cache';
 
 export const QuerySettingsScreen = () => {
   const theme = useAppTheme();
@@ -26,6 +28,7 @@ export const QuerySettingsScreen = () => {
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
+  const [imageCacheSize, setImageCacheSize] = useState<number | undefined>();
 
   const bustCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -74,47 +77,63 @@ export const QuerySettingsScreen = () => {
     });
   };
 
+  useEffect(() => {
+    // https://github.com/georstat/react-native-image-cache/issues/81
+    // This doesn't work.
+    const getCacheSize = async () => {
+      const cacheSize = await CacheManager.getCacheSize();
+      setImageCacheSize(cacheSize);
+    }
+    getCacheSize();
+  }, []);
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
-        <PaddedContentView padTop={true}>
-          <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text>Cache Management</Text>
-          <DataTable style={commonStyles.marginBottomSmall}>
-            <SettingDataTableRow title={'Last Bust'}>
-              <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
-            </SettingDataTableRow>
-            <SettingDataTableRow title={'Item Count'} value={queryClient.getQueryCache().getAll().length.toString()} />
-          </DataTable>
-          <PrimaryActionButton
-            buttonText={'Bust Cache'}
-            onPress={bustCache}
-            buttonColor={theme.colors.twitarrNegativeButton}
-          />
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text>Connection Disruption</Text>
-          <DataTable style={commonStyles.marginBottomSmall}>
-            <SettingDataTableRow title={'Error Count'} value={errorCount.toString()} />
-          </DataTable>
-          <PrimaryActionButton
-            buttonText={'Trigger Disruption'}
-            onPress={triggerDisruption}
-            buttonColor={theme.colors.twitarrNegativeButton}
-            style={commonStyles.marginBottom}
-          />
-          <PrimaryActionButton
-            buttonText={'Server Health Check'}
-            onPress={refetchHealth}
-            buttonColor={theme.colors.twitarrNeutralButton}
-          />
-        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>General</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
+          </PaddedContentView>
+        </ListSection>
+        <ListSection>
+          <ListSubheader>Cache Management</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <DataTable style={commonStyles.marginBottomSmall}>
+              <SettingDataTableRow title={'Last Bust'} reverseSplit={true}>
+                <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
+              </SettingDataTableRow>
+              <SettingDataTableRow reverseSplit={true} title={'Item Count'} value={queryClient.getQueryCache().getAll().length.toString()} />
+              {imageCacheSize && <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={imageCacheSize.toString()} />}
+            </DataTable>
+            <PrimaryActionButton
+              buttonText={'Bust Cache'}
+              onPress={bustCache}
+              buttonColor={theme.colors.twitarrNegativeButton}
+            />
+          </PaddedContentView>
+        </ListSection>
+        <ListSection>
+          <ListSubheader>Connection Disruption</ListSubheader>
+          <PaddedContentView padTop={true}>
+            <DataTable style={commonStyles.marginBottomSmall}>
+              <SettingDataTableRow title={'Error Count'} value={errorCount.toString()} />
+            </DataTable>
+            <PrimaryActionButton
+              buttonText={'Trigger Disruption'}
+              onPress={triggerDisruption}
+              buttonColor={theme.colors.twitarrNegativeButton}
+              style={commonStyles.marginBottom}
+            />
+            <PrimaryActionButton
+              buttonText={'Server Health Check'}
+              onPress={refetchHealth}
+              buttonColor={theme.colors.twitarrNeutralButton}
+            />
+          </PaddedContentView>
+        </ListSection>
       </ScrollingContentView>
     </AppView>
   );
