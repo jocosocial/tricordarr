@@ -2,7 +2,6 @@ import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {apiQueryV3, asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
-import axios from 'axios';
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
