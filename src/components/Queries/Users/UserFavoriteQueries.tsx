@@ -17,8 +17,5 @@ export const useUserFavoriteMutation = () => {
 };
 
 export const useUserFavoritesQuery = (options = {}) => {
-  return useTokenAuthQuery<UserHeader[]>({
-    queryKey: ['/users/favorites'],
-    ...options,
-  });
+  return useTokenAuthQuery<UserHeader[]>('/users/favorites', options);
 };

@@ -7,7 +7,7 @@ import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries.tsx';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {ActivityIndicator} from 'react-native-paper';
 

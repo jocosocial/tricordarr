@@ -14,7 +14,7 @@ import {StorageKeys} from './Storage';
 import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
-let fgsWorkerTimer: number;
+let fgsWorkerTimer: NodeJS.Timeout;
 
 export const getSharedWebSocket = async () => sharedWebSocket;
 const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);
@@ -59,7 +59,7 @@ const fgsWorkerHealthcheck = async () => {
  */
 const fgsEventHandler = (event: WebSocketMessageEvent) => {
   console.log('[Service.ts] responding to event', event);
-  generatePushNotificationFromEvent(event);
+  generatePushNotificationFromEvent(event).catch(console.error);
 };
 
 /**

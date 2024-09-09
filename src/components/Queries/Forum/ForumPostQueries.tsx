@@ -2,7 +2,5 @@ import {useTokenAuthQuery} from '../TokenAuthQuery';
 import {PostDetailData} from '../../../libraries/Structs/ControllerStructs';
 
 export const useForumPostQuery = (postID: string) => {
-  return useTokenAuthQuery<PostDetailData>({
-    queryKey: [`/forum/post/${postID}`],
-  });
+  return useTokenAuthQuery<PostDetailData>(`/forum/post/${postID}`);
 };

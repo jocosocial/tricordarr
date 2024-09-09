@@ -13,7 +13,5 @@ export const useForumThreadQuery = (forumID?: string, postID?: string, options =
 };
 
 export const useForumThreadPinnedPostsQuery = (forumID: string) => {
-  return useTokenAuthQuery<PostData[]>({
-    queryKey: [`/forum/${forumID}/pinnedposts`],
-  });
+  return useTokenAuthQuery<PostData[]>(`/forum/${forumID}/pinnedposts`);
 };

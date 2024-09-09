@@ -65,6 +65,7 @@ export interface AppConfig {
   skipThumbnails: boolean;
   schedBaseUrl: string;
   userPreferences: UserPreferences;
+  markReadCancelPush: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -127,6 +128,7 @@ const defaultAppConfig: AppConfig = {
   userPreferences: {
     reverseSwipeOrientation: false,
   },
+  markReadCancelPush: true,
 };
 
 /**

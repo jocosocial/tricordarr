@@ -13,7 +13,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {AppIcon} from '../../Icons/AppIcon';
 import {getDurationString} from '../../../libraries/DateTime';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.tsx';
 import {useAppTheme} from '../../../styles/Theme';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';

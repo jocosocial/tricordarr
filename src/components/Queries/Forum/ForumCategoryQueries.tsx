@@ -6,9 +6,7 @@ import {WithPaginator} from '../Pagination';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 
 export const useForumCategoriesQuery = () => {
-  return useTokenAuthQuery<CategoryData[]>({
-    queryKey: ['/forum/categories'],
-  });
+  return useTokenAuthQuery<CategoryData[]>('/forum/categories');
 };
 
 export interface ForumCategoryQueryParams {

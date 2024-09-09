@@ -34,6 +34,8 @@ import {useAppState} from '@react-native-community/hooks';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {styleDefaults} from '../../../styles';
+import notifee from '@notifee/react-native';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
 
@@ -50,6 +52,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const queryClient = useQueryClient();
   const appStateVisible = useAppState();
+  const {appConfig} = useConfig();
 
   const {
     data,
@@ -221,12 +224,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         type: FezListActions.markAsRead,
         fezID: fez.fezID,
       });
-      // Allegedly this invalidates based on prefix, so this will have a side effect
-      // of invalidating LFGs too. Shouldn't be a big deal.
-      queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+      queryClient.invalidateQueries(['/fez/joined']);
+      if (appConfig.markReadCancelPush) {
+        console.log('[SeamailScreen.tsx] auto canceling notifications.');
+        notifee.cancelDisplayedNotification(fez.fezID);
+      }
       refetchUserNotificationData();
     }
-  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData]);
+  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData, appConfig.markReadCancelPush]);
 
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background

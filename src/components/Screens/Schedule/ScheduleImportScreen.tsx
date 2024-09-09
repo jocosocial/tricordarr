@@ -10,7 +10,7 @@ import {FormikHelpers} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
 import {getCalFeedFromUrl, getEventUid} from '../../../libraries/Schedule.ts';
-import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteQueries.tsx';
+import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.tsx';
 import pluralize from 'pluralize';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {VEvent} from 'node-ical';
