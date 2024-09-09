@@ -29,6 +29,8 @@ import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {styleDefaults} from '../../../styles';
+import notifee from '@notifee/react-native';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgChatScreen>;
 
@@ -44,6 +46,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const {dispatchLfgList, lfgPostsData, dispatchLfgPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {appConfig} = useConfig();
 
   const {
     data,
@@ -203,6 +206,10 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         type: FezListActions.markAsRead,
         fezID: lfg.fezID,
       });
+      if (appConfig.markReadCancelPush) {
+        console.log('[LfgChatScreen.tsx] auto canceling notifications.');
+        notifee.cancelDisplayedNotification(lfg.fezID);
+      }
       refetchUserNotificationData();
     }
   }, [dispatchLfgList, lfg, refetchUserNotificationData]);

@@ -25,6 +25,7 @@ export const PushNotificationSettingsScreen = () => {
   const [permissionStatus, setPermissionStatus] = useState('Unknown');
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
+  const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);
 
   const muteButtons: SegmentedButtonType[] = [
     {value: '5', label: '5m'},
@@ -81,6 +82,15 @@ export const PushNotificationSettingsScreen = () => {
         startForegroundServiceWorker();
       }
     });
+  };
+
+  const toggleMarkReadCancelPush = () => {
+    const newValue = !markReadCancelPush;
+    updateAppConfig({
+      ...appConfig,
+      markReadCancelPush: newValue,
+    });
+    setMarkReadCancelPush(newValue);
   };
 
   useEffect(() => {
@@ -177,6 +187,24 @@ export const PushNotificationSettingsScreen = () => {
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
+          </PaddedContentView>
+        </ListSection>
+        <ListSection>
+          <ListSubheader>Auto Cancel</ListSubheader>
+          <PaddedContentView>
+            <Formik initialValues={{}} onSubmit={() => {}}>
+              <View>
+                <BooleanField
+                  name={'markReadCancelPush'}
+                  label={'Dismiss Notifications on Read'}
+                  value={markReadCancelPush}
+                  onPress={toggleMarkReadCancelPush}
+                  helperText={
+                    'Automatically dismiss push notifications for unread content when you have read the content. This can be useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the notification and want the notification to go away.'
+                  }
+                />
+              </View>
+            </Formik>
           </PaddedContentView>
         </ListSection>
       </ScrollingContentView>
