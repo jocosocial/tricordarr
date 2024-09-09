@@ -191,7 +191,10 @@ export const PushNotificationSettingsScreen = () => {
         </ListSection>
         <ListSection>
           <ListSubheader>Auto Cancel</ListSubheader>
-          <PaddedContentView>
+          <PaddedContentView padTop={true}>
+            <Text variant={'bodyMedium'}>
+              Automatically dismiss push notifications for unread content when you have read the content. This can be useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the notification and want the notification to go away.
+            </Text>
             <Formik initialValues={{}} onSubmit={() => {}}>
               <View>
                 <BooleanField
@@ -200,7 +203,7 @@ export const PushNotificationSettingsScreen = () => {
                   value={markReadCancelPush}
                   onPress={toggleMarkReadCancelPush}
                   helperText={
-                    'Automatically dismiss push notifications for unread content when you have read the content. This can be useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the notification and want the notification to go away.'
+                    'This setting only applies to Seamails and LFGs at this time.'
                   }
                 />
               </View>
