@@ -68,6 +68,16 @@ export const buildScheduleList = (
   });
 };
 
+/**
+ * Determine the index of the item in a list of schedule objects should be considered
+ * the one where "now" is. This enables the user to jump (roughly) to that point in
+ * the list.
+ * @param nowDayTime CruiseDayTime of the current day and minutes into the day that we are.
+ * @param itemList List of items
+ * @param cruiseStartDate Start Date of the cruise
+ * @param cruiseEndDate End Date of the cruise
+ * @param portTimeZoneID Time Zone ID of the port in which the ship departed.
+ */
 export const getScheduleScrollIndex = (
   nowDayTime: CruiseDayTime,
   itemList: (EventData | FezData | PersonalEventData)[],
@@ -75,6 +85,7 @@ export const getScheduleScrollIndex = (
   cruiseEndDate: Date,
   portTimeZoneID: string,
 ) => {
+  // console.info(nowDayTime, itemList.length, cruiseStartDate, cruiseEndDate, portTimeZoneID);
   for (let i = 0; i < itemList.length; i++) {
     // Creating a dedicated variable makes the parser happier.
     const scheduleItem = itemList[i];
@@ -83,7 +94,7 @@ export const getScheduleScrollIndex = (
     }
     const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
     const tzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
-
+    // console.info('nowDayTime', nowDayTime, 'tzOffset', tzOffset, 'itemStartDayTime', itemStartDayTime);
     if (nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes) {
       // The current i index is the next event in the schedule. Put another way,
       // it's the first upcoming event.
@@ -102,7 +113,7 @@ export const getScheduleScrollIndex = (
           previousMarkerID = separatorID;
         } else {
           if (separatorID !== previousMarkerID) {
-            // This is +1 because we've already advanced the loop to the next item
+            // This is +1 because we've already advanced the loop to the next item,
             // but we wanted the previous one.
             return i - r + 1;
           }
@@ -112,23 +123,28 @@ export const getScheduleScrollIndex = (
       return i - 1;
     }
   }
+  // console.info('STILL HERE');
   // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
   if (itemList.length > 0) {
-    // Creating a dedicated variable makes the parser happier.
-    const scheduleItem = itemList[itemList.length - 1];
-    if (!scheduleItem.startTime || !scheduleItem.timeZoneID) {
-      return itemList.length - 1;
-    }
-    const lastItemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
-    const lastItemTzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
-    if (
-      nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
-      nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
-    ) {
-      return itemList.length - 1;
-    }
+    // I have no idea why all of this was here if it was so "simple".
+    // Commenting out until I can test it more.
+    // // Creating a dedicated variable makes the parser happier.
+    // const scheduleItem = itemList[itemList.length - 1];
+    // if (!scheduleItem.startTime || !scheduleItem.timeZoneID) {
+    //   return itemList.length - 1;
+    // }
+    // const lastItemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
+    // const lastItemTzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
+    // if (
+    //   nowDayTime.cruiseDay === lastItemStartDayTime.cruiseDay &&
+    //   nowDayTime.dayMinutes - lastItemTzOffset >= lastItemStartDayTime.dayMinutes
+    // ) {
+    //   return itemList.length - 1;
+    // }
+    return itemList.length - 1;
   }
   // List of zero or any other situation, just return 0 (start of list);
+  // console.info('[Schedule.ts] getScheduleScrollIndex got 0?');
   return 0;
 };
 
