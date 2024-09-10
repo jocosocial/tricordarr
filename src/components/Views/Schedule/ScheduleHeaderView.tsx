@@ -43,7 +43,7 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
     };
     return (
       <TouchableOpacity key={item.cruiseDay} style={styles.buttonContainer} onPress={onPress}>
-        <ScheduleHeaderDayButton cruiseDay={item} isToday={item.cruiseDay === props.selectedCruiseDay} />
+        <ScheduleHeaderDayButton cruiseDay={item} isSelectedDay={item.cruiseDay === props.selectedCruiseDay} />
       </TouchableOpacity>
     );
   };

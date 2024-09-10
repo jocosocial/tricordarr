@@ -5,18 +5,22 @@ import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {format} from 'date-fns';
 import {Text} from 'react-native-paper';
 import {useAppTheme} from '../../styles/Theme.ts';
+import {useCruise} from '../Context/Contexts/CruiseContext.ts';
 
 interface ScheduleHeaderDayViewProps {
   cruiseDay: CruiseDayData;
-  isToday?: boolean;
+  isSelectedDay?: boolean;
 }
 
 export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
+  const {adjustedCruiseDayToday} = useCruise();
+  const isToday = props.cruiseDay.cruiseDay === adjustedCruiseDayToday;
+
   const styles = StyleSheet.create({
     view: {
-      backgroundColor: props.isToday ? theme.colors.inverseSurface : theme.colors.inverseOnSurface,
+      backgroundColor: props.isSelectedDay ? theme.colors.inverseSurface : theme.colors.inverseOnSurface,
       ...commonStyles.roundedBorderLarge,
       ...commonStyles.justifyCenter,
       ...commonStyles.alignItemsCenter,
@@ -25,10 +29,11 @@ export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
     },
     dayText: {
       ...commonStyles.bold,
-      color: props.isToday ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
+      ...(isToday ? commonStyles.underline : undefined),
+      color: props.isSelectedDay ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
     },
     dateText: {
-      color: props.isToday ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
+      color: props.isSelectedDay ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
     },
   });
 

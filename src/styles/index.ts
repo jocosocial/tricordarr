@@ -173,6 +173,9 @@ export const commonStyles = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
   },
+  underline: {
+    textDecorationLine: 'underline',
+  },
   marginZero: {
     // margin: 0 not good enough.
     marginVertical: 0,
