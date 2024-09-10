@@ -94,7 +94,6 @@ export interface QuerySettingsFormValues {
   retry: number;
   staleTimeMinutes: number;
   disruptionThreshold: number;
-  imageStaleTimeDays: number;
 }
 
 export interface NotificationPollingSettingsFormValues {

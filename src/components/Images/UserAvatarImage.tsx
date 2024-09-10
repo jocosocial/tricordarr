@@ -13,6 +13,14 @@ type UserAvatarImageProps = {
   icon?: string;
 };
 
+/**
+ * Image component for little user circles. This behaves fundamentally differently than APIImage with
+ * the whole identicon thing. Plus they are always small so no need to fetch the big version here.
+ * @param userHeader
+ * @param small
+ * @param icon
+ * @constructor
+ */
 export const UserAvatarImage = ({userHeader, small = false, icon = AppIcons.user}: UserAvatarImageProps) => {
   const size = small ? styleDefaults.avatarSizeSmall : styleDefaults.avatarSize;
   const {getIsDisabled} = useFeature();

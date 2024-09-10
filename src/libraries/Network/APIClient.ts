@@ -10,6 +10,7 @@ import DeviceInfo from 'react-native-device-info';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import superjson from 'superjson';
+import {CacheManager} from '@georstat/react-native-image-cache';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
 class BadResponseFormatError extends Error {
@@ -146,6 +147,28 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
   };
 };
 
+export const apiQueryImageDataV2 = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
+  const appConfig = await getAppConfig();
+  let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${queryKey[0]}`;
+  const base64Data = await CacheManager.prefetchBlob(url);
+
+  const fileName = queryKey[0].split('/').pop();
+  if (!fileName) {
+    throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
+  }
+
+  if (!base64Data) {
+    throw Error(`Unable to determine base64Data from query: ${queryKey[0]}`);
+  }
+
+  return {
+    base64: base64Data,
+    mimeType: 'image',
+    dataURI: `data:image;base64,${base64Data}`,
+    fileName: fileName,
+  };
+};
+
 /**
  * React-Query Client.
  * https://tanstack.com/query/latest/docs/react/overview
@@ -157,7 +180,6 @@ export const SwiftarrQueryClient = new QueryClient();
  */
 export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 export const defaultStaleTime = 1000 * 60; // 60 seconds
-export const defaultImageStaleTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 /**
  * React-Query Storage Persister.

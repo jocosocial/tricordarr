@@ -144,8 +144,11 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
 
   useEffect(() => {
-    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-    setScrollNowIndex(getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID));
+    if (scheduleList.length > 0) {
+      const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+      const index = getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID);
+      setScrollNowIndex(index);
+    }
   }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, scheduleList, startDate]);
 
   if (!isLoggedIn) {
