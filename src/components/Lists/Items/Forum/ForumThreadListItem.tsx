@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
@@ -134,8 +134,6 @@ export const ForumThreadListItem = ({
     setEnableSelection(true);
     handleSelection();
   };
-
-  console.log(`Rendering item ${forumListData.forumID}`);
 
   return (
     <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID} enabled={!enableSelection}>
