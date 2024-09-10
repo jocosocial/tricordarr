@@ -4,6 +4,10 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
+import {HelpSectionView} from '../../Views/Help/HelpSectionView.tsx';
+import {IconButton} from 'react-native-paper';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {HelpSectionContentView} from '../../Views/Help/HelpSectionContentView.tsx';
 
 export const ForumHelpScreen = () => {
   return (
@@ -51,6 +55,20 @@ export const ForumHelpScreen = () => {
             Favoriting a post will save it to an easily accessible Personal Category on the Forums page.
           </HelpParagraphText>
           <HelpParagraphText>You can edit or delete your own forum posts.</HelpParagraphText>
+        </PaddedContentView>
+        <PaddedContentView>
+          <HelpHeaderText>Alert Keywords</HelpHeaderText>
+        </PaddedContentView>
+        <PaddedContentView>
+          <HelpSectionView>
+            <IconButton icon={AppIcons.alertword} />
+            <HelpSectionContentView>
+              <HelpParagraphText>
+                Generate an alert/notification whenever new content is made containing these keywords. Alert words will
+                be highlighted in content views like 🚨this🚨.
+              </HelpParagraphText>
+            </HelpSectionContentView>
+          </HelpSectionView>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
