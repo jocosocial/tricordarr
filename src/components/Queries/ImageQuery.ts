@@ -8,14 +8,11 @@ import {useConfig} from '../Context/Contexts/ConfigContext';
  */
 export const useImageQuery = (path: string, enabled: boolean = true) => {
   const {isLoggedIn} = useAuth();
-  const {appConfig} = useConfig();
 
   return useQuery({
     queryKey: [path],
     enabled: enabled && isLoggedIn && !!path,
     queryFn: apiQueryImageDataV2,
-    staleTime: appConfig.apiClientConfig.imageStaleTime,
-    cacheTime: appConfig.apiClientConfig.cacheTime,
     meta: {
       noDehydrate: true,
     },

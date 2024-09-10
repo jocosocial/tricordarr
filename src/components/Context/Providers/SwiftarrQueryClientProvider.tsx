@@ -36,14 +36,16 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     },
     onSuccess: (data, query) => {
       if (errorCount !== 0) {
+        // Images get cached by a different query mechanism now so this is no longer relevant.
+        // Leaving the documentation here for future lolz.
         // Axios honors cache-control headers that we set on the images and will
         // return image data if we have it, which triggers the app into thinking that everything
         // is working again. This is sorta a hack unless I can figure out a way to "disable" Axios
         // caching, which doesn't feel like the right decision.
-        if (String(query.queryKey[0]).includes('/image/')) {
-          console.log('[SwiftarrQueryClientProvider.tsx] Skipping image path because Axios is weird.');
-          return;
-        }
+        // if (String(query.queryKey[0]).includes('/image/')) {
+        //   console.log('[SwiftarrQueryClientProvider.tsx] Skipping image path because Axios is weird.');
+        //   return;
+        // }
         console.log('[SwiftarrQueryClientProvider.tsx] Resetting error count via', query.queryKey);
         setErrorCount(0);
       }
