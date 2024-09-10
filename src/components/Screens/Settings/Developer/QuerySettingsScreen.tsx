@@ -30,7 +30,7 @@ export const QuerySettingsScreen = () => {
   });
   const [imageCacheSize, setImageCacheSize] = useState<number | undefined>();
 
-  const bustCache = () => {
+  const bustQueryCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
     updateAppConfig({
       ...appConfig,
@@ -40,6 +40,10 @@ export const QuerySettingsScreen = () => {
       },
     });
     queryClient.getQueryCache().clear();
+  };
+
+  const bustImageCache = async () => {
+    await CacheManager.clearCache();
   };
 
   const triggerDisruption = () => {
@@ -83,7 +87,7 @@ export const QuerySettingsScreen = () => {
     const getCacheSize = async () => {
       const cacheSize = await CacheManager.getCacheSize();
       setImageCacheSize(cacheSize);
-    }
+    };
     getCacheSize();
   }, []);
 
@@ -102,15 +106,30 @@ export const QuerySettingsScreen = () => {
           <ListSubheader>Cache Management</ListSubheader>
           <PaddedContentView padTop={true}>
             <DataTable style={commonStyles.marginBottomSmall}>
-              <SettingDataTableRow title={'Last Bust'} reverseSplit={true}>
+              <SettingDataTableRow title={'Last Query Bust'} reverseSplit={true}>
                 <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
               </SettingDataTableRow>
-              <SettingDataTableRow reverseSplit={true} title={'Item Count'} value={queryClient.getQueryCache().getAll().length.toString()} />
-              {imageCacheSize && <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={imageCacheSize.toString()} />}
+              <SettingDataTableRow
+                reverseSplit={true}
+                title={'Query Item Count'}
+                value={queryClient.getQueryCache().getAll().length.toString()}
+              />
             </DataTable>
             <PrimaryActionButton
-              buttonText={'Bust Cache'}
-              onPress={bustCache}
+              buttonText={'Bust Query Cache'}
+              onPress={bustQueryCache}
+              buttonColor={theme.colors.twitarrNegativeButton}
+            />
+          </PaddedContentView>
+          <PaddedContentView>
+            <DataTable>
+              {imageCacheSize && (
+                <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={imageCacheSize.toString()} />
+              )}
+            </DataTable>
+            <PrimaryActionButton
+              buttonText={'Bust Image Cache'}
+              onPress={bustImageCache}
               buttonColor={theme.colors.twitarrNegativeButton}
             />
           </PaddedContentView>

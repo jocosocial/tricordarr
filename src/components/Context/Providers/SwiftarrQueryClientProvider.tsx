@@ -51,8 +51,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   };
 
   const shouldDehydrateQuery = (query: Query) => {
-    const noHydrate = ['/client/health'];
-    return !noHydrate.includes(query.queryKey[0] as string);
+    // Endpoints that should not be dehydrated (aka cached).
+    const noDehydrateEndpoints = ['/client/health'];
+    // The .meta is arbitrary but our convention is to use .noDehydrate=true for queries that should not be cached.
+    // https://github.com/TanStack/query/discussions/3568
+    return !noDehydrateEndpoints.includes(query.queryKey[0] as string) && !query.meta?.noDehydrate;
   };
 
   useEffect(() => {
