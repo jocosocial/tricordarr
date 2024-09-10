@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useRef} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {ScheduleHeaderDayButton} from '../../Buttons/ScheduleHeaderDayButton.tsx';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
@@ -23,9 +23,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       ...commonStyles.paddingVerticalSmall,
       ...commonStyles.paddingHorizontalSmall,
     },
-    buttonContainer: {
-      ...commonStyles.paddingHorizontalTiny,
-    },
   });
 
   const renderItem = ({item}: {item: CruiseDayData}) => {
@@ -42,9 +39,12 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
       }
     };
     return (
-      <TouchableOpacity key={item.cruiseDay} style={styles.buttonContainer} onPress={onPress}>
-        <ScheduleHeaderDayButton cruiseDay={item} isSelectedDay={item.cruiseDay === props.selectedCruiseDay} />
-      </TouchableOpacity>
+      <ScheduleHeaderDayButton
+        key={item.cruiseDay}
+        cruiseDay={item}
+        isSelectedDay={item.cruiseDay === props.selectedCruiseDay}
+        onPress={onPress}
+      />
     );
   };
 

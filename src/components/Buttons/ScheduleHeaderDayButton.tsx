@@ -1,5 +1,5 @@
 import {CruiseDayData} from '../../libraries/Types';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {format} from 'date-fns';
@@ -10,6 +10,7 @@ import {useCruise} from '../Context/Contexts/CruiseContext.ts';
 interface ScheduleHeaderDayViewProps {
   cruiseDay: CruiseDayData;
   isSelectedDay?: boolean;
+  onPress: () => void;
 }
 
 export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
@@ -35,16 +36,21 @@ export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
     dateText: {
       color: props.isSelectedDay ? theme.colors.inverseOnSurface : theme.colors.inverseSurface,
     },
+    buttonContainer: {
+      ...commonStyles.paddingHorizontalTiny,
+    },
   });
 
   return (
-    <View style={styles.view}>
-      <Text style={styles.dayText} variant={'titleLarge'}>
-        {format(props.cruiseDay.date, 'EEE')}
-      </Text>
-      <Text style={styles.dateText} variant={'bodyMedium'}>
-        {format(props.cruiseDay.date, 'MMM dd')}
-      </Text>
-    </View>
+    <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+      <View style={styles.view}>
+        <Text style={styles.dayText} variant={'titleLarge'}>
+          {format(props.cruiseDay.date, 'EEE')}
+        </Text>
+        <Text style={styles.dateText} variant={'bodyMedium'}>
+          {format(props.cruiseDay.date, 'MMM dd')}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
