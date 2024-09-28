@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -17,14 +17,16 @@ import {ServerHealthcheckResultView} from '../../Views/Settings/ServerHealthchec
 import {ServerUrlSettingForm} from '../../Forms/Settings/ServerUrlSettingForm.tsx';
 import {RefreshControl} from 'react-native';
 import {ServerChoices} from '../../../libraries/Network/ServerChoices.ts';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen, NavigatorIDs.oobeStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig} = useConfig();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
+  const {hasUnsavedWork} = useErrorHandler();
 
   const onSave = (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     updateAppConfig({
@@ -70,18 +72,16 @@ export const OobeServerScreen = ({navigation}: Props) => {
             }}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <ServerHealthcheckResultView
-            serverHealthData={serverHealthData}
-            serverHealthPassed={serverHealthPassed}
-            isFetching={isFetching}
-          />
-        </PaddedContentView>
+        {!hasUnsavedWork && (
+          <PaddedContentView>
+            <ServerHealthcheckResultView serverHealthPassed={serverHealthPassed} />
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
-        rightDisabled={!serverHealthPassed || isFetching}
+        rightDisabled={!serverHealthPassed || isFetching || hasUnsavedWork}
       />
     </AppView>
   );

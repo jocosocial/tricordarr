@@ -14,7 +14,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {getApparentCruiseDate} from '../../../libraries/DateTime.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
-export const PersonalEventCreateScreen = ({navigation}: Props) => {
+export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
   const createMutation = usePersonalEventCreateMutation();
   const queryClient = useQueryClient();
   const {startDate, adjustedCruiseDayToday} = useCruise();
@@ -38,11 +38,9 @@ export const PersonalEventCreateScreen = ({navigation}: Props) => {
         },
       },
       {
-        onSuccess: async response => {
+        onSuccess: async () => {
           await queryClient.invalidateQueries(['/personalevents']);
-          navigation.replace(CommonStackComponents.personalEventScreen, {
-            eventID: response.data.personalEventID,
-          });
+          navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
       },
@@ -50,7 +48,10 @@ export const PersonalEventCreateScreen = ({navigation}: Props) => {
   };
   const initialValues: PersonalEventFormValues = {
     title: '',
-    startDate: getApparentCruiseDate(startDate, adjustedCruiseDayToday),
+    startDate: getApparentCruiseDate(
+      startDate,
+      route.params.cruiseDay !== undefined ? route.params.cruiseDay : adjustedCruiseDayToday,
+    ),
     duration: '30',
     description: undefined,
     startTime: {

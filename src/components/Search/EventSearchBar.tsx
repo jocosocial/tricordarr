@@ -1,13 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useEventsQuery} from '../Queries/Events/EventQueries';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {EventData, FezData} from '../../libraries/Structs/ControllerStructs';
-import {EventFlatList} from '../Lists/Schedule/EventFlatList';
+import {EventData} from '../../libraries/Structs/ControllerStructs';
 import {TimeDivider} from '../Lists/Dividers/TimeDivider';
 import {getDayMarker} from '../../libraries/DateTime';
+import {ScheduleFlatList} from '../Lists/Schedule/ScheduleFlatList.tsx';
+import {FlashList} from '@shopify/flash-list';
 
 export const EventSearchBar = () => {
   const [queryEnable, setQueryEnable] = useState(false);
@@ -20,7 +21,7 @@ export const EventSearchBar = () => {
     },
   });
   const {commonStyles} = useStyles();
-  const listRef = useRef<FlatList<EventData | FezData>>(null);
+  const listRef = useRef<FlashList<EventData>>(null);
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
@@ -49,7 +50,8 @@ export const EventSearchBar = () => {
   const eventList = data || [];
 
   return (
-    <EventFlatList
+    <ScheduleFlatList
+      listRef={listRef}
       listFooter={<TimeDivider label={'End of Results'} />}
       listHeader={
         <>
@@ -67,8 +69,7 @@ export const EventSearchBar = () => {
           )}
         </>
       }
-      scheduleItems={eventList}
-      listRef={listRef}
+      items={eventList}
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
       separator={'day'}
     />

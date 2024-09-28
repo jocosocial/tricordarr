@@ -17,7 +17,6 @@ const validationSchema = Yup.object().shape({
   cacheTimeDays: Yup.number().required(),
   retry: Yup.number().required(),
   staleTimeMinutes: Yup.number().required(),
-  imageStaleTimeHours: Yup.number().required(),
   disruptionThreshold: Yup.number().required(),
 });
 
@@ -67,20 +66,8 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             unit={'minute'}
           />
           <SliderField
-            value={values.imageStaleTimeHours}
-            maximumValue={24}
-            minimumValue={0}
-            step={1}
-            label={'Image Stale Time'}
-            name={'imageStaleTimeHours'}
-            helperText={
-              'Amount of time for image query response data to be considered fresh before automatically refreshed. Images in Twitarr are immutable so a longer stale time is appropriate here.'
-            }
-            unit={'hour'}
-          />
-          <SliderField
             value={values.cacheTimeDays}
-            maximumValue={28}
+            maximumValue={30}
             minimumValue={0}
             step={1}
             label={'Cache Time'}

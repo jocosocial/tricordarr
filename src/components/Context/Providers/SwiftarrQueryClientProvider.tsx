@@ -2,7 +2,6 @@ import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {apiQueryV3, asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
-import axios from 'axios';
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
@@ -29,31 +28,24 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const queryCache = SwiftarrQueryClient.getQueryCache();
   queryCache.config = {
     onError: (error, query) => {
-      if (axios.isAxiosError(error)) {
-        // Even 404's have responses.
-        // if (!error.response?.data.reason) {
-        //   console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered.');
-        //   setErrorCount(errorCount + 1);
-        // }
-        // I think I was getting too clever. See how this goes for now.
-        console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
-        setErrorCount(errorCount + 1);
-        // Moved
-        if (!disruptionDetected) {
-          setErrorMessage(error);
-        }
+      console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
+      setErrorCount(errorCount + 1);
+      if (!disruptionDetected) {
+        setErrorMessage(String(error));
       }
     },
     onSuccess: (data, query) => {
       if (errorCount !== 0) {
+        // Images get cached by a different query mechanism now so this is no longer relevant.
+        // Leaving the documentation here for future lolz.
         // Axios honors cache-control headers that we set on the images and will
         // return image data if we have it, which triggers the app into thinking that everything
         // is working again. This is sorta a hack unless I can figure out a way to "disable" Axios
         // caching, which doesn't feel like the right decision.
-        if (String(query.queryKey[0]).includes('/image/')) {
-          console.log('[SwiftarrQueryClientProvider.tsx] Skipping image path because Axios is weird.');
-          return;
-        }
+        // if (String(query.queryKey[0]).includes('/image/')) {
+        //   console.log('[SwiftarrQueryClientProvider.tsx] Skipping image path because Axios is weird.');
+        //   return;
+        // }
         console.log('[SwiftarrQueryClientProvider.tsx] Resetting error count via', query.queryKey);
         setErrorCount(0);
       }
@@ -61,8 +53,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   };
 
   const shouldDehydrateQuery = (query: Query) => {
-    const noHydrate = ['/client/health'];
-    return !noHydrate.includes(query.queryKey[0] as string);
+    // Endpoints that should not be dehydrated (aka cached).
+    const noDehydrateEndpoints = ['/client/health'];
+    // The .meta is arbitrary but our convention is to use .noDehydrate=true for queries that should not be cached.
+    // https://github.com/TanStack/query/discussions/3568
+    return !noDehydrateEndpoints.includes(query.queryKey[0] as string) && !query.meta?.noDehydrate;
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -17,7 +17,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../Views/Modals/LogoutModal';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen, NavigatorIDs.oobeStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const theme = useAppTheme();

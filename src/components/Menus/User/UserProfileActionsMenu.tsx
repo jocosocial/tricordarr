@@ -1,34 +1,31 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {ReportModalView} from '../Views/Modals/ReportModalView';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {MuteUserModalView} from '../Views/Modals/MuteUserModalView';
-import {useUserMuteMutation} from '../Queries/Users/UserMuteQueries';
-import {useUserRelations} from '../Context/Contexts/UserRelationsContext';
-import {useUserBlockMutation} from '../Queries/Users/UserBlockQueries';
-import {BlockUserModalView} from '../Views/Modals/BlockUserModalView';
-import {useUserFavoriteMutation} from '../Queries/Users/UserFavoriteQueries';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries.tsx';
+import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries.tsx';
+import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
-  isFavorite: boolean;
   isMuted: boolean;
   isBlocked: boolean;
 }
 
-export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
+export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const favoriteMutation = useUserFavoriteMutation();
-  const {mutes, setMutes, blocks, setBlocks, favorites, setFavorites} = useUserRelations();
+  const {mutes, setMutes, blocks, setBlocks} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
 
@@ -42,35 +39,6 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       id: profile.header.userID,
       moderate: true,
     });
-  };
-  const handleFavorite = () => {
-    if (isFavorite) {
-      favoriteMutation.mutate(
-        {
-          userID: profile.header.userID,
-          action: 'unfavorite',
-        },
-        {
-          onSuccess: () => {
-            setFavorites(favorites.filter(m => m.userID !== profile.header.userID));
-            closeMenu();
-          },
-        },
-      );
-    } else {
-      favoriteMutation.mutate(
-        {
-          userID: profile.header.userID,
-          action: 'favorite',
-        },
-        {
-          onSuccess: () => {
-            setFavorites(favorites.concat([profile.header]));
-            closeMenu();
-          },
-        },
-      );
-    }
   };
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -89,17 +57,16 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
       user: profile,
     });
   };
+  const handleHelp = () => {
+    closeMenu();
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
+  };
 
   return (
     <Menu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item
-        leadingIcon={isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
-        title={isFavorite ? 'Unfavorite' : 'Favorite'}
-        onPress={handleFavorite}
-      />
       <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <Divider bold={true} />
       <Menu.Item
@@ -154,6 +121,8 @@ export const UserProfileActionsMenu = ({profile, isFavorite, isMuted, isBlocked}
           )}
         </>
       )}
+      <Divider bold={true} />
+      <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </Menu>
   );
 };

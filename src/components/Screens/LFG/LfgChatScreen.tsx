@@ -3,7 +3,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
+import {FlatList, Keyboard, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -28,6 +28,9 @@ import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {styleDefaults} from '../../../styles';
+import notifee from '@notifee/react-native';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgChatScreen>;
 
@@ -43,6 +46,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   const {dispatchLfgList, lfgPostsData, dispatchLfgPostsData} = useTwitarr();
   const {setErrorMessage} = useErrorHandler();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {appConfig} = useConfig();
 
   const {
     data,
@@ -202,6 +206,10 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
         type: FezListActions.markAsRead,
         fezID: lfg.fezID,
       });
+      if (appConfig.markReadCancelPush) {
+        console.log('[LfgChatScreen.tsx] auto canceling notifications.');
+        notifee.cancelDisplayedNotification(lfg.fezID);
+      }
       refetchUserNotificationData();
     }
   }, [dispatchLfgList, lfg, refetchUserNotificationData]);
@@ -224,9 +232,8 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
   };
 
   // useCallback() didn't change any number of renders
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
   };
 
   const showNewDivider = useCallback(

@@ -28,15 +28,6 @@ export const PhotostreamImageActionsMenu = ({visible, closeMenu, anchor, image}:
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
-      <Menu.Item
-        dense={false}
-        leadingIcon={AppIcons.save}
-        title={'Share'}
-        onPress={() => {
-          // Clipboard.setString(fezPost.text);
-          closeMenu();
-        }}
-      />
       <Menu.Item dense={false} leadingIcon={AppIcons.report} title={'Report'} onPress={handleReport} />
       {hasModerator && (
         <>

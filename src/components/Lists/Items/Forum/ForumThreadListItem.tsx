@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {List, Text} from 'react-native-paper';
+import React, {Dispatch, SetStateAction} from 'react';
+import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
@@ -11,30 +11,48 @@ import {AppIcon} from '../../../Icons/AppIcon';
 import {useAppTheme} from '../../../../styles/Theme';
 import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {getEventTimeString} from '../../../../libraries/DateTime';
-import {ForumThreadActionsMenu} from '../../../Menus/Forum/ForumThreadActionsMenu';
 import {UserBylineTag} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
+import {ForumThreadListItemSwipeable} from '../../../Swipeables/ForumThreadListItemSwipeable.tsx';
+import {useSelection} from '../../../Context/Contexts/SelectionContext.ts';
+import {ForumListDataSelectionActions} from '../../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
   categoryID?: string;
+  enableSelection: boolean;
+  setEnableSelection: Dispatch<SetStateAction<boolean>>;
+  selected: boolean;
 }
 
-export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadListItemProps) => {
+export const ForumThreadListItem = ({
+  forumListData,
+  categoryID,
+  // onSelect,
+  enableSelection = false,
+  selected = false,
+  setEnableSelection,
+}: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
-  const [menuVisible, setMenuVisible] = useState(false);
+  // const [selected, setSelected] = useState(false);
+  const {dispatchSelectedForums} = useSelection();
+
   const styles = StyleSheet.create({
     item: {
-      // ...commonStyles.paddingHorizontal,
-      // ...commonStyles.paddingLeftZero,
+      backgroundColor: theme.colors.background,
     },
     title: commonStyles.bold,
     rightContainer: {
       ...commonStyles.marginLeftSmall,
     },
     rightContent: {
-      ...commonStyles.flexRow,
+      ...commonStyles.flexColumn,
+      ...commonStyles.alignItemsEnd,
+    },
+    leftContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.justifyCenter,
     },
   });
 
@@ -60,6 +78,7 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       );
     }
   };
+
   const getDescription = () => (
     <View>
       {forumListData.eventTime && (
@@ -87,30 +106,48 @@ export const ForumThreadListItem = ({forumListData, categoryID}: ForumThreadList
       )}
     </View>
   );
-  const onPress = () =>
+
+  const onPress = () => {
     forumNavigation.push(CommonStackComponents.forumThreadScreen, {
       forumID: forumListData.forumID,
       forumListData: forumListData,
     });
+  };
+
+  const handleSelection = () => {
+    dispatchSelectedForums({
+      type: ForumListDataSelectionActions.select,
+      forumListData: forumListData,
+    });
+    // setSelected(!selected);
+  };
+
+  const getLeft = () => {
+    return (
+      <View style={styles.leftContainer}>
+        <Checkbox status={selected ? 'checked' : 'unchecked'} onPress={handleSelection} />
+      </View>
+    );
+  };
+
+  const onLongPress = () => {
+    setEnableSelection(true);
+    handleSelection();
+  };
 
   return (
-    <ForumThreadActionsMenu
-      anchor={
-        <List.Item
-          style={styles.item}
-          title={forumListData.title}
-          titleStyle={styles.title}
-          titleNumberOfLines={0}
-          description={getDescription}
-          onPress={onPress}
-          right={getRight}
-          onLongPress={() => setMenuVisible(true)}
-        />
-      }
-      forumListData={forumListData}
-      visible={menuVisible}
-      setVisible={setMenuVisible}
-      categoryID={categoryID}
-    />
+    <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID} enabled={!enableSelection}>
+      <List.Item
+        style={styles.item}
+        title={forumListData.title}
+        titleStyle={styles.title}
+        titleNumberOfLines={0}
+        description={getDescription}
+        onPress={enableSelection ? handleSelection : onPress}
+        right={getRight}
+        left={enableSelection ? getLeft : undefined}
+        onLongPress={onLongPress}
+      />
+    </ForumThreadListItemSwipeable>
   );
 };

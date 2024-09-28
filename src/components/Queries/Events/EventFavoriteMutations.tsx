@@ -1,6 +1,4 @@
 import axios, {AxiosResponse} from 'axios';
-import {EventData} from '../../../libraries/Structs/ControllerStructs';
-import {useTokenAuthQuery} from '../TokenAuthQuery';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 
 interface EventFavoriteMutationProps {
@@ -16,15 +14,4 @@ const queryHandler = async ({eventID, action}: EventFavoriteMutationProps): Prom
 
 export const useEventFavoriteMutation = () => {
   return useTokenAuthMutation(queryHandler);
-};
-
-interface EventFavoriteQueryProps {
-  enabled?: boolean;
-}
-
-export const useEventFavoritesQuery = ({enabled}: EventFavoriteQueryProps = {enabled: true}) => {
-  return useTokenAuthQuery<EventData[]>({
-    queryKey: ['/events/favorites'],
-    enabled: enabled,
-  });
 };

@@ -1,5 +1,5 @@
-import notifee, {AndroidChannelGroup} from '@notifee/react-native';
-import {PressAction} from '../Enums/Notifications';
+import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native';
+import {markAsReadPressAction, PressAction, settingsPressAction} from '../Enums/Notifications';
 import {PushNotificationConfig} from '../AppConfig';
 
 interface ContentNotificationCategory {
@@ -78,7 +78,7 @@ export const contentNotificationCategories: ContentNotificationCategory[] = [
   },
 ];
 
-export function generateContentNotification(
+export async function generateContentNotification(
   id: string,
   title: string,
   body: string,
@@ -86,37 +86,39 @@ export function generateContentNotification(
   type: string,
   url: string,
   pressActionID: string = PressAction.twitarrTab,
-  autoCancel: boolean = true,
+  autoCancel: boolean = false,
   ongoing: boolean = false,
+  markAsReadUrl?: string,
 ) {
-  console.log('Displaying notification with pressID', pressActionID);
-  notifee
-    .displayNotification({
-      id: id,
-      title: title,
-      body: body,
-      data: {type: type, url: url},
-      android: {
-        ongoing: ongoing,
-        channelId: channel.id,
-        // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
-        autoCancel: autoCancel,
-        // https://notifee.app/react-native/docs/android/interaction
-        pressAction: {
-          id: pressActionID,
-        },
-        smallIcon: 'ic_notification',
-        actions: [
-          {
-            title: 'Settings',
-            pressAction: {
-              id: PressAction.contentSettings,
-            },
-          },
-        ],
+  console.log('[Content.ts] Displaying notification with pressID', pressActionID);
+
+  let actions: AndroidAction[] = [settingsPressAction];
+  if (markAsReadUrl) {
+    actions = [markAsReadPressAction, ...actions];
+  }
+
+  const data = {
+    type: type,
+    url: url,
+    ...(markAsReadUrl ? {markAsReadUrl: markAsReadUrl} : undefined),
+  };
+
+  await notifee.displayNotification({
+    id: id,
+    title: title,
+    body: body,
+    data: data,
+    android: {
+      ongoing: ongoing,
+      channelId: channel.id,
+      // smallIcon: 'mail', // optional, defaults to 'ic_launcher'.
+      autoCancel: autoCancel,
+      // https://notifee.app/react-native/docs/android/interaction
+      pressAction: {
+        id: pressActionID,
       },
-    })
-    .catch(e => {
-      console.error(e);
-    });
+      smallIcon: 'ic_notification',
+      actions: actions,
+    },
+  });
 }

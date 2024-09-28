@@ -10,9 +10,10 @@ interface ForumFABProps {
   categoryId: string;
   openLabel?: string;
   icon?: IconSource;
+  showLabel?: boolean;
 }
 
-export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon}: ForumFABProps) => {
+export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon, showLabel}: ForumFABProps) => {
   const navigation = useForumStackNavigation();
 
   const actions = [
@@ -34,5 +35,5 @@ export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={openLabel} icon={icon || AppIcons.forum} />;
+  return <BaseFABGroup actions={actions} openLabel={openLabel} icon={icon || AppIcons.forum} showLabel={showLabel} />;
 };

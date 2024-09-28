@@ -1,12 +1,7 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
-import {Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {LfgCard} from '../../Cards/Schedule/LfgCard';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../Menus/LFG/ScheduleLfgFilterMenu';
@@ -23,7 +18,8 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
+import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -32,18 +28,19 @@ interface LfgJoinedScreenProps {
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
-  const {data, isFetched, isFetching, refetch, isLoading} = useLfgListQuery({
+  const {data, isFetching, refetch, isLoading} = useLfgListQuery({
     endpoint: endpoint,
     fezType: lfgTypeFilter,
     // @TODO we intend to fix this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
   });
-  const {commonStyles} = useStyles();
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
   const {notificationSocket, closeFezSocket} = useSocket();
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -126,27 +123,14 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
 
   return (
     <AppView>
-      <ScrollingContentView
-        isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView padTop={true}>
-          {isFetched && lfgList.length === 0 && (
-            <View key={'noResults'} style={[commonStyles.paddingVerticalSmall]}>
-              <Text>No Results</Text>
-            </View>
-          )}
-          {lfgList.map((lfg, i) => (
-            <View key={i} style={[commonStyles.marginBottom]}>
-              <LfgCard
-                showDay={true}
-                lfg={lfg}
-                onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: lfg.fezID})}
-              />
-            </View>
-          ))}
-        </PaddedContentView>
-      </ScrollingContentView>
-      <LfgFAB />
+      <TimezoneWarningView />
+      <LFGFlatList
+        items={lfgList}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        separator={'day'}
+        onScrollThreshold={onScrollThreshold}
+      />
+      <LfgFAB showLabel={showFabLabel} />
     </AppView>
   );
 };

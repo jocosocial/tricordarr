@@ -6,15 +6,12 @@ import {
   Animated,
   ColorValue,
   GestureResponderEvent,
-  ImageSourcePropType, ImageURISource,
+  ImageSourcePropType,
+  ImageURISource,
   StyleProp,
   TextStyle,
   ViewStyle,
 } from 'react-native';
-
-export interface KvObject {
-  [key: string]: string | null;
-}
 
 export type StringOrError = string | Error;
 

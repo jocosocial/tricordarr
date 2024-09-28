@@ -14,12 +14,13 @@ import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {SeamailFormValues} from '../../../libraries/Types/FormValues.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
 export const SeamailCreateScreen = ({navigation, route}: Props) => {
-  const seamailCreateFormRef = useRef<FormikProps<FezContentData>>(null);
+  const seamailCreateFormRef = useRef<FormikProps<SeamailFormValues>>(null);
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
   const fezMutation = useFezCreateMutation();
   const fezPostMutation = useFezPostMutation();
@@ -28,10 +29,10 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const {setErrorMessage} = useErrorHandler();
   const {dispatchFezList} = useTwitarr();
 
-  const initialFormValues: FezContentData = {
+  const initialFormValues: SeamailFormValues = {
     fezType: FezType.open,
     info: '',
-    initialUsers: [],
+    initialUsers: route.params?.initialUserHeader ? [route.params.initialUserHeader] : [],
     maxCapacity: 0,
     minCapacity: 0,
     title: '',
@@ -41,10 +42,14 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
 
   // Handler for creating the Fez.
   const onFezSubmit = useCallback(
-    (values: FezContentData) => {
+    (values: SeamailFormValues) => {
       setSubmitting(true);
+      const contentData: FezContentData = {
+        ...values,
+        initialUsers: values.initialUsers.map(u => u.userID),
+      };
       fezMutation.mutate(
-        {fezContentData: values},
+        {fezContentData: contentData},
         {
           onSuccess: response => {
             setNewSeamail(response.data);
@@ -101,12 +106,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
     <AppView>
       <PostAsUserBanner />
       <ScrollingContentView>
-        <SeamailCreateForm
-          initialUserHeader={route.params?.initialUserHeader}
-          formRef={seamailCreateFormRef}
-          onSubmit={onFezSubmit}
-          initialValues={initialFormValues}
-        />
+        <SeamailCreateForm formRef={seamailCreateFormRef} onSubmit={onFezSubmit} initialValues={initialFormValues} />
       </ScrollingContentView>
       <ContentPostForm
         formRef={seamailPostFormRef}

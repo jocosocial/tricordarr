@@ -17,7 +17,7 @@ import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
 import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SiteUIScreen} from '../Screens/SiteUIScreen';
 import {MapScreen} from '../Screens/Main/MapScreen';
@@ -48,7 +48,15 @@ import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScre
 import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
 import {PersonalEventEditScreen} from '../Screens/PersonalEvent/PersonalEventEditScreen.tsx';
 import {PersonalEventCreateScreen} from '../Screens/PersonalEvent/PersonalEventCreateScreen.tsx';
-import {PersonalEventListScreen} from '../Screens/PersonalEvent/PersonalEventListScreen.tsx';
+import {UserProfileHelpScreen} from '../Screens/User/UserProfileHelpScreen.tsx';
+import {BlockUsersScreen} from '../Screens/User/BlockUsersScreen.tsx';
+import {MuteUsersScreen} from '../Screens/User/MuteUsersScreen.tsx';
+import {FavoriteUsersScreen} from '../Screens/User/FavoriteUsersScreen.tsx';
+import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.tsx';
+import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScreen.tsx';
+import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
+import {EventStackComponents} from '../../libraries/Enums/Navigation.ts';
+import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -162,7 +170,17 @@ export type CommonStackParamList = {
   PersonalEventEditScreen: {
     personalEvent: PersonalEventData;
   };
-  PersonalEventCreateScreen: undefined;
+  PersonalEventCreateScreen: {
+    cruiseDay?: number;
+  };
+  UserProfileHelpScreen: undefined;
+  BlockUsersScreen: undefined;
+  MuteUsersScreen: undefined;
+  FavoriteUsersScreen: undefined;
+  UserDirectoryHelpScreen: undefined;
+  ForumSettingsScreen: undefined;
+  ForumHelpScreen: undefined;
+  ScheduleHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -200,6 +218,14 @@ export enum CommonStackComponents {
   personalEventScreen = 'PersonalEventScreen',
   personalEventEditScreen = 'PersonalEventEditScreen',
   personalEventCreateScreen = 'PersonalEventCreateScreen',
+  userProfileHelpScreen = 'UserProfileHelpScreen',
+  blockUsers = 'BlockUsersScreen',
+  muteUsers = 'MuteUsersScreen',
+  favoriteUsers = 'FavoriteUsersScreen',
+  userDirectoryHelpScreen = 'UserDirectoryHelpScreen',
+  forumSettingsScreen = 'ForumSettingsScreen',
+  forumHelpScreen = 'ForumHelpScreen',
+  scheduleHelpScreen = 'ScheduleHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -381,8 +407,50 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         component={PersonalEventCreateScreen}
         options={{title: 'Create Personal Event'}}
       />
+      <Stack.Screen
+        name={CommonStackComponents.userProfileHelpScreen}
+        component={UserProfileHelpScreen}
+        options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.blockUsers}
+        component={BlockUsersScreen}
+        options={{title: 'Blocked Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.muteUsers}
+        component={MuteUsersScreen}
+        options={{title: 'Muted Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.favoriteUsers}
+        component={FavoriteUsersScreen}
+        options={{title: 'Favorite Users'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.userDirectoryHelpScreen}
+        component={UserDirectoryHelpScreen}
+        options={{title: 'Directory Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumSettingsScreen}
+        component={ForumSettingsScreen}
+        options={{title: 'Forum Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumHelpScreen}
+        component={ForumHelpScreen}
+        options={{title: 'Forum Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleHelpScreen}
+        component={ScheduleHelpScreen}
+        options={{title: 'Schedule Help'}}
+      />
     </>
   );
 };
 
 export const useCommonStack = () => useNavigation<NativeStackNavigationProp<CommonStackParamList>>();
+
+export const useCommonRoute = () => useRoute<RouteProp<CommonStackParamList>>();

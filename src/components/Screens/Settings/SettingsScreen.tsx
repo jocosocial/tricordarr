@@ -73,33 +73,8 @@ export const SettingsScreen = ({navigation}: Props) => {
           <ListSection>
             <ListSubheader>Content</ListSubheader>
             <SettingsNavigationListItem
-              title={'Alert Keywords'}
-              description={'Manage keywords that will generate a notification.'}
-              navComponent={CommonStackComponents.alertKeywords}
-            />
-            <SettingsNavigationListItem
-              title={'Mute Keywords'}
-              description={'Manage keywords that will mute content.'}
-              navComponent={CommonStackComponents.muteKeywords}
-            />
-            <SettingsNavigationListItem
-              title={'Blocked Users'}
-              description={'Users that cannot see your content.'}
-              navComponent={SettingsStackScreenComponents.blockUsers}
-            />
-            <SettingsNavigationListItem
-              title={'Muted Users'}
-              description={'Users whose content you will not see.'}
-              navComponent={SettingsStackScreenComponents.muteUsers}
-            />
-            <SettingsNavigationListItem
-              title={'Favorite Users'}
-              description={'Quickly access friends profiles.'}
-              navComponent={SettingsStackScreenComponents.favoriteUsers}
-            />
-            <SettingsNavigationListItem
-              title={'Event Settings'}
-              description={'Settings for official and shadow event schedule.'}
+              title={'Schedule Settings'}
+              description={'Settings related to the day and schedule.'}
               navComponent={SettingsStackScreenComponents.eventSettings}
             />
             <SettingsNavigationListItem
@@ -111,6 +86,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               title={'Image Settings'}
               description={'Manage settings for images.'}
               navComponent={CommonStackComponents.imageSettingsScreen}
+            />
+            <SettingsNavigationListItem
+              title={'Forum Settings'}
+              description={'Settings for Forum threads and categories.'}
+              navComponent={CommonStackComponents.forumSettingsScreen}
             />
           </ListSection>
           {appConfig.enableDeveloperOptions && (

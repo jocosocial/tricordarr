@@ -17,8 +17,5 @@ export const useUserBlockMutation = () => {
 };
 
 export const useUserBlocksQuery = (options = {}) => {
-  return useTokenAuthQuery<UserHeader[]>({
-    queryKey: ['/users/blocks'],
-    ...options,
-  });
+  return useTokenAuthQuery<UserHeader[]>('/users/blocks', options);
 };

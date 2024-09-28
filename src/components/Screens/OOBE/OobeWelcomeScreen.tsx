@@ -3,7 +3,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavigatorIDs, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -15,7 +15,7 @@ import {AppImage} from '../../Images/AppImage.tsx';
 import {encode as base64_encode} from 'base-64';
 import DeviceInfo from 'react-native-device-info';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen, NavigatorIDs.oobeStack>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();

@@ -10,6 +10,16 @@ import DeviceInfo from 'react-native-device-info';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import superjson from 'superjson';
+import {CacheManager} from '@georstat/react-native-image-cache';
+
+// https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
+class BadResponseFormatError extends Error {
+  constructor(public response: AxiosResponse) {
+    const contentType = response.headers['content-type'];
+    const server = response.headers.server;
+    super(`Malformed response. Got ${contentType} payload from server ${server}.`);
+  }
+}
 
 /**
  * Setup function for the Axios HTTP library. We use an interceptor to automagically
@@ -34,6 +44,8 @@ export async function configureAxios() {
     // Other Headers
     config.headers.Accept = 'application/json';
     config.headers['X-Swiftarr-Client'] = `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`;
+    // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
+    config.headers['Cache-Control'] = 'no-store';
     // Other Config
     config.timeout = apiClientConfig.requestTimeout;
     config.timeoutErrorMessage = 'Tricordarr/Axios request timeout.';
@@ -54,8 +66,26 @@ export async function configureAxios() {
  */
 export const apiQueryV3 = async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
   const mutableQueryKey = queryKey as string[];
-  const {data} = await axios.get(mutableQueryKey[0]);
-  return data;
+  const response = await apiGet<any, any>({url: mutableQueryKey[0]});
+  return response.data;
+};
+
+export interface apiGetProps<TQueryParams = object> {
+  url: string;
+  queryParams?: TQueryParams;
+}
+
+export const apiGet = async <TData, TQueryParams>(props: apiGetProps<TQueryParams>) => {
+  const response = await axios.get<TData, AxiosResponse<TData, TData>>(props.url, {
+    params: props.queryParams,
+  });
+
+  // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
+  if (!response.headers['content-type'].startsWith('application/json')) {
+    throw new BadResponseFormatError(response);
+  }
+
+  return response;
 };
 
 /**
@@ -117,6 +147,28 @@ export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]
   };
 };
 
+export const apiQueryImageDataV2 = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
+  const appConfig = await getAppConfig();
+  let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${queryKey[0]}`;
+  const base64Data = await CacheManager.prefetchBlob(url);
+
+  const fileName = queryKey[0].split('/').pop();
+  if (!fileName) {
+    throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
+  }
+
+  if (!base64Data) {
+    throw Error(`Unable to determine base64Data from query: ${queryKey[0]}`);
+  }
+
+  return {
+    base64: base64Data,
+    mimeType: 'image',
+    dataURI: `data:image;base64,${base64Data}`,
+    fileName: fileName,
+  };
+};
+
 /**
  * React-Query Client.
  * https://tanstack.com/query/latest/docs/react/overview
@@ -126,9 +178,8 @@ export const SwiftarrQueryClient = new QueryClient();
 /**
  * This is here because it gets referenced in the settings.
  */
-export const defaultCacheTime = 1000 * 60 * 60 * 24 * 28; // 28 days === 4 weeks
+export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 export const defaultStaleTime = 1000 * 60; // 60 seconds
-export const defaultImageStaleTime = 1000 * 60 * 60 * 24; // 24 hours
 
 /**
  * React-Query Storage Persister.

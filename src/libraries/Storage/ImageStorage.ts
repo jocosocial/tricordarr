@@ -2,6 +2,8 @@ import {ImageQueryData} from '../Types';
 import RNFS from 'react-native-fs';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import * as mime from 'react-native-mime-types';
+import {CacheManager} from '@georstat/react-native-image-cache';
+import {Dirs} from 'react-native-file-access';
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
@@ -27,4 +29,16 @@ export const saveImageToLocal = async (imageData: ImageQueryData) => {
   await RNFS.unlink(destPath);
   console.log('[ImageStorage.ts] Saved to camera roll at', cameraRollSaveResult);
   return cameraRollSaveResult;
+};
+
+export const configureImageCache = () => {
+  CacheManager.config = {
+    baseDir: `${Dirs.CacheDir}/images_cache/`,
+    blurRadius: 15,
+    cacheLimit: 0,
+    maxRetries: 3 /* optional, if not provided defaults to 0 */,
+    retryDelay: 3000 /* in milliseconds, optional, if not provided defaults to 0 */,
+    sourceAnimationDuration: 1000,
+    thumbnailAnimationDuration: 1000,
+  };
 };

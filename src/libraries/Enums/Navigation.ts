@@ -3,16 +3,7 @@
  * https://reactnavigation.org/docs/typescript/
  *
  * @TODO start moving these out to the various navigators
- * @TODO kill the navigatorIDs. THey aren't necessary.
  */
-export enum NavigatorIDs {
-  settingsStack = 'SettingsStackNavigator',
-  mainStack = 'MainStack',
-  oobeStack = 'OobeStackNavigator',
-  eventStack = 'EventStackNavigator',
-  lfgStack = 'LfgStackNavigator',
-  forumStack = 'ForumStackNavigator',
-}
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',
@@ -35,9 +26,6 @@ export enum SettingsStackScreenComponents {
   changeUsername = 'ChangeUsernameScreen',
   login = 'LoginScreen',
   accountManagement = 'AccountManagementScreen',
-  blockUsers = 'BlockUsersScreen',
-  muteUsers = 'MuteUsersScreen',
-  favoriteUsers = 'FavoriteUsersScreen',
   eventSettings = 'EventSettingsScreen',
   lfgSettings = 'LfgSettingsScreen',
   featureSettingsScreen = 'FeatureSettingsScreen',
@@ -86,12 +74,8 @@ export enum OobeStackComponents {
 export enum EventStackComponents {
   eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  eventHelpScreen = 'EventHelpScreen',
-  eventFavoritesScreen = 'EventFavoritesScreen',
-  eventYourDayScreen = 'EventYourDayScreen',
-  personalEventHelpScreen = 'PersonalEventHelpScreen',
-  personalEventListScreen = 'PersonalEventListScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleImportScreen = 'ScheduleImportScreen',
 }
 
 export enum LfgStackComponents {

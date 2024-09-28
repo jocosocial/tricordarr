@@ -6,7 +6,12 @@ import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
-export const ScheduleFAB = () => {
+interface ScheduleFABProps {
+  selectedDay?: number;
+  showLabel?: boolean;
+}
+
+export const ScheduleFAB = (props: ScheduleFABProps) => {
   const navigation = useEventStackNavigation();
   const route = useEventStackRoute();
 
@@ -17,21 +22,17 @@ export const ScheduleFAB = () => {
     navigation.push(component);
   };
 
+  const handleCreateNavigation = () => {
+    navigation.push(CommonStackComponents.personalEventCreateScreen, {
+      cruiseDay: props.selectedDay,
+    });
+  };
+
   const actions = [
     FabGroupAction({
       icon: AppIcons.new,
       label: 'Create Personal Event',
-      onPress: () => handleNavigation(CommonStackComponents.personalEventCreateScreen),
-    }),
-    FabGroupAction({
-      icon: AppIcons.favorite,
-      label: 'Favorite Events',
-      onPress: () => handleNavigation(EventStackComponents.eventFavoritesScreen),
-    }),
-    FabGroupAction({
-      icon: AppIcons.personalEvent,
-      label: 'Personal Events',
-      onPress: () => handleNavigation(EventStackComponents.personalEventListScreen),
+      onPress: handleCreateNavigation,
     }),
     FabGroupAction({
       icon: AppIcons.eventSearch,
@@ -40,5 +41,5 @@ export const ScheduleFAB = () => {
     }),
   ];
 
-  return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} />;
+  return <BaseFABGroup actions={actions} openLabel={'Schedule'} icon={AppIcons.events} showLabel={props.showLabel} />;
 };

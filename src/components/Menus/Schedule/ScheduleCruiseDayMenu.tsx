@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {format} from 'date-fns';
-import {EventStackParamList, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {EventStackParamList, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {RouteProp} from '@react-navigation/native';
-import {CruiseDayMenuItem} from '../Items/CruiseDayMenuItem';
+import {CruiseDayMenuItem} from '../Items/CruiseDayMenuItem.tsx';
 
 interface ScheduleCruiseDayMenuProps {
   scrollToNow: () => void;

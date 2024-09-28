@@ -65,6 +65,7 @@ export const ForumThreadScreenBase = ({
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID)
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -105,11 +106,7 @@ export const ForumThreadScreenBase = ({
           <ForumThreadPinnedPostsItem forumID={data.pages[0].forumID} navigation={navigation} />
           <ForumThreadScreenActionsMenu
             forumData={data.pages[0]}
-            invalidationQueryKeys={[
-              [`/forum/${data.pages[0].forumID}`],
-              [`/forum/categories/${data.pages[0].categoryID}`],
-              ['/forum/search'],
-            ]}
+            invalidationQueryKeys={invalidationQueryKeys}
             onRefresh={onRefresh}
           />
         </HeaderButtons>
@@ -137,9 +134,9 @@ export const ForumThreadScreenBase = ({
         return;
       }
       console.log(`[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} as read.`);
-      queryClient.invalidateQueries([`/forum/${forumData.forumID}`]);
-      queryClient.invalidateQueries([`/forum/categories/${forumData.categoryID}`]);
-      queryClient.invalidateQueries(['/forum/search']);
+      invalidationQueryKeys.map(key => {
+        queryClient.invalidateQueries(key);
+      });
     }
   }, [forumData, queryClient, forumListData]);
 
@@ -164,11 +161,11 @@ export const ForumThreadScreenBase = ({
           // Refetch needed to "mark" the forum as read.
           await refetch();
           if (data.pages[0]) {
-            await Promise.all([
-              // queryClient.invalidateQueries([`/forum/${data.pages[0].forumID}`]),
-              queryClient.invalidateQueries(['/forum/search']),
-              queryClient.invalidateQueries([`/forum/categories/${data.pages[0].categoryID}`]),
-            ]);
+            // This used to not include the forum itself. idk if that's a problem.
+            const invalidations = invalidationQueryKeys.map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
           }
         },
         onSettled: () => {

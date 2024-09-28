@@ -5,17 +5,14 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ForumListData} from '../../libraries/Structs/ControllerStructs';
 import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useForumStackNavigation} from '../Navigation/Stacks/ForumStackNavigator';
 import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
-import {forumPostHelpText} from '../Menus/Forum/ForumPostScreenBaseActionsMenu';
+import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 interface Props {
   categoryID?: string;
@@ -49,18 +46,12 @@ export const ForumThreadSearchBar = (props: Props) => {
   const {commonStyles} = useStyles();
   const [forumList, setForumList] = useState<ForumListData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {setModalContent, setModalVisible} = useModal();
-  const navigation = useForumStackNavigation();
-
-  const handleHelpModal = useCallback(() => {
-    setModalContent(<HelpModalView text={forumPostHelpText} />);
-    setModalVisible(true);
-  }, [setModalContent, setModalVisible]);
+  const commonNavigation = useCommonStack();
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     setEnable(false);
-  }
+  };
   const onClear = () => {
     setEnable(false);
     setForumList([]);
@@ -98,17 +89,23 @@ export const ForumThreadSearchBar = (props: Props) => {
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <ForumThreadScreenSortMenu />
-          <Item title={'Help'} iconName={AppIcons.help} onPress={handleHelpModal} />
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              commonNavigation.push(CommonStackComponents.forumHelpScreen);
+            }}
+          />
         </HeaderButtons>
       </View>
     );
-  }, [handleHelpModal]);
+  }, [commonNavigation]);
 
   useEffect(() => {
-    navigation.setOptions({
+    commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+  }, [getNavButtons, commonNavigation]);
 
   useEffect(() => {
     if (data && data.pages) {

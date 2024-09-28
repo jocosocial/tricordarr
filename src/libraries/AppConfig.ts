@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
-import {defaultCacheTime, defaultStaleTime, defaultImageStaleTime} from './Network/APIClient';
+import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -18,7 +18,6 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
-  imageStaleTime: number;
 }
 
 export interface ScheduleConfig {
@@ -32,6 +31,13 @@ export interface ScheduleConfig {
 export interface AccessibilityConfig {
   useSystemTheme: boolean;
   darkMode: boolean;
+}
+
+/**
+ * Some day this should be a part of Swiftarr.
+ */
+export interface UserPreferences {
+  reverseSwipeOrientation: boolean;
 }
 
 export interface AppConfig {
@@ -56,6 +62,9 @@ export interface AppConfig {
   accessibility: AccessibilityConfig;
   muteNotifications?: Date;
   skipThumbnails: boolean;
+  schedBaseUrl: string;
+  userPreferences: UserPreferences;
+  markReadCancelPush: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -106,7 +115,6 @@ const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
-    imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,
   accessibility: {
@@ -114,12 +122,17 @@ const defaultAppConfig: AppConfig = {
     darkMode: false,
   },
   skipThumbnails: true,
+  schedBaseUrl: 'https://jococruise1970.sched.com',
+  userPreferences: {
+    reverseSwipeOrientation: false,
+  },
+  markReadCancelPush: true,
 };
 
 /**
  * Generates an AppConfig object from the defaults and React Native Config "env vars".
  */
-const getInitialAppConfig = () => {
+export const getInitialAppConfig = () => {
   let config = defaultAppConfig;
   if (Config.SERVER_URL) {
     config.serverUrl = Config.SERVER_URL;

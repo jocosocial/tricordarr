@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {LfgStackComponents, NavigatorIDs} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgForm} from '../../Forms/LfgForm';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
@@ -15,11 +15,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {getApparentCruiseDate} from '../../../libraries/DateTime.ts';
 
-export type Props = NativeStackScreenProps<
-  LfgStackParamList,
-  LfgStackComponents.lfgCreateScreen,
-  NavigatorIDs.lfgStack
->;
+type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgCreateScreen>;
 
 export const LfgCreateScreen = ({navigation}: Props) => {
   const fezMutation = useFezCreateMutation();

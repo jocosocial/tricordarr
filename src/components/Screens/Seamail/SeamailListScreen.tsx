@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {AppView} from '../../Views/AppView';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
@@ -20,7 +20,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {SeamailAccountButtons} from '../../Buttons/SeamailAccountButtons';
+import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
@@ -40,6 +40,8 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -154,8 +156,9 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         fezList={fezList}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
+        onScrollThreshold={onScrollThreshold}
       />
-      <SeamailFAB />
+      <SeamailFAB showLabel={showFabLabel} />
     </AppView>
   );
 };

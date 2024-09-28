@@ -10,6 +10,7 @@ export const connectionChannel: AndroidChannel = {
   name: 'Connection',
   groupId: systemChannelGroup.id,
   description: 'Server connection events.',
+  sound: 'default',
 };
 
 /**
@@ -32,6 +33,7 @@ export const serviceChannel: AndroidChannel = {
   description: 'Background processes associated with Tricordarr.',
   badge: false,
   vibration: false,
+  sound: 'default',
 };
 
 /**
@@ -42,6 +44,7 @@ export const seamailChannel: AndroidChannel = {
   name: 'Seamail',
   groupId: contentChannelGroup.id,
   description: 'Seamail content from the Twitarr server.',
+  sound: 'default',
 };
 
 /**
@@ -52,6 +55,7 @@ export const lfgChannel: AndroidChannel = {
   name: 'LFG',
   groupId: contentChannelGroup.id,
   description: 'LFG content from the Twitarr server.',
+  sound: 'default',
 };
 
 /**
@@ -62,6 +66,7 @@ export const announcementsChannel: AndroidChannel = {
   name: 'Announcements',
   groupId: contentChannelGroup.id,
   description: 'Announcements from the Twitarr server.',
+  sound: 'default',
 };
 
 /**
@@ -72,6 +77,7 @@ export const forumChannel: AndroidChannel = {
   name: 'Forums',
   groupId: contentChannelGroup.id,
   description: 'Forum content from the Twitarr server.',
+  sound: 'default',
 };
 
 /**
@@ -88,6 +94,7 @@ export const callsChannel: AndroidChannel = {
   // The 1's are needed because it seems the docs have it backwards and it goes delay-vibrate
   // not vibrate-delay. They can't be 0's.
   vibrationPattern: [1, 500, 500, 500, 500, 500, 1500, 500, 500, 500, 500, 500, 1500, 1],
+  sound: 'default',
 };
 
 export const callMgmtChannel: AndroidChannel = {
@@ -95,6 +102,7 @@ export const callMgmtChannel: AndroidChannel = {
   name: 'KrakenTalk Call Management',
   groupId: contentChannelGroup.id,
   description: 'Signalling messages for KrakenTalk.',
+  sound: 'default',
 };
 
 /**
@@ -105,6 +113,7 @@ export const eventChannel: AndroidChannel = {
   name: 'Events',
   groupId: contentChannelGroup.id,
   description: 'Event content from the Twitarr server.',
+  sound: 'default',
 };
 
 /**

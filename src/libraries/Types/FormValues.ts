@@ -64,6 +64,17 @@ export interface FezFormValues {
   };
 }
 
+export interface SeamailFormValues {
+  fezType: FezType;
+  info: string;
+  initialUsers: UserHeader[];
+  maxCapacity: number;
+  minCapacity: number;
+  title: string;
+  createdByTwitarrTeam: boolean;
+  createdByModerator: boolean;
+}
+
 export interface ForumThreadValues {
   title: string;
   postAsModerator?: boolean;
@@ -74,6 +85,7 @@ export interface CruiseSettingsFormValues {
   startDate: Date;
   cruiseLength: string;
   portTimeZoneID: string;
+  schedBaseUrl: string;
 }
 
 export interface QuerySettingsFormValues {
@@ -82,7 +94,6 @@ export interface QuerySettingsFormValues {
   retry: number;
   staleTimeMinutes: number;
   disruptionThreshold: number;
-  imageStaleTimeHours: number;
 }
 
 export interface NotificationPollingSettingsFormValues {
@@ -112,4 +123,8 @@ export interface PersonalEventFormValues {
     hours: number;
     minutes: number;
   };
+}
+
+export interface SchedImportFormValues {
+  username: string;
 }

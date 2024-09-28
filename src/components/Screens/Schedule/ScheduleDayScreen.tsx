@@ -9,22 +9,23 @@ import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {ScheduleEventFilterMenu} from '../../Menus/Events/ScheduleEventFilterMenu.tsx';
-import {EventDayScreenActionsMenu} from '../../Menus/Events/EventDayScreenActionsMenu.tsx';
+import {ScheduleEventFilterMenu} from '../../Menus/Schedule/ScheduleEventFilterMenu.tsx';
+import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScreenActionsMenu.tsx';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries.ts';
 import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
-import {EventFlatList} from '../../Lists/Schedule/EventFlatList.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {buildScheduleList, getScheduleScrollIndex} from '../../../libraries/Schedule.ts';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import useDateTime, {calcCruiseDayTime} from '../../../libraries/DateTime.ts';
 import {FlashList} from '@shopify/flash-list';
+import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
+import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
+import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 
 type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -39,6 +40,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
+  const [showFabLabel, setShowFabLabel] = useState(true);
+  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const {
     data: eventData,
@@ -114,12 +117,13 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <HeaderScheduleYourDayButton />
           <ScheduleEventFilterMenu />
-          <EventDayScreenActionsMenu onRefresh={onRefresh} />
+          <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh, scrollToNow]);
+  }, [isLoggedIn, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -140,40 +144,45 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
 
   useEffect(() => {
-    const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
-    setScrollNowIndex(getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID));
+    if (scheduleList.length > 0) {
+      const nowDayTime = calcCruiseDayTime(minutelyUpdatingDate, startDate, endDate);
+      const index = getScheduleScrollIndex(nowDayTime, scheduleList, startDate, endDate, appConfig.portTimeZoneID);
+      setScrollNowIndex(index);
+    }
   }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, scheduleList, startDate]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
   }
 
-  if (
+  // Returning the <LoadingView /> would lose the position tracking of the <ScheduleHeaderView />
+  // list, so we rely on the <RefreshControl /> spinner instead.
+  const isRefreshing =
     (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) ||
     (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenLoading) ||
     isEventLoading ||
-    isPersonalEventLoading
-  ) {
-    return <LoadingView />;
-  }
+    isPersonalEventLoading ||
+    refreshing;
 
   return (
     <AppView>
+      <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}
         setCruiseDay={setSelectedCruiseDay}
         scrollToNow={scrollToNow}
       />
-      <View style={[commonStyles.flex, commonStyles.paddingHorizontal]}>
-        <EventFlatList
+      <View style={[commonStyles.flex]}>
+        <ScheduleFlatList
           listRef={listRef}
-          scheduleItems={scheduleList}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} enabled={false} />}
+          items={scheduleList}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} enabled={false} />}
           setRefreshing={setRefreshing}
           initialScrollIndex={scrollNowIndex}
+          onScrollThreshold={onScrollThreshold}
         />
       </View>
-      <ScheduleFAB />
+      <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
     </AppView>
   );
 };

@@ -27,6 +27,7 @@ export enum AppIcons {
   drawer = 'menu',
   favorite = 'star',
   unfavorite = 'star-off',
+  toggleFavorite = 'star-outline',
   block = 'cancel',
   unblock = 'check-circle',
   mute = 'volume-off',
@@ -109,4 +110,11 @@ export enum AppIcons {
   eventEdit = 'calendar-edit', // I wanted -outline but it's not available in my version
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
+  schedImport = 'calendar-import',
+  sortAscending = 'sort-ascending',
+  sortDescending = 'sort-descending',
+  selectAll = 'select-all',
+  selectNone = 'select-remove',
+  selectInverse = 'select-inverse',
+  markAsRead = 'read',
 }

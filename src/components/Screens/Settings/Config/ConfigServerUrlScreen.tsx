@@ -18,6 +18,7 @@ import {ServerChoices} from '../../../../libraries/Network/ServerChoices.ts';
 import {ServerHealthcheckResultView} from '../../../Views/Settings/ServerHealthcheckResultView.tsx';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
+import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
@@ -28,6 +29,7 @@ export const ConfigServerUrlScreen = () => {
   const queryClient = useQueryClient();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
+  const {hasUnsavedWork} = useErrorHandler();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = appConfig.serverUrl;
@@ -75,13 +77,11 @@ export const ConfigServerUrlScreen = () => {
             }}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <ServerHealthcheckResultView
-            serverHealthData={serverHealthData}
-            serverHealthPassed={serverHealthPassed}
-            isFetching={isFetching}
-          />
-        </PaddedContentView>
+        {!hasUnsavedWork && (
+          <PaddedContentView>
+            <ServerHealthcheckResultView serverHealthPassed={serverHealthPassed} />
+          </PaddedContentView>
+        )}
         {disruptionDetected && (
           <PaddedContentView>
             <Text style={[commonStyles.marginBottomSmall]}>

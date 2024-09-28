@@ -1,4 +1,4 @@
-import {FlatList, RefreshControlProps, View} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, View} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef, useState} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
@@ -10,6 +10,9 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useAppTheme} from '../../../styles/Theme';
+import {FlashList} from '@shopify/flash-list';
+import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
+import {styleDefaults} from '../../../styles';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -21,6 +24,8 @@ interface ForumThreadFlatListProps {
   hasPreviousPage?: boolean;
   pinnedThreads?: ForumListData[];
   categoryID?: string;
+  keyExtractor: (item: ForumListData) => string;
+  onScrollThreshold?: (value: boolean) => void;
 }
 
 export const ForumThreadFlatList = ({
@@ -32,12 +37,15 @@ export const ForumThreadFlatList = ({
   hasPreviousPage,
   pinnedThreads = [],
   categoryID,
+  keyExtractor,
+  onScrollThreshold,
 }: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlatList<ForumListData>>(null);
+  const flatListRef = useRef<FlashList<ForumListData>>(null);
   const [showButton, setShowButton] = useState(false);
   const {commonStyles} = useStyles();
   const renderSeparator = useCallback(() => <Divider bold={true} />, []);
   const theme = useAppTheme();
+  const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -67,9 +75,7 @@ export const ForumThreadFlatList = ({
             wrapperStyle={[commonStyles.marginTopZero]}
             dividerColor={theme.colors.outlineVariant}
           />
-          {pinnedThreads.map(fld => {
-            return <ForumThreadListItem key={fld.forumID} forumListData={fld} categoryID={categoryID} />;
-          })}
+          {pinnedThreads.map(item => renderItem({item}))}
           <LabelDivider
             label={'End of Pinned Threads'}
             color={theme.colors.onBackground}
@@ -111,26 +117,46 @@ export const ForumThreadFlatList = ({
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
 
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    let scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
+    setShowButton(scrollThresholdCondition);
+    if (onScrollThreshold) {
+      onScrollThreshold(scrollThresholdCondition);
+    }
   };
+
+  const renderItem = useCallback(
+    ({item}: {item: ForumListData}) => {
+      return (
+        <ForumThreadListItem
+          forumListData={item}
+          categoryID={categoryID}
+          enableSelection={enableSelection}
+          setEnableSelection={setEnableSelection}
+          selected={selectedForums.some(i => i.forumID === item.forumID)}
+        />
+      );
+    },
+    [categoryID, enableSelection, selectedForums, setEnableSelection],
+  );
 
   return (
     <>
-      <FlatList
+      <FlashList
         ref={flatListRef}
         refreshControl={refreshControl}
         data={forumListData}
-        renderItem={({item}) => <ForumThreadListItem forumListData={item} categoryID={categoryID} />}
+        renderItem={renderItem}
         onEndReached={handleLoadNext}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
-        keyExtractor={(item: ForumListData) => item.forumID}
+        keyExtractor={keyExtractor}
         ItemSeparatorComponent={renderSeparator}
         ListHeaderComponent={renderListHeader}
         ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
         onEndReachedThreshold={10}
+        estimatedItemSize={170}
+        extraData={[enableSelection]}
       />
       {showButton && (
         <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />

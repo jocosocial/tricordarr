@@ -1,5 +1,5 @@
 import {AppView} from '../../Views/AppView';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FezPostData, PostContentData} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -33,6 +33,9 @@ import {FezMutedView} from '../../Views/Static/FezMutedView';
 import {useAppState} from '@react-native-community/hooks';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {styleDefaults} from '../../../styles';
+import notifee from '@notifee/react-native';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
 
@@ -49,6 +52,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const queryClient = useQueryClient();
   const appStateVisible = useAppState();
+  const {appConfig} = useConfig();
 
   const {
     data,
@@ -220,12 +224,14 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         type: FezListActions.markAsRead,
         fezID: fez.fezID,
       });
-      // Allegedly this invalidates based on prefix, so this will have a side effect
-      // of invalidating LFGs too. Shouldn't be a big deal.
-      queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+      queryClient.invalidateQueries(['/fez/joined']);
+      if (appConfig.markReadCancelPush) {
+        console.log('[SeamailScreen.tsx] auto canceling notifications.');
+        notifee.cancelDisplayedNotification(fez.fezID);
+      }
       refetchUserNotificationData();
     }
-  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData]);
+  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData, appConfig.markReadCancelPush]);
 
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background
@@ -254,9 +260,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   };
 
   // useCallback() didn't change any number of renders
-  const handleScroll = (event: any) => {
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
   };
 
   const showNewDivider = useCallback(

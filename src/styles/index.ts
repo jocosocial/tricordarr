@@ -8,6 +8,10 @@ export const styleDefaults = {
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
   fontSize: 16, // This is copied from styles/Theme.
+  // Arbitrary point at which things happen when scrolling a list.
+  // Things such as displaying a back-to-top button.
+  // 450 was originally roughly 8 messages @ 56 units per message.
+  listScrollThreshold: 450,
 };
 
 export const commonStyles = StyleSheet.create({
@@ -103,6 +107,9 @@ export const commonStyles = StyleSheet.create({
   alignItemsCenter: {
     alignItems: 'center',
   },
+  alignItemsEnd: {
+    alignItems: 'flex-end',
+  },
   paddingLeftSmall: {
     paddingLeft: styleDefaults.marginSize / 2,
   },
@@ -116,11 +123,24 @@ export const commonStyles = StyleSheet.create({
     paddingRight: styleDefaults.marginSize / 2,
     paddingHorizontal: styleDefaults.marginSize / 2,
   },
+  paddingHorizontalTiny: {
+    paddingLeft: styleDefaults.marginSize / 4,
+    paddingRight: styleDefaults.marginSize / 4,
+    paddingHorizontal: styleDefaults.marginSize / 4,
+  },
+  paddingHorizontalLarge: {
+    paddingLeft: styleDefaults.marginSize * 2,
+    paddingRight: styleDefaults.marginSize * 2,
+    paddingHorizontal: styleDefaults.marginSize * 2,
+  },
   paddingVertical: {
     paddingVertical: styleDefaults.marginSize,
   },
   paddingVerticalSmall: {
     paddingVertical: styleDefaults.marginSize / 2,
+  },
+  paddingVerticalTiny: {
+    paddingVertical: styleDefaults.marginSize / 4,
   },
   paddingBottom: {
     paddingBottom: styleDefaults.marginSize,
@@ -152,6 +172,9 @@ export const commonStyles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold',
+  },
+  underline: {
+    textDecorationLine: 'underline',
   },
   marginZero: {
     // margin: 0 not good enough.
@@ -244,5 +267,8 @@ export const commonStyles = StyleSheet.create({
   },
   contentPostForm: {
     minHeight: styleDefaults.marginSize * 4,
+  },
+  minHeightLarge: {
+    minHeight: styleDefaults.marginSize * 2,
   },
 });

@@ -13,6 +13,10 @@ import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {Text} from 'react-native-paper';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {styleDefaults} from '../../../styles';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
@@ -46,13 +50,8 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   }, []);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (event.nativeEvent.contentOffset.y <= 150) {
-      setExpandFab(true);
-    } else {
-      setExpandFab(false);
-    }
-    // I picked 450 out of a hat. Roughly 8 messages @ 56 units per message.
-    setShowButton(event.nativeEvent.contentOffset.y > 450);
+    setExpandFab(event.nativeEvent.contentOffset.y <= styleDefaults.listScrollThreshold);
+    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
   };
 
   const handleScrollButtonPress = () => {
@@ -66,6 +65,19 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   }, [getNavButtons, navigation]);
 
   const streamList = data?.pages.flatMap(p => p.photos);
+
+  if (!streamList || streamList.length === 0) {
+    return (
+      <AppView>
+        <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <PaddedContentView>
+            <Text>There are no photos in the Photo Stream. Press the button below to add one!</Text>
+          </PaddedContentView>
+        </ScrollingContentView>
+        <PhotostreamFAB />
+      </AppView>
+    );
+  }
 
   return (
     <AppView>

@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {CustomEmoji} from '../../libraries/Enums/Emoji';
@@ -7,8 +7,7 @@ import Markdown from '@ronradtke/react-native-markdown-display';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
-import {useUserNotificationData} from '../Context/Contexts/UserNotificationDataContext';
-import {useUserKeywordQuery} from '../Queries/User/UserQueries';
+import {useUserKeywordQuery} from '../Queries/User/UserQueries.tsx';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -25,6 +24,10 @@ interface ContentTextProps {
  */
 export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, mentionOnPress}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
+  const {data} = useUserKeywordQuery({
+    keywordType: 'alertwords',
+  });
+  const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
 
   const renderEmojiText = useCallback(
     (
@@ -57,15 +60,17 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
             </Text>
           );
         }
-        // if (data?.keywords.includes(token)) {
-        //   return (
-        //     <Text key={tokenIndex} style={commonStyles.linkText}>{token}</Text>
-        //   );
-        // }
+        undWords.forEach(word => {
+          // ChatGPT came up with this
+          const regex = new RegExp(`\\b(${word})\\b`, 'gi'); // 'gi' for global and case-insensitive
+          token = token.replace(regex, match => {
+            return `🚨${match}🚨`;
+          });
+        });
         return token;
       });
     },
-    [commonStyles.linkText],
+    [commonStyles.linkText, undWords],
   );
 
   const renderContentText = useCallback(
@@ -87,6 +92,7 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
   const markdownStyle = StyleSheet.create({
     text: {
       ...commonStyles.onBackground,
+      ...(textStyle as TextStyle),
     },
     body: {
       fontSize: styleDefaults.fontSize,

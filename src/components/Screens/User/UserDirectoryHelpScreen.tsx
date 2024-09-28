@@ -1,14 +1,16 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 
-export const PersonalEventHelpScreen = () => {
+export const UserDirectoryHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView>
-        <Text>Personal events are not a way to reserve space.</Text>
-        <Text>Confirm that the time your event is shown in Twitarr makes sense with the ships clocks.</Text>
+        <PaddedContentView>
+          <Text>Directory Help!</Text>
+        </PaddedContentView>
       </ScrollingContentView>
     </AppView>
   );

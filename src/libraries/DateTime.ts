@@ -213,6 +213,14 @@ export const getBoatTimeMoment = (dateTimeStr: string, timeZoneID: string) => {
   return date.tz(timeZoneID);
 };
 
+/**
+ * Calculate the minute offset between two time zones at a given date.
+ * Positive means towards UTC (going into the future), negative means
+ * away from UTC (going into the past).
+ * @param originTimeZoneID Time zone you feel like you're in all the time.
+ * @param compareTimeZoneID Time zone of the reference date.
+ * @param compareDateStr The reference date.
+ */
 export const getTimeZoneOffset = (originTimeZoneID: string, compareTimeZoneID: string, compareDateStr: string) => {
   let offset = 0;
 

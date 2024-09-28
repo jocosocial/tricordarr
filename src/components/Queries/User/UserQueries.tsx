@@ -19,9 +19,7 @@ interface KeywordQueryProps {
 }
 
 export const useUserKeywordQuery = ({keywordType}: KeywordQueryProps) => {
-  return useTokenAuthQuery<KeywordData>({
-    queryKey: [`/user/${keywordType}`],
-  });
+  return useTokenAuthQuery<KeywordData>(`/user/${keywordType}`);
 };
 
 interface KeywordMutationProps {
@@ -85,7 +83,5 @@ export const useUserCreateQuery = (options = {}) => {
 };
 
 export const useUserFindQuery = (username: string) => {
-  return useTokenAuthQuery<UserHeader>({
-    queryKey: [`/users/find/${username}`],
-  });
+  return useTokenAuthQuery<UserHeader>(`/users/find/${username}`);
 };
