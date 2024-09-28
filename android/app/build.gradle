@@ -130,6 +130,9 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:2.5.0'
     implementation 'com.facebook.fresco:animated-webp:2.5.0'
     implementation 'com.facebook.fresco:webpsupport:2.5.0'
+
+    // ML Kit OCR
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
