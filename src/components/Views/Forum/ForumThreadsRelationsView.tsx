@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {LoadingView} from '../Static/LoadingView';
-import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumSort} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
@@ -28,7 +28,7 @@ export const ForumThreadsRelationsView = ({relationType, categoryID, title}: For
     fetchNextPage,
   } = useForumRelationQuery(relationType, {
     ...(categoryID ? {cat: categoryID} : undefined),
-    ...(forumSortOrder && forumSortOrder !== ForumSortOrder.event ? {sort: forumSortOrder} : undefined),
+    ...(forumSortOrder && forumSortOrder !== ForumSort.event ? {sort: forumSortOrder} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);

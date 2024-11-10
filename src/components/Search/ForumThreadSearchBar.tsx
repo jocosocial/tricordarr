@@ -10,7 +10,7 @@ import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
 import {useFilter} from '../Context/Contexts/FilterContext';
-import {ForumSortOrder} from '../../libraries/Enums/ForumSortFilter';
+import {ForumSort} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
@@ -36,7 +36,7 @@ export const ForumThreadSearchBar = (props: Props) => {
   } = useForumSearchQuery(
     {
       search: searchQuery,
-      sort: forumSortOrder !== ForumSortOrder.event ? forumSortOrder : undefined,
+      sort: forumSortOrder !== ForumSort.event ? forumSortOrder : undefined,
       category: props.categoryID,
     },
     {

@@ -2,7 +2,7 @@ import React, {PropsWithChildren, useState} from 'react';
 import {FilterContext} from '../Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../Contexts/ConfigContext';
-import {ForumFilter, ForumSortDirection, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumFilter, ForumSortDirection, ForumSort} from '../../../libraries/Enums/ForumSortFilter';
 import {ScheduleFilterSettings} from '../../../libraries/Types';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
 
@@ -14,7 +14,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
-  const [forumSortOrder, setForumSortOrder] = useState<ForumSortOrder>();
+  const [forumSortOrder, setForumSortOrder] = useState<ForumSort>();
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
   const [eventLfgFilter, setEventLfgFilter] = useState(false);
   const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection>();

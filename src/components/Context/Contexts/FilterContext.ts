@@ -1,6 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {FezType} from '../../../libraries/Enums/FezType';
-import {ForumFilter, ForumSortDirection, ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumFilter, ForumSortDirection, ForumSort} from '../../../libraries/Enums/ForumSortFilter';
 import {ScheduleFilterSettings} from '../../../libraries/Types';
 
 interface ScheduleFilterContextType {
@@ -14,8 +14,8 @@ interface ScheduleFilterContextType {
   setLfgTypeFilter: Dispatch<SetStateAction<keyof typeof FezType | undefined>>;
   lfgHidePastFilter: boolean;
   setLfgHidePastFilter: Dispatch<SetStateAction<boolean>>;
-  forumSortOrder?: ForumSortOrder;
-  setForumSortOrder: Dispatch<SetStateAction<ForumSortOrder | undefined>>;
+  forumSortOrder?: ForumSort;
+  setForumSortOrder: Dispatch<SetStateAction<ForumSort | undefined>>;
   forumFilter?: ForumFilter;
   setForumFilter: Dispatch<SetStateAction<ForumFilter | undefined>>;
   eventPersonalFilter: boolean;
