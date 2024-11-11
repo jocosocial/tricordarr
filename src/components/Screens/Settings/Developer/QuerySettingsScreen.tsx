@@ -19,6 +19,8 @@ import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {CacheManager} from '@georstat/react-native-image-cache';
+import {getDirSize} from '../../../../libraries/Storage/ImageStorage.ts';
+import {filesize} from 'filesize';
 
 export const QuerySettingsScreen = () => {
   const theme = useAppTheme();
@@ -28,7 +30,7 @@ export const QuerySettingsScreen = () => {
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
-  const [imageCacheSize, setImageCacheSize] = useState<number | undefined>();
+  const [imageCacheSize, setImageCacheSize] = useState(0);
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
 
   const bustQueryCache = () => {
@@ -45,7 +47,9 @@ export const QuerySettingsScreen = () => {
   };
 
   const bustImageCache = async () => {
+    console.log('[QuerySettingsScreen.tsx] Busting image cache.');
     await CacheManager.clearCache();
+    await refreshImageCacheSize();
   };
 
   const triggerDisruption = () => {
@@ -81,15 +85,15 @@ export const QuerySettingsScreen = () => {
     });
   };
 
-  useEffect(() => {
+  const refreshImageCacheSize = useCallback(async () => {
     // https://github.com/georstat/react-native-image-cache/issues/81
-    // This doesn't work.
-    const getCacheSize = async () => {
-      const cacheSize = await CacheManager.getCacheSize();
-      setImageCacheSize(cacheSize);
-    };
-    getCacheSize();
+    const cacheSize = await getDirSize(CacheManager.config.baseDir);
+    setImageCacheSize(cacheSize);
   }, []);
+
+  useEffect(() => {
+    refreshImageCacheSize();
+  }, [refreshImageCacheSize]);
 
   const refreshCacheStats = useCallback(() => {
     const contents = queryClient.getQueryCache().getAll();
@@ -143,9 +147,7 @@ export const QuerySettingsScreen = () => {
           </PaddedContentView>
           <PaddedContentView>
             <DataTable>
-              {imageCacheSize && (
-                <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={imageCacheSize.toString()} />
-              )}
+              <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={filesize(imageCacheSize)} />
             </DataTable>
             <PrimaryActionButton
               buttonText={'Bust Image Cache'}
