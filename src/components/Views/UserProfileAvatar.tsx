@@ -2,10 +2,8 @@ import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
-import {IconButton} from 'react-native-paper';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
-import {AppIcons} from '../../libraries/Enums/Icons';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
@@ -47,7 +45,9 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
@@ -64,7 +64,9 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
