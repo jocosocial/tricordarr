@@ -1,7 +1,6 @@
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ActivityIndicator, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import React from 'react';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {StateLoadingIcon} from '../../Icons/StateLoadingIcon';
 
 interface FavoriteMenuItemProps {

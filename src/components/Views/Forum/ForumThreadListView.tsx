@@ -66,8 +66,6 @@ export const ForumThreadListView = ({
     }
   };
 
-  const keyExtractor = (item: ForumListData) => item.forumID;
-
   return (
     <>
       {enableSelection ? <SelectionButtons items={forumListData} /> : <ListTitleView title={title} />}
@@ -79,7 +77,6 @@ export const ForumThreadListView = ({
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
         categoryID={categoryID}
-        keyExtractor={keyExtractor}
         onScrollThreshold={onScrollThreshold}
       />
       {enableFAB && categoryID && <ForumCategoryFAB categoryId={categoryID} showLabel={showFabLabel} />}

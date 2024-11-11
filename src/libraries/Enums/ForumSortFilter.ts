@@ -1,7 +1,7 @@
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/SiteForumController.swift
 import {ForumRelationQueryType} from '../../components/Queries/Forum/ForumThreadRelationQueries';
 
-export enum ForumSortOrder {
+export enum ForumSort {
   event = 'event',
   update = 'update',
   create = 'create',

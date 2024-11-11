@@ -29,7 +29,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();
-  const {forumSortOrder} = useFilter();
+  const {forumSortOrder, forumSortDirection} = useFilter();
   const {
     data,
     refetch,
@@ -42,6 +42,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     isLoading,
   } = useForumCategoryQuery(route.params.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
+    ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);

@@ -10,13 +10,15 @@ interface FavoriteMenuItemProps {
   refreshing?: boolean;
 }
 
+const getIndicator = () => <ActivityIndicator />;
+
 export const MuteMenuItem = (props: FavoriteMenuItemProps) => {
   const getLeadingIcon = (): IconSource => {
     if (props.refreshing) {
-      return () => <ActivityIndicator />
+      return getIndicator;
     }
-    return props.isMuted ? AppIcons.unmute : AppIcons.mute
-  }
+    return props.isMuted ? AppIcons.unmute : AppIcons.mute;
+  };
 
   return (
     <Menu.Item

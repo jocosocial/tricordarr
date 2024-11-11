@@ -3,8 +3,8 @@ import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {Dispatch, SetStateAction, useState} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
 import {DeckData, ShipDecks} from '../../libraries/Ship';
+import {SelectableMenuItem} from './Items/SelectableMenuItem.tsx';
 
 interface DeckMapMenuProps {
   shipDeck: DeckData;
@@ -13,7 +13,6 @@ interface DeckMapMenuProps {
 
 export const DeckMapMenu = (props: DeckMapMenuProps) => {
   const [visible, setVisible] = useState(false);
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -30,12 +29,11 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
       anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}>
       {ShipDecks.map(deck => {
         return (
-          <Menu.Item
+          <SelectableMenuItem
             key={deck.number}
             title={`Deck ${deck.number} - ${deck.label}`}
             onPress={() => onPress(deck)}
-            style={props.shipDeck.number === deck.number ? commonStyles.surfaceVariant : undefined}
-            titleStyle={props.shipDeck.number === deck.number ? commonStyles.bold : undefined}
+            selected={props.shipDeck.number === deck.number}
           />
         );
       })}

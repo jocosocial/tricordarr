@@ -1,32 +1,29 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
-import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useAppTheme} from '../../../styles/Theme';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ForumThreadScreenSortMenu = () => {
   const [visible, setVisible] = useState(false);
-  const {forumSortOrder, setForumSortOrder} = useFilter();
-  const theme = useAppTheme();
-  const {commonStyles} = useStyles();
+  const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useFilter();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const menuAnchor = (
-    <Item
-      color={forumSortOrder ? theme.colors.twitarrNeutralButton : undefined}
+    <MenuAnchor
       title={'Filter'}
+      active={!!forumSortOrder}
       iconName={AppIcons.sort}
       onPress={openMenu}
       onLongPress={() => setForumSortOrder(undefined)}
     />
   );
 
-  const handleFilterSelection = (filter: ForumSortOrder) => {
+  const handleFilterSelection = (filter: ForumSort) => {
     if (filter === forumSortOrder) {
       setForumSortOrder(undefined);
     } else {
@@ -35,39 +32,54 @@ export const ForumThreadScreenSortMenu = () => {
     closeMenu();
   };
 
+  const handleDirectionSelection = (direction: ForumSortDirection) => {
+    if (direction === forumSortDirection) {
+      setForumSortDirection(undefined);
+    } else {
+      setForumSortDirection(direction);
+    }
+    closeMenu();
+  };
+
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
+      <SelectableMenuItem
         title={'Event Time'}
         leadingIcon={AppIcons.events}
-        onPress={() => handleFilterSelection(ForumSortOrder.event)}
-        style={forumSortOrder === ForumSortOrder.event ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSortOrder.event ? AppIcons.check : undefined}
+        selected={forumSortOrder === ForumSort.event}
+        onPress={() => handleFilterSelection(ForumSort.event)}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Most Recent Post'}
         leadingIcon={AppIcons.recent}
-        onPress={() => handleFilterSelection(ForumSortOrder.update)}
-        style={forumSortOrder === ForumSortOrder.update ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSortOrder.update ? AppIcons.check : undefined}
+        selected={forumSortOrder === ForumSort.update}
+        onPress={() => handleFilterSelection(ForumSort.update)}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Creation Time'}
         leadingIcon={AppIcons.new}
-        onPress={() => handleFilterSelection(ForumSortOrder.create)}
-        style={forumSortOrder === ForumSortOrder.create ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSortOrder.create ? AppIcons.check : undefined}
+        selected={forumSortOrder === ForumSort.create}
+        onPress={() => handleFilterSelection(ForumSort.create)}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Title'}
         leadingIcon={AppIcons.text}
-        onPress={() => handleFilterSelection(ForumSortOrder.title)}
-        style={forumSortOrder === ForumSortOrder.title ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSortOrder.title ? AppIcons.check : undefined}
+        selected={forumSortOrder === ForumSort.title}
+        onPress={() => handleFilterSelection(ForumSort.title)}
       />
       <Divider bold={true} />
-      <Menu.Item title={'Ascending'} leadingIcon={AppIcons.sortAscending} />
-      <Menu.Item title={'Descending'} leadingIcon={AppIcons.sortDescending} />
+      <SelectableMenuItem
+        title={'Ascending'}
+        leadingIcon={AppIcons.sortAscending}
+        selected={forumSortDirection === ForumSortDirection.ascending}
+        onPress={() => handleDirectionSelection(ForumSortDirection.ascending)}
+      />
+      <SelectableMenuItem
+        title={'Descending'}
+        leadingIcon={AppIcons.sortDescending}
+        selected={forumSortDirection === ForumSortDirection.descending}
+        onPress={() => handleDirectionSelection(ForumSortDirection.descending)}
+      />
     </Menu>
   );
 };

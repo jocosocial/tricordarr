@@ -24,7 +24,7 @@ interface ForumThreadFlatListProps {
   hasPreviousPage?: boolean;
   pinnedThreads?: ForumListData[];
   categoryID?: string;
-  keyExtractor: (item: ForumListData) => string;
+  keyExtractor?: (item: ForumListData) => string;
   onScrollThreshold?: (value: boolean) => void;
 }
 
@@ -37,7 +37,7 @@ export const ForumThreadFlatList = ({
   hasPreviousPage,
   pinnedThreads = [],
   categoryID,
-  keyExtractor,
+  keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
 }: ForumThreadFlatListProps) => {
   const flatListRef = useRef<FlashList<ForumListData>>(null);

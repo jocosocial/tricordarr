@@ -1,15 +1,13 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {Item} from 'react-navigation-header-buttons';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
-import {useAppTheme} from '../../../styles/Theme.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
-  const theme = useAppTheme();
   const {
     eventTypeFilter,
     setEventTypeFilter,
@@ -20,7 +18,6 @@ export const ScheduleEventFilterMenu = () => {
     eventLfgFilter,
     setEventLfgFilter,
   } = useFilter();
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -60,9 +57,9 @@ export const ScheduleEventFilterMenu = () => {
   const anyActiveFilter = eventFavoriteFilter || eventTypeFilter || eventPersonalFilter || eventLfgFilter;
 
   const menuAnchor = (
-    <Item
+    <MenuAnchor
+      active={!!anyActiveFilter}
       title={'Filter'}
-      color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.filter}
       onPress={openMenu}
       onLongPress={clearFilters}
@@ -71,33 +68,17 @@ export const ScheduleEventFilterMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
-        title={'Favorite Events'}
-        onPress={handleFavoriteSelection}
-        style={eventFavoriteFilter ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={eventFavoriteFilter ? AppIcons.check : undefined}
-      />
-      <Menu.Item
-        title={'Personal Events'}
-        onPress={handlePersonalSelection}
-        style={eventPersonalFilter ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={eventPersonalFilter ? AppIcons.check : undefined}
-      />
-      <Menu.Item
-        title={'LFGs'}
-        onPress={handleLfgSelection}
-        style={eventLfgFilter ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={eventLfgFilter ? AppIcons.check : undefined}
-      />
+      <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
+      <SelectableMenuItem title={'Personal Events'} onPress={handlePersonalSelection} selected={eventPersonalFilter} />
+      <SelectableMenuItem title={'LFGs'} onPress={handleLfgSelection} selected={eventLfgFilter} />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
         return (
-          <Menu.Item
+          <SelectableMenuItem
             key={eventType}
-            style={eventTypeFilter === eventType ? commonStyles.surfaceVariant : undefined}
             title={EventType[eventType as keyof typeof EventType]}
             onPress={() => handleFilterSelection(eventType)}
-            trailingIcon={eventTypeFilter === eventType ? AppIcons.check : undefined}
+            selected={eventTypeFilter === eventType}
           />
         );
       })}

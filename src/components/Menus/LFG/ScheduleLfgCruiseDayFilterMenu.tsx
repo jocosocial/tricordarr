@@ -1,19 +1,16 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useAppTheme} from '../../../styles/Theme';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ScheduleLfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();
-  const theme = useAppTheme();
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -32,9 +29,9 @@ export const ScheduleLfgCruiseDayFilterMenu = () => {
   };
 
   const menuAnchor = (
-    <Item
+    <MenuAnchor
       title={'Cruise Day'}
-      color={lfgCruiseDayFilter !== undefined ? theme.colors.twitarrNeutralButton : undefined}
+      active={lfgCruiseDayFilter !== undefined}
       iconName={AppIcons.cruiseDay}
       onPress={openMenu}
       onLongPress={clearFilters}
@@ -45,12 +42,11 @@ export const ScheduleLfgCruiseDayFilterMenu = () => {
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {cruiseDays.map(day => {
         return (
-          <Menu.Item
-            style={lfgCruiseDayFilter === day.cruiseDay ? commonStyles.surfaceVariant : undefined}
-            key={day.cruiseDay}
-            onPress={() => handleCruiseDaySelection(day.cruiseDay)}
+          <SelectableMenuItem
             title={`${format(day.date, 'EEEE')}${adjustedCruiseDayToday === day.cruiseDay ? ' (Today)' : ''}`}
-            trailingIcon={lfgCruiseDayFilter === day.cruiseDay ? AppIcons.check : undefined}
+            onPress={() => handleCruiseDaySelection(day.cruiseDay)}
+            key={day.cruiseDay}
+            selected={lfgCruiseDayFilter === day.cruiseDay}
           />
         );
       })}

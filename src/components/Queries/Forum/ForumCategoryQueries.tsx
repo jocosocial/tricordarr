@@ -1,7 +1,7 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
 import axios, {AxiosResponse} from 'axios';
-import {ForumSortOrder} from '../../../libraries/Enums/ForumSortFilter';
+import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 
@@ -10,11 +10,12 @@ export const useForumCategoriesQuery = () => {
 };
 
 export interface ForumCategoryQueryParams {
-  sort?: ForumSortOrder;
+  sort?: ForumSort;
   start?: number;
   limit?: number;
   afterdate?: string; // mutually exclusive
   beforedate?: string; // mutually exclusive
+  order?: ForumSortDirection;
 }
 
 // https://github.com/jocosocial/swiftarr/issues/236
@@ -22,7 +23,7 @@ export interface CategoryDataQueryResponse extends CategoryData, WithPaginator {
 
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
   const {appConfig} = useConfig();
-  return useTokenAuthPaginationQuery<CategoryDataQueryResponse>(
+  return useTokenAuthPaginationQuery<CategoryDataQueryResponse, ForumCategoryQueryParams>(
     `/forum/categories/${categoryId}`,
     {
       queryFn: async ({
@@ -37,6 +38,7 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
               ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
               ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
               ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
+              ...(queryParams.order ? {order: queryParams.order} : undefined),
             },
           },
         );
