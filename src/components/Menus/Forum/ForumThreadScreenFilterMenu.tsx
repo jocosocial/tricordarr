@@ -5,13 +5,12 @@ import {Item} from 'react-navigation-header-buttons';
 import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 
 export const ForumThreadScreenFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {forumFilter, setForumFilter} = useFilter();
   const theme = useAppTheme();
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -37,33 +36,29 @@ export const ForumThreadScreenFilterMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
+      <SelectableMenuItem
         title={'Favorites'}
         leadingIcon={AppIcons.favorite}
+        selected={forumFilter === ForumFilter.favorite}
         onPress={() => handleFilterSelection(ForumFilter.favorite)}
-        style={forumFilter === ForumFilter.favorite ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumFilter === ForumFilter.favorite ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Your Forums'}
         leadingIcon={AppIcons.user}
+        selected={forumFilter === ForumFilter.owned}
         onPress={() => handleFilterSelection(ForumFilter.owned)}
-        style={forumFilter === ForumFilter.owned ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumFilter === ForumFilter.owned ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Muted'}
         leadingIcon={AppIcons.mute}
+        selected={forumFilter === ForumFilter.mute}
         onPress={() => handleFilterSelection(ForumFilter.mute)}
-        style={forumFilter === ForumFilter.mute ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumFilter === ForumFilter.mute ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Unread'}
         leadingIcon={AppIcons.forumUnread}
+        selected={forumFilter === ForumFilter.unread}
         onPress={() => handleFilterSelection(ForumFilter.unread)}
-        style={forumFilter === ForumFilter.unread ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumFilter === ForumFilter.unread ? AppIcons.check : undefined}
       />
     </Menu>
   );

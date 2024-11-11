@@ -5,14 +5,12 @@ import {Item} from 'react-navigation-header-buttons';
 import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 
 export const ForumThreadScreenSortMenu = () => {
   const [visible, setVisible] = useState(false);
   const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useFilter();
   const theme = useAppTheme();
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -47,33 +45,29 @@ export const ForumThreadScreenSortMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <Menu.Item
+      <SelectableMenuItem
         title={'Event Time'}
         leadingIcon={AppIcons.events}
+        selected={forumSortOrder === ForumSort.event}
         onPress={() => handleFilterSelection(ForumSort.event)}
-        style={forumSortOrder === ForumSort.event ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSort.event ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Most Recent Post'}
         leadingIcon={AppIcons.recent}
+        selected={forumSortOrder === ForumSort.update}
         onPress={() => handleFilterSelection(ForumSort.update)}
-        style={forumSortOrder === ForumSort.update ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSort.update ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Creation Time'}
         leadingIcon={AppIcons.new}
+        selected={forumSortOrder === ForumSort.create}
         onPress={() => handleFilterSelection(ForumSort.create)}
-        style={forumSortOrder === ForumSort.create ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSort.create ? AppIcons.check : undefined}
       />
-      <Menu.Item
+      <SelectableMenuItem
         title={'Title'}
         leadingIcon={AppIcons.text}
+        selected={forumSortOrder === ForumSort.title}
         onPress={() => handleFilterSelection(ForumSort.title)}
-        style={forumSortOrder === ForumSort.title ? commonStyles.surfaceVariant : undefined}
-        trailingIcon={forumSortOrder === ForumSort.title ? AppIcons.check : undefined}
       />
       <Divider bold={true} />
       <SelectableMenuItem
