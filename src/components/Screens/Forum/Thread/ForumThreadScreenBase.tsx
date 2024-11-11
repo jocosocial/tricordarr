@@ -65,7 +65,7 @@ export const ForumThreadScreenBase = ({
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID)
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -133,12 +133,14 @@ export const ForumThreadScreenBase = ({
         console.log(`[ForumThreadScreenBase.tsx] Forum ${forumData.forumID} has already been read.`);
         return;
       }
-      console.log(`[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} as read.`);
+      console.log(
+        `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
+      );
       invalidationQueryKeys.map(key => {
         queryClient.invalidateQueries(key);
       });
     }
-  }, [forumData, queryClient, forumListData]);
+  }, [forumData, queryClient, forumListData, invalidationQueryKeys]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);

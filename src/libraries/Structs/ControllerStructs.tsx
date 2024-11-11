@@ -606,7 +606,7 @@ export namespace ForumListData {
    * @param forumID Optional string of the Forum ID.
    */
   export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
-    let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes']];
+    let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes'], ['/forum/unread']];
     if (forumID) {
       queryKeys.push([`/forum/${forumID}`]);
     }
