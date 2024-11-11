@@ -3,7 +3,7 @@ import RNFS from 'react-native-fs';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import * as mime from 'react-native-mime-types';
 import {CacheManager} from '@georstat/react-native-image-cache';
-import {Dirs} from 'react-native-file-access';
+import {Dirs, FileSystem} from 'react-native-file-access';
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
@@ -41,4 +41,21 @@ export const configureImageCache = () => {
     sourceAnimationDuration: 1000,
     thumbnailAnimationDuration: 1000,
   };
+};
+
+// https://github.com/georstat/react-native-image-cache/issues/81
+export const getDirSize = async (dir: string, rootDir: string = dir) => {
+  const files = await FileSystem.statDir(dir);
+
+  const paths = files.map(async (file): Promise<number> => {
+    const filePath = `${rootDir}${file.path}`;
+
+    if (file.type === 'directory') {
+      return getDirSize(filePath, rootDir);
+    }
+
+    return file.size;
+  });
+
+  return (await Promise.all(paths)).flat(Infinity).reduce((i, size) => i + size, 0);
 };

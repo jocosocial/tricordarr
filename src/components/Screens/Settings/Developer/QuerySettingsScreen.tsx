@@ -1,7 +1,7 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {DataTable, Divider, Text} from 'react-native-paper';
-import {RefreshControl, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {DataTable} from 'react-native-paper';
+import {RefreshControl} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -19,6 +19,10 @@ import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {CacheManager} from '@georstat/react-native-image-cache';
+import {getDirSize} from '../../../../libraries/Storage/ImageStorage.ts';
+import {filesize} from 'filesize';
+import {useModal} from '../../../Context/Contexts/ModalContext.ts';
+import {QueryKeysModalView} from '../../../Views/Modals/QueryKeysModalView.tsx';
 
 export const QuerySettingsScreen = () => {
   const theme = useAppTheme();
@@ -28,7 +32,14 @@ export const QuerySettingsScreen = () => {
   const {refetch: refetchHealth, isFetching: isFetchingHealth} = useHealthQuery({
     enabled: false,
   });
-  const [imageCacheSize, setImageCacheSize] = useState<number | undefined>();
+  const [imageCacheSize, setImageCacheSize] = useState(0);
+  const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
+  const {setModalContent, setModalVisible} = useModal()
+
+  const displayKeysModal = () => {
+    setModalContent(<QueryKeysModalView />);
+    setModalVisible(true);
+  }
 
   const bustQueryCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -40,10 +51,13 @@ export const QuerySettingsScreen = () => {
       },
     });
     queryClient.getQueryCache().clear();
+    refreshCacheStats();
   };
 
   const bustImageCache = async () => {
+    console.log('[QuerySettingsScreen.tsx] Busting image cache.');
     await CacheManager.clearCache();
+    await refreshImageCacheSize();
   };
 
   const triggerDisruption = () => {
@@ -79,15 +93,32 @@ export const QuerySettingsScreen = () => {
     });
   };
 
-  useEffect(() => {
+  const refreshImageCacheSize = useCallback(async () => {
     // https://github.com/georstat/react-native-image-cache/issues/81
-    // This doesn't work.
-    const getCacheSize = async () => {
-      const cacheSize = await CacheManager.getCacheSize();
-      setImageCacheSize(cacheSize);
-    };
-    getCacheSize();
+    const cacheSize = await getDirSize(CacheManager.config.baseDir);
+    setImageCacheSize(cacheSize);
   }, []);
+
+  useEffect(() => {
+    refreshImageCacheSize();
+  }, [refreshImageCacheSize]);
+
+  const refreshCacheStats = useCallback(() => {
+    const contents = queryClient.getQueryCache().getAll();
+    const cachedDates = contents
+      .map(c => {
+        return c.state.dataUpdatedAt;
+      })
+      .filter(v => v !== 0);
+    if (cachedDates.length > 0) {
+      const lowest = Math.min(...cachedDates);
+      setOldestCacheItem(new Date(lowest));
+    }
+  }, [queryClient]);
+
+  useEffect(() => {
+    refreshCacheStats();
+  }, [refreshCacheStats]);
 
   return (
     <AppView>
@@ -112,7 +143,15 @@ export const QuerySettingsScreen = () => {
                 title={'Query Item Count'}
                 value={queryClient.getQueryCache().getAll().length.toString()}
               />
+              <SettingDataTableRow reverseSplit={true} title={'Oldest Item'}>
+                <RelativeTimeTag date={oldestCacheItem} />
+              </SettingDataTableRow>
             </DataTable>
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton buttonText={'Cached Keys'} onPress={() => displayKeysModal()} buttonColor={theme.colors.twitarrNeutralButton} />
+          </PaddedContentView>
+          <PaddedContentView>
             <PrimaryActionButton
               buttonText={'Bust Query Cache'}
               onPress={bustQueryCache}
@@ -121,9 +160,7 @@ export const QuerySettingsScreen = () => {
           </PaddedContentView>
           <PaddedContentView>
             <DataTable>
-              {imageCacheSize && (
-                <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={imageCacheSize.toString()} />
-              )}
+              <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={filesize(imageCacheSize)} />
             </DataTable>
             <PrimaryActionButton
               buttonText={'Bust Image Cache'}

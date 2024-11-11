@@ -5756,6 +5756,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"filesize@npm:^10.1.6":
+  version: 10.1.6
+  resolution: "filesize@npm:10.1.6"
+  checksum: a797a9d41c8f27a9ae334d23f99fc5d903eac5d03c82190dc163901205435b56626fe1260c779ba3e87a2a34d426f19ff264c3f7d956e00f2d3ac69760b52e33
+  languageName: node
+  linkType: hard
+
 "fill-range@npm:^7.1.1":
   version: 7.1.1
   resolution: "fill-range@npm:7.1.1"
@@ -11100,6 +11107,7 @@ __metadata:
     date-fns: ^2.30.0
     eslint: ^8.0
     eslint-plugin-jest: ^28.6.0
+    filesize: ^10.1.6
     formik: ^2.2.9
     humanize-duration: ^3.31.0
     javascript-time-ago: ^2.5.9
