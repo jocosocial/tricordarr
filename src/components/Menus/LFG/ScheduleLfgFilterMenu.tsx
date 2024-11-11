@@ -1,16 +1,14 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
-import {useAppTheme} from '../../../styles/Theme';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ScheduleLfgFilterMenu = () => {
   const [visible, setVisible] = useState(false);
-  const theme = useAppTheme();
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();
 
@@ -39,9 +37,9 @@ export const ScheduleLfgFilterMenu = () => {
   const anyActiveFilter = lfgTypeFilter || lfgHidePastFilter;
 
   const menuAnchor = (
-    <Item
+    <MenuAnchor
       title={'Filter'}
-      color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
+      active={!!anyActiveFilter}
       iconName={AppIcons.filter}
       onPress={openMenu}
       onLongPress={clearFilters}

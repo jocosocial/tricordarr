@@ -1,15 +1,13 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {Item} from 'react-navigation-header-buttons';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
-import {useAppTheme} from '../../../styles/Theme.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
-  const theme = useAppTheme();
   const {
     eventTypeFilter,
     setEventTypeFilter,
@@ -59,9 +57,9 @@ export const ScheduleEventFilterMenu = () => {
   const anyActiveFilter = eventFavoriteFilter || eventTypeFilter || eventPersonalFilter || eventLfgFilter;
 
   const menuAnchor = (
-    <Item
+    <MenuAnchor
+      active={!!anyActiveFilter}
       title={'Filter'}
-      color={anyActiveFilter ? theme.colors.twitarrNeutralButton : undefined}
       iconName={AppIcons.filter}
       onPress={openMenu}
       onLongPress={clearFilters}

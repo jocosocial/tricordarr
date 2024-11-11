@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useAppTheme} from '../../../styles/Theme';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ScheduleLfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();
-  const theme = useAppTheme();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -31,9 +29,9 @@ export const ScheduleLfgCruiseDayFilterMenu = () => {
   };
 
   const menuAnchor = (
-    <Item
+    <MenuAnchor
       title={'Cruise Day'}
-      color={lfgCruiseDayFilter !== undefined ? theme.colors.twitarrNeutralButton : undefined}
+      active={lfgCruiseDayFilter !== undefined}
       iconName={AppIcons.cruiseDay}
       onPress={openMenu}
       onLongPress={clearFilters}

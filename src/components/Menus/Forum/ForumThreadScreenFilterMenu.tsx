@@ -1,24 +1,22 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
 import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {useAppTheme} from '../../../styles/Theme';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '../MenuAnchor.tsx';
 
 export const ForumThreadScreenFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {forumFilter, setForumFilter} = useFilter();
-  const theme = useAppTheme();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const menuAnchor = (
-    <Item
-      color={forumFilter ? theme.colors.twitarrNeutralButton : undefined}
+    <MenuAnchor
       title={'Filter'}
+      active={!!forumFilter}
       iconName={AppIcons.filter}
       onPress={openMenu}
       onLongPress={() => setForumFilter(undefined)}
