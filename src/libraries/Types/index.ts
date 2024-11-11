@@ -106,3 +106,8 @@ export interface FabGroupActionType {
   testID?: string;
   rippleColor?: ColorValue;
 }
+
+export interface StartEndTime {
+  startTime: Date;
+  endTime: Date;
+}

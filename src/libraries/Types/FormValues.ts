@@ -1,5 +1,4 @@
 import {FezType} from '../Enums/FezType';
-import {DinnerTeam} from '../Enums/DinnerTeam';
 import {EventData, UserHeader} from '../Structs/ControllerStructs.tsx';
 import {ServerUrlChoice} from '../Network/ServerChoices.ts';
 
@@ -112,6 +111,11 @@ export interface ServerUrlFormValues {
   serverUrl: string;
 }
 
+export interface StartTime {
+  hours: number;
+  minutes: number;
+}
+
 export interface PersonalEventFormValues {
   title: string;
   description?: string;
@@ -119,10 +123,7 @@ export interface PersonalEventFormValues {
   participants: UserHeader[];
   startDate: Date;
   duration: string;
-  startTime: {
-    hours: number;
-    minutes: number;
-  };
+  startTime: StartTime;
 }
 
 export interface SchedImportFormValues {

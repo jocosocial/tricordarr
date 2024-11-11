@@ -8,12 +8,11 @@ import {LfgForm} from '../../Forms/LfgForm';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {addMinutes} from 'date-fns';
 import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
-import {getApparentCruiseDate} from '../../../libraries/DateTime.ts';
+import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 
 type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgCreateScreen>;
 
@@ -23,10 +22,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     helpers.setSubmitting(true);
-    let fezStartTime = new Date(values.startDate);
-    fezStartTime.setHours(values.startTime.hours);
-    fezStartTime.setMinutes(values.startTime.minutes);
-    let fezEndTime = addMinutes(fezStartTime, Number(values.duration));
+    let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
     fezMutation.mutate(
       {
@@ -34,8 +30,8 @@ export const LfgCreateScreen = ({navigation}: Props) => {
           fezType: values.fezType,
           title: values.title,
           info: values.info,
-          startTime: fezStartTime.toISOString(),
-          endTime: fezEndTime.toISOString(),
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
           location: values.location,
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),

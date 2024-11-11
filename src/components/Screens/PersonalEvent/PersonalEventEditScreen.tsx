@@ -8,7 +8,7 @@ import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
 import {PersonalEventFormValues} from '../../../libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset} from '../../../libraries/DateTime.ts';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
 import {useQueryClient} from '@tanstack/react-query';
@@ -20,11 +20,7 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
   const queryClient = useQueryClient();
 
   const onSubmit = (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => {
-    let eventStartTime = new Date(values.startDate);
-    eventStartTime.setHours(values.startTime.hours);
-    eventStartTime.setMinutes(values.startTime.minutes);
-
-    let eventEndTime = addMinutes(eventStartTime, Number(values.duration));
+    let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
     updateMutation.mutate(
       {
@@ -32,8 +28,8 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
         personalEventContentData: {
           title: values.title,
           description: values.description,
-          startTime: eventStartTime.toISOString(),
-          endTime: eventEndTime.toISOString(),
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
           location: values.location,
           participants: values.participants.map(p => p.userID),
         },
