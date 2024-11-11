@@ -1,7 +1,7 @@
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {DataTable, Divider, Text} from 'react-native-paper';
-import {RefreshControl, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {DataTable} from 'react-native-paper';
+import {RefreshControl} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -29,6 +29,7 @@ export const QuerySettingsScreen = () => {
     enabled: false,
   });
   const [imageCacheSize, setImageCacheSize] = useState<number | undefined>();
+  const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
 
   const bustQueryCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -40,6 +41,7 @@ export const QuerySettingsScreen = () => {
       },
     });
     queryClient.getQueryCache().clear();
+    refreshCacheStats();
   };
 
   const bustImageCache = async () => {
@@ -89,6 +91,23 @@ export const QuerySettingsScreen = () => {
     getCacheSize();
   }, []);
 
+  const refreshCacheStats = useCallback(() => {
+    const contents = queryClient.getQueryCache().getAll();
+    const cachedDates = contents
+      .map(c => {
+        return c.state.dataUpdatedAt;
+      })
+      .filter(v => v !== 0);
+    if (cachedDates.length > 0) {
+      const lowest = Math.min(...cachedDates);
+      setOldestCacheItem(new Date(lowest));
+    }
+  }, [queryClient]);
+
+  useEffect(() => {
+    refreshCacheStats();
+  }, [refreshCacheStats]);
+
   return (
     <AppView>
       <ScrollingContentView
@@ -112,6 +131,9 @@ export const QuerySettingsScreen = () => {
                 title={'Query Item Count'}
                 value={queryClient.getQueryCache().getAll().length.toString()}
               />
+              <SettingDataTableRow reverseSplit={true} title={'Oldest Item'}>
+                <RelativeTimeTag date={oldestCacheItem} />
+              </SettingDataTableRow>
             </DataTable>
             <PrimaryActionButton
               buttonText={'Bust Query Cache'}
