@@ -1,7 +1,6 @@
 import {apiQueryImageDataV2} from '../../libraries/Network/APIClient';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useQuery} from '@tanstack/react-query';
-import {useConfig} from '../Context/Contexts/ConfigContext';
 
 /**
  * Handler for retrieving images.

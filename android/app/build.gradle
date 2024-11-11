@@ -127,9 +127,10 @@ dependencies {
     implementation project(':react-native-fs')
 
     // https://reactnative.dev/docs/image#gif-and-webp-support-on-android
-    implementation 'com.facebook.fresco:animated-gif:2.5.0'
-    implementation 'com.facebook.fresco:animated-webp:2.5.0'
-    implementation 'com.facebook.fresco:webpsupport:2.5.0'
+    // https://stackoverflow.com/questions/35594783/how-do-i-display-an-animated-gif-in-react-native
+    implementation 'com.facebook.fresco:animated-gif:3.4.0'
+    implementation 'com.facebook.fresco:animated-webp:3.4.0'
+    implementation 'com.facebook.fresco:webpsupport:3.4.0'
 
     // ML Kit OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
