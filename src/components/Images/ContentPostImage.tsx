@@ -27,7 +27,7 @@ export const ContentPostImage = ({image, messageOnRight}: FezPostImageProps) => 
     <View style={styles.view}>
       <APIImage
         style={styles.image}
-        mode={'image'}
+        mode={'scaledimage'}
         thumbPath={`/image/thumb/${image}`}
         fullPath={`/image/full/${image}`}
       />
