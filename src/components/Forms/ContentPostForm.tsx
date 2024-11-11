@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useStyles} from '../Context/Contexts/StyleContext';
@@ -100,6 +100,17 @@ export const ContentPostForm = ({
     setInsertMenuVisible(!insertMenuVisible);
   };
 
+  // #152 Used to use enableReinitialize={true} to reset the form
+  // if the asPrivilegedUser changed. But that wiped out anything
+  // the user had typed or attached.
+  useEffect(() => {
+    if (formRef?.current) {
+      console.log('[ContentPostForm.tsx] updating privilege user Formik context.');
+      formRef.current.values.postAsModerator = asPrivilegedUser === PrivilegedUserAccounts.moderator;
+      formRef.current.values.postAsTwitarrTeam = asPrivilegedUser === PrivilegedUserAccounts.TwitarrTeam;
+    }
+  }, [asPrivilegedUser, formRef]);
+
   // https://formik.org/docs/api/withFormik
   // https://www.programcreek.com/typescript/?api=formik.FormikHelpers
   // https://formik.org/docs/guides/react-native
@@ -110,7 +121,6 @@ export const ContentPostForm = ({
   return (
     <Formik
       innerRef={formRef}
-      enableReinitialize={true}
       initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
