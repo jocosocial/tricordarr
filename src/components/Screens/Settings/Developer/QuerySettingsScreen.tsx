@@ -21,6 +21,8 @@ import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {getDirSize} from '../../../../libraries/Storage/ImageStorage.ts';
 import {filesize} from 'filesize';
+import {useModal} from '../../../Context/Contexts/ModalContext.ts';
+import {QueryKeysModalView} from '../../../Views/Modals/QueryKeysModalView.tsx';
 
 export const QuerySettingsScreen = () => {
   const theme = useAppTheme();
@@ -32,6 +34,12 @@ export const QuerySettingsScreen = () => {
   });
   const [imageCacheSize, setImageCacheSize] = useState(0);
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
+  const {setModalContent, setModalVisible} = useModal()
+
+  const displayKeysModal = () => {
+    setModalContent(<QueryKeysModalView />);
+    setModalVisible(true);
+  }
 
   const bustQueryCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -139,6 +147,11 @@ export const QuerySettingsScreen = () => {
                 <RelativeTimeTag date={oldestCacheItem} />
               </SettingDataTableRow>
             </DataTable>
+          </PaddedContentView>
+          <PaddedContentView>
+            <PrimaryActionButton buttonText={'Cached Keys'} onPress={() => displayKeysModal()} buttonColor={theme.colors.twitarrNeutralButton} />
+          </PaddedContentView>
+          <PaddedContentView>
             <PrimaryActionButton
               buttonText={'Bust Query Cache'}
               onPress={bustQueryCache}
