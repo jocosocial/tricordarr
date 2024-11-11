@@ -12,7 +12,11 @@ const ModalContent = () => {
   return (
     <View>
       {contents.map((query, index) => {
-        return <Text style={commonStyles.paddingBottomSmall} selectable={true} key={index}>{query.queryKey.toString()}</Text>;
+        return (
+          <Text style={commonStyles.paddingBottomSmall} selectable={true} key={index}>
+            {query.queryKey.toString()}
+          </Text>
+        );
       })}
     </View>
   );
@@ -21,10 +25,7 @@ const ModalContent = () => {
 export const QueryKeysModalView = () => {
   return (
     <ScrollView>
-      <ModalCard
-        title={'Cached Keys'}
-        content={<ModalContent />}
-      />
+      <ModalCard title={'Cached Keys'} content={<ModalContent />} />
     </ScrollView>
-  )
-}
+  );
+};
