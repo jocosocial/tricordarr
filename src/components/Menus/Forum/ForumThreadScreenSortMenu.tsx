@@ -16,7 +16,7 @@ export const ForumThreadScreenSortMenu = () => {
   const menuAnchor = (
     <MenuAnchor
       title={'Filter'}
-      active={!!forumSortOrder}
+      active={!!forumSortOrder || !!forumSortDirection}
       iconName={AppIcons.sort}
       onPress={openMenu}
       onLongPress={() => setForumSortOrder(undefined)}

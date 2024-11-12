@@ -30,6 +30,19 @@ export enum ForumSortDirection {
   descending = 'descending',
 }
 
+export namespace ForumSortDirection {
+  export const getLabel = (direction?: ForumSortDirection) => {
+    switch (direction) {
+      case ForumSortDirection.ascending:
+        return 'Ascending';
+      case ForumSortDirection.descending:
+        return 'Descending';
+      default:
+        return 'None';
+    }
+  };
+}
+
 export enum ForumFilter {
   owned = 'owned',
   favorite = 'favorite',
