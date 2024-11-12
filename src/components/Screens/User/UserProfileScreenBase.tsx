@@ -161,7 +161,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
           <PaddedContentView>
             <UserNoteCard
               user={data}
-              onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
+              onPress={() => commonNavigation.push(CommonStackComponents.userPrivateNoteScreen, {user: data})}
               onLongPress={() => {
                 if (data.note !== undefined) {
                   Clipboard.setString(data.note);

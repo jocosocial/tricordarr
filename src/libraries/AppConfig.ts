@@ -4,6 +4,7 @@ import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
 import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
+import {ForumSort, ForumSortDirection} from './Enums/ForumSortFilter.ts';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -38,6 +39,8 @@ export interface AccessibilityConfig {
  */
 export interface UserPreferences {
   reverseSwipeOrientation: boolean;
+  defaultForumSortOrder: ForumSort | undefined;
+  defaultForumSortDirection: ForumSortDirection | undefined;
 }
 
 export interface AppConfig {
@@ -125,6 +128,8 @@ const defaultAppConfig: AppConfig = {
   schedBaseUrl: 'https://jococruise1970.sched.com',
   userPreferences: {
     reverseSwipeOrientation: false,
+    defaultForumSortDirection: undefined,
+    defaultForumSortOrder: undefined,
   },
   markReadCancelPush: true,
 };

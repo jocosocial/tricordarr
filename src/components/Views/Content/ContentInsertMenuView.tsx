@@ -51,7 +51,9 @@ export const ContentInsertMenuView = ({
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
@@ -63,7 +65,9 @@ export const ContentInsertMenuView = ({
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 

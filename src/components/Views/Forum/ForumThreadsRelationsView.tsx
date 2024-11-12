@@ -15,7 +15,7 @@ interface ForumThreadsRelationsViewProps {
   title?: string;
 }
 export const ForumThreadsRelationsView = ({relationType, categoryID, title}: ForumThreadsRelationsViewProps) => {
-  const {forumSortOrder} = useFilter();
+  const {forumSortOrder, forumSortDirection} = useFilter();
   const {
     data,
     refetch,
@@ -29,6 +29,7 @@ export const ForumThreadsRelationsView = ({relationType, categoryID, title}: For
   } = useForumRelationQuery(relationType, {
     ...(categoryID ? {cat: categoryID} : undefined),
     ...(forumSortOrder && forumSortOrder !== ForumSort.event ? {sort: forumSortOrder} : undefined),
+    ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
   const [refreshing, setRefreshing] = useState(false);
   const [forumListData, setForumListData] = useState<ForumListData[]>([]);

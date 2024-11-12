@@ -7,7 +7,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset} from '../../../libraries/DateTime';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
@@ -29,11 +29,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
   const queryClient = useQueryClient();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
-    let fezStartTime = new Date(values.startDate);
-    fezStartTime.setHours(values.startTime.hours);
-    fezStartTime.setMinutes(values.startTime.minutes);
-
-    let fezEndTime = addMinutes(fezStartTime, Number(values.duration));
+    let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
     updateMutation.mutate(
       {
@@ -42,8 +38,8 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
           fezType: values.fezType,
           title: values.title,
           info: values.info,
-          startTime: fezStartTime.toISOString(),
-          endTime: fezEndTime.toISOString(),
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
           location: values.location,
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),

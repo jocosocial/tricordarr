@@ -34,7 +34,7 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`], () => {
+          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
             return {
               ...route.params.user,
               note: values.note,
@@ -53,7 +53,7 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`], () => {
+          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
             return {
               ...route.params.user,
               note: undefined,

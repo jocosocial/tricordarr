@@ -10,10 +10,11 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData, CruiseDayTime} from './Types';
+import {CruiseDayData, CruiseDayTime, StartEndTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import TimeAgo from 'javascript-time-ago';
+import {StartTime} from './Types/FormValues.ts';
 
 const thresholdMap = {
   second: {
@@ -309,4 +310,30 @@ export const getApparentCruiseDate = (startDate: Date, adjustedCruiseDayToday: n
   const apparentCruiseDate = new Date(startDate);
   apparentCruiseDate.setDate(startDate.getDate() + (adjustedCruiseDayToday - 1));
   return apparentCruiseDate;
+};
+
+/**
+ * The DatePickerModal returns a Date with the time component set to 23:59:59.999Z
+ * The TimePickerModal stores its data in another field which is then smashed together
+ * with the DatePickerModal and Duration values to form the start and end dates.
+ * Leaving the extra precision in there is a problem for things that expect the
+ * schedule item to start on the whole minute. This function is a wrapper around
+ * this smashing.
+ * @param startDate Arbitrary precision Date with the starting Date of the schedule.
+ * @param startTime Object containing the hours and minutes that the thing starts.
+ * @param duration How long the thing is.
+ */
+export const getScheduleItemStartEndTime = (
+  startDate: Date | string,
+  startTime: StartTime,
+  duration: string | number,
+): StartEndTime => {
+  let eventStartTime = new Date(startDate);
+  eventStartTime.setHours(startTime.hours);
+  eventStartTime.setMinutes(startTime.minutes);
+  eventStartTime.setSeconds(0);
+  eventStartTime.setMilliseconds(0);
+
+  let eventEndTime = addMinutes(eventStartTime, Number(duration));
+  return {startTime: eventStartTime, endTime: eventEndTime};
 };

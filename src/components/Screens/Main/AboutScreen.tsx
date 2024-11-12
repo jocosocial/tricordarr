@@ -76,7 +76,7 @@ export const AboutScreen = () => {
           <ContributorCard
             imageSource={cfry}
             bodyText={
-              'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable. He also made the cool lighter video.'
+              'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video and PhotoStream processing library.'
             }
           />
           <OobeNoteCard />

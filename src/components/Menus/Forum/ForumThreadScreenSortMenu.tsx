@@ -16,7 +16,7 @@ export const ForumThreadScreenSortMenu = () => {
   const menuAnchor = (
     <MenuAnchor
       title={'Filter'}
-      active={!!forumSortOrder}
+      active={!!forumSortOrder || !!forumSortDirection}
       iconName={AppIcons.sort}
       onPress={openMenu}
       onLongPress={() => setForumSortOrder(undefined)}
@@ -44,25 +44,25 @@ export const ForumThreadScreenSortMenu = () => {
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem
-        title={'Event Time'}
+        title={ForumSort.getLabel(ForumSort.event)}
         leadingIcon={AppIcons.events}
         selected={forumSortOrder === ForumSort.event}
         onPress={() => handleFilterSelection(ForumSort.event)}
       />
       <SelectableMenuItem
-        title={'Most Recent Post'}
+        title={ForumSort.getLabel(ForumSort.update)}
         leadingIcon={AppIcons.recent}
         selected={forumSortOrder === ForumSort.update}
         onPress={() => handleFilterSelection(ForumSort.update)}
       />
       <SelectableMenuItem
-        title={'Creation Time'}
+        title={ForumSort.getLabel(ForumSort.create)}
         leadingIcon={AppIcons.new}
         selected={forumSortOrder === ForumSort.create}
         onPress={() => handleFilterSelection(ForumSort.create)}
       />
       <SelectableMenuItem
-        title={'Title'}
+        title={ForumSort.getLabel(ForumSort.title)}
         leadingIcon={AppIcons.text}
         selected={forumSortOrder === ForumSort.title}
         onPress={() => handleFilterSelection(ForumSort.title)}

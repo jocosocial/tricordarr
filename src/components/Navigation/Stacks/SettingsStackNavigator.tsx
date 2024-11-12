@@ -26,6 +26,8 @@ import {UserInfoSettingsScreen} from '../../Screens/Settings/Developer/UserInfoS
 import {AboutSettingsScreen} from '../../Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySettingsScreen';
 import {CommonStackParamList} from '../CommonScreens';
+import {QueryKeysSettingsScreen} from '../../Screens/Settings/Developer/QueryKeysSettingsScreen.tsx';
+import {QueryDataSettingsScreen} from '../../Screens/Settings/Developer/QueryDataSettingsScreen.tsx';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
@@ -50,6 +52,10 @@ export type SettingsStackParamList = CommonStackParamList & {
   UserInfoSettingsScreen: undefined;
   AboutSettingsScreen: undefined;
   QuerySettingsScreen: undefined;
+  QueryKeysSettingsScreen: undefined;
+  QueryDataSettingsScreen: {
+    queryHash: string;
+  };
 };
 
 export const SettingsStackNavigator = () => {
@@ -166,6 +172,16 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.querySettingsScreen}
         component={QuerySettingsScreen}
         options={{title: 'Query Settings'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.queryKeysSettingsScreen}
+        component={QueryKeysSettingsScreen}
+        options={{title: 'Query Keys'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.queryDataSettingsScreen}
+        component={QueryDataSettingsScreen}
+        options={{title: 'Query Data'}}
       />
     </Stack.Navigator>
   );

@@ -21,10 +21,13 @@ import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {getDirSize} from '../../../../libraries/Storage/ImageStorage.ts';
 import {filesize} from 'filesize';
-import {useModal} from '../../../Context/Contexts/ModalContext.ts';
-import {QueryKeysModalView} from '../../../Views/Modals/QueryKeysModalView.tsx';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation.ts';
 
-export const QuerySettingsScreen = () => {
+export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
+
+export const QuerySettingsScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
@@ -34,12 +37,6 @@ export const QuerySettingsScreen = () => {
   });
   const [imageCacheSize, setImageCacheSize] = useState(0);
   const [oldestCacheItem, setOldestCacheItem] = useState<Date>();
-  const {setModalContent, setModalVisible} = useModal()
-
-  const displayKeysModal = () => {
-    setModalContent(<QueryKeysModalView />);
-    setModalVisible(true);
-  }
 
   const bustQueryCache = () => {
     console.log('[QuerySettingsScreen.tsx] Busting query cache.');
@@ -149,7 +146,11 @@ export const QuerySettingsScreen = () => {
             </DataTable>
           </PaddedContentView>
           <PaddedContentView>
-            <PrimaryActionButton buttonText={'Cached Keys'} onPress={() => displayKeysModal()} buttonColor={theme.colors.twitarrNeutralButton} />
+            <PrimaryActionButton
+              buttonText={'Cached Keys'}
+              onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
+              buttonColor={theme.colors.twitarrNeutralButton}
+            />
           </PaddedContentView>
           <PaddedContentView>
             <PrimaryActionButton

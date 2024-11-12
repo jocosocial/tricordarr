@@ -1,4 +1,4 @@
-import {Button, Divider, Menu} from 'react-native-paper';
+import {Button, Divider, HelperText, Menu} from 'react-native-paper';
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -14,6 +14,8 @@ interface PickerFieldProps<TData> {
   viewStyle?: StyleProp<ViewStyle>;
   addUndefinedOption?: boolean;
   onSelect?: (value: TData | undefined) => void;
+  anchorButtonMode?: 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
+  helperText?: string;
 }
 
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
@@ -26,6 +28,8 @@ export const PickerField = <TData,>({
   viewStyle,
   addUndefinedOption = false,
   onSelect,
+  anchorButtonMode = 'outlined',
+  helperText,
 }: PickerFieldProps<TData>) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -53,13 +57,19 @@ export const PickerField = <TData,>({
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
-      marginHorizontal: 14,
+      ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : undefined),
     },
     content: {
       ...commonStyles.flexRow,
       ...commonStyles.flex,
       minHeight: 48,
       justifyContent: 'flex-start',
+    },
+    helperTextContainer: {
+      ...commonStyles.paddingHorizontal,
+    },
+    helperText: {
+      color: theme.colors.onBackground,
     },
   });
 
@@ -76,9 +86,16 @@ export const PickerField = <TData,>({
             contentStyle={styles.content}
             style={styles.button}
             onPress={openMenu}
-            mode={'outlined'}>
+            mode={anchorButtonMode}>
             {label} ({getTitle(value)})
           </Button>
+          {helperText && (
+            <View style={styles.helperTextContainer}>
+              <HelperText style={styles.helperText} type={'info'}>
+                {helperText}
+              </HelperText>
+            </View>
+          )}
         </View>
       }>
       {choices.map((item, index) => {

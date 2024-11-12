@@ -55,7 +55,7 @@ export const EditUserProfileScreen = ({route, navigation}: Props) => {
           if (profilePublicData && profilePublicData.header.userID === route.params.user.header.userID) {
             setProfilePublicData(response.data);
           }
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`], () => {
+          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
             return response.data;
           });
           navigation.goBack();

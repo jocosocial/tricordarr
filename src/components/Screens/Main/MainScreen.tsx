@@ -23,6 +23,8 @@ import {MainAccountMenu} from '../../Menus/MainAccountMenu';
 import {MainHeaderView} from '../../Views/MainHeaderView';
 import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
 import {MainTimezoneWarningView} from '../../Views/MainTimezoneWarningView.tsx';
+import {TodayAppUpdateView} from '../../Views/TodayAppUpdateView.tsx';
+import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
@@ -39,13 +41,14 @@ export const MainScreen = ({navigation}: Props) => {
   const {refetch: refetchMutes} = useUserMutesQuery({enabled: false});
   const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
+  const {refetch: refetchClient} = useClientConfigQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetchUserNotificationData(), refetchThemes(), refetchAnnouncements()]);
+    await Promise.all([refetchUserNotificationData(), refetchThemes(), refetchAnnouncements(), refetchClient()]);
     if (isLoggedIn) {
       await Promise.all([refetchFavorites(), refetchBlocks(), refetchMutes()]);
     }
@@ -81,10 +84,11 @@ export const MainScreen = ({navigation}: Props) => {
         <MainThemeView />
         <MainNextEventView />
         {hasModerator && (
-          <PaddedContentView>
+          <PaddedContentView padBottom={false}>
             <ModeratorCard />
           </PaddedContentView>
         )}
+        <TodayAppUpdateView />
       </ScrollingContentView>
     </AppView>
   );
