@@ -8,6 +8,23 @@ export enum ForumSort {
   title = 'title',
 }
 
+export namespace ForumSort {
+  export const getLabel = (sort?: ForumSort) => {
+    switch (sort) {
+      case ForumSort.event:
+        return 'Event Time';
+      case ForumSort.update:
+        return 'Most Recent Post';
+      case ForumSort.create:
+        return 'Creation Time';
+      case ForumSort.title:
+        return 'Title';
+      default:
+        return 'None';
+    }
+  };
+}
+
 export enum ForumSortDirection {
   ascending = 'ascending',
   descending = 'descending',

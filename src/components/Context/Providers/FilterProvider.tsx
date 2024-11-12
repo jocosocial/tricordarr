@@ -14,10 +14,14 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
   const [lfgTypeFilter, setLfgTypeFilter] = useState<keyof typeof FezType>();
   const [lfgHidePastFilter, setLfgHidePastFilter] = useState(appConfig.schedule.hidePastLfgs);
   const [forumFilter, setForumFilter] = useState<ForumFilter>();
-  const [forumSortOrder, setForumSortOrder] = useState<ForumSort>();
+  const [forumSortOrder, setForumSortOrder] = useState<ForumSort | undefined>(
+    appConfig.userPreferences.defaultForumSortOrder,
+  );
   const [eventPersonalFilter, setEventPersonalFilter] = useState(false);
   const [eventLfgFilter, setEventLfgFilter] = useState(false);
-  const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection>();
+  const [forumSortDirection, setForumSortDirection] = useState<ForumSortDirection | undefined>(
+    appConfig.userPreferences.defaultForumSortDirection,
+  );
 
   const scheduleFilterSettings: ScheduleFilterSettings = {
     eventTypeFilter: eventTypeFilter ? (eventTypeFilter as keyof typeof EventType) : undefined,
