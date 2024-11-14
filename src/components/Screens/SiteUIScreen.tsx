@@ -1,6 +1,6 @@
 import {WebView, WebViewNavigation} from 'react-native-webview';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
 import {AppView} from '../Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -13,12 +13,29 @@ import {CommonStackComponents, CommonStackParamList} from '../Navigation/CommonS
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
 export const SiteUIScreen = ({route, navigation}: Props) => {
-  const [url, setUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const {appConfig} = useConfig();
+
+  const getInitialUrl = () => {
+    let newUrl = appConfig.serverUrl;
+
+    if (route.params.moderate) {
+      newUrl += '/moderate';
+    }
+
+    if (route?.params?.resource) {
+      newUrl += `/${route.params.resource}`;
+
+      if (route.params.id) {
+        newUrl += `/${route.params.id}`;
+      }
+    }
+    return newUrl;
+  };
+
+  const [webviewUrl, setWebviewUrl] = useState(getInitialUrl());
   const [key, setKey] = useState('');
   const [handleGoBack, setHandleGoBack] = useState(false);
-  const webViewRef = useRef<WebView>();
-  const {appConfig} = useConfig();
+  const webViewRef = useRef<WebView>(null);
 
   const handleBackButtonPress = () => {
     try {
@@ -30,15 +47,17 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
   };
 
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
-    const {canGoBack} = newNavState;
+    const {canGoBack, url} = newNavState;
+    console.log(`[SiteUIScreen.tsx] webview navigating to ${url}`);
     setHandleGoBack(canGoBack);
   };
 
   useBackHandler(() => {
+    // This means we're gonna go back in the WebView, not in app.
     if (handleGoBack) {
       return handleBackButtonPress();
     }
-    // let the default thing happen
+    // Let the default thing happen, which is back in the app.
     return false;
   });
 
@@ -50,13 +69,7 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
             title={'Home'}
             iconName={AppIcons.home}
             onPress={() => {
-              if (route.params) {
-                // This prevents the useEffect from resetting the state
-                // back to whatever route params we were given.
-                route.params.resource = undefined;
-                route.params.id = undefined;
-              }
-              setUrl(`${appConfig.serverUrl}/home`);
+              setWebviewUrl(appConfig.serverUrl);
               setKey(String(Date.now()));
             }}
           />
@@ -64,56 +77,33 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [appConfig.serverUrl, route.params],
+    [appConfig.serverUrl],
   );
 
   useEffect(() => {
-    const loadSettings = async () => {
-      let newUrl = appConfig.serverUrl;
-
-      if (route.params.moderate) {
-        newUrl += '/moderate';
-      }
-
-      if (route?.params?.resource) {
-        newUrl += `/${route.params.resource}`;
-
-        if (route.params.id) {
-          newUrl += `/${route.params.id}`;
-        }
-      }
-
-      setUrl(newUrl);
-      setIsLoading(false);
-    };
-
     if (route?.params?.timestamp !== key && route.params.timestamp) {
       setKey(route.params.timestamp);
       setHandleGoBack(false);
     }
 
-    loadSettings();
-
     navigation.setOptions({
       headerRight: getNavBarIcons,
     });
   }, [
-    route.params?.timestamp,
+    route.params.timestamp,
     route.params.resource,
     route.params.id,
-    isLoading,
+    route.params.moderate,
     key,
     navigation,
     getNavBarIcons,
     appConfig.serverUrl,
   ]);
 
-  return isLoading ? (
-    <ActivityIndicator />
-  ) : (
+  return (
     <AppView>
       <WebView
-        source={{uri: url}}
+        source={{uri: webviewUrl}}
         key={key}
         ref={webViewRef}
         onNavigationStateChange={handleWebViewNavigationStateChange}
