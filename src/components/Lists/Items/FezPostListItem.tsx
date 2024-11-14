@@ -24,7 +24,7 @@ interface FezPostListItemProps {
   };
 }
 
-export const FezPostListItem = ({fezPost, index, separators, fez}: FezPostListItemProps) => {
+export const FezPostListItem = ({fezPost, fez}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const seamailNavigation = useChatStack();

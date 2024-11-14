@@ -248,7 +248,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
                     const deck = guessDeckNumber(lfg.location);
                     navigation.push(CommonStackComponents.mapScreen, {
                       deckNumber: deck,
-                    })
+                    });
                   }}
                 />
                 <DataFieldListItem

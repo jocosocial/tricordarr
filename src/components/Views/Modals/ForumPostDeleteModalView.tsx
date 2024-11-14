@@ -46,7 +46,7 @@ export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
             await Promise.all([
               queryClient.invalidateQueries([`/forum/${forumData.forumID}`]),
               queryClient.invalidateQueries([`/forum/${forumData.forumID}/pinnedposts`]),
-            ])
+            ]);
           }
           setModalVisible(false);
         },

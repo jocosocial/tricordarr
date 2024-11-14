@@ -1,5 +1,5 @@
 import notifee from '@notifee/react-native';
-import {callsChannel, serviceChannel} from './Channels';
+import {callsChannel} from './Channels';
 import {PressAction} from '../Enums/Notifications';
 
 /**

@@ -8,7 +8,11 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
 import {TextField} from '../Fields/TextField.tsx';
-import {AccountRecoveryValidation, PasswordValidation, UsernameValidation} from '../../../libraries/ValidationSchema.ts';
+import {
+  AccountRecoveryValidation,
+  PasswordValidation,
+  UsernameValidation,
+} from '../../../libraries/ValidationSchema.ts';
 import {SecureTextField} from '../Fields/SecureTextField.tsx';
 
 interface UserCreateFormProps {

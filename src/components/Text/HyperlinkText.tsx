@@ -1,6 +1,5 @@
 import React from 'react';
 import {Hyperlink} from 'react-native-hyperlink';
-import {StyleSheet} from 'react-native';
 import {useTwitarr} from '../Context/Contexts/TwitarrContext';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
 import {useConfig} from '../Context/Contexts/ConfigContext';
@@ -29,7 +28,7 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
   const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
 
-  const handleLink = (linkUrl?: string, linkText?: string) => {
+  const handleLink = (linkUrl?: string) => {
     if (linkUrl) {
       console.log(`[HyperlinkText.tsx] opening link to ${linkUrl}`);
       openWebUrl(linkUrl);

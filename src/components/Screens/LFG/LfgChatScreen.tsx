@@ -212,7 +212,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
       }
       refetchUserNotificationData();
     }
-  }, [dispatchLfgList, lfg, refetchUserNotificationData]);
+  }, [appConfig.markReadCancelPush, dispatchLfgList, lfg, refetchUserNotificationData]);
 
   const renderHeader = () => {
     return (

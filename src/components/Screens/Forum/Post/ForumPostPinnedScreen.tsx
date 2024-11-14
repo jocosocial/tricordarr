@@ -26,17 +26,21 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
 
   if (data.length === 0) {
     return (
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView>
-          <TimeDivider label={'No posts to display'} />
-        </PaddedContentView>
-      </ScrollingContentView>
+      <AppView>
+        <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+          <PaddedContentView>
+            <TimeDivider label={'No posts to display'} />
+          </PaddedContentView>
+        </ScrollingContentView>
+      </AppView>
     );
   }
 
+  const getListHeader = () => <PaddedContentView />;
+
   return (
     <AppView>
-      <View style={[commonStyles.flex, commonStyles.marginTopSmall]}>
+      <View style={[commonStyles.flex]}>
         <ForumPostFlatList
           flatListRef={flatListRef}
           refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
@@ -44,6 +48,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
           invertList={false}
           enableShowInThread={true}
           forumData={forumData?.pages[0]}
+          getListHeader={getListHeader}
         />
       </View>
     </AppView>

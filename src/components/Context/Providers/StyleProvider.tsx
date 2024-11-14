@@ -82,7 +82,6 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: AndroidColor.WHITE,
     },
     borderBottom: {
-      borderBottomStyle: 'solid',
       borderBottomColor: theme.colors.onBackground,
       borderBottomWidth: 1,
     },

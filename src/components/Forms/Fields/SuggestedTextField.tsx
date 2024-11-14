@@ -27,7 +27,7 @@ export const SuggestedTextField = ({
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
   const {setFieldValue} = useFormikContext();
-  const [field, meta, helpers] = useField<string>(name);
+  const [field] = useField<string>(name);
   const {modalVisible} = useModal();
 
   const handleSelect = (newValue: string) => {

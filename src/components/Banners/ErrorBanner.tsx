@@ -1,5 +1,5 @@
 import React from 'react';
-import {Linking, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Banner, Text} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 import {useAppTheme} from '../../styles/Theme.ts';
@@ -27,7 +27,7 @@ export const ErrorBanner = () => {
       actions={[
         {
           label: 'Dismiss',
-          onPress: () => setErrorBanner(undefined),
+          onPress: () => setErrorBanner(''),
           labelStyle: styles.button,
         },
       ]}>

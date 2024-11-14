@@ -22,7 +22,7 @@ export const ForumCategoriesScreenActionsMenu = () => {
         leadingIcon={AppIcons.alertword}
         onPress={() => {
           closeMenu();
-          commonNavigation.push(CommonStackComponents.alertKeywords)
+          commonNavigation.push(CommonStackComponents.alertKeywords);
         }}
       />
       <Menu.Item

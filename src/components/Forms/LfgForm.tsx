@@ -94,7 +94,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, values, isSubmitting, isValid, dirty}) => (
+      {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
           <DirtyDetectionField />
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} autoCapitalize={'words'} />

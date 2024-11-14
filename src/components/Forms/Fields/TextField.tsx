@@ -58,7 +58,7 @@ export const TextField = ({
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
-  const [field, meta, helpers] = useField<string>(name);
+  const [field, meta] = useField<string>(name);
 
   const handleValueChange = (value: string) => {
     handleChange(name)(value);

@@ -1,4 +1,4 @@
-import {ImageSourcePropType, ImageURISource} from 'react-native';
+import {ImageURISource} from 'react-native';
 // @ts-ignore
 import deck1 from '../../assets/map/deck1.png';
 // @ts-ignore

@@ -64,7 +64,7 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [appConfig.serverUrl],
+    [appConfig.serverUrl, route.params],
   );
 
   useEffect(() => {

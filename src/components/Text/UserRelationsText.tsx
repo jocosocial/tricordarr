@@ -45,7 +45,8 @@ export const UserFavoriteText = () => {
   const {commonStyles} = useStyles();
   return (
     <Text style={[commonStyles.marginBottomSmall]}>
-      Favoriting a user allows them to call you (between iOS devices only) and allows them to invite you to Personal Events.
+      Favoriting a user allows them to call you (between iOS devices only) and allows them to invite you to Personal
+      Events.
     </Text>
   );
 };

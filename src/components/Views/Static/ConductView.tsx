@@ -4,8 +4,10 @@ import {BoldText} from '../../Text/BoldText';
 import React from 'react';
 import {View} from 'react-native';
 import {ConductDocDocument} from '../../../libraries/Structs/SiteStructs';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 export const ConductView = ({docs}: {docs: (ConductDocDocument | undefined)[]}) => {
+  const {commonStyles} = useStyles();
   return (
     <View>
       {docs.map((doc, docIndex) => {
@@ -16,7 +18,7 @@ export const ConductView = ({docs}: {docs: (ConductDocDocument | undefined)[]}) 
           <View key={docIndex}>
             <PaddedContentView>
               {doc.header && (
-                <Text style={{fontWeight: 'bold'}} variant={'titleLarge'}>
+                <Text style={commonStyles.bold} variant={'titleLarge'}>
                   {doc.header}
                 </Text>
               )}

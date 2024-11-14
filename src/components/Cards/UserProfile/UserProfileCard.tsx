@@ -26,7 +26,9 @@ export const UserProfileCard = ({user}: UserProfileCardProps) => {
           {user.header.preferredPronoun && (
             <DataFieldListItem title={'Pronouns'} description={user.header.preferredPronoun} />
           )}
-          {user.dinnerTeam && <DataFieldListItem title={'Dinner Team'} description={DinnerTeam.getLabel(user.dinnerTeam)} />}
+          {user.dinnerTeam && (
+            <DataFieldListItem title={'Dinner Team'} description={DinnerTeam.getLabel(user.dinnerTeam)} />
+          )}
           {user.email && (
             <DataFieldListItem
               title={'Email'}

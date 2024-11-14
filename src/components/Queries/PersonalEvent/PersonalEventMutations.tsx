@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from 'axios';
-import {FezData, PersonalEventContentData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PersonalEventContentData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 
 interface PersonalEventCreateMutationProps {

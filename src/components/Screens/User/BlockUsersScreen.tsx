@@ -15,11 +15,9 @@ import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.blockUsers>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
 export const BlockUsersScreen = ({navigation}: Props) => {
   const {blocks, setBlocks} = useUserRelations();
   const {hasModerator} = usePrivilege();
@@ -79,9 +77,11 @@ export const BlockUsersScreen = ({navigation}: Props) => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unblock}
-              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {
-                userID: relatedUserHeader.userID,
-              })}
+              onPress={() =>
+                navigation.push(CommonStackComponents.userProfileScreen, {
+                  userID: relatedUserHeader.userID,
+                })
+              }
               buttonOnPress={handleUnblockUser}
             />
           ))}

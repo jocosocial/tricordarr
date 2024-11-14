@@ -1,7 +1,6 @@
 import React from 'react';
 import {List} from 'react-native-paper';
 import {SettingsStackParamList, useSettingsStack} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
 
 interface NavigationListItemProps {
   title: string;
@@ -12,7 +11,5 @@ interface NavigationListItemProps {
 export const SettingsNavigationListItem = ({title, description, navComponent}: NavigationListItemProps) => {
   const navigation = useSettingsStack();
 
-  return (
-    <List.Item title={title} description={description} onPress={() => navigation.push(navComponent)} />
-  );
+  return <List.Item title={title} description={description} onPress={() => navigation.push(navComponent)} />;
 };

@@ -19,7 +19,7 @@ export const NotificationDataPoller = () => {
       return;
     }
     console.log('[NotificationDataPoller.tsx] Clearing poll interval with ID', id);
-    clearInterval(id);
+    clearInterval(id as any);
     setIntervalId(undefined);
   };
 
@@ -62,7 +62,7 @@ export const NotificationDataPoller = () => {
       console.log('[NotificationDataPoller.tsx] Refreshing notification data');
       queryClient.invalidateQueries(['/notification/global']);
     }
-  }, [appState, refetchUserNotificationData]);
+  }, [appState, queryClient, refetchUserNotificationData]);
 
   return null;
 };

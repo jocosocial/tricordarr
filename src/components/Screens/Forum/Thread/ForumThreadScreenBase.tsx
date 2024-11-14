@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../../Views/Static/LoadingView';
@@ -32,7 +32,7 @@ interface ForumThreadScreenBaseProps {
   isFetchingPreviousPage: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
-  getListHeader?: () => ReactNode;
+  getListHeader?: () => React.JSX.Element;
   invertList?: boolean;
   forumListData?: ForumListData;
 }
@@ -112,7 +112,7 @@ export const ForumThreadScreenBase = ({
         </HeaderButtons>
       </View>
     );
-  }, [data?.pages, navigation, onRefresh]);
+  }, [data?.pages, invalidationQueryKeys, navigation, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({

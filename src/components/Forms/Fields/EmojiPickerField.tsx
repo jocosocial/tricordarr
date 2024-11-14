@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {CustomEmoji} from '../../../libraries/Enums/Emoji';

@@ -116,7 +116,13 @@ export const ScheduleItemCardBase = ({
                 </Text>
               )}
               {author && (
-                <UserBylineTag style={styles.bodyText} variant={'bodyMedium'} user={author} prefix={'Hosted by:'} includePronoun={false} />
+                <UserBylineTag
+                  style={styles.bodyText}
+                  variant={'bodyMedium'}
+                  user={author}
+                  prefix={'Hosted by:'}
+                  includePronoun={false}
+                />
               )}
               {participation && (
                 <Text style={styles.bodyText} variant={'bodyMedium'}>

@@ -93,11 +93,7 @@ export const CruiseSettingsScreen = () => {
               value={adjustedCruiseDayToday.toString()}
               reverseSplit={true}
             />
-            <SettingDataTableRow
-              title={'Cruise Day Index'}
-              value={cruiseDayIndex.toString()}
-              reverseSplit={true}
-            />
+            <SettingDataTableRow title={'Cruise Day Index'} value={cruiseDayIndex.toString()} reverseSplit={true} />
             <SettingDataTableRow
               title={'Adjusted Cruise Day Index'}
               value={adjustedCruiseDayIndex.toString()}
