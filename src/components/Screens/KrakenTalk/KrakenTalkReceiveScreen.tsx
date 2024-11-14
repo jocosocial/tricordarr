@@ -28,7 +28,7 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
         userID: route.params.callerUserID,
         username: route.params.callerUsername,
       },
-    })
+    });
   }, [route, navigation]);
 
   return (

@@ -1,7 +1,7 @@
 import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
 import React, {FC} from 'react';
 import {MentionSuggestionsProps} from 'react-native-controlled-mentions';
-import {Pressable, View} from 'react-native';
+import {Pressable, View, StyleSheet} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {UserBylineTag} from '../Text/Tags/UserBylineTag';
@@ -9,6 +9,12 @@ import {UserBylineTag} from '../Text/Tags/UserBylineTag';
 export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({keyword, onSuggestionPress}) => {
   const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || ''});
   const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    pressable: {
+      padding: 12,
+    },
+  });
 
   if (keyword == null) {
     return null;
@@ -30,7 +36,7 @@ export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({
           <Pressable
             key={one.userID}
             onPress={() => onSuggestionPress({id: one.userID, name: one.username})}
-            style={{padding: 12}}>
+            style={styles.pressable}>
             <UserBylineTag user={one} />
           </Pressable>
         ))}

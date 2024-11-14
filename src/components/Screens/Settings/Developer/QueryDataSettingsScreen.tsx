@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView.tsx';
 import {RefreshControl, ScrollView} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -8,7 +8,6 @@ import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigat
 import {Query, useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import JSONTree from 'react-native-json-tree';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,

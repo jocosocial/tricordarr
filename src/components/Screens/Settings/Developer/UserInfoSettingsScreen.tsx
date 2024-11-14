@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
-import {DataTable, Text} from 'react-native-paper';
+import {DataTable} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useAuth} from '../../../Context/Contexts/AuthContext';

@@ -12,6 +12,7 @@ export const HeaderScheduleYourDayButton = () => {
     setEventPersonalFilter,
     eventLfgFilter,
     setEventLfgFilter,
+    setEventTypeFilter,
   } = useFilter();
   const theme = useAppTheme();
 
@@ -22,10 +23,12 @@ export const HeaderScheduleYourDayButton = () => {
       setEventFavoriteFilter(false);
       setEventPersonalFilter(false);
       setEventLfgFilter(false);
+      setEventTypeFilter('');
     } else {
       setEventFavoriteFilter(true);
       setEventPersonalFilter(true);
       setEventLfgFilter(true);
+      setEventTypeFilter('');
     }
   };
 

@@ -17,16 +17,16 @@ const {ImageTextBlurModule} = NativeModules;
 export const PhotostreamImageSelectionView = () => {
   const {commonStyles} = useStyles();
   const {setErrorMessage} = useErrorHandler();
-  const {values, setFieldValue, isSubmitting} = useFormikContext<PhotostreamUploadData>();
+  const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
 
   const processImage = (image: Image) => {
-    ImageTextBlurModule.blurTextInImage(image.path, newPath => {
+    ImageTextBlurModule.blurTextInImage(image.path, (newPath: string) => {
       RNFS.readFile(newPath, 'base64')
-        .then((blurredImageData) => {
+        .then(blurredImageData => {
           setFieldValue('image', blurredImageData);
         })
-        .catch((err) => {
-          console.log(err.message);
+        .catch(err => {
+          setErrorMessage(err);
         });
     });
   };

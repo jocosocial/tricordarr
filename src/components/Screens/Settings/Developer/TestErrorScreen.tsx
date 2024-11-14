@@ -12,7 +12,6 @@ import {HelpModalView} from '../../../Views/Modals/HelpModalView';
 import {useQuery} from '@tanstack/react-query';
 import {RefreshControl} from 'react-native';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
-import axios from 'axios';
 import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
 
 export const TestErrorScreen = () => {

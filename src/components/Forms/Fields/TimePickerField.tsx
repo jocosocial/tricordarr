@@ -17,7 +17,7 @@ interface TimePick {
 }
 
 export const TimePickerField = ({name}: TimePickerFieldProps) => {
-  const [field, meta, helpers] = useField<TimePick>(name);
+  const [field] = useField<TimePick>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();

@@ -31,7 +31,9 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
             <Button
               mode={'outlined'}
               style={[commonStyles.marginTopSmall]}
-              onPress={() => navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.pages[0].forumID})}>
+              onPress={() =>
+                navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.pages[0].forumID})
+              }>
               View Full Forum
             </Button>
           )}
@@ -53,6 +55,6 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
       hasPreviousPage={undefined}
       getListHeader={route.params.postID ? getListHeader : undefined}
       invertList={false}
-      />
+    />
   );
 };

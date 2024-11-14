@@ -4,7 +4,6 @@
  *
  * @TODO start moving these out to the various navigators
  */
-import {QueryKeysSettingsScreen} from '../../components/Screens/Settings/Developer/QueryKeysSettingsScreen.tsx';
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',

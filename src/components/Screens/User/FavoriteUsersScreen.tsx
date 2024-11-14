@@ -14,11 +14,9 @@ import {useUserFavoriteMutation, useUserFavoritesQuery} from '../../Queries/User
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.favoriteUsers>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 export const FavoriteUsersScreen = ({navigation}: Props) => {
   const {favorites, setFavorites} = useUserRelations();
   const userFavoriteMutation = useUserFavoriteMutation();
@@ -58,7 +56,10 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userFavoriteMutation.isLoading} onRefresh={refetch} />}>
+      <ScrollingContentView
+        refreshControl={
+          <RefreshControl refreshing={isRefetching || userFavoriteMutation.isLoading} onRefresh={refetch} />
+        }>
         <PaddedContentView>
           <UserFavoriteText />
         </PaddedContentView>
@@ -73,9 +74,11 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unfavorite}
-              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {
-                userID: relatedUserHeader.userID,
-              })}
+              onPress={() =>
+                navigation.push(CommonStackComponents.userProfileScreen, {
+                  userID: relatedUserHeader.userID,
+                })
+              }
               buttonOnPress={handleUnfavoriteUser}
             />
           ))}

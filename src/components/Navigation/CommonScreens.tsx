@@ -55,7 +55,6 @@ import {FavoriteUsersScreen} from '../Screens/User/FavoriteUsersScreen.tsx';
 import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.tsx';
 import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScreen.tsx';
 import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
-import {EventStackComponents} from '../../libraries/Enums/Navigation.ts';
 import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
 
 /**

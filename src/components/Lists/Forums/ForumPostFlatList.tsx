@@ -1,6 +1,6 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
-import React, {ReactNode, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
@@ -28,7 +28,7 @@ interface ForumPostFlatListProps {
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
   flatListRef: React.RefObject<FlatList<PostData>>;
-  getListHeader?: () => ReactNode;
+  getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
 }
 
@@ -106,7 +106,6 @@ export const ForumPostFlatList = ({
     },
     [
       hasModerator,
-      forumData?.creator.userID,
       profilePublicData?.header.userID,
       styles.postContainerView,
       showNewDivider,
@@ -149,17 +148,16 @@ export const ForumPostFlatList = ({
 
   const renderListHeader = useCallback(() => {
     if (forumData && !hasPreviousPage) {
+      if (getListHeader) {
+        return getListHeader();
+      }
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
-          {getListHeader ? (
-            getListHeader()
-          ) : (
-            <View style={[commonStyles.flexRow]}>
-              <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-                <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
-              </View>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
             </View>
-          )}
+          </View>
         </PaddedContentView>
       );
     } else if (hasPreviousPage) {

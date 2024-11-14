@@ -15,11 +15,9 @@ import {useUserMuteMutation, useUserMutesQuery} from '../../Queries/Users/UserMu
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.muteUsers>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
 export const MuteUsersScreen = ({navigation}: Props) => {
   const {mutes, setMutes} = useUserRelations();
   const {hasModerator} = usePrivilege();
@@ -60,7 +58,8 @@ export const MuteUsersScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching || userMuteMutation.isLoading} onRefresh={refetch} />}>
+      <ScrollingContentView
+        refreshControl={<RefreshControl refreshing={isRefetching || userMuteMutation.isLoading} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserMuteText />
           {hasModerator && <ModeratorMuteText />}
@@ -76,9 +75,11 @@ export const MuteUsersScreen = ({navigation}: Props) => {
               key={i}
               userHeader={relatedUserHeader}
               buttonIcon={AppIcons.unmute}
-              onPress={() => navigation.push(CommonStackComponents.userProfileScreen, {
-                userID: relatedUserHeader.userID,
-              })}
+              onPress={() =>
+                navigation.push(CommonStackComponents.userProfileScreen, {
+                  userID: relatedUserHeader.userID,
+                })
+              }
               buttonOnPress={handleUnmuteUser}
             />
           ))}

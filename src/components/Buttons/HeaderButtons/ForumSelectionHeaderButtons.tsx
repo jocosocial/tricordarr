@@ -15,7 +15,7 @@ interface ForumSelectionHeaderButtonsProps {
 }
 
 export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsProps) => {
-  const {selectedForums, setEnableSelection, dispatchSelectedForums} = useSelection();
+  const {selectedForums, dispatchSelectedForums} = useSelection();
   const relationMutation = useForumRelationMutation();
   const queryClient = useQueryClient();
 

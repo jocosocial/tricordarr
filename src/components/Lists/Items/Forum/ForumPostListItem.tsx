@@ -23,7 +23,12 @@ interface ForumPostListItemProps {
   forumData?: ForumData;
 }
 
-export const ForumPostListItem = ({postData, enableShowInThread, enablePinnedPosts, forumData}: ForumPostListItemProps) => {
+export const ForumPostListItem = ({
+  postData,
+  enableShowInThread,
+  enablePinnedPosts,
+  forumData,
+}: ForumPostListItemProps) => {
   const forumNavigation = useForumStackNavigation();
 
   const handleAuthorAvatarPress = () => {

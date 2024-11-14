@@ -36,7 +36,10 @@ export const DateValidation = Yup.date().required('Date is required');
 
 export const EmailValidation = Yup.string().email().min(2).max(50);
 
-export const RoomNumberValidation = Yup.string().optional().min(4, 'If specified, must be minimum 4 characters').max(20);
+export const RoomNumberValidation = Yup.string()
+  .optional()
+  .min(4, 'If specified, must be minimum 4 characters')
+  .max(20);
 
 export const ForumPostTextValidation = Yup.string()
   .required('Post is required.')

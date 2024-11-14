@@ -12,8 +12,8 @@ interface MentionTextFieldProps {
 
 export const MentionTextField = (props: MentionTextFieldProps) => {
   const {commonStyles} = useStyles();
-  const {handleChange, handleBlur, isSubmitting} = useFormikContext();
-  const [field, meta, helpers] = useField<string>(props.name);
+  const {handleChange, handleBlur} = useFormikContext();
+  const [field] = useField<string>(props.name);
   return (
     <Field name={props.name}>
       {() => (

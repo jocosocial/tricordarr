@@ -57,9 +57,7 @@ export const ScheduleHelpScreen = () => {
           />
         </PaddedContentView>
         <PaddedContentView>
-          <HelpHeaderText>
-            Filtering
-          </HelpHeaderText>
+          <HelpHeaderText>Filtering</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>
@@ -73,9 +71,7 @@ export const ScheduleHelpScreen = () => {
           </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <HelpHeaderText>
-            NowTM
-          </HelpHeaderText>
+          <HelpHeaderText>NowTM</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>
@@ -84,9 +80,7 @@ export const ScheduleHelpScreen = () => {
           </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <HelpHeaderText>
-            Favorite/Follow
-          </HelpHeaderText>
+          <HelpHeaderText>Favorite/Follow</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>
@@ -100,13 +94,12 @@ export const ScheduleHelpScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>
-            All events are given a corresponding forum. You can use that to discuss the event by tapping the forum button in the Menu.
+            All events are given a corresponding forum. You can use that to discuss the event by tapping the forum
+            button in the Menu.
           </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <HelpHeaderText>
-            LFG Integration
-          </HelpHeaderText>
+          <HelpHeaderText>LFG Integration</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>
@@ -114,9 +107,7 @@ export const ScheduleHelpScreen = () => {
           </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <HelpHeaderText>
-            Your Day Today
-          </HelpHeaderText>
+          <HelpHeaderText>Your Day Today</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
           <HelpParagraphText>

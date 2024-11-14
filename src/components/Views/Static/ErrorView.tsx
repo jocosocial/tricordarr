@@ -1,8 +1,7 @@
 import React from 'react';
-import {Linking, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {AppView} from '../AppView';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {AppIcon} from '../../Icons/AppIcon';

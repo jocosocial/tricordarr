@@ -64,7 +64,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
     );
   };
 
-  const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {};
+  const onPostSubmit = () => null;
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = () => {

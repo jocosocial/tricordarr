@@ -16,7 +16,7 @@ interface DatePickerFieldProps {
 
 export const DatePickerField = ({name, limitRange = true}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
-  const [field, meta, helpers] = useField<Date>(name);
+  const [field] = useField<Date>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();

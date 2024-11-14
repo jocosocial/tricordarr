@@ -1,5 +1,5 @@
 import {useContext, createContext, Dispatch, SetStateAction} from 'react';
-import {FezData, FezPostData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
 import {FezListActionsType} from '../../Reducers/Fez/FezListReducers';
 import {FezPostsActionsType} from '../../Reducers/Fez/FezPostsReducers';
 

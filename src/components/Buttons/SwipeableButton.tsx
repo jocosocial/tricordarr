@@ -34,7 +34,7 @@ export const SwipeableButton = (props: SwipeableButtonProps) => {
       ...(props.textStyle as object),
     },
     icon: {
-      color: props.disabled ? theme.colors.onSurfaceDisabled : props.iconColor || theme.colors.onBackground
+      color: props.disabled ? theme.colors.onSurfaceDisabled : props.iconColor || theme.colors.onBackground,
     },
   });
   return (

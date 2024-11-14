@@ -26,9 +26,14 @@ export const ConnectionDisruptedView = () => {
   };
 
   return (
-    <TouchableOpacity style={styles.headerView} onPress={onPress} disabled={commonRoute.name === CommonStackComponents.configServerUrl}>
+    <TouchableOpacity
+      style={styles.headerView}
+      onPress={onPress}
+      disabled={commonRoute.name === CommonStackComponents.configServerUrl}>
       <Text style={styles.headerText}>Connection Disrupted</Text>
-      <Text variant={'labelSmall'} style={commonStyles.errorContainer}>Tap here for more information</Text>
+      <Text variant={'labelSmall'} style={commonStyles.errorContainer}>
+        Tap here for more information
+      </Text>
     </TouchableOpacity>
   );
 };

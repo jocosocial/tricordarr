@@ -1,7 +1,6 @@
 import {Modal} from 'react-native-paper';
 import React from 'react';
 import {useModal} from '../Context/Contexts/ModalContext';
-import {useStyles} from '../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../styles/Theme';
 import {commonStyles} from '../../styles';
 

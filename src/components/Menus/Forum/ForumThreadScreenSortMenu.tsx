@@ -19,7 +19,10 @@ export const ForumThreadScreenSortMenu = () => {
       active={!!forumSortOrder || !!forumSortDirection}
       iconName={AppIcons.sort}
       onPress={openMenu}
-      onLongPress={() => setForumSortOrder(undefined)}
+      onLongPress={() => {
+        setForumSortOrder(undefined);
+        setForumSortDirection(undefined);
+      }}
     />
   );
 

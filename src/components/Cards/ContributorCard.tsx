@@ -27,7 +27,7 @@ export const ContributorCard = (props: ContributorCardProps) => {
     },
     card: {
       ...commonStyles.marginBottomSmall,
-    }
+    },
   });
 
   return (

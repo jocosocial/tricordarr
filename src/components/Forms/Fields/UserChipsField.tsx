@@ -24,7 +24,7 @@ export const UserChipsField = ({
 }: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
-  const [field, meta, helpers] = useField<UserHeader[]>(name);
+  const [field, _, helpers] = useField<UserHeader[]>(name);
 
   const styles = {
     parentContainer: [],

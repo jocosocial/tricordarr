@@ -71,7 +71,7 @@ export interface AppConfig {
 }
 
 const defaultAppConfig: AppConfig = {
-  serverUrl: 'http://joco.hollandamerica.com', // This uses the deprecated URL so we can be sure its overridden later.
+  serverUrl: '',
   urlPrefix: '/api/v3',
   enableBackgroundWorker: true,
   notificationPollInterval: 120000, // 2 minutes

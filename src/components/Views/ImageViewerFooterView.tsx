@@ -15,7 +15,7 @@ interface ImageViewerFooterViewProps {
  * VirtualizedList ref. The module also looks abandoned so this may need to change some day.
  * So I totally abandoned that thought and just displayed metadata instead.
  */
-export const ImageViewerFooterView = ({currentIndex, setImageIndex, viewerImages}: ImageViewerFooterViewProps) => {
+export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     footerContainer: {

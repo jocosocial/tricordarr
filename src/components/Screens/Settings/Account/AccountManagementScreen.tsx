@@ -47,9 +47,11 @@ export const AccountManagementScreen = ({navigation}: Props) => {
               <MinorActionListItem
                 title={'Create Alt Account'}
                 icon={AppIcons.altAccount}
-                onPress={() => navigation.push(CommonStackComponents.siteUIScreen, {
-                  resource: 'createAltAccount',
-                })}
+                onPress={() =>
+                  navigation.push(CommonStackComponents.siteUIScreen, {
+                    resource: 'createAltAccount',
+                  })
+                }
               />
             </ListSection>
           )}

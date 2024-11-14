@@ -417,7 +417,10 @@ export namespace DailyThemeData {
         if (cruiseDayIndex >= cruiseLength - 1) {
           todaysTheme = {
             themeID: 'default_theme_after',
-            title: `${cruiseDayIndex - cruiseLength + 1} ${pluralize('day', cruiseDayIndex - cruiseLength + 1)} after boat`,
+            title: `${cruiseDayIndex - cruiseLength + 1} ${pluralize(
+              'day',
+              cruiseDayIndex - cruiseLength + 1,
+            )} after boat`,
             info: "JoCo Cruise has ended. Hope you're enjoying being back in the real world.",
             cruiseDay: cruiseDayIndex,
           };

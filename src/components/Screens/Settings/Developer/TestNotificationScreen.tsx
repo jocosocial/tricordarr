@@ -8,7 +8,6 @@ import {AppView} from '../../../Views/AppView';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {generateContentNotification} from '../../../../libraries/Notifications/Content';
 import {eventChannel} from '../../../../libraries/Notifications/Channels';
-import {NotificationType} from '@notifee/react-native/dist/utils';
 import {NotificationTypeData} from '../../../../libraries/Structs/SocketStructs';
 import {PressAction} from '../../../../libraries/Enums/Notifications';
 

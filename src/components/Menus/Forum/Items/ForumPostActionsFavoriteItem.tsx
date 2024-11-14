@@ -2,8 +2,6 @@ import {Menu} from 'react-native-paper';
 import React from 'react';
 import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {useForumPostBookmarkMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations';
-import {useTwitarr} from '../../../Context/Contexts/TwitarrContext';
-import {ForumPostListActions} from '../../../Reducers/Forum/ForumPostListReducer';
 import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {useQueryClient} from '@tanstack/react-query';
@@ -34,7 +32,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData}: ForumPostAc
             await Promise.all([
               queryClient.invalidateQueries([`/forum/${forumData.forumID}`]),
               queryClient.invalidateQueries([`/forum/${forumData.forumID}/pinnedposts`]),
-            ])
+            ]);
           }
         },
       },

@@ -12,11 +12,7 @@ interface ForumPostActionsModerateItemProps {
   navigation: NativeStackNavigationProp<CommonStackParamList>;
 }
 
-export const ForumPostActionsModerateItem = ({
-  forumPost,
-  closeMenu,
-  navigation,
-}: ForumPostActionsModerateItemProps) => {
+export const ForumPostActionsModerateItem = ({forumPost, closeMenu, navigation}: ForumPostActionsModerateItemProps) => {
   const {hasModerator} = usePrivilege();
 
   if (!hasModerator) {

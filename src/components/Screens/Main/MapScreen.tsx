@@ -10,10 +10,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ShipDecks} from '../../../libraries/Ship';
 import {ListTitleView} from '../../Views/ListTitleView';
 import {MapIndicatorView} from '../../Views/MapIndicatorView';
-import FastImage from 'react-native-fast-image';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
-import {AppFastImage} from '../../Images/AppFastImage.tsx';
-import tricordarr from '../../../../assets/PlayStore/tricordarr.jpg';
 import {encode as base64_encode} from 'base-64';
 import {AppImage} from '../../Images/AppImage.tsx';
 

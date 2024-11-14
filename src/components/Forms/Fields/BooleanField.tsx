@@ -29,7 +29,7 @@ export const BooleanField = ({
 }: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
-  const [field, meta, helpers] = useField<boolean>(name);
+  const [field] = useField<boolean>(name);
   const {setFieldValue} = useFormikContext();
 
   const onPressDefault = () => {
