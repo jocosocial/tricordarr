@@ -154,7 +154,11 @@ export const ForumThreadFlatList = ({
         ListHeaderComponent={renderListHeader}
         ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
-        onEndReachedThreshold={10}
+        // onEndReachedThreshold is measured in units of visible area.
+        // So visible area of the list is 1.0. Do the maths from there.
+        // At a standard page size of 50 it is safe to aggressively
+        // load next pages.
+        onEndReachedThreshold={5}
         estimatedItemSize={170}
         extraData={[enableSelection]}
       />
