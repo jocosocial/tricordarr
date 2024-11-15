@@ -68,7 +68,10 @@ export const ForumThreadScreenBase = ({
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(
+    data?.pages[0].categoryID,
+    hasNextPage ? undefined : data?.pages[0].forumID,
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -139,12 +142,9 @@ export const ForumThreadScreenBase = ({
       console.log(
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
-      // @TODO this is incorrectly causing unread loads to fail.
-      // Disabling until it can be fixed
-      console.warn('Mark as read us broken');
-      // invalidationQueryKeys.map(key => {
-      //   queryClient.invalidateQueries(key);
-      // });
+      invalidationQueryKeys.map(key => {
+        queryClient.invalidateQueries(key);
+      });
     }
   }, [forumData, queryClient, forumListData, invalidationQueryKeys]);
 
@@ -190,6 +190,26 @@ export const ForumThreadScreenBase = ({
     return <LoadingView />;
   }
 
+  console.log('There are', data.pages.length, 'pages');
+  data.pages.forEach(p => console.log(p.paginator));
+
+  const getInitialScrollIndex = (pages: ForumData[]) => {
+    // Can't get the index if no pages of data.
+    if (pages.length <= 0) {
+      return 0;
+    }
+    // Last page paginator start value is where we want to target.
+    // But paginator.start is the "post index" in the entire server array
+    // of posts. Not the array of the data that we have here.
+    let pagedPostsCount = 0;
+    pages.forEach(page => (pagedPostsCount += page.paginator.limit));
+
+    const pagedStart = pages[pages.length - 1].paginator.start;
+    return Math.max(pagedStart - pagedPostsCount, 0);
+  };
+
+  console.log(forumListData?.postCount === forumListData?.readCount);
+
   return (
     <AppView>
       <PostAsUserBanner />
@@ -207,6 +227,7 @@ export const ForumThreadScreenBase = ({
         getListHeader={getListHeader}
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
+        initialScrollIndex={invertList ? undefined : getInitialScrollIndex(data.pages)}
       />
       {(!data.pages[0].isLocked || hasModerator) && (
         <ContentPostForm

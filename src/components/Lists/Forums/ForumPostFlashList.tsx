@@ -13,6 +13,7 @@ import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {timeAgo} from '../../../libraries/DateTime.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 
 interface ForumPostFlashListProps {
   postList: PostData[];
@@ -29,6 +30,7 @@ interface ForumPostFlashListProps {
   flatListRef: React.RefObject<FlatList<PostData>>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  initialScrollIndex?: number;
 }
 
 // @TODO the API returns the first page of posts that you have not read.
@@ -100,23 +102,19 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
         return props.getListHeader();
       }
       return (
-        <PaddedContentView padTop={true} invertVertical={props.invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
-            </View>
-          </View>
+        <PaddedContentView padTop={true}>
+          <FlexCenteredContentView>
+            <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     } else if (props.hasPreviousPage) {
       return (
-        <PaddedContentView padTop={true} invertVertical={props.invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
-              <PrimaryActionButton buttonText={'Load Previous'} onPress={props.handleLoadPrevious} />
-            </View>
-          </View>
+        <PaddedContentView padTop={true}>
+          <FlexCenteredContentView>
+            {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
+            <PrimaryActionButton buttonText={'Load Previous'} onPress={props.handleLoadPrevious} />
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
@@ -134,41 +132,57 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
 
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
     return <TimeDivider style={styles.timeDividerStyle} label={label} />;
-  }, [
-    commonStyles.alignItemsCenter,
-    commonStyles.flex,
-    commonStyles.flexRow,
-    props.forumData,
-    props.hasPreviousPage,
-    props.getListHeader,
-    props.invertList,
-    props.itemSeparator,
-    props.postList,
-    styles.timeDividerStyle,
-  ]);
+  }, [props, styles.timeDividerStyle]);
 
   const renderListFooter = useCallback(() => {
-    if (props.hasNextPage) {
+    return (
+      <PaddedContentView padTop={true}>
+        <FlexCenteredContentView>
+          {props.hasNextPage ? (
+            // <Text variant={'labelMedium'}>Loading more...</Text>
+            <PrimaryActionButton buttonText={'Load Next'} onPress={props.handleLoadNext} />
+          ) : (
+            <Text variant={'labelMedium'}>End of thread</Text>
+          )}
+        </FlexCenteredContentView>
+      </PaddedContentView>
+    );
+    // return <SpaceDivider />;
+  }, [props.handleLoadNext, props.hasNextPage]);
+
+  const renderSeparator = useCallback(
+    ({leadingItem}: {leadingItem: PostData}) => {
+      if (!props.itemSeparator) {
+        return <SpaceDivider />;
+      }
+      const leadingIndex = props.postList.indexOf(leadingItem);
+      if (leadingIndex === undefined) {
+        return <TimeDivider style={styles.timeDividerStyle} label={'Leading Unknown?'} />;
+      }
+      const trailingIndex = leadingIndex + 1;
+      const trailingItem = props.postList[trailingIndex];
+      if (!leadingItem.createdAt || !trailingItem.createdAt) {
+        return <SpaceDivider />;
+      }
+      const leadingDate = new Date(leadingItem.createdAt);
+      const trailingDate = new Date(trailingItem.createdAt);
+      const leadingTimeMarker = timeAgo.format(leadingDate, 'round');
+      const trailingTimeMarker = timeAgo.format(trailingDate, 'round');
+      if (leadingTimeMarker === trailingTimeMarker) {
+        return <SpaceDivider />;
+      }
+
       return (
-        <PaddedContentView padTop={true} invertVertical={props.invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
-              <PrimaryActionButton buttonText={'Load Next'} onPress={props.handleLoadNext} />
-            </View>
-          </View>
-        </PaddedContentView>
+        <TimeDivider
+          label={timeAgo.format(props.invertList ? leadingDate : trailingDate, 'round')}
+          style={styles.timeDividerStyle}
+        />
       );
-    }
-    return <SpaceDivider />;
-  }, [
-    commonStyles.alignItemsCenter,
-    commonStyles.flex,
-    commonStyles.flexRow,
-    props.handleLoadNext,
-    props.hasNextPage,
-    props.invertList,
-  ]);
+    },
+    [props.invertList, props.itemSeparator, props.postList, styles.timeDividerStyle],
+  );
+
+  console.log('[ForumPostFlashList.tsx] initial scroll index is', props.initialScrollIndex);
 
   return (
     <>
@@ -179,8 +193,10 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
         overrideProps={{isInvertedVirtualizedList: props.invertList}}
         inverted={props.invertList}
         contentContainerStyle={styles.flatList}
-        ListFooterComponent={renderListFooter}
-        ListHeaderComponent={renderListHeader}
+        ListFooterComponent={props.invertList ? renderListHeader : renderListFooter}
+        ListHeaderComponent={props.invertList ? renderListFooter : renderListHeader}
+        initialScrollIndex={props.initialScrollIndex}
+        ItemSeparatorComponent={renderSeparator}
       />
     </>
   );
