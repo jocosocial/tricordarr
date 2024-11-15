@@ -31,11 +31,12 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         props.scrollToNow();
       } else {
         props.setCruiseDay(item.cruiseDay);
-        headerListRef.current?.scrollToIndex({
-          index: item.cruiseDay - 1,
-          viewPosition: 0.5,
-          animated: true,
-        });
+        // Killing this to prevent the days from jumping the list around.
+        // headerListRef.current?.scrollToIndex({
+        //   index: item.cruiseDay - 1,
+        //   viewPosition: 0.5,
+        //   animated: true,
+        // });
       }
     };
     return (
@@ -57,7 +58,11 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         showsHorizontalScrollIndicator={false}
         estimatedItemSize={75}
         data={cruiseDays}
-        initialScrollIndex={props.selectedCruiseDay - 1} // selectedCruiseDay is event-style 1-indexed.
+        // selectedCruiseDay is event-style 1-indexed.
+        // The Math.min() is needed because the initialScrollIndex will overscroll
+        // the list on load if we get to later in the week. It fixes itself if the user
+        // scrolls but then it jumps.
+        initialScrollIndex={Math.min(props.selectedCruiseDay - 1, 3)}
         extraData={[props.selectedCruiseDay, props.scrollToNow]}
       />
     </View>
