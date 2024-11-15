@@ -21,6 +21,7 @@ import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonS
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
+import {ForumPostFlashList} from '../../../Lists/Forums/ForumPostFlashList.tsx';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -47,9 +48,11 @@ export const ForumThreadScreenBase = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  invertList,
+  // invertList,
   forumListData,
 }: ForumThreadScreenBaseProps) => {
+  const invertList = forumListData?.postCount === forumListData?.readCount;
+  console.log(forumListData);
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
@@ -189,7 +192,7 @@ export const ForumThreadScreenBase = ({
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlatList
+      <ForumPostFlashList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
