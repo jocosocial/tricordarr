@@ -139,9 +139,12 @@ export const ForumThreadScreenBase = ({
       console.log(
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
-      invalidationQueryKeys.map(key => {
-        queryClient.invalidateQueries(key);
-      });
+      // @TODO this is incorrectly causing unread loads to fail.
+      // Disabling until it can be fixed
+      console.warn('Mark as read us broken');
+      // invalidationQueryKeys.map(key => {
+      //   queryClient.invalidateQueries(key);
+      // });
     }
   }, [forumData, queryClient, forumListData, invalidationQueryKeys]);
 

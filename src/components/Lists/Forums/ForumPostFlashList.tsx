@@ -8,6 +8,11 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {FlashList} from '@shopify/flash-list';
 import {LabelDivider} from '../Dividers/LabelDivider.tsx';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
+import {TimeDivider} from '../Dividers/TimeDivider.tsx';
+import {timeAgo} from '../../../libraries/DateTime.ts';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 
 interface ForumPostFlashListProps {
   postList: PostData[];
@@ -89,6 +94,82 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
     ],
   );
 
+  const renderListHeader = useCallback(() => {
+    if (props.forumData && !props.hasPreviousPage) {
+      if (props.getListHeader) {
+        return props.getListHeader();
+      }
+      return (
+        <PaddedContentView padTop={true} invertVertical={props.invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    } else if (props.hasPreviousPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={props.invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
+              <PrimaryActionButton buttonText={'Load Previous'} onPress={props.handleLoadPrevious} />
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    }
+    if (!props.itemSeparator) {
+      return <SpaceDivider />;
+    }
+    if (props.postList.length === 0) {
+      return <TimeDivider style={styles.timeDividerStyle} label={'No posts to display'} />;
+    }
+    const firstDisplayItemIndex = props.invertList ? props.postList.length - 1 : 0;
+    const firstDisplayItem = props.postList[firstDisplayItemIndex];
+    if (!firstDisplayItem.createdAt) {
+      return <SpaceDivider />;
+    }
+
+    let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
+    return <TimeDivider style={styles.timeDividerStyle} label={label} />;
+  }, [
+    commonStyles.alignItemsCenter,
+    commonStyles.flex,
+    commonStyles.flexRow,
+    props.forumData,
+    props.hasPreviousPage,
+    props.getListHeader,
+    props.invertList,
+    props.itemSeparator,
+    props.postList,
+    styles.timeDividerStyle,
+  ]);
+
+  const renderListFooter = useCallback(() => {
+    if (props.hasNextPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={props.invertList}>
+          <View style={[commonStyles.flexRow]}>
+            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+              {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
+              <PrimaryActionButton buttonText={'Load Next'} onPress={props.handleLoadNext} />
+            </View>
+          </View>
+        </PaddedContentView>
+      );
+    }
+    return <SpaceDivider />;
+  }, [
+    commonStyles.alignItemsCenter,
+    commonStyles.flex,
+    commonStyles.flexRow,
+    props.handleLoadNext,
+    props.hasNextPage,
+    props.invertList,
+  ]);
+
   return (
     <>
       <FlashList
@@ -98,6 +179,8 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
         overrideProps={{isInvertedVirtualizedList: props.invertList}}
         inverted={props.invertList}
         contentContainerStyle={styles.flatList}
+        ListFooterComponent={renderListFooter}
+        ListHeaderComponent={renderListHeader}
       />
     </>
   );
