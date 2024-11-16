@@ -223,7 +223,7 @@ export const ForumThreadScreenBase = ({
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlashList
+      <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}

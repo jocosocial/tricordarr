@@ -14,6 +14,8 @@ import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {styleDefaults} from '../../../styles';
+import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -30,6 +32,7 @@ interface ForumPostFlatListProps {
   flatListRef: React.RefObject<FlatList<PostData>>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  initialScrollIndex?: number;
 }
 
 export const ForumPostFlatList = ({
@@ -47,6 +50,7 @@ export const ForumPostFlatList = ({
   getListHeader,
   forumListData,
   hasNextPage,
+  initialScrollIndex,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
@@ -153,21 +157,18 @@ export const ForumPostFlatList = ({
       }
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
-            </View>
-          </View>
+          <FlexCenteredContentView>
+            <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     } else if (hasPreviousPage) {
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading more...</Text>
-            </View>
-          </View>
+          <FlexCenteredContentView>
+            {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
+            <PrimaryActionButton buttonText={'Load Previous'} onPress={handleLoadPrevious} />
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
@@ -186,32 +187,33 @@ export const ForumPostFlatList = ({
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
     return <TimeDivider style={styles.timeDividerStyle} label={label} />;
   }, [
-    commonStyles.alignItemsCenter,
-    commonStyles.flex,
-    commonStyles.flexRow,
     forumData,
     hasPreviousPage,
-    getListHeader,
-    invertList,
     itemSeparator,
     postList,
+    invertList,
     styles.timeDividerStyle,
+    getListHeader,
+    handleLoadPrevious,
   ]);
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading more...</Text>
-            </View>
-          </View>
+          <FlexCenteredContentView>
+            {hasNextPage ? (
+              // <Text variant={'labelMedium'}>Loading more...</Text>
+              <PrimaryActionButton buttonText={'Load Next'} onPress={handleLoadNext} />
+            ) : (
+              <Text variant={'labelMedium'}>End of thread</Text>
+            )}
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
     return <SpaceDivider />;
-  }, [commonStyles.alignItemsCenter, commonStyles.flex, commonStyles.flexRow, hasNextPage, invertList]);
+  }, [handleLoadNext, hasNextPage, invertList]);
 
   // https://github.com/facebook/react-native/issues/25239
   return (
@@ -226,11 +228,12 @@ export const ForumPostFlatList = ({
         ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
         onScroll={handleScroll}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
-        onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
-        onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
-        onEndReachedThreshold={10}
+        // onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
+        // onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
+        // onEndReachedThreshold={10}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
+        // initialScrollIndex={initialScrollIndex}
       />
       {showButton && !hasNextPage && (
         <FloatingScrollButton
