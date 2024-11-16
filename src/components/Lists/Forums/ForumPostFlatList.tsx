@@ -87,7 +87,14 @@ export const ForumPostFlatList = ({
         // index is inverted so the last message in the list is 0.
         // Add one to the readCount so that we render below the message at the readCount.
         // This doesn't do anything with un-inverted lists.
-        return forumListData.postCount - index === forumListData.readCount + 1;
+        // @TODO there is a logic bug here.
+        console.log('postCount', forumListData.postCount);
+        console.log('readCount', forumListData.readCount);
+        console.log('index', index);
+        // index === forumListData.readCount is ignorant of what pages have been loaded.
+        // Do we need to guarantee that all previous pages have been fetched?
+        return index === forumListData.readCount;
+        // return forumListData.postCount - index === forumListData.readCount + 1;
       }
     },
     [forumListData],

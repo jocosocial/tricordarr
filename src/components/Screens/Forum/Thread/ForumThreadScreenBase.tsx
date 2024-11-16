@@ -236,6 +236,7 @@ export const ForumThreadScreenBase = ({
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
         initialScrollIndex={invertList ? undefined : getInitialScrollIndex(data.pages)}
+        forumListData={forumListData}
       />
       {(!data.pages[0].isLocked || hasModerator) && (
         <ContentPostForm
