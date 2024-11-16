@@ -193,6 +193,11 @@ export const ForumThreadScreenBase = ({
   console.log('There are', data.pages.length, 'pages');
   data.pages.forEach(p => console.log(p.paginator));
 
+  /**
+   * This means we need to start "in the middle" of a thread because there could
+   * be read posts and there are definitely unread posts.
+   * @param pages
+   */
   const getInitialScrollIndex = (pages: ForumData[]) => {
     // Can't get the index if no pages of data.
     if (pages.length <= 0) {
@@ -203,9 +208,12 @@ export const ForumThreadScreenBase = ({
     // of posts. Not the array of the data that we have here.
     let pagedPostsCount = 0;
     pages.forEach(page => (pagedPostsCount += page.paginator.limit));
+    console.log('total paged posts', pagedPostsCount);
 
-    const pagedStart = pages[pages.length - 1].paginator.start;
-    return Math.max(pagedStart - pagedPostsCount, 0);
+    const lastPagePaginator = pages[pages.length - 1].paginator;
+    console.log('last page paginator', lastPagePaginator);
+    return pagedPostsCount - lastPagePaginator.limit;
+    // return Math.max(pagedStart - pagedPostsCount, 0);
   };
 
   console.log(forumListData?.postCount === forumListData?.readCount);

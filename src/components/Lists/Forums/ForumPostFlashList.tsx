@@ -183,6 +183,8 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
   );
 
   console.log('[ForumPostFlashList.tsx] initial scroll index is', props.initialScrollIndex);
+  console.log('LIst inverted?', props.invertList);
+  console.log('Maintain View', props.maintainViewPosition);
 
   return (
     <>
@@ -197,6 +199,9 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
         ListHeaderComponent={props.invertList ? renderListFooter : renderListHeader}
         initialScrollIndex={props.initialScrollIndex}
         ItemSeparatorComponent={renderSeparator}
+        // https://github.com/Shopify/flash-list/issues/547
+        // Not implemented. This is critical.
+        maintainVisibleContentPosition={props.maintainViewPosition ? {minIndexForVisible: 1} : undefined}
       />
     </>
   );
