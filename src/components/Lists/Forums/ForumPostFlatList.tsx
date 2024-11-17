@@ -1,6 +1,14 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {
+  FlatList,
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
@@ -100,11 +108,35 @@ export const ForumPostFlatList = ({
     [forumListData],
   );
 
+  const onItemLayout = useCallback(
+    (index: number) => (event: LayoutChangeEvent) => {
+      const {height} = event.nativeEvent.layout;
+      setItemHeights(prevHeights => {
+        if (prevHeights[index] !== height) {
+          const newHeights = {...prevHeights, [index]: height};
+
+          // Update cumulative offsets for all items
+          cumulativeOffsets.current = [];
+          let runningOffset = 0;
+          for (let i = 0; i < postList.length; i++) {
+            const itemHeight = newHeights[i] || 50; // Default height for unmeasured items
+            cumulativeOffsets.current[i] = runningOffset;
+            runningOffset += itemHeight;
+          }
+
+          return newHeights;
+        }
+        return prevHeights;
+      });
+    },
+    [postList.length],
+  );
+
   const renderItem = useCallback(
     ({item, index}: {item: PostData; index: number}) => {
       const enablePinnedPosts = hasModerator || forumData?.creator.userID === profilePublicData?.header.userID;
       return (
-        <View style={styles.postContainerView}>
+        <View style={styles.postContainerView} onLayout={onItemLayout(index)}>
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <ForumPostListItem
             postData={item}
@@ -117,11 +149,12 @@ export const ForumPostFlatList = ({
     },
     [
       hasModerator,
+      forumData,
       profilePublicData?.header.userID,
       styles.postContainerView,
+      onItemLayout,
       showNewDivider,
       enableShowInThread,
-      forumData,
     ],
   );
 
@@ -222,6 +255,15 @@ export const ForumPostFlatList = ({
     return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
 
+  const [itemHeights, setItemHeights] = useState<Record<number, number>>({});
+  const cumulativeOffsets = useRef<number[]>([]);
+
+  const getItemLayout = (_data: PostData[], index: number) => {
+    const offset = cumulativeOffsets.current[index] ?? 0;
+    const length = itemHeights[index] ?? 50; // Default height for unmeasured items
+    return {length, offset, index};
+  };
+
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
@@ -240,7 +282,22 @@ export const ForumPostFlatList = ({
         // onEndReachedThreshold={10}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
+        //  ERROR  Invariant Violation: scrollToIndex should be used in conjunction with
+        //  getItemLayout or onScrollToIndexFailed, otherwise there is no way to know the
+        //  location of offscreen indices or handle failures., js engine: hermes
         // initialScrollIndex={initialScrollIndex}
+        initialScrollIndex={0}
+        // onScrollToIndexFailed={info => {
+        //   // Log the failure
+        //   console.warn('Scroll to index failed:', info);
+        //
+        //   // Scroll to a closer valid index
+        //   flatListRef.current?.scrollToIndex({
+        //     index: Math.min(info.highestMeasuredFrameIndex, info.index),
+        //     animated: true,
+        //   });
+        // }}
+        // getItemLayout={getItemLayout}
       />
       {showButton && !hasNextPage && (
         <FloatingScrollButton
