@@ -203,21 +203,21 @@ export const ForumPostFlatList = ({
   ]);
 
   const renderListFooter = useCallback(() => {
-    if (hasNextPage) {
-      return (
-        <PaddedContentView padTop={true} invertVertical={invertList}>
-          <FlexCenteredContentView>
-            {hasNextPage ? (
-              // <Text variant={'labelMedium'}>Loading more...</Text>
-              <PrimaryActionButton buttonText={'Load Next'} onPress={handleLoadNext} />
-            ) : (
-              <Text variant={'labelMedium'}>End of thread</Text>
-            )}
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
-    }
-    return <SpaceDivider />;
+    // if (hasNextPage) {
+    return (
+      <PaddedContentView padTop={true} invertVertical={invertList}>
+        <FlexCenteredContentView>
+          {hasNextPage ? (
+            // <Text variant={'labelMedium'}>Loading more...</Text>
+            <PrimaryActionButton buttonText={'Load Next'} onPress={handleLoadNext} />
+          ) : (
+            <Text variant={'labelMedium'}>End of thread</Text>
+          )}
+        </FlexCenteredContentView>
+      </PaddedContentView>
+    );
+    // }
+    // return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
 
   // https://github.com/facebook/react-native/issues/25239

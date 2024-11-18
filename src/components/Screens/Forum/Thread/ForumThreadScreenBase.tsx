@@ -50,8 +50,7 @@ export const ForumThreadScreenBase = ({
   // invertList,
   forumListData,
 }: ForumThreadScreenBaseProps) => {
-  // const invertList = forumListData?.postCount === forumListData?.readCount;
-  const invertList = false;
+  const invertList = forumListData?.postCount === forumListData?.readCount;
   console.log(forumListData);
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
