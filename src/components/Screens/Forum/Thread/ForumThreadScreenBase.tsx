@@ -21,6 +21,7 @@ import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonS
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
+import {ForumPostFlashList} from '../../../Lists/Forums/ForumPostFlashList.tsx';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -50,7 +51,8 @@ export const ForumThreadScreenBase = ({
   // invertList,
   forumListData,
 }: ForumThreadScreenBaseProps) => {
-  const invertList = forumListData?.postCount === forumListData?.readCount;
+  // const invertList = forumListData?.postCount === forumListData?.readCount;
+  const invertList = false;
   console.log(forumListData);
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
@@ -213,9 +215,16 @@ export const ForumThreadScreenBase = ({
     // console.log('last page paginator', lastPagePaginator);
     // return pagedPostsCount - lastPagePaginator.limit;
     // // return Math.max(pagedStart - pagedPostsCount, 0);
+    if (!forumListData) {
+      return 0;
+    }
     console.log('initial scrollIndex', forumListData?.readCount);
     console.log('inverted', invertList);
-    return forumListData?.readCount;
+    if (forumListData.readCount === forumListData.postCount) {
+      return forumListData.postCount - 1;
+    }
+    return forumListData.readCount;
+    // return 0;
   };
 
   // console.log(forumListData?.postCount === forumListData?.readCount);
@@ -225,7 +234,7 @@ export const ForumThreadScreenBase = ({
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlatList
+      <ForumPostFlashList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}

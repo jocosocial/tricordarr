@@ -201,7 +201,7 @@ export const ForumPostFlashList = (props: ForumPostFlashListProps) => {
         ItemSeparatorComponent={renderSeparator}
         // https://github.com/Shopify/flash-list/issues/547
         // Not implemented. This is critical.
-        maintainVisibleContentPosition={props.maintainViewPosition ? {minIndexForVisible: 1} : undefined}
+        // maintainVisibleContentPosition={props.maintainViewPosition ? {minIndexForVisible: 1} : undefined}
       />
     </>
   );
