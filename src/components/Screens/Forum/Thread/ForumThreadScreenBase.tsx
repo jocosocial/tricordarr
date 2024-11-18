@@ -220,11 +220,11 @@ export const ForumThreadScreenBase = ({
     }
     console.log('initial scrollIndex', forumListData?.readCount);
     console.log('inverted', invertList);
-    if (forumListData.readCount === forumListData.postCount) {
-      return forumListData.postCount - 1;
-    }
-    return forumListData.readCount;
-    // return 0;
+    // if (forumListData.readCount === forumListData.postCount) {
+    //   return forumListData.postCount - 1;
+    // }
+    // return forumListData.readCount;
+    return 0;
   };
 
   // console.log(forumListData?.postCount === forumListData?.readCount);

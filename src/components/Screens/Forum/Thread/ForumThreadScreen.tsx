@@ -35,48 +35,21 @@ export const ForumThreadScreen = ({route}: Props) => {
   //   setLoadedPrevious(true);
   // }, [fetchPreviousPage, hasPreviousPage]);
   const fetchAllPages = useCallback(async () => {
-    if (loadedPrevious) {
-      return;
+    console.log('[ForumThreadScreen.tsx] fetchAllPages start');
+    if (hasNextPage) {
+      console.log('[ForumThreadScreen.tsx] fetchAllPages hasNextPage');
+      await fetchNextPage();
     }
-
-    // Flag to prevent recursive fetching
-    setLoadedPrevious(false);
-
-    try {
-      // Fetch all previous pages
-      // while (true) {
-      //   console.log('fetch previous');
-      //   const canFetchPrevious = hasPreviousPage && !isFetchingPreviousPage;
-      //   if (!canFetchPrevious) {
-      //     break;
-      //   }
-      //   await fetchPreviousPage();
-      // }
-
-      // Fetch all next pages
-      // while (true) {
-      //   console.log('fetch next');
-      //   const canFetchNext = hasNextPage && !isFetchingNextPage;
-      //   if (!canFetchNext) {
-      //     break;
-      //   }
-      //   await fetchNextPage();
-      // }
-
-      setLoadedPrevious(true); // Mark as done fetching
-    } catch (error) {
-      console.error('Error fetching pages:', error);
-      setLoadedPrevious(false); // Reset to allow retries if needed
+    if (hasPreviousPage) {
+      console.log('[ForumThreadScreen.tsx] fetchAllPages hasPreviousPage');
+      await fetchPreviousPage();
     }
-  }, [
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    loadedPrevious,
-  ]);
+    if (!hasNextPage && !hasPreviousPage) {
+      console.log('[ForumThreadScreen.tsx] fetchAllPages setLoaded ready');
+      setLoadedPrevious(true);
+    }
+    console.log('[ForumThreadScreen.tsx] fetchAllPages end');
+  }, [fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage]);
 
   useEffect(() => {
     console.log('[ForumThreadScreen.tsx] useEffect');
