@@ -21,7 +21,6 @@ import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonS
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
-import {ForumPostFlashList} from '../../../Lists/Forums/ForumPostFlashList.tsx';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -199,24 +198,27 @@ export const ForumThreadScreenBase = ({
    * @param pages
    */
   const getInitialScrollIndex = (pages: ForumData[]) => {
-    // Can't get the index if no pages of data.
-    if (pages.length <= 0) {
-      return 0;
-    }
-    // Last page paginator start value is where we want to target.
-    // But paginator.start is the "post index" in the entire server array
-    // of posts. Not the array of the data that we have here.
-    let pagedPostsCount = 0;
-    pages.forEach(page => (pagedPostsCount += page.paginator.limit));
-    console.log('total paged posts', pagedPostsCount);
-
-    const lastPagePaginator = pages[pages.length - 1].paginator;
-    console.log('last page paginator', lastPagePaginator);
-    return pagedPostsCount - lastPagePaginator.limit;
-    // return Math.max(pagedStart - pagedPostsCount, 0);
+    // // Can't get the index if no pages of data.
+    // if (pages.length <= 0) {
+    //   return 0;
+    // }
+    // // Last page paginator start value is where we want to target.
+    // // But paginator.start is the "post index" in the entire server array
+    // // of posts. Not the array of the data that we have here.
+    // let pagedPostsCount = 0;
+    // pages.forEach(page => (pagedPostsCount += page.paginator.limit));
+    // console.log('total paged posts', pagedPostsCount);
+    //
+    // const lastPagePaginator = pages[pages.length - 1].paginator;
+    // console.log('last page paginator', lastPagePaginator);
+    // return pagedPostsCount - lastPagePaginator.limit;
+    // // return Math.max(pagedStart - pagedPostsCount, 0);
+    console.log('initial scrollIndex', forumListData?.readCount);
+    console.log('inverted', invertList);
+    return forumListData?.readCount;
   };
 
-  console.log(forumListData?.postCount === forumListData?.readCount);
+  // console.log(forumListData?.postCount === forumListData?.readCount);
 
   return (
     <AppView>

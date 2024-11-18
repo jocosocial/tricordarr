@@ -96,9 +96,9 @@ export const ForumPostFlatList = ({
         // Add one to the readCount so that we render below the message at the readCount.
         // This doesn't do anything with un-inverted lists.
         // @TODO there is a logic bug here.
-        console.log('postCount', forumListData.postCount);
-        console.log('readCount', forumListData.readCount);
-        console.log('index', index);
+        // console.log('postCount', forumListData.postCount);
+        // console.log('readCount', forumListData.readCount);
+        // console.log('index', index);
         // index === forumListData.readCount is ignorant of what pages have been loaded.
         // Do we need to guarantee that all previous pages have been fetched?
         return index === forumListData.readCount;
@@ -282,11 +282,14 @@ export const ForumPostFlatList = ({
         // onEndReachedThreshold={10}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
-        //  ERROR  Invariant Violation: scrollToIndex should be used in conjunction with
-        //  getItemLayout or onScrollToIndexFailed, otherwise there is no way to know the
-        //  location of offscreen indices or handle failures., js engine: hermes
+        // ERROR  Invariant Violation: scrollToIndex should be used in conjunction with
+        // getItemLayout or onScrollToIndexFailed, otherwise there is no way to know the
+        // location of offscreen indices or handle failures., js engine: hermes
+        // This applies to initialScrollIndex as well!
+
         // initialScrollIndex={initialScrollIndex}
-        initialScrollIndex={0}
+        // onScrollToIndexFailed={() => console.warn('scroll failed')}
+        // initialScrollIndex={0}
         // onScrollToIndexFailed={info => {
         //   // Log the failure
         //   console.warn('Scroll to index failed:', info);
