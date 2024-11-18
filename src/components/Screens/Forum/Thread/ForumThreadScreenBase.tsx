@@ -21,7 +21,6 @@ import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonS
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
-import {ForumPostFlashList} from '../../../Lists/Forums/ForumPostFlashList.tsx';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -194,47 +193,12 @@ export const ForumThreadScreenBase = ({
   console.log('There are', data.pages.length, 'pages');
   data.pages.forEach(p => console.log(p.paginator));
 
-  /**
-   * This means we need to start "in the middle" of a thread because there could
-   * be read posts and there are definitely unread posts.
-   * @param pages
-   */
-  const getInitialScrollIndex = (pages: ForumData[]) => {
-    // // Can't get the index if no pages of data.
-    // if (pages.length <= 0) {
-    //   return 0;
-    // }
-    // // Last page paginator start value is where we want to target.
-    // // But paginator.start is the "post index" in the entire server array
-    // // of posts. Not the array of the data that we have here.
-    // let pagedPostsCount = 0;
-    // pages.forEach(page => (pagedPostsCount += page.paginator.limit));
-    // console.log('total paged posts', pagedPostsCount);
-    //
-    // const lastPagePaginator = pages[pages.length - 1].paginator;
-    // console.log('last page paginator', lastPagePaginator);
-    // return pagedPostsCount - lastPagePaginator.limit;
-    // // return Math.max(pagedStart - pagedPostsCount, 0);
-    if (!forumListData) {
-      return 0;
-    }
-    console.log('initial scrollIndex', forumListData?.readCount);
-    console.log('inverted', invertList);
-    // if (forumListData.readCount === forumListData.postCount) {
-    //   return forumListData.postCount - 1;
-    // }
-    // return forumListData.readCount;
-    return 0;
-  };
-
-  // console.log(forumListData?.postCount === forumListData?.readCount);
-
   return (
     <AppView>
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlashList
+      <ForumPostFlatList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
@@ -246,7 +210,6 @@ export const ForumThreadScreenBase = ({
         getListHeader={getListHeader}
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
-        initialScrollIndex={invertList ? undefined : getInitialScrollIndex(data.pages)}
         forumListData={forumListData}
       />
       {(!data.pages[0].isLocked || hasModerator) && (

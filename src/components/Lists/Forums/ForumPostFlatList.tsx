@@ -1,13 +1,5 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {
-  FlatList,
-  LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  RefreshControlProps,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -40,7 +32,6 @@ interface ForumPostFlatListProps {
   flatListRef: React.RefObject<FlatList<PostData>>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
-  initialScrollIndex?: number;
 }
 
 export const ForumPostFlatList = ({
@@ -58,7 +49,6 @@ export const ForumPostFlatList = ({
   getListHeader,
   forumListData,
   hasNextPage,
-  initialScrollIndex,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
@@ -108,35 +98,11 @@ export const ForumPostFlatList = ({
     [forumListData],
   );
 
-  const onItemLayout = useCallback(
-    (index: number) => (event: LayoutChangeEvent) => {
-      const {height} = event.nativeEvent.layout;
-      setItemHeights(prevHeights => {
-        if (prevHeights[index] !== height) {
-          const newHeights = {...prevHeights, [index]: height};
-
-          // Update cumulative offsets for all items
-          cumulativeOffsets.current = [];
-          let runningOffset = 0;
-          for (let i = 0; i < postList.length; i++) {
-            const itemHeight = newHeights[i] || 50; // Default height for unmeasured items
-            cumulativeOffsets.current[i] = runningOffset;
-            runningOffset += itemHeight;
-          }
-
-          return newHeights;
-        }
-        return prevHeights;
-      });
-    },
-    [postList.length],
-  );
-
   const renderItem = useCallback(
     ({item, index}: {item: PostData; index: number}) => {
       const enablePinnedPosts = hasModerator || forumData?.creator.userID === profilePublicData?.header.userID;
       return (
-        <View style={styles.postContainerView} onLayout={onItemLayout(index)}>
+        <View style={styles.postContainerView}>
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <ForumPostListItem
             postData={item}
@@ -152,7 +118,6 @@ export const ForumPostFlatList = ({
       forumData,
       profilePublicData?.header.userID,
       styles.postContainerView,
-      onItemLayout,
       showNewDivider,
       enableShowInThread,
     ],
@@ -254,15 +219,6 @@ export const ForumPostFlatList = ({
     }
     return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
-
-  const [itemHeights, setItemHeights] = useState<Record<number, number>>({});
-  const cumulativeOffsets = useRef<number[]>([]);
-
-  const getItemLayout = (_data: PostData[], index: number) => {
-    const offset = cumulativeOffsets.current[index] ?? 0;
-    const length = itemHeights[index] ?? 50; // Default height for unmeasured items
-    return {length, offset, index};
-  };
 
   // https://github.com/facebook/react-native/issues/25239
   return (
