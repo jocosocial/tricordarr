@@ -98,6 +98,7 @@ export const ForumPostFlatList = ({
   const {hasModerator} = usePrivilege();
   const [itemHeights, setItemHeights] = useState<number[]>([]);
   // const [hasScrolled, setHasScrolled] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
 
   const styles = StyleSheet.create({
     postContainerView: {
@@ -117,7 +118,7 @@ export const ForumPostFlatList = ({
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     // isAtBottom.modify(value => value);
-    console.log(event.nativeEvent);
+    // console.log(event.nativeEvent);
     if (invertList) {
       setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
     } else {
@@ -130,10 +131,14 @@ export const ForumPostFlatList = ({
 
   const handleScrollButtonPress = () => {
     if (invertList) {
+      console.log('[ForumPostFlatList.tsx] scrolling to offset 0');
       flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+      // setShowButton(false);
     } else {
-      flatListRef.current?.scrollToEnd({animated: true});
-      // flatListRef.current?.scrollToOffset({offset: flatListRef.current?.scrollToIndex, animated: true});
+      console.log('[ForumPostFlatList.tsx] scrolling to end');
+      // flatListRef.current?.scrollToEnd({animated: true});
+      flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
+      // setTimeout(() => setShowButton(false), 100);
       // flatListRef.current?.scrollToIndex({
       //   index: postList.length - 1,
       //   animated: true,
@@ -297,45 +302,18 @@ export const ForumPostFlatList = ({
   ]);
 
   const renderListFooter = useCallback(() => {
-    // if (hasNextPage) {
-    return (
-      <PaddedContentView padTop={true} invertVertical={invertList}>
-        <FlexCenteredContentView>
-          {hasNextPage ? (
-            // <Text variant={'labelMedium'}>Loading more...</Text>
+    if (hasNextPage) {
+      return (
+        <PaddedContentView padTop={true} invertVertical={invertList}>
+          <FlexCenteredContentView>
+            {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
             <PrimaryActionButton buttonText={'Load Next'} onPress={handleLoadNext} />
-          ) : (
-            <Text variant={'labelMedium'}>End of thread</Text>
-          )}
-        </FlexCenteredContentView>
-      </PaddedContentView>
-    );
-    // }
-    // return <SpaceDivider />;
+          </FlexCenteredContentView>
+        </PaddedContentView>
+      );
+    }
+    return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
-
-  // const onContentSizeChange = useCallback(
-  //   (height: number, width: number) => {
-  //     console.log('[WEE] onContentSizeChange', height, width);
-  //     if (hasScrolled) {
-  //       console.log('List has scrolled. Skipping additional scroll action.');
-  //       return;
-  //     }
-  //     console.info('SCROLL TO INDEX');
-  //     flatListRef.current?.scrollToIndex({
-  //       index: initialScrollIndex,
-  //       animated: false,
-  //     });
-  //
-  //     if (!hasScrolled) {
-  //       console.log('You have not previously scrolled. Cool. Changing that.');
-  //       setTimeout(() => {
-  //         setHasScrolled(true);
-  //       }, 100);
-  //     }
-  //   },
-  //   [flatListRef, hasScrolled, initialScrollIndex],
-  // );
 
   // @TODO why does this "work" but initialScrollIndex does not
   // const onListLayout = useCallback(() => {
@@ -347,6 +325,10 @@ export const ForumPostFlatList = ({
   //     console.info('scrollToIndex firing', !!flatListRef.current, initialScrollIndex);
   //   }, 100);
   // }, [flatListRef, initialScrollIndex]);
+
+  const onContentSizeChange = (w: number, h: number) => {
+    setContentHeight(h);
+  };
 
   console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
   console.log('[ForumPostFlatList.tsx] item length:', postList.length);
@@ -367,6 +349,7 @@ export const ForumPostFlatList = ({
         ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
         onScroll={handleScroll}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
+        onContentSizeChange={onContentSizeChange}
         // onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         // onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
         // onEndReachedThreshold={10}
@@ -383,11 +366,12 @@ export const ForumPostFlatList = ({
         // regret it at some point.
         initialScrollIndex={initialScrollIndex}
         disableVirtualization={true}
-        // onContentSizeChange={onContentSizeChange}
         onScrollToIndexFailed={info => console.warn('scroll failed', info)}
-        scrollEventThrottle={100}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
+        // Setting scrollEventThrottle to [at least] 100 makes the scroll button disappearance less reliable.
+        // scrollEventThrottle={100}
+        // initialNumToRender={20}
+        // @TODO maxToRenderPerBatch is impacting initialScrollIndex.
+        // maxToRenderPerBatch={20}
         // windowSize={}
         // initialNumToRender={10}
         // maxToRenderPerBatch={}
