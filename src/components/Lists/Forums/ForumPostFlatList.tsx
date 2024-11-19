@@ -1,5 +1,14 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
+import {
+  FlatList,
+  LayoutChangeEvent,
+  LayoutRectangle,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControlProps,
+  StyleSheet,
+  View,
+} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
@@ -32,6 +41,7 @@ interface ForumPostFlatListProps {
   flatListRef: React.RefObject<FlatList<PostData>>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
+  initialScrollIndex?: number;
 }
 
 export const ForumPostFlatList = ({
@@ -49,11 +59,13 @@ export const ForumPostFlatList = ({
   getListHeader,
   forumListData,
   hasNextPage,
+  initialScrollIndex,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
   const {profilePublicData} = useUserData();
   const {hasModerator} = usePrivilege();
+  const [itemLayouts, setItemLayouts] = useState<LayoutRectangle[]>([]);
 
   const styles = StyleSheet.create({
     postContainerView: {
@@ -75,6 +87,27 @@ export const ForumPostFlatList = ({
   const handleScrollButtonPress = () => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
   };
+
+  const getItemHeight = (index: number) => {
+    if (itemLayouts[index] !== undefined) {
+      return itemLayouts[index].height;
+    }
+    return 0;
+  };
+
+  // @TODO factor in separators.
+  const getItemOffset = (index: number) => {
+    if (itemLayouts[index] === undefined) {
+      return 0;
+    }
+    return itemLayouts.slice(0, index).reduce((previousValue, currentItem) => previousValue + currentItem.height, 0);
+  };
+
+  const getItemLayout = (data: ArrayLike<PostData> | null | undefined, index: number) => ({
+    length: getItemHeight(index),
+    offset: getItemOffset(index),
+    index,
+  });
 
   const showNewDivider = useCallback(
     (index: number) => {
@@ -102,7 +135,22 @@ export const ForumPostFlatList = ({
     ({item, index}: {item: PostData; index: number}) => {
       const enablePinnedPosts = hasModerator || forumData?.creator.userID === profilePublicData?.header.userID;
       return (
-        <View style={styles.postContainerView}>
+        <View
+          style={styles.postContainerView}
+          onLayout={event => {
+            // console.log(event);
+            // if (event.nativeEvent === null) {
+            //   console.warn('layout empty?', event.nativeEvent);
+            //   return;
+            // }
+            // Doing this without the variable blows up with a null value. Wonder
+            // if the setter callback is resetting the event context? /shrug.
+            const layout = event.nativeEvent.layout;
+            console.log(layout);
+            setItemLayouts(prevData => {
+              return [...prevData, layout];
+            });
+          }}>
           {showNewDivider(index) && <LabelDivider label={'New'} />}
           <ForumPostListItem
             postData={item}
@@ -220,6 +268,8 @@ export const ForumPostFlatList = ({
     // return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
 
+  console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
+
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
@@ -242,8 +292,8 @@ export const ForumPostFlatList = ({
         // getItemLayout or onScrollToIndexFailed, otherwise there is no way to know the
         // location of offscreen indices or handle failures., js engine: hermes
         // This applies to initialScrollIndex as well!
-
-        // initialScrollIndex={initialScrollIndex}
+        getItemLayout={getItemLayout}
+        initialScrollIndex={initialScrollIndex}
         // onScrollToIndexFailed={() => console.warn('scroll failed')}
         // initialScrollIndex={0}
         // onScrollToIndexFailed={info => {

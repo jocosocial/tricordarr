@@ -192,6 +192,29 @@ export const ForumThreadScreenBase = ({
   console.log('There are', data.pages.length, 'pages');
   data.pages.forEach(p => console.log(p.paginator));
 
+  const getInitialScrollIndex = () => {
+    // Inverted list means that we are starting from the bottom, so the
+    // ISI (InitialScrollIndex) is meaningless.
+    if (invertList) {
+      return undefined;
+    }
+
+    // The forum has been completely read
+    if (forumListData && forumListData.readCount === forumListData.postCount) {
+      // @TODO
+      return undefined;
+    }
+    // The forum has not been completely read. There is going to be a point in
+    // the loaded data that we need to scroll to.
+    if (forumListData && forumListData.readCount !== forumListData.postCount) {
+      // return 2;
+      // ok.... setting this to anything makes nothing show up in the list.
+    }
+
+    // Default answer.
+    return 0;
+  };
+
   return (
     <AppView>
       <PostAsUserBanner />
@@ -210,6 +233,7 @@ export const ForumThreadScreenBase = ({
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
+        initialScrollIndex={getInitialScrollIndex()}
       />
       {(!data.pages[0].isLocked || hasModerator) && (
         <ContentPostForm
