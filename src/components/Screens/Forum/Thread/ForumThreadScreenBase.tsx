@@ -67,10 +67,9 @@ export const ForumThreadScreenBase = ({
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(
-    data?.pages[0].categoryID,
-    hasNextPage ? undefined : data?.pages[0].forumID,
-  );
+  // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
+  // to care about. It's all in the category (ForumListData) queries.
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -142,7 +141,6 @@ export const ForumThreadScreenBase = ({
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
       invalidationQueryKeys.map(key => {
-        // @TODO this is invalidating too much
         queryClient.invalidateQueries(key);
       });
     }
