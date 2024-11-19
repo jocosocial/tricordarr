@@ -180,8 +180,8 @@ export const ForumPostFlatList = ({
         // first page of data that you have. That start is the equivalent
         // of item index 0.
         const loadedStartIndex = forumData.paginator.start;
-        // + 1 to see it without needing the next page. One off at this point.
-        return forumListData.readCount - loadedStartIndex === index + 1;
+        // + 1 to see it without needing the next page.
+        return forumListData.readCount - loadedStartIndex === index;
       }
     },
     [forumData, forumListData],
@@ -270,8 +270,8 @@ export const ForumPostFlatList = ({
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
           <FlexCenteredContentView>
-            {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
-            <PrimaryActionButton buttonText={'Load Previous'} onPress={handleLoadPrevious} />
+            <Text variant={'labelMedium'}>Loading more...</Text>
+            {/*<PrimaryActionButton buttonText={'Load Previous'} onPress={handleLoadPrevious} />*/}
           </FlexCenteredContentView>
         </PaddedContentView>
       );
@@ -290,16 +290,7 @@ export const ForumPostFlatList = ({
 
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
     return <TimeDivider style={styles.timeDividerStyle} label={label} />;
-  }, [
-    forumData,
-    hasPreviousPage,
-    itemSeparator,
-    postList,
-    invertList,
-    styles.timeDividerStyle,
-    getListHeader,
-    handleLoadPrevious,
-  ]);
+  }, [forumData, hasPreviousPage, itemSeparator, postList, invertList, styles.timeDividerStyle, getListHeader]);
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
