@@ -1,15 +1,16 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {
   FlatList,
-  LayoutChangeEvent,
   LayoutRectangle,
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
+  StyleProp,
   StyleSheet,
   View,
+  ViewStyle,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
 import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
@@ -45,6 +46,35 @@ interface ForumPostFlatListProps {
   initialScrollIndex?: number;
 }
 
+// interface InternalItemProps {
+//   viewStyle: StyleProp<ViewStyle>;
+//   onLayout;
+// }
+//
+// const InternalItem = () => {
+//   return (
+//     <View
+//       style={styles.postContainerView}
+//       onLayout={event => {
+//         // Doing this without the variable blows up with a null value. Wonder
+//         // if the setter callback is resetting the event context? /shrug.
+//         const layout = event.nativeEvent.layout;
+//         console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
+//         setItemHeights(prevData => {
+//           return [...prevData, layout.height];
+//         });
+//       }}>
+//       {showNewDivider(index) && <LabelDivider label={'New'} />}
+//       <ForumPostListItem
+//         postData={item}
+//         enableShowInThread={enableShowInThread}
+//         enablePinnedPosts={enablePinnedPosts}
+//         forumData={forumData}
+//       />
+//     </View>
+//   );
+// };
+
 export const ForumPostFlatList = ({
   postList,
   refreshControl,
@@ -66,8 +96,8 @@ export const ForumPostFlatList = ({
   const [showButton, setShowButton] = useState(false);
   const {profilePublicData} = useUserData();
   const {hasModerator} = usePrivilege();
-  const [itemLayouts, setItemLayouts] = useState<LayoutRectangle[]>([]);
-  const [hasScrolled, setHasScrolled] = useState(false);
+  const [itemHeights, setItemHeights] = useState<number[]>([]);
+  // const [hasScrolled, setHasScrolled] = useState(false);
 
   const styles = StyleSheet.create({
     postContainerView: {
@@ -95,18 +125,19 @@ export const ForumPostFlatList = ({
   };
 
   const getItemHeight = (index: number) => {
-    if (itemLayouts[index] !== undefined) {
-      return itemLayouts[index].height;
-    }
-    return 0;
+    // if (itemHeights[index] !== undefined) {
+    //   return itemHeights[index];
+    // }
+    // return 0;
+    return itemHeights[index] || 0;
   };
 
   // @TODO factor in separators.
   const getItemOffset = (index: number) => {
-    if (itemLayouts[index] === undefined) {
+    if (itemHeights[index] === undefined) {
       return 0;
     }
-    return itemLayouts.slice(0, index).reduce((previousValue, currentItem) => previousValue + currentItem.height, 0);
+    return itemHeights.slice(0, index).reduce((previousValue, currentItem) => previousValue + currentItem, 0);
   };
 
   const getItemLayout = (data: ArrayLike<PostData> | null | undefined, index: number) => ({
@@ -148,8 +179,8 @@ export const ForumPostFlatList = ({
             // if the setter callback is resetting the event context? /shrug.
             const layout = event.nativeEvent.layout;
             console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
-            setItemLayouts(prevData => {
-              return [...prevData, layout];
+            setItemHeights(prevData => {
+              return [...prevData, layout.height];
             });
           }}>
           {showNewDivider(index) && <LabelDivider label={'New'} />}
@@ -299,12 +330,13 @@ export const ForumPostFlatList = ({
   return (
     <>
       <FlatList
-        onLayout={() =>
+        onLayout={() => {
           flatListRef.current?.scrollToIndex({
             index: initialScrollIndex,
-            animated: true,
-          })
-        }
+            animated: false,
+          });
+          console.warn('firing onlayout', !!flatListRef.current, initialScrollIndex);
+        }}
         style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -324,10 +356,14 @@ export const ForumPostFlatList = ({
         // location of offscreen indices or handle failures., js engine: hermes
         // This applies to initialScrollIndex as well!
         getItemLayout={getItemLayout}
-        // initialScrollIndex={1}
+        // initialScrollIndex is causing the list to be empty. I do not know why.
+        // initialScrollIndex={initialScrollIndex}
         // onContentSizeChange={onContentSizeChange}
         onScrollToIndexFailed={info => console.warn('scroll failed', info)}
         scrollEventThrottle={100}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        // windowSize={}
         // initialNumToRender={10}
         // maxToRenderPerBatch={}
         // initialScrollIndex={0}
@@ -350,6 +386,16 @@ export const ForumPostFlatList = ({
           displayPosition={forumData ? (forumData.isLocked ? 'bottom' : 'raised') : 'bottom'}
         />
       )}
+      <PrimaryActionButton
+        buttonText={'Derp'}
+        onPress={() => {
+          console.info('WEEEEEEE');
+          flatListRef.current?.scrollToIndex({
+            index: initialScrollIndex,
+            animated: true,
+          });
+        }}
+      />
     </>
   );
 };

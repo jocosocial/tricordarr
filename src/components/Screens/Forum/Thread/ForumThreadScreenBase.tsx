@@ -199,6 +199,8 @@ export const ForumThreadScreenBase = ({
       return undefined;
     }
 
+    const loadedStartIndex = data.pages[0].paginator.start;
+
     // The forum has been completely read
     if (forumListData && forumListData.readCount === forumListData.postCount) {
       // @TODO
@@ -207,8 +209,7 @@ export const ForumThreadScreenBase = ({
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
-      return 5;
-      // ok.... setting this to anything makes nothing show up in the list.
+      return forumListData.readCount - loadedStartIndex - 1;
     }
 
     // Default answer.
