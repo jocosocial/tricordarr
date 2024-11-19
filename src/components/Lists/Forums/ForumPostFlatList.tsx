@@ -350,9 +350,10 @@ export const ForumPostFlatList = ({
         onScroll={handleScroll}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         onContentSizeChange={onContentSizeChange}
-        // onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
+        onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         // onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
-        // onEndReachedThreshold={10}
+        onEndReachedThreshold={1} // 10
+        onStartReachedThreshold={1}
         keyExtractor={(item: PostData) => String(item.postID)}
         ItemSeparatorComponent={renderSeparator}
         // ERROR  Invariant Violation: scrollToIndex should be used in conjunction with
