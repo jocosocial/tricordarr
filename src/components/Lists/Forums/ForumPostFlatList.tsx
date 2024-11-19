@@ -116,12 +116,29 @@ export const ForumPostFlatList = ({
   // const isAtTop = useSharedValue(true);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
     // isAtBottom.modify(value => value);
+    console.log(event.nativeEvent);
+    if (invertList) {
+      setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
+    } else {
+      setShowButton(
+        event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
+          styleDefaults.listScrollThreshold * 2,
+      );
+    }
   };
 
   const handleScrollButtonPress = () => {
-    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+    if (invertList) {
+      flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+    } else {
+      flatListRef.current?.scrollToEnd({animated: true});
+      // flatListRef.current?.scrollToOffset({offset: flatListRef.current?.scrollToIndex, animated: true});
+      // flatListRef.current?.scrollToIndex({
+      //   index: postList.length - 1,
+      //   animated: true,
+      // });
+    }
   };
 
   const getItemHeight = (index: number) => {
@@ -148,24 +165,21 @@ export const ForumPostFlatList = ({
 
   const showNewDivider = useCallback(
     (index: number) => {
-      if (forumListData) {
+      if (forumListData && forumData) {
         if (forumListData.postCount === forumListData.readCount) {
           return false;
         }
-        // index is inverted so the last message in the list is 0.
-        // Add one to the readCount so that we render below the message at the readCount.
-        // This doesn't do anything with un-inverted lists.
-        // @TODO there is a logic bug here.
-        // console.log('postCount', forumListData.postCount);
-        // console.log('readCount', forumListData.readCount);
-        // console.log('index', index);
-        // index === forumListData.readCount is ignorant of what pages have been loaded.
-        // Do we need to guarantee that all previous pages have been fetched?
-        return index === forumListData.readCount;
-        // return forumListData.postCount - index === forumListData.readCount + 1;
+        // loadedStartIndex is the starting post index from the server of the
+        // thread we are viewing. 0 if you've loaded the entire thing.
+        // n if you're somewhere in the middle. Regardless it's from the
+        // first page of data that you have. That start is the equivalent
+        // of item index 0.
+        const loadedStartIndex = forumData.paginator.start;
+        // + 1 to see it without needing the next page. One off at this point.
+        return forumListData.readCount - loadedStartIndex === index + 1;
       }
     },
-    [forumListData],
+    [forumData, forumListData],
   );
 
   const renderItem = useCallback(
@@ -323,20 +337,27 @@ export const ForumPostFlatList = ({
   //   [flatListRef, hasScrolled, initialScrollIndex],
   // );
 
+  // @TODO why does this "work" but initialScrollIndex does not
+  // const onListLayout = useCallback(() => {
+  //   setTimeout(() => {
+  //     flatListRef.current?.scrollToIndex({
+  //       index: initialScrollIndex,
+  //       animated: false,
+  //     });
+  //     console.info('scrollToIndex firing', !!flatListRef.current, initialScrollIndex);
+  //   }, 100);
+  // }, [flatListRef, initialScrollIndex]);
+
   console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
   console.log('[ForumPostFlatList.tsx] item length:', postList.length);
+  console.log('[ForumPostFlatList.tsx] layout heights length:', itemHeights.length);
+  console.log(showButton);
 
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlatList
-        onLayout={() => {
-          flatListRef.current?.scrollToIndex({
-            index: initialScrollIndex,
-            animated: false,
-          });
-          console.warn('firing onlayout', !!flatListRef.current, initialScrollIndex);
-        }}
+        // onLayout={invertList ? undefined : onListLayout}
         style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -356,8 +377,12 @@ export const ForumPostFlatList = ({
         // location of offscreen indices or handle failures., js engine: hermes
         // This applies to initialScrollIndex as well!
         getItemLayout={getItemLayout}
-        // initialScrollIndex is causing the list to be empty. I do not know why.
-        // initialScrollIndex={initialScrollIndex}
+        // Just setting initialScrollIndex is causing the list to be empty. Allegedly this is
+        // because FlatList skips rendering for invisible items.
+        // disableVirtualization={true} made this work, though I feel like I'm going to
+        // regret it at some point.
+        initialScrollIndex={initialScrollIndex}
+        disableVirtualization={true}
         // onContentSizeChange={onContentSizeChange}
         onScrollToIndexFailed={info => console.warn('scroll failed', info)}
         scrollEventThrottle={100}
@@ -379,23 +404,23 @@ export const ForumPostFlatList = ({
         // }}
         // getItemLayout={getItemLayout}
       />
-      {showButton && !hasNextPage && (
+      {showButton && (
         <FloatingScrollButton
-          icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
+          icon={AppIcons.scrollDown}
           onPress={handleScrollButtonPress}
           displayPosition={forumData ? (forumData.isLocked ? 'bottom' : 'raised') : 'bottom'}
         />
       )}
-      <PrimaryActionButton
-        buttonText={'Derp'}
-        onPress={() => {
-          console.info('WEEEEEEE');
-          flatListRef.current?.scrollToIndex({
-            index: initialScrollIndex,
-            animated: true,
-          });
-        }}
-      />
+      {/*<PrimaryActionButton*/}
+      {/*  buttonText={'Derp'}*/}
+      {/*  onPress={() => {*/}
+      {/*    console.info('WEEEEEEE');*/}
+      {/*    flatListRef.current?.scrollToIndex({*/}
+      {/*      index: initialScrollIndex,*/}
+      {/*      animated: true,*/}
+      {/*    });*/}
+      {/*  }}*/}
+      {/*/>*/}
     </>
   );
 };
