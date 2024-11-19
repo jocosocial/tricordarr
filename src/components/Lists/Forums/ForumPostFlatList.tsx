@@ -25,6 +25,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {styleDefaults} from '../../../styles';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -59,13 +60,14 @@ export const ForumPostFlatList = ({
   getListHeader,
   forumListData,
   hasNextPage,
-  initialScrollIndex,
+  initialScrollIndex = 0,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const [showButton, setShowButton] = useState(false);
   const {profilePublicData} = useUserData();
   const {hasModerator} = usePrivilege();
   const [itemLayouts, setItemLayouts] = useState<LayoutRectangle[]>([]);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const styles = StyleSheet.create({
     postContainerView: {
@@ -80,8 +82,12 @@ export const ForumPostFlatList = ({
     },
   });
 
+  // const isAtBottom = useSharedValue(true);
+  // const isAtTop = useSharedValue(true);
+
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
+    // isAtBottom.modify(value => value);
   };
 
   const handleScrollButtonPress = () => {
@@ -138,15 +144,10 @@ export const ForumPostFlatList = ({
         <View
           style={styles.postContainerView}
           onLayout={event => {
-            // console.log(event);
-            // if (event.nativeEvent === null) {
-            //   console.warn('layout empty?', event.nativeEvent);
-            //   return;
-            // }
             // Doing this without the variable blows up with a null value. Wonder
             // if the setter callback is resetting the event context? /shrug.
             const layout = event.nativeEvent.layout;
-            console.log(layout);
+            console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
             setItemLayouts(prevData => {
               return [...prevData, layout];
             });
@@ -268,12 +269,42 @@ export const ForumPostFlatList = ({
     // return <SpaceDivider />;
   }, [handleLoadNext, hasNextPage, invertList]);
 
+  // const onContentSizeChange = useCallback(
+  //   (height: number, width: number) => {
+  //     console.log('[WEE] onContentSizeChange', height, width);
+  //     if (hasScrolled) {
+  //       console.log('List has scrolled. Skipping additional scroll action.');
+  //       return;
+  //     }
+  //     console.info('SCROLL TO INDEX');
+  //     flatListRef.current?.scrollToIndex({
+  //       index: initialScrollIndex,
+  //       animated: false,
+  //     });
+  //
+  //     if (!hasScrolled) {
+  //       console.log('You have not previously scrolled. Cool. Changing that.');
+  //       setTimeout(() => {
+  //         setHasScrolled(true);
+  //       }, 100);
+  //     }
+  //   },
+  //   [flatListRef, hasScrolled, initialScrollIndex],
+  // );
+
   console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
+  console.log('[ForumPostFlatList.tsx] item length:', postList.length);
 
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlatList
+        onLayout={() =>
+          flatListRef.current?.scrollToIndex({
+            index: initialScrollIndex,
+            animated: true,
+          })
+        }
         style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -293,8 +324,12 @@ export const ForumPostFlatList = ({
         // location of offscreen indices or handle failures., js engine: hermes
         // This applies to initialScrollIndex as well!
         getItemLayout={getItemLayout}
-        initialScrollIndex={initialScrollIndex}
-        // onScrollToIndexFailed={() => console.warn('scroll failed')}
+        // initialScrollIndex={1}
+        // onContentSizeChange={onContentSizeChange}
+        onScrollToIndexFailed={info => console.warn('scroll failed', info)}
+        scrollEventThrottle={100}
+        // initialNumToRender={10}
+        // maxToRenderPerBatch={}
         // initialScrollIndex={0}
         // onScrollToIndexFailed={info => {
         //   // Log the failure

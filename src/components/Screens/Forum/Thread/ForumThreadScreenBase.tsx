@@ -207,7 +207,7 @@ export const ForumThreadScreenBase = ({
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
-      // return 2;
+      return 5;
       // ok.... setting this to anything makes nothing show up in the list.
     }
 
