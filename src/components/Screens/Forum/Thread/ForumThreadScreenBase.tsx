@@ -142,6 +142,7 @@ export const ForumThreadScreenBase = ({
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
       invalidationQueryKeys.map(key => {
+        // @TODO this is invalidating too much
         queryClient.invalidateQueries(key);
       });
     }
@@ -208,8 +209,9 @@ export const ForumThreadScreenBase = ({
     }
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
+    // @TODO this is buggy
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
-      return forumListData.readCount - loadedStartIndex - 1;
+      return forumListData.readCount - loadedStartIndex;
     }
 
     // Default answer.
