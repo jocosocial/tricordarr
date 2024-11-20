@@ -18,7 +18,6 @@ import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
@@ -26,13 +25,6 @@ import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
-
-const helpContent = [
-  "Don't just add random people to your LFG. It's not nice.",
-  'If you add people to your LFG, those people should already expect to be added.',
-  "Same idea with removing people: those removed should know why. Don't remove people who signed up just to bump your friend off the waitlist.",
-  'If you schedule a "Drink Like a Pirate" LFG and someone joins and asks if they can come as a ninja instead, you may tell them it\'s more of a pirate thing and you may need to remove them to make room for more pirate participants.',
-];
 
 export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const {lfg, setLfg} = useTwitarr();
@@ -79,15 +71,12 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => {
-              setModalContent(<HelpModalView text={helpContent} />);
-              setModalVisible(true);
-            }}
+            onPress={() => navigation.push(CommonStackComponents.lfgParticipationHelpScreen)}
           />
         </HeaderButtons>
       </View>
     ),
-    [setModalContent, setModalVisible],
+    [navigation],
   );
 
   const handleJoin = useCallback(() => {
