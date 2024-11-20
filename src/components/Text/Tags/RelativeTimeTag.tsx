@@ -63,5 +63,17 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
 
   // https://github.com/catamphetamine/react-time-ago/issues/18
   // No, no. He's right. We is buggy.
-  return <ReactTimeAgo date={Date.parse(date.toString())} locale="en-US" component={StylizedText} />;
+  // "Unknown" props are passed through to the component.
+  // @ts-ignore
+  // https://github.com/Microsoft/TypeScript/issues/19573
+  return (
+    <ReactTimeAgo
+      date={Date.parse(date.toString())}
+      locale="en-US"
+      component={StylizedText}
+      variant={variant}
+      onPress={onPress}
+      onLongPress={onLongPress}
+    />
+  );
 };
