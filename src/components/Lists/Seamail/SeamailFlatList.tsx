@@ -8,13 +8,12 @@ import {styleDefaults} from '../../../styles';
 interface SeamailFlatListProps {
   fezList: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  onEndReached?: ((info: {distanceFromEnd: number}) => void) | null | undefined;
+  onEndReached?: () => void;
   onScrollThreshold?: (condition: boolean) => void;
 }
 
 const ListSeparator = () => <Divider bold={true} />;
 
-// With RN 0.72 if pageSize is too small this doesnt trigger onEndReached. Page size bigger, just fine. WTF?
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const SeamailListMargin = useCallback(() => {
     if (props.fezList.length > 0) {
@@ -31,6 +30,10 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
 
   return (
     <FlatList
+      // With RN 0.72 if pageSize is too small this doesn't trigger onEndReached.
+      // Page size bigger, just fine.
+      // Encountered this with ForumPostFlatList and this time had a way around it.
+      onLayout={props.onEndReached}
       refreshControl={props.refreshControl}
       ItemSeparatorComponent={ListSeparator}
       ListHeaderComponent={SeamailListMargin}
