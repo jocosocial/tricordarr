@@ -51,7 +51,6 @@ export const ForumThreadScreenBase = ({
   forumListData,
 }: ForumThreadScreenBaseProps) => {
   const invertList = forumListData?.postCount === forumListData?.readCount;
-  console.log(forumListData);
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
@@ -196,22 +195,26 @@ export const ForumThreadScreenBase = ({
   const getInitialScrollIndex = () => {
     // Inverted list means that we are starting from the bottom, so the
     // ISI (InitialScrollIndex) is meaningless.
+    // console.log('### getInitialScrollIndex');
+    // console.log('invert', invertList);
+    // console.log('readCount', forumListData?.readCount);
+    // console.log('postCount', forumListData?.postCount);
     if (invertList) {
       return undefined;
     }
 
     const loadedStartIndex = data.pages[0].paginator.start;
+    // console.log('loadedStartIndex', loadedStartIndex);
 
     // The forum has been completely read
     if (forumListData && forumListData.readCount === forumListData.postCount) {
-      // @TODO
       return undefined;
     }
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
     // @TODO this is buggy. Getting an index that is the length.
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
-      return forumListData.readCount - loadedStartIndex;
+      return Math.max(forumListData.readCount - loadedStartIndex - 1, 0);
     }
 
     // Default answer.

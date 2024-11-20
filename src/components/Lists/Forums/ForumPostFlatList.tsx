@@ -168,7 +168,7 @@ export const ForumPostFlatList = ({
             // Doing this without the variable blows up with a null value. Wonder
             // if the setter callback is resetting the event context? /shrug.
             const layout = event.nativeEvent.layout;
-            console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
+            // console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
             setItemHeights(prevData => {
               return [...prevData, layout.height];
             });
@@ -294,8 +294,11 @@ export const ForumPostFlatList = ({
    * this only if the pageSize is small (like <=10).
    */
   const onListLayout = () => {
+    console.log('onListLayout firing', invertList, hasPreviousPage, hasNextPage);
     if (invertList && hasPreviousPage && handleLoadPrevious) {
       handleLoadPrevious();
+    } else if (!invertList && hasNextPage && handleLoadNext) {
+      handleLoadNext();
     }
   };
 
@@ -303,7 +306,7 @@ export const ForumPostFlatList = ({
   return (
     <>
       <FlatList
-        onLayout={invertList ? onListLayout : undefined}
+        onLayout={onListLayout}
         style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -357,7 +360,7 @@ export const ForumPostFlatList = ({
         <FloatingScrollButton
           icon={AppIcons.scrollDown}
           onPress={handleScrollButtonPress}
-          displayPosition={forumData ? (forumData.isLocked ? 'bottom' : 'raised') : 'bottom'}
+          displayPosition={forumData ? (!forumData.isLocked || hasModerator ? 'raised' : 'bottom') : 'bottom'}
         />
       )}
     </>
