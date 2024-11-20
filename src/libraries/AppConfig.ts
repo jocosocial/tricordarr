@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
 import {LfgStackComponents} from './Enums/Navigation';
-import {defaultCacheTime, defaultStaleTime} from './Network/APIClient';
+import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from './Network/APIClient';
 import {ForumSort, ForumSortDirection} from './Enums/ForumSortFilter.ts';
 
 export type PushNotificationConfig = {
@@ -19,6 +19,7 @@ export interface APIClientConfig {
   staleTime: number;
   disruptionThreshold: number;
   requestTimeout: number;
+  imageStaleTime: number;
 }
 
 export interface ScheduleConfig {
@@ -118,6 +119,7 @@ const defaultAppConfig: AppConfig = {
     staleTime: defaultStaleTime,
     disruptionThreshold: 10,
     requestTimeout: 10000,
+    imageStaleTime: defaultImageStaleTime,
   },
   enableEasterEgg: false,
   accessibility: {

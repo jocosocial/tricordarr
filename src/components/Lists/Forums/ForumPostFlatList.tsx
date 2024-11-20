@@ -46,35 +46,6 @@ interface ForumPostFlatListProps {
   initialScrollIndex?: number;
 }
 
-// interface InternalItemProps {
-//   viewStyle: StyleProp<ViewStyle>;
-//   onLayout;
-// }
-//
-// const InternalItem = () => {
-//   return (
-//     <View
-//       style={styles.postContainerView}
-//       onLayout={event => {
-//         // Doing this without the variable blows up with a null value. Wonder
-//         // if the setter callback is resetting the event context? /shrug.
-//         const layout = event.nativeEvent.layout;
-//         console.log(`index=${index}`, 'layout', layout, `post=${item.text.substring(0, 9)}`);
-//         setItemHeights(prevData => {
-//           return [...prevData, layout.height];
-//         });
-//       }}>
-//       {showNewDivider(index) && <LabelDivider label={'New'} />}
-//       <ForumPostListItem
-//         postData={item}
-//         enableShowInThread={enableShowInThread}
-//         enablePinnedPosts={enablePinnedPosts}
-//         forumData={forumData}
-//       />
-//     </View>
-//   );
-// };
-
 export const ForumPostFlatList = ({
   postList,
   refreshControl,
@@ -389,16 +360,6 @@ export const ForumPostFlatList = ({
           displayPosition={forumData ? (forumData.isLocked ? 'bottom' : 'raised') : 'bottom'}
         />
       )}
-      {/*<PrimaryActionButton*/}
-      {/*  buttonText={'Derp'}*/}
-      {/*  onPress={() => {*/}
-      {/*    console.info('WEEEEEEE');*/}
-      {/*    flatListRef.current?.scrollToIndex({*/}
-      {/*      index: initialScrollIndex,*/}
-      {/*      animated: true,*/}
-      {/*    });*/}
-      {/*  }}*/}
-      {/*/>*/}
     </>
   );
 };

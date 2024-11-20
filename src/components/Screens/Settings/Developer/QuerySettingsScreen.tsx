@@ -67,6 +67,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     retry: appConfig.apiClientConfig.retry,
     staleTimeMinutes: appConfig.apiClientConfig.staleTime / 60 / 1000,
     disruptionThreshold: appConfig.apiClientConfig.disruptionThreshold,
+    imageStaleTimeHours: appConfig.apiClientConfig.imageStaleTime / 60 / 60 / 1000,
   };
 
   const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
@@ -82,6 +83,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         retry: values.retry,
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
+        imageStaleTime: values.imageStaleTimeHours * 60 * 60 * 1000,
       },
     });
     helpers.setSubmitting(false);
