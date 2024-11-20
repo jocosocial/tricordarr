@@ -47,7 +47,7 @@ export const MainImageCardCover = () => {
   // 7PM (19:00) Sunset
   // 9PM (21:00) Night
   let sourceImage = NightImage;
-  let viewerIndex = 3;
+  let viewerIndex = 5;
   if (currentHour >= 6 && currentHour <= 15) {
     sourceImage = DayImage;
     viewerIndex = 0;
@@ -56,13 +56,13 @@ export const MainImageCardCover = () => {
     viewerIndex = 1;
   } else if (currentHour >= 17 && currentHour <= 18) {
     sourceImage = MainShowImage;
-    viewerIndex = 4;
+    viewerIndex = 2;
   } else if (currentHour >= 19 && currentHour <= 20) {
     sourceImage = SunsetImage;
-    viewerIndex = 2;
+    viewerIndex = 3;
   } else if (currentHour >= 21 && currentHour <= 23) {
     sourceImage = LateShowImage;
-    viewerIndex = 5;
+    viewerIndex = 4;
   }
 
   const viewerImages: ImageQueryData[] = [
@@ -79,28 +79,28 @@ export const MainImageCardCover = () => {
       base64: base64_encode(HappyHourImage),
     },
     {
-      dataURI: Image.resolveAssetSource(SunsetImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrSunsetImage.jpg',
-      base64: base64_encode(SunsetImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(NightImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrNightImage.jpg',
-      base64: base64_encode(NightImage),
-    },
-    {
       dataURI: Image.resolveAssetSource(MainShowImage).uri,
       mimeType: 'image/jpeg',
       fileName: 'TwitarrMainShowImage.jpg',
       base64: base64_encode(MainShowImage),
     },
     {
+      dataURI: Image.resolveAssetSource(SunsetImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrSunsetImage.jpg',
+      base64: base64_encode(SunsetImage),
+    },
+    {
       dataURI: Image.resolveAssetSource(LateShowImage).uri,
       mimeType: 'image/jpeg',
       fileName: 'TwitarrLateShowImage.jpg',
       base64: base64_encode(LateShowImage),
+    },
+    {
+      dataURI: Image.resolveAssetSource(NightImage).uri,
+      mimeType: 'image/jpeg',
+      fileName: 'TwitarrNightImage.jpg',
+      base64: base64_encode(NightImage),
     },
   ];
 
