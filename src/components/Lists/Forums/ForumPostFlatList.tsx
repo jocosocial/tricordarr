@@ -270,7 +270,7 @@ export const ForumPostFlatList = ({
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
           <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>Loading more...</Text>
+            <Text variant={'labelMedium'}>Loading previous...</Text>
             {/*<PrimaryActionButton buttonText={'Load Previous'} onPress={handleLoadPrevious} />*/}
           </FlexCenteredContentView>
         </PaddedContentView>
@@ -297,40 +297,42 @@ export const ForumPostFlatList = ({
       return (
         <PaddedContentView padTop={true} invertVertical={invertList}>
           <FlexCenteredContentView>
-            {/*<Text variant={'labelMedium'}>Loading more...</Text>*/}
-            <PrimaryActionButton buttonText={'Load Next'} onPress={handleLoadNext} />
+            <Text variant={'labelMedium'}>Loading next...</Text>
           </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
     return <SpaceDivider />;
-  }, [handleLoadNext, hasNextPage, invertList]);
-
-  // @TODO why does this "work" but initialScrollIndex does not
-  // const onListLayout = useCallback(() => {
-  //   setTimeout(() => {
-  //     flatListRef.current?.scrollToIndex({
-  //       index: initialScrollIndex,
-  //       animated: false,
-  //     });
-  //     console.info('scrollToIndex firing', !!flatListRef.current, initialScrollIndex);
-  //   }, 100);
-  // }, [flatListRef, initialScrollIndex]);
+  }, [hasNextPage, invertList]);
 
   const onContentSizeChange = (w: number, h: number) => {
     setContentHeight(h);
   };
+  //
+  // console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
+  // console.log('[ForumPostFlatList.tsx] item length:', postList.length);
+  // console.log('[ForumPostFlatList.tsx] layout heights length:', itemHeights.length);
+  // console.log(showButton);
 
-  console.log('[ForumPostFlatList.tsx] initial scroll index:', initialScrollIndex);
-  console.log('[ForumPostFlatList.tsx] item length:', postList.length);
-  console.log('[ForumPostFlatList.tsx] layout heights length:', itemHeights.length);
-  console.log(showButton);
+  /**
+   * If the forum has been fully read and you only have the latest very small
+   * page, it can leave the list in a situation where the onEndReached hook
+   * never fires. This is particularly problematic in inverted lists because
+   * you can be left with one or two posts and a header that says Loading.
+   * So this jogs its memory. A potential future optimization can be to trigger
+   * this only if the pageSize is small (like <=10).
+   */
+  const onListLayout = () => {
+    if (invertList && hasPreviousPage && handleLoadPrevious) {
+      handleLoadPrevious();
+    }
+  };
 
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlatList
-        // onLayout={invertList ? undefined : onListLayout}
+        onLayout={invertList ? onListLayout : undefined}
         style={styles.flatList}
         ref={flatListRef}
         refreshControl={refreshControl}
@@ -342,7 +344,7 @@ export const ForumPostFlatList = ({
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         onContentSizeChange={onContentSizeChange}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
-        // onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
+        onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
         onEndReachedThreshold={1} // 10
         onStartReachedThreshold={1}
         keyExtractor={(item: PostData) => String(item.postID)}

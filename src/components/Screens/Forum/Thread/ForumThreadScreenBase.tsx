@@ -78,12 +78,14 @@ export const ForumThreadScreenBase = ({
   }, [refetch]);
 
   const handleLoadNext = () => {
+    console.log('handleLoadNext');
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };
   const handleLoadPrevious = () => {
+    console.log('handleLoadPrevious');
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
@@ -207,7 +209,7 @@ export const ForumThreadScreenBase = ({
     }
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
-    // @TODO this is buggy
+    // @TODO this is buggy. Getting an index that is the length.
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
       return forumListData.readCount - loadedStartIndex;
     }
