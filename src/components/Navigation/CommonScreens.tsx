@@ -56,6 +56,7 @@ import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.t
 import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScreen.tsx';
 import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
 import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
+import {LfgParticipationHelpScreen} from '../Screens/LFG/LfgParticipationHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -180,6 +181,7 @@ export type CommonStackParamList = {
   ForumSettingsScreen: undefined;
   ForumHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
+  LfgParticipationHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -225,6 +227,7 @@ export enum CommonStackComponents {
   forumSettingsScreen = 'ForumSettingsScreen',
   forumHelpScreen = 'ForumHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
+  lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -445,6 +448,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.scheduleHelpScreen}
         component={ScheduleHelpScreen}
         options={{title: 'Schedule Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgParticipationHelpScreen}
+        component={LfgParticipationHelpScreen}
+        options={{title: 'LFG Participation Help'}}
       />
     </>
   );

@@ -180,6 +180,7 @@ export const SwiftarrQueryClient = new QueryClient();
  */
 export const defaultCacheTime = 1000 * 60 * 60 * 24 * 30; // 30 days
 export const defaultStaleTime = 1000 * 60; // 60 seconds
+export const defaultImageStaleTime = 1000 * 60 * 60 * 24; // 24 hours
 
 /**
  * React-Query Storage Persister.

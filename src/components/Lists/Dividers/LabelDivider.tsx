@@ -15,7 +15,9 @@ export const LabelDivider = ({label = 'New', color = undefined, wrapperStyle, di
   const theme = useAppTheme();
   const styles = {
     wrapper: {
-      ...commonStyles.marginTop,
+      // Changing these to Smalls for the ForumPostFlatList use case.
+      ...commonStyles.marginTopSmall,
+      ...commonStyles.marginBottomSmall,
     },
     container: {
       ...commonStyles.flexRow,

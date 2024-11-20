@@ -47,9 +47,10 @@ export const ForumThreadScreenBase = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  invertList,
+  // invertList,
   forumListData,
 }: ForumThreadScreenBaseProps) => {
+  const invertList = forumListData?.postCount === forumListData?.readCount;
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
@@ -65,7 +66,9 @@ export const ForumThreadScreenBase = ({
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
+  // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
+  // to care about. It's all in the category (ForumListData) queries.
+  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -74,12 +77,14 @@ export const ForumThreadScreenBase = ({
   }, [refetch]);
 
   const handleLoadNext = () => {
+    console.log('handleLoadNext');
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };
   const handleLoadPrevious = () => {
+    console.log('handleLoadPrevious');
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
@@ -184,6 +189,38 @@ export const ForumThreadScreenBase = ({
     return <LoadingView />;
   }
 
+  console.log('There are', data.pages.length, 'pages');
+  data.pages.forEach(p => console.log(p.paginator));
+
+  const getInitialScrollIndex = () => {
+    // Inverted list means that we are starting from the bottom, so the
+    // ISI (InitialScrollIndex) is meaningless.
+    // console.log('### getInitialScrollIndex');
+    // console.log('invert', invertList);
+    // console.log('readCount', forumListData?.readCount);
+    // console.log('postCount', forumListData?.postCount);
+    if (invertList) {
+      return undefined;
+    }
+
+    const loadedStartIndex = data.pages[0].paginator.start;
+    // console.log('loadedStartIndex', loadedStartIndex);
+
+    // The forum has been completely read
+    if (forumListData && forumListData.readCount === forumListData.postCount) {
+      return undefined;
+    }
+    // The forum has not been completely read. There is going to be a point in
+    // the loaded data that we need to scroll to.
+    // @TODO this is buggy. Getting an index that is the length.
+    if (forumListData && forumListData.readCount !== forumListData.postCount) {
+      return Math.max(forumListData.readCount - loadedStartIndex - 1, 0);
+    }
+
+    // Default answer.
+    return 0;
+  };
+
   return (
     <AppView>
       <PostAsUserBanner />
@@ -201,6 +238,8 @@ export const ForumThreadScreenBase = ({
         getListHeader={getListHeader}
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
+        forumListData={forumListData}
+        initialScrollIndex={getInitialScrollIndex()}
       />
       {(!data.pages[0].isLocked || hasModerator) && (
         <ContentPostForm

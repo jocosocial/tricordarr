@@ -5,7 +5,6 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {StyleSheet} from 'react-native';
-import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 
 export const LfgHelpScreen = () => {
   const {commonStyles} = useStyles();
@@ -80,7 +79,6 @@ export const LfgHelpScreen = () => {
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <LfgFAB />
     </AppView>
   );
 };

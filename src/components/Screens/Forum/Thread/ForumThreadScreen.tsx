@@ -17,6 +17,7 @@ export const ForumThreadScreen = ({route}: Props) => {
     hasNextPage,
     hasPreviousPage,
   } = useForumThreadQuery(route.params.forumID);
+
   return (
     <ForumThreadScreenBase
       data={data}

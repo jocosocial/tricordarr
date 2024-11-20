@@ -75,6 +75,16 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             helperText={'Amount of time for query response data to be cached.'}
             unit={'day'}
           />
+          <SliderField
+            value={values.imageStaleTimeHours}
+            maximumValue={24}
+            minimumValue={1}
+            step={1}
+            label={'Image Stale Time'}
+            name={'imageStaleTimeHours'}
+            helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
+            unit={'hour'}
+          />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

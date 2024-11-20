@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {UserAvatarImage} from '../../../Images/UserAvatarImage';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
@@ -23,7 +23,7 @@ interface ForumPostListItemProps {
   forumData?: ForumData;
 }
 
-export const ForumPostListItem = ({
+const ForumPostListItemInternal = ({
   postData,
   enableShowInThread,
   enablePinnedPosts,
@@ -58,3 +58,6 @@ export const ForumPostListItem = ({
     </FlatListItemContent>
   );
 };
+
+// https://react.dev/reference/react/memo
+export const ForumPostListItem = memo(ForumPostListItemInternal);

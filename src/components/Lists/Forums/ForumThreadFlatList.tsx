@@ -22,7 +22,6 @@ interface ForumThreadFlatListProps {
   maintainViewPosition?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
-  pinnedThreads?: ForumListData[];
   categoryID?: string;
   keyExtractor?: (item: ForumListData) => string;
   onScrollThreshold?: (value: boolean) => void;
@@ -35,7 +34,6 @@ export const ForumThreadFlatList = ({
   maintainViewPosition,
   hasNextPage,
   hasPreviousPage,
-  pinnedThreads = [],
   categoryID,
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
@@ -63,28 +61,6 @@ export const ForumThreadFlatList = ({
         </PaddedContentView>
       );
     }
-    if (forumListData.length !== 0) {
-      if (!pinnedThreads || pinnedThreads.length === 0) {
-        return <Divider bold={true} />;
-      }
-      return (
-        <View>
-          <LabelDivider
-            label={'Pinned Threads'}
-            color={theme.colors.onBackground}
-            wrapperStyle={[commonStyles.marginTopZero]}
-            dividerColor={theme.colors.outlineVariant}
-          />
-          {pinnedThreads.map(item => renderItem({item}))}
-          <LabelDivider
-            label={'End of Pinned Threads'}
-            color={theme.colors.onBackground}
-            wrapperStyle={[commonStyles.marginTopZero, commonStyles.marginBottomSmall]}
-            dividerColor={theme.colors.outlineVariant}
-          />
-        </View>
-      );
-    }
     return null;
   };
 
@@ -94,7 +70,7 @@ export const ForumThreadFlatList = ({
         <PaddedContentView>
           <View style={[commonStyles.flexRow]}>
             <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading...</Text>
+              <Text variant={'labelMedium'}>Loading next...</Text>
             </View>
           </View>
         </PaddedContentView>
@@ -154,7 +130,11 @@ export const ForumThreadFlatList = ({
         ListHeaderComponent={renderListHeader}
         ListFooterComponent={renderListFooter}
         onScroll={handleScroll}
-        onEndReachedThreshold={10}
+        // onEndReachedThreshold is measured in units of visible area.
+        // So visible area of the list is 1.0. Do the maths from there.
+        // At a standard page size of 50 it is safe to aggressively
+        // load next pages.
+        onEndReachedThreshold={5}
         estimatedItemSize={170}
         extraData={[enableSelection]}
       />
