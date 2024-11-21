@@ -16,6 +16,7 @@ interface LFGFlatListProps {
   listFooter?: ReactElement;
   initialScrollIndex?: number;
   onScrollThreshold?: (condition: boolean) => void;
+  handleLoadNext?: () => void;
 }
 
 export const LFGFlatList = ({
@@ -24,6 +25,7 @@ export const LFGFlatList = ({
   separator = 'day',
   listRef,
   onScrollThreshold,
+  handleLoadNext,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
@@ -52,6 +54,7 @@ export const LFGFlatList = ({
       estimatedItemSize={161}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
+      handleLoadNext={handleLoadNext}
     />
   );
 };

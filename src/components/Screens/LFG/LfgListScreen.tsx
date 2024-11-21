@@ -28,13 +28,14 @@ interface LfgJoinedScreenProps {
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
-  const {data, isFetching, refetch, isLoading} = useLfgListQuery({
-    endpoint: endpoint,
-    fezType: lfgTypeFilter,
-    // @TODO we intend to fix this some day. Upstream Swiftarr issue.
-    cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
-    hidePast: lfgHidePastFilter,
-  });
+  const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage} =
+    useLfgListQuery({
+      endpoint: endpoint,
+      fezType: lfgTypeFilter,
+      // @TODO we intend to fix this some day. Upstream Swiftarr issue.
+      cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
+      hidePast: lfgHidePastFilter,
+    });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
   const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
@@ -126,9 +127,12 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
       <TimezoneWarningView />
       <LFGFlatList
         items={lfgList}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+        refreshControl={
+          <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
+        }
         separator={'day'}
         onScrollThreshold={onScrollThreshold}
+        handleLoadNext={fetchNextPage}
       />
       <LfgFAB showLabel={showFabLabel} />
     </AppView>
