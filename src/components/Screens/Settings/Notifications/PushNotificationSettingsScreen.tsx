@@ -11,10 +11,7 @@ import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-p
 import {Formik} from 'formik';
 import {View} from 'react-native';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
-import {
-  ContentNotificationCategories,
-  contentNotificationCategories,
-} from '../../../../libraries/Notifications/Content';
+import {contentNotificationCategories} from '../../../../libraries/Notifications/Content';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
@@ -73,10 +70,9 @@ export const PushNotificationSettingsScreen = () => {
 
   const setAllValue = (value: boolean) => {
     let pushConfig = appConfig.pushNotifications;
-    Object.keys(contentNotificationCategories).flatMap(key => {
-      const c = contentNotificationCategories[key];
+    Object.values(contentNotificationCategories).flatMap(c => {
       if (!c.disabled) {
-        (pushConfig[key] as boolean) = value;
+        (pushConfig[c.configKey] as boolean) = value;
       }
     });
     updateAppConfig({
@@ -137,20 +133,19 @@ export const PushNotificationSettingsScreen = () => {
             </Text>
             <Formik initialValues={{}} onSubmit={() => {}}>
               <View>
-                {Object.keys(contentNotificationCategories).flatMap((key: keyof ContentNotificationCategories) => {
-                  const c = contentNotificationCategories[key];
-                  if (c.disabled) {
+                {Object.values(contentNotificationCategories).flatMap(value => {
+                  if (value.disabled) {
                     return null;
                   }
                   return (
                     <BooleanField
-                      key={key}
-                      name={key}
-                      label={c.title}
-                      value={appConfig.pushNotifications[key]}
-                      onPress={() => toggleValue(key)}
-                      disabled={!hasNotificationPermission || c.disabled}
-                      helperText={c.description}
+                      key={value.configKey}
+                      name={value.configKey}
+                      label={value.title}
+                      value={appConfig.pushNotifications[value.configKey]}
+                      onPress={() => toggleValue(value.configKey)}
+                      disabled={!hasNotificationPermission || value.disabled}
+                      helperText={value.description}
                     />
                   );
                 })}

@@ -14,6 +14,8 @@ import {SegmentedButtonType} from '../../../libraries/Types';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 import {ListSection} from '../../Lists/ListSection.tsx';
+import {PushNotificationConfig} from '../../../libraries/AppConfig.ts';
+import {contentNotificationCategories} from '../../../libraries/Notifications/Content.ts';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
@@ -64,23 +66,13 @@ export const LfgSettingsScreen = () => {
     setDefaultScreen(value as LfgStackComponents);
   };
 
-  const toggleLFGUnreadNotifications = () => {
+  const toggleValue = (configKey: keyof PushNotificationConfig) => {
+    let pushConfig = appConfig.pushNotifications;
+    // https://bobbyhadz.com/blog/typescript-cannot-assign-to-because-it-is-read-only-property
+    (pushConfig[configKey] as boolean) = !appConfig.pushNotifications[configKey];
     updateAppConfig({
       ...appConfig,
-      pushNotifications: {
-        ...appConfig.pushNotifications,
-        fezUnreadMsg: !appConfig.pushNotifications.fezUnreadMsg,
-      },
-    });
-  };
-
-  const toggleLfgJoinedNotifications = () => {
-    updateAppConfig({
-      ...appConfig,
-      pushNotifications: {
-        ...appConfig.pushNotifications,
-        joinedLFGStarting: !appConfig.pushNotifications.joinedLFGStarting,
-      },
+      pushNotifications: pushConfig,
     });
   };
 
@@ -119,23 +111,23 @@ export const LfgSettingsScreen = () => {
               <ListSection>
                 <ListSubheader>Push Notifications</ListSubheader>
                 <BooleanField
-                  key={'fezUnreadMsg'}
-                  name={'fezUnreadMsg'}
-                  label={'LFG Posts'}
+                  key={contentNotificationCategories.fezUnreadMsg.configKey}
+                  name={contentNotificationCategories.fezUnreadMsg.configKey}
+                  label={contentNotificationCategories.fezUnreadMsg.title}
                   value={appConfig.pushNotifications.fezUnreadMsg}
-                  onPress={toggleLFGUnreadNotifications}
+                  onPress={() => toggleValue(contentNotificationCategories.fezUnreadMsg.configKey)}
                   disabled={!hasNotificationPermission}
-                  helperText={"New unread chat public messages posted in an LFG you've joined or that you own."}
+                  helperText={contentNotificationCategories.fezUnreadMsg.description}
                   style={commonStyles.paddingHorizontal}
                 />
                 <BooleanField
-                  key={'joinedLFGStarting'}
-                  name={'joinedLFGStarting'}
-                  label={'Joined LFG Reminders'}
+                  key={contentNotificationCategories.joinedLFGStarting.configKey}
+                  name={contentNotificationCategories.joinedLFGStarting.configKey}
+                  label={contentNotificationCategories.joinedLFGStarting.title}
                   value={appConfig.pushNotifications.joinedLFGStarting}
-                  onPress={toggleLfgJoinedNotifications}
+                  onPress={() => toggleValue(contentNotificationCategories.joinedLFGStarting.configKey)}
                   disabled={!hasNotificationPermission}
-                  helperText={'Reminder that a joined LFG is starting Soon™.'}
+                  helperText={contentNotificationCategories.joinedLFGStarting.description}
                   style={commonStyles.paddingHorizontal}
                 />
               </ListSection>

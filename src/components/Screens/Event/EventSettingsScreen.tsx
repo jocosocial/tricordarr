@@ -9,6 +9,8 @@ import {View} from 'react-native';
 import {BooleanField} from '../../Forms/Fields/BooleanField';
 import {ListSection} from '../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
+import {PushNotificationConfig} from '../../../libraries/AppConfig.ts';
+import {contentNotificationCategories} from '../../../libraries/Notifications/Content.ts';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
@@ -50,23 +52,13 @@ export const EventSettingsScreen = () => {
     setEnableLateDayFlip(!appConfig.schedule.enableLateDayFlip);
   };
 
-  const toggleEventNotifications = () => {
+  const toggleValue = (configKey: keyof PushNotificationConfig) => {
+    let pushConfig = appConfig.pushNotifications;
+    // https://bobbyhadz.com/blog/typescript-cannot-assign-to-because-it-is-read-only-property
+    (pushConfig[configKey] as boolean) = !appConfig.pushNotifications[configKey];
     updateAppConfig({
       ...appConfig,
-      pushNotifications: {
-        ...appConfig.pushNotifications,
-        followedEventStarting: !appConfig.pushNotifications.followedEventStarting,
-      },
-    });
-  };
-
-  const togglePersonalEventNotifications = () => {
-    updateAppConfig({
-      ...appConfig,
-      pushNotifications: {
-        ...appConfig.pushNotifications,
-        personalEventStarting: !appConfig.pushNotifications.personalEventStarting,
-      },
+      pushNotifications: pushConfig,
     });
   };
 
@@ -115,23 +107,23 @@ export const EventSettingsScreen = () => {
               <ListSection>
                 <ListSubheader>Push Notifications</ListSubheader>
                 <BooleanField
-                  key={'followedEventStarting'}
-                  name={'followedEventStarting'}
-                  label={'Followed Event Reminder Notifications'}
+                  key={contentNotificationCategories.followedEventStarting.configKey}
+                  name={contentNotificationCategories.followedEventStarting.configKey}
+                  label={contentNotificationCategories.followedEventStarting.title}
                   value={appConfig.pushNotifications.followedEventStarting}
-                  onPress={toggleEventNotifications}
+                  onPress={() => toggleValue(contentNotificationCategories.followedEventStarting.configKey)}
                   disabled={!hasNotificationPermission}
-                  helperText={'Enable push notifications for reminders that a followed event is starting Soon™.'}
+                  helperText={contentNotificationCategories.followedEventStarting.description}
                   style={commonStyles.paddingHorizontal}
                 />
                 <BooleanField
-                  key={'personalEventStarting'}
-                  name={'personalEventStarting'}
-                  label={'Personal Event Reminder Notifications'}
+                  key={contentNotificationCategories.personalEventStarting.configKey}
+                  name={contentNotificationCategories.personalEventStarting.configKey}
+                  label={contentNotificationCategories.personalEventStarting.title}
                   value={appConfig.pushNotifications.personalEventStarting}
-                  onPress={togglePersonalEventNotifications}
+                  onPress={() => toggleValue(contentNotificationCategories.personalEventStarting.configKey)}
                   disabled={!hasNotificationPermission}
-                  helperText={'Enable push notifications for reminders that a personal event is starting Soon™.'}
+                  helperText={contentNotificationCategories.personalEventStarting.description}
                   style={commonStyles.paddingHorizontal}
                 />
               </ListSection>
