@@ -4,9 +4,12 @@ import {ConfigContext} from '../Contexts/ConfigContext';
 import {AppConfig, getAppConfig} from '../../../libraries/AppConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../libraries/Storage';
+import {check as checkPermission, PERMISSIONS, PermissionStatus, RESULTS} from 'react-native-permissions';
 
 export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
+  const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
+  const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<PermissionStatus | undefined>();
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -15,6 +18,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
     loadConfig()
       .then(config => setAppConfig(config))
       .finally(() => console.log('[ConfigProvider.tsx] Finished loading app config.'));
+    checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
+      setHasNotificationPermission(status === RESULTS.GRANTED);
+      setNotificationPermissionStatus(status);
+    });
   }, []);
 
   const updateAppConfig = (newConfig: AppConfig) => {
@@ -29,6 +36,17 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
   return (
-    <ConfigContext.Provider value={{appConfig, updateAppConfig, oobeCompleted}}>{children}</ConfigContext.Provider>
+    <ConfigContext.Provider
+      value={{
+        appConfig,
+        updateAppConfig,
+        oobeCompleted,
+        hasNotificationPermission,
+        setHasNotificationPermission,
+        notificationPermissionStatus,
+        setNotificationPermissionStatus,
+      }}>
+      {children}
+    </ConfigContext.Provider>
   );
 };

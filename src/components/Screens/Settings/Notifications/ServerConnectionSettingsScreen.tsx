@@ -29,6 +29,8 @@ import {Formik} from 'formik';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
 import {SliderField} from '../../../Forms/Fields/SliderField';
 import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView';
+import {ListSection} from '../../../Lists/ListSection.tsx';
+import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
 
@@ -109,6 +111,9 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ListSection>
+          <ListSubheader>About</ListSubheader>
+        </ListSection>
         <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottomSmall}>
             The background worker (which Android calls a Foreground Service) is necessary to enable push notifications
@@ -119,7 +124,9 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
             safely dismiss the notification and the worker will continue to run.
           </Text>
         </PaddedContentView>
-        <Divider bold={true} />
+        <ListSection>
+          <ListSubheader>Settings</ListSubheader>
+        </ListSection>
         <PaddedContentView padSides={false} padBottom={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
@@ -148,20 +155,14 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
             </View>
           </Formik>
         </PaddedContentView>
-        <PaddedContentView>
+        <ListSection>
+          <ListSubheader>Status</ListSubheader>
+        </ListSection>
+        <PaddedContentView padBottom={false}>
           <DataTable>
             <SettingDataTableRow title={'Previous Start'}>
               <RelativeTimeTag date={fgsStartDate} />
             </SettingDataTableRow>
-          </DataTable>
-        </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Worker WebSocket</Text>
-          <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
-            You can pull to refresh this page if you believe the WebSocket state is out of date.
-          </HelperText>
-          <DataTable>
             <SettingDataTableRow
               title={'Socket State'}
               value={WebSocketState[socketState as keyof typeof WebSocketState]}
@@ -172,12 +173,15 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
             <SettingDataTableRow title={'Failed Count'} value={String(fgsFailedCounter)} />
           </DataTable>
         </PaddedContentView>
-        <Divider bold={true} />
-        <PaddedContentView padTop={true}>
-          <Text variant={'titleMedium'}>Worker Control</Text>
+        <PaddedContentView padSides={false}>
           <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
-            Note: It may take up to 10 seconds for the worker notification to appear on start.
+            You can pull to refresh this page if you believe the WebSocket state is out of date.
           </HelperText>
+        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Control</ListSubheader>
+        </ListSection>
+        <PaddedContentView>
           <DataTable>
             <SettingDataTableRow title={'Enabled'} value={String(enableUserNotifications)} />
           </DataTable>
@@ -194,9 +198,12 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>
-        <Divider bold={true} />
+        <PaddedContentView padSides={false}>
+          <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
+            Note: It may take up to 10 seconds for the worker notification to appear on start.
+          </HelperText>
+        </PaddedContentView>
         <BatteryOptimizationSettingsView />
-        <Divider bold={true} />
       </ScrollingContentView>
     </AppView>
   );

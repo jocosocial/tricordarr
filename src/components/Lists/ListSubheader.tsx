@@ -2,8 +2,15 @@ import React from 'react';
 import {PropsWithChildren} from 'react';
 import {List} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {StyleSheet} from 'react-native';
 
 export const ListSubheader = ({children}: PropsWithChildren) => {
   const {commonStyles} = useStyles();
-  return <List.Subheader style={commonStyles.surfaceVariant}>{children}</List.Subheader>;
+  const styles = StyleSheet.create({
+    subheader: {
+      ...commonStyles.surfaceVariant,
+      ...commonStyles.onTwitarrButton,
+    },
+  });
+  return <List.Subheader style={styles.subheader}>{children}</List.Subheader>;
 };

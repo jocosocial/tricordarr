@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
@@ -8,38 +8,33 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {check as checkPermission, PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
+import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BatteryOptimizationSettingsView} from '../../Views/Settings/BatteryOptimizationSettingsView';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeNotificationsScreen>;
 
 export const OobeNotificationsScreen = ({navigation}: Props) => {
-  const [permissionStatus, setPermissionStatus] = useState('');
   const {commonStyles} = useStyles();
+  const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = useConfig();
 
-  const enablePermissions = () => {
-    requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
-      setPermissionStatus(status);
-    });
+  const enablePermissions = async () => {
+    const status = await requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    setHasNotificationPermission(status === RESULTS.GRANTED);
+    setNotificationPermissionStatus(status);
   };
 
-  useEffect(() => {
-    checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
-      setPermissionStatus(status);
-    });
-  }, []);
-
-  const disableButton = permissionStatus !== RESULTS.DENIED;
+  const disableButton = notificationPermissionStatus !== RESULTS.DENIED;
 
   const buttonLabel = () => {
-    if (permissionStatus === RESULTS.BLOCKED) {
+    if (notificationPermissionStatus === RESULTS.BLOCKED) {
       return 'Blocked';
-    } else if (permissionStatus === RESULTS.DENIED) {
+    } else if (notificationPermissionStatus === RESULTS.DENIED) {
       return 'Enable';
-    } else if (permissionStatus === RESULTS.GRANTED) {
+    } else if (notificationPermissionStatus === RESULTS.GRANTED) {
       return 'Already Enabled';
-    } else if (permissionStatus === RESULTS.UNAVAILABLE) {
+    } else if (notificationPermissionStatus === RESULTS.UNAVAILABLE) {
       return 'Unavailable';
     } else {
       return 'Unknown';
@@ -65,20 +60,20 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
           <PrimaryActionButton buttonText={buttonLabel()} onPress={enablePermissions} disabled={disableButton} />
         </PaddedContentView>
         <PaddedContentView>
-          {permissionStatus === RESULTS.GRANTED && (
+          {notificationPermissionStatus === RESULTS.GRANTED && (
             <Text>Cool! You can pick exactly which kinds of notifications you want in the app settings.</Text>
           )}
-          {permissionStatus === RESULTS.BLOCKED && (
+          {notificationPermissionStatus === RESULTS.BLOCKED && (
             <Text>No problem! You can always change your mind in the app settings.</Text>
           )}
-          {permissionStatus === RESULTS.UNAVAILABLE && (
+          {notificationPermissionStatus === RESULTS.UNAVAILABLE && (
             <Text>
               Unavailable usually means your device does not require permission to send notifications. You can pick
               exactly which kinds of notifications you want in the app settings.
             </Text>
           )}
         </PaddedContentView>
-        {permissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
+        {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}

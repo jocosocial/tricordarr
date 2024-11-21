@@ -26,7 +26,7 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   };
 
   /**
-   * Open a Twitarr URL. This is would normally get covered by Android App Links
+   * Open a Twitarr URL. This would normally get covered by Android App Links
    * https://developer.android.com/training/app-links but verifying a non-public
    * server is a problem, and it's a lot of work. Plus I want to translate certain URLs
    * until we fix the upstream. So this exists.

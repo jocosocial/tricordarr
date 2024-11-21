@@ -21,6 +21,8 @@ interface ScheduleFlatListBaseProps<TItem> {
   renderItem: ({item}: {item: TItem}) => ReactElement;
   keyExtractor: (item: TItem) => string;
   onScrollThreshold?: (condition: boolean) => void;
+  handleLoadNext?: () => void;
+  handleLoadPrevious?: () => void;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
@@ -35,6 +37,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   renderItem,
   keyExtractor,
   onScrollThreshold,
+  handleLoadNext,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 
@@ -81,6 +84,8 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
   };
 
+  // FlashList skips separator when paginating.
+  // https://github.com/Shopify/flash-list/issues/633
   const renderSeparatorDay = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);
     if (leadingIndex === undefined) {
@@ -134,6 +139,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
         ...commonStyles.paddingHorizontal,
       }}
       onScroll={handleScroll}
+      onEndReached={handleLoadNext}
     />
   );
 };

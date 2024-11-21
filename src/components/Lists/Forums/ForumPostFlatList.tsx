@@ -25,8 +25,6 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {styleDefaults} from '../../../styles';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
