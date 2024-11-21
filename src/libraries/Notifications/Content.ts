@@ -2,81 +2,79 @@ import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native
 import {markAsReadPressAction, PressAction, settingsPressAction} from '../Enums/Notifications';
 import {PushNotificationConfig} from '../AppConfig';
 
-interface ContentNotificationCategory {
-  configKey: keyof PushNotificationConfig;
+export interface ContentNotificationCategory {
   title: string;
   disabled?: boolean;
   description?: string;
 }
 
-export const contentNotificationCategories: ContentNotificationCategory[] = [
-  {
-    configKey: 'announcement',
+export type ContentNotificationCategories = {
+  [key in keyof PushNotificationConfig]: ContentNotificationCategory;
+};
+
+export const contentNotificationCategories: ContentNotificationCategories = {
+  announcement: {
     title: 'Announcements',
     description:
       'Ship-wide public messages from THO or the TwitarrTeam. These are used sparingly and usually contain important information.',
   },
-  {
-    configKey: 'seamailUnreadMsg',
+  seamailUnreadMsg: {
     title: 'Seamails',
     description: 'New unread private chat messages sent to you from another user.',
   },
-  {
-    configKey: 'fezUnreadMsg',
+  fezUnreadMsg: {
     title: 'LFG Posts',
     description: "New unread chat public messages posted in an LFG you've joined or that you own.",
   },
-  {
-    configKey: 'alertwordPost',
+  alertwordPost: {
     title: 'Forum Alert Words',
     description: 'New forum post was made containing one of your configured alert words.',
   },
-  {
-    configKey: 'forumMention',
+  forumMention: {
     title: 'Forum Mentions',
     description: 'New forum post was made [@]mentioning you in the content.',
   },
-  {
-    configKey: 'incomingPhoneCall',
+  incomingPhoneCall: {
     title: 'Incoming Call',
     description: 'Incoming KrakenTalk hailing frequencies.',
   },
-  {
-    configKey: 'phoneCallAnswered',
+  phoneCallAnswered: {
     title: 'Call Answered',
     description: 'KrakenTalk hailing frequencies opened, possibly on another device.',
   },
-  {
-    configKey: 'phoneCallEnded',
+  phoneCallEnded: {
     title: 'Call Ended',
     description: 'KrakenTalk hailing frequencies closed.',
   },
-  {
-    configKey: 'followedEventStarting',
+  followedEventStarting: {
     title: 'Followed Event Reminders',
     description: 'Reminder that a followed event is starting Soon™.',
   },
-  {
-    configKey: 'personalEventStarting',
+  personalEventStarting: {
     title: 'Personal Event Starting',
     description: 'Reminder that a personal event is starting Soon™.',
   },
-  {
-    configKey: 'joinedLFGStarting',
+  joinedLFGStarting: {
     title: 'Joined LFG Reminders',
     description: 'Reminder that a joined LFG is starting Soon™.',
   },
-  {
-    configKey: 'moderatorForumMention',
+  moderatorForumMention: {
     title: 'Moderator Forum Mentions',
     description: 'Affects moderators only. New forum post was made [@]mentioning moderator.',
   },
-  {
-    configKey: 'twitarrTeamForumMention',
+  twitarrTeamForumMention: {
     title: 'TwitarrTeam Forum Mentions',
     description: 'Affects twitarrteam only. New forum post was made [@]mentioning twitarrteam.',
   },
-];
+  alertwordTwarrt: {
+    title: 'Twarrt Alert Words',
+    disabled: true,
+  },
+  twarrtMention: {
+    title: 'Twarrt Mention',
+    disabled: true,
+  },
+};
 
 export async function generateContentNotification(
   id: string,

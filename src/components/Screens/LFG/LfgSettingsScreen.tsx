@@ -14,10 +14,9 @@ import {SegmentedButtonType} from '../../../libraries/Types';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 import {ListSection} from '../../Lists/ListSection.tsx';
-import {RESULTS} from 'react-native-permissions';
 
 export const LfgSettingsScreen = () => {
-  const {appConfig, updateAppConfig, notificationPermissionStatus, hasNotificationPermission} = useConfig();
+  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
   const [hidePastLfgs, setHidePastLfgs] = useState(appConfig.schedule.hidePastLfgs);
   const {setLfgHidePastFilter} = useFilter();
   const {commonStyles} = useStyles();

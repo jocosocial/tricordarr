@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -7,11 +7,14 @@ import {PushNotificationConfig} from '../../../../libraries/AppConfig';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../../styles/Theme';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
-import {check as checkPermission, PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
+import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
 import {Formik} from 'formik';
 import {View} from 'react-native';
 import {BooleanField} from '../../../Forms/Fields/BooleanField';
-import {contentNotificationCategories} from '../../../../libraries/Notifications/Content';
+import {
+  ContentNotificationCategories,
+  contentNotificationCategories,
+} from '../../../../libraries/Notifications/Content';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
@@ -70,9 +73,10 @@ export const PushNotificationSettingsScreen = () => {
 
   const setAllValue = (value: boolean) => {
     let pushConfig = appConfig.pushNotifications;
-    contentNotificationCategories.flatMap(c => {
+    Object.keys(contentNotificationCategories).flatMap(key => {
+      const c = contentNotificationCategories[key];
       if (!c.disabled) {
-        (pushConfig[c.configKey] as boolean) = value;
+        (pushConfig[key] as boolean) = value;
       }
     });
     updateAppConfig({
@@ -118,7 +122,7 @@ export const PushNotificationSettingsScreen = () => {
                 <PrimaryActionButton
                   buttonText={hasNotificationPermission ? 'Already Allowed' : 'Allow Push Notifications'}
                   onPress={handleEnable}
-                  disabled={!hasNotificationPermission}
+                  disabled={hasNotificationPermission}
                 />
               )}
             </DataTable>
@@ -133,17 +137,23 @@ export const PushNotificationSettingsScreen = () => {
             </Text>
             <Formik initialValues={{}} onSubmit={() => {}}>
               <View>
-                {contentNotificationCategories.flatMap(c => (
-                  <BooleanField
-                    key={c.configKey}
-                    name={c.configKey}
-                    label={c.title}
-                    value={appConfig.pushNotifications[c.configKey]}
-                    onPress={() => toggleValue(c.configKey)}
-                    disabled={!hasNotificationPermission || c.disabled}
-                    helperText={c.description}
-                  />
-                ))}
+                {Object.keys(contentNotificationCategories).flatMap((key: keyof ContentNotificationCategories) => {
+                  const c = contentNotificationCategories[key];
+                  if (c.disabled) {
+                    return null;
+                  }
+                  return (
+                    <BooleanField
+                      key={key}
+                      name={key}
+                      label={c.title}
+                      value={appConfig.pushNotifications[key]}
+                      onPress={() => toggleValue(key)}
+                      disabled={!hasNotificationPermission || c.disabled}
+                      helperText={c.description}
+                    />
+                  );
+                })}
               </View>
             </Formik>
           </PaddedContentView>
