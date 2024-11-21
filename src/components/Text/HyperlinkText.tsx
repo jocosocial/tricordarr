@@ -5,6 +5,7 @@ import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/t
 import {useConfig} from '../Context/Contexts/ConfigContext';
 import URLParse from 'url-parse';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
@@ -35,6 +36,12 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
     }
   };
 
+  const onLongPress = (linkUrl?: string) => {
+    if (linkUrl) {
+      Clipboard.setString(linkUrl);
+    }
+  };
+
   const handleText = (linkUrl: string) => {
     const linkUrlObject = new URLParse(linkUrl);
     if (
@@ -54,7 +61,7 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
   };
 
   return (
-    <Hyperlink onPress={handleLink} linkStyle={commonStyles.linkText} linkText={handleText}>
+    <Hyperlink onPress={handleLink} onLongPress={onLongPress} linkStyle={commonStyles.linkText} linkText={handleText}>
       {children}
     </Hyperlink>
   );
