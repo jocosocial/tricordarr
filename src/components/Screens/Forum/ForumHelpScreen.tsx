@@ -25,14 +25,7 @@ export const ForumHelpScreen = () => {
             (for general topics, announcements, memes, etc) and Personal (for forums that relate specifically to you.)
           </HelpParagraphText>
           <HelpParagraphText>
-            You can set up alert words to ping you when someone makes a forum post containing a specific word.
-          </HelpParagraphText>
-          <HelpParagraphText>
             You can set up mute words to prevent seeing forum posts containing a specific word.
-          </HelpParagraphText>
-          <HelpParagraphText>
-            You can search for forum threads or forum posts using the appropriate action in the floating action button
-            at the bottom of the screen.
           </HelpParagraphText>
         </PaddedContentView>
         <ListSection>
@@ -66,6 +59,9 @@ export const ForumHelpScreen = () => {
           <HelpSectionView>
             <IconButton icon={AppIcons.alertword} />
             <HelpSectionContentView>
+              <HelpParagraphText>
+                You can set up alert words to ping you when someone makes a forum post containing a specific word.
+              </HelpParagraphText>
               <HelpParagraphText>
                 Generate an alert/notification whenever new content is made containing these keywords. Alert words will
                 be highlighted in content views like 🚨this🚨.
