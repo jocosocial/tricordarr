@@ -1,23 +1,21 @@
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Formik} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {BooleanField} from '../../Forms/Fields/BooleanField';
-import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {ListSection} from '../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 
 export const EventSettingsScreen = () => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
   const [enableLateDayFlip, setEnableLateDayFlip] = useState(appConfig.schedule.enableLateDayFlip);
   const {commonStyles} = useStyles();
   const [joined, setJoined] = useState(appConfig.schedule.eventsShowJoinedLfgs);
   const [open, setOpen] = useState(appConfig.schedule.eventsShowOpenLfgs);
-  const [permissionStatus, setPermissionStatus] = useState('Unknown');
 
   const handleOpenLfgs = () => {
     updateAppConfig({
@@ -72,12 +70,6 @@ export const EventSettingsScreen = () => {
     });
   };
 
-  useEffect(() => {
-    checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
-      setPermissionStatus(status);
-    });
-  }, []);
-
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -128,7 +120,7 @@ export const EventSettingsScreen = () => {
                   label={'Followed Event Reminder Notifications'}
                   value={appConfig.pushNotifications.followedEventStarting}
                   onPress={toggleEventNotifications}
-                  disabled={permissionStatus !== RESULTS.GRANTED}
+                  disabled={!hasNotificationPermission}
                   helperText={'Enable push notifications for reminders that a followed event is starting Soon™.'}
                   style={commonStyles.paddingHorizontal}
                 />
@@ -138,7 +130,7 @@ export const EventSettingsScreen = () => {
                   label={'Personal Event Reminder Notifications'}
                   value={appConfig.pushNotifications.personalEventStarting}
                   onPress={togglePersonalEventNotifications}
-                  disabled={permissionStatus !== RESULTS.GRANTED}
+                  disabled={!hasNotificationPermission}
                   helperText={'Enable push notifications for reminders that a personal event is starting Soon™.'}
                   style={commonStyles.paddingHorizontal}
                 />

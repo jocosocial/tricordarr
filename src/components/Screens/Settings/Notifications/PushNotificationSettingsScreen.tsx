@@ -20,9 +20,15 @@ import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
 import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag.tsx';
 
 export const PushNotificationSettingsScreen = () => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {
+    appConfig,
+    updateAppConfig,
+    hasNotificationPermission,
+    setNotificationPermissionStatus,
+    notificationPermissionStatus,
+    setHasNotificationPermission,
+  } = useConfig();
   const theme = useAppTheme();
-  const [permissionStatus, setPermissionStatus] = useState('Unknown');
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
   const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);
@@ -77,7 +83,8 @@ export const PushNotificationSettingsScreen = () => {
 
   const handleEnable = () => {
     requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
-      setPermissionStatus(status);
+      setNotificationPermissionStatus(status);
+      setHasNotificationPermission(status === RESULTS.GRANTED);
       if (status === RESULTS.GRANTED) {
         startForegroundServiceWorker();
       }
@@ -93,12 +100,6 @@ export const PushNotificationSettingsScreen = () => {
     setMarkReadCancelPush(newValue);
   };
 
-  useEffect(() => {
-    checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
-      setPermissionStatus(status);
-    });
-  }, []);
-
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -106,18 +107,18 @@ export const PushNotificationSettingsScreen = () => {
           <ListSubheader>Permissions</ListSubheader>
           <PaddedContentView padTop={true}>
             <DataTable>
-              {permissionStatus === RESULTS.BLOCKED && (
+              {notificationPermissionStatus === RESULTS.BLOCKED && (
                 <Text>
                   Notifications have been blocked by your device. You'll need to enable them for this app manually in
                   the Android settings. You can access this by long pressing on the app icon on your home screen and
                   selecting App Info.
                 </Text>
               )}
-              {permissionStatus !== RESULTS.BLOCKED && (
+              {notificationPermissionStatus !== RESULTS.BLOCKED && (
                 <PrimaryActionButton
-                  buttonText={permissionStatus === RESULTS.GRANTED ? 'Already Allowed' : 'Allow Push Notifications'}
+                  buttonText={hasNotificationPermission ? 'Already Allowed' : 'Allow Push Notifications'}
                   onPress={handleEnable}
-                  disabled={permissionStatus === RESULTS.GRANTED}
+                  disabled={!hasNotificationPermission}
                 />
               )}
             </DataTable>
@@ -139,7 +140,7 @@ export const PushNotificationSettingsScreen = () => {
                     label={c.title}
                     value={appConfig.pushNotifications[c.configKey]}
                     onPress={() => toggleValue(c.configKey)}
-                    disabled={permissionStatus !== RESULTS.GRANTED || c.disabled}
+                    disabled={!hasNotificationPermission || c.disabled}
                     helperText={c.description}
                   />
                 ))}
@@ -151,7 +152,7 @@ export const PushNotificationSettingsScreen = () => {
               buttonColor={theme.colors.twitarrPositiveButton}
               buttonText={'Enable All Categories'}
               onPress={() => setAllValue(true)}
-              disabled={permissionStatus !== RESULTS.GRANTED}
+              disabled={notificationPermissionStatus !== RESULTS.GRANTED}
             />
           </PaddedContentView>
           <PaddedContentView>
@@ -159,7 +160,7 @@ export const PushNotificationSettingsScreen = () => {
               buttonColor={theme.colors.twitarrNegativeButton}
               buttonText={'Disable All Categories'}
               onPress={() => setAllValue(false)}
-              disabled={permissionStatus !== RESULTS.GRANTED}
+              disabled={notificationPermissionStatus !== RESULTS.GRANTED}
             />
           </PaddedContentView>
         </ListSection>
