@@ -77,14 +77,12 @@ export const ForumThreadScreenBase = ({
   }, [refetch]);
 
   const handleLoadNext = () => {
-    console.log('handleLoadNext');
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
     }
   };
   const handleLoadPrevious = () => {
-    console.log('handleLoadPrevious');
     if (!isFetchingPreviousPage && hasPreviousPage) {
       setRefreshing(true);
       fetchPreviousPage().finally(() => setRefreshing(false));
@@ -189,9 +187,6 @@ export const ForumThreadScreenBase = ({
     return <LoadingView />;
   }
 
-  console.log('There are', data.pages.length, 'pages');
-  data.pages.forEach(p => console.log(p.paginator));
-
   const getInitialScrollIndex = () => {
     // Inverted list means that we are starting from the bottom, so the
     // ISI (InitialScrollIndex) is meaningless.
@@ -212,7 +207,7 @@ export const ForumThreadScreenBase = ({
     }
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
-    // @TODO this is buggy. Getting an index that is the length.
+    // @TODO this is buggy. Getting an index that is the length. Worked around with the Math.max.
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
       return Math.max(forumListData.readCount - loadedStartIndex - 1, 0);
     }

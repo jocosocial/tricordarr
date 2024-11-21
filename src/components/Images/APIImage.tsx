@@ -141,7 +141,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity onPress={handleThumbPress} onLongPress={saveImage}>
+      <TouchableOpacity activeOpacity={1} onPress={handleThumbPress} onLongPress={saveImage}>
         {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )}
