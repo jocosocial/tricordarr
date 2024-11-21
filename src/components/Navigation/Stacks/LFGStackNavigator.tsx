@@ -39,7 +39,7 @@ export const LfgStackNavigator = () => {
       <Stack.Screen
         name={LfgStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
-        options={{title: 'Looking For Group FAQ'}}
+        options={{title: 'Looking For Group Help'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgJoinedScreen}
