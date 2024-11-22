@@ -19,6 +19,8 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
   const [hasAdmin, setHasAdmin] = useState(false);
   const {tokenData} = useAuth();
   const accessLevel = tokenData?.accessLevel || UserAccessLevel.unverified;
+  // Maybe these should come from SwiftarrClientConfig some day?
+  const privilegedUsernames = ['admin', 'twitarrteam', 'tho', 'moderator'];
 
   useEffect(() => {
     clearLevels();
@@ -113,6 +115,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         hasTwitarrTeam,
         hasVerified,
         hasAdmin,
+        privilegedUsernames,
       }}>
       {children}
     </PrivilegeContext.Provider>
