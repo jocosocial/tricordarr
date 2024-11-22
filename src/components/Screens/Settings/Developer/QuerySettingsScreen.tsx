@@ -27,6 +27,8 @@ import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigat
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 
+const generateNewCacheBuster = () => new Date().toString();
+
 export const QuerySettingsScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
   const queryClient = useQueryClient();
@@ -44,7 +46,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
       ...appConfig,
       apiClientConfig: {
         ...appConfig.apiClientConfig,
-        cacheBuster: new Date().toString(),
+        cacheBuster: generateNewCacheBuster(),
       },
     });
     queryClient.getQueryCache().clear();
@@ -71,9 +73,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
   };
 
   const onSubmit = (values: QuerySettingsFormValues, helpers: FormikHelpers<QuerySettingsFormValues>) => {
-    if (values.defaultPageSize !== appConfig.apiClientConfig.defaultPageSize) {
-      queryClient.getQueryCache().clear();
-    }
+    const bustCache = values.defaultPageSize !== appConfig.apiClientConfig.defaultPageSize;
     updateAppConfig({
       ...appConfig,
       apiClientConfig: {
@@ -84,8 +84,16 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         staleTime: values.staleTimeMinutes * 60 * 1000,
         disruptionThreshold: values.disruptionThreshold,
         imageStaleTime: values.imageStaleTimeHours * 60 * 60 * 1000,
+        cacheBuster: bustCache ? generateNewCacheBuster() : appConfig.apiClientConfig.cacheBuster,
       },
     });
+    if (bustCache) {
+      queryClient.getQueryCache().clear();
+      // This needs a moment to let any queries refresh.
+      setTimeout(() => {
+        refreshCacheStats();
+      }, 1000);
+    }
     helpers.setSubmitting(false);
     helpers.resetForm({
       values: values,
@@ -104,6 +112,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
 
   const refreshCacheStats = useCallback(() => {
     const contents = queryClient.getQueryCache().getAll();
+    console.log('[QuerySettingsScreen.tsx] refreshing stats, had count', contents.length);
     const cachedDates = contents
       .map(c => {
         return c.state.dataUpdatedAt;
