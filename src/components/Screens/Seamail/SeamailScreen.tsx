@@ -36,6 +36,7 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {styleDefaults} from '../../../styles';
 import notifee from '@notifee/react-native';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 
 export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
 
@@ -245,9 +246,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
   const renderHeader = () => {
     return (
       <PaddedContentView padTop={true} invertVertical={true}>
-        {!hasPreviousPage && (
-          <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
-        )}
+        <FlexCenteredContentView>
+          {hasPreviousPage ? (
+            <Text variant={'labelMedium'}>Loading...</Text>
+          ) : (
+            <Text variant={'labelMedium'}>You've reached the beginning of this Seamail conversation.</Text>
+          )}
+        </FlexCenteredContentView>
       </PaddedContentView>
     );
   };
@@ -303,6 +308,8 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         // removeClippedSubviews={false}
         ItemSeparatorComponent={SpaceDivider}
         data={fezPostsData}
+        onEndReachedThreshold={1}
+        onStartReachedThreshold={1}
         // Inverted murders performance to the point of locking the app.
         // So we do a series of verticallyInverted, relying on a deprecated style prop.
         // https://github.com/facebook/react-native/issues/30034

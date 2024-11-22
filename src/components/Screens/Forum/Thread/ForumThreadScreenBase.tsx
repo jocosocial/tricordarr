@@ -47,10 +47,9 @@ export const ForumThreadScreenBase = ({
   hasNextPage,
   hasPreviousPage,
   getListHeader,
-  // invertList,
+  invertList,
   forumListData,
 }: ForumThreadScreenBaseProps) => {
-  const invertList = forumListData?.postCount === forumListData?.readCount;
   const navigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
@@ -164,6 +163,7 @@ export const ForumThreadScreenBase = ({
           // https://github.com/jocosocial/swiftarr/issues/237
           // https://github.com/jocosocial/swiftarr/issues/168
           // Refetch needed to "mark" the forum as read.
+          // Also needed to load the data into the list.
           await refetch();
           if (data.pages[0]) {
             // This used to not include the forum itself. idk if that's a problem.
@@ -178,6 +178,11 @@ export const ForumThreadScreenBase = ({
           // When you make a post, disable the "scroll lock" so that the screen includes your new post.
           // This will get reset anyway whenever the screen is re-mounted.
           setMaintainViewPosition(false);
+          if (invertList) {
+            flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+          } else {
+            flatListRef.current?.scrollToIndex({index: forumPosts.length - 1});
+          }
         },
       },
     );

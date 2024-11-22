@@ -85,6 +85,7 @@ export const ForumPostMessageView = ({
       <TouchableOpacity
         style={styles.opacity}
         onLongPress={openMenu}
+        activeOpacity={1}
         onPress={enableShowInThread ? onPress : undefined}>
         <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
           {showAuthor && (

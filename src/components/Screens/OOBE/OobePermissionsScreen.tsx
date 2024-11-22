@@ -12,10 +12,12 @@ import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-p
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {BatteryOptimizationSettingsView} from '../../Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {ListSection} from '../../Lists/ListSection.tsx';
+import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeNotificationsScreen>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobePermissionsScreen>;
 
-export const OobeNotificationsScreen = ({navigation}: Props) => {
+export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = useConfig();
 
@@ -43,8 +45,11 @@ export const OobeNotificationsScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={false}>
-        <PaddedContentView>
+      <ScrollingContentView isStack={true}>
+        <ListSection>
+          <ListSubheader>Notifications</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true}>
           <Text style={commonStyles.marginBottomSmall}>
             This app can send you certain push notifications (assuming fair WiFi conditions). Would you like to enable
             this? You can always change or make up your mind later.
