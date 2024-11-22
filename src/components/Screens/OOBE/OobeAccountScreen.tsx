@@ -84,7 +84,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
       )}
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeNotificationsScreen)}
+        rightOnPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
         rightDisabled={!isLoggedIn}
       />
     </AppView>

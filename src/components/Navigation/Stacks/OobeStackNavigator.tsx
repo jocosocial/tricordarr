@@ -10,7 +10,7 @@ import {OobeFinishScreen} from '../../Screens/OOBE/OobeFinishScreen';
 import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
 import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
-import {OobeNotificationsScreen} from '../../Screens/OOBE/OobeNotificationsScreen';
+import {OobePermissionsScreen} from '../../Screens/OOBE/OobePermissionsScreen.tsx';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 
@@ -22,7 +22,7 @@ export type OobeStackParamList = CommonStackParamList & {
   LoginScreen: undefined;
   OobeFinishScreen: undefined;
   RegisterScreen: undefined;
-  OobeNotificationsScreen: undefined;
+  OobePermissionsScreen: undefined;
 };
 
 export const OobeStackNavigator = () => {
@@ -60,9 +60,9 @@ export const OobeStackNavigator = () => {
         options={{title: 'Register'}}
       />
       <Stack.Screen
-        name={OobeStackComponents.oobeNotificationsScreen}
-        component={OobeNotificationsScreen}
-        options={{title: 'Notifications'}}
+        name={OobeStackComponents.oobePermissionsScreen}
+        component={OobePermissionsScreen}
+        options={{title: 'Permissions'}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeFinishScreen}
