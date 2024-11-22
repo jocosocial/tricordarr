@@ -65,8 +65,8 @@ export const ScheduleLfgFilterMenu = () => {
           <SelectableMenuItem
             key={fezType}
             selected={lfgTypeFilter === fezType}
-            title={FezType[fezType as keyof typeof FezType]}
-            onPress={() => handleFilterSelection(fezType as keyof typeof FezType)}
+            title={FezType.getLabel(fezType)}
+            onPress={() => handleFilterSelection(fezType)}
           />
         );
       })}

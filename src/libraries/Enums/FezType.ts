@@ -23,3 +23,15 @@ export enum FezType {
   /// A shore excursion LFG.
   shore = 'shore',
 }
+
+export namespace FezType {
+  export const getLabel = (fezType?: FezType) => {
+    switch (fezType) {
+      default:
+        if (!fezType) {
+          return 'Unknown';
+        }
+        return fezType.charAt(0).toUpperCase() + fezType.slice(1);
+    }
+  };
+}

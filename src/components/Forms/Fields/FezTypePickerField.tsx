@@ -1,5 +1,4 @@
 import {PickerField} from './PickerField';
-import {AppIcons} from '../../../libraries/Enums/Icons';
 import React from 'react';
 import {FezType} from '../../../libraries/Enums/FezType';
 
@@ -19,10 +18,10 @@ const choices = [
   FezType.other,
 ];
 
-const getTitle = (choice: number | string) => String(choice);
+const getTitle = (choice: FezType | undefined) => FezType.getLabel(choice);
 
 export const FezTypePickerField = ({name, label, value}: FezTypePickerFieldProps) => {
   return (
-    <PickerField name={name} label={label} value={value} choices={choices} icon={AppIcons.type} getTitle={getTitle} />
+    <PickerField<FezType | undefined> name={name} label={label} value={value} choices={choices} getTitle={getTitle} />
   );
 };
