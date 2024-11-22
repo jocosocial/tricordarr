@@ -103,4 +103,5 @@ Layout Consideration
 --------------------
 * Most screens should have an Actions Menu (three dots) in the upper right.
   * Common actions, then privileged actions separated on both sides by divider, help
+  * Other than the Menu, acceptable Header buttons are [Filter, Sort, maybe Search?].
 * Screens where there is a "create" action should have that Create be in the form of a FAB
