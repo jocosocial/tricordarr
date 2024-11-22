@@ -2,7 +2,7 @@ import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import {ForumThreadScreenBase} from './ForumThreadScreenBase';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {Button, Text} from 'react-native-paper';
 import {useForumThreadQuery} from '../../../Queries/Forum/ForumThreadQueries';
@@ -22,15 +22,27 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
   } = useForumThreadQuery(undefined, route.params.postID);
   const {commonStyles} = useStyles();
 
+  const styles = StyleSheet.create({
+    outerContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.marginVertical,
+    },
+    innerContainer: {
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.flex,
+    },
+    button: commonStyles.marginTopSmall,
+  });
+
   const getListHeader = () => {
     return (
-      <View style={[commonStyles.flexRow]}>
-        <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
+      <View style={styles.outerContainer}>
+        <View style={styles.innerContainer}>
           <Text variant={'labelMedium'}>Showing forum starting at selected post.</Text>
           {data?.pages[0] && (
             <Button
               mode={'outlined'}
-              style={[commonStyles.marginTopSmall]}
+              style={styles.button}
               onPress={() =>
                 navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.pages[0].forumID})
               }>

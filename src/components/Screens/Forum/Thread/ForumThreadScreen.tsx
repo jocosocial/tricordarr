@@ -29,7 +29,7 @@ export const ForumThreadScreen = ({route}: Props) => {
       isFetchingPreviousPage={isFetchingPreviousPage}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      invertList={true}
+      invertList={route.params.forumListData?.postCount === route.params.forumListData?.readCount}
       forumListData={route.params.forumListData}
     />
   );
