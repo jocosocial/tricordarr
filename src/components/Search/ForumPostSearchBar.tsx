@@ -8,12 +8,12 @@ import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {CategoryData, ForumListData, PostData} from '../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumData, ForumListData, PostData} from '../../libraries/Structs/ControllerStructs';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 interface ForumPostSearchBarProps {
   category?: CategoryData;
-  forum?: ForumListData;
+  forum?: ForumListData | ForumData;
 }
 
 export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {

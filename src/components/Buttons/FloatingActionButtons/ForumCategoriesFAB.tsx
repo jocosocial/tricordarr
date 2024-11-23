@@ -5,6 +5,7 @@ import {BaseFABGroup} from './BaseFABGroup';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import React from 'react';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface ForumFABProps {
   openLabel?: string;
@@ -19,7 +20,7 @@ export const ForumCategoriesFAB = ({openLabel = 'Forum Categories', icon, showLa
     FabGroupAction({
       icon: AppIcons.postSearch,
       label: 'Search Posts',
-      onPress: () => navigation.push(ForumStackComponents.forumPostSearchScreen, {}),
+      onPress: () => navigation.push(CommonStackComponents.forumPostSearchScreen, {}),
     }),
     FabGroupAction({
       icon: AppIcons.search,

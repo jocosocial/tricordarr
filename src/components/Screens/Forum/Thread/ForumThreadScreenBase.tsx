@@ -21,6 +21,7 @@ import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonS
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
+import {ForumThreadSearchPostsItem} from '../../../Menus/Forum/Items/ForumThreadSearchPostsItem.tsx';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;
@@ -106,6 +107,7 @@ export const ForumThreadScreenBase = ({
             />
           )}
           <ForumThreadPinnedPostsItem forumID={data.pages[0].forumID} navigation={navigation} />
+          <ForumThreadSearchPostsItem navigation={navigation} forum={data.pages[0]} />
           <ForumThreadScreenActionsMenu
             forumData={data.pages[0]}
             invalidationQueryKeys={invalidationQueryKeys}

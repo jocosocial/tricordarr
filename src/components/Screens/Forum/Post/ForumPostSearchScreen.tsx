@@ -4,11 +4,10 @@ import {ForumPostSearchBar} from '../../../Search/ForumPostSearchBar';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {ForumStackComponents} from '../../../../libraries/Enums/Navigation.ts';
 import {ListTitleView} from '../../../Views/ListTitleView.tsx';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens.tsx';
 
-export type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumPostSearchScreen>;
+export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostSearchScreen>;
 
 export const ForumPostSearchScreen = ({route}: Props) => {
   // This is used deep in the FlatList to star posts by favorite users.

@@ -6,6 +6,7 @@ import {BaseFABGroup} from './BaseFABGroup';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface ForumFABProps {
   category: CategoryData;
@@ -27,10 +28,10 @@ export const ForumCategoryFAB = ({category, openLabel = 'Forum Category', icon, 
         }),
     }),
     FabGroupAction({
-      icon: AppIcons.search,
+      icon: AppIcons.postSearch,
       label: 'Search Posts',
       onPress: () =>
-        navigation.push(ForumStackComponents.forumPostSearchScreen, {
+        navigation.push(CommonStackComponents.forumPostSearchScreen, {
           category: category,
         }),
     }),

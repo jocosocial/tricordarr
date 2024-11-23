@@ -16,13 +16,12 @@ import {ForumThreadFavoritesScreen} from '../../Screens/Forum/Thread/ForumThread
 import {ForumThreadMutesScreen} from '../../Screens/Forum/Thread/ForumThreadMutesScreen';
 import {ForumThreadOwnedScreen} from '../../Screens/Forum/Thread/ForumThreadOwnedScreen';
 import {ForumThreadRecentScreen} from '../../Screens/Forum/Thread/ForumThreadRecentScreen';
-import {ForumPostSearchScreen} from '../../Screens/Forum/Post/ForumPostSearchScreen';
 import {ForumThreadSearchScreen} from '../../Screens/Forum/Thread/ForumThreadSearchScreen';
 import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
-import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
@@ -36,10 +35,6 @@ export type ForumStackParamList = CommonStackParamList & {
   ForumMutesScreen: undefined;
   ForumOwnedScreen: undefined;
   ForumRecentScreen: undefined;
-  ForumPostSearchScreen: {
-    category?: CategoryData;
-    forum?: ForumListData;
-  };
   ForumPostAlertwordScreen: {
     alertWord: string;
   };
@@ -111,11 +106,6 @@ export const ForumStackNavigator = () => {
         name={ForumStackComponents.forumRecentScreen}
         component={isDisabled ? DisabledView : ForumThreadRecentScreen}
         options={{title: 'Recently Viewed'}}
-      />
-      <Stack.Screen
-        name={ForumStackComponents.forumPostSearchScreen}
-        component={isDisabled ? DisabledView : ForumPostSearchScreen}
-        options={{title: 'Post Search'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumThreadSearchScreen}
