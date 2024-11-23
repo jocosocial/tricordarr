@@ -22,11 +22,12 @@ import {ForumThreadCreateScreen} from '../../Screens/Forum/Thread/ForumThreadCre
 import {ForumPostAlertwordScreen} from '../../Screens/Forum/Post/ForumPostAlertwordScreen';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 export type ForumStackParamList = CommonStackParamList & {
   ForumCategoriesScreen: undefined;
   ForumCategoryScreen: {
-    categoryID: string;
+    category: CategoryData;
   };
   ForumPostMentionScreen: undefined;
   ForumPostSelfScreen: undefined;
@@ -40,7 +41,7 @@ export type ForumStackParamList = CommonStackParamList & {
     alertWord: string;
   };
   ForumThreadSearchScreen: {
-    categoryID?: string;
+    category?: CategoryData;
   };
   ForumThreadCreateScreen: {
     categoryId: string;

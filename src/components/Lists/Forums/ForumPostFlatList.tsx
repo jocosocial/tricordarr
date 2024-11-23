@@ -1,15 +1,5 @@
 import {ForumData, ForumListData, PostData} from '../../../libraries/Structs/ControllerStructs';
-import {
-  FlatList,
-  LayoutRectangle,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  RefreshControlProps,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';

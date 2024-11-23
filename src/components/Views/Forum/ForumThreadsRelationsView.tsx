@@ -5,16 +5,16 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumEmptyListView} from './ForumEmptyListView.tsx';
 import {ForumThreadListView} from './ForumThreadListView.tsx';
 
 interface ForumThreadsRelationsViewProps {
   relationType: ForumRelationQueryType;
-  categoryID?: string;
+  category?: CategoryData;
   title?: string;
 }
-export const ForumThreadsRelationsView = ({relationType, categoryID, title}: ForumThreadsRelationsViewProps) => {
+export const ForumThreadsRelationsView = ({relationType, category, title}: ForumThreadsRelationsViewProps) => {
   const {forumSortOrder, forumSortDirection} = useFilter();
   const {
     data,
@@ -27,7 +27,7 @@ export const ForumThreadsRelationsView = ({relationType, categoryID, title}: For
     hasNextPage,
     fetchNextPage,
   } = useForumRelationQuery(relationType, {
-    ...(categoryID ? {cat: categoryID} : undefined),
+    ...(category ? {cat: category.categoryID} : undefined),
     ...(forumSortOrder && forumSortOrder !== ForumSort.event ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
@@ -67,7 +67,7 @@ export const ForumThreadsRelationsView = ({relationType, categoryID, title}: For
       hasPreviousPage={hasPreviousPage}
       hasNextPage={hasNextPage}
       forumListData={forumListData}
-      categoryID={categoryID}
+      category={category}
       isFetchingPreviousPage={isFetchingPreviousPage}
       title={title}
       isFetchingNextPage={isFetchingNextPage}

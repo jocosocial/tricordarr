@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {Text, DataTable, Divider, HelperText} from 'react-native-paper';
+import {Text, DataTable, HelperText} from 'react-native-paper';
 import {
   getSharedWebSocket,
   startForegroundServiceWorker,

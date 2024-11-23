@@ -40,7 +40,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     hasNextPage,
     fetchNextPage,
     isLoading,
-  } = useForumCategoryQuery(route.params.categoryID, {
+  } = useForumCategoryQuery(route.params.category.categoryID, {
     ...(forumSortOrder ? {sort: forumSortOrder} : undefined),
     ...(forumSortDirection ? {order: forumSortDirection} : undefined),
   });
@@ -73,7 +73,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     if (enableSelection) {
       return (
         <View>
-          <ForumSelectionHeaderButtons setRefreshing={setRefreshing} categoryID={route.params.categoryID} />
+          <ForumSelectionHeaderButtons setRefreshing={setRefreshing} categoryID={route.params.category.categoryID} />
         </View>
       );
     }
@@ -86,7 +86,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.categoryID]);
+  }, [enableSelection, route.params.category.categoryID]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
@@ -111,7 +111,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return (
       <AppView>
         <ForumEmptyListView onRefresh={onRefresh} refreshing={refreshing} />
-        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
+        {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
       </AppView>
     );
   }
@@ -121,9 +121,9 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
       <AppView>
         <ForumThreadsRelationsView
           relationType={ForumFilter.toRelation(forumFilter)}
-          categoryID={route.params.categoryID}
+          category={route.params.category}
         />
-        {!isUserRestricted && <ForumCategoryFAB categoryId={route.params.categoryID} />}
+        {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
       </AppView>
     );
   }
@@ -136,9 +136,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         hasPreviousPage={hasPreviousPage}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
-        categoryID={route.params.categoryID}
+        category={route.params.category}
         isFetchingPreviousPage={isFetchingPreviousPage}
-        title={data?.pages[0].title}
         isFetchingNextPage={isFetchingNextPage}
         refreshing={refreshing}
         onRefresh={onRefresh}

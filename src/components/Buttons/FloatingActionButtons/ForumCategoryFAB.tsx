@@ -5,15 +5,16 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {BaseFABGroup} from './BaseFABGroup';
 import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 interface ForumFABProps {
-  categoryId: string;
+  category: CategoryData;
   openLabel?: string;
   icon?: IconSource;
   showLabel?: boolean;
 }
 
-export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon, showLabel}: ForumFABProps) => {
+export const ForumCategoryFAB = ({category, openLabel = 'Forum Category', icon, showLabel}: ForumFABProps) => {
   const navigation = useForumStackNavigation();
 
   const actions = [
@@ -22,7 +23,7 @@ export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon
       label: 'New Forum',
       onPress: () =>
         navigation.push(ForumStackComponents.forumThreadCreateScreen, {
-          categoryId: categoryId,
+          categoryId: category.categoryID,
         }),
     }),
     FabGroupAction({
@@ -30,7 +31,7 @@ export const ForumCategoryFAB = ({categoryId, openLabel = 'Forum Category', icon
       label: 'Search Forums',
       onPress: () =>
         navigation.push(ForumStackComponents.forumThreadSearchScreen, {
-          categoryID: categoryId,
+          category: category,
         }),
     }),
   ];
