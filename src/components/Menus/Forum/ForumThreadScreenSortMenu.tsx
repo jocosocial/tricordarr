@@ -5,8 +5,13 @@ import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortF
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
+import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
-export const ForumThreadScreenSortMenu = () => {
+interface ForumThreadScreenSortMenuProps {
+  category?: CategoryData;
+}
+
+export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useFilter();
 
@@ -46,12 +51,14 @@ export const ForumThreadScreenSortMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
-      <SelectableMenuItem
-        title={ForumSort.getLabel(ForumSort.event)}
-        leadingIcon={AppIcons.events}
-        selected={forumSortOrder === ForumSort.event}
-        onPress={() => handleFilterSelection(ForumSort.event)}
-      />
+      {props.category && props.category.isEventCategory && (
+        <SelectableMenuItem
+          title={ForumSort.getLabel(ForumSort.event)}
+          leadingIcon={AppIcons.events}
+          selected={forumSortOrder === ForumSort.event}
+          onPress={() => handleFilterSelection(ForumSort.event)}
+        />
+      )}
       <SelectableMenuItem
         title={ForumSort.getLabel(ForumSort.update)}
         leadingIcon={AppIcons.recent}

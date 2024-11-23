@@ -22,6 +22,7 @@ import {ForumThreadListView} from '../../Views/Forum/ForumThreadListView.tsx';
 import {ForumEmptyListView} from '../../Views/Forum/ForumEmptyListView.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
 import {ForumSelectionHeaderButtons} from '../../Buttons/HeaderButtons/ForumSelectionHeaderButtons.tsx';
+import {ForumCategoryScreenSearchMenu} from '../../Menus/Forum/ForumCategoryScreenSearchMenu.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -80,13 +81,14 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumThreadScreenSortMenu />
+          <ForumCategoryScreenSearchMenu category={route.params.category} />
+          <ForumThreadScreenSortMenu category={route.params.category} />
           <ForumThreadScreenFilterMenu />
           <ForumCategoryScreenActionsMenu />
         </HeaderButtons>
       </View>
     );
-  }, [enableSelection, route.params.category.categoryID]);
+  }, [enableSelection, route.params.category]);
 
   useEffect(() => {
     // This clears the previous state of forum posts and a specific forum.
