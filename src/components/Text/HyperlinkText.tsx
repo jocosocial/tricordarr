@@ -57,6 +57,15 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
         return '[Twitarr Link]';
       }
     }
+
+    // ChatGPT
+    const prefixes = ['mailto:', 'http://', 'https://'];
+    for (const prefix of prefixes) {
+      if (linkUrl.startsWith(prefix) && linkUrl.length > prefix.length) {
+        return linkUrl.slice(prefix.length);
+      }
+    }
+
     return linkUrl;
   };
 

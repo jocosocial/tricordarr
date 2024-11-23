@@ -1,8 +1,11 @@
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {StyleProp, TextStyle} from 'react-native';
+import {StyleProp, TextStyle, StyleSheet} from 'react-native';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {useAppTheme} from '../../../styles/Theme.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 interface UserBylineTagProps {
   user: UserHeader;
@@ -16,13 +19,8 @@ interface UserBylineTagProps {
   prefix?: string;
 }
 
-export const getUserBylineString = (
-  user: UserHeader,
-  includePronoun: boolean,
-  includeDisplayName: boolean,
-  prefix?: string,
-) => {
-  let displayComponents: string[] = prefix ? [prefix] : [];
+export const getUserBylineString = (user: UserHeader, includePronoun: boolean, includeDisplayName: boolean) => {
+  let displayComponents: string[] = [];
   if (includeDisplayName && user.displayName) {
     displayComponents.push(user.displayName);
     displayComponents.push(`(@${user.username})`);
@@ -46,9 +44,26 @@ export const UserBylineTag = ({
   variant,
   prefix,
 }: UserBylineTagProps) => {
+  const {privilegedUsernames} = usePrivilege();
+  const theme = useAppTheme();
+  const {commonStyles} = useStyles();
+  const byPrivilegedUser = privilegedUsernames.some(username => user.username === username);
+  const styles = StyleSheet.create({
+    innerText: style as TextStyle,
+    user: {
+      color: byPrivilegedUser ? theme.colors.twitarrNegativeButton : undefined,
+      ...(byPrivilegedUser ? commonStyles.bold : undefined),
+      ...(style as TextStyle),
+    },
+  });
   return (
-    <Text style={style} onPress={onPress} selectable={selectable} variant={variant} onLongPress={onLongPress}>
-      {getUserBylineString(user, includePronoun, includeDisplayName, prefix)}
+    <Text style={styles.user} onPress={onPress} selectable={selectable} variant={variant} onLongPress={onLongPress}>
+      {prefix && (
+        <Text variant={variant} style={styles.innerText}>
+          {prefix}{' '}
+        </Text>
+      )}
+      {getUserBylineString(user, includePronoun, includeDisplayName)}
     </Text>
   );
 };

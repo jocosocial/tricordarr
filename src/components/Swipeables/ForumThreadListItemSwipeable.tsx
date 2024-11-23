@@ -38,11 +38,11 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
 
   const handleMarkAsRead = useCallback(
     async (swipeable: SwipeableMethods) => {
-      setReadRefreshing(true);
-      await refetch();
-      await queryClient.invalidateQueries([`/forum/categories/${props.categoryID}`]);
-      setReadRefreshing(false);
+      // Reset first. Improves response time.
       swipeable.reset();
+      setReadRefreshing(true);
+      await Promise.all([refetch(), queryClient.invalidateQueries([`/forum/categories/${props.categoryID}`])]);
+      setReadRefreshing(false);
     },
     [props.categoryID, queryClient, refetch],
   );
