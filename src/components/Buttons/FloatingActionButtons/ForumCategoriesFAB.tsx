@@ -19,7 +19,7 @@ export const ForumCategoriesFAB = ({openLabel = 'Forum Categories', icon, showLa
     FabGroupAction({
       icon: AppIcons.postSearch,
       label: 'Search Posts',
-      onPress: () => navigation.push(ForumStackComponents.forumPostSearchScreen),
+      onPress: () => navigation.push(ForumStackComponents.forumPostSearchScreen, {}),
     }),
     FabGroupAction({
       icon: AppIcons.search,
