@@ -15,7 +15,6 @@ import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
-import {ForumCategoriesFAB} from '../../Buttons/FloatingActionButtons/ForumCategoriesFAB.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -25,6 +24,7 @@ import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordList
 import {ListSubheader} from '../../Lists/ListSubheader';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {styleDefaults} from '../../../styles';
+import {ForumCategoriesScreenSearchMenu} from '../../Menus/Forum/ForumCategoriesScreenSearchMenu.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {
@@ -37,8 +37,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data: keywordData, refetch: refetchKeywordData} = useUserKeywordQuery({
     keywordType: 'alertwords',
   });
-  const [showFabLabel, setShowFabLabel] = useState(true);
-  const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -50,15 +48,12 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <ForumCategoriesScreenSearchMenu />
           <ForumCategoriesScreenActionsMenu />
         </HeaderButtons>
       </View>
     );
   }, []);
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    onScrollThreshold(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-  };
 
   useEffect(() => {
     // This clears the previous state of forum posts, specific forum, and the category list data.
@@ -86,7 +81,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        onScroll={handleScroll}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
         <View>
           {data && (
@@ -166,7 +160,6 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
           </ListSection>
         </View>
       </ScrollingContentView>
-      <ForumCategoriesFAB showLabel={showFabLabel} />
     </AppView>
   );
 };

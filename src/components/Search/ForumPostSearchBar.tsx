@@ -8,10 +8,15 @@ import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {PostData} from '../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumData, ForumListData, PostData} from '../../libraries/Structs/ControllerStructs';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
-export const ForumPostSearchBar = () => {
+interface ForumPostSearchBarProps {
+  category?: CategoryData;
+  forum?: ForumListData | ForumData;
+}
+
+export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [queryEnable, setQueryEnable] = useState(false);
   const {setErrorMessage} = useErrorHandler();
@@ -29,6 +34,8 @@ export const ForumPostSearchBar = () => {
   } = useForumPostSearchQuery(
     {
       search: searchQuery,
+      ...(props.category ? {category: props.category.categoryID} : undefined),
+      ...(props.forum ? {forum: props.forum.forumID} : undefined),
     },
     {
       enabled: queryEnable,

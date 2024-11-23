@@ -111,3 +111,5 @@ export interface StartEndTime {
   startTime: Date;
   endTime: Date;
 }
+
+export type FloatingScrollButtonPosition = 'raised' | 'bottom' | undefined;

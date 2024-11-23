@@ -14,6 +14,11 @@ import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientCon
 import {apiGet, shouldQueryEnable} from '../../libraries/Network/APIClient';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 
+export type TokenAuthQueryOptionsType<TData, TError extends Error = AxiosError<ErrorResponse>> = Omit<
+  UseQueryOptions<TData, TError, TData>,
+  'initialData' | 'queryKey' | 'onError'
+>;
+
 /**
  * Clone of useQuery but coded to require the user be logged in.
  * Some endpoints can be used without authentication such as the schedule.
@@ -26,7 +31,7 @@ export function useTokenAuthQuery<
 >(
   endpoint: string,
   // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
-  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey' | 'onError'>,
+  options?: TokenAuthQueryOptionsType<TData, TError>,
   queryParams?: TQueryParams,
   queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {

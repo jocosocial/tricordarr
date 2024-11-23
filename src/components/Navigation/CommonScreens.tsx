@@ -5,6 +5,7 @@ import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {MainStack} from './Stacks/MainStackNavigator';
 import {
+  CategoryData,
   FezData,
   ForumData,
   ForumListData,
@@ -57,6 +58,7 @@ import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScre
 import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
 import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
 import {LfgParticipationHelpScreen} from '../Screens/LFG/LfgParticipationHelpScreen.tsx';
+import {ForumPostSearchScreen} from '../Screens/Forum/Post/ForumPostSearchScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -182,6 +184,10 @@ export type CommonStackParamList = {
   ForumHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
   LfgParticipationHelpScreen: undefined;
+  ForumPostSearchScreen: {
+    category?: CategoryData;
+    forum?: ForumListData | ForumData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -228,6 +234,7 @@ export enum CommonStackComponents {
   forumHelpScreen = 'ForumHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
   lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
+  forumPostSearchScreen = 'ForumPostSearchScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -453,6 +460,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.lfgParticipationHelpScreen}
         component={LfgParticipationHelpScreen}
         options={{title: 'LFG Participation Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.forumPostSearchScreen}
+        component={isForumsDisabled ? DisabledView : ForumPostSearchScreen}
+        options={{title: 'Post Search'}}
       />
     </>
   );

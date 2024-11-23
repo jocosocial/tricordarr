@@ -2,7 +2,6 @@ import React from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
 import {HelpSectionView} from '../../Views/Help/HelpSectionView.tsx';
 import {IconButton} from 'react-native-paper';

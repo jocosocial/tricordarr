@@ -4,11 +4,12 @@ import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import {FloatingScrollButtonPosition} from '../../libraries/Types';
 
 interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
-  displayPosition?: 'raised' | 'bottom';
+  displayPosition?: FloatingScrollButtonPosition;
 }
 
 /**

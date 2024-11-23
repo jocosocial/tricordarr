@@ -3,7 +3,7 @@ import {Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {ForumListData} from '../../libraries/Structs/ControllerStructs';
+import {CategoryData, ForumListData} from '../../libraries/Structs/ControllerStructs';
 import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
@@ -15,7 +15,7 @@ import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMen
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 interface Props {
-  categoryID?: string;
+  category?: CategoryData;
 }
 
 export const ForumThreadSearchBar = (props: Props) => {
@@ -37,7 +37,7 @@ export const ForumThreadSearchBar = (props: Props) => {
     {
       search: searchQuery,
       sort: forumSortOrder !== ForumSort.event ? forumSortOrder : undefined,
-      category: props.categoryID,
+      category: props.category?.categoryID,
     },
     {
       enabled: enable,

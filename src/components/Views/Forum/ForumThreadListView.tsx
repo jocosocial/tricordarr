@@ -1,7 +1,12 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {SelectionButtons} from '../../Buttons/SegmentedButtons/SelectionButtons.tsx';
-import {ErrorResponse, ForumListData, ForumSearchData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {
+  CategoryData,
+  ErrorResponse,
+  ForumListData,
+  ForumSearchData,
+} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ListTitleView} from '../ListTitleView.tsx';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
@@ -14,7 +19,7 @@ interface ForumThreadListViewProps {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   enableFAB?: boolean;
-  categoryID?: string;
+  category?: CategoryData;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
   fetchNextPage: (
     options?: FetchNextPageOptions | undefined,
@@ -38,7 +43,7 @@ export const ForumThreadListView = ({
   hasNextPage,
   hasPreviousPage,
   enableFAB = false,
-  categoryID,
+  category,
   setRefreshing,
   fetchNextPage,
   fetchPreviousPage,
@@ -76,10 +81,10 @@ export const ForumThreadListView = ({
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
-        categoryID={categoryID}
+        categoryID={category?.categoryID}
         onScrollThreshold={onScrollThreshold}
       />
-      {enableFAB && categoryID && <ForumCategoryFAB categoryId={categoryID} showLabel={showFabLabel} />}
+      {enableFAB && category && <ForumCategoryFAB category={category} showLabel={showFabLabel} />}
     </>
   );
 };
