@@ -4,6 +4,7 @@ import {
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  RefreshControlProps,
   StyleSheet,
   View,
 } from 'react-native';
@@ -13,7 +14,6 @@ import React, {useCallback, useState} from 'react';
 import {FloatingScrollButtonPosition} from '../../libraries/Types';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import ArrayLike = jasmine.ArrayLike;
 
 interface ConversationFlatListProps<TItem> {
   floatingScrollButtonPosition?: FloatingScrollButtonPosition;
@@ -22,8 +22,8 @@ interface ConversationFlatListProps<TItem> {
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  handleLoadPrevious: () => void;
-  handleLoadNext: () => void;
+  handleLoadPrevious?: () => void;
+  handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;
   keyExtractor?: (item: TItem, index: number) => string;
@@ -32,6 +32,9 @@ interface ConversationFlatListProps<TItem> {
   renderListFooter: () => React.JSX.Element;
   renderItem: ListRenderItem<TItem>;
   data: ArrayLike<TItem>;
+  renderItemSeparator?: React.ComponentType<any>;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
+  maintainViewPosition?: boolean;
 }
 
 export const ConversationFlatList = <TItem,>({
@@ -50,7 +53,10 @@ export const ConversationFlatList = <TItem,>({
   renderListHeader,
   renderListFooter,
   renderItem,
+  renderItemSeparator,
   data,
+  refreshControl,
+  maintainViewPosition = false,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -159,6 +165,7 @@ export const ConversationFlatList = <TItem,>({
     [renderItem, styles.itemContainerView],
   );
 
+  // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlatList
@@ -184,6 +191,9 @@ export const ConversationFlatList = <TItem,>({
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
         ListFooterComponent={invertList ? renderListHeader : renderListFooter}
         ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
+        ItemSeparatorComponent={renderItemSeparator}
+        refreshControl={refreshControl}
+        maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
       />
       {showScrollButton && (
         <FloatingScrollButton
