@@ -108,14 +108,16 @@ export const ConversationFlatList = <TItem,>({
    * you can be left with one or two posts and a header that says Loading.
    * So this jogs its memory. A potential future optimization can be to trigger
    * this only if the pageSize is small (like <=10).
+   * This was being problematic when placed in a useCallback(). handleLoadPrevious
+   * was coming across as undefined.
    */
-  const onLayout = useCallback(() => {
+  const onLayout = () => {
     if (invertList && hasPreviousPage && handleLoadPrevious) {
       handleLoadPrevious();
     } else if (!invertList && hasNextPage && handleLoadNext) {
       handleLoadNext();
     }
-  }, [handleLoadNext, handleLoadPrevious, hasNextPage, hasPreviousPage, invertList]);
+  };
 
   const getItemHeight = useCallback(
     (index: number) => {

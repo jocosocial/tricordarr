@@ -13,6 +13,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {FloatingScrollButtonPosition} from '../../../libraries/Types';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -30,6 +31,7 @@ interface ForumPostFlatListProps {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
+  floatingScrollButtonPosition?: FloatingScrollButtonPosition;
 }
 
 export const ForumPostFlatList = ({
@@ -48,6 +50,7 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
   initialScrollIndex = 0,
+  floatingScrollButtonPosition,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
@@ -199,6 +202,7 @@ export const ForumPostFlatList = ({
       maintainViewPosition={maintainViewPosition}
       initialScrollIndex={initialScrollIndex}
       refreshControl={refreshControl}
+      floatingScrollButtonPosition={floatingScrollButtonPosition}
     />
   );
 };
