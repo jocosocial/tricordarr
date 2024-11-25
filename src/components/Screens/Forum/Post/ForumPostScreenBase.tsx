@@ -12,6 +12,7 @@ import {ForumPostScreenBaseActionsMenu} from '../../../Menus/Forum/ForumPostScre
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
+import {AppIcons} from '../../../../libraries/Enums/Icons.ts';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -110,6 +111,9 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
         itemSeparator={'time'}
         enableShowInThread={true}
         hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        scrollButtonToTop={true}
+        scrollButtonIcon={AppIcons.scrollUp}
       />
     </AppView>
   );
