@@ -223,6 +223,8 @@ export const ForumThreadScreenBase = ({
     return 0;
   };
 
+  const showForm = !data.pages[0].isLocked || hasModerator;
+
   return (
     <AppView>
       <PostAsUserBanner />
@@ -242,8 +244,9 @@ export const ForumThreadScreenBase = ({
         hasNextPage={hasNextPage}
         forumListData={forumListData}
         initialScrollIndex={getInitialScrollIndex()}
+        floatingScrollButtonPosition={showForm ? 'raised' : 'bottom'}
       />
-      {(!data.pages[0].isLocked || hasModerator) && (
+      {showForm && (
         <ContentPostForm
           onSubmit={onPostSubmit}
           formRef={postFormRef}

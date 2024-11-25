@@ -11,6 +11,7 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '../../../Queries/Forum/ForumThreadQueries';
+import {AppIcons} from '../../../../libraries/Enums/Icons.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
 
@@ -49,6 +50,8 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
           enableShowInThread={true}
           forumData={forumData?.pages[0]}
           getListHeader={getListHeader}
+          scrollButtonToTop={true}
+          scrollButtonIcon={AppIcons.scrollUp}
         />
       </View>
     </AppView>

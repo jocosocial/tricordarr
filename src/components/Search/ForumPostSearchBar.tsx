@@ -142,6 +142,8 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
           invertList={false}
           enableShowInThread={true}
           hasNextPage={hasNextPage}
+          scrollButtonToTop={true}
+          scrollButtonIcon={AppIcons.scrollUp}
         />
       </View>
     </>

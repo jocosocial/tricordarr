@@ -16,8 +16,9 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 interface ConversationFlatListProps<TItem> {
-  floatingScrollButtonPosition?: FloatingScrollButtonPosition;
-  floatingScrollButtonIcon?: IconSource;
+  scrollButtonPosition?: FloatingScrollButtonPosition;
+  scrollButtonIcon?: IconSource;
+  scrollButtonToTop?: boolean;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
@@ -38,8 +39,8 @@ interface ConversationFlatListProps<TItem> {
 }
 
 export const ConversationFlatList = <TItem,>({
-  floatingScrollButtonPosition,
-  floatingScrollButtonIcon = AppIcons.scrollDown,
+  scrollButtonPosition,
+  scrollButtonIcon = AppIcons.scrollDown,
   invertList = true,
   flatListRef,
   hasNextPage,
@@ -57,6 +58,7 @@ export const ConversationFlatList = <TItem,>({
   data,
   refreshControl,
   maintainViewPosition = false,
+  scrollButtonToTop = false,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -74,18 +76,18 @@ export const ConversationFlatList = <TItem,>({
   });
 
   const handleScrollButtonPress = useCallback(() => {
-    if (invertList) {
+    if (invertList || scrollButtonToTop) {
       console.log('[ConversationFlatList.tsx] scrolling to offset 0');
       flatListRef.current?.scrollToOffset({offset: 0, animated: true});
     } else {
       console.log('[ConversationFlatList.tsx] scrolling to end');
       flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
     }
-  }, [contentHeight, flatListRef, invertList]);
+  }, [contentHeight, flatListRef, invertList, scrollButtonToTop]);
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (invertList) {
+      if (invertList || scrollButtonToTop) {
         setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
       } else {
         setShowScrollButton(
@@ -94,7 +96,7 @@ export const ConversationFlatList = <TItem,>({
         );
       }
     },
-    [invertList, styleDefaults.listScrollThreshold],
+    [invertList, styleDefaults.listScrollThreshold, scrollButtonToTop],
   );
 
   const onContentSizeChange = useCallback((w: number, h: number) => {
@@ -197,9 +199,9 @@ export const ConversationFlatList = <TItem,>({
       />
       {showScrollButton && (
         <FloatingScrollButton
-          icon={floatingScrollButtonIcon}
+          icon={scrollButtonIcon}
           onPress={handleScrollButtonPress}
-          displayPosition={floatingScrollButtonPosition}
+          displayPosition={scrollButtonPosition}
         />
       )}
     </>

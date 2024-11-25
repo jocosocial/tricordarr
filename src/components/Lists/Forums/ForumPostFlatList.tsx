@@ -13,6 +13,8 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {FloatingScrollButtonPosition} from '../../../libraries/Types';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -30,6 +32,9 @@ interface ForumPostFlatListProps {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
+  floatingScrollButtonPosition?: FloatingScrollButtonPosition;
+  scrollButtonToTop?: boolean;
+  scrollButtonIcon?: IconSource;
 }
 
 export const ForumPostFlatList = ({
@@ -48,6 +53,9 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
   initialScrollIndex = 0,
+  floatingScrollButtonPosition,
+  scrollButtonToTop = false,
+  scrollButtonIcon,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
@@ -199,6 +207,12 @@ export const ForumPostFlatList = ({
       maintainViewPosition={maintainViewPosition}
       initialScrollIndex={initialScrollIndex}
       refreshControl={refreshControl}
+      scrollButtonPosition={floatingScrollButtonPosition}
+      invertList={invertList}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      scrollButtonToTop={scrollButtonToTop}
+      scrollButtonIcon={scrollButtonIcon}
     />
   );
 };
