@@ -203,6 +203,7 @@ export const ForumPostFlatList = ({
       initialScrollIndex={initialScrollIndex}
       refreshControl={refreshControl}
       floatingScrollButtonPosition={floatingScrollButtonPosition}
+      invertList={invertList}
     />
   );
 };
