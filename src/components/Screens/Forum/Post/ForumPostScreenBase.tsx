@@ -7,12 +7,12 @@ import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import {PostData} from '../../../../libraries/Structs/ControllerStructs';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
-import {useCommonStack} from '../../../Navigation/CommonScreens';
-import {ForumPostScreenBaseActionsMenu} from '../../../Menus/Forum/ForumPostScreenBaseActionsMenu';
-import {HeaderButtons} from 'react-navigation-header-buttons';
+import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
 import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../../libraries/Enums/Icons.ts';
+import pluralize from 'pluralize';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;
@@ -54,11 +54,17 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ForumPostScreenBaseActionsMenu onReload={onRefresh} />
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => {
+              commonNavigation.push(CommonStackComponents.forumHelpScreen);
+            }}
+          />
         </HeaderButtons>
       </View>
     );
-  }, [onRefresh]);
+  }, [commonNavigation]);
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -100,7 +106,9 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
 
   return (
     <AppView>
-      {title && <ListTitleView title={title} />}
+      {title && (
+        <ListTitleView title={title} subtitle={`${forumPosts.length} ${pluralize('result', forumPosts.length)}`} />
+      )}
       <ForumPostFlatList
         flatListRef={flatListRef}
         invertList={false}

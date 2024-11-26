@@ -3,13 +3,15 @@ import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {BoldText} from '../Text/BoldText.tsx';
+import {MD3TypescaleKey} from 'react-native-paper/src/types.tsx';
 
 interface ListTitleViewProps {
   title?: string;
   subtitle?: string;
+  subtitleVariant?: keyof typeof MD3TypescaleKey;
 }
 
-export const ListTitleView = ({title, subtitle}: ListTitleViewProps) => {
+export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
@@ -34,7 +36,7 @@ export const ListTitleView = ({title, subtitle}: ListTitleViewProps) => {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <BoldText>{title}</BoldText>
-        {subtitle && <Text>{subtitle}</Text>}
+        {subtitle && <Text variant={subtitleVariant}>{subtitle}</Text>}
       </View>
     </View>
   );
