@@ -100,14 +100,17 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     }
   }, [data, setForumPosts, refetchUserNotificationData, userNotificationData?.newForumMentionCount]);
 
-  if (isLoading || isLoadingFavorites) {
+  if (isLoading || isLoadingFavorites || !data) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
       {title && (
-        <ListTitleView title={title} subtitle={`${forumPosts.length} ${pluralize('result', forumPosts.length)}`} />
+        <ListTitleView
+          title={title}
+          subtitle={`${data.pages[0].paginator.total} ${pluralize('result', data.pages[0].paginator.total)}`}
+        />
       )}
       <ForumPostFlatList
         flatListRef={flatListRef}

@@ -124,6 +124,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         <ForumThreadsRelationsView
           relationType={ForumFilter.toRelation(forumFilter)}
           category={route.params.category}
+          title={route.params.category.title}
         />
         {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
       </AppView>
@@ -145,6 +146,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         onRefresh={onRefresh}
         setRefreshing={setRefreshing}
         enableFAB={!isUserRestricted}
+        title={route.params.category.title}
       />
     </AppView>
   );

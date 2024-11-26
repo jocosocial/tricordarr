@@ -14,6 +14,7 @@ import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
 import {CategoryDataQueryResponse} from '../../Queries/Forum/ForumCategoryQueries.tsx';
 import {AxiosError} from 'axios';
+import pluralize from 'pluralize';
 
 interface ForumThreadListViewProps {
   hasNextPage?: boolean;
