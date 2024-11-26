@@ -14,7 +14,6 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
 import {FloatingScrollButtonPosition} from '../../../libraries/Types';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -33,8 +32,6 @@ interface ForumPostFlatListProps {
   forumListData?: ForumListData;
   initialScrollIndex?: number;
   floatingScrollButtonPosition?: FloatingScrollButtonPosition;
-  // scrollButtonToTop?: boolean;
-  // scrollButtonIcon?: IconSource;
 }
 
 export const ForumPostFlatList = ({
@@ -54,9 +51,7 @@ export const ForumPostFlatList = ({
   hasNextPage,
   initialScrollIndex = 0,
   floatingScrollButtonPosition,
-}: // scrollButtonToTop = false,
-// scrollButtonIcon,
-ForumPostFlatListProps) => {
+}: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const {hasModerator} = usePrivilege();
@@ -211,8 +206,6 @@ ForumPostFlatListProps) => {
       invertList={invertList}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      // scrollButtonToTop={scrollButtonToTop}
-      // scrollButtonIcon={scrollButtonIcon}
     />
   );
 };

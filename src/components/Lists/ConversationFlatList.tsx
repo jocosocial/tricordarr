@@ -12,13 +12,10 @@ import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
 import {FloatingScrollButtonPosition} from '../../libraries/Types';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 interface ConversationFlatListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;
-  // scrollButtonIcon?: IconSource;
-  // scrollButtonToTop?: boolean;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
@@ -40,7 +37,6 @@ interface ConversationFlatListProps<TItem> {
 
 export const ConversationFlatList = <TItem,>({
   scrollButtonPosition,
-  // scrollButtonIcon = AppIcons.scrollDown,
   invertList = true,
   flatListRef,
   hasNextPage,
@@ -58,11 +54,9 @@ export const ConversationFlatList = <TItem,>({
   data,
   refreshControl,
   maintainViewPosition = false,
-}: // scrollButtonToTop = false,
-ConversationFlatListProps<TItem>) => {
+}: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
-  // const [contentHeight, setContentHeight] = useState(0);
   const [itemHeights, setItemHeights] = useState<number[]>([]);
 
   const styles = StyleSheet.create({
@@ -75,67 +69,30 @@ ConversationFlatListProps<TItem>) => {
     },
   });
 
+  /**
+   * Callback handler for when the scroll button is pressed.
+   * Used to track some state for the list contentHeight and would do
+   * flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
+   */
   const handleScrollButtonPress = useCallback(() => {
     flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-    // if (invertList) {
-    //   console.log('dunno yet');
-    //   // offset: 0 is the bottom in an inverted list.
-    //   flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-    //   // flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
-    // } else {
-    //   flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-    // }
-    // if (invertList || scrollButtonToTop) {
-    //   console.log('[ConversationFlatList.tsx] scrolling to offset 0');
-    //   flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-    // } else {
-    //   console.log('[ConversationFlatList.tsx] scrolling to end');
-    //   flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
-    // }
   }, [flatListRef]);
 
-  // @TODO theres some logic wonk here.
-  // inverted list = start at bottom
-  // ForumThreadScreenBase, regular forum view: invert if unread
-  // The rest is all Favorites, Your Posts, Users Posts, lists that should start
-  // at the top.
-  // event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold is true
-  // when scrolled down from the top.
-  // There's probably a case when you start mid-way down a thread.
-  // If invertList is false, scroll up.
-  // console.log(invertList, scrollButtonToTop);
+  /**
+   * There are basically two types of list:
+   * - Inverted: Things like read Forums and Seamail that start at the bottom.
+   * - Uninverted: Things like unread Forums and LFG Lists that start at the top.
+   *
+   * At one point I had this, but it's not relevant anymore. Saving for later.
+   *   event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
+   *     styleDefaults.listScrollThreshold * 2,
+   */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      // console.log('Invert', event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      // console.log(
-      //   'Other',
-      //   event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
-      //     styleDefaults.listScrollThreshold * 2,
-      // );
-      // if (invertList) {
-      //   console.log('idk yet');
-      //   setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      // } else {
-      //   setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      // }
-      // if (invertList || scrollButtonToTop) {
-      //   console.log('YES');
-      //   setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      // } else {
-      //   console.log('NO');
-      //   setShowScrollButton(
-      //     event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
-      //       styleDefaults.listScrollThreshold * 2,
-      //   );
-      // }
     },
     [styleDefaults.listScrollThreshold],
   );
-
-  const onContentSizeChange = useCallback((w: number, h: number) => {
-    // setContentHeight(h);
-  }, []);
 
   /**
    * If the forum has been fully read and you only have the latest very small
@@ -172,7 +129,7 @@ ConversationFlatListProps<TItem>) => {
   );
 
   const getItemLayout = useCallback(
-    (data: ArrayLike<TItem> | null | undefined, index: number) => ({
+    (_: ArrayLike<TItem> | null | undefined, index: number) => ({
       length: getItemHeight(index),
       offset: getItemOffset(index),
       index,
@@ -208,7 +165,6 @@ ConversationFlatListProps<TItem>) => {
         ref={flatListRef}
         data={data}
         renderItem={renderItemInternal}
-        onContentSizeChange={onContentSizeChange}
         onScroll={onScroll}
         onLayout={onLayout}
         style={styles.flatList}
