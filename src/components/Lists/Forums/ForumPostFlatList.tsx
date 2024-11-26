@@ -33,8 +33,8 @@ interface ForumPostFlatListProps {
   forumListData?: ForumListData;
   initialScrollIndex?: number;
   floatingScrollButtonPosition?: FloatingScrollButtonPosition;
-  scrollButtonToTop?: boolean;
-  scrollButtonIcon?: IconSource;
+  // scrollButtonToTop?: boolean;
+  // scrollButtonIcon?: IconSource;
 }
 
 export const ForumPostFlatList = ({
@@ -54,9 +54,9 @@ export const ForumPostFlatList = ({
   hasNextPage,
   initialScrollIndex = 0,
   floatingScrollButtonPosition,
-  scrollButtonToTop = false,
-  scrollButtonIcon,
-}: ForumPostFlatListProps) => {
+}: // scrollButtonToTop = false,
+// scrollButtonIcon,
+ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const {hasModerator} = usePrivilege();
@@ -211,8 +211,8 @@ export const ForumPostFlatList = ({
       invertList={invertList}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      scrollButtonToTop={scrollButtonToTop}
-      scrollButtonIcon={scrollButtonIcon}
+      // scrollButtonToTop={scrollButtonToTop}
+      // scrollButtonIcon={scrollButtonIcon}
     />
   );
 };

@@ -123,8 +123,8 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
         enableShowInThread={true}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
-        scrollButtonToTop={true}
-        scrollButtonIcon={AppIcons.scrollUp}
+        // scrollButtonToTop={true}
+        // scrollButtonIcon={AppIcons.scrollUp}
       />
     </AppView>
   );

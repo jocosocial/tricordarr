@@ -50,8 +50,8 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
           enableShowInThread={true}
           forumData={forumData?.pages[0]}
           getListHeader={getListHeader}
-          scrollButtonToTop={true}
-          scrollButtonIcon={AppIcons.scrollUp}
+          // scrollButtonToTop={true}
+          // scrollButtonIcon={AppIcons.scrollUp}
         />
       </View>
     </AppView>
