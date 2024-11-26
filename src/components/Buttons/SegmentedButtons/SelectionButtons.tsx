@@ -31,6 +31,7 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
       ...commonStyles.justifyCenter,
       ...commonStyles.minHeightLarge,
       ...commonStyles.alignItemsCenter,
+      height: 56, // I don't love that this is static
     },
   });
 

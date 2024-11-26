@@ -65,7 +65,6 @@ export const ForumPostFlatList = ({
     },
     flatList: {
       ...commonStyles.paddingHorizontal,
-      ...(invertList ? commonStyles.verticallyInverted : undefined),
     },
   });
 
@@ -206,6 +205,7 @@ export const ForumPostFlatList = ({
       invertList={invertList}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
+      listStyle={styles.flatList}
     />
   );
 };

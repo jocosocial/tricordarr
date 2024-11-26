@@ -1,18 +1,13 @@
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, View} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider, Text} from 'react-native-paper';
-import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useStyles} from '../../Context/Contexts/StyleContext';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
-import {LabelDivider} from '../Dividers/LabelDivider';
-import {useAppTheme} from '../../../styles/Theme';
-import {FlashList} from '@shopify/flash-list';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
-import {styleDefaults} from '../../../styles';
+import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -38,11 +33,7 @@ export const ForumThreadFlatList = ({
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
 }: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlashList<ForumListData>>(null);
-  const [showButton, setShowButton] = useState(false);
-  const {commonStyles} = useStyles();
-  const renderSeparator = useCallback(() => <Divider bold={true} />, []);
-  const theme = useAppTheme();
+  const flatListRef = useRef<FlatList<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
@@ -53,53 +44,39 @@ export const ForumThreadFlatList = ({
     if (hasPreviousPage) {
       return (
         <PaddedContentView>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading...</Text>
-            </View>
-          </View>
+          <FlexCenteredContentView>
+            <Text variant={'labelMedium'}>Loading previous...</Text>
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
-    return null;
+    return <></>;
   };
 
-  const renderListFooter = () => {
+  const renderListFooter = useCallback(() => {
     if (hasNextPage) {
       return (
         <PaddedContentView>
-          <View style={[commonStyles.flexRow]}>
-            <View style={[commonStyles.alignItemsCenter, commonStyles.flex]}>
-              <Text variant={'labelMedium'}>Loading next...</Text>
-            </View>
-          </View>
+          <FlexCenteredContentView>
+            <Text variant={'labelMedium'}>Loading next...</Text>
+          </FlexCenteredContentView>
         </PaddedContentView>
       );
     }
     if (forumListData.length !== 0) {
       return (
-        <LabelDivider
-          label={'End of Results'}
-          color={theme.colors.onBackground}
-          wrapperStyle={[commonStyles.marginTopZero, commonStyles.marginBottomSmall]}
-          dividerColor={theme.colors.outlineVariant}
-        />
+        <>
+          <Divider bold={true} />
+          <PaddedContentView>
+            <FlexCenteredContentView>
+              <Text variant={'labelMedium'}>End of results</Text>
+            </FlexCenteredContentView>
+          </PaddedContentView>
+        </>
       );
     }
     return <SpaceDivider />;
-  };
-
-  const handleScrollButtonPress = () => {
-    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-  };
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    let scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
-    setShowButton(scrollThresholdCondition);
-    if (onScrollThreshold) {
-      onScrollThreshold(scrollThresholdCondition);
-    }
-  };
+  }, [forumListData.length, hasNextPage]);
 
   const renderItem = useCallback(
     ({item}: {item: ForumListData}) => {
@@ -116,31 +93,23 @@ export const ForumThreadFlatList = ({
     [categoryID, enableSelection, selectedForums, setEnableSelection],
   );
 
+  const renderItemSeparator = () => <Divider bold={true} />;
+
   return (
-    <>
-      <FlashList
-        ref={flatListRef}
-        refreshControl={refreshControl}
-        data={forumListData}
-        renderItem={renderItem}
-        onEndReached={handleLoadNext}
-        maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
-        keyExtractor={keyExtractor}
-        ItemSeparatorComponent={renderSeparator}
-        ListHeaderComponent={renderListHeader}
-        ListFooterComponent={renderListFooter}
-        onScroll={handleScroll}
-        // onEndReachedThreshold is measured in units of visible area.
-        // So visible area of the list is 1.0. Do the maths from there.
-        // At a standard page size of 50 it is safe to aggressively
-        // load next pages.
-        onEndReachedThreshold={5}
-        estimatedItemSize={170}
-        extraData={[enableSelection]}
-      />
-      {showButton && (
-        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
-      )}
-    </>
+    <ConversationFlatList
+      flatListRef={flatListRef}
+      renderListHeader={renderListHeader}
+      renderListFooter={renderListFooter}
+      renderItem={renderItem}
+      data={forumListData}
+      onScrollThreshold={onScrollThreshold}
+      keyExtractor={keyExtractor}
+      maintainViewPosition={maintainViewPosition}
+      refreshControl={refreshControl}
+      handleLoadNext={handleLoadNext}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      renderItemSeparator={renderItemSeparator}
+    />
   );
 };

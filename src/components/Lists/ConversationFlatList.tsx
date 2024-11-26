@@ -5,8 +5,10 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
+  StyleProp,
   StyleSheet,
   View,
+  ViewStyle,
 } from 'react-native';
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
@@ -33,6 +35,8 @@ interface ConversationFlatListProps<TItem> {
   renderItemSeparator?: React.ComponentType<any>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   maintainViewPosition?: boolean;
+  onScrollThreshold?: (condition: boolean) => void;
+  listStyle?: StyleProp<ViewStyle>;
 }
 
 export const ConversationFlatList = <TItem,>({
@@ -54,6 +58,8 @@ export const ConversationFlatList = <TItem,>({
   data,
   refreshControl,
   maintainViewPosition = false,
+  onScrollThreshold,
+  listStyle,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -61,8 +67,8 @@ export const ConversationFlatList = <TItem,>({
 
   const styles = StyleSheet.create({
     flatList: {
-      ...commonStyles.paddingHorizontal,
       ...(invertList ? commonStyles.verticallyInverted : undefined),
+      ...(listStyle as ViewStyle),
     },
     itemContainerView: {
       ...(invertList ? commonStyles.verticallyInverted : undefined),
@@ -89,9 +95,13 @@ export const ConversationFlatList = <TItem,>({
    */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
+      const scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
+      setShowScrollButton(scrollThresholdCondition);
+      if (onScrollThreshold) {
+        onScrollThreshold(scrollThresholdCondition);
+      }
     },
-    [styleDefaults.listScrollThreshold],
+    [onScrollThreshold, styleDefaults.listScrollThreshold],
   );
 
   /**
