@@ -8,6 +8,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {ForumEmptyListView} from './ForumEmptyListView.tsx';
 import {ForumThreadListView} from './ForumThreadListView.tsx';
+import pluralize from 'pluralize';
 
 interface ForumThreadsRelationsViewProps {
   relationType: ForumRelationQueryType;
@@ -51,7 +52,7 @@ export const ForumThreadsRelationsView = ({relationType, category, title}: Forum
     return <NotLoggedInView />;
   }
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return <LoadingView />;
   }
 
@@ -75,6 +76,7 @@ export const ForumThreadsRelationsView = ({relationType, category, title}: Forum
       onRefresh={onRefresh}
       setRefreshing={setRefreshing}
       enableFAB={false}
+      subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
     />
   );
 };

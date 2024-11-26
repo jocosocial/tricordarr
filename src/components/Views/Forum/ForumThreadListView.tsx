@@ -14,7 +14,6 @@ import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
 import {CategoryDataQueryResponse} from '../../Queries/Forum/ForumCategoryQueries.tsx';
 import {AxiosError} from 'axios';
-import pluralize from 'pluralize';
 
 interface ForumThreadListViewProps {
   hasNextPage?: boolean;
@@ -38,6 +37,7 @@ interface ForumThreadListViewProps {
   refreshing: boolean;
   onRefresh: () => void;
   forumListData: ForumListData[];
+  subtitle?: string;
 }
 
 export const ForumThreadListView = ({
@@ -54,6 +54,7 @@ export const ForumThreadListView = ({
   refreshing,
   onRefresh,
   forumListData,
+  subtitle,
 }: ForumThreadListViewProps) => {
   const {enableSelection} = useSelection();
   const [showFabLabel, setShowFabLabel] = useState(true);
@@ -74,7 +75,11 @@ export const ForumThreadListView = ({
 
   return (
     <>
-      {enableSelection ? <SelectionButtons items={forumListData} /> : <ListTitleView title={title} />}
+      {enableSelection ? (
+        <SelectionButtons items={forumListData} />
+      ) : (
+        <ListTitleView title={title} subtitle={subtitle} />
+      )}
       <ForumThreadFlatList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
