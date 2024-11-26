@@ -114,7 +114,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
       )}
       <ForumPostFlatList
         flatListRef={flatListRef}
-        invertList={false}
         postList={forumPosts}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadPrevious={handleLoadPrevious}
@@ -123,8 +122,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
         enableShowInThread={true}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
-        // scrollButtonToTop={true}
-        // scrollButtonIcon={AppIcons.scrollUp}
       />
     </AppView>
   );

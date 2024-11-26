@@ -37,7 +37,7 @@ interface ConversationFlatListProps<TItem> {
 
 export const ConversationFlatList = <TItem,>({
   scrollButtonPosition,
-  invertList = true,
+  invertList,
   flatListRef,
   hasNextPage,
   hasPreviousPage,

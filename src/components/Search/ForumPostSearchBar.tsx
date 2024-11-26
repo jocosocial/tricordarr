@@ -139,11 +139,8 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           itemSeparator={'time'}
-          invertList={false}
           enableShowInThread={true}
           hasNextPage={hasNextPage}
-          // scrollButtonToTop={true}
-          // scrollButtonIcon={AppIcons.scrollUp}
         />
       </View>
     </>

@@ -46,12 +46,9 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
           flatListRef={flatListRef}
           refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
           postList={data}
-          invertList={false}
           enableShowInThread={true}
           forumData={forumData?.pages[0]}
           getListHeader={getListHeader}
-          // scrollButtonToTop={true}
-          // scrollButtonIcon={AppIcons.scrollUp}
         />
       </View>
     </AppView>
