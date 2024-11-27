@@ -6,15 +6,14 @@ import {ForumPostListItem} from '../Items/Forum/ForumPostListItem';
 import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {timeAgo} from '../../../libraries/DateTime';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {Text} from 'react-native-paper';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
 import {FloatingScrollButtonPosition} from '../../../libraries/Types';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
+import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
+import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -32,9 +31,7 @@ interface ForumPostFlatListProps {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
-  floatingScrollButtonPosition?: FloatingScrollButtonPosition;
-  scrollButtonToTop?: boolean;
-  scrollButtonIcon?: IconSource;
+  scrollButtonPosition?: FloatingScrollButtonPosition;
 }
 
 export const ForumPostFlatList = ({
@@ -53,9 +50,7 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
   initialScrollIndex = 0,
-  floatingScrollButtonPosition,
-  scrollButtonToTop = false,
-  scrollButtonIcon,
+  scrollButtonPosition,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
@@ -70,7 +65,6 @@ export const ForumPostFlatList = ({
     },
     flatList: {
       ...commonStyles.paddingHorizontal,
-      ...(invertList ? commonStyles.verticallyInverted : undefined),
     },
   });
 
@@ -148,22 +142,9 @@ export const ForumPostFlatList = ({
       if (getListHeader) {
         return getListHeader();
       }
-      return (
-        <PaddedContentView padTop={true} invertVertical={invertList}>
-          <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>You've reached the beginning of this Forum thread.</Text>
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
+      return <ForumPostListHeader invertList={invertList} />;
     } else if (hasPreviousPage) {
-      return (
-        <PaddedContentView padTop={true} invertVertical={invertList}>
-          <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>Loading previous...</Text>
-            {/*<PrimaryActionButton buttonText={'Load Previous'} onPress={handleLoadPrevious} />*/}
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
+      return <LoadingPreviousHeader invertList={invertList} />;
     }
     if (!itemSeparator) {
       return <SpaceDivider />;
@@ -183,13 +164,7 @@ export const ForumPostFlatList = ({
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
-      return (
-        <PaddedContentView padTop={true} invertVertical={invertList}>
-          <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>Loading next...</Text>
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
+      return <LoadingNextFooter invertList={invertList} />;
     }
     return <SpaceDivider />;
   }, [hasNextPage, invertList]);
@@ -207,12 +182,11 @@ export const ForumPostFlatList = ({
       maintainViewPosition={maintainViewPosition}
       initialScrollIndex={initialScrollIndex}
       refreshControl={refreshControl}
-      scrollButtonPosition={floatingScrollButtonPosition}
+      scrollButtonPosition={scrollButtonPosition}
       invertList={invertList}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      scrollButtonToTop={scrollButtonToTop}
-      scrollButtonIcon={scrollButtonIcon}
+      listStyle={styles.flatList}
     />
   );
 };

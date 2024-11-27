@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, memo, SetStateAction, useMemo} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
@@ -25,7 +25,7 @@ interface ForumThreadListItemProps {
   selected: boolean;
 }
 
-export const ForumThreadListItem = ({
+const ForumThreadListInternal = ({
   forumListData,
   categoryID,
   // onSelect,
@@ -151,3 +151,5 @@ export const ForumThreadListItem = ({
     </ForumThreadListItemSwipeable>
   );
 };
+
+export const ForumThreadListItem = memo(ForumThreadListInternal);

@@ -37,6 +37,10 @@ interface ForumThreadScreenBaseProps {
   invertList?: boolean;
   forumListData?: ForumListData;
 }
+
+/**
+ * Used for a regular forum thread display.
+ */
 export const ForumThreadScreenBase = ({
   data,
   refetch,
@@ -215,6 +219,7 @@ export const ForumThreadScreenBase = ({
     // The forum has not been completely read. There is going to be a point in
     // the loaded data that we need to scroll to.
     // @TODO this is buggy. Getting an index that is the length. Worked around with the Math.max.
+    // @TODO also can get value that is longer than the list
     if (forumListData && forumListData.readCount !== forumListData.postCount) {
       return Math.max(forumListData.readCount - loadedStartIndex - 1, 0);
     }
@@ -244,7 +249,7 @@ export const ForumThreadScreenBase = ({
         hasNextPage={hasNextPage}
         forumListData={forumListData}
         initialScrollIndex={getInitialScrollIndex()}
-        floatingScrollButtonPosition={showForm ? 'raised' : 'bottom'}
+        scrollButtonPosition={showForm ? 'raised' : 'bottom'}
       />
       {showForm && (
         <ContentPostForm

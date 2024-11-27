@@ -23,6 +23,7 @@ import {ForumEmptyListView} from '../../Views/Forum/ForumEmptyListView.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
 import {ForumSelectionHeaderButtons} from '../../Buttons/HeaderButtons/ForumSelectionHeaderButtons.tsx';
 import {ForumCategoryScreenSearchMenu} from '../../Menus/Forum/ForumCategoryScreenSearchMenu.tsx';
+import pluralize from 'pluralize';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
@@ -105,7 +106,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     }
   }, [isFocused, getNavButtons, navigation, clearPrivileges, enableSelection, selectedForums.length]);
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return <LoadingView />;
   }
 
@@ -124,6 +125,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         <ForumThreadsRelationsView
           relationType={ForumFilter.toRelation(forumFilter)}
           category={route.params.category}
+          title={route.params.category.title}
         />
         {!isUserRestricted && <ForumCategoryFAB category={route.params.category} />}
       </AppView>
@@ -145,6 +147,8 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
         onRefresh={onRefresh}
         setRefreshing={setRefreshing}
         enableFAB={!isUserRestricted}
+        title={route.params.category.title}
+        subtitle={`${data.pages[0].paginator.total} ${pluralize('forum', data.pages[0].paginator.total)}`}
       />
     </AppView>
   );

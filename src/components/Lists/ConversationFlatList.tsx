@@ -5,20 +5,19 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   RefreshControlProps,
+  StyleProp,
   StyleSheet,
   View,
+  ViewStyle,
 } from 'react-native';
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
 import {FloatingScrollButtonPosition} from '../../libraries/Types';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
-interface ConversationFlatListProps<TItem> {
+export interface ConversationFlatListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;
-  scrollButtonIcon?: IconSource;
-  scrollButtonToTop?: boolean;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
   hasPreviousPage?: boolean;
@@ -29,19 +28,20 @@ interface ConversationFlatListProps<TItem> {
   onStartReachedThreshold?: number;
   keyExtractor?: (item: TItem, index: number) => string;
   initialScrollIndex?: number;
-  renderListHeader: () => React.JSX.Element;
-  renderListFooter: () => React.JSX.Element;
+  renderListHeader?: React.ComponentType<any>;
+  renderListFooter?: React.ComponentType<any>;
   renderItem: ListRenderItem<TItem>;
   data: ArrayLike<TItem>;
   renderItemSeparator?: React.ComponentType<any>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   maintainViewPosition?: boolean;
+  onScrollThreshold?: (condition: boolean) => void;
+  listStyle?: StyleProp<ViewStyle>;
 }
 
 export const ConversationFlatList = <TItem,>({
   scrollButtonPosition,
-  scrollButtonIcon = AppIcons.scrollDown,
-  invertList = true,
+  invertList,
   flatListRef,
   hasNextPage,
   hasPreviousPage,
@@ -57,51 +57,52 @@ export const ConversationFlatList = <TItem,>({
   renderItemSeparator,
   data,
   refreshControl,
-  maintainViewPosition = false,
-  scrollButtonToTop = false,
+  maintainViewPosition = true,
+  onScrollThreshold,
+  listStyle,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
   const [itemHeights, setItemHeights] = useState<number[]>([]);
 
   const styles = StyleSheet.create({
     flatList: {
-      ...commonStyles.paddingHorizontal,
       ...(invertList ? commonStyles.verticallyInverted : undefined),
+      ...(listStyle as ViewStyle),
     },
     itemContainerView: {
       ...(invertList ? commonStyles.verticallyInverted : undefined),
     },
   });
 
+  /**
+   * Callback handler for when the scroll button is pressed.
+   * Used to track some state for the list contentHeight and would do
+   * flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
+   */
   const handleScrollButtonPress = useCallback(() => {
-    if (invertList || scrollButtonToTop) {
-      console.log('[ConversationFlatList.tsx] scrolling to offset 0');
-      flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-    } else {
-      console.log('[ConversationFlatList.tsx] scrolling to end');
-      flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
-    }
-  }, [contentHeight, flatListRef, invertList, scrollButtonToTop]);
+    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
+  }, [flatListRef]);
 
+  /**
+   * There are basically two types of list:
+   * - Inverted: Things like read Forums and Seamail that start at the bottom.
+   * - Uninverted: Things like unread Forums and LFG Lists that start at the top.
+   *
+   * At one point I had this, but it's not relevant anymore. Saving for later.
+   *   event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
+   *     styleDefaults.listScrollThreshold * 2,
+   */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (invertList || scrollButtonToTop) {
-        setShowScrollButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-      } else {
-        setShowScrollButton(
-          event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
-            styleDefaults.listScrollThreshold * 2,
-        );
+      const scrollThresholdCondition = event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold;
+      setShowScrollButton(scrollThresholdCondition);
+      if (onScrollThreshold) {
+        onScrollThreshold(scrollThresholdCondition);
       }
     },
-    [invertList, styleDefaults.listScrollThreshold, scrollButtonToTop],
+    [onScrollThreshold, styleDefaults.listScrollThreshold],
   );
-
-  const onContentSizeChange = useCallback((w: number, h: number) => {
-    setContentHeight(h);
-  }, []);
 
   /**
    * If the forum has been fully read and you only have the latest very small
@@ -138,7 +139,7 @@ export const ConversationFlatList = <TItem,>({
   );
 
   const getItemLayout = useCallback(
-    (data: ArrayLike<TItem> | null | undefined, index: number) => ({
+    (_: ArrayLike<TItem> | null | undefined, index: number) => ({
       length: getItemHeight(index),
       offset: getItemOffset(index),
       index,
@@ -174,8 +175,10 @@ export const ConversationFlatList = <TItem,>({
         ref={flatListRef}
         data={data}
         renderItem={renderItemInternal}
-        onContentSizeChange={onContentSizeChange}
         onScroll={onScroll}
+        // With RN 0.72 if pageSize is too small this doesn't trigger onEndReached.
+        // Page size bigger, just fine.
+        // Encountered this with ForumPostFlatList and this time had a way around it.
         onLayout={onLayout}
         style={styles.flatList}
         onStartReachedThreshold={onStartReachedThreshold}
@@ -199,7 +202,7 @@ export const ConversationFlatList = <TItem,>({
       />
       {showScrollButton && (
         <FloatingScrollButton
-          icon={scrollButtonIcon}
+          icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
           displayPosition={scrollButtonPosition}
         />

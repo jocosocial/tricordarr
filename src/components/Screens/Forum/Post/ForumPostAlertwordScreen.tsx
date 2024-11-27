@@ -64,7 +64,6 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
           handleLoadNext={handleLoadNext}
           handleLoadPrevious={handleLoadPrevious}
           itemSeparator={'time'}
-          invertList={false}
           enableShowInThread={true}
           hasNextPage={hasNextPage}
         />

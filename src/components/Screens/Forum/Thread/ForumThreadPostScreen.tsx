@@ -64,9 +64,7 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
       isFetchingNextPage={isFetchingNextPage}
       isFetchingPreviousPage={isFetchingPreviousPage}
       hasNextPage={hasNextPage}
-      hasPreviousPage={undefined}
       getListHeader={route.params.postID ? getListHeader : undefined}
-      invertList={false}
     />
   );
 };
