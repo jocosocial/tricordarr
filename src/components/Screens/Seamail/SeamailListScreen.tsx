@@ -17,13 +17,15 @@ import {useIsFocused} from '@react-navigation/native';
 import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {HeaderButtons} from 'react-navigation-header-buttons';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -104,11 +106,20 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     return (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Search'}
+            iconName={AppIcons.seamailSearch}
+            onPress={() =>
+              navigation.push(ChatStackScreenComponents.seamailSearchScreen, {
+                forUser: asPrivilegedUser,
+              })
+            }
+          />
           <SeamailListActionsMenu />
         </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [asPrivilegedUser, navigation]);
 
   useEffect(() => {
     if (notificationSocket) {
