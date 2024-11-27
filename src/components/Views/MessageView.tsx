@@ -6,6 +6,7 @@ import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag';
 import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
 import {FezPostData} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface MessageViewProps {
   fezPost: FezPostData;
@@ -40,9 +41,11 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
     opacity: [commonStyles.paddingSmall, commonStyles.roundedBorderLarge],
   };
 
+  const onLongPress = () => Clipboard.setString(fezPost.text);
+
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onPress={openMenu} activeOpacity={1}>
+      <TouchableOpacity style={styles.opacity} onPress={openMenu} onLongPress={onLongPress} activeOpacity={1}>
         {showAuthor && <Text style={styles.messageTextHeader}>{fezPost.author.username}</Text>}
         <FezPostActionsMenu
           visible={menuVisible}
