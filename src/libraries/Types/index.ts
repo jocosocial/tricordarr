@@ -113,3 +113,8 @@ export interface StartEndTime {
 }
 
 export type FloatingScrollButtonPosition = 'raised' | 'bottom' | undefined;
+
+export interface FlatListSeparatorProps<TItem> {
+  highlighted: boolean;
+  leadingItem: TItem;
+}

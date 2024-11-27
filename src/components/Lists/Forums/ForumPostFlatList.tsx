@@ -10,7 +10,7 @@ import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
-import {FloatingScrollButtonPosition} from '../../../libraries/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../../libraries/Types';
 import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
@@ -100,7 +100,7 @@ export const ForumPostFlatList = ({
   );
 
   const renderSeparator = useCallback(
-    ({leadingItem}: {leadingItem: PostData}) => {
+    ({leadingItem}: FlatListSeparatorProps<PostData>) => {
       if (!itemSeparator) {
         return <SpaceDivider />;
       }

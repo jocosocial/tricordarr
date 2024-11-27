@@ -13,7 +13,7 @@ import {
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
-import {FloatingScrollButtonPosition} from '../../libraries/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../libraries/Types';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export interface ConversationFlatListProps<TItem> {
@@ -171,15 +171,16 @@ export const ConversationFlatList = <TItem,>({
   const renderComponentInternal = useCallback(
     (inputComponent?: React.ComponentType<any>): React.ComponentType<any> | null | undefined => {
       // If it's a valid React element, render it directly
+      // This currently does not do the FlatListSeparatorProps. Does it need to?
       if (React.isValidElement(inputComponent)) {
         return () => <View style={styles.itemContainerView}>{inputComponent}</View>;
       }
       if (typeof inputComponent === 'function') {
         // If it's a function (ComponentType or functional component), render it
         const RenderedComponent = inputComponent as React.ComponentType<any>;
-        return () => (
+        return ({highlighted, leadingItem}: FlatListSeparatorProps<TItem>) => (
           <View style={styles.itemContainerView}>
-            <RenderedComponent />
+            <RenderedComponent highlighted={highlighted} leadingItem={leadingItem} />
           </View>
         );
       }
@@ -221,7 +222,7 @@ export const ConversationFlatList = <TItem,>({
         ListHeaderComponent={
           invertList ? renderComponentInternal(renderListFooter) : renderComponentInternal(renderListHeader)
         }
-        ItemSeparatorComponent={renderItemSeparator}
+        ItemSeparatorComponent={renderComponentInternal(renderItemSeparator)}
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
       />

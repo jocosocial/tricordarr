@@ -122,8 +122,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
         enableShowInThread={true}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
-        // @TODO remove this from testing
-        invertList={true}
       />
     </AppView>
   );
