@@ -42,7 +42,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
 
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onLongPress={openMenu} activeOpacity={1}>
+      <TouchableOpacity style={styles.opacity} onPress={openMenu} activeOpacity={1}>
         {showAuthor && <Text style={styles.messageTextHeader}>{fezPost.author.username}</Text>}
         <FezPostActionsMenu
           visible={menuVisible}
