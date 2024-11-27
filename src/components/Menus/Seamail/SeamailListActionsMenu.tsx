@@ -18,6 +18,14 @@ export const SeamailListActionsMenu = () => {
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item
+        leadingIcon={AppIcons.settings}
+        title={'Settings'}
+        onPress={() => {
+          closeMenu();
+          navigation.push(ChatStackScreenComponents.seamailSettingsScreen);
+        }}
+      />
+      <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
         onPress={() => {

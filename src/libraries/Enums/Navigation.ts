@@ -46,6 +46,7 @@ export enum ChatStackScreenComponents {
   seamailSearchScreen = 'SeamailSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
+  seamailSettingsScreen = 'SeamailSettingsScreen',
 }
 
 export enum MainStackComponents {

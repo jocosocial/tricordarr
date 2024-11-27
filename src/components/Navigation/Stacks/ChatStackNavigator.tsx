@@ -15,6 +15,7 @@ import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {MainStack} from './MainStackNavigator';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {SeamailSettingsScreen} from '../../Screens/Seamail/SeamailSettingsScreen.tsx';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {
@@ -31,6 +32,7 @@ export type ChatStackParamList = CommonStackParamList & {
     callerUserID: string;
     callerUsername: string;
   };
+  SeamailSettingsScreen: undefined;
 };
 
 const ChatStack = createNativeStackNavigator<ChatStackParamList>();
@@ -70,6 +72,11 @@ export const ChatStackNavigator = () => {
         name={ChatStackScreenComponents.krakenTalkReceiveScreen}
         component={KrakenTalkReceiveScreen}
         options={{title: 'Incoming Call'}}
+      />
+      <ChatStack.Screen
+        name={ChatStackScreenComponents.seamailSettingsScreen}
+        component={SeamailSettingsScreen}
+        options={{title: 'Seamail Settings'}}
       />
       {CommonScreens(ChatStack as typeof MainStack)}
     </ChatStack.Navigator>
