@@ -28,8 +28,8 @@ interface ConversationFlatListProps<TItem> {
   onStartReachedThreshold?: number;
   keyExtractor?: (item: TItem, index: number) => string;
   initialScrollIndex?: number;
-  renderListHeader: () => React.JSX.Element;
-  renderListFooter: () => React.JSX.Element;
+  renderListHeader?: React.ComponentType<any>;
+  renderListFooter?: React.ComponentType<any>;
   renderItem: ListRenderItem<TItem>;
   data: ArrayLike<TItem>;
   renderItemSeparator?: React.ComponentType<any>;
@@ -176,6 +176,9 @@ export const ConversationFlatList = <TItem,>({
         data={data}
         renderItem={renderItemInternal}
         onScroll={onScroll}
+        // With RN 0.72 if pageSize is too small this doesn't trigger onEndReached.
+        // Page size bigger, just fine.
+        // Encountered this with ForumPostFlatList and this time had a way around it.
         onLayout={onLayout}
         style={styles.flatList}
         onStartReachedThreshold={onStartReachedThreshold}

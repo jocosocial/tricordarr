@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
