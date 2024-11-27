@@ -2,12 +2,13 @@ import {FlatList, RefreshControlProps} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
-import {Divider, Text} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {Divider} from 'react-native-paper';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
-import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
+import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
+import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
+import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -42,36 +43,20 @@ export const ForumThreadFlatList = ({
     //   return <TimeDivider label={'No forums to display'} />;
     // }
     if (hasPreviousPage) {
-      return (
-        <PaddedContentView>
-          <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>Loading previous...</Text>
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
+      return <LoadingPreviousHeader />;
     }
     return <></>;
   };
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
-      return (
-        <PaddedContentView>
-          <FlexCenteredContentView>
-            <Text variant={'labelMedium'}>Loading next...</Text>
-          </FlexCenteredContentView>
-        </PaddedContentView>
-      );
+      return <LoadingNextFooter />;
     }
     if (forumListData.length !== 0) {
       return (
         <>
           <Divider bold={true} />
-          <PaddedContentView>
-            <FlexCenteredContentView>
-              <Text variant={'labelMedium'}>End of results</Text>
-            </FlexCenteredContentView>
-          </PaddedContentView>
+          <EndResultsFooter />
         </>
       );
     }
