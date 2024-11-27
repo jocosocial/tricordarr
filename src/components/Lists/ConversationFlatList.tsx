@@ -16,7 +16,7 @@ import React, {useCallback, useState} from 'react';
 import {FloatingScrollButtonPosition} from '../../libraries/Types';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
-interface ConversationFlatListProps<TItem> {
+export interface ConversationFlatListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;
   invertList?: boolean;
   flatListRef: React.RefObject<FlatList<TItem>>;
