@@ -2,11 +2,10 @@ import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentVi
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import React from 'react';
-import {ListHeaderInvertProp} from '../../../libraries/Types';
 
-export const LoadingPreviousHeader = (props: ListHeaderInvertProp) => {
+export const LoadingPreviousHeader = () => {
   return (
-    <PaddedContentView padTop={true} invertVertical={props.invertList}>
+    <PaddedContentView padTop={true}>
       <FlexCenteredContentView>
         <Text variant={'labelMedium'}>Loading previous...</Text>
       </FlexCenteredContentView>

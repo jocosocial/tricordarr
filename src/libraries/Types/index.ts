@@ -113,7 +113,3 @@ export interface StartEndTime {
 }
 
 export type FloatingScrollButtonPosition = 'raised' | 'bottom' | undefined;
-
-export interface ListHeaderInvertProp {
-  invertList?: boolean;
-}

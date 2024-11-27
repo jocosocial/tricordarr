@@ -168,6 +168,27 @@ export const ConversationFlatList = <TItem,>({
     [renderItem, styles.itemContainerView],
   );
 
+  const renderComponentInternal = useCallback(
+    (inputComponent?: React.ComponentType<any>): React.ComponentType<any> | null | undefined => {
+      // If it's a valid React element, render it directly
+      if (React.isValidElement(inputComponent)) {
+        return () => <View style={styles.itemContainerView}>{inputComponent}</View>;
+      }
+      if (typeof inputComponent === 'function') {
+        // If it's a function (ComponentType or functional component), render it
+        const RenderedComponent = inputComponent as React.ComponentType<any>;
+        return () => (
+          <View style={styles.itemContainerView}>
+            <RenderedComponent />
+          </View>
+        );
+      }
+      console.error('Invalid component type provided to renderComponentInternal.');
+      return null;
+    },
+    [styles.itemContainerView],
+  );
+
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
@@ -194,8 +215,12 @@ export const ConversationFlatList = <TItem,>({
         getItemLayout={getItemLayout}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
-        ListFooterComponent={invertList ? renderListHeader : renderListFooter}
-        ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
+        ListFooterComponent={
+          invertList ? renderComponentInternal(renderListHeader) : renderComponentInternal(renderListFooter)
+        }
+        ListHeaderComponent={
+          invertList ? renderComponentInternal(renderListFooter) : renderComponentInternal(renderListHeader)
+        }
         ItemSeparatorComponent={renderItemSeparator}
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
