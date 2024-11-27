@@ -184,6 +184,9 @@ export const ConversationFlatList = <TItem,>({
           </View>
         );
       }
+      if (inputComponent === undefined) {
+        return;
+      }
       console.error('Invalid component type provided to renderComponentInternal.');
       return null;
     },
