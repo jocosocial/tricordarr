@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserAvatarImage} from '../../Images/UserAvatarImage';
@@ -24,7 +24,7 @@ interface FezPostListItemProps {
   };
 }
 
-export const FezPostListItem = ({fezPost, fez}: FezPostListItemProps) => {
+const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
   const {profilePublicData} = useUserData();
   const {asPrivilegedUser} = usePrivilege();
   const seamailNavigation = useChatStack();
@@ -66,3 +66,5 @@ export const FezPostListItem = ({fezPost, fez}: FezPostListItemProps) => {
     </FlatListItemContent>
   );
 };
+
+export const FezPostListItem = memo(FezPostListItemInternal);

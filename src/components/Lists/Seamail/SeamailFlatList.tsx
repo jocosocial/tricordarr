@@ -12,6 +12,10 @@ interface SeamailFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   onEndReached?: () => void;
   onScrollThreshold?: (condition: boolean) => void;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+  handleLoadNext?: () => void;
+  handleLoadPrevious?: () => void;
 }
 
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
@@ -56,6 +60,10 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListHeader={getListHeader}
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
+      hasPreviousPage={props.hasPreviousPage}
+      handleLoadPrevious={props.handleLoadPrevious}
+      hasNextPage={props.hasNextPage}
+      handleLoadNext={props.handleLoadNext}
     />
   );
 };

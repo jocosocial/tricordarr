@@ -31,7 +31,7 @@ interface ForumPostFlatListProps {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
-  floatingScrollButtonPosition?: FloatingScrollButtonPosition;
+  scrollButtonPosition?: FloatingScrollButtonPosition;
 }
 
 export const ForumPostFlatList = ({
@@ -50,7 +50,7 @@ export const ForumPostFlatList = ({
   forumListData,
   hasNextPage,
   initialScrollIndex = 0,
-  floatingScrollButtonPosition,
+  scrollButtonPosition,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
@@ -182,7 +182,7 @@ export const ForumPostFlatList = ({
       maintainViewPosition={maintainViewPosition}
       initialScrollIndex={initialScrollIndex}
       refreshControl={refreshControl}
-      scrollButtonPosition={floatingScrollButtonPosition}
+      scrollButtonPosition={scrollButtonPosition}
       invertList={invertList}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}

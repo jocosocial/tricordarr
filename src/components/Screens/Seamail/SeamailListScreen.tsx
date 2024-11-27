@@ -157,6 +157,8 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
         onScrollThreshold={onScrollThreshold}
+        hasNextPage={hasNextPage}
+        handleLoadNext={handleLoadNext}
       />
       <SeamailFAB showLabel={showFabLabel} />
     </AppView>

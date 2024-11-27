@@ -57,7 +57,7 @@ export const ConversationFlatList = <TItem,>({
   renderItemSeparator,
   data,
   refreshControl,
-  maintainViewPosition = false,
+  maintainViewPosition = true,
   onScrollThreshold,
   listStyle,
 }: ConversationFlatListProps<TItem>) => {
