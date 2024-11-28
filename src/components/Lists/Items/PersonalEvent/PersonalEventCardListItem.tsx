@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import {PersonalEventData} from '../../../../libraries/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '../../../../libraries/Types';
 import {PersonalEventCard} from '../../../Cards/Schedule/PersonalEventCard.tsx';
@@ -11,7 +11,7 @@ interface PersonalEventCardListItemProps {
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const PersonalEventCardListItem = (props: PersonalEventCardListItemProps) => {
+const PersonalEventCardListItemInternal = (props: PersonalEventCardListItemProps) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const anchorContent = (
@@ -33,3 +33,5 @@ export const PersonalEventCardListItem = (props: PersonalEventCardListItemProps)
     />
   );
 };
+
+export const PersonalEventCardListItem = memo(PersonalEventCardListItemInternal);

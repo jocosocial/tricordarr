@@ -1,5 +1,5 @@
 import {EventCard} from '../../../Cards/Schedule/EventCard';
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import {EventData} from '../../../../libraries/Structs/ControllerStructs';
 import {ScheduleCardMarkerType} from '../../../../libraries/Types';
 import {EventCardActionsMenu} from '../../../Menus/Events/EventCardActionsMenu';
@@ -11,7 +11,7 @@ interface EventCardListItemProps {
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const EventCardListItem = (props: EventCardListItemProps) => {
+const EventCardListItemInternal = (props: EventCardListItemProps) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const anchorContent = (
@@ -33,3 +33,5 @@ export const EventCardListItem = (props: EventCardListItemProps) => {
     />
   );
 };
+
+export const EventCardListItem = memo(EventCardListItemInternal);
