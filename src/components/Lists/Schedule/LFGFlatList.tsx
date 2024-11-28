@@ -4,7 +4,7 @@ import {FlatList, RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
-import {ScheduleFlatListV2} from './ScheduleFlatListV2.tsx';
+import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 
 interface LFGFlatListProps {
@@ -51,7 +51,7 @@ export const LFGFlatList = ({
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);
 
   return (
-    <ScheduleFlatListV2
+    <ScheduleFlatListBase
       flatListRef={flatListRef}
       keyExtractor={keyExtractor}
       items={items}

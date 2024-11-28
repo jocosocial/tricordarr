@@ -1,45 +1,49 @@
-import {FlashList} from '@shopify/flash-list';
+import {ConversationFlatList} from '../ConversationFlatList.tsx';
 import React, {ReactElement, useCallback} from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {FlatList, RefreshControlProps, StyleSheet} from 'react-native';
+import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
-import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
-import {styleDefaults} from '../../../styles';
+import {ScheduleFlatListSeparator} from '../../../libraries/Types';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 
 interface ScheduleFlatListBaseProps<TItem> {
-  items: TItem[];
-  separator?: 'day' | 'time' | 'none';
-  listHeader?: ReactElement;
-  listFooter?: ReactElement;
-  refreshControl?: React.ReactElement<RefreshControlProps>;
-  initialScrollIndex?: number;
-  estimatedItemSize?: number;
-  listRef?: React.RefObject<FlashList<TItem>> | null;
+  flatListRef: React.RefObject<FlatList<TItem>>;
   renderItem: ({item}: {item: TItem}) => ReactElement;
+  items: TItem[];
   keyExtractor: (item: TItem) => string;
+  separator?: ScheduleFlatListSeparator;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
   onScrollThreshold?: (condition: boolean) => void;
-  handleLoadNext?: () => void;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
   handleLoadPrevious?: () => void;
+  handleLoadNext?: () => void;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
+  flatListRef,
+  renderItem,
   items,
+  keyExtractor,
   separator,
   refreshControl,
-  listHeader,
-  listFooter,
-  initialScrollIndex,
-  estimatedItemSize,
-  listRef = null,
-  renderItem,
-  keyExtractor,
   onScrollThreshold,
+  hasPreviousPage,
+  hasNextPage,
+  handleLoadPrevious,
   handleLoadNext,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    flatList: {
+      ...commonStyles.paddingHorizontalSmall,
+    },
+  });
 
   const renderListHeader = useCallback(() => {
     if (!items[0]) {
@@ -57,56 +61,65 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={label} />;
   }, [items, separator]);
 
-  const renderListFooter = () => {
+  const renderListFooter = useCallback(() => {
     if (items.length === 0) {
       return <></>;
     }
+    if (hasNextPage) {
+      return <LoadingNextFooter />;
+    }
     return <TimeDivider />;
-  };
+  }, [hasNextPage, items.length]);
 
-  const renderSeparatorTime = ({leadingItem}: {leadingItem: TItem}) => {
-    const leadingIndex = items.indexOf(leadingItem);
-    if (leadingIndex === undefined) {
-      return <TimeDivider label={'Leading Unknown?'} />;
-    }
-    const trailingIndex = leadingIndex + 1;
-    const trailingItem = items[trailingIndex];
-    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
-      return <SpaceDivider />;
-    }
-    const leadingDate = new Date(leadingItem.startTime);
-    const trailingDate = new Date(trailingItem.startTime);
-    const leadingTimeMarker = getScheduleListTimeSeparatorID(leadingDate);
-    const trailingTimeMarker = getScheduleListTimeSeparatorID(trailingDate);
-    if (leadingTimeMarker === trailingTimeMarker) {
-      return <SpaceDivider />;
-    }
-    return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
-  };
+  const renderSeparatorTime = useCallback(
+    ({leadingItem}: {leadingItem: TItem}) => {
+      const leadingIndex = items.indexOf(leadingItem);
+      if (leadingIndex === undefined) {
+        return <TimeDivider label={'Leading Unknown?'} />;
+      }
+      const trailingIndex = leadingIndex + 1;
+      const trailingItem = items[trailingIndex];
+      if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
+        return <SpaceDivider />;
+      }
+      const leadingDate = new Date(leadingItem.startTime);
+      const trailingDate = new Date(trailingItem.startTime);
+      const leadingTimeMarker = getScheduleListTimeSeparatorID(leadingDate);
+      const trailingTimeMarker = getScheduleListTimeSeparatorID(trailingDate);
+      if (leadingTimeMarker === trailingTimeMarker) {
+        return <SpaceDivider />;
+      }
+      return <TimeDivider label={getTimeMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    },
+    [items],
+  );
 
   // FlashList skips separator when paginating.
   // https://github.com/Shopify/flash-list/issues/633
-  const renderSeparatorDay = ({leadingItem}: {leadingItem: TItem}) => {
-    const leadingIndex = items.indexOf(leadingItem);
-    if (leadingIndex === undefined) {
-      return <TimeDivider label={'Leading Unknown?'} />;
-    }
-    const trailingIndex = leadingIndex + 1;
-    const trailingItem = items[trailingIndex];
-    if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
-      return <SpaceDivider />;
-    }
-    const leadingDate = new Date(leadingItem.startTime);
-    const trailingDate = new Date(trailingItem.startTime);
-    const leadingTimeMarker = leadingDate.getDay();
-    const trailingTimeMarker = trailingDate.getDay();
-    if (leadingTimeMarker === trailingTimeMarker) {
-      return <SpaceDivider />;
-    }
-    return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
-  };
+  const renderSeparatorDay = useCallback(
+    ({leadingItem}: {leadingItem: TItem}) => {
+      const leadingIndex = items.indexOf(leadingItem);
+      if (leadingIndex === undefined) {
+        return <TimeDivider label={'Leading Unknown?'} />;
+      }
+      const trailingIndex = leadingIndex + 1;
+      const trailingItem = items[trailingIndex];
+      if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
+        return <SpaceDivider />;
+      }
+      const leadingDate = new Date(leadingItem.startTime);
+      const trailingDate = new Date(trailingItem.startTime);
+      const leadingTimeMarker = leadingDate.getDay();
+      const trailingTimeMarker = trailingDate.getDay();
+      if (leadingTimeMarker === trailingTimeMarker) {
+        return <SpaceDivider />;
+      }
+      return <TimeDivider label={getDayMarker(trailingItem.startTime, trailingItem.timeZoneID)} />;
+    },
+    [items],
+  );
 
-  const renderSeparatorNone = () => <SpaceDivider />;
+  const renderSeparatorNone = useCallback(() => <SpaceDivider />, []);
 
   let ItemSeparatorComponent = renderSeparatorTime;
   switch (separator) {
@@ -117,29 +130,22 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
       ItemSeparatorComponent = renderSeparatorNone;
   }
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (onScrollThreshold) {
-      onScrollThreshold(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-    }
-  };
-
   return (
-    <FlashList
-      refreshControl={refreshControl}
-      ItemSeparatorComponent={ItemSeparatorComponent}
-      data={items}
+    <ConversationFlatList
+      flatListRef={flatListRef}
       renderItem={renderItem}
-      ListHeaderComponent={listHeader || renderListHeader}
-      ListFooterComponent={listFooter || renderListFooter}
-      ref={listRef}
+      data={items}
       keyExtractor={keyExtractor}
-      initialScrollIndex={initialScrollIndex}
-      estimatedItemSize={estimatedItemSize}
-      contentContainerStyle={{
-        ...commonStyles.paddingHorizontal,
-      }}
-      onScroll={handleScroll}
-      onEndReached={handleLoadNext}
+      renderItemSeparator={ItemSeparatorComponent}
+      renderListHeader={renderListHeader}
+      renderListFooter={renderListFooter}
+      refreshControl={refreshControl}
+      onScrollThreshold={onScrollThreshold}
+      handleLoadNext={handleLoadNext}
+      handleLoadPrevious={handleLoadPrevious}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      listStyle={styles.flatList}
     />
   );
 };
