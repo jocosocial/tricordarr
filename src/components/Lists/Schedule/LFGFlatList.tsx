@@ -1,21 +1,24 @@
-import {FlashList} from '@shopify/flash-list';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
-import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
+import {ScheduleFlatListV2} from './ScheduleFlatListV2.tsx';
+import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef?: React.RefObject<FlashList<FezData>> | null;
-  separator?: 'day' | 'time' | 'none';
+  flatListRef: React.RefObject<FlatList<FezData>>;
+  separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   initialScrollIndex?: number;
   onScrollThreshold?: (condition: boolean) => void;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+  handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
 }
 
@@ -23,9 +26,12 @@ export const LFGFlatList = ({
   items,
   refreshControl,
   separator = 'day',
-  listRef,
+  flatListRef,
   onScrollThreshold,
   handleLoadNext,
+  handleLoadPrevious,
+  hasNextPage,
+  hasPreviousPage,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
@@ -45,16 +51,18 @@ export const LFGFlatList = ({
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);
 
   return (
-    <ScheduleFlatListBase
-      listRef={listRef}
+    <ScheduleFlatListV2
+      flatListRef={flatListRef}
       keyExtractor={keyExtractor}
       items={items}
       renderItem={renderItem}
       separator={separator}
-      estimatedItemSize={161}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}
+      handleLoadPrevious={handleLoadPrevious}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
     />
   );
 };

@@ -118,3 +118,5 @@ export interface FlatListSeparatorProps<TItem> {
   highlighted: boolean;
   leadingItem: TItem;
 }
+
+export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
