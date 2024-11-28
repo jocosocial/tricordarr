@@ -194,6 +194,7 @@ export const ConversationFlatList = <TItem,>({
     },
     [styles.itemContainerView],
   );
+  console.log('[ConversationFlatList.tsx] Rendering ConversationFlatList at', new Date());
 
   // https://github.com/facebook/react-native/issues/25239
   return (
