@@ -8,6 +8,7 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {HyperlinkText} from './HyperlinkText';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 import {useUserKeywordQuery} from '../Queries/User/UserQueries.tsx';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;
@@ -28,6 +29,7 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
     keywordType: 'alertwords',
   });
   const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
+  const {appConfig} = useConfig();
 
   const renderEmojiText = useCallback(
     (
@@ -60,17 +62,19 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
             </Text>
           );
         }
-        undWords.forEach(word => {
-          // ChatGPT came up with this
-          const regex = new RegExp(`\\b(${word})\\b`, 'gi'); // 'gi' for global and case-insensitive
-          token = token.replace(regex, match => {
-            return `🚨${match}🚨`;
+        if (appConfig.userPreferences.highlightForumAlertWords) {
+          undWords.forEach(word => {
+            // ChatGPT came up with this
+            const regex = new RegExp(`\\b(${word})\\b`, 'gi'); // 'gi' for global and case-insensitive
+            token = token.replace(regex, match => {
+              return `🚨${match}🚨`;
+            });
           });
-        });
+        }
         return token;
       });
     },
-    [commonStyles.linkText, undWords],
+    [appConfig.userPreferences.highlightForumAlertWords, commonStyles.linkText, undWords],
   );
 
   const renderContentText = useCallback(
