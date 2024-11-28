@@ -37,6 +37,7 @@ export interface ConversationFlatListProps<TItem> {
   maintainViewPosition?: boolean;
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
+  enableScrollButton?: boolean;
 }
 
 export const ConversationFlatList = <TItem,>({
@@ -60,6 +61,7 @@ export const ConversationFlatList = <TItem,>({
   maintainViewPosition = true,
   onScrollThreshold,
   listStyle,
+  enableScrollButton = true,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -200,7 +202,7 @@ export const ConversationFlatList = <TItem,>({
         ref={flatListRef}
         data={data}
         renderItem={renderItemInternal}
-        onScroll={onScroll}
+        onScroll={enableScrollButton ? onScroll : undefined}
         // With RN 0.72 if pageSize is too small this doesn't trigger onEndReached.
         // Page size bigger, just fine.
         // Encountered this with ForumPostFlatList and this time had a way around it.
@@ -229,7 +231,7 @@ export const ConversationFlatList = <TItem,>({
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
       />
-      {showScrollButton && (
+      {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}

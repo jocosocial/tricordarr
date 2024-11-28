@@ -146,6 +146,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
       listStyle={styles.flatList}
+      enableScrollButton={false}
     />
   );
 };
