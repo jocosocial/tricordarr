@@ -19,6 +19,7 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {PhotostreamScreen} from '../../Screens/Photostream/PhotostreamScreen.tsx';
 import {PhotostreamImageCreateScreen} from '../../Screens/Photostream/PhotostreamImageCreateScreen.tsx';
 import {PhotostreamHelpScreen} from '../../Screens/Photostream/PhotostreamHelpScreen.tsx';
+import {MicroKaraokeListScreen} from '../../Screens/MicroKaraoke/MicroKaraokeListScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -34,6 +35,7 @@ export type MainStackParamList = CommonStackParamList & {
   PhotostreamScreen: undefined;
   PhotostreamImageCreateScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  MicroKaraokeListScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -95,6 +97,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
         options={{title: 'Help'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.microKaraokeListScreen}
+        component={MicroKaraokeListScreen}
+        options={{title: 'Song List'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

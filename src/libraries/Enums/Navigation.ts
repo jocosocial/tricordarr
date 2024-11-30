@@ -60,6 +60,7 @@ export enum MainStackComponents {
   photostreamScreen = 'PhotostreamScreen',
   photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
   photostreamHelpScreen = 'PhotostreamHelpScreen',
+  microKaraokeListScreen = 'MicroKaraokeListScreen',
 }
 
 export enum OobeStackComponents {

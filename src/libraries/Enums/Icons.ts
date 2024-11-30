@@ -117,4 +117,5 @@ export enum AppIcons {
   selectNone = 'select-remove',
   selectInverse = 'select-inverse',
   markAsRead = 'read',
+  microKaraoke = 'account-music',
 }

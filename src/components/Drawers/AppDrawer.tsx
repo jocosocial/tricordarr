@@ -77,6 +77,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => handleDrawerNav('tricordarr://photostream')}
                 />
               )}
+              {hasVerified && (
+                <PaperDrawer.Item
+                  label={'Micro Karaoke'}
+                  icon={AppIcons.microKaraoke}
+                  onPress={() => handleDrawerNav('tricordarr://microkaraoke')}
+                />
+              )}
               <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}

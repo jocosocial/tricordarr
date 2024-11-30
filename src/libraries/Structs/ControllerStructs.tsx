@@ -8,6 +8,7 @@ import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
 import {DinnerTeam} from '../Enums/DinnerTeam';
 import {QueryKey} from '@tanstack/react-query';
+import {bool} from 'yup';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -852,4 +853,67 @@ export interface SwiftarrClientConfig {
     name: string;
   };
   spec: SwiftarrClientConfigV1;
+}
+
+export interface MicroKaraokeCompletedSong {
+  /// Each song the server works on collecting (via piecing together multiple song clips from users) gets an ID
+  songID: number;
+  // The song title, as it'd appear in karaoke metadata
+  songName: string;
+  /// The artist, as they'd appear in karaoke metadata
+  artistName: string;
+  /// How many song slots this song has. NOT how many are currently filled. This number includes pre-filled 'filler' slots for instrumental sections.
+  totalSnippetSlots: number;
+  /// Always TRUE unless the user is a mod, in which case will be FALSE for songs that have all the necessary clips recorded but require mod approval to publish.
+  modApproved: boolean;
+  /// When the song's clips were last modified. Usually the time the final snippet gets uploaded (although 'final' means '30th out of 30'
+  /// and not 'the one at the end of the song'). However, clips can get deleted via moderation, causing the server to re-issue an offer
+  /// for the deleted clip, which may change the completion time. NIL if song isn't complete
+  completionTime?: string;
+  /// TRUE if the current user contributed to the song
+  userContributed: boolean;
+}
+
+export interface MicroKaraokeSongManifest {
+  /// Each song the server works on collecting (via piecing together multiple song clips from users) gets an ID
+  songID: number;
+  /// TRUE if all the clips for this song must be recorded in portrait mode. FALSE if they all need to be landscape.
+  portraitMode: boolean;
+  /// The video snippets that make up the song. Some snippets may be 'filler', such as for a song's instrumental section.
+  snippetVideoURLs: string[];
+  /// How long each snippet should be, in seconds.
+  snippetDurations: number[];
+  /// The karaoke audio for the song
+  karaokeMusicTrack: string;
+}
+
+export interface MicroKaraokeOfferPacket {
+  ///	The ID of this offer. Offers are good for 30 minutes (or until fulfilled with a snippet upload), and a user may only
+  /// have 1 open offer at a time. If a user re-requests while the offser is open, they should get the same offer response.
+  /// This prevents users shopping for the lyric they want to sing.
+  offerID: string;
+  /// Each song the server works on collecting (via piecing together multiple song clips from users) gets an ID
+  songID: number;
+  /// The song title, as it'd appear in karaoke metadata
+  songName: string;
+  /// The artist, as they'd appear in karaoke metadata
+  artistName: string;
+  /// Song tempo. May not be exact; used for the timing of the countdown prompt before recording starts.
+  bpm: number;
+  /// TRUE if all the clips for this song must be recorded in portrait mode. FALSE if they all need to be landscape.
+  portraitMode: boolean;
+  /// Which song snippet is being offered (songs are divided into 30-50 snippets when configured for use on Swiftarr)
+  snippetIndex: number;
+  /// The lyrics the user is supposed to sing. Generally 1-2 lines. NOT the entire lyrics for the song.
+  lyrics: string;
+  /// An URL that points to a .mp3 file containing ~6 seconds of the original song
+  /// This clip will have the artist singing the lyrics of 1-2 lines of the song, for the user to listen to before recording.
+  originalSnippetSoundURL: string;
+  /// This is a karaoke backing snippet to play while recording. It will be the same part of the song as `originalSnippetSoundURL`
+  /// but MAY NOT quite be the same duration (karaoke versions of songs are sometimes faster or slower tempo then their originals).
+  /// As a karaoke track, this snippet won't have main vocals, but it also could have slightly diffeent instruments/sounds.
+  karaokeSnippetSoundURL: string;
+  /// The time that this offer expires. If no upload has happened by this time, the user will need to request a new snippet offer,
+  /// which will likely be for a different part of the song, or even a different song altogether.
+  offerExpirationTime: string;
 }

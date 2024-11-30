@@ -10,6 +10,7 @@ import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavig
 import Config from 'react-native-config';
 import type {PathConfigMap} from '@react-navigation/core';
 import {SiteUILinkScreen} from '../components/Screens/SiteUI/SiteUILinkScreen.tsx';
+import {MicroKaraokeListScreen} from '../components/Screens/MicroKaraoke/MicroKaraokeListScreen.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -51,6 +52,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MainConductScreen: 'codeOfConduct',
             DailyThemesScreen: 'dailyThemes',
             PhotostreamScreen: 'photostream',
+            MicroKaraokeListScreen: 'microkaraoke',
           },
         },
         SeamailTab: {
