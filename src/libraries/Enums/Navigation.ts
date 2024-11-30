@@ -48,22 +48,6 @@ export enum ChatStackScreenComponents {
   seamailSettingsScreen = 'SeamailSettingsScreen',
 }
 
-export enum MainStackComponents {
-  mainScreen = 'MainScreen',
-  mainSettingsScreen = 'MainSettingsScreen',
-  aboutScreen = 'AboutScreen',
-  userDirectoryScreen = 'UserDirectoryScreen',
-  dailyThemeScreen = 'DailyThemeScreen',
-  mainHelpScreen = 'MainHelpScreen',
-  conductScreen = 'MainConductScreen',
-  dailyThemesScreen = 'DailyThemesScreen',
-  photostreamScreen = 'PhotostreamScreen',
-  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
-  photostreamHelpScreen = 'PhotostreamHelpScreen',
-  microKaraokeListScreen = 'MicroKaraokeListScreen',
-  microKaraokeSongScreen = 'MicroKaraokeSongScreen',
-}
-
 export enum OobeStackComponents {
   oobeWelcomeScreen = 'OobeWelcomeScreen',
   oobeServerScreen = 'OobeServerScreen',

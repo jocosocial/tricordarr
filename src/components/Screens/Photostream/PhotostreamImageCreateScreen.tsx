@@ -12,8 +12,7 @@ import {FormikHelpers} from 'formik';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {PhotostreamUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 

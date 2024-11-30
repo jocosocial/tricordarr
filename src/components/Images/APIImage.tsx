@@ -22,6 +22,7 @@ interface APIImageProps {
   fullPath: string;
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
+  disableTouch?: boolean;
 }
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
@@ -42,7 +43,7 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  * @param mode Underlying component to use for the image display.
  * @constructor
  */
-export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIImageProps) => {
+export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disableTouch}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
   const {appConfig} = useConfig();
   // The thumbnails Swiftarr generates are not animated.
@@ -143,7 +144,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity activeOpacity={1} onPress={handleThumbPress}>
+      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={handleThumbPress}>
         {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )}

@@ -4,8 +4,7 @@ import {MicroKaraokeCompletedSong} from '../../../libraries/Structs/ControllerSt
 import {View, StyleSheet} from 'react-native';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 
 interface MicroKaraokeSongListItemProps {
   mkSong: MicroKaraokeCompletedSong;

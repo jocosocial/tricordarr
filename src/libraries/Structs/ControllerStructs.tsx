@@ -8,7 +8,6 @@ import {LikeType} from '../Enums/LikeType';
 import pluralize from 'pluralize';
 import {DinnerTeam} from '../Enums/DinnerTeam';
 import {QueryKey} from '@tanstack/react-query';
-import {bool} from 'yup';
 
 /**
  * All of these interfaces come from Swiftarr.
@@ -916,4 +915,53 @@ export interface MicroKaraokeOfferPacket {
   /// The time that this offer expires. If no upload has happened by this time, the user will need to request a new snippet offer,
   /// which will likely be for a different part of the song, or even a different song altogether.
   offerExpirationTime: string;
+}
+
+export interface PerformerHeaderData {
+  /// Database ID of hte performer. Used to get full performer info via `/api/v3/performer/<id>`
+  id?: string;
+  /// Name of the performer
+  name: string;
+  /// Photo ID, accessible through `/api/v3/image/[full|thumb]/<photo>` methods in the `ImageController`.
+  photo?: string;
+  /// TRUE if the performer is on JoCo's list of featured guests. FALSE if this is a shadow event organizer.
+  isOfficialPerformer: boolean;
+}
+
+export interface PerformerData {
+  /// ID, name, photo -- used to create a title card
+  header: PerformerHeaderData;
+  /// For Shadow Event Organizers, the Performer links to their User, but don't use the user's pronoun field when referring to them as a Performer.
+  pronouns?: string;
+  /// Bio may contain Markdown.
+  bio?: string;
+  /// Bandname, NGO, university, Podcast name, etc. Should only be filled if the org is relevant to the performer's event.
+  organization?: string;
+  /// Should only be non-nil if it's a title that's relevant to the performer's event. Hopefully won't contain 'Mr./Mrs."
+  title?: string;
+  /// Should be a fully-qualified URL.
+  website?: string;
+  /// Should be a fully-qualified URL.
+  facebookURL?: string;
+  /// Should be a fully-qualified URL.
+  xURL?: string;
+  /// Should be a fully-qualified URL.
+  instagramURL?: string;
+  /// Should be a fully-qualified URL.
+  youtubeURL?: string;
+  /// Full 4-digit years, ascending order-- like this: [2011, 2012, 2022]
+  yearsAttended: number[];
+  /// The events this performer is going to be performing at.
+  events: EventData[];
+  /// The user who  created this Performer. Only applies to Shadow Event organizers, and is only returned if the requester is a Moderator or higher.
+  /// Although we track the User who created a Performer model for their shadow event for moderation purposes, the User behind the Performer
+  /// shouldn't be shown to everyone.
+  user?: UserHeader;
+}
+
+export interface PerformerResponseData {
+  /// The requested performers
+  performers: PerformerHeaderData[];
+  /// Pagination info.
+  paginator: Paginator;
 }

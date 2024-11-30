@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainScreen} from '../../Screens/Main/MainScreen';
@@ -21,6 +20,9 @@ import {PhotostreamImageCreateScreen} from '../../Screens/Photostream/Photostrea
 import {PhotostreamHelpScreen} from '../../Screens/Photostream/PhotostreamHelpScreen.tsx';
 import {MicroKaraokeListScreen} from '../../Screens/MicroKaraoke/MicroKaraokeListScreen.tsx';
 import {MicroKaraokeSongScreen} from '../../Screens/MicroKaraoke/MicroKaraokeSongScreen.tsx';
+import {PerformerListScreen} from '../../Screens/Performer/PerformerListScreen.tsx';
+import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
+import {PerformerScreen} from '../../Screens/Performer/PerformerScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -40,9 +42,33 @@ export type MainStackParamList = CommonStackParamList & {
   MicroKaraokeSongScreen: {
     songID: number;
   };
+  PerformerListScreen: {
+    performerType?: PerformerType;
+  };
+  PerformerScreen: {
+    id: string;
+  };
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
+
+export enum MainStackComponents {
+  mainScreen = 'MainScreen',
+  mainSettingsScreen = 'MainSettingsScreen',
+  aboutScreen = 'AboutScreen',
+  userDirectoryScreen = 'UserDirectoryScreen',
+  dailyThemeScreen = 'DailyThemeScreen',
+  mainHelpScreen = 'MainHelpScreen',
+  conductScreen = 'MainConductScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
+  photostreamScreen = 'PhotostreamScreen',
+  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
+  photostreamHelpScreen = 'PhotostreamHelpScreen',
+  microKaraokeListScreen = 'MicroKaraokeListScreen',
+  microKaraokeSongScreen = 'MicroKaraokeSongScreen',
+  performerListScreen = 'PerformerListScreen',
+  performerScreen = 'PerformerScreen',
+}
 
 export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -111,6 +137,16 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.microKaraokeSongScreen}
         component={MicroKaraokeSongScreen}
         options={{title: 'Song'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.performerListScreen}
+        component={PerformerListScreen}
+        options={{title: 'Performers'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.performerScreen}
+        component={PerformerScreen}
+        options={{title: 'Performer'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

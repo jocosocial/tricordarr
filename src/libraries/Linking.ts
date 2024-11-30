@@ -3,14 +3,12 @@ import {
   EventStackComponents,
   ForumStackComponents,
   LfgStackComponents,
-  MainStackComponents,
   ChatStackScreenComponents,
 } from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
 import type {PathConfigMap} from '@react-navigation/core';
-import {SiteUILinkScreen} from '../components/Screens/SiteUI/SiteUILinkScreen.tsx';
-import {MicroKaraokeListScreen} from '../components/Screens/MicroKaraoke/MicroKaraokeListScreen.tsx';
+import {MainStackComponents} from '../components/Navigation/Stacks/MainStackNavigator.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -53,6 +51,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             DailyThemesScreen: 'dailyThemes',
             PhotostreamScreen: 'photostream',
             MicroKaraokeListScreen: 'microkaraoke',
+            PerformerListScreen: 'performers',
           },
         },
         SeamailTab: {

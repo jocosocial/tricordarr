@@ -55,20 +55,27 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       renderDrawerContent={() => {
         return (
           <ScrollView>
-            {hasVerified && (
-              <PaperDrawer.Section title={'User'} showDivider={false}>
-                <PaperDrawer.Item
-                  label={`Your Profile (${profilePublicData?.header.username})`}
-                  icon={AppIcons.profile}
-                  onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
-                />
-                <PaperDrawer.Item
-                  label={'Directory'}
-                  icon={AppIcons.group}
-                  onPress={() => handleDrawerNav('tricordarr://users')}
-                />
-              </PaperDrawer.Section>
-            )}
+            <PaperDrawer.Section title={'User'} showDivider={false}>
+              {hasVerified && (
+                <>
+                  <PaperDrawer.Item
+                    label={`Your Profile (${profilePublicData?.header.username})`}
+                    icon={AppIcons.profile}
+                    onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
+                  />
+                  <PaperDrawer.Item
+                    label={'Directory'}
+                    icon={AppIcons.group}
+                    onPress={() => handleDrawerNav('tricordarr://users')}
+                  />
+                </>
+              )}
+              <PaperDrawer.Item
+                label={'Performers'}
+                icon={AppIcons.microKaraoke}
+                onPress={() => handleDrawerNav('tricordarr://performers')}
+              />
+            </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               {hasVerified && (
                 <PaperDrawer.Item

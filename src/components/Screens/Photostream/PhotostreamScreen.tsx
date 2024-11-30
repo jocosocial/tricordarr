@@ -8,8 +8,7 @@ import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';

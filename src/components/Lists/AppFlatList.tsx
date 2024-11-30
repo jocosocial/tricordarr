@@ -38,6 +38,9 @@ export interface ConversationFlatListProps<TItem> {
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
   enableScrollButton?: boolean;
+  numColumns?: number;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  columnWrapperStyle?: StyleProp<ViewStyle>;
 }
 
 export const AppFlatList = <TItem,>({
@@ -62,6 +65,9 @@ export const AppFlatList = <TItem,>({
   onScrollThreshold,
   listStyle,
   enableScrollButton = true,
+  numColumns,
+  contentContainerStyle,
+  columnWrapperStyle,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -231,6 +237,9 @@ export const AppFlatList = <TItem,>({
         ItemSeparatorComponent={renderComponentInternal(renderItemSeparator)}
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
+        numColumns={numColumns}
+        contentContainerStyle={contentContainerStyle}
+        columnWrapperStyle={columnWrapperStyle}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton

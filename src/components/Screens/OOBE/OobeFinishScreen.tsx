@@ -1,6 +1,6 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {BottomTabComponents, MainStackComponents, OobeStackComponents} from '../../../libraries/Enums/Navigation';
+import {BottomTabComponents, OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -10,6 +10,7 @@ import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {startForegroundServiceWorker} from '../../../libraries/Service';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard';
+import {MainStackComponents} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
