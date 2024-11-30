@@ -27,8 +27,8 @@ export const FloatingScrollButton = ({
     ...commonStyles.fullWidth,
     ...commonStyles.backgroundTransparent,
     ...commonStyles.positionAbsolute,
-    ...(displayPosition === 'bottom' ? {bottom: styleDefaults.marginSize} : undefined),
-    ...(displayPosition === 'raised' ? {bottom: 80} : undefined),
+    ...(displayPosition === 'bottom' ? {bottom: styleDefaults.marginSize * 2} : undefined),
+    ...(displayPosition === 'raised' ? {bottom: styleDefaults.marginSize * 5} : undefined),
   };
   return (
     <View style={style} pointerEvents={'box-none'}>
