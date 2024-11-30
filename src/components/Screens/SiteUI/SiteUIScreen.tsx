@@ -14,6 +14,8 @@ export const SiteUIScreen = ({route}: Props) => {
 
     if (route.params.moderate) {
       newUrl += '/moderate';
+    } else if (route.params.admin) {
+      newUrl += '/admin';
     }
 
     if (route?.params?.resource) {

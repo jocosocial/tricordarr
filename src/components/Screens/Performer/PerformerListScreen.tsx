@@ -1,5 +1,5 @@
 import {AppView} from '../../Views/AppView.tsx';
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {PerformerType, usePerformersQuery} from '../../Queries/Performer/PerformerQueries.ts';
 import {PerformerHeaderData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControl, View, StyleSheet} from 'react-native';
@@ -11,6 +11,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {PerformerHeaderCard} from '../../Cards/PerformerHeaderCard.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
@@ -65,6 +68,26 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
       </PaddedContentView>
     );
   };
+
+  const getHeaderButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(MainStackComponents.performerHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getHeaderButtons,
+    });
+  }, [navigation, getHeaderButtons]);
 
   const performers = data?.pages.flatMap(p => p.performers) || [];
 

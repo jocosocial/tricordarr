@@ -99,6 +99,7 @@ export type CommonStackParamList = {
     id?: string;
     timestamp?: string;
     moderate?: boolean;
+    admin?: boolean;
   };
   MapScreen: {
     deckNumber?: number;

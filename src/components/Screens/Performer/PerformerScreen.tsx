@@ -1,6 +1,6 @@
 import {Card, Chip, Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {usePerformerQuery} from '../../Queries/Performer/PerformerQueries.ts';
@@ -12,10 +12,13 @@ import {APIImage} from '../../Images/APIImage.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {LinkIconButton} from '../../Buttons/IconButtons/LinkIconButton.tsx';
+import {PerformerActionsMenu} from '../../Menus/Performer/PerformerActionsMenu.tsx';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerScreen>;
 
-export const PerformerScreen = ({route}: Props) => {
+export const PerformerScreen = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = usePerformerQuery(route.params.id);
   const {commonStyles} = useStyles();
 
@@ -42,6 +45,22 @@ export const PerformerScreen = ({route}: Props) => {
       ...commonStyles.flex,
     },
   });
+
+  const getHeaderButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <PerformerActionsMenu id={route.params.id} />
+        </HeaderButtons>
+      </View>
+    );
+  }, [route.params.id]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getHeaderButtons,
+    });
+  }, [navigation, getHeaderButtons]);
 
   if (!data) {
     return <LoadingView />;

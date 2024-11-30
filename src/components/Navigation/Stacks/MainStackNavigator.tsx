@@ -23,6 +23,7 @@ import {MicroKaraokeSongScreen} from '../../Screens/MicroKaraoke/MicroKaraokeSon
 import {PerformerListScreen} from '../../Screens/Performer/PerformerListScreen.tsx';
 import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
 import {PerformerScreen} from '../../Screens/Performer/PerformerScreen.tsx';
+import {PerformerHelpScreen} from '../../Screens/Performer/PerformerHelpScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -48,6 +49,7 @@ export type MainStackParamList = CommonStackParamList & {
   PerformerScreen: {
     id: string;
   };
+  PerformerHelpScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -68,6 +70,7 @@ export enum MainStackComponents {
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',
   performerListScreen = 'PerformerListScreen',
   performerScreen = 'PerformerScreen',
+  performerHelpScreen = 'PerformerHelpScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -147,6 +150,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.performerScreen}
         component={PerformerScreen}
         options={{title: 'Performer'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.performerHelpScreen}
+        component={PerformerHelpScreen}
+        options={{title: 'Help'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>
