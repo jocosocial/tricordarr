@@ -29,6 +29,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     image: commonStyles.roundedBorderLarge,
   });
 
+  // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
@@ -38,7 +39,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={styles.text}>The on-board bespoke communication platform of the JoCo Cruise.</Text>
+          <Text style={styles.text}>The un/semi-official on-board social media platform of the JoCo Cruise.</Text>
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>
