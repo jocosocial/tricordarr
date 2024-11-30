@@ -1,16 +1,17 @@
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
-import {FlatList, RefreshControlProps} from 'react-native';
+import {RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
+import {FlashList} from '@shopify/flash-list';
 
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  flatListRef: React.RefObject<FlatList<FezData>>;
+  listRef: React.RefObject<FlashList<FezData>>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
@@ -26,7 +27,7 @@ export const LFGFlatList = ({
   items,
   refreshControl,
   separator = 'day',
-  flatListRef,
+  listRef,
   onScrollThreshold,
   handleLoadNext,
   handleLoadPrevious,
@@ -52,7 +53,7 @@ export const LFGFlatList = ({
 
   return (
     <ScheduleFlatListBase
-      flatListRef={flatListRef}
+      listRef={listRef}
       keyExtractor={keyExtractor}
       items={items}
       renderItem={renderItem}
@@ -63,6 +64,7 @@ export const LFGFlatList = ({
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
+      estimatedItemSize={161}
     />
   );
 };

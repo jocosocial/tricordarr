@@ -1,6 +1,6 @@
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
-import {FlatList, RefreshControlProps} from 'react-native';
+import {RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {getScheduleItemMarker} from '../../../libraries/Schedule.ts';
@@ -11,11 +11,12 @@ import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import useDateTime from '../../../libraries/DateTime.ts';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
+import {FlashList} from '@shopify/flash-list';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlatList<TItem>>;
+  listRef: React.RefObject<FlashList<TItem>>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
@@ -90,13 +91,14 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
 
   return (
     <ScheduleFlatListBase
-      flatListRef={listRef}
+      listRef={listRef}
       keyExtractor={keyExtractor}
       items={items}
       renderItem={renderItem}
       separator={separator}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
+      estimatedItemSize={120}
     />
   );
 };

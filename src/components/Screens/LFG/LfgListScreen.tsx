@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {ScheduleLfgFilterMenu} from '../../Menus/LFG/ScheduleLfgFilterMenu';
@@ -21,6 +21,7 @@ import {NotificationTypeData, SocketNotificationData} from '../../../libraries/S
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FlashList} from '@shopify/flash-list';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -43,7 +44,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {notificationSocket, closeFezSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const flatListRef = useRef<FlatList<FezData>>(null);
+  const listRef = useRef<FlashList<FezData>>(null);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -128,7 +129,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     <AppView>
       <TimezoneWarningView />
       <LFGFlatList
-        flatListRef={flatListRef}
+        listRef={listRef}
         items={lfgList}
         refreshControl={
           <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
