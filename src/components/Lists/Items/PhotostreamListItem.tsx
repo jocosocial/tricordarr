@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {APIImage} from '../../Images/APIImage.tsx';
 import {View} from 'react-native';
@@ -9,7 +9,7 @@ interface PhotostreamListItemProps {
   item: PhotostreamImageData;
 }
 
-export const PhotostreamListItem = ({item}: PhotostreamListItemProps) => {
+const PhotostreamListItemInternal = ({item}: PhotostreamListItemProps) => {
   return (
     <View>
       <PhotostreamImageHeaderView image={item} />
@@ -24,3 +24,5 @@ export const PhotostreamListItem = ({item}: PhotostreamListItemProps) => {
     </View>
   );
 };
+
+export const PhotostreamListItem = memo(PhotostreamListItemInternal);
