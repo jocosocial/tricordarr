@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
-import {useModal} from '../../Context/Contexts/ModalContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
@@ -14,7 +12,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
 interface SeamailActionsMenuProps {
@@ -23,20 +21,15 @@ interface SeamailActionsMenuProps {
   onRefresh: () => void;
 }
 
-const helpContent = [
-  'You can long press on a message for additional actions.',
-  'Press the title to easily access details.',
-];
-
 export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: SeamailActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const seamailNavigation = useChatStack();
-  const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
   const {dispatchFezList, setFez} = useTwitarr();
   const {remove} = useSeamailQuery({fezID: fez.fezID});
+  const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -104,12 +97,11 @@ export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: Seama
         </>
       )}
       <Menu.Item
-        leadingIcon={AppIcons.help}
         title={'Help'}
+        leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          setModalContent(<HelpModalView text={helpContent} />);
-          setModalVisible(true);
+          commonNavigation.push(CommonStackComponents.seamailHelpScreen);
         }}
       />
     </Menu>

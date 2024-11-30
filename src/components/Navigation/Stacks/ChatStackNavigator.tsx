@@ -26,7 +26,6 @@ export type ChatStackParamList = CommonStackParamList & {
   SeamailSearchScreen: {
     forUser?: string;
   };
-  SeamailHelpScreen: undefined;
   KrakenTalkReceiveScreen: {
     callID: string;
     callerUserID: string;
@@ -62,11 +61,6 @@ export const ChatStackNavigator = () => {
         name={ChatStackScreenComponents.seamailSearchScreen}
         component={SeamailSearchScreen}
         options={{title: 'Search Seamail'}}
-      />
-      <ChatStack.Screen
-        name={ChatStackScreenComponents.seamailHelpScreen}
-        component={SeamailHelpScreen}
-        options={{title: 'Seamail Help'}}
       />
       <ChatStack.Screen
         name={ChatStackScreenComponents.krakenTalkReceiveScreen}

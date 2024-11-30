@@ -4,6 +4,7 @@ import {Menu} from 'react-native-paper';
 import * as React from 'react';
 import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 export const SeamailListActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
@@ -30,7 +31,7 @@ export const SeamailListActionsMenu = () => {
         title={'Help'}
         onPress={() => {
           closeMenu();
-          navigation.push(ChatStackScreenComponents.seamailHelpScreen);
+          navigation.push(CommonStackComponents.seamailHelpScreen);
         }}
       />
     </Menu>
