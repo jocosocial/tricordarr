@@ -4,6 +4,8 @@ import {MicroKaraokeCompletedSong} from '../../../libraries/Structs/ControllerSt
 import {View, StyleSheet} from 'react-native';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
 
 interface MicroKaraokeSongListItemProps {
   mkSong: MicroKaraokeCompletedSong;
@@ -11,9 +13,12 @@ interface MicroKaraokeSongListItemProps {
 
 export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps) => {
   const {commonStyles} = useStyles();
+  const mainStack = useMainStack();
+
   const styles = StyleSheet.create({
     title: commonStyles.bold,
   });
+
   const getDescription = () => {
     return (
       <View>
@@ -26,5 +31,11 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
       </View>
     );
   };
-  return <List.Item title={mkSong.songName} titleStyle={styles.title} description={getDescription} />;
+
+  const onPress = () =>
+    mainStack.push(MainStackComponents.microKaraokeSongScreen, {
+      songID: mkSong.songID,
+    });
+
+  return <List.Item title={mkSong.songName} titleStyle={styles.title} description={getDescription} onPress={onPress} />;
 };
