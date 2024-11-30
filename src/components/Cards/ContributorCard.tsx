@@ -1,11 +1,13 @@
 import {Card, Text} from 'react-native-paper';
-import {Image, ImageSourcePropType, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {ImageQueryData} from '../../libraries/Types';
+import {AppImage} from '../Images/AppImage.tsx';
 
 interface ContributorCardProps {
-  imageSource: ImageSourcePropType;
   bodyText: string;
+  image: ImageQueryData;
 }
 
 export const ContributorCard = (props: ContributorCardProps) => {
@@ -33,7 +35,7 @@ export const ContributorCard = (props: ContributorCardProps) => {
   return (
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
-        <Image style={styles.image} source={props.imageSource} />
+        <AppImage image={props.image} style={styles.image} />
         <View style={styles.body}>
           <Text>{props.bodyText}</Text>
         </View>
