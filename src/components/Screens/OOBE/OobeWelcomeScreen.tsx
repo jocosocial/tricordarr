@@ -14,15 +14,21 @@ import tricordarr from '../../../../assets/PlayStore/tricordarr.jpg';
 import {AppImage} from '../../Images/AppImage.tsx';
 import {encode as base64_encode} from 'base-64';
 import DeviceInfo from 'react-native-device-info';
+import {useAppTheme} from '../../../styles/Theme.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
+  const theme = useAppTheme();
+
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
     image: commonStyles.roundedBorderLarge,
   });
+
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
@@ -60,7 +66,13 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)} />
+      <OobeButtonsView
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)}
+        leftOnPress={() => navigation.push(OobeStackComponents.oobePreregistrationScreen)}
+        leftButtonColor={theme.colors.twitarrNeutralButton}
+        leftText={'Pre-Registration'}
+        leftDisabled={new Date() > appConfig.preRegistrationEndDate}
+      />
     </AppView>
   );
 };

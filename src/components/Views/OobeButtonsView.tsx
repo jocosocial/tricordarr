@@ -1,6 +1,6 @@
 import {useStyles} from '../Context/Contexts/StyleContext';
 import React from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../styles/Theme';
 
@@ -13,6 +13,8 @@ interface OobeButtonsViewProps {
   rightOnPress?: () => void;
   rightMode?: 'contained' | 'text' | 'outlined' | 'elevated' | 'contained-tonal';
   rightDisabled?: boolean;
+  leftButtonColor?: string;
+  rightButtonColor?: string;
 }
 
 export const OobeButtonsView = ({
@@ -24,11 +26,13 @@ export const OobeButtonsView = ({
   rightMode = 'contained',
   leftDisabled = false,
   rightDisabled = false,
+  leftButtonColor = undefined,
+  rightButtonColor = undefined,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
-  const styles = {
+  const styles = StyleSheet.create({
     buttonContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
@@ -48,7 +52,7 @@ export const OobeButtonsView = ({
     rightButton: {
       ...commonStyles.flexEnd,
     },
-  };
+  });
 
   return (
     <View style={styles.buttonContainer}>
@@ -61,6 +65,7 @@ export const OobeButtonsView = ({
             mode={leftMode}
             disabled={leftDisabled}
             textColor={theme.colors.onBackground}
+            buttonColor={leftButtonColor}
           />
         )}
       </View>
@@ -72,6 +77,7 @@ export const OobeButtonsView = ({
             style={styles.rightButton}
             mode={rightMode}
             disabled={rightDisabled}
+            buttonColor={rightButtonColor}
           />
         )}
       </View>

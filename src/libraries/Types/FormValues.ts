@@ -87,6 +87,11 @@ export interface CruiseSettingsFormValues {
   schedBaseUrl: string;
 }
 
+export interface PreRegistrationSettingsFormValues {
+  preRegistrationServerUrl: string;
+  preRegistrationEndDate: Date;
+}
+
 export interface QuerySettingsFormValues {
   defaultPageSize: number;
   cacheTimeDays: number;

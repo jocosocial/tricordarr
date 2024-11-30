@@ -73,6 +73,7 @@ export enum OobeStackComponents {
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
+  oobePreregistrationScreen = 'OobePreregistrationScreen',
 }
 
 export enum EventStackComponents {

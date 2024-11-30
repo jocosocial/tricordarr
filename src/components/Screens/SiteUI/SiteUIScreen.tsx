@@ -6,7 +6,7 @@ import {SiteUIScreenBase} from './SiteUIScreenBase.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
-export const SiteUIScreen = ({route, navigation}: Props) => {
+export const SiteUIScreen = ({route}: Props) => {
   const {appConfig} = useConfig();
 
   const getInitialUrl = () => {
@@ -26,5 +26,5 @@ export const SiteUIScreen = ({route, navigation}: Props) => {
     return newUrl;
   };
 
-  return <SiteUIScreenBase initialUrl={getInitialUrl()} navigation={navigation} initialKey={route.params.timestamp} />;
+  return <SiteUIScreenBase initialUrl={getInitialUrl()} initialKey={route.params.timestamp} />;
 };

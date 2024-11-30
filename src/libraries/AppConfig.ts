@@ -70,6 +70,8 @@ export interface AppConfig {
   schedBaseUrl: string;
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
+  preRegistrationServerUrl: string;
+  preRegistrationEndDate: Date;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -113,7 +115,7 @@ const defaultAppConfig: AppConfig = {
   portTimeZoneID: 'America/New_York',
   apiClientConfig: {
     defaultPageSize: 50,
-    canonicalHostnames: ['joco.hollandamerica.com', 'twitarr.com'],
+    canonicalHostnames: ['twitarr.com'],
     cacheBuster: new Date().toString(),
     cacheTime: defaultCacheTime,
     retry: 2, // 3 attempts total (initial, retry 1, retry 2)
@@ -128,7 +130,7 @@ const defaultAppConfig: AppConfig = {
     darkMode: false,
   },
   skipThumbnails: true,
-  schedBaseUrl: 'https://jococruise1970.sched.com',
+  schedBaseUrl: '',
   userPreferences: {
     reverseSwipeOrientation: false,
     defaultForumSortDirection: undefined,
@@ -136,6 +138,8 @@ const defaultAppConfig: AppConfig = {
     highlightForumAlertWords: true,
   },
   markReadCancelPush: true,
+  preRegistrationServerUrl: '',
+  preRegistrationEndDate: new Date(2023, 3, 5),
 };
 
 /**
@@ -160,6 +164,16 @@ export const getInitialAppConfig = () => {
   if (Config.PORT_TIME_ZONE_ID) {
     config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
   }
+  if (Config.PREREGISTRATION_SERVER_URL) {
+    config.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
+  } else {
+    config.preRegistrationServerUrl = config.serverUrl;
+  }
+  if (Config.PREREGISTRATION_END_DATE) {
+    const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
+    // Because Javascript, Fools!
+    config.preRegistrationEndDate = new Date(year, month - 1, day);
+  }
   return config;
 };
 
@@ -181,6 +195,7 @@ export const getAppConfig = async () => {
   }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
+  appConfig.preRegistrationEndDate = new Date(appConfig.preRegistrationEndDate);
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
   }
