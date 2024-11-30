@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import pluralize from 'pluralize';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
@@ -20,7 +20,7 @@ interface LfgCardProps {
   titleHeader?: string;
 }
 
-export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = false, titleHeader}: LfgCardProps) => {
+const LfgCardInternal = ({lfg, onPress, marker, showLfgIcon = false, showDay = false, titleHeader}: LfgCardProps) => {
   const theme = useAppTheme();
   const unreadCount = lfg.members ? lfg.members.postCount - lfg.members.readCount : 0;
   const {commonStyles} = useStyles();
@@ -65,3 +65,5 @@ export const LfgCard = ({lfg, onPress, marker, showLfgIcon = false, showDay = fa
     />
   );
 };
+
+export const LfgCard = memo(LfgCardInternal);

@@ -9,6 +9,7 @@ import {ImageQueryData} from '../../libraries/Types';
 import {saveImageToLocal} from '../../libraries/Storage/ImageStorage';
 import {ImageViewerFooterView} from '../Views/ImageViewerFooterView';
 import {useAppTheme} from '../../styles/Theme';
+import {StyleSheet} from 'react-native';
 
 interface AppImageViewerProps {
   initialIndex?: number;
@@ -34,6 +35,14 @@ export const AppImageViewer = ({
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
 
+  const styles = StyleSheet.create({
+    header: {
+      ...commonStyles.flexRow,
+      ...commonStyles.justifyContentEnd,
+      ...commonStyles.imageViewerBackground,
+    },
+  });
+
   const saveImage = useCallback(
     async (index: number) => {
       try {
@@ -51,7 +60,7 @@ export const AppImageViewer = ({
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
-        <View style={[commonStyles.flexRow, commonStyles.justifyContentEnd]}>
+        <View style={styles.header}>
           {enableDownload && (
             <IconButton
               icon={AppIcons.download}
@@ -67,14 +76,7 @@ export const AppImageViewer = ({
         </View>
       );
     },
-    [
-      commonStyles.flexRow,
-      commonStyles.justifyContentEnd,
-      enableDownload,
-      saveImage,
-      setIsVisible,
-      theme.colors.onImageViewer,
-    ],
+    [enableDownload, saveImage, setIsVisible, styles.header, theme.colors.onImageViewer],
   );
 
   const viewerFooter = useCallback(

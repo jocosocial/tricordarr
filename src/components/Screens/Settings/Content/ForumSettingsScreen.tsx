@@ -24,6 +24,7 @@ export const ForumSettingsScreen = () => {
   const [defaultSortOrder, setDefaultSortOrder] = useState(appConfig.userPreferences.defaultForumSortOrder);
   const [defaultSortDirection, setDefaultSortDirection] = useState(appConfig.userPreferences.defaultForumSortDirection);
   const {setForumSortOrder, setForumSortDirection} = useFilter();
+  const [highlightAlertWords, setHighlightAlertWords] = useState(appConfig.userPreferences.highlightForumAlertWords);
 
   const handleOrientation = () => {
     updateAppConfig({
@@ -70,6 +71,17 @@ export const ForumSettingsScreen = () => {
     });
   };
 
+  const handleHighlightAlerts = () => {
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        highlightForumAlertWords: !highlightAlertWords,
+      },
+    });
+    setHighlightAlertWords(!highlightAlertWords);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -112,6 +124,16 @@ export const ForumSettingsScreen = () => {
                   }
                   onSelect={handleSortDirection}
                   viewStyle={commonStyles.paddingBottomSmall}
+                />
+                <BooleanField
+                  name={'highlightForumAlertWords'}
+                  label={'Highlight Forum Alert Words'}
+                  value={highlightAlertWords}
+                  helperText={
+                    'Visually identify your alert keywords in forums like 🚨this🚨. Disabling this has no effect on your notifications for the alert words.'
+                  }
+                  onPress={handleHighlightAlerts}
+                  style={commonStyles.paddingHorizontal}
                 />
               </ListSection>
               <ListSection>

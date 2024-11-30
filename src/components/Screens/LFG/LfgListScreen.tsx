@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
@@ -20,6 +20,8 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FlashList} from '@shopify/flash-list';
 
 interface LfgJoinedScreenProps {
   endpoint: 'open' | 'joined' | 'owner';
@@ -28,7 +30,7 @@ interface LfgJoinedScreenProps {
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
-  const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage} =
+  const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
     useLfgListQuery({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
@@ -42,6 +44,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
   const {notificationSocket, closeFezSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
+  const listRef = useRef<FlashList<FezData>>(null);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -126,6 +129,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     <AppView>
       <TimezoneWarningView />
       <LFGFlatList
+        listRef={listRef}
         items={lfgList}
         refreshControl={
           <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
@@ -133,6 +137,7 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
         separator={'day'}
         onScrollThreshold={onScrollThreshold}
         handleLoadNext={fetchNextPage}
+        hasNextPage={hasNextPage}
       />
       <LfgFAB showLabel={showFabLabel} />
     </AppView>

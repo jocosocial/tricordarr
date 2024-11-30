@@ -8,6 +8,7 @@ import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
 import {styleDefaults} from '../../../styles';
+import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];
@@ -23,6 +24,8 @@ interface ScheduleFlatListBaseProps<TItem> {
   onScrollThreshold?: (condition: boolean) => void;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
@@ -38,6 +41,8 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   keyExtractor,
   onScrollThreshold,
   handleLoadNext,
+  hasNextPage,
+  hasPreviousPage,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 
@@ -57,12 +62,15 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     return <TimeDivider label={label} />;
   }, [items, separator]);
 
-  const renderListFooter = () => {
+  const renderListFooter = useCallback(() => {
     if (items.length === 0) {
       return <></>;
     }
+    if (hasNextPage) {
+      return <LoadingNextFooter />;
+    }
     return <TimeDivider />;
-  };
+  }, [hasNextPage, items.length]);
 
   const renderSeparatorTime = ({leadingItem}: {leadingItem: TItem}) => {
     const leadingIndex = items.indexOf(leadingItem);

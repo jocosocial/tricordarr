@@ -42,6 +42,7 @@ export interface UserPreferences {
   reverseSwipeOrientation: boolean;
   defaultForumSortOrder: ForumSort | undefined;
   defaultForumSortDirection: ForumSortDirection | undefined;
+  highlightForumAlertWords: boolean;
 }
 
 export interface AppConfig {
@@ -132,6 +133,7 @@ const defaultAppConfig: AppConfig = {
     reverseSwipeOrientation: false,
     defaultForumSortDirection: undefined,
     defaultForumSortOrder: undefined,
+    highlightForumAlertWords: true,
   },
   markReadCancelPush: true,
 };

@@ -38,7 +38,7 @@ export const ChatFlatList = ({
   const invertList = fez.members && fez.members.readCount === fez.members.postCount;
 
   const renderHeader = () => {
-    return hasPreviousPage ? <LoadingPreviousHeader /> : <FezPostListHeader invertList={invertList} />;
+    return hasPreviousPage ? <LoadingPreviousHeader /> : <FezPostListHeader />;
   };
 
   const showNewDivider = useCallback(

@@ -20,7 +20,7 @@ import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
 import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SiteUIScreen} from '../Screens/SiteUIScreen';
+import {SiteUIScreen} from '../Screens/SiteUI/SiteUIScreen.tsx';
 import {MapScreen} from '../Screens/Main/MapScreen';
 import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
 import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen';
@@ -59,6 +59,9 @@ import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
 import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
 import {LfgParticipationHelpScreen} from '../Screens/LFG/LfgParticipationHelpScreen.tsx';
 import {ForumPostSearchScreen} from '../Screens/Forum/Post/ForumPostSearchScreen.tsx';
+import {SeamailHelpScreen} from '../Screens/Seamail/SeamailHelpScreen.tsx';
+import {SiteUILinkScreen} from '../Screens/SiteUI/SiteUILinkScreen.tsx';
+import {RootStackComponents} from './Stacks/RootStackNavigator.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -188,6 +191,8 @@ export type CommonStackParamList = {
     category?: CategoryData;
     forum?: ForumListData | ForumData;
   };
+  SeamailHelpScreen: undefined;
+  SiteUILinkScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -235,6 +240,8 @@ export enum CommonStackComponents {
   scheduleHelpScreen = 'ScheduleHelpScreen',
   lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
+  seamailHelpScreen = 'SeamailHelpScreen',
+  siteUILinkScreen = 'SiteUILinkScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -465,6 +472,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.forumPostSearchScreen}
         component={isForumsDisabled ? DisabledView : ForumPostSearchScreen}
         options={{title: 'Post Search'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.seamailHelpScreen}
+        component={SeamailHelpScreen}
+        options={{title: 'Seamail Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.siteUILinkScreen}
+        component={SiteUILinkScreen}
+        options={{title: 'Twitarr'}}
       />
     </>
   );

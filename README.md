@@ -101,6 +101,8 @@ Query
 
 Layout Consideration
 --------------------
+### General
+* Every screen should have Help. Whether directly in the header or under a menu.
 
 ### Screen Headers / Menus
 * Most screens should have an Actions Menu (three dots) in the upper right.

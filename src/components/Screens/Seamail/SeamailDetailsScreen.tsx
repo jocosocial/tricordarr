@@ -14,8 +14,6 @@ import {FezType} from '../../../libraries/Enums/FezType';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {HelpModalView} from '../../Views/Modals/HelpModalView';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext';
@@ -28,16 +26,9 @@ import {CommonStackComponents, CommonStackParamList} from '../../Navigation/Comm
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailDetailsScreen>;
 
-const helpContent = [
-  'Seamail titles cannot be modified.',
-  'With Open seamails, the creator can add or remove members at any time.',
-  'Closed seamails cannot be modified after they are created.',
-];
-
 export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez, dispatchFezList} = useTwitarr();
-  const {setModalContent, setModalVisible} = useModal();
   const {fezSocket} = useSocket();
   const {refetch, isRefetching} = useSeamailQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
@@ -68,15 +59,12 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => {
-              setModalContent(<HelpModalView text={helpContent} />);
-              setModalVisible(true);
-            }}
+            onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
           />
         </HeaderButtons>
       </View>
     ),
-    [setModalContent, setModalVisible],
+    [navigation],
   );
 
   useEffect(() => {

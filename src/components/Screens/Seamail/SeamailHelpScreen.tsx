@@ -1,47 +1,49 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ListSection} from '../../Lists/ListSection.tsx';
+import {ListSubheader} from '../../Lists/ListSubheader.tsx';
+import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
+import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 
 export const SeamailHelpScreen = () => {
-  const {commonStyles} = useStyles();
   return (
     <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
-          <Text>Seamail: It's like email, but at sea. Use them to send private messages to other users.</Text>
+      <ScrollingContentView isStack={true}>
+        <ListSection>
+          <ListSubheader>General</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true}>
+          <HelpParagraphText>
+            Seamail: It's like email, but at sea. Use them to send private messages to other users.
+          </HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
-            Types of Seamail Conversations
-          </Text>
+          <HelpHeaderText>Types of Seamail Conversations</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={[commonStyles.marginBottomSmall]}>
+          <HelpParagraphText>
             Open: Allows you add or remove users later on. Added users will be able to read all past history. This is
             the default type.
-          </Text>
-          <Text style={[commonStyles.marginBottomSmall]}>
+          </HelpParagraphText>
+          <HelpParagraphText>
             Closed: Cannot add or remove users later on. To start chatting with new users you'll need to create a new
             conversation.
-          </Text>
-          <Text>The type cannot be changed once the conversation is created.</Text>
+          </HelpParagraphText>
+          <HelpParagraphText>The type cannot be changed once the conversation is created.</HelpParagraphText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text variant={'titleMedium'} style={[commonStyles.bold]}>
-            Seamail Content
-          </Text>
+          <HelpHeaderText>Seamail Content</HelpHeaderText>
         </PaddedContentView>
         <PaddedContentView>
-          <Text style={[commonStyles.marginBottomSmall]}>
-            You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is by design.
-          </Text>
-          <Text style={[commonStyles.marginBottomSmall]}>
+          <HelpParagraphText>
+            You can send text, unicode emojis, and our custom emojis. You cannot send pictures. This is intentional.
+          </HelpParagraphText>
+          <HelpParagraphText>
             Messages made in Open seamails can be reported to the moderation team by long-pressing on the message and
             selecting Report.
-          </Text>
+          </HelpParagraphText>
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

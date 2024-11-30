@@ -1,22 +1,23 @@
-import {FlashList} from '@shopify/flash-list';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {getScheduleItemMarker} from '../../../libraries/Schedule.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {EventCardListItem} from '../Items/Event/EventCardListItem.tsx';
 import {PersonalEventCardListItem} from '../Items/PersonalEvent/PersonalEventCardListItem.tsx';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import useDateTime from '../../../libraries/DateTime.ts';
+import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
+import {ScheduleFlatListSeparator} from '../../../libraries/Types';
+import {FlashList} from '@shopify/flash-list';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef?: React.RefObject<FlashList<TItem>> | null;
-  separator?: 'day' | 'time' | 'none';
+  listRef: React.RefObject<FlashList<TItem>>;
+  separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   initialScrollIndex?: number;
@@ -30,8 +31,6 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
   separator = 'time',
   listRef,
   setRefreshing,
-  listFooter,
-  listHeader,
   onScrollThreshold,
 }: ScheduleFlatListProps<TItem>) => {
   const commonNavigation = useCommonStack();
@@ -97,11 +96,9 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
       items={items}
       renderItem={renderItem}
       separator={separator}
-      estimatedItemSize={120}
       refreshControl={refreshControl}
-      listHeader={listHeader}
-      listFooter={listFooter}
       onScrollThreshold={onScrollThreshold}
+      estimatedItemSize={120}
     />
   );
 };

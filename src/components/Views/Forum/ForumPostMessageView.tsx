@@ -11,6 +11,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -80,13 +81,15 @@ export const ForumPostMessageView = ({
     });
   };
 
+  const onLongPress = () => Clipboard.setString(postData.text);
+
   return (
     <View style={styles.messageView}>
       <TouchableOpacity
         style={styles.opacity}
-        onLongPress={openMenu}
+        onLongPress={enableShowInThread ? openMenu : onLongPress}
         activeOpacity={1}
-        onPress={enableShowInThread ? onPress : undefined}>
+        onPress={enableShowInThread ? onPress : openMenu}>
         <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
           {showAuthor && (
             <>

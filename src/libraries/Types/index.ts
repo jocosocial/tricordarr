@@ -114,6 +114,9 @@ export interface StartEndTime {
 
 export type FloatingScrollButtonPosition = 'raised' | 'bottom' | undefined;
 
-export interface ListHeaderInvertProp {
-  invertList?: boolean;
+export interface FlatListSeparatorProps<TItem> {
+  highlighted: boolean;
+  leadingItem: TItem;
 }
+
+export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';

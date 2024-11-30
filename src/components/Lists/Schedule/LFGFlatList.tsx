@@ -1,4 +1,3 @@
-import {FlashList} from '@shopify/flash-list';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
@@ -6,16 +5,21 @@ import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
+import {ScheduleFlatListSeparator} from '../../../libraries/Types';
+import {FlashList} from '@shopify/flash-list';
 
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef?: React.RefObject<FlashList<FezData>> | null;
-  separator?: 'day' | 'time' | 'none';
+  listRef: React.RefObject<FlashList<FezData>>;
+  separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
   initialScrollIndex?: number;
   onScrollThreshold?: (condition: boolean) => void;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+  handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
 }
 
@@ -26,6 +30,9 @@ export const LFGFlatList = ({
   listRef,
   onScrollThreshold,
   handleLoadNext,
+  handleLoadPrevious,
+  hasNextPage,
+  hasPreviousPage,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
@@ -51,10 +58,13 @@ export const LFGFlatList = ({
       items={items}
       renderItem={renderItem}
       separator={separator}
-      estimatedItemSize={161}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       handleLoadNext={handleLoadNext}
+      handleLoadPrevious={handleLoadPrevious}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      estimatedItemSize={161}
     />
   );
 };

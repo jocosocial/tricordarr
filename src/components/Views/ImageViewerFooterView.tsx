@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
 import {ImageQueryData} from '../../libraries/Types';
 import {Text} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;
@@ -17,7 +18,7 @@ interface ImageViewerFooterViewProps {
  */
 export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
-  const styles = {
+  const styles = StyleSheet.create({
     footerContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifySpaceBetween,
@@ -25,12 +26,20 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.paddingVertical,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
+      ...commonStyles.imageViewerBackground,
     },
     verticalContainer: {
       ...commonStyles.flexColumn,
       ...commonStyles.alignItemsCenter,
     },
-  };
+    filenameText: {
+      ...commonStyles.marginBottomSmall,
+      ...commonStyles.onImageViewer,
+    },
+    indexText: {
+      ...commonStyles.onImageViewer,
+    },
+  });
   // This is a hack to get around the ImageViewer not updating in time if the underlying images changes and you
   // have already scrolled around in the viewer.
   // https://github.com/jobtoday/react-native-image-viewing/issues/203
@@ -38,8 +47,8 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={[commonStyles.marginBottomSmall, commonStyles.onImageViewer]}>{filename}</Text>
-        <Text style={[commonStyles.onImageViewer]}>
+        <Text style={styles.filenameText}>{filename}</Text>
+        <Text style={styles.indexText}>
           {currentIndex + 1} of {viewerImages.length}
         </Text>
       </View>

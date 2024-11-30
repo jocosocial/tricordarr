@@ -13,7 +13,7 @@ import {
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
-import {FloatingScrollButtonPosition} from '../../libraries/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../libraries/Types';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export interface ConversationFlatListProps<TItem> {
@@ -37,6 +37,7 @@ export interface ConversationFlatListProps<TItem> {
   maintainViewPosition?: boolean;
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
+  enableScrollButton?: boolean;
 }
 
 export const ConversationFlatList = <TItem,>({
@@ -60,6 +61,7 @@ export const ConversationFlatList = <TItem,>({
   maintainViewPosition = true,
   onScrollThreshold,
   listStyle,
+  enableScrollButton = true,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -168,6 +170,32 @@ export const ConversationFlatList = <TItem,>({
     [renderItem, styles.itemContainerView],
   );
 
+  const renderComponentInternal = useCallback(
+    (inputComponent?: React.ComponentType<any>): React.ComponentType<any> | null | undefined => {
+      // If it's a valid React element, render it directly
+      // This currently does not do the FlatListSeparatorProps. Does it need to?
+      if (React.isValidElement(inputComponent)) {
+        return () => <View style={styles.itemContainerView}>{inputComponent}</View>;
+      }
+      if (typeof inputComponent === 'function') {
+        // If it's a function (ComponentType or functional component), render it
+        const RenderedComponent = inputComponent as React.ComponentType<any>;
+        return ({highlighted, leadingItem}: FlatListSeparatorProps<TItem>) => (
+          <View style={styles.itemContainerView}>
+            <RenderedComponent highlighted={highlighted} leadingItem={leadingItem} />
+          </View>
+        );
+      }
+      if (inputComponent === undefined) {
+        return;
+      }
+      console.error('Invalid component type provided to renderComponentInternal.');
+      return null;
+    },
+    [styles.itemContainerView],
+  );
+  console.log('[ConversationFlatList.tsx] Rendering ConversationFlatList at', new Date());
+
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
@@ -175,7 +203,7 @@ export const ConversationFlatList = <TItem,>({
         ref={flatListRef}
         data={data}
         renderItem={renderItemInternal}
-        onScroll={onScroll}
+        onScroll={enableScrollButton ? onScroll : undefined}
         // With RN 0.72 if pageSize is too small this doesn't trigger onEndReached.
         // Page size bigger, just fine.
         // Encountered this with ForumPostFlatList and this time had a way around it.
@@ -194,13 +222,17 @@ export const ConversationFlatList = <TItem,>({
         getItemLayout={getItemLayout}
         onStartReached={invertList ? handleLoadNext : handleLoadPrevious}
         onEndReached={invertList ? handleLoadPrevious : handleLoadNext}
-        ListFooterComponent={invertList ? renderListHeader : renderListFooter}
-        ListHeaderComponent={invertList ? renderListFooter : renderListHeader}
-        ItemSeparatorComponent={renderItemSeparator}
+        ListFooterComponent={
+          invertList ? renderComponentInternal(renderListHeader) : renderComponentInternal(renderListFooter)
+        }
+        ListHeaderComponent={
+          invertList ? renderComponentInternal(renderListFooter) : renderComponentInternal(renderListHeader)
+        }
+        ItemSeparatorComponent={renderComponentInternal(renderItemSeparator)}
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
       />
-      {showScrollButton && (
+      {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}

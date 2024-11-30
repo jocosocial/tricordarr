@@ -105,6 +105,11 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       ...commonStyles.flexWrap,
       ...commonStyles.paddingTopSmall,
     },
+    imageViewerBackground: {
+      backgroundColor: AndroidColor.BLACK,
+      color: AndroidColor.WHITE,
+      opacity: 0.7,
+    },
   });
 
   const screenOptions = {

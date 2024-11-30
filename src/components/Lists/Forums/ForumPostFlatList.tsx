@@ -10,7 +10,7 @@ import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ConversationFlatList} from '../ConversationFlatList.tsx';
-import {FloatingScrollButtonPosition} from '../../../libraries/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../../libraries/Types';
 import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
@@ -57,12 +57,6 @@ export const ForumPostFlatList = ({
   const {hasModerator} = usePrivilege();
 
   const styles = StyleSheet.create({
-    postContainerView: {
-      ...(invertList ? commonStyles.verticallyInverted : undefined),
-    },
-    timeDividerStyle: {
-      ...(invertList ? commonStyles.verticallyInverted : undefined),
-    },
     flatList: {
       ...commonStyles.paddingHorizontal,
     },
@@ -106,13 +100,13 @@ export const ForumPostFlatList = ({
   );
 
   const renderSeparator = useCallback(
-    ({leadingItem}: {leadingItem: PostData}) => {
+    ({leadingItem}: FlatListSeparatorProps<PostData>) => {
       if (!itemSeparator) {
         return <SpaceDivider />;
       }
       const leadingIndex = postList.indexOf(leadingItem);
       if (leadingIndex === undefined) {
-        return <TimeDivider style={styles.timeDividerStyle} label={'Leading Unknown?'} />;
+        return <TimeDivider label={'Leading Unknown?'} />;
       }
       const trailingIndex = leadingIndex + 1;
       const trailingItem = postList[trailingIndex];
@@ -127,14 +121,9 @@ export const ForumPostFlatList = ({
         return <SpaceDivider />;
       }
 
-      return (
-        <TimeDivider
-          label={timeAgo.format(invertList ? leadingDate : trailingDate, 'round')}
-          style={styles.timeDividerStyle}
-        />
-      );
+      return <TimeDivider label={timeAgo.format(invertList ? leadingDate : trailingDate, 'round')} />;
     },
-    [invertList, itemSeparator, postList, styles.timeDividerStyle],
+    [invertList, itemSeparator, postList],
   );
 
   const renderListHeader = useCallback(() => {
@@ -142,15 +131,15 @@ export const ForumPostFlatList = ({
       if (getListHeader) {
         return getListHeader();
       }
-      return <ForumPostListHeader invertList={invertList} />;
+      return <ForumPostListHeader />;
     } else if (hasPreviousPage) {
-      return <LoadingPreviousHeader invertList={invertList} />;
+      return <LoadingPreviousHeader />;
     }
     if (!itemSeparator) {
       return <SpaceDivider />;
     }
     if (postList.length === 0) {
-      return <TimeDivider style={styles.timeDividerStyle} label={'No posts to display'} />;
+      return <TimeDivider label={'No posts to display'} />;
     }
     const firstDisplayItemIndex = invertList ? postList.length - 1 : 0;
     const firstDisplayItem = postList[firstDisplayItemIndex];
@@ -159,15 +148,15 @@ export const ForumPostFlatList = ({
     }
 
     let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
-    return <TimeDivider style={styles.timeDividerStyle} label={label} />;
-  }, [forumData, hasPreviousPage, itemSeparator, postList, invertList, styles.timeDividerStyle, getListHeader]);
+    return <TimeDivider label={label} />;
+  }, [forumData, hasPreviousPage, itemSeparator, postList, invertList, getListHeader]);
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
-      return <LoadingNextFooter invertList={invertList} />;
+      return <LoadingNextFooter />;
     }
     return <SpaceDivider />;
-  }, [hasNextPage, invertList]);
+  }, [hasNextPage]);
 
   return (
     <ConversationFlatList
