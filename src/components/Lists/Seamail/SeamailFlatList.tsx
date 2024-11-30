@@ -3,7 +3,7 @@ import {FlatList, RefreshControlProps, View} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
-import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {AppFlatList} from '../AppFlatList.tsx';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
 import {NoResultsView} from '../../Views/Static/NoResultsView.tsx';
 
@@ -50,7 +50,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
   }, [props.fezList.length]);
 
   return (
-    <ConversationFlatList
+    <AppFlatList
       flatListRef={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}

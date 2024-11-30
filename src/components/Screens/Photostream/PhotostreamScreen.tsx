@@ -14,7 +14,7 @@ import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActions
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {ConversationFlatList} from '../../Lists/ConversationFlatList.tsx';
+import {AppFlatList} from '../../Lists/AppFlatList.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
@@ -76,7 +76,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ConversationFlatList
+      <AppFlatList
         flatListRef={flatListRef}
         renderItem={renderItem}
         data={streamList}

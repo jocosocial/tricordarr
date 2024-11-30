@@ -4,7 +4,7 @@ import {PaddedContentView} from '../Views/Content/PaddedContentView.tsx';
 import {LabelDivider} from './Dividers/LabelDivider.tsx';
 import {FezPostListItem} from './Items/FezPostListItem.tsx';
 import React, {useCallback} from 'react';
-import {ConversationFlatList} from './ConversationFlatList.tsx';
+import {AppFlatList} from './AppFlatList.tsx';
 import {LoadingPreviousHeader} from './Headers/LoadingPreviousHeader.tsx';
 import {FezPostListHeader} from './Headers/FezPostListHeader.tsx';
 import {SpaceDivider} from './Dividers/SpaceDivider.tsx';
@@ -63,7 +63,7 @@ export const ChatFlatList = ({
   );
 
   return (
-    <ConversationFlatList
+    <AppFlatList
       flatListRef={flatListRef}
       renderItem={renderItem}
       data={fezPostData}

@@ -5,7 +5,7 @@ import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider} from 'react-native-paper';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
-import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {AppFlatList} from '../AppFlatList.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
@@ -81,7 +81,7 @@ export const ForumThreadFlatList = ({
   const renderItemSeparator = () => <Divider bold={true} />;
 
   return (
-    <ConversationFlatList
+    <AppFlatList
       flatListRef={flatListRef}
       renderListHeader={renderListHeader}
       renderListFooter={renderListFooter}

@@ -40,7 +40,7 @@ export interface ConversationFlatListProps<TItem> {
   enableScrollButton?: boolean;
 }
 
-export const ConversationFlatList = <TItem,>({
+export const AppFlatList = <TItem,>({
   scrollButtonPosition,
   invertList,
   flatListRef,
@@ -194,7 +194,7 @@ export const ConversationFlatList = <TItem,>({
     },
     [styles.itemContainerView],
   );
-  console.log('[ConversationFlatList.tsx] Rendering ConversationFlatList at', new Date());
+  console.log('[AppFlatList.tsx] Rendering AppFlatList at', new Date());
 
   // https://github.com/facebook/react-native/issues/25239
   return (
