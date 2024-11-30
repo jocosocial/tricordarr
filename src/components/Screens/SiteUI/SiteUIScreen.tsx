@@ -2,13 +2,13 @@ import {WebView, WebViewNavigation} from 'react-native-webview';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View} from 'react-native';
 import {useBackHandler} from '@react-native-community/hooks';
-import {AppView} from '../Views/AppView';
+import {AppView} from '../../Views/AppView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useConfig} from '../Context/Contexts/ConfigContext';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
-import {CommonStackComponents, CommonStackParamList} from '../Navigation/CommonScreens';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 

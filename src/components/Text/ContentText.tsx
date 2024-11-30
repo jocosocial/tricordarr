@@ -38,6 +38,7 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
       mentionOnPressFunction?: (username: string) => void,
     ) => {
       // @TODO this is matching to much hashtag, but TBH that's not the end of the world.
+      // This is some write-once-read-never nonsense
       const tokens = line.split(
         /(:[\w-]+:)|((?<!\S)@[A-Za-z0-9]+(?:[-.+_][A-Za-z0-9]+)*)|((?<!\S)#[A-Za-z0-9]+(?!\\S))/g,
       );
