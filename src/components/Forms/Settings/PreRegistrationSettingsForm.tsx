@@ -35,7 +35,7 @@ export const PreRegistrationSettingsForm = (props: CruiseSettingsFormProps) => {
         <View>
           <DirtyDetectionField />
           <TextField name={'preRegistrationServerUrl'} label={'URL'} autoCapitalize={'none'} />
-          <DatePickerField name={'preRegistrationEndDate'} limitRange={false} />
+          <DatePickerField name={'preRegistrationEndDate'} label={'End Date'} limitRange={false} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

@@ -16,9 +16,17 @@ interface DatePickerFieldProps {
   startYear?: number;
   endYear?: number;
   validRange?: ValidRangeType;
+  label?: string;
 }
 
-export const DatePickerField = ({name, limitRange = true, startYear, endYear, validRange}: DatePickerFieldProps) => {
+export const DatePickerField = ({
+  name,
+  limitRange = true,
+  startYear,
+  endYear,
+  validRange,
+  label = 'Date',
+}: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
   const [field] = useField<Date>(name);
   const {setFieldValue} = useFormikContext();
@@ -72,7 +80,7 @@ export const DatePickerField = ({name, limitRange = true, startYear, endYear, va
         style={styles.button}
         onPress={() => setVisible(true)}
         mode={'outlined'}>
-        Date ({getDateFormat()})
+        {label} ({getDateFormat()})
       </Button>
       <DatePickerModal
         visible={visible}

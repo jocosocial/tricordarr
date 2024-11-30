@@ -98,15 +98,15 @@ export const CruiseSettingsScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
         <ListSubheader>General</ListSubheader>
-        <PaddedContentView>
-          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
-        </PaddedContentView>
-        <PaddedContentView>
+        <PaddedContentView padTop={true} padBottom={false}>
           <PrimaryActionButton
             buttonText={'Reload From Server'}
             onPress={reloadClientConfig}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
+        </PaddedContentView>
+        <PaddedContentView>
+          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         <ListSubheader>Internal State</ListSubheader>
         <PaddedContentView>
