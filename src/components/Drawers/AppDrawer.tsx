@@ -55,7 +55,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       renderDrawerContent={() => {
         return (
           <ScrollView>
-            <PaperDrawer.Section title={'User'} showDivider={false}>
+            <PaperDrawer.Section title={'Community'} showDivider={false}>
               {hasVerified && (
                 <>
                   <PaperDrawer.Item
@@ -72,7 +72,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               )}
               <PaperDrawer.Item
                 label={'Performers'}
-                icon={AppIcons.microKaraoke}
+                icon={AppIcons.performer}
                 onPress={() => handleDrawerNav('tricordarr://performers')}
               />
             </PaperDrawer.Section>

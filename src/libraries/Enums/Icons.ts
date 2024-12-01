@@ -122,4 +122,5 @@ export enum AppIcons {
   youtube = 'youtube',
   facebook = 'facebook',
   instagram = 'instagram',
+  performer = 'piano',
 }
