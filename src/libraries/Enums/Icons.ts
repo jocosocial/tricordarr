@@ -123,4 +123,5 @@ export enum AppIcons {
   facebook = 'facebook',
   instagram = 'instagram',
   performer = 'piano',
+  official = 'shield-check',
 }

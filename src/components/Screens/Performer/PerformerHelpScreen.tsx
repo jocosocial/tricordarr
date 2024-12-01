@@ -5,6 +5,9 @@ import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
+import {styleDefaults} from '../../../styles';
 
 export const PerformerHelpScreen = () => {
   return (
@@ -17,7 +20,8 @@ export const PerformerHelpScreen = () => {
         <PaddedContentView>
           <HelpParagraphText>
             These are guests hired by the Home Office to share or present their talent with JoCo Cruise. You've probably
-            heard of some of them.
+            heard of some of them. Their performer profiles appear with a{' '}
+            <AppIcon size={styleDefaults.IconSizeSmall} icon={AppIcons.official} /> mark.
           </HelpParagraphText>
           <HelpParagraphText>
             Please do your best to “read the room” and use proper judgment as to when introduction/autograph/photo

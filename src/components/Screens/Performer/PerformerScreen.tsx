@@ -20,6 +20,7 @@ import {PerformerBioCard} from '../../Cards/Performer/PerformerBioCard.tsx';
 import {EventCard} from '../../Cards/Schedule/EventCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {PerformerData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
@@ -115,6 +116,12 @@ export const PerformerScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer} padBottom={false}>
           <Text variant={'headlineMedium'} selectable={true}>
+            {data.header.isOfficialPerformer && (
+              <>
+                <AppIcon icon={AppIcons.official} />
+                &nbsp;
+              </>
+            )}
             {data.header.name}
           </Text>
         </PaddedContentView>
