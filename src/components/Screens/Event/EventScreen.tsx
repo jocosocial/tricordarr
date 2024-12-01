@@ -169,7 +169,7 @@ export const EventScreen = ({navigation, route}: Props) => {
                   title={'Description'}
                 />
               )}
-              {eventData.performers && (
+              {eventData.performers.length !== 0 && (
                 <EventPerformerListItem
                   iconStyle={styles.icon}
                   itemStyle={styles.item}
