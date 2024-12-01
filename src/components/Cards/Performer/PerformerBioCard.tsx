@@ -22,7 +22,6 @@ export const PerformerBioCard = (props: PerformerBioCardProps) => {
 
   return (
     <Card style={styles.bioCard}>
-      <Card.Title title={'Bio'} />
       <Card.Content>
         <Text selectable={true}>{props.bio}</Text>
       </Card.Content>

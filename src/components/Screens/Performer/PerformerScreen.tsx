@@ -2,7 +2,7 @@ import {Card, Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {usePerformerQuery} from '../../Queries/Performer/PerformerQueries.ts';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {RefreshControl, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
@@ -38,8 +38,8 @@ const PerformerLinksView = (props: PerformerLinksViewProps) => {
     return <></>;
   }
   return (
-    <PaddedContentView style={props.style}>
-      <View>
+    <PaddedContentView>
+      <View style={props.style}>
         <LinkIconButton link={props.data.website} icon={AppIcons.webview} />
         <LinkIconButton link={props.data.xURL} icon={AppIcons.twitter} />
         <LinkIconButton link={props.data.facebookURL} icon={AppIcons.facebook} />
@@ -139,20 +139,22 @@ export const PerformerScreen = ({route, navigation}: Props) => {
             <PerformerYearsCard years={data.yearsAttended} />
           </PaddedContentView>
         )}
-        <PaddedContentView>
-          <Card>
-            <Card.Title title={'Hosted Events'} />
-            {data.events.map((event, index) => (
-              <View key={index} style={styles.eventCardContainer}>
-                <EventCard
-                  eventData={event}
-                  showDay={true}
-                  onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: event.eventID})}
-                />
-              </View>
-            ))}
-          </Card>
-        </PaddedContentView>
+        {data.events.length !== 0 && (
+          <PaddedContentView>
+            <Card>
+              <Card.Title title={'Hosted Events'} />
+              {data.events.map((event, index) => (
+                <View key={index} style={styles.eventCardContainer}>
+                  <EventCard
+                    eventData={event}
+                    showDay={true}
+                    onPress={() => navigation.push(CommonStackComponents.eventScreen, {eventID: event.eventID})}
+                  />
+                </View>
+              ))}
+            </Card>
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
     </AppView>
   );
