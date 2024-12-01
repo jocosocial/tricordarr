@@ -72,11 +72,11 @@ export const PerformerScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <PerformerActionsMenu id={route.params.id} />
+          <PerformerActionsMenu performerData={data} />
         </HeaderButtons>
       </View>
     );
-  }, [route.params.id]);
+  }, [data]);
 
   useEffect(() => {
     navigation.setOptions({

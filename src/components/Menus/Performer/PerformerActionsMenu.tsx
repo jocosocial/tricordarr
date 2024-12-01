@@ -4,35 +4,54 @@ import {Divider, Menu} from 'react-native-paper';
 import * as React from 'react';
 import {useState} from 'react';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {PerformerData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 interface PerformerActionsMenuProps {
-  id: string;
+  performerData?: PerformerData;
 }
 
-export const PerformerActionsMenu = ({id}: PerformerActionsMenuProps) => {
+export const PerformerActionsMenu = ({performerData}: PerformerActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
-  const {hasTwitarrTeam} = usePrivilege();
-  const mainNavigation = useMainStack();
+  const {hasTwitarrTeam, hasModerator} = usePrivilege();
+  const navigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
+  // TypeScript + JSX = silly
+  const creatorID = performerData?.user?.userID;
+  const performerID = performerData?.header.id;
 
   return (
     <Menu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      {hasTwitarrTeam && (
+      {hasModerator && creatorID && (
+        <>
+          <Menu.Item
+            title={'View Creator Profile'}
+            leadingIcon={AppIcons.moderator}
+            onPress={() => {
+              navigation.push(CommonStackComponents.userProfileScreen, {
+                userID: creatorID,
+              });
+              closeMenu();
+            }}
+          />
+          <Divider bold={true} />
+        </>
+      )}
+      {hasTwitarrTeam && performerID && (
         <>
           <Menu.Item
             title={'Edit Performer'}
             leadingIcon={AppIcons.twitarteam}
             onPress={() => {
-              mainNavigation.push(CommonStackComponents.siteUIScreen, {
+              navigation.push(CommonStackComponents.siteUIScreen, {
                 resource: 'performer',
-                id: `add?performer=${id}`,
+                id: `add?performer=${performerID}`,
                 admin: true,
               });
               closeMenu();
@@ -46,7 +65,7 @@ export const PerformerActionsMenu = ({id}: PerformerActionsMenuProps) => {
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          mainNavigation.push(MainStackComponents.performerHelpScreen);
+          navigation.push(CommonStackComponents.performerHelpScreen);
         }}
       />
     </Menu>
