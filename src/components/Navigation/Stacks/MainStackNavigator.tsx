@@ -46,10 +46,6 @@ export type MainStackParamList = CommonStackParamList & {
   PerformerListScreen: {
     performerType?: PerformerType;
   };
-  PerformerScreen: {
-    id: string;
-  };
-  PerformerHelpScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -69,8 +65,6 @@ export enum MainStackComponents {
   microKaraokeListScreen = 'MicroKaraokeListScreen',
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',
   performerListScreen = 'PerformerListScreen',
-  performerScreen = 'PerformerScreen',
-  performerHelpScreen = 'PerformerHelpScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -145,16 +139,6 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.performerListScreen}
         component={PerformerListScreen}
         options={{title: 'Performers'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.performerScreen}
-        component={PerformerScreen}
-        options={{title: 'Performer'}}
-      />
-      <MainStack.Screen
-        name={MainStackComponents.performerHelpScreen}
-        component={PerformerHelpScreen}
-        options={{title: 'Help'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

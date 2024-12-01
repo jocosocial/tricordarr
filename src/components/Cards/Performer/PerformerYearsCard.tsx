@@ -29,6 +29,11 @@ export const PerformerYearsCard = ({years = []}: PerformerYearsCardProps) => {
       ...commonStyles.bold,
     },
   });
+
+  if (years.length === 0) {
+    return <></>;
+  }
+
   return (
     <Card style={styles.chipCard}>
       <Card.Title title={'Years Attended'} titleStyle={styles.title} />

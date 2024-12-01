@@ -4,7 +4,8 @@ import {Card, Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';
 import {APIImage} from '../../Images/APIImage.tsx';
-import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface PerformerHeaderCardProps {
   header: PerformerHeaderData;
@@ -37,7 +38,7 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
 
   const onPress = () => {
     if (header.id) {
-      navigation.push(MainStackComponents.performerScreen, {
+      navigation.push(CommonStackComponents.performerScreen, {
         id: header.id,
       });
     }

@@ -509,6 +509,8 @@ export interface EventData {
   forum?: string;
   /// Whether user has favorited event.
   isFavorite: boolean;
+  /// The performers who will be at the event.
+  performers: PerformerHeaderData[];
 }
 
 export interface UserProfileUploadData {

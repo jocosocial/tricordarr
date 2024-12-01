@@ -14,6 +14,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
@@ -58,7 +59,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(MainStackComponents.performerHelpScreen)}
+            onPress={() => navigation.push(CommonStackComponents.performerHelpScreen)}
           />
         </HeaderButtons>
       </View>
