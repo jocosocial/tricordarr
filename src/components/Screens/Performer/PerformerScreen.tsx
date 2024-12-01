@@ -1,4 +1,4 @@
-import {Card, Chip, Text} from 'react-native-paper';
+import {Card, Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -15,6 +15,7 @@ import {LinkIconButton} from '../../Buttons/IconButtons/LinkIconButton.tsx';
 import {PerformerActionsMenu} from '../../Menus/Performer/PerformerActionsMenu.tsx';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+import {PerformerYearsCard} from '../../Cards/Performer/PerformerYearsCard.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerScreen>;
 
@@ -30,19 +31,6 @@ export const PerformerScreen = ({route, navigation}: Props) => {
     listContentContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.justifyCenter,
-    },
-    chipContainer: {
-      ...commonStyles.flexRow,
-      ...commonStyles.justifyCenter,
-      ...commonStyles.flexWrap,
-      ...commonStyles.paddingTopSmall,
-    },
-    chip: {
-      ...commonStyles.marginRightSmall,
-      ...commonStyles.marginBottomSmall,
-    },
-    chipCard: {
-      ...commonStyles.flex,
     },
   });
 
@@ -113,16 +101,7 @@ export const PerformerScreen = ({route, navigation}: Props) => {
           </View>
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer}>
-          <Card style={styles.chipCard}>
-            <Card.Title title={'Years Attended'} />
-            <Card.Content style={styles.chipContainer}>
-              {data.yearsAttended.map((year, index) => (
-                <Chip key={index} style={styles.chip}>
-                  {year}
-                </Chip>
-              ))}
-            </Card.Content>
-          </Card>
+          <PerformerYearsCard years={data.yearsAttended} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

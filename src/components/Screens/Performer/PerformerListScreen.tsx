@@ -9,7 +9,7 @@ import {PerformerTypeButtons} from '../../Buttons/SegmentedButtons/PerformerType
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {PerformerHeaderCard} from '../../Cards/PerformerHeaderCard.tsx';
+import {PerformerHeaderCard} from '../../Cards/Performer/PerformerHeaderCard.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
@@ -25,30 +25,12 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
 
   const styles = StyleSheet.create({
     cardContainer: {
-      // ...commonStyles.paddingHorizontalSmall,
-      // ...commonStyles.paddingVerticalSmall,
-      // ...commonStyles.flex,
-      // backgroundColor: 'red',
-      // flex: 1 / 2,
       width: 180,
     },
     column: {
-      // backgroundColor: 'pink',
-      // ...commonStyles.justiry,
-      // justifyContent: 'space-between',
-      // margin: 10,
-      // display: 'flex',
-      // flexDirection: 'row',
-      // gap: 0,
-      // ...commonStyles.flexGrow,
-      // alignItems: 'flex-start',
-      // ...commonStyles.alignItemsCenter,
-      // ...commonStyles.justifyCenter,
-      // flex: 1,
-      justifyContent: 'space-evenly',
+      ...commonStyles.justifySpaceEvenly,
     },
     content: {
-      // backgroundColor: 'white',
       gap: styleDefaults.marginSize,
     },
   });

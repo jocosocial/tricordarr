@@ -205,6 +205,9 @@ export const commonStyles = StyleSheet.create({
   justifySpaceBetween: {
     justifyContent: 'space-between',
   },
+  justifySpaceEvenly: {
+    justifyContent: 'space-evenly',
+  },
   // https://github.com/facebook/react-native/issues/30034
   verticallyInverted: {
     scaleY: -1,
