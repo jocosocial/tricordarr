@@ -21,7 +21,7 @@ type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobe
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
+  const {enablePreregistration} = useConfig();
   const theme = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -72,7 +72,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         leftOnPress={() => navigation.push(OobeStackComponents.oobePreregistrationScreen)}
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}
-        leftDisabled={new Date() > appConfig.preRegistrationEndDate}
+        leftDisabled={!enablePreregistration}
       />
     </AppView>
   );
