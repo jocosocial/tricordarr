@@ -9,11 +9,13 @@ import {ConductView} from '../../Views/Static/ConductView';
 import {useConductQuery} from '../../Queries/PublicQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;
 
 export const OobeConductScreen = ({navigation}: Props) => {
   const {data, refetch, isFetching} = useConductQuery();
+  const {commonStyles} = useStyles();
   if (!data) {
     return <LoadingView onRefresh={refetch} refreshing={isFetching} />;
   }
@@ -22,6 +24,7 @@ export const OobeConductScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={false}
+        style={commonStyles.marginBottomZero}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <ConductView docs={[data.guidelines, data.codeofconduct, data.twitarrconduct]} />
         <OobeButtonsView

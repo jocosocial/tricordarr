@@ -170,6 +170,9 @@ export const commonStyles = StyleSheet.create({
   marginBottomSmall: {
     marginBottom: styleDefaults.marginSize / 2,
   },
+  marginBottomZero: {
+    marginBottom: 0,
+  },
   bold: {
     fontWeight: 'bold',
   },
