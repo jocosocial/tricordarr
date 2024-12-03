@@ -7,7 +7,6 @@ import {ServerUrlFormValues} from '../../../../libraries/Types/FormValues';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {configureAxios} from '../../../../libraries/Network/APIClient';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
@@ -49,7 +48,6 @@ export const ConfigServerUrlScreen = () => {
       signOut().then(() => {
         clearPrivileges();
         queryClient.clear();
-        configureAxios();
       });
     }
   };

@@ -1,10 +1,9 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs';
-import axios, {AxiosResponse} from 'axios';
 import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {apiGet} from '../../../libraries/Network/APIClient.ts';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>('/forum/categories');
@@ -24,6 +23,7 @@ export interface CategoryDataQueryResponse extends CategoryData, WithPaginator {
 
 export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCategoryQueryParams = {}) => {
   const {appConfig} = useConfig();
+  const {apiGet} = useSwiftarrQueryClient();
   return useTokenAuthPaginationQuery<CategoryDataQueryResponse, ForumCategoryQueryParams>(
     `/forum/categories/${categoryId}`,
     {

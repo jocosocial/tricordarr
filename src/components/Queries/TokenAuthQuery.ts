@@ -11,7 +11,7 @@ import {AxiosError} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
 import {getNextPageParam, getPreviousPageParam, PageParam, PaginationQueryParams, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
-import {apiGet, shouldQueryEnable} from '../../libraries/Network/APIClient';
+import {shouldQueryEnable} from '../../libraries/Network/APIClient';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 
 export type TokenAuthQueryOptionsType<TData, TError extends Error = AxiosError<ErrorResponse>> = Omit<
@@ -36,7 +36,7 @@ export function useTokenAuthQuery<
   queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
 
   return useQuery<TData, TError, TData>({
     queryKey: queryKey ? queryKey : [endpoint, queryParams],
@@ -72,7 +72,7 @@ export function useTokenAuthPaginationQuery<
   queryKey?: TQueryKey,
 ) {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
   return useInfiniteQuery<TData, TError, TData>(
