@@ -2,7 +2,6 @@ import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} fro
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {
   apiGetProps,
-  apiPostProps,
   asyncStoragePersister,
   BadResponseFormatError,
   SwiftarrQueryClient,

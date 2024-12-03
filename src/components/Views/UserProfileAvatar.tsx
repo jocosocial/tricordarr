@@ -3,7 +3,7 @@ import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
-import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarQueries';
+import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarMutations.tsx';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';

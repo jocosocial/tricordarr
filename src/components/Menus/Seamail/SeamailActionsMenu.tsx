@@ -7,7 +7,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
-import {useFezMuteMutation} from '../../Queries/Fez/FezMuteQueries';
+import {useFezMuteMutation} from '../../Queries/Fez/FezMuteMutations.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';

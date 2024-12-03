@@ -1,5 +1,4 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {AxiosResponse} from 'axios';
 import {LikeType} from '../../../libraries/Enums/LikeType';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
@@ -9,12 +8,12 @@ interface ForumPostBookmarkProps {
 }
 
 export const useForumPostBookmarkMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
-  const bookmarkQueryHandler = async ({postID, action}: ForumPostBookmarkProps): Promise<AxiosResponse<void>> => {
+  const {apiPost, apiDelete} = useSwiftarrQueryClient();
+  const bookmarkQueryHandler = async ({postID, action}: ForumPostBookmarkProps) => {
     if (action === 'delete') {
-      return await ServerQueryClient.delete(`/forum/post/${postID}/bookmark`);
+      return await apiDelete(`/forum/post/${postID}/bookmark`);
     }
-    return await ServerQueryClient.post(`/forum/post/${postID}/bookmark`);
+    return await apiPost(`/forum/post/${postID}/bookmark`);
   };
   return useTokenAuthMutation(bookmarkQueryHandler);
 };
@@ -26,17 +25,13 @@ interface ForumPostReactionProps {
 }
 
 export const useForumPostReactionMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost, apiDelete} = useSwiftarrQueryClient();
 
-  const reactionQueryHandler = async ({
-    postID,
-    reaction,
-    action,
-  }: ForumPostReactionProps): Promise<AxiosResponse<void>> => {
+  const reactionQueryHandler = async ({postID, reaction, action}: ForumPostReactionProps) => {
     if (action === 'delete') {
-      return await ServerQueryClient.delete(`/forum/post/${postID}/${reaction}`);
+      return await apiDelete(`/forum/post/${postID}/${reaction}`);
     }
-    return await ServerQueryClient.post(`/forum/post/${postID}/${reaction}`);
+    return await apiPost(`/forum/post/${postID}/${reaction}`);
   };
 
   return useTokenAuthMutation(reactionQueryHandler);

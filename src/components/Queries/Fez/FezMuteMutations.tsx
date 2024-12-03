@@ -1,4 +1,3 @@
-import {AxiosResponse} from 'axios';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
@@ -8,13 +7,13 @@ interface FezMuteMutationProps {
 }
 
 export const useFezMuteMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost, apiDelete} = useSwiftarrQueryClient();
 
-  const queryHandler = async ({fezID, action}: FezMuteMutationProps): Promise<AxiosResponse<void>> => {
+  const queryHandler = async ({fezID, action}: FezMuteMutationProps) => {
     if (action === 'unmute') {
-      return await ServerQueryClient.delete(`/fez/${fezID}/mute`);
+      return await apiDelete(`/fez/${fezID}/mute`);
     }
-    return await ServerQueryClient.post(`/fez/${fezID}/mute`);
+    return await apiPost(`/fez/${fezID}/mute`);
   };
 
   return useTokenAuthMutation(queryHandler);

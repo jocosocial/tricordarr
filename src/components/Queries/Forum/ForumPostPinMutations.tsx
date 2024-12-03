@@ -1,5 +1,4 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {AxiosResponse} from 'axios';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ForumPostPinProps {
@@ -8,13 +7,13 @@ interface ForumPostPinProps {
 }
 
 export const useForumPostPinMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost, apiDelete} = useSwiftarrQueryClient();
 
-  const PinQueryHandler = async ({postID, action}: ForumPostPinProps): Promise<AxiosResponse<void>> => {
+  const PinQueryHandler = async ({postID, action}: ForumPostPinProps) => {
     if (action === 'unpin') {
-      return await ServerQueryClient.delete(`/forum/post/${postID}/pin`);
+      return await apiDelete(`/forum/post/${postID}/pin`);
     }
-    return await ServerQueryClient.post(`/forum/post/${postID}/pin`);
+    return await apiPost(`/forum/post/${postID}/pin`);
   };
 
   return useTokenAuthMutation(PinQueryHandler);
