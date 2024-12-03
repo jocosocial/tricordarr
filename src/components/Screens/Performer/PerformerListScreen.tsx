@@ -11,10 +11,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {PerformerHeaderCard} from '../../Cards/Performer/PerformerHeaderCard.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {PerformerListActionsMenu} from '../../Menus/Performer/PerformerListActionsMenu.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
@@ -34,37 +33,41 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
     content: {
       gap: styleDefaults.marginSize,
     },
+    list: {
+      ...commonStyles.paddingVertical,
+    },
   });
 
-  const renderItem = ({item}: {item: PerformerHeaderData}) => {
-    return (
-      <View style={styles.cardContainer}>
-        <PerformerHeaderCard header={item} />
-      </View>
-    );
-  };
+  const renderItem = useCallback(
+    ({item}: {item: PerformerHeaderData}) => {
+      return (
+        <View style={styles.cardContainer}>
+          <PerformerHeaderCard header={item} />
+        </View>
+      );
+    },
+    [styles.cardContainer],
+  );
 
-  const renderListHeader = () => {
+  const renderListHeader = useCallback(() => {
     return (
-      <PaddedContentView>
+      <PaddedContentView padTop={true}>
         <PerformerTypeButtons performerType={performerType} setPerformerType={setPerformerType} />
       </PaddedContentView>
     );
-  };
+  }, [performerType]);
+
+  const renderListFooter = useCallback(() => <PaddedContentView />, []);
 
   const getHeaderButtons = useCallback(() => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item
-            title={'Help'}
-            iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.performerHelpScreen)}
-          />
+          <PerformerListActionsMenu />
         </HeaderButtons>
       </View>
     );
-  }, [navigation]);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -88,9 +91,11 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
         handleLoadNext={fetchNextPage}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         renderListHeader={renderListHeader}
+        renderListFooter={renderListFooter}
         numColumns={2}
         contentContainerStyle={styles.content}
         columnWrapperStyle={styles.column}
+        maintainViewPosition={false}
       />
     </AppView>
   );

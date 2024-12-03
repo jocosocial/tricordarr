@@ -6,6 +6,8 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import React from 'react';
 import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 interface EventScreenActionsMenuProps {
   event: EventData;
@@ -14,6 +16,7 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const commonNavigation = useCommonStack();
+  const {enablePreregistration} = useConfig();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -29,6 +32,20 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
+      {props.event.eventType === EventType.shadow && (
+        <Menu.Item
+          title={'Set Organizer'}
+          leadingIcon={AppIcons.performer}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.siteUIScreen, {
+              resource: 'performer/shadow/addtoevent',
+              id: props.event.eventID,
+            });
+          }}
+          disabled={!enablePreregistration}
+        />
+      )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
     </Menu>
   );
