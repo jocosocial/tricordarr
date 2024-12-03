@@ -4,8 +4,9 @@ import {
   PhotostreamLocationData,
   PhotostreamUploadData,
 } from '../../../libraries/Structs/ControllerStructs.tsx';
-import axios, {AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const usePhotostreamQuery = () => {
   return useTokenAuthPaginationQuery<PhotostreamListData>('/photostream');
@@ -19,11 +20,13 @@ interface PhotostreamImageMutationProps {
   imageUploadData: PhotostreamUploadData;
 }
 
-const queryHandler = async ({imageUploadData}: PhotostreamImageMutationProps): Promise<AxiosResponse<void>> => {
-  return await axios.post('/photostream/upload', imageUploadData);
-};
-
 export const usePhotostreamImageUploadMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const queryHandler = async ({imageUploadData}: PhotostreamImageMutationProps): Promise<AxiosResponse<void>> => {
+    return await ServerQueryClient.post('/photostream/upload', imageUploadData);
+  };
+
   return useTokenAuthMutation(queryHandler);
 };
 

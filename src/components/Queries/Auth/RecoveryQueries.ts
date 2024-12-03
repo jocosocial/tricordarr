@@ -1,11 +1,14 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import axios, {AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
 import {TokenStringData, UserRecoveryData} from '../../../libraries/Structs/ControllerStructs';
-
-const recoveryHandler = async (recoveryData: UserRecoveryData): Promise<AxiosResponse<TokenStringData>> => {
-  return await axios.post('/auth/recovery', recoveryData);
-};
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const useUserRecoveryMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const recoveryHandler = async (recoveryData: UserRecoveryData): Promise<AxiosResponse<TokenStringData>> => {
+    return await ServerQueryClient.post('/auth/recovery', recoveryData);
+  };
+
   return useTokenAuthMutation(recoveryHandler);
 };

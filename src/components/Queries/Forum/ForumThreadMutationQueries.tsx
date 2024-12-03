@@ -1,20 +1,23 @@
 import {ErrorResponse, ForumCreateData, ForumData} from '../../../libraries/Structs/ControllerStructs';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ForumCreateMutationProps {
   categoryId: string;
   forumCreateData: ForumCreateData;
 }
 
-const forumCreateQueryHandler = async ({
-  categoryId,
-  forumCreateData,
-}: ForumCreateMutationProps): Promise<AxiosResponse<ForumData>> => {
-  return await axios.post(`/forum/categories/${categoryId}/create`, forumCreateData);
-};
-
 export const useForumCreateMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const forumCreateQueryHandler = async ({
+    categoryId,
+    forumCreateData,
+  }: ForumCreateMutationProps): Promise<AxiosResponse<ForumData>> => {
+    return await ServerQueryClient.post(`/forum/categories/${categoryId}/create`, forumCreateData);
+  };
+
   return useTokenAuthMutation<AxiosResponse<ForumData>, AxiosError<ErrorResponse>, ForumCreateMutationProps>(
     forumCreateQueryHandler,
   );
@@ -25,10 +28,12 @@ interface ForumRenameMutationProps {
   name: string;
 }
 
-const forumRenameQueryHandler = async ({forumID, name}: ForumRenameMutationProps) => {
-  return await axios.post(`/forum/${forumID}/rename/${encodeURIComponent(name)}`);
-};
-
 export const useForumRenameMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const forumRenameQueryHandler = async ({forumID, name}: ForumRenameMutationProps) => {
+    return await ServerQueryClient.post(`/forum/${forumID}/rename/${encodeURIComponent(name)}`);
+  };
+
   return useTokenAuthMutation(forumRenameQueryHandler);
 };

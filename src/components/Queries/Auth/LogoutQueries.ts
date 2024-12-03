@@ -1,10 +1,12 @@
-import axios from 'axios';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-
-const queryHandler = async () => {
-  return await axios.post('/auth/logout');
-};
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const useLogoutMutation = (options = {}) => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const queryHandler = async () => {
+    return await ServerQueryClient.post('/auth/logout');
+  };
+
   return useTokenAuthMutation(queryHandler, options);
 };
