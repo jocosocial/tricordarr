@@ -120,33 +120,6 @@ export function getAuthHeaders(
   return authHeaders;
 }
 
-// https://stackoverflow.com/questions/41846669/download-an-image-using-axios-and-convert-it-to-base64
-// https://www.npmjs.com/package/@craftzdog/react-native-buffer
-// https://reactnative.dev/docs/images
-export const apiQueryImageData = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
-  const {data, headers} = await axios.get(queryKey[0], {
-    responseType: 'arraybuffer',
-    // headers: {
-    //   // https://github.com/jocosocial/swiftarr/blob/e3815bb2e3c7933f7e79fbb38cbaa989372501d4/Sources/App/Controllers/ImageController.swift#L90
-    //   // May need to figure this out better.
-    //   // Not having this makes Axios pretend to respond, ignoring the React Query caching?
-    //   'Cache-Control': 'no-cache',
-    // },
-  });
-  const contentType = headers['content-type'];
-  const base64Data = Buffer.from(data, 'binary').toString('base64');
-  const fileName = queryKey[0].split('/').pop();
-  if (!fileName) {
-    throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
-  }
-  return {
-    base64: base64Data,
-    mimeType: contentType,
-    dataURI: `data:${contentType};base64,${base64Data}`,
-    fileName: fileName,
-  };
-};
-
 export const apiQueryImageDataV2 = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
   const appConfig = await getAppConfig();
   let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${queryKey[0]}`;

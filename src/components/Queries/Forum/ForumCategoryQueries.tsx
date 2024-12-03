@@ -4,6 +4,7 @@ import axios, {AxiosResponse} from 'axios';
 import {ForumSort, ForumSortDirection} from '../../../libraries/Enums/ForumSortFilter';
 import {WithPaginator} from '../Pagination';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {apiGet} from '../../../libraries/Network/APIClient.ts';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>('/forum/categories');
@@ -29,19 +30,17 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
       queryFn: async ({
         pageParam = {start: queryParams.start || 0, limit: appConfig.apiClientConfig.defaultPageSize},
       }): Promise<CategoryDataQueryResponse> => {
-        const {data: responseData} = await axios.get<CategoryData, AxiosResponse<CategoryData>>(
-          `/forum/categories/${categoryId}`,
-          {
-            params: {
-              ...(pageParam.start ? {start: pageParam.start} : undefined),
-              ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
-              ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
-              ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
-              ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
-              ...(queryParams.order ? {order: queryParams.order} : undefined),
-            },
+        const {data: responseData} = await apiGet<CategoryData, ForumCategoryQueryParams>({
+          url: `/forum/categories/${categoryId}`,
+          queryParams: {
+            ...(pageParam.start ? {start: pageParam.start} : undefined),
+            ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
+            ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
+            ...(queryParams.afterdate ? {afterdate: queryParams.afterdate} : undefined),
+            ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
+            ...(queryParams.order ? {order: queryParams.order} : undefined),
           },
-        );
+        });
         return {
           ...responseData,
           paginator: {
