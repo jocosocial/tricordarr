@@ -1,7 +1,7 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 import {AxiosResponse} from 'axios';
-import {Query, QueryClient, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
+import {QueryClient, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
 import {ImageQueryData} from '../Types';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
@@ -16,17 +16,6 @@ export class BadResponseFormatError extends Error {
     const server = response.headers.server;
     super(`Malformed response. Got ${contentType} payload from server ${server}.`);
   }
-}
-
-export interface apiGetProps<TQueryParams = object> {
-  url: string;
-  queryParams?: TQueryParams;
-}
-
-export interface apiPostProps<TBodyParams = object, TQueryParams = object> {
-  url: string;
-  queryParams?: TQueryParams;
-  body?: TBodyParams;
 }
 
 /**

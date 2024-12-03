@@ -1,11 +1,6 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
-import {
-  apiGetProps,
-  asyncStoragePersister,
-  BadResponseFormatError,
-  SwiftarrQueryClient,
-} from '../../../libraries/Network/APIClient';
+import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
@@ -47,9 +42,10 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
 
   const apiGet = useCallback(
-    async <TData, TQueryParams>(props: apiGetProps<TQueryParams>) => {
-      const response = await ServerQueryClient.get<TData, AxiosResponse<TData, TData>>(props.url, {
-        params: props.queryParams,
+    async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
+      const response = await ServerQueryClient.get<TData, AxiosResponse<TData, TData>>(url, {
+        params: queryParams,
+        ...config,
       });
 
       // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
@@ -62,11 +58,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
-  /**
-   * To match functionality with apiGet this should take props and not parameters.
-   * However, to maintain easy compatibility I am not going to do that. So far POSTs
-   * only take a URL, body, and maybe the config object (login).
-   */
   const apiPost = useCallback(
     async <TResponseData = void, TRequestData = void>(
       url: string,
@@ -82,11 +73,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
-  /**
-   * To match functionality with apiGet this should take props and not parameters.
-   * However, to maintain easy compatibility I am not going to do that. So far DELETEs
-   * only take a URL.
-   */
   const apiDelete = useCallback(
     async <TResponseData = void,>(url: string) => {
       return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);

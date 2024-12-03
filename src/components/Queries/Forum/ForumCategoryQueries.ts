@@ -30,9 +30,9 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
       queryFn: async ({
         pageParam = {start: queryParams.start || 0, limit: appConfig.apiClientConfig.defaultPageSize},
       }): Promise<CategoryDataQueryResponse> => {
-        const {data: responseData} = await apiGet<CategoryData, ForumCategoryQueryParams>({
-          url: `/forum/categories/${categoryId}`,
-          queryParams: {
+        const {data: responseData} = await apiGet<CategoryData, ForumCategoryQueryParams>(
+          `/forum/categories/${categoryId}`,
+          {
             ...(pageParam.start ? {start: pageParam.start} : undefined),
             ...(pageParam.limit ? {limit: pageParam.limit} : undefined),
             ...(queryParams.sort ? {sort: queryParams.sort} : undefined),
@@ -40,7 +40,7 @@ export const useForumCategoryQuery = (categoryId: string, queryParams: ForumCate
             ...(queryParams.beforedate ? {beforedate: queryParams.beforedate} : undefined),
             ...(queryParams.order ? {order: queryParams.order} : undefined),
           },
-        });
+        );
         return {
           ...responseData,
           paginator: {

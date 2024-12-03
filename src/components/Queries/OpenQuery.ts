@@ -30,7 +30,7 @@ export function useOpenQuery<
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
-          const response = await apiGet<TData, TQueryParams>({url: endpoint, queryParams: queryParams});
+          const response = await apiGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
     ...options,

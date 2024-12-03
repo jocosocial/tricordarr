@@ -39,7 +39,7 @@ export const AppEventHandler = () => {
       if (pressAction?.id === PressAction.markAsRead) {
         console.info('[AppEventHandler.tsx] handleForegroundEvent is marking as read.');
         if (notification?.data) {
-          await apiGet({url: notification.data.markAsReadUrl.toString()});
+          await apiGet(notification.data.markAsReadUrl.toString());
           await refetchUserNotificationData();
         }
         return;
@@ -84,7 +84,7 @@ export const AppEventHandler = () => {
     if (pressAction?.id === PressAction.markAsRead) {
       console.info('[AppEventHandler.tsx] handleForegroundEvent is marking as read.');
       if (notification?.data) {
-        await apiGet({url: notification.data.markAsReadUrl.toString()});
+        await apiGet(notification.data.markAsReadUrl.toString());
         await refetchUserNotificationData();
       }
       return;

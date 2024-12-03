@@ -44,7 +44,7 @@ export function useTokenAuthQuery<
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
-          const response = await apiGet<TData, TQueryParams>({url: endpoint, queryParams: queryParams});
+          const response = await apiGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
@@ -80,13 +80,10 @@ export function useTokenAuthPaginationQuery<
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
-          const {data: responseData} = await apiGet<TData, PageParam>({
-            url: endpoint,
-            queryParams: {
-              ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
-              ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
-              ...queryParams,
-            },
+          const {data: responseData} = await apiGet<TData, PageParam>(endpoint, {
+            ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+            ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
+            ...queryParams,
           });
           return responseData;
         },

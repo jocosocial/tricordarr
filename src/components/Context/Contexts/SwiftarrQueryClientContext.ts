@@ -1,13 +1,16 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
-import {apiGetProps} from '../../../libraries/Network/APIClient.ts';
 
 interface SwiftarrQueryClientContextType {
   errorCount: number;
   setErrorCount: Dispatch<SetStateAction<number>>;
   disruptionDetected: boolean;
   ServerQueryClient: AxiosInstance;
-  apiGet: <TData, TQueryParams>(props: apiGetProps<TQueryParams>) => Promise<AxiosResponse<TData>>;
+  apiGet: <TData, TQueryParams>(
+    url: string,
+    queryParams?: TQueryParams,
+    config?: AxiosRequestConfig,
+  ) => Promise<AxiosResponse<TData>>;
   apiPost: <TResponseData = void, TRequestData = void>(
     url: string,
     body?: TRequestData | undefined,
