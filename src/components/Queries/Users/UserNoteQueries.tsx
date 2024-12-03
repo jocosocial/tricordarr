@@ -1,27 +1,32 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import axios, {AxiosResponse} from 'axios/index';
+import {AxiosResponse} from 'axios';
 import {NoteCreateData, NoteData} from '../../../libraries/Structs/ControllerStructs';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface UserNoteCreateMutationProps {
   userID: string;
   noteData: NoteCreateData;
 }
 
-const createQueryHandler = async ({
-  userID,
-  noteData,
-}: UserNoteCreateMutationProps): Promise<AxiosResponse<NoteData>> => {
-  return await axios.post(`/users/${userID}/note`, noteData);
-};
-
 export const useUserNoteCreateMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const createQueryHandler = async ({
+    userID,
+    noteData,
+  }: UserNoteCreateMutationProps): Promise<AxiosResponse<NoteData>> => {
+    return await ServerQueryClient.post(`/users/${userID}/note`, noteData);
+  };
+
   return useTokenAuthMutation(createQueryHandler);
 };
 
-const deleteQueryHandler = async ({userID}: {userID: string}): Promise<AxiosResponse<void>> => {
-  return await axios.delete(`/users/${userID}/note`);
-};
-
 export const useUserNoteDeleteMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const deleteQueryHandler = async ({userID}: {userID: string}): Promise<AxiosResponse<void>> => {
+    return await ServerQueryClient.delete(`/users/${userID}/note`);
+  };
+
   return useTokenAuthMutation(deleteQueryHandler);
 };

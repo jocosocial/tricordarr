@@ -1,5 +1,6 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import axios, {AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ForumRelationCreateProps {
   forumID: string;
@@ -7,17 +8,19 @@ interface ForumRelationCreateProps {
   action: 'create' | 'delete';
 }
 
-const relationQueryHandler = async ({
-  forumID,
-  relationType,
-  action,
-}: ForumRelationCreateProps): Promise<AxiosResponse<void>> => {
-  if (action === 'delete') {
-    return await axios.delete(`/forum/${forumID}/${relationType}`);
-  }
-  return await axios.post(`/forum/${forumID}/${relationType}`);
-};
-
 export const useForumRelationMutation = () => {
+  const {ServerQueryClient} = useSwiftarrQueryClient();
+
+  const relationQueryHandler = async ({
+    forumID,
+    relationType,
+    action,
+  }: ForumRelationCreateProps): Promise<AxiosResponse<void>> => {
+    if (action === 'delete') {
+      return await ServerQueryClient.delete(`/forum/${forumID}/${relationType}`);
+    }
+    return await ServerQueryClient.post(`/forum/${forumID}/${relationType}`);
+  };
+
   return useTokenAuthMutation(relationQueryHandler);
 };

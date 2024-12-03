@@ -23,6 +23,12 @@ export interface apiGetProps<TQueryParams = object> {
   queryParams?: TQueryParams;
 }
 
+export interface apiPostProps<TQueryParams = object, TBodyParams = object> {
+  url: string;
+  queryParams?: TQueryParams;
+  body?: TBodyParams;
+}
+
 /**
  * Generate the HTTP headers needed to authenticate with the Twitarr API.
  * Behaves differently if given username/password or token.

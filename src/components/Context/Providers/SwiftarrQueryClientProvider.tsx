@@ -2,6 +2,7 @@ import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} fro
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {
   apiGetProps,
+  apiPostProps,
   asyncStoragePersister,
   BadResponseFormatError,
   SwiftarrQueryClient,
@@ -58,6 +59,17 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       }
 
       return response;
+    },
+    [ServerQueryClient],
+  );
+
+  // @TODO this doesnt work yet.
+  // Needs to be able to take two params not props
+  const apiPost = useCallback(
+    async <TData, TQueryParams, TBodyData>(props: apiPostProps<TQueryParams, TBodyData>) => {
+      return await ServerQueryClient.post<TData, AxiosResponse<TData, TData>>(props.url, props.body, {
+        params: props.queryParams,
+      });
     },
     [ServerQueryClient],
   );
@@ -157,7 +169,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   return (
     <SwiftarrQueryClientContext.Provider
-      value={{errorCount, setErrorCount, disruptionDetected: disruptionDetected, apiGet, ServerQueryClient}}>
+      value={{errorCount, setErrorCount, disruptionDetected: disruptionDetected, apiGet, apiPost, ServerQueryClient}}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}
         persistOptions={{
