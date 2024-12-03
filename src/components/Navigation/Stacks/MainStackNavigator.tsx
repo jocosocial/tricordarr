@@ -22,8 +22,6 @@ import {MicroKaraokeListScreen} from '../../Screens/MicroKaraoke/MicroKaraokeLis
 import {MicroKaraokeSongScreen} from '../../Screens/MicroKaraoke/MicroKaraokeSongScreen.tsx';
 import {PerformerListScreen} from '../../Screens/Performer/PerformerListScreen.tsx';
 import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
-import {PerformerScreen} from '../../Screens/Performer/PerformerScreen.tsx';
-import {PerformerHelpScreen} from '../../Screens/Performer/PerformerHelpScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -71,6 +69,9 @@ export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
+  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
+  const isPhotostreamDisabled = getIsDisabled(SwiftarrFeature.photostream);
+  const isMicroKaraokeDisabled = getIsDisabled(SwiftarrFeature.microkaraoke);
 
   return (
     <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
@@ -112,12 +113,12 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamScreen}
-        component={PhotostreamScreen}
+        component={isPhotostreamDisabled ? DisabledView : PhotostreamScreen}
         options={{title: 'Photo Stream'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamImageCreateScreen}
-        component={PhotostreamImageCreateScreen}
+        component={isPhotostreamDisabled ? DisabledView : PhotostreamImageCreateScreen}
         options={{title: 'Upload'}}
       />
       <MainStack.Screen
@@ -127,17 +128,17 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.microKaraokeListScreen}
-        component={MicroKaraokeListScreen}
+        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeListScreen}
         options={{title: 'Song List'}}
       />
       <MainStack.Screen
         name={MainStackComponents.microKaraokeSongScreen}
-        component={MicroKaraokeSongScreen}
+        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeSongScreen}
         options={{title: 'Song'}}
       />
       <MainStack.Screen
         name={MainStackComponents.performerListScreen}
-        component={PerformerListScreen}
+        component={isPerformersDisabled ? DisabledView : PerformerListScreen}
         options={{title: 'Performers'}}
       />
       {CommonScreens(MainStack)}

@@ -258,6 +258,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
   const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
+  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
 
   return (
     <>
@@ -493,7 +494,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
       />
       <Stack.Screen
         name={CommonStackComponents.performerScreen}
-        component={PerformerScreen}
+        component={isPerformersDisabled ? DisabledView : PerformerScreen}
         options={{title: 'Performer'}}
       />
       <Stack.Screen
