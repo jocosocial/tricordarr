@@ -1,7 +1,7 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 import {AxiosResponse} from 'axios';
-import {QueryClient} from '@tanstack/react-query';
+import {Query, QueryClient, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {getAppConfig} from '../AppConfig';
 import {ImageQueryData} from '../Types';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
@@ -61,12 +61,12 @@ export function getAuthHeaders(
   return authHeaders;
 }
 
-export const apiQueryImageDataV2 = async ({queryKey}: {queryKey: string | string[]}): Promise<ImageQueryData> => {
+export const apiQueryImageDataV2 = async ({queryKey}: QueryFunctionContext<QueryKey, any>): Promise<ImageQueryData> => {
   const appConfig = await getAppConfig();
   let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${queryKey[0]}`;
   const base64Data = await CacheManager.prefetchBlob(url);
 
-  const fileName = queryKey[0].split('/').pop();
+  const fileName = String(queryKey[0]).split('/').pop();
   if (!fileName) {
     throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
   }

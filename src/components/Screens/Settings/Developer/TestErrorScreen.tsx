@@ -9,17 +9,17 @@ import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {HelpModalView} from '../../../Views/Modals/HelpModalView';
-import {useQuery} from '@tanstack/react-query';
 import {RefreshControl} from 'react-native';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
+import {useOpenQuery} from '../../../Queries/OpenQuery.ts';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();
   const {setErrorMessage, setErrorBanner, errorBanner, errorMessage} = useErrorHandler();
   const {commonStyles} = useStyles();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
-  const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useQuery(['/nonexistant'], {
+  const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useOpenQuery('/nonexistant', {
     enabled: false,
   });
   const {errorCount} = useSwiftarrQueryClient();

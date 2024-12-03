@@ -7,7 +7,7 @@ import {
   SwiftarrQueryClient,
 } from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
-import {Query, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
+import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
@@ -62,6 +62,11 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
+  /**
+   * To match functionality with apiGet this should take props and not parameters.
+   * However, to maintain easy compatibility I am not going to do that. So far POSTs
+   * only take a URL, body, and maybe the config object (login).
+   */
   const apiPost = useCallback(
     async <TResponseData = void, TRequestData = void>(
       url: string,
@@ -87,21 +92,6 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
     },
     [ServerQueryClient],
-  );
-
-  /**
-   * Default query function for React-Query registered in App.tsx.
-   * It seems that the queryKey passed to the defaultQueryFn is of
-   * type unknown instead of QueryKey as expected. -ChatGPT
-   * @TODO should get this deprecated? Yes.
-   */
-  const apiQueryV3 = useCallback(
-    async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
-      const mutableQueryKey = queryKey as string[];
-      const response = await apiGet<any, any>({url: mutableQueryKey[0]});
-      return response.data;
-    },
-    [apiGet],
   );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -173,15 +163,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         cacheTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
         retry: appConfig.apiClientConfig.retry,
-        queryFn: apiQueryV3,
       },
     });
-  }, [
-    apiQueryV3,
-    appConfig.apiClientConfig.cacheTime,
-    appConfig.apiClientConfig.retry,
-    appConfig.apiClientConfig.staleTime,
-  ]);
+  }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);
 
   return (
     <SwiftarrQueryClientContext.Provider

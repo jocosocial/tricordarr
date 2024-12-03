@@ -7,22 +7,32 @@ import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientCon
 /**
  * Clone of useQuery but dedicated for queries that can be performed without the user needing
  * to be logged in. Also does our error processing.
- * @param options
  */
 export function useOpenQuery<
-  TQueryFnData = unknown,
-  TError extends Error = AxiosError<ErrorResponse>,
-  TData = TQueryFnData,
+  TData,
   TQueryKey extends QueryKey = QueryKey,
+  TQueryParams = Object,
+  TError extends Error = AxiosError<ErrorResponse>,
 >(
-  options: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'initialData'> & {
+  endpoint: string,
+  // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
+  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey'> & {
     initialData?: () => undefined;
   },
+  queryParams?: TQueryParams,
+  queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
 
-  return useQuery<TQueryFnData, TError, TData, TQueryKey>({
+  return useQuery<TData, TError, TData>({
     enabled: !disruptionDetected,
+    queryKey: queryKey ? queryKey : [endpoint, queryParams],
+    queryFn: options?.queryFn
+      ? options.queryFn
+      : async () => {
+          const response = await apiGet<TData, TQueryParams>({url: endpoint, queryParams: queryParams});
+          return response.data;
+        },
     ...options,
   });
 }
