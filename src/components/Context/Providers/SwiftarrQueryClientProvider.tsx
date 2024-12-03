@@ -11,7 +11,7 @@ import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext
 import {Query, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
-import axios, {AxiosResponse, isAxiosError} from 'axios';
+import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import {ErrorResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useAuth} from '../Contexts/AuthContext.ts';
 import DeviceInfo from 'react-native-device-info';
@@ -64,10 +64,16 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   );
 
   const apiPost = useCallback(
-    async <TBodyData, TQueryParams, TData = void>(props: apiPostProps<TBodyData, TQueryParams>) => {
-      return await ServerQueryClient.post<TData, AxiosResponse<TData, TData>>(props.url, props.body, {
-        params: props.queryParams,
-      });
+    async <TResponseData = void, TRequestData = void>(
+      url: string,
+      body?: TRequestData,
+      config?: AxiosRequestConfig,
+    ) => {
+      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
+        url,
+        body,
+        config,
+      );
     },
     [ServerQueryClient],
   );
@@ -78,8 +84,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
    * only take a URL.
    */
   const apiDelete = useCallback(
-    async <TData = void,>(url: string) => {
-      return await ServerQueryClient.delete<TData, AxiosResponse<TData, TData>>(url);
+    async <TResponseData = void,>(url: string) => {
+      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
     },
     [ServerQueryClient],
   );

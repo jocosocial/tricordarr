@@ -16,10 +16,7 @@ export const useForumPostCreateMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   const createQueryHandler = async ({forumID, postData}: {forumID: string; postData: PostContentData}) => {
-    return await apiPost<PostData, PostContentData>({
-      url: `/forum/${forumID}/create`,
-      body: postData,
-    });
+    return await apiPost<PostData, PostContentData>(`/forum/${forumID}/create`, postData);
   };
 
   return useTokenAuthMutation(createQueryHandler);
@@ -34,10 +31,7 @@ export const useForumPostUpdateMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   const forumPostUpdateHandler = async ({postID, postContentData}: ForumPostUpdateMutationProps) => {
-    return await apiPost<PostData, PostContentData>({
-      url: `/forum/post/${postID}/update`,
-      body: postContentData,
-    });
+    return await apiPost<PostData, PostContentData>(`/forum/post/${postID}/update`, postContentData);
   };
 
   return useTokenAuthMutation(forumPostUpdateHandler);

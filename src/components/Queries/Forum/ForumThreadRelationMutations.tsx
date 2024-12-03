@@ -14,8 +14,7 @@ export const useForumRelationMutation = () => {
     if (action === 'delete') {
       return await apiDelete(`/forum/${forumID}/${relationType}`);
     }
-    // return await ServerQueryClient.post(`/forum/${forumID}/${relationType}`);
-    return await apiPost({url: `/forum/${forumID}/${relationType}`});
+    return await apiPost(`/forum/${forumID}/${relationType}`);
   };
 
   return useTokenAuthMutation(relationQueryHandler);

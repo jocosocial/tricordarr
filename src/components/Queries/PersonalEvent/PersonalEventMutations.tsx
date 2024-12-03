@@ -1,4 +1,3 @@
-import {AxiosResponse} from 'axios';
 import {PersonalEventContentData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
@@ -14,36 +13,40 @@ interface PersonalEventDeleteMutationProps {
 interface PersonalEventUpdateMutationProps extends PersonalEventCreateMutationProps, PersonalEventDeleteMutationProps {}
 
 export const usePersonalEventUpdateMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost} = useSwiftarrQueryClient();
 
   const personalEventUpdateQueryHandler = async ({
     personalEventID,
     personalEventContentData,
-  }: PersonalEventUpdateMutationProps): Promise<AxiosResponse<PersonalEventData>> => {
-    return await ServerQueryClient.post(`/personalevents/${personalEventID}/update`, personalEventContentData);
+  }: PersonalEventUpdateMutationProps) => {
+    return await apiPost<PersonalEventData, PersonalEventContentData>(
+      `/personalevents/${personalEventID}/update`,
+      personalEventContentData,
+    );
   };
 
   return useTokenAuthMutation(personalEventUpdateQueryHandler);
 };
 
 export const usePersonalEventCreateMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost} = useSwiftarrQueryClient();
 
-  const personalEventCreateQueryHandler = async ({
-    personalEventContentData,
-  }: PersonalEventCreateMutationProps): Promise<AxiosResponse<PersonalEventData>> => {
-    return await ServerQueryClient.post('/personalevents/create', personalEventContentData);
+  const personalEventCreateQueryHandler = async ({personalEventContentData}: PersonalEventCreateMutationProps) => {
+    return await apiPost<PersonalEventData, PersonalEventContentData>(
+      '/personalevents/create',
+      personalEventContentData,
+    );
   };
 
   return useTokenAuthMutation(personalEventCreateQueryHandler);
 };
 
 export const usePersonalEventDeleteMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
-  const deleteQueryHandler = async ({
-    personalEventID,
-  }: PersonalEventDeleteMutationProps): Promise<AxiosResponse<void>> => {
-    return await ServerQueryClient.delete(`/personalevents/${personalEventID}`);
+  const {apiDelete} = useSwiftarrQueryClient();
+
+  const deleteQueryHandler = async ({personalEventID}: PersonalEventDeleteMutationProps) => {
+    return await apiDelete(`/personalevents/${personalEventID}`);
   };
+
   return useTokenAuthMutation(deleteQueryHandler);
 };

@@ -29,11 +29,6 @@ export interface apiPostProps<TBodyParams = object, TQueryParams = object> {
   body?: TBodyParams;
 }
 
-export interface apiDeleteProps<TQueryParams = object> {
-  url: string;
-  queryParams?: TQueryParams;
-}
-
 /**
  * Generate the HTTP headers needed to authenticate with the Twitarr API.
  * Behaves differently if given username/password or token.
