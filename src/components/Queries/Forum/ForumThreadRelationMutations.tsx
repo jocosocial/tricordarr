@@ -9,7 +9,7 @@ interface ForumRelationCreateProps {
 }
 
 export const useForumRelationMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost, apiDelete} = useSwiftarrQueryClient();
 
   const relationQueryHandler = async ({
     forumID,
@@ -17,9 +17,13 @@ export const useForumRelationMutation = () => {
     action,
   }: ForumRelationCreateProps): Promise<AxiosResponse<void>> => {
     if (action === 'delete') {
-      return await ServerQueryClient.delete(`/forum/${forumID}/${relationType}`);
+      // return await ServerQueryClient.delete(`/forum/${forumID}/${relationType}`);
+      return await apiDelete({
+        url: `/forum/${forumID}/${relationType}`,
+      });
     }
-    return await ServerQueryClient.post(`/forum/${forumID}/${relationType}`);
+    // return await ServerQueryClient.post(`/forum/${forumID}/${relationType}`);
+    return await apiPost({url: `/forum/${forumID}/${relationType}`});
   };
 
   return useTokenAuthMutation(relationQueryHandler);

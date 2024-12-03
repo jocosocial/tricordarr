@@ -1,6 +1,7 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {
+  apiDeleteProps,
   apiGetProps,
   apiPostProps,
   asyncStoragePersister,
@@ -63,11 +64,18 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
-  // @TODO this doesnt work yet.
-  // Needs to be able to take two params not props
   const apiPost = useCallback(
-    async <TData, TQueryParams, TBodyData>(props: apiPostProps<TQueryParams, TBodyData>) => {
+    async <TBodyData, TQueryParams, TData = void>(props: apiPostProps<TBodyData, TQueryParams>) => {
       return await ServerQueryClient.post<TData, AxiosResponse<TData, TData>>(props.url, props.body, {
+        params: props.queryParams,
+      });
+    },
+    [ServerQueryClient],
+  );
+
+  const apiDelete = useCallback(
+    async <TQueryParams, TData = void>(props: apiDeleteProps<TQueryParams>) => {
+      return await ServerQueryClient.delete<TData, AxiosResponse<TData, TData>>(props.url, {
         params: props.queryParams,
       });
     },
@@ -78,6 +86,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
    * Default query function for React-Query registered in App.tsx.
    * It seems that the queryKey passed to the defaultQueryFn is of
    * type unknown instead of QueryKey as expected. -ChatGPT
+   * @TODO should get this deprecated? Yes.
    */
   const apiQueryV3 = useCallback(
     async ({queryKey}: QueryFunctionContext<QueryKey>): Promise<AxiosResponse<any>> => {
@@ -169,7 +178,15 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
 
   return (
     <SwiftarrQueryClientContext.Provider
-      value={{errorCount, setErrorCount, disruptionDetected: disruptionDetected, apiGet, apiPost, ServerQueryClient}}>
+      value={{
+        errorCount,
+        setErrorCount,
+        disruptionDetected: disruptionDetected,
+        apiGet,
+        apiPost,
+        apiDelete,
+        ServerQueryClient,
+      }}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}
         persistOptions={{

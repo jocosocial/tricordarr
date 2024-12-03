@@ -23,10 +23,15 @@ export interface apiGetProps<TQueryParams = object> {
   queryParams?: TQueryParams;
 }
 
-export interface apiPostProps<TQueryParams = object, TBodyParams = object> {
+export interface apiPostProps<TBodyParams = object, TQueryParams = object> {
   url: string;
   queryParams?: TQueryParams;
   body?: TBodyParams;
+}
+
+export interface apiDeleteProps<TQueryParams = object> {
+  url: string;
+  queryParams?: TQueryParams;
 }
 
 /**
