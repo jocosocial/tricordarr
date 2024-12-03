@@ -6,9 +6,7 @@ export const useForumPostDeleteMutation = () => {
   const {apiDelete} = useSwiftarrQueryClient();
 
   const deleteQueryHandler = async ({postID}: {postID: string}) => {
-    return await apiDelete({
-      url: `/forum/post/${postID}`,
-    });
+    return await apiDelete(`/forum/post/${postID}`);
   };
 
   return useTokenAuthMutation(deleteQueryHandler);

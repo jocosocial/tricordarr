@@ -1,7 +1,6 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {
-  apiDeleteProps,
   apiGetProps,
   apiPostProps,
   asyncStoragePersister,
@@ -73,11 +72,14 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     [ServerQueryClient],
   );
 
+  /**
+   * To match functionality with apiGet this should take props and not parameters.
+   * However, to maintain easy compatibility I am not going to do that. So far DELETEs
+   * only take a URL.
+   */
   const apiDelete = useCallback(
-    async <TQueryParams, TData = void>(props: apiDeleteProps<TQueryParams>) => {
-      return await ServerQueryClient.delete<TData, AxiosResponse<TData, TData>>(props.url, {
-        params: props.queryParams,
-      });
+    async <TData = void,>(url: string) => {
+      return await ServerQueryClient.delete<TData, AxiosResponse<TData, TData>>(url);
     },
     [ServerQueryClient],
   );

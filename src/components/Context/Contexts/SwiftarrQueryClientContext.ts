@@ -1,6 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {AxiosInstance, AxiosResponse} from 'axios';
-import {apiDeleteProps, apiGetProps, apiPostProps} from '../../../libraries/Network/APIClient.ts';
+import {apiGetProps, apiPostProps} from '../../../libraries/Network/APIClient.ts';
 
 interface SwiftarrQueryClientContextType {
   errorCount: number;
@@ -10,8 +10,8 @@ interface SwiftarrQueryClientContextType {
   apiGet: <TData, TQueryParams>(props: apiGetProps<TQueryParams>) => Promise<AxiosResponse<TData>>;
   apiPost: <TData = void, TBodyData = void, TQueryParams = void>(
     props: apiPostProps<TBodyData, TQueryParams>,
-  ) => Promise<AxiosResponse<TData>>;
-  apiDelete: <TQueryParams, TData = void>(props: apiDeleteProps<TQueryParams>) => Promise<AxiosResponse<TData>>;
+  ) => Promise<AxiosResponse<TData, TData>>;
+  apiDelete: <TData = void>(url: string) => Promise<AxiosResponse<TData, TData>>;
 }
 
 export const SwiftarrQueryClientContext = createContext(<SwiftarrQueryClientContextType>{});
