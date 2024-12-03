@@ -1,9 +1,9 @@
 import React, {useState, PropsWithChildren, useEffect} from 'react';
 import {UserRelationsContext} from '../Contexts/UserRelationsContext';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
-import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
-import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 
 export const UserRelationsProvider = ({children}: PropsWithChildren) => {
   const [favorites, setFavorites] = useState<UserHeader[]>([]);

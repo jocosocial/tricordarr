@@ -3,7 +3,7 @@ import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {UserDataContext} from '../Contexts/UserDataContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useAuth} from '../Contexts/AuthContext';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
+import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: PropsWithChildren) => {

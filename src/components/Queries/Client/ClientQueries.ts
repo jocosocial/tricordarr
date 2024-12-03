@@ -1,11 +1,10 @@
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
 import {HealthResponse, SwiftarrClientConfig} from '../../../libraries/Structs/ControllerStructs';
-import {AxiosError} from 'axios';
+import {useOpenQuery} from '../OpenQuery.ts';
 
 export const useHealthQuery = (options = {}) => {
   const client = useQueryClient();
-  return useQuery<HealthResponse, AxiosError<HealthResponse>>({
-    queryKey: ['/client/health'],
+  return useOpenQuery<HealthResponse>('/client/health', {
     retry: false,
     keepPreviousData: false,
     cacheTime: 0,
@@ -26,8 +25,7 @@ export const useHealthQuery = (options = {}) => {
 };
 
 export const useClientConfigQuery = (options = {}) => {
-  return useQuery<SwiftarrClientConfig>({
-    queryKey: ['/../../public/clients/tricordarr.json'],
+  return useOpenQuery<SwiftarrClientConfig>('/../../public/clients/tricordarr.json', {
     ...options,
   });
 };

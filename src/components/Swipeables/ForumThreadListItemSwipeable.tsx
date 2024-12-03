@@ -5,12 +5,12 @@ import {SwipeableButton} from '../Buttons/SwipeableButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import {useAppTheme} from '../../styles/Theme.ts';
 import {ForumListData} from '../../libraries/Structs/ControllerStructs.tsx';
-import {useForumRelationMutation} from '../Queries/Forum/ForumThreadRelationMutations.tsx';
+import {useForumRelationMutation} from '../Queries/Forum/ForumThreadRelationMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
-import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.tsx';
-import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.tsx';
+import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.ts';
+import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.ts';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {

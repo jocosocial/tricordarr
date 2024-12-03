@@ -7,7 +7,7 @@ import React from 'react';
 import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useForumPostDeleteMutation} from '../../Queries/Forum/ForumPostMutations';
+import {useForumPostDeleteMutation} from '../../Queries/Forum/ForumPostMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 const ModalContent = () => {

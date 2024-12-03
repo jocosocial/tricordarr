@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useUserKeywordMutation, useUserKeywordQuery} from '../../../Queries/User/UserQueries';
+import {useUserKeywordQuery} from '../../../Queries/User/UserQueries.ts';
 import {RefreshControl, View} from 'react-native';
 import {KeywordChip} from '../../../Chips/KeywordChip';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
@@ -13,6 +13,7 @@ import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
 import {useQueryClient} from '@tanstack/react-query';
+import {useUserKeywordMutation} from '../../../Queries/User/UserMutations.ts';
 
 export const AlertKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();

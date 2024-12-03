@@ -5,7 +5,7 @@ import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useAppTheme} from '../../../styles/Theme.ts';
-import {useHealthQuery} from '../../Queries/Client/ClientQueries.tsx';
+import {useHealthQuery} from '../../Queries/Client/ClientQueries.ts';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 
 interface ServerHealthcheckResultViewProps {

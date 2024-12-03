@@ -7,7 +7,7 @@ import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {FormikHelpers} from 'formik';
-import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';

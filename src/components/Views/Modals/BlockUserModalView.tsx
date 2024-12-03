@@ -3,12 +3,12 @@ import {View} from 'react-native';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
 
 interface BlockUserModalViewProps {
   user: UserHeader;

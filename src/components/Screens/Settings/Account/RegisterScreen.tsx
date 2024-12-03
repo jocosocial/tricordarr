@@ -4,8 +4,7 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView'
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {LoginFormValues, UserRegistrationFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useUserCreateQuery} from '../../../Queries/User/UserQueries';
-import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
+import {useLoginMutation} from '../../../Queries/Auth/LoginMutations.ts';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {UserCreateForm} from '../../../Forms/User/UserCreateForm.tsx';
 import {useModal} from '../../../Context/Contexts/ModalContext';
@@ -13,10 +12,11 @@ import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyMod
 import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
+import {useUserCreateQuery} from '../../../Queries/User/UserMutations.ts';
 
 export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();
-  const loginMutation = useLoginQuery();
+  const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const navigation = useNavigation();

@@ -10,7 +10,7 @@ import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
+import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;

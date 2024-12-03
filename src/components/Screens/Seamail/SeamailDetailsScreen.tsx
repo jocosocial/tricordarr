@@ -11,7 +11,7 @@ import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {FezType} from '../../../libraries/Enums/FezType';
-import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {WebSocketState} from '../../../libraries/Network/Websockets';

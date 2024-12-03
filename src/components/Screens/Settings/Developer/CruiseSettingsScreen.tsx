@@ -9,7 +9,7 @@ import {FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../../styles/Theme.ts';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.tsx';
+import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {useCruise} from '../../../Context/Contexts/CruiseContext.ts';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';

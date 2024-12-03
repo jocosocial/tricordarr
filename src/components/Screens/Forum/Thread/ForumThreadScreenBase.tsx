@@ -15,11 +15,11 @@ import {FormikHelpers, FormikProps} from 'formik';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries';
+import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries.ts';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens';
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
-import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations';
+import {useForumPostCreateMutation} from '../../../Queries/Forum/ForumPostMutations.ts';
 import {ForumThreadPinnedPostsItem} from '../../../Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '../../../Menus/Forum/Items/ForumThreadSearchPostsItem.tsx';
 

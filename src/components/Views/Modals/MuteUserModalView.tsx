@@ -3,12 +3,12 @@ import {View} from 'react-native';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
 
 interface MuteUserModalViewProps {
   user: UserHeader;

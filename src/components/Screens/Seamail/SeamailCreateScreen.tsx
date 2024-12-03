@@ -5,8 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {ContentPostForm} from '../../Forms/ContentPostForm';
 import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikProps} from 'formik';
-import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
-import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
@@ -15,6 +14,7 @@ import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {SeamailFormValues} from '../../../libraries/Types/FormValues.ts';
+import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 

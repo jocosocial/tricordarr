@@ -9,7 +9,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {ServerUrlFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useHealthQuery} from '../../Queries/Client/ClientQueries';
+import {useHealthQuery} from '../../Queries/Client/ClientQueries.ts';
 import {HttpStatusCode} from 'axios';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {OobeServerHeaderTitle} from '../../Navigation/Components/OobeServerHeaderTitle';

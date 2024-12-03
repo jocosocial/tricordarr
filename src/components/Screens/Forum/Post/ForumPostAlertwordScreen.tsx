@@ -2,7 +2,7 @@ import {AppView} from '../../../Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList';
 import React, {useEffect, useRef, useState} from 'react';
-import {useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries';
+import {useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries.ts';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';

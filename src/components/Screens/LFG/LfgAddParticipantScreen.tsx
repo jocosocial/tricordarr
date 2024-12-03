@@ -5,7 +5,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
-import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';

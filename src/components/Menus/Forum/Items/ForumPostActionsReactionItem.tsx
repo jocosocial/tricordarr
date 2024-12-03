@@ -1,4 +1,4 @@
-import {useForumPostReactionMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations';
+import {useForumPostReactionMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations.ts';
 import {PostData, PostDetailData} from '../../../../libraries/Structs/ControllerStructs';
 import {LikeType} from '../../../../libraries/Enums/LikeType';
 import {ActivityIndicator, Text} from 'react-native-paper';
@@ -7,7 +7,7 @@ import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
-import {useForumPostQuery} from '../../../Queries/Forum/ForumPostQueries';
+import {useForumPostQuery} from '../../../Queries/Forum/ForumPostQueries.ts';
 import {SubmitIconButton} from '../../../Buttons/IconButtons/SubmitIconButton';
 import {useAppTheme} from '../../../../styles/Theme';
 

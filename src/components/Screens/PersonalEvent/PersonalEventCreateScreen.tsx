@@ -4,7 +4,7 @@ import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import React from 'react';
 import {PersonalEventFormValues} from '../../../libraries/Types/FormValues.ts';
-import {usePersonalEventCreateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
+import {usePersonalEventCreateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

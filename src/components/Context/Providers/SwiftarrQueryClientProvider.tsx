@@ -1,17 +1,84 @@
-import React, {PropsWithChildren, useEffect, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
-import {apiQueryV3, asyncStoragePersister, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
+import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
-import {isAxiosError} from 'axios';
+import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import {ErrorResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useAuth} from '../Contexts/AuthContext.ts';
+import DeviceInfo from 'react-native-device-info';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
   const {setErrorMessage} = useErrorHandler();
+  const {tokenData, isLoggedIn} = useAuth();
+
+  const ServerQueryClient = useMemo(() => {
+    const client = axios.create({
+      baseURL: `${appConfig.serverUrl}${appConfig.urlPrefix}`,
+      headers: {
+        ...(isLoggedIn && tokenData ? {Authorization: `Bearer ${tokenData.token}`} : undefined),
+        ...(isLoggedIn && tokenData ? {'X-Swiftarr-User': tokenData.userID} : undefined),
+        Accept: 'application/json',
+        'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
+        // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
+        'Cache-Control': 'no-store',
+      },
+      timeout: appConfig.apiClientConfig.requestTimeout,
+      timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
+    });
+    client.interceptors.request.use(async config => {
+      // This logs even when the response is returned from cache.
+      console.info(
+        `API Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.baseURL}${config.url}`,
+        config.params,
+      );
+      return config;
+    });
+    return client;
+  }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
+
+  const apiGet = useCallback(
+    async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
+      const response = await ServerQueryClient.get<TData, AxiosResponse<TData, TData>>(url, {
+        params: queryParams,
+        ...config,
+      });
+
+      // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
+      if (!response.headers['content-type'].startsWith('application/json')) {
+        throw new BadResponseFormatError(response);
+      }
+
+      return response;
+    },
+    [ServerQueryClient],
+  );
+
+  const apiPost = useCallback(
+    async <TResponseData = void, TRequestData = void>(
+      url: string,
+      body?: TRequestData,
+      config?: AxiosRequestConfig,
+    ) => {
+      return await ServerQueryClient.post<TResponseData, AxiosResponse<TResponseData, TResponseData>>(
+        url,
+        body,
+        config,
+      );
+    },
+    [ServerQueryClient],
+  );
+
+  const apiDelete = useCallback(
+    async <TResponseData = void,>(url: string) => {
+      return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
+    },
+    [ServerQueryClient],
+  );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
   // https://tanstack.com/query/v4/docs/react/guides/query-invalidation
@@ -82,13 +149,21 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         cacheTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
         retry: appConfig.apiClientConfig.retry,
-        queryFn: apiQueryV3,
       },
     });
   }, [appConfig.apiClientConfig.cacheTime, appConfig.apiClientConfig.retry, appConfig.apiClientConfig.staleTime]);
 
   return (
-    <SwiftarrQueryClientContext.Provider value={{errorCount, setErrorCount, disruptionDetected: disruptionDetected}}>
+    <SwiftarrQueryClientContext.Provider
+      value={{
+        errorCount,
+        setErrorCount,
+        disruptionDetected: disruptionDetected,
+        apiGet,
+        apiPost,
+        apiDelete,
+        ServerQueryClient,
+      }}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}
         persistOptions={{

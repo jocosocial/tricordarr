@@ -2,9 +2,9 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import React from 'react';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {Item} from 'react-navigation-header-buttons';
-import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteQueries.tsx';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
+import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteMutations.ts';
 
 interface HeaderProfileFavoriteButtonProps {
   profile: ProfilePublicData;

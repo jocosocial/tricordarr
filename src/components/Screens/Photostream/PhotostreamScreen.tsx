@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
-import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.tsx';
+import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.ts';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';

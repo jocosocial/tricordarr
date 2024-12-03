@@ -1,39 +1,10 @@
-import axios, {AxiosResponse} from 'axios';
-import {FezContentData, FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
-import {useTokenAuthMutation} from '../TokenAuthMutation';
 import {QueryKey} from '@tanstack/react-query';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
-
-interface FezCreateMutationProps {
-  fezContentData: FezContentData;
-}
-
-const fezCreateQueryHandler = async ({fezContentData}: FezCreateMutationProps): Promise<AxiosResponse<FezData>> => {
-  return await axios.post('/fez/create', fezContentData);
-};
-
-export const useFezCreateMutation = () => {
-  return useTokenAuthMutation(fezCreateQueryHandler);
-};
-
-interface FezUpdateMutationProps extends FezCreateMutationProps {
-  fezID: string;
-}
-
-const fezUpdateQueryHandler = async ({
-  fezID,
-  fezContentData,
-}: FezUpdateMutationProps): Promise<AxiosResponse<FezData>> => {
-  return await axios.post(`/fez/${fezID}/update`, fezContentData);
-};
-
-export const useFezUpdateMutation = () => {
-  return useTokenAuthMutation(fezUpdateQueryHandler);
-};
 
 interface SeamailQueryProps {
   fezID: string;
@@ -86,16 +57,4 @@ export const useLfgListQuery = ({
     ...(excludeFezType && {excludetype: excludeFezType}),
   };
   return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, options, queryParams);
-};
-
-interface FezCancelMutationProps {
-  fezID: string;
-}
-
-const cancelQueryHandler = async ({fezID}: FezCancelMutationProps): Promise<AxiosResponse<FezData>> => {
-  return await axios.post(`/fez/${fezID}/cancel`);
-};
-
-export const useFezCancelMutation = () => {
-  return useTokenAuthMutation(cancelQueryHandler);
 };

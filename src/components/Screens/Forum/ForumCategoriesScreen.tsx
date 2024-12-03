@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries';
+import {useForumCategoriesQuery} from '../../Queries/Forum/ForumCategoryQueries.ts';
 import {RefreshControl, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
@@ -19,7 +19,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {useUserKeywordQuery} from '../../Queries/User/UserQueries';
+import {useUserKeywordQuery} from '../../Queries/User/UserQueries.ts';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';

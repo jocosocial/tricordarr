@@ -9,7 +9,7 @@ import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
-import {usePersonalEventDeleteMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.tsx';
+import {usePersonalEventDeleteMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useNavigation} from '@react-navigation/native';
 
 const ModalContent = () => {

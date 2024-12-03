@@ -7,11 +7,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {MainAnnouncementView} from '../../Views/MainAnnouncementView';
 import {RefreshControl, View} from 'react-native';
-import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
-import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
-import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
-import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
-import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
+import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries.ts';
+import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
@@ -23,7 +23,7 @@ import {MainHeaderView} from '../../Views/MainHeaderView';
 import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
 import {MainTimezoneWarningView} from '../../Views/MainTimezoneWarningView.tsx';
 import {TodayAppUpdateView} from '../../Views/TodayAppUpdateView.tsx';
-import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.tsx';
+import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 

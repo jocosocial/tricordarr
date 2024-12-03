@@ -7,16 +7,16 @@ import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {LoginFormValues} from '../../../../libraries/Types/FormValues';
 import {commonStyles} from '../../../../styles';
-import {useLoginQuery} from '../../../Queries/Auth/LoginQueries';
+import {useLoginMutation} from '../../../Queries/Auth/LoginMutations.ts';
 import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
-import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.tsx';
+import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
-  const loginMutation = useLoginQuery();
+  const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
   const {appConfig, updateAppConfig} = useConfig();
   const {refetch: refetchClientConfig, data: clientConfigData} = useClientConfigQuery();

@@ -6,13 +6,13 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteQueries.tsx';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
-import {useUserBlockMutation} from '../../Queries/Users/UserBlockQueries.tsx';
 import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;

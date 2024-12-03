@@ -12,7 +12,7 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
-import {CategoryDataQueryResponse} from '../../Queries/Forum/ForumCategoryQueries.tsx';
+import {CategoryDataQueryResponse} from '../../Queries/Forum/ForumCategoryQueries.ts';
 import {AxiosError} from 'axios';
 
 interface ForumThreadListViewProps {

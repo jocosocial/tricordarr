@@ -13,9 +13,9 @@ import {ScheduleEventFilterMenu} from '../../Menus/Schedule/ScheduleEventFilterM
 import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScreenActionsMenu.tsx';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
-import {useEventsQuery} from '../../Queries/Events/EventQueries.tsx';
+import {useEventsQuery} from '../../Queries/Events/EventQueries.ts';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries.ts';
-import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.tsx';
+import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';

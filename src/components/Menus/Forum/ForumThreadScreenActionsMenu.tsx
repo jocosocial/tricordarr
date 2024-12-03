@@ -16,7 +16,7 @@ import {MuteMenuItem} from '../Items/MuteMenuItem';
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import {ModerateMenuItem} from '../Items/ModerateMenuItem';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
-import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
 import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
 
 interface ForumThreadActionsMenuProps {

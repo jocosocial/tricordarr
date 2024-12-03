@@ -9,9 +9,9 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useFezCancelMutation} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useQueryClient} from '@tanstack/react-query';
+import {useFezCancelMutation} from '../../Queries/Fez/FezMutations.ts';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

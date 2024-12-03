@@ -1,9 +1,6 @@
 import React, {useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
-import {
-  usePhotostreamImageUploadMutation,
-  usePhotostreamLocationDataQuery,
-} from '../../Queries/Photostream/PhotostreamQueries.tsx';
+import {usePhotostreamLocationDataQuery} from '../../Queries/Photostream/PhotostreamQueries.ts';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {RefreshControl} from 'react-native';
 import {PhotostreamImageCreateForm} from '../../Forms/Photostream/PhotostreamImageCreateForm.tsx';
@@ -15,6 +12,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {usePhotostreamImageUploadMutation} from '../../Queries/Photostream/PhotostreamMutations.ts';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 

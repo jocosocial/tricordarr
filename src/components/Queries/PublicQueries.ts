@@ -1,11 +1,10 @@
-import {useOpenQuery} from './OpenQuery';
+import {useOpenQuery} from './OpenQuery.ts';
 import {ConductDoc} from '../../libraries/Structs/SiteStructs';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 
 export const useConductQuery = () => {
   const {appConfig} = useConfig();
-  return useOpenQuery<ConductDoc>({
-    queryKey: [`${appConfig.serverUrl}/public/codeofconduct.json`],
+  return useOpenQuery<ConductDoc>(`${appConfig.serverUrl}/public/codeofconduct.json`, {
     enabled: true,
   });
 };

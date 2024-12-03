@@ -7,7 +7,7 @@ import {FlatList, Keyboard, NativeScrollEvent, NativeSyntheticEvent, RefreshCont
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {useFezPostMutation} from '../../Queries/Fez/FezPostQueries';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
 import {HeaderButtons} from 'react-navigation-header-buttons';

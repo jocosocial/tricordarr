@@ -7,7 +7,7 @@ import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries';
+import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries.ts';
 import {APIImage} from '../../Images/APIImage';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;

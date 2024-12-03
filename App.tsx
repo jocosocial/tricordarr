@@ -9,7 +9,6 @@ import {Portal} from 'react-native-paper';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import {setupChannels} from './src/libraries/Notifications/Channels';
-import {configureAxios} from './src/libraries/Network/APIClient';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
@@ -65,9 +64,6 @@ console.log('[App.tsx] Tricordarr start!');
 TimeAgo.addDefaultLocale(en);
 registerTranslation('en', paperEn);
 
-// Configure network interceptors
-configureAxios();
-
 // Declare what the Foreground Service worker function should be.
 registerFgsWorker();
 
@@ -101,9 +97,9 @@ function App(): React.JSX.Element {
         <AppNavigationThemeProvider>
           <StyleProvider>
             <ErrorHandlerProvider>
-              <SwiftarrQueryClientProvider>
-                <LoadingProvider>
-                  <AuthProvider>
+              <AuthProvider>
+                <SwiftarrQueryClientProvider>
+                  <LoadingProvider>
                     <CriticalErrorProvider>
                       <UserDataProvider>
                         <PrivilegeProvider>
@@ -139,9 +135,9 @@ function App(): React.JSX.Element {
                         </PrivilegeProvider>
                       </UserDataProvider>
                     </CriticalErrorProvider>
-                  </AuthProvider>
-                </LoadingProvider>
-              </SwiftarrQueryClientProvider>
+                  </LoadingProvider>
+                </SwiftarrQueryClientProvider>
+              </AuthProvider>
             </ErrorHandlerProvider>
           </StyleProvider>
         </AppNavigationThemeProvider>

@@ -11,7 +11,7 @@ import {AxiosError} from 'axios';
 import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
 import {getNextPageParam, getPreviousPageParam, PageParam, PaginationQueryParams, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
-import {apiGet, shouldQueryEnable} from '../../libraries/Network/APIClient';
+import {shouldQueryEnable} from '../../libraries/Network/APIClient';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 
 export type TokenAuthQueryOptionsType<TData, TError extends Error = AxiosError<ErrorResponse>> = Omit<
@@ -36,7 +36,7 @@ export function useTokenAuthQuery<
   queryKey?: TQueryKey,
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
 
   return useQuery<TData, TError, TData>({
     queryKey: queryKey ? queryKey : [endpoint, queryParams],
@@ -44,7 +44,7 @@ export function useTokenAuthQuery<
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {
-          const response = await apiGet<TData, TQueryParams>({url: endpoint, queryParams: queryParams});
+          const response = await apiGet<TData, TQueryParams>(endpoint, queryParams);
           return response.data;
         },
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
@@ -72,7 +72,7 @@ export function useTokenAuthPaginationQuery<
   queryKey?: TQueryKey,
 ) {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
   return useInfiniteQuery<TData, TError, TData>(
@@ -80,13 +80,10 @@ export function useTokenAuthPaginationQuery<
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
-          const {data: responseData} = await apiGet<TData, PageParam>({
-            url: endpoint,
-            queryParams: {
-              ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
-              ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
-              ...queryParams,
-            },
+          const {data: responseData} = await apiGet<TData, PageParam>(endpoint, {
+            ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+            ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
+            ...queryParams,
           });
           return responseData;
         },
