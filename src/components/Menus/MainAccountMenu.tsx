@@ -4,9 +4,9 @@ import React, {useState} from 'react';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {TouchableOpacity} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {MainStackComponents, SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
+import {SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {useAuth} from '../Context/Contexts/AuthContext';
-import {useMainStack} from '../Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator';
 import {CommonStackComponents} from '../Navigation/CommonScreens';
 
 export const MainAccountMenu = () => {

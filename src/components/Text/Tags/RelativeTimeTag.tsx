@@ -4,6 +4,7 @@ import {Text} from 'react-native-paper';
 import ReactTimeAgo from 'react-time-ago';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 interface RelativeTimeTagProps {
   date?: Date;
@@ -41,6 +42,7 @@ const StylizedText = (props: StylizedTextProps) => {
  */
 export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) => {
   const [showRawTime, setShowRawTime] = React.useState(false);
+  const {appConfig} = useConfig();
 
   const onPress = () => {
     setShowRawTime(!showRawTime);
@@ -53,11 +55,9 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
 
   if (showRawTime) {
     return (
-      // <TouchableOpacity onPress={onPress} onLongPress={() => Clipboard.setString(date?.toISOString())}>
       <StylizedText onPress={onPress} onLongPress={onLongPress} style={style} variant={variant}>
         {date?.toISOString()}
       </StylizedText>
-      // </TouchableOpacity>
     );
   }
 
@@ -72,8 +72,8 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
       locale="en-US"
       component={StylizedText}
       variant={variant}
-      onPress={onPress}
-      onLongPress={onLongPress}
+      onPress={appConfig.enableDeveloperOptions ? onPress : undefined}
+      onLongPress={appConfig.enableDeveloperOptions ? onLongPress : undefined}
     />
   );
 };

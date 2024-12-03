@@ -61,7 +61,8 @@ import {LfgParticipationHelpScreen} from '../Screens/LFG/LfgParticipationHelpScr
 import {ForumPostSearchScreen} from '../Screens/Forum/Post/ForumPostSearchScreen.tsx';
 import {SeamailHelpScreen} from '../Screens/Seamail/SeamailHelpScreen.tsx';
 import {SiteUILinkScreen} from '../Screens/SiteUI/SiteUILinkScreen.tsx';
-import {RootStackComponents} from './Stacks/RootStackNavigator.tsx';
+import {PerformerScreen} from '../Screens/Performer/PerformerScreen.tsx';
+import {PerformerHelpScreen} from '../Screens/Performer/PerformerHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -100,6 +101,7 @@ export type CommonStackParamList = {
     id?: string;
     timestamp?: string;
     moderate?: boolean;
+    admin?: boolean;
   };
   MapScreen: {
     deckNumber?: number;
@@ -193,6 +195,10 @@ export type CommonStackParamList = {
   };
   SeamailHelpScreen: undefined;
   SiteUILinkScreen: undefined;
+  PerformerScreen: {
+    id: string;
+  };
+  PerformerHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -242,6 +248,8 @@ export enum CommonStackComponents {
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
+  performerScreen = 'PerformerScreen',
+  performerHelpScreen = 'PerformerHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -250,6 +258,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
   const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
+  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
 
   return (
     <>
@@ -482,6 +491,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.siteUILinkScreen}
         component={SiteUILinkScreen}
         options={{title: 'Twitarr'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerScreen}
+        component={isPerformersDisabled ? DisabledView : PerformerScreen}
+        options={{title: 'Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerHelpScreen}
+        component={PerformerHelpScreen}
+        options={{title: 'Help'}}
       />
     </>
   );

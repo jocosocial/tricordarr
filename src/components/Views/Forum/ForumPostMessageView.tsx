@@ -1,4 +1,4 @@
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag';
@@ -43,23 +43,29 @@ export const ForumPostMessageView = ({
   const {favorites} = useUserRelations();
   const commonNavigation = useCommonStack();
 
-  const styles = {
-    messageView: [
+  const styles = StyleSheet.create({
+    messageView: {
       // commonStyles.paddingSmall,
-      commonStyles.roundedBorderLarge,
-      messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
-      messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart,
-      commonStyles.fullWidth,
-    ],
-    messageText: [messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer],
-    messageTextHeader: [
-      messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer,
-      showAuthor ? commonStyles.displayFlex : commonStyles.displayNone,
-      commonStyles.bold,
-    ],
-    messageDateText: [],
-    opacity: [commonStyles.paddingSmall, commonStyles.roundedBorderLarge],
-  };
+      ...commonStyles.roundedBorderLarge,
+      ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
+      ...(messageOnRight ? commonStyles.flexEnd : commonStyles.flexStart),
+      ...commonStyles.fullWidth,
+    },
+    messageText: {
+      ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
+    },
+    messageTextHeader: {
+      ...(messageOnRight ? commonStyles.primaryContainer : commonStyles.secondaryContainer),
+      ...(showAuthor ? commonStyles.displayFlex : commonStyles.displayNone),
+      ...commonStyles.bold,
+      ...commonStyles.flexStart,
+    },
+    messageDateText: {},
+    opacity: {
+      ...commonStyles.paddingSmall,
+      ...commonStyles.roundedBorderLarge,
+    },
+  });
 
   // Same as the button in the menu used in the menu
   const onPress = () => {
@@ -94,7 +100,7 @@ export const ForumPostMessageView = ({
           {showAuthor && (
             <>
               <View>
-                <UserBylineTag user={postData.author} style={[styles.messageTextHeader, commonStyles.flexStart]} />
+                <UserBylineTag user={postData.author} style={styles.messageTextHeader} />
               </View>
               {UserHeader.contains(favorites, postData.author) && (
                 <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />

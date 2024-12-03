@@ -21,6 +21,10 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {EventScreenActionsMenu} from '../../Menus/Events/EventScreenActionsMenu';
+import {UserChip} from '../../Chips/UserChip.tsx';
+import {Chip} from 'react-native-paper';
+import {PerformerChip} from '../../Chips/PerformerChip.tsx';
+import {EventPerformerListItem} from '../../Lists/Items/Event/EventPerformerListItem.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
@@ -163,6 +167,13 @@ export const EventScreen = ({navigation, route}: Props) => {
                   left={() => getIcon(AppIcons.description)}
                   description={eventData.description}
                   title={'Description'}
+                />
+              )}
+              {eventData.performers.length !== 0 && (
+                <EventPerformerListItem
+                  iconStyle={styles.icon}
+                  itemStyle={styles.item}
+                  performers={eventData.performers}
                 />
               )}
             </ListSection>

@@ -4,7 +4,7 @@ import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {CruiseSettingsForm} from '../../../Forms/Settings/CruiseSettingsForm.tsx';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {CruiseSettingsFormValues} from '../../../../libraries/Types/FormValues';
+import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../../styles/Theme.ts';
@@ -14,6 +14,7 @@ import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {useCruise} from '../../../Context/Contexts/CruiseContext.ts';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
 import {DataTable} from 'react-native-paper';
+import {PreRegistrationSettingsForm} from '../../../Forms/Settings/PreRegistrationSettingsForm.tsx';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -27,6 +28,11 @@ export const CruiseSettingsScreen = () => {
     cruiseLength: appConfig.cruiseLength.toString(),
     startDate: appConfig.cruiseStartDate,
     schedBaseUrl: appConfig.schedBaseUrl,
+  };
+
+  const preRegistrationInitialValues: PreRegistrationSettingsFormValues = {
+    preRegistrationServerUrl: appConfig.preRegistrationServerUrl,
+    preRegistrationEndDate: appConfig.preRegistrationEndDate,
   };
 
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
@@ -53,6 +59,24 @@ export const CruiseSettingsScreen = () => {
     });
   };
 
+  const onPreRegistrationSubmit = (
+    values: PreRegistrationSettingsFormValues,
+    helpers: FormikHelpers<PreRegistrationSettingsFormValues>,
+  ) => {
+    updateAppConfig({
+      ...appConfig,
+      preRegistrationServerUrl: values.preRegistrationServerUrl,
+      preRegistrationEndDate: values.preRegistrationEndDate,
+    });
+    helpers.setSubmitting(false);
+    helpers.resetForm({
+      values: {
+        preRegistrationServerUrl: values.preRegistrationServerUrl,
+        preRegistrationEndDate: values.preRegistrationEndDate,
+      },
+    });
+  };
+
   const reloadClientConfig = async () => {
     setRefreshing(true);
     await refetch();
@@ -74,15 +98,15 @@ export const CruiseSettingsScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
         <ListSubheader>General</ListSubheader>
-        <PaddedContentView>
-          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
-        </PaddedContentView>
-        <PaddedContentView>
+        <PaddedContentView padTop={true} padBottom={false}>
           <PrimaryActionButton
             buttonText={'Reload From Server'}
             onPress={reloadClientConfig}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
+        </PaddedContentView>
+        <PaddedContentView>
+          <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         <ListSubheader>Internal State</ListSubheader>
         <PaddedContentView>
@@ -100,6 +124,13 @@ export const CruiseSettingsScreen = () => {
               reverseSplit={true}
             />
           </DataTable>
+        </PaddedContentView>
+        <ListSubheader>Pre-Registration</ListSubheader>
+        <PaddedContentView padTop={true}>
+          <PreRegistrationSettingsForm
+            onSubmit={onPreRegistrationSubmit}
+            initialValues={preRegistrationInitialValues}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

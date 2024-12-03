@@ -26,3 +26,8 @@ const queryHandler = async ({imageUploadData}: PhotostreamImageMutationProps): P
 export const usePhotostreamImageUploadMutation = () => {
   return useTokenAuthMutation(queryHandler);
 };
+
+// There is no delete handler. Per cfry 2024/08/27:
+// Mods can delete photos, and letting users delete their photos increases
+// the chance people will try posting bad photos and quickly deleting them
+// before they can be reported.

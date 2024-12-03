@@ -48,14 +48,16 @@ export const UserBylineTag = ({
   const theme = useAppTheme();
   const {commonStyles} = useStyles();
   const byPrivilegedUser = privilegedUsernames.some(username => user.username === username);
+
   const styles = StyleSheet.create({
     innerText: style as TextStyle,
     user: {
-      color: byPrivilegedUser ? theme.colors.twitarrNegativeButton : undefined,
+      color: byPrivilegedUser ? theme.colors.twitarrNegativeButton : theme.colors.onBackground,
       ...(byPrivilegedUser ? commonStyles.bold : undefined),
       ...(style as TextStyle),
     },
   });
+
   return (
     <Text style={styles.user} onPress={onPress} selectable={selectable} variant={variant} onLongPress={onLongPress}>
       {prefix && (

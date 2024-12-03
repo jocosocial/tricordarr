@@ -3,6 +3,9 @@ import {Card, Text} from 'react-native-paper';
 import twitarrteam from '../../../assets/contributors/twitarrteam.jpg';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
+import {AppImage} from '../Images/AppImage.tsx';
+import {Image} from 'react-native';
+import {encode as base64_encode} from 'base-64';
 
 export const OobeNoteCard = () => {
   const {commonStyles} = useStyles();
@@ -15,7 +18,16 @@ export const OobeNoteCard = () => {
           and have a great cruise!
         </Text>
       </Card.Content>
-      <Card.Cover source={twitarrteam} />
+      <AppImage
+        image={{
+          dataURI: Image.resolveAssetSource(twitarrteam).uri,
+          mimeType: 'image/jpeg',
+          fileName: 'twitarrteam.jpg',
+          base64: base64_encode(twitarrteam),
+        }}
+        mode={'cardcover'}
+      />
+      {/*<Card.Cover source={twitarrteam} />*/}
     </Card>
   );
 };

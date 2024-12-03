@@ -117,4 +117,11 @@ export enum AppIcons {
   selectNone = 'select-remove',
   selectInverse = 'select-inverse',
   markAsRead = 'read',
+  microKaraoke = 'account-music',
+  twitter = 'twitter',
+  youtube = 'youtube',
+  facebook = 'facebook',
+  instagram = 'instagram',
+  performer = 'piano',
+  official = 'shield-check',
 }

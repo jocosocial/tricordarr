@@ -2,29 +2,25 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.tsx';
 import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {FlatList, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';
 import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
-import {FloatingScrollButton} from '../../Buttons/FloatingScrollButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {styleDefaults} from '../../../styles';
+import {AppFlatList} from '../../Lists/AppFlatList.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
 export const PhotostreamScreen = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
-  const [expandFab, setExpandFab] = useState(false);
-  const [showButton, setShowButton] = useState(false);
+  const [expandFab, setExpandFab] = useState(true);
   const flatListRef = useRef<FlatList<PhotostreamImageData>>(null);
 
   const onRefresh = useCallback(async () => {
@@ -49,20 +45,18 @@ export const PhotostreamScreen = ({navigation}: Props) => {
     );
   }, []);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setExpandFab(event.nativeEvent.contentOffset.y <= styleDefaults.listScrollThreshold);
-    setShowButton(event.nativeEvent.contentOffset.y > styleDefaults.listScrollThreshold);
-  };
-
-  const handleScrollButtonPress = () => {
-    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-  };
+  const onScrollThreshold = useCallback((condition: boolean) => {
+    setExpandFab(!condition);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
   }, [getNavButtons, navigation]);
+
+  const renderItem = useCallback(({item}: {item: PhotostreamImageData}) => <PhotostreamListItem item={item} />, []);
+  const keyExtractor = useCallback((item: PhotostreamImageData) => item.postID.toString(), []);
 
   const streamList = data?.pages.flatMap(p => p.photos);
 
@@ -81,19 +75,16 @@ export const PhotostreamScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <FlatList
-        ref={flatListRef}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        onEndReached={handleLoadNext}
-        keyExtractor={(item: PhotostreamImageData) => item.postID.toString()}
+      <AppFlatList
+        flatListRef={flatListRef}
+        renderItem={renderItem}
         data={streamList}
-        renderItem={({item}) => <PhotostreamListItem item={item} />}
-        onEndReachedThreshold={5}
-        onScroll={handleScroll}
+        onScrollThreshold={onScrollThreshold}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        hasNextPage={hasNextPage}
+        handleLoadNext={handleLoadNext}
+        keyExtractor={keyExtractor}
       />
-      {showButton && (
-        <FloatingScrollButton icon={AppIcons.scrollUp} onPress={handleScrollButtonPress} displayPosition={'bottom'} />
-      )}
       <PhotostreamFAB showLabel={expandFab} />
     </AppView>
   );

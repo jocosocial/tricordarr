@@ -1,7 +1,7 @@
 import {AppImageViewer} from './AppImageViewer';
 import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ImageQueryData} from '../../libraries/Types';
@@ -14,14 +14,15 @@ import {HelpModalView} from '../Views/Modals/HelpModalView';
 import {AppFastImage} from './AppFastImage.tsx';
 import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
-import {saveImageToLocal} from '../../libraries/Storage/ImageStorage.ts';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
+// import {saveImageToLocal} from '../../libraries/Storage/ImageStorage.ts';
+// import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 
 interface APIImageProps {
   thumbPath: string;
   fullPath: string;
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
+  disableTouch?: boolean;
 }
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
@@ -42,7 +43,7 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  * @param mode Underlying component to use for the image display.
  * @constructor
  */
-export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIImageProps) => {
+export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disableTouch}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
   const {appConfig} = useConfig();
   // The thumbnails Swiftarr generates are not animated.
@@ -59,7 +60,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   const [enableFullQuery, setEnableFullQuery] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const [imageQueryData, setImageQueryData] = useState<ImageQueryData>();
-  const {setInfoMessage} = useErrorHandler();
+  // const {setInfoMessage} = useErrorHandler();
 
   const handleThumbPress = () => {
     if (fullImageQuery.data) {
@@ -90,17 +91,19 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
     setModalVisible(true);
   };
 
-  const saveImage = useCallback(async () => {
-    if (imageQueryData) {
-      try {
-        await saveImageToLocal(imageQueryData);
-        setInfoMessage('Saved to camera roll.');
-      } catch (error: any) {
-        console.error(error);
-        setInfoMessage(error);
-      }
-    }
-  }, [imageQueryData, setInfoMessage]);
+  // The image onLongPress={saveImage} was a little too easy to hit. Disabling
+  // until I change my mind.
+  // const saveImage = useCallback(async () => {
+  //   if (imageQueryData) {
+  //     try {
+  //       await saveImageToLocal(imageQueryData);
+  //       setInfoMessage('Saved to camera roll.');
+  //     } catch (error: any) {
+  //       console.error(error);
+  //       setInfoMessage(error);
+  //     }
+  //   }
+  // }, [imageQueryData, setInfoMessage]);
 
   useEffect(() => {
     if (fullImageQuery.data) {
@@ -141,7 +144,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover'}: APIIm
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity activeOpacity={1} onPress={handleThumbPress} onLongPress={saveImage}>
+      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={handleThumbPress}>
         {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )}

@@ -48,20 +48,6 @@ export enum ChatStackScreenComponents {
   seamailSettingsScreen = 'SeamailSettingsScreen',
 }
 
-export enum MainStackComponents {
-  mainScreen = 'MainScreen',
-  mainSettingsScreen = 'MainSettingsScreen',
-  aboutScreen = 'AboutScreen',
-  userDirectoryScreen = 'UserDirectoryScreen',
-  dailyThemeScreen = 'DailyThemeScreen',
-  mainHelpScreen = 'MainHelpScreen',
-  conductScreen = 'MainConductScreen',
-  dailyThemesScreen = 'DailyThemesScreen',
-  photostreamScreen = 'PhotostreamScreen',
-  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
-  photostreamHelpScreen = 'PhotostreamHelpScreen',
-}
-
 export enum OobeStackComponents {
   oobeWelcomeScreen = 'OobeWelcomeScreen',
   oobeServerScreen = 'OobeServerScreen',
@@ -71,6 +57,7 @@ export enum OobeStackComponents {
   oobeFinishScreen = 'OobeFinishScreen',
   oobeLoginScreen = 'LoginScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
+  oobePreregistrationScreen = 'OobePreregistrationScreen',
 }
 
 export enum EventStackComponents {

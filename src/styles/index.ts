@@ -170,6 +170,9 @@ export const commonStyles = StyleSheet.create({
   marginBottomSmall: {
     marginBottom: styleDefaults.marginSize / 2,
   },
+  marginBottomZero: {
+    marginBottom: 0,
+  },
   bold: {
     fontWeight: 'bold',
   },
@@ -204,6 +207,9 @@ export const commonStyles = StyleSheet.create({
   },
   justifySpaceBetween: {
     justifyContent: 'space-between',
+  },
+  justifySpaceEvenly: {
+    justifyContent: 'space-evenly',
   },
   // https://github.com/facebook/react-native/issues/30034
   verticallyInverted: {

@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {MainScreen} from '../../Screens/Main/MainScreen';
@@ -19,6 +18,10 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {PhotostreamScreen} from '../../Screens/Photostream/PhotostreamScreen.tsx';
 import {PhotostreamImageCreateScreen} from '../../Screens/Photostream/PhotostreamImageCreateScreen.tsx';
 import {PhotostreamHelpScreen} from '../../Screens/Photostream/PhotostreamHelpScreen.tsx';
+import {MicroKaraokeListScreen} from '../../Screens/MicroKaraoke/MicroKaraokeListScreen.tsx';
+import {MicroKaraokeSongScreen} from '../../Screens/MicroKaraoke/MicroKaraokeSongScreen.tsx';
+import {PerformerListScreen} from '../../Screens/Performer/PerformerListScreen.tsx';
+import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -34,14 +37,41 @@ export type MainStackParamList = CommonStackParamList & {
   PhotostreamScreen: undefined;
   PhotostreamImageCreateScreen: undefined;
   PhotostreamHelpScreen: undefined;
+  MicroKaraokeListScreen: undefined;
+  MicroKaraokeSongScreen: {
+    songID: number;
+  };
+  PerformerListScreen: {
+    performerType?: PerformerType;
+  };
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
+
+export enum MainStackComponents {
+  mainScreen = 'MainScreen',
+  mainSettingsScreen = 'MainSettingsScreen',
+  aboutScreen = 'AboutScreen',
+  userDirectoryScreen = 'UserDirectoryScreen',
+  dailyThemeScreen = 'DailyThemeScreen',
+  mainHelpScreen = 'MainHelpScreen',
+  conductScreen = 'MainConductScreen',
+  dailyThemesScreen = 'DailyThemesScreen',
+  photostreamScreen = 'PhotostreamScreen',
+  photostreamImageCreateScreen = 'PhotostreamImageCreateScreen',
+  photostreamHelpScreen = 'PhotostreamHelpScreen',
+  microKaraokeListScreen = 'MicroKaraokeListScreen',
+  microKaraokeSongScreen = 'MicroKaraokeSongScreen',
+  performerListScreen = 'PerformerListScreen',
+}
 
 export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
+  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
+  const isPhotostreamDisabled = getIsDisabled(SwiftarrFeature.photostream);
+  const isMicroKaraokeDisabled = getIsDisabled(SwiftarrFeature.microkaraoke);
 
   return (
     <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
@@ -83,18 +113,33 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamScreen}
-        component={PhotostreamScreen}
+        component={isPhotostreamDisabled ? DisabledView : PhotostreamScreen}
         options={{title: 'Photo Stream'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamImageCreateScreen}
-        component={PhotostreamImageCreateScreen}
+        component={isPhotostreamDisabled ? DisabledView : PhotostreamImageCreateScreen}
         options={{title: 'Upload'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamHelpScreen}
         component={PhotostreamHelpScreen}
         options={{title: 'Help'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.microKaraokeListScreen}
+        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeListScreen}
+        options={{title: 'Song List'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.microKaraokeSongScreen}
+        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeSongScreen}
+        options={{title: 'Song'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.performerListScreen}
+        component={isPerformersDisabled ? DisabledView : PerformerListScreen}
+        options={{title: 'Performers'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

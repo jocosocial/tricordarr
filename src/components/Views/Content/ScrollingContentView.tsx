@@ -1,5 +1,13 @@
 import React, {PropsWithChildren, ReactElement} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, View} from 'react-native';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleProp,
+  View,
+  ViewStyle,
+  StyleSheet,
+} from 'react-native';
 import {commonStyles} from '../../../styles';
 
 interface ScrollingContentViewProps {
@@ -9,6 +17,7 @@ interface ScrollingContentViewProps {
   // that we care about.
   overScroll?: boolean;
   onScroll?: ((event: NativeSyntheticEvent<NativeScrollEvent>) => void) | undefined;
+  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -21,16 +30,20 @@ export const ScrollingContentView = ({
   refreshControl,
   overScroll = false,
   onScroll,
+  style,
 }: PropsWithChildren<ScrollingContentViewProps>) => {
-  const style = {
-    ...commonStyles.flex,
-    ...(isStack ? null : commonStyles.marginTop),
-    ...(overScroll ? commonStyles.overscroll : commonStyles.marginBottom),
-  };
+  const styles = StyleSheet.create({
+    scrollView: {
+      ...commonStyles.flex,
+      ...(isStack ? null : commonStyles.marginTop),
+      ...(overScroll ? commonStyles.overscroll : commonStyles.marginBottom),
+      ...(style as ViewStyle),
+    },
+  });
 
   return (
     <ScrollView refreshControl={refreshControl} onScroll={onScroll}>
-      <View style={style}>{children}</View>
+      <View style={styles.scrollView}>{children}</View>
     </ScrollView>
   );
 };

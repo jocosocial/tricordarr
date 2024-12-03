@@ -5,6 +5,8 @@ import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext
 import {Query} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
+import {isAxiosError} from 'axios';
+import {ErrorResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted} = useConfig();
@@ -28,10 +30,20 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const queryCache = SwiftarrQueryClient.getQueryCache();
   queryCache.config = {
     onError: (error, query) => {
+      let errorString = String(error);
+      if (isAxiosError(error) && error.response) {
+        try {
+          const errorData = error.response.data as ErrorResponse;
+          errorString += `. ${errorData.reason}`;
+        } catch {
+          console.warn('[SwiftarrQueryClientProvider.tsx] Unable to decode error response.');
+        }
+      }
       console.log('[SwiftarrQueryClientProvider.tsx] Query error encountered via', query.queryKey);
+      console.log('[SwiftarrQueryClientProvider.tsx]', error);
       setErrorCount(errorCount + 1);
       if (!disruptionDetected) {
-        setErrorMessage(String(error));
+        setErrorMessage(errorString);
       }
     },
     onSuccess: (data, query) => {

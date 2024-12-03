@@ -41,7 +41,7 @@ export const AppImage = ({image, style, mode = 'cardcover', disableTouch = false
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity onPress={handlePress} disabled={disableTouch}>
+      <TouchableOpacity activeOpacity={1} onPress={handlePress} disabled={disableTouch}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />

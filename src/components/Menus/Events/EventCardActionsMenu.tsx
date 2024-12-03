@@ -4,6 +4,8 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {EventData} from '../../../libraries/Structs/ControllerStructs';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
+import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;
@@ -14,6 +16,7 @@ interface EventCardActionsMenuProps {
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
+  const {enablePreregistration} = useConfig();
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -28,6 +31,20 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
 
   return (
     <Menu visible={props.menuVisible} onDismiss={closeMenu} anchor={props.anchor}>
+      {props.eventData.eventType === EventType.shadow && (
+        <Menu.Item
+          title={'Set Organizer'}
+          leadingIcon={AppIcons.performer}
+          onPress={() => {
+            closeMenu();
+            commonNavigation.push(CommonStackComponents.siteUIScreen, {
+              resource: 'performer/shadow/addtoevent',
+              id: props.eventData.eventID,
+            });
+          }}
+          disabled={!enablePreregistration}
+        />
+      )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
     </Menu>

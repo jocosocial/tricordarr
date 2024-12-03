@@ -6,7 +6,7 @@ import {SiteUIScreenBase} from './SiteUIScreenBase.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList>;
 
-export const SiteUILinkScreen = ({route, navigation}: Props) => {
+export const SiteUILinkScreen = ({route}: Props) => {
   const {appConfig} = useConfig();
-  return <SiteUIScreenBase navigation={navigation} initialUrl={`${appConfig.serverUrl}/${route.path}`} />;
+  return <SiteUIScreenBase initialUrl={`${appConfig.serverUrl}/${route.path}`} />;
 };

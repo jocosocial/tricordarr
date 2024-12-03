@@ -10,6 +10,7 @@ import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
@@ -18,6 +19,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const {tokenData} = useAuth();
   const {profilePublicData} = useUserData();
+  const {appConfig} = useConfig();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -55,26 +57,40 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
       renderDrawerContent={() => {
         return (
           <ScrollView>
-            {hasVerified && (
-              <PaperDrawer.Section title={'User'} showDivider={false}>
-                <PaperDrawer.Item
-                  label={`Your Profile (${profilePublicData?.header.username})`}
-                  icon={AppIcons.profile}
-                  onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
-                />
-                <PaperDrawer.Item
-                  label={'Directory'}
-                  icon={AppIcons.group}
-                  onPress={() => handleDrawerNav('tricordarr://users')}
-                />
-              </PaperDrawer.Section>
-            )}
+            <PaperDrawer.Section title={'Community'} showDivider={false}>
+              {hasVerified && (
+                <>
+                  <PaperDrawer.Item
+                    label={`Your Profile (${profilePublicData?.header.username})`}
+                    icon={AppIcons.profile}
+                    onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
+                  />
+                  <PaperDrawer.Item
+                    label={'Directory'}
+                    icon={AppIcons.group}
+                    onPress={() => handleDrawerNav('tricordarr://users')}
+                  />
+                </>
+              )}
+              <PaperDrawer.Item
+                label={'Performers'}
+                icon={AppIcons.performer}
+                onPress={() => handleDrawerNav('tricordarr://performers')}
+              />
+            </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
               {hasVerified && (
                 <PaperDrawer.Item
                   label={'Photo Stream'}
                   icon={AppIcons.photostream}
                   onPress={() => handleDrawerNav('tricordarr://photostream')}
+                />
+              )}
+              {hasVerified && appConfig.enableDeveloperOptions && (
+                <PaperDrawer.Item
+                  label={'Micro Karaoke'}
+                  icon={AppIcons.microKaraoke}
+                  onPress={() => handleDrawerNav('tricordarr://microkaraoke')}
                 />
               )}
               <PaperDrawer.Item

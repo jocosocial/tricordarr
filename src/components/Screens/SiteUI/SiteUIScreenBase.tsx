@@ -7,21 +7,20 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useBackHandler} from '@react-native-community/hooks';
-import {CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
 
 interface SiteUIScreenBaseProps {
   initialUrl: string;
   initialKey?: string;
-  navigation: NativeStackNavigationProp<CommonStackParamList>;
 }
 
-export const SiteUIScreenBase = ({navigation, initialUrl, initialKey = ''}: SiteUIScreenBaseProps) => {
+export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBaseProps) => {
   const {appConfig} = useConfig();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
+  const navigation = useNavigation();
 
   const onHome = useCallback(() => {
     setWebviewUrl(appConfig.serverUrl);

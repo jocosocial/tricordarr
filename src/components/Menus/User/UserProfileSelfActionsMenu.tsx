@@ -5,10 +5,9 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
-// interface UserProfileSelfActionsMenuProps {
-//   profile: ProfilePublicData;
-// }
-
+/**
+ * Actions menu for when you're viewing your own profile.
+ */
 export const UserProfileSelfActionsMenu = () => {
   const [visible, setVisible] = useState(false);
   const commonNavigation = useCommonStack();

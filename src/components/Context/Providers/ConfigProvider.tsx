@@ -34,6 +34,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
+  const enablePreregistration = new Date() > appConfig.preRegistrationEndDate;
 
   return (
     <ConfigContext.Provider
@@ -45,6 +46,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         setHasNotificationPermission,
         notificationPermissionStatus,
         setNotificationPermissionStatus,
+        enablePreregistration,
       }}>
       {children}
     </ConfigContext.Provider>

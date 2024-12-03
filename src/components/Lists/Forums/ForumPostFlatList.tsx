@@ -9,7 +9,7 @@ import {timeAgo} from '../../../libraries/DateTime';
 import {LabelDivider} from '../Dividers/LabelDivider';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {ConversationFlatList} from '../ConversationFlatList.tsx';
+import {AppFlatList} from '../AppFlatList.tsx';
 import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../../libraries/Types';
 import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
@@ -159,7 +159,7 @@ export const ForumPostFlatList = ({
   }, [hasNextPage]);
 
   return (
-    <ConversationFlatList
+    <AppFlatList
       flatListRef={flatListRef}
       handleLoadPrevious={handleLoadPrevious}
       handleLoadNext={handleLoadNext}

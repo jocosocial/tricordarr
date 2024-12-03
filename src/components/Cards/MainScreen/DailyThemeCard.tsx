@@ -3,8 +3,7 @@ import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {APIImage} from '../../Images/APIImage';
-import {MainStackComponents} from '../../../libraries/Enums/Navigation';
-import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator';
+import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator';
 
 interface DailyThemeCardProps {
   dailyTheme: DailyThemeData;

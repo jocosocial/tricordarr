@@ -38,9 +38,12 @@ export interface ConversationFlatListProps<TItem> {
   onScrollThreshold?: (condition: boolean) => void;
   listStyle?: StyleProp<ViewStyle>;
   enableScrollButton?: boolean;
+  numColumns?: number;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  columnWrapperStyle?: StyleProp<ViewStyle>;
 }
 
-export const ConversationFlatList = <TItem,>({
+export const AppFlatList = <TItem,>({
   scrollButtonPosition,
   invertList,
   flatListRef,
@@ -62,6 +65,9 @@ export const ConversationFlatList = <TItem,>({
   onScrollThreshold,
   listStyle,
   enableScrollButton = true,
+  numColumns,
+  contentContainerStyle,
+  columnWrapperStyle,
 }: ConversationFlatListProps<TItem>) => {
   const {commonStyles, styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -194,7 +200,7 @@ export const ConversationFlatList = <TItem,>({
     },
     [styles.itemContainerView],
   );
-  console.log('[ConversationFlatList.tsx] Rendering ConversationFlatList at', new Date());
+  console.log('[AppFlatList.tsx] Rendering AppFlatList at', new Date());
 
   // https://github.com/facebook/react-native/issues/25239
   return (
@@ -231,6 +237,9 @@ export const ConversationFlatList = <TItem,>({
         ItemSeparatorComponent={renderComponentInternal(renderItemSeparator)}
         refreshControl={refreshControl}
         maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
+        numColumns={numColumns}
+        contentContainerStyle={contentContainerStyle}
+        columnWrapperStyle={columnWrapperStyle}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
