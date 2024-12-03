@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useUserKeywordQuery} from '../../../Queries/User/UserQueries';
+import {useUserKeywordQuery} from '../../../Queries/User/UserQueries.ts';
 import {RefreshControl, View} from 'react-native';
 import {KeywordChip} from '../../../Chips/KeywordChip';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
@@ -12,7 +12,7 @@ import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
-import {useUserKeywordMutation} from '../../../Queries/User/UserMutations.tsx';
+import {useUserKeywordMutation} from '../../../Queries/User/UserMutations.ts';
 
 export const MuteKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();

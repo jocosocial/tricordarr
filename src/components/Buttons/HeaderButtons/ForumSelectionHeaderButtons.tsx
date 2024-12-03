@@ -4,7 +4,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import React, {Dispatch, SetStateAction} from 'react';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.tsx';
+import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
 import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';

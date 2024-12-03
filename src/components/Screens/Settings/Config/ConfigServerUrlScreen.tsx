@@ -10,7 +10,7 @@ import {useStyles} from '../../../Context/Contexts/StyleContext';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
-import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
+import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
 import {RefreshControl} from 'react-native';
 import {ServerUrlSettingForm} from '../../../Forms/Settings/ServerUrlSettingForm.tsx';
 import {ServerChoices} from '../../../../libraries/Network/ServerChoices.ts';

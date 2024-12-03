@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {LoadingView} from '../Static/LoadingView';
 import {ForumSort} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries';
+import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries.ts';
 import {NotLoggedInView} from '../Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {CategoryData, ForumListData} from '../../../libraries/Structs/ControllerStructs';

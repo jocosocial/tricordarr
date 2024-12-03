@@ -1,10 +1,10 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries';
+import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
 import {UserProfileScreenBase} from './UserProfileScreenBase';
-import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
-import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
-import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 

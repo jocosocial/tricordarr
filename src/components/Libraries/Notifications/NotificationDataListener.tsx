@@ -3,7 +3,7 @@ import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries';
+import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';

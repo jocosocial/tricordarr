@@ -10,7 +10,7 @@ import {RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';

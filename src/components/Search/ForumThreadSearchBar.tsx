@@ -4,7 +4,7 @@ import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {CategoryData, ForumListData} from '../../libraries/Structs/ControllerStructs';
-import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries';
+import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';

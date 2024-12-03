@@ -7,7 +7,7 @@ import {RefreshControl} from 'react-native';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
 import {ForumThreadFlatList} from '../../../Lists/Forums/ForumThreadFlatList';
-import {useForumSearchQuery} from '../../../Queries/Forum/ForumThreadSearchQueries';
+import {useForumSearchQuery} from '../../../Queries/Forum/ForumThreadSearchQueries.ts';
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {getUserBylineString} from '../../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';

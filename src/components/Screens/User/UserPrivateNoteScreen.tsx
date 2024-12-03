@@ -7,7 +7,7 @@ import {UserNoteForm} from '../../Forms/User/UserNoteForm.tsx';
 import {UserNoteFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '../../Queries/Users/UserNoteMutations.tsx';
+import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '../../Queries/Users/UserNoteMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';

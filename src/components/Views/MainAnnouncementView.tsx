@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {useAnnouncementsQuery} from '../Queries/Alert/AnnouncementQueries';
+import {useAnnouncementsQuery} from '../Queries/Alert/AnnouncementQueries.ts';
 import {AnnouncementData} from '../../libraries/Structs/ControllerStructs';
 import {AnnouncementCard} from '../Cards/MainScreen/AnnouncementCard';
 import {PaddedContentView} from './Content/PaddedContentView';

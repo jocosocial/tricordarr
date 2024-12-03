@@ -1,4 +1,4 @@
-import {useOpenQuery} from './OpenQuery';
+import {useOpenQuery} from './OpenQuery.ts';
 import {ConductDoc} from '../../libraries/Structs/SiteStructs';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 

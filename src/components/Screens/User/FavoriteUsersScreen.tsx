@@ -10,7 +10,7 @@ import {RefreshControl} from 'react-native';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {UserFavoriteText} from '../../Text/UserRelationsText';
-import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

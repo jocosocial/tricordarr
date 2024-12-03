@@ -15,7 +15,7 @@ import {QuerySettingsFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
 import {commonStyles} from '../../../../styles';
-import {useHealthQuery} from '../../../Queries/Client/ClientQueries';
+import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {CacheManager} from '@georstat/react-native-image-cache';

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useDailyThemeQuery} from '../Queries/Alert/DailyThemeQueries';
+import {useDailyThemeQuery} from '../Queries/Alert/DailyThemeQueries.ts';
 import {useCruise} from '../Context/Contexts/CruiseContext';
 import {DailyThemeData} from '../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from './Content/PaddedContentView';

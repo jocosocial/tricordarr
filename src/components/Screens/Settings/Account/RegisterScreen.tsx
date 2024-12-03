@@ -12,7 +12,7 @@ import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyMod
 import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
-import {useUserCreateQuery} from '../../../Queries/User/UserMutations.tsx';
+import {useUserCreateQuery} from '../../../Queries/User/UserMutations.ts';
 
 export const RegisterScreen = () => {
   const createMutation = useUserCreateQuery();

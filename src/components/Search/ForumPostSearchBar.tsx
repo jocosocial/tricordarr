@@ -3,7 +3,7 @@ import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
-import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries';
+import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries.ts';
 import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';

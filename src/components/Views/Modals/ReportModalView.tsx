@@ -11,7 +11,7 @@ import {
   ReportData,
 } from '../../../libraries/Structs/ControllerStructs';
 import {ReportContentForm} from '../../Forms/ReportContentForm';
-import {useReportMutation} from '../../Queries/Moderation/ModerationMutations.tsx';
+import {useReportMutation} from '../../Queries/Moderation/ModerationMutations.ts';
 import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
 import {ReportModalSuccessView} from './ReportModalSuccessView';
 import {ReportModalErrorView} from './ReportModalErrorView';

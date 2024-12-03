@@ -11,7 +11,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
-import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

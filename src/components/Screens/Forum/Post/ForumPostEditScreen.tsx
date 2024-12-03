@@ -7,7 +7,7 @@ import {FormikHelpers} from 'formik';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
-import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostMutations';
+import {useForumPostUpdateMutation} from '../../../Queries/Forum/ForumPostMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;

@@ -14,7 +14,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {AppView} from '../../Views/AppView';
 import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {ForumCategoryScreenActionsMenu} from '../../Menus/Forum/ForumCategoryScreenActionsMenu.tsx';
-import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries.tsx';
+import {useForumCategoryQuery} from '../../Queries/Forum/ForumCategoryQueries.ts';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';

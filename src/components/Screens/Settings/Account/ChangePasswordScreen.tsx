@@ -12,7 +12,7 @@ import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
 
-import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.tsx';
+import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
 
 export const ChangePasswordScreen = () => {
   const {profilePublicData} = useUserData();

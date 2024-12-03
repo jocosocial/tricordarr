@@ -12,7 +12,7 @@ import {FormikHelpers} from 'formik';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
-import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.tsx';
+import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();

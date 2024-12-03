@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {Searchbar} from 'react-native-paper';
-import {useEventsQuery} from '../Queries/Events/EventQueries';
+import {useEventsQuery} from '../Queries/Events/EventQueries.ts';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {EventData} from '../../libraries/Structs/ControllerStructs';

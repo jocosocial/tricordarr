@@ -1,4 +1,4 @@
-import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries';
+import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries.ts';
 import React, {FC} from 'react';
 import {MentionSuggestionsProps} from 'react-native-controlled-mentions';
 import {Pressable, View, StyleSheet} from 'react-native';
