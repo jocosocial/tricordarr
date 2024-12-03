@@ -1,12 +1,11 @@
 import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {AxiosResponse} from 'axios';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const usePhoneCallDeclineMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost} = useSwiftarrQueryClient();
 
-  const forumCreateQueryHandler = async ({callID}: {callID: string}): Promise<AxiosResponse<void>> => {
-    return await ServerQueryClient.post(`/phone/decline/${callID}`);
+  const forumCreateQueryHandler = async ({callID}: {callID: string}) => {
+    return await apiPost(`/phone/decline/${callID}`);
   };
 
   return useTokenAuthMutation(forumCreateQueryHandler);

@@ -11,7 +11,8 @@ import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
-import {useUserPasswordMutation} from '../../../Queries/User/UserQueries';
+
+import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.tsx';
 
 export const ChangePasswordScreen = () => {
   const {profilePublicData} = useUserData();

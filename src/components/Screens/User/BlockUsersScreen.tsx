@@ -10,12 +10,13 @@ import {RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useUserBlockMutation, useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
 export const BlockUsersScreen = ({navigation}: Props) => {

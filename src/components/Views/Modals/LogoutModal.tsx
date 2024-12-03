@@ -8,7 +8,7 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {useLogoutMutation} from '../../Queries/Auth/LogoutQueries';
+import {useLogoutMutation} from '../../Queries/Auth/LogoutMutations.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSettingsStack} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';

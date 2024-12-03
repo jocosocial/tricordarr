@@ -5,7 +5,7 @@ import {UserRecoveryForm} from '../../../Forms/User/UserRecoveryForm.tsx';
 import {UserRegistrationFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useUserRecoveryMutation} from '../../../Queries/Auth/RecoveryQueries';
+import {useUserRecoveryMutation} from '../../../Queries/Auth/RecoveryMutations.ts';
 import {TokenStringData} from '../../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';

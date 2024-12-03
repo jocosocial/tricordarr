@@ -8,11 +8,11 @@ import {LfgForm} from '../../Forms/LfgForm';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {useFezCreateMutation} from '../../Queries/Fez/FezQueries';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
+import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgCreateScreen>;
 

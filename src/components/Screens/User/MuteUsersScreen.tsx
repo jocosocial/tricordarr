@@ -11,11 +11,12 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
-import {useUserMuteMutation, useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries';
 import {ItalicText} from '../../Text/ItalicText';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
 export const MuteUsersScreen = ({navigation}: Props) => {

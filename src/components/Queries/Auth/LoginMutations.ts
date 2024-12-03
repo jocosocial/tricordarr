@@ -8,7 +8,7 @@ interface LoginMutationProps {
   password: string;
 }
 
-export const useLoginQuery = () => {
+export const useLoginMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   const queryHandler = async ({username, password}: LoginMutationProps) => {

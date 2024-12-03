@@ -1,4 +1,3 @@
-import {AxiosResponse} from 'axios';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
@@ -9,10 +8,10 @@ interface FezMembershipMutationProps {
 }
 
 export const useFezMembershipMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost} = useSwiftarrQueryClient();
 
-  const queryHandler = async ({fezID, action}: FezMembershipMutationProps): Promise<AxiosResponse<FezData>> => {
-    return await ServerQueryClient.post(`/fez/${fezID}/${action}`);
+  const queryHandler = async ({fezID, action}: FezMembershipMutationProps) => {
+    return await apiPost<FezData>(`/fez/${fezID}/${action}`);
   };
 
   return useTokenAuthMutation(queryHandler);

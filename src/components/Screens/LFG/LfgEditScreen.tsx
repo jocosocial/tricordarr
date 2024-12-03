@@ -9,12 +9,12 @@ import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useFezUpdateMutation} from '../../Queries/Fez/FezQueries';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
+import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {

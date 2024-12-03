@@ -12,7 +12,7 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {useFezParticipantMutation} from '../../Queries/Fez/Management/UserQueries';
+import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';

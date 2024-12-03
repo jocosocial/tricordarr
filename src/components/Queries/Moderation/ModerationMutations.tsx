@@ -1,4 +1,3 @@
-import {AxiosResponse} from 'axios';
 import {ReportData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
 import {useTokenAuthMutation} from '../TokenAuthMutation';
@@ -11,14 +10,10 @@ interface ModReportMutationProps {
 }
 
 export const useReportMutation = () => {
-  const {ServerQueryClient} = useSwiftarrQueryClient();
+  const {apiPost} = useSwiftarrQueryClient();
 
-  const queryHandler = async ({
-    contentType,
-    contentID,
-    reportData,
-  }: ModReportMutationProps): Promise<AxiosResponse<void>> => {
-    return await ServerQueryClient.post(`/${contentType}/${contentID}/report`, reportData);
+  const queryHandler = async ({contentType, contentID, reportData}: ModReportMutationProps) => {
+    return await apiPost<void, ReportData>(`/${contentType}/${contentID}/report`, reportData);
   };
 
   return useTokenAuthMutation(queryHandler);

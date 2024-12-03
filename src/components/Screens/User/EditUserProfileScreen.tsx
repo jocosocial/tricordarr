@@ -8,7 +8,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserProfileForm} from '../../Forms/User/UserProfileForm.tsx';
 import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useUserProfileMutation} from '../../Queries/User/UserProfileQueries';
+import {useUserProfileMutation} from '../../Queries/User/UserProfileMutations.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
