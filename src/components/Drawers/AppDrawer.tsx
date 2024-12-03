@@ -10,6 +10,7 @@ import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
@@ -18,6 +19,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const {tokenData} = useAuth();
   const {profilePublicData} = useUserData();
+  const {appConfig} = useConfig();
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -84,7 +86,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => handleDrawerNav('tricordarr://photostream')}
                 />
               )}
-              {hasVerified && (
+              {hasVerified && appConfig.enableDeveloperOptions && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}
