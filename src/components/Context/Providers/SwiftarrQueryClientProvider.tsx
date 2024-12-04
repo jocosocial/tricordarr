@@ -2,7 +2,7 @@ import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} fro
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
-import {Query} from '@tanstack/react-query';
+import {Query, QueryKey} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
@@ -16,6 +16,9 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {setErrorMessage} = useErrorHandler();
   const {tokenData, isLoggedIn} = useAuth();
 
+  /**
+   * Establish the primary query client. Some day there may be multiple of these.
+   */
   const ServerQueryClient = useMemo(() => {
     const client = axios.create({
       baseURL: `${appConfig.serverUrl}${appConfig.urlPrefix}`,
@@ -40,6 +43,12 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     });
     return client;
   }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
+
+  /**
+   * Bonus data to inject into the clients query keys.
+   * Some day there may be more than one in which case this could need to be smarter.
+   */
+  const queryKeyExtraData: QueryKey = [appConfig.serverUrl, tokenData?.userID];
 
   const apiGet = useCallback(
     async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
@@ -156,6 +165,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   return (
     <SwiftarrQueryClientContext.Provider
       value={{
+        queryKeyExtraData,
         errorCount,
         setErrorCount,
         disruptionDetected: disruptionDetected,

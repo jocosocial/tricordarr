@@ -17,7 +17,6 @@ interface LFGFlatListProps {
   listFooter?: ReactElement;
   initialScrollIndex?: number;
   onScrollThreshold?: (condition: boolean) => void;
-  hasPreviousPage?: boolean;
   hasNextPage?: boolean;
   handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
@@ -32,7 +31,6 @@ export const LFGFlatList = ({
   handleLoadNext,
   handleLoadPrevious,
   hasNextPage,
-  hasPreviousPage,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
@@ -63,7 +61,6 @@ export const LFGFlatList = ({
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
-      hasPreviousPage={hasPreviousPage}
       estimatedItemSize={161}
     />
   );

@@ -23,7 +23,6 @@ import {useUserKeywordQuery} from '../../Queries/User/UserQueries.ts';
 import {ForumAlertwordListItem} from '../../Lists/Items/Forum/ForumAlertwordListItem';
 import {ListSubheader} from '../../Lists/ListSubheader';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import {styleDefaults} from '../../../styles';
 import {ForumCategoriesScreenSearchMenu} from '../../Menus/Forum/ForumCategoriesScreenSearchMenu.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;

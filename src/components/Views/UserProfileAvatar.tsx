@@ -12,6 +12,7 @@ import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useUserProfileQuery} from '../Queries/Users/UserProfileQueries.ts';
 import {ImageButtons} from '../Buttons/ImageButtons.tsx';
+import {styleDefaults} from '../../styles';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -38,8 +39,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     try {
       const image = await ImagePicker.openPicker({
         cropping: true,
-        width: 2048,
-        height: 2048,
+        width: styleDefaults.imageSquareCropDimension,
+        height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
       });
@@ -57,8 +58,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     try {
       const image = await ImagePicker.openCamera({
         cropping: true,
-        width: 2048,
-        height: 2048,
+        width: styleDefaults.imageSquareCropDimension,
+        height: styleDefaults.imageSquareCropDimension,
         includeBase64: true,
         mediaType: 'photo',
       });

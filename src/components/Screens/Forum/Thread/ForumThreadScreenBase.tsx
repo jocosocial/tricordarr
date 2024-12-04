@@ -72,7 +72,8 @@ export const ForumThreadScreenBase = ({
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
   // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
   // to care about. It's all in the category (ForumListData) queries.
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID);
+  const markReadInvalidationKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID);
+  const otherInvalidationKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -114,13 +115,13 @@ export const ForumThreadScreenBase = ({
           <ForumThreadSearchPostsItem navigation={navigation} forum={data.pages[0]} />
           <ForumThreadScreenActionsMenu
             forumData={data.pages[0]}
-            invalidationQueryKeys={invalidationQueryKeys}
+            invalidationQueryKeys={otherInvalidationKeys}
             onRefresh={onRefresh}
           />
         </HeaderButtons>
       </View>
     );
-  }, [data?.pages, invalidationQueryKeys, navigation, onRefresh]);
+  }, [data?.pages, otherInvalidationKeys, navigation, onRefresh]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -144,11 +145,11 @@ export const ForumThreadScreenBase = ({
       console.log(
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
-      invalidationQueryKeys.map(key => {
+      markReadInvalidationKeys.map(key => {
         queryClient.invalidateQueries(key);
       });
     }
-  }, [forumData, queryClient, forumListData, invalidationQueryKeys]);
+  }, [forumData, queryClient, forumListData, markReadInvalidationKeys]);
 
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
@@ -173,7 +174,8 @@ export const ForumThreadScreenBase = ({
           await refetch();
           if (data.pages[0]) {
             // This used to not include the forum itself. idk if that's a problem.
-            const invalidations = invalidationQueryKeys.map(key => {
+            // If it is, use otherInvalidationKeys.
+            const invalidations = markReadInvalidationKeys.map(key => {
               return queryClient.invalidateQueries(key);
             });
             await Promise.all(invalidations);
