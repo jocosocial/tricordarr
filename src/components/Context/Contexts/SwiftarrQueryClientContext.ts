@@ -1,5 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import {QueryKey} from '@tanstack/react-query';
 
 interface SwiftarrQueryClientContextType {
   errorCount: number;
@@ -17,6 +18,7 @@ interface SwiftarrQueryClientContextType {
     config?: AxiosRequestConfig,
   ) => Promise<AxiosResponse<TResponseData, TResponseData>>;
   apiDelete: <TResponseData = void>(url: string) => Promise<AxiosResponse<TResponseData, TResponseData>>;
+  queryKeyExtraData: QueryKey;
 }
 
 export const SwiftarrQueryClientContext = createContext(<SwiftarrQueryClientContextType>{});

@@ -16,11 +16,11 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
   },
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
-  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 
   return useQuery<TData, TError, TData>({
     enabled: !disruptionDetected,
-    queryKey: [endpoint, queryParams],
+    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
     queryFn: options?.queryFn
       ? options.queryFn
       : async () => {

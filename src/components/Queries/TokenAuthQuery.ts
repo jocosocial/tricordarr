@@ -29,10 +29,10 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
   queryParams?: TQueryParams,
 ): UseQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
 
   return useQuery<TData, TError, TData>({
-    queryKey: [endpoint, queryParams],
+    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
     ...options,
     queryFn: options?.queryFn
       ? options.queryFn
@@ -62,11 +62,11 @@ export function useTokenAuthPaginationQuery<
   queryParams?: TQueryParams,
 ) {
   const {isLoggedIn} = useAuth();
-  const {disruptionDetected, apiGet} = useSwiftarrQueryClient();
+  const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
   const {appConfig} = useConfig();
 
   return useInfiniteQuery<TData, TError, TData>(
-    [endpoint, queryParams],
+    [endpoint, queryParams, ...queryKeyExtraData],
     options?.queryFn
       ? options.queryFn
       : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
