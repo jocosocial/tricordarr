@@ -116,13 +116,13 @@ export const PerformerScreen = ({route, navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer} padBottom={false}>
           <Text variant={'headlineMedium'} selectable={true}>
+            {data.header.name}
             {data.header.isOfficialPerformer && (
               <>
-                <AppIcon icon={AppIcons.official} />
                 &nbsp;
+                <AppIcon icon={AppIcons.official} />
               </>
             )}
-            {data.header.name}
           </Text>
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer}>
