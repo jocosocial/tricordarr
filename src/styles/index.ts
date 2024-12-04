@@ -12,6 +12,8 @@ export const styleDefaults = {
   // Things such as displaying a back-to-top button.
   // 450 was originally roughly 8 messages @ 56 units per message.
   listScrollThreshold: 450,
+  // Used for square crops in User Avatar and Photostream
+  imageSquareCropDimension: 2048,
 };
 
 export const commonStyles = StyleSheet.create({

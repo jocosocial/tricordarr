@@ -15,7 +15,7 @@ import RNFS from 'react-native-fs';
 const {ImageTextBlurModule} = NativeModules;
 
 export const PhotostreamImageSelectionView = () => {
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
 
@@ -40,6 +40,9 @@ export const PhotostreamImageSelectionView = () => {
       const image = await ImagePicker.openPicker({
         includeBase64: false,
         mediaType: 'photo',
+        cropping: true,
+        width: styleDefaults.imageSquareCropDimension,
+        height: styleDefaults.imageSquareCropDimension,
       });
       processImage(image);
     } catch (err: any) {
@@ -54,6 +57,9 @@ export const PhotostreamImageSelectionView = () => {
       const image = await ImagePicker.openCamera({
         includeBase64: false,
         mediaType: 'photo',
+        cropping: true,
+        width: styleDefaults.imageSquareCropDimension,
+        height: styleDefaults.imageSquareCropDimension,
       });
       processImage(image);
     } catch (err: any) {
