@@ -1,13 +1,10 @@
 // REST API client for interacting with the Swiftarr API.
 import {encode as base64_encode} from 'base-64';
 import {AxiosResponse} from 'axios';
-import {QueryClient, QueryFunctionContext, QueryKey} from '@tanstack/react-query';
-import {getAppConfig} from '../AppConfig';
-import {ImageQueryData} from '../Types';
+import {QueryClient} from '@tanstack/react-query';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import superjson from 'superjson';
-import {CacheManager} from '@georstat/react-native-image-cache';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios
 export class BadResponseFormatError extends Error {
@@ -49,28 +46,6 @@ export function getAuthHeaders(
   };
   return authHeaders;
 }
-
-export const apiQueryImageDataV2 = async ({queryKey}: QueryFunctionContext<QueryKey, any>): Promise<ImageQueryData> => {
-  const appConfig = await getAppConfig();
-  let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${queryKey[0]}`;
-  const base64Data = await CacheManager.prefetchBlob(url);
-
-  const fileName = String(queryKey[0]).split('/').pop();
-  if (!fileName) {
-    throw Error(`Unable to determine fileName from query: ${queryKey[0]}`);
-  }
-
-  if (!base64Data) {
-    throw Error(`Unable to determine base64Data from query: ${queryKey[0]}`);
-  }
-
-  return {
-    base64: base64Data,
-    mimeType: 'image',
-    dataURI: `data:image;base64,${base64Data}`,
-    fileName: fileName,
-  };
-};
 
 /**
  * React-Query Client.

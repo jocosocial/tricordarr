@@ -23,8 +23,7 @@ export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailList
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
     type: [FezType.closed, FezType.open],
   };
-  const queryKey: QueryKey = ['/fez/joined', queryParams, search];
-  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, queryParams, queryKey);
+  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, queryParams);
 };
 
 export const useSeamailQuery = ({fezID}: SeamailQueryProps) => {
