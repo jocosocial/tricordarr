@@ -8,7 +8,6 @@ import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
 import {SeamailSearchScreen} from '../../Screens/Seamail/SeamailSearchScreen';
-import {SeamailHelpScreen} from '../../Screens/Seamail/SeamailHelpScreen';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';

@@ -25,7 +25,6 @@ interface ScheduleFlatListBaseProps<TItem> {
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
 }
 
 export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
@@ -42,7 +41,6 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   onScrollThreshold,
   handleLoadNext,
   hasNextPage,
-  hasPreviousPage,
 }: ScheduleFlatListBaseProps<TItem>) => {
   const {commonStyles} = useStyles();
 

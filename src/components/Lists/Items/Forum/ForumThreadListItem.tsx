@@ -1,4 +1,4 @@
-import React, {Dispatch, memo, SetStateAction, useMemo} from 'react';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
 import {commonStyles} from '../../../../styles';
 import {ForumListData} from '../../../../libraries/Structs/ControllerStructs';
