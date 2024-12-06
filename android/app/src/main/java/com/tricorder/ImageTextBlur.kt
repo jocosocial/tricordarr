@@ -26,21 +26,24 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
   // calls the callback with the original file path.
   @ReactMethod fun blurTextInImage(name: String, callback: Callback) {
     try {
-      Log.d("ImageTextBlurModule", "Start of blurTextInImage function, called with $name.")
+      Log.d(getName(), "Start of blurTextInImage function, called with $name.")
       var opts = BitmapFactory.Options()
       var inputFilePath = Uri.parse(name).getPath()
       var sourceMap = BitmapFactory.decodeFile(inputFilePath, opts)
       var destSize = if (sourceMap.getHeight() < sourceMap.getWidth()) sourceMap.getHeight() else sourceMap.getWidth()
       var destMap = Bitmap.createBitmap(sourceMap, (sourceMap.getWidth() - destSize) / 2,
         (sourceMap.getHeight() - destSize) / 2, destSize, destSize)
+      // https://stackoverflow.com/questions/13119582/immutable-bitmap-crash-error
+      // java.lang.IllegalStateException: Immutable bitmap passed to Canvas constructor
+      var mutableDestMap = destMap.copy(Bitmap.Config.ARGB_8888, true)
 
       // OCR the image; we'll use the locations of found text, but don't care about contents
       val recognizer = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
-      val image = InputImage.fromBitmap(destMap, 0)
+      val image = InputImage.fromBitmap(mutableDestMap, 0)
       recognizer.process(image)
         .addOnSuccessListener { visionText ->
           if (!visionText.textBlocks.isEmpty()) {
-            Log.d("ImageTextBlurModule", "Text detected in image.")
+            Log.d(getName(), "Text detected in image.")
 
             // Build the clipping path. All the disjoint text blocks can be put into a single 'Path' object.
             var textPoly = Path()
@@ -56,14 +59,15 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
                 }
               }
             }
+            Log.d(getName(), "Finished building textPoly.")
 
-            // Create a thumbmail sized bitmap from the original, then scale the thumbnail bitmap
+            // Create a thumbnail sized bitmap from the original, then scale the thumbnail bitmap
             // back up to full size, painting it over the original bitmap, with a clip region that
             // will limit drawing to the discovered text lines.
-            var smallMap = Bitmap.createScaledBitmap(destMap, destMap.width / 64 + 1, destMap.height / 64 + 1, true)
+            var smallMap = Bitmap.createScaledBitmap(mutableDestMap, mutableDestMap.width / 64 + 1, mutableDestMap.height / 64 + 1, true)
             val sourceRect = Rect(0, 0, smallMap.width, smallMap.height)
-            val destRect = Rect(0, 0, destMap.width, destMap.height)
-            var canvas = Canvas(destMap)
+            val destRect = Rect(0, 0, mutableDestMap.width, mutableDestMap.height)
+            var canvas = Canvas(mutableDestMap)
             canvas.clipPath(textPoly)
             canvas.drawBitmap(smallMap, sourceRect, destRect, Paint())
           }
@@ -71,18 +75,18 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
           // Write the output file
           var outputFile = File.createTempFile("photostreamUpload", ".jpg")
           var out = FileOutputStream(outputFile)
-          destMap.compress(CompressFormat.JPEG, 90, out)
+          mutableDestMap.compress(CompressFormat.JPEG, 90, out)
           var outputFilePath = outputFile.getAbsolutePath()
-          Log.d("ImageTextBlurModule", "output file path is $outputFilePath.")
+          Log.d(getName(), "output file path is $outputFilePath.")
           callback.invoke(outputFilePath)
         }
         .addOnFailureListener { e ->
-          Log.d("ImageTextBlurModule", "Error during text detection: $e.")
+          Log.d(getName(), "Error during text detection: $e.")
           callback.invoke(name)
         }
     }
     catch (e: Exception) {
-      Log.d("ImageTextBlurModule", "Error loading image file: $e.")
+      Log.d(getName(), "Error loading image file: $e.")
       callback.invoke(name)
     }
   }
