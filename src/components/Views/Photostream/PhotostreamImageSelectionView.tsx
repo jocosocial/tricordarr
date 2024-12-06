@@ -19,20 +19,23 @@ export const PhotostreamImageSelectionView = () => {
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
 
-  const processImage = (image: Image) => {
-    ImageTextBlurModule.blurTextInImage(image.path, (newPath: string) => {
-      RNFS.readFile(newPath, 'base64')
-        .then(blurredImageData => {
-          setFieldValue('image', blurredImageData);
-        })
-        .catch(err => {
-          setErrorMessage(err);
-        });
-    });
+  const onBlur = async (newPath: string) => {
+    try {
+      const imageData = await RNFS.readFile(newPath, 'base64');
+      await setFieldValue('image', imageData);
+    } catch (err) {
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
+    }
   };
 
-  const clearImage = () => {
-    setFieldValue('image', undefined);
+  const processImage = (image: Image) => {
+    ImageTextBlurModule.blurTextInImage(image.path, onBlur);
+  };
+
+  const clearImage = async () => {
+    await setFieldValue('image', undefined);
   };
 
   const pickImage = async () => {
@@ -46,7 +49,9 @@ export const PhotostreamImageSelectionView = () => {
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
@@ -63,7 +68,9 @@ export const PhotostreamImageSelectionView = () => {
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
