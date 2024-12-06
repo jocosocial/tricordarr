@@ -73,6 +73,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}
         leftDisabled={!enablePreregistration}
+        leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
       />
     </AppView>
   );
