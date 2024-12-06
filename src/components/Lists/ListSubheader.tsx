@@ -9,7 +9,6 @@ export const ListSubheader = ({children}: PropsWithChildren) => {
   const styles = StyleSheet.create({
     subheader: {
       ...commonStyles.surfaceVariant,
-      ...commonStyles.onTwitarrButton,
     },
   });
   return <List.Subheader style={styles.subheader}>{children}</List.Subheader>;

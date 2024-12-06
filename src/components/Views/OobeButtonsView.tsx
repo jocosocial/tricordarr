@@ -15,6 +15,8 @@ interface OobeButtonsViewProps {
   rightDisabled?: boolean;
   leftButtonColor?: string;
   rightButtonColor?: string;
+  leftButtonTextColor?: string;
+  rightButtonTextColor?: string;
 }
 
 export const OobeButtonsView = ({
@@ -26,8 +28,10 @@ export const OobeButtonsView = ({
   rightMode = 'contained',
   leftDisabled = false,
   rightDisabled = false,
-  leftButtonColor = undefined,
-  rightButtonColor = undefined,
+  leftButtonColor,
+  rightButtonColor,
+  leftButtonTextColor,
+  rightButtonTextColor,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
@@ -64,7 +68,7 @@ export const OobeButtonsView = ({
             style={styles.leftButton}
             mode={leftMode}
             disabled={leftDisabled}
-            textColor={theme.colors.onBackground}
+            textColor={leftButtonTextColor || theme.colors.onBackground}
             buttonColor={leftButtonColor}
           />
         )}
@@ -78,6 +82,7 @@ export const OobeButtonsView = ({
             mode={rightMode}
             disabled={rightDisabled}
             buttonColor={rightButtonColor}
+            textColor={rightButtonTextColor || theme.colors.onTwitarrPositiveButton}
           />
         )}
       </View>

@@ -84,6 +84,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
         hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
+        maintainViewPosition={false}
       />
       <PhotostreamFAB showLabel={expandFab} />
     </AppView>
