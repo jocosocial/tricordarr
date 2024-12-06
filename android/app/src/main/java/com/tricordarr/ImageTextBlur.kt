@@ -1,8 +1,6 @@
 package com.tricordarr
 
-import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
@@ -27,26 +25,29 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
   @ReactMethod fun blurTextInImage(name: String, callback: Callback) {
     try {
       Log.d(getName(), "Start of blurTextInImage function, called with $name.")
-      var opts = BitmapFactory.Options()
-      var inputFilePath = Uri.parse(name).getPath()
-      var sourceMap = BitmapFactory.decodeFile(inputFilePath, opts)
-      var destSize = if (sourceMap.getHeight() < sourceMap.getWidth()) sourceMap.getHeight() else sourceMap.getWidth()
-      var destMap = Bitmap.createBitmap(sourceMap, (sourceMap.getWidth() - destSize) / 2,
-        (sourceMap.getHeight() - destSize) / 2, destSize, destSize)
+      val opts = BitmapFactory.Options()
+      val inputFilePath = Uri.parse(name).getPath()
+      val sourceMap = BitmapFactory.decodeFile(inputFilePath, opts)
+      // This was originally written to automatically crop to square but that
+      // doesn't allow the user to specify the crop area. The PhotostreamImageSelectionView
+      // has been altered to provide the user with cropping before calling this function.
+      // val destSize = if (sourceMap.height < sourceMap.width) sourceMap.height else sourceMap.width
+      // val destMap = Bitmap.createBitmap(sourceMap, (sourceMap.width - destSize) / 2,
+      //   (sourceMap.height - destSize) / 2, destSize, destSize)
       // https://stackoverflow.com/questions/13119582/immutable-bitmap-crash-error
       // java.lang.IllegalStateException: Immutable bitmap passed to Canvas constructor
-      var mutableDestMap = destMap.copy(Bitmap.Config.ARGB_8888, true)
+      val destMap = sourceMap.copy(Bitmap.Config.ARGB_8888, true)
 
       // OCR the image; we'll use the locations of found text, but don't care about contents
       val recognizer = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
-      val image = InputImage.fromBitmap(mutableDestMap, 0)
+      val image = InputImage.fromBitmap(destMap, 0)
       recognizer.process(image)
         .addOnSuccessListener { visionText ->
-          if (!visionText.textBlocks.isEmpty()) {
+          if (visionText.textBlocks.isNotEmpty()) {
             Log.d(getName(), "Text detected in image.")
 
             // Build the clipping path. All the disjoint text blocks can be put into a single 'Path' object.
-            var textPoly = Path()
+            val textPoly = Path()
             for (block in visionText.textBlocks) {
               for (line in block.lines) {
                 val cornerPoints = line.cornerPoints
@@ -64,19 +65,19 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
             // Create a thumbnail sized bitmap from the original, then scale the thumbnail bitmap
             // back up to full size, painting it over the original bitmap, with a clip region that
             // will limit drawing to the discovered text lines.
-            var smallMap = Bitmap.createScaledBitmap(mutableDestMap, mutableDestMap.width / 64 + 1, mutableDestMap.height / 64 + 1, true)
+            val smallMap = Bitmap.createScaledBitmap(destMap, destMap.width / 64 + 1, destMap.height / 64 + 1, true)
             val sourceRect = Rect(0, 0, smallMap.width, smallMap.height)
-            val destRect = Rect(0, 0, mutableDestMap.width, mutableDestMap.height)
-            var canvas = Canvas(mutableDestMap)
+            val destRect = Rect(0, 0, destMap.width, destMap.height)
+            val canvas = Canvas(destMap)
             canvas.clipPath(textPoly)
             canvas.drawBitmap(smallMap, sourceRect, destRect, Paint())
           }
 
           // Write the output file
-          var outputFile = File.createTempFile("photostreamUpload", ".jpg")
-          var out = FileOutputStream(outputFile)
-          mutableDestMap.compress(CompressFormat.JPEG, 90, out)
-          var outputFilePath = outputFile.getAbsolutePath()
+          val outputFile = File.createTempFile("photostreamUpload", ".jpg")
+          val out = FileOutputStream(outputFile)
+          destMap.compress(CompressFormat.JPEG, 90, out)
+          val outputFilePath = outputFile.getAbsolutePath()
           Log.d(getName(), "output file path is $outputFilePath.")
           callback.invoke(outputFilePath)
         }
