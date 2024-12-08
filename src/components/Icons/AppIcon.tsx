@@ -11,13 +11,14 @@ interface AppIconProps {
   style?: StyleProp<TextStyle>;
   onPress?: () => void;
   onLongPress?: () => void;
+  small?: boolean;
 }
 
 /**
  * An Icon based on Material UI.
  * https://pictogrammers.com/library/mdi/
  */
-export const AppIcon = ({icon, size, color, style, onPress, onLongPress}: AppIconProps) => {
+export const AppIcon = ({icon, size, color, style, onPress, onLongPress, small}: AppIconProps) => {
   const theme = useAppTheme();
   const {styleDefaults} = useStyles();
 
@@ -26,7 +27,7 @@ export const AppIcon = ({icon, size, color, style, onPress, onLongPress}: AppIco
       onPress={onPress}
       style={style}
       name={icon}
-      size={size || styleDefaults.iconSize}
+      size={size || small ? styleDefaults.IconSizeSmall : styleDefaults.iconSize}
       color={color || theme.colors.onBackground}
       onLongPress={onLongPress}
     />
