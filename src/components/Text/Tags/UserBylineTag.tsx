@@ -58,8 +58,6 @@ export const UserBylineTag = ({
     },
   });
 
-  console.log(user, byPrivilegedUser);
-
   return (
     <Text style={styles.user} onPress={onPress} selectable={selectable} variant={variant} onLongPress={onLongPress}>
       {prefix && (

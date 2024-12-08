@@ -35,8 +35,9 @@ interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
   refetch: () => Promise<any>;
   isLoading: boolean;
+  enableContent?: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScreenBaseProps) => {
+export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -178,9 +179,11 @@ export const UserProfileScreenBase = ({data, refetch, isLoading}: UserProfileScr
             <UserAboutCard user={data} />
           </PaddedContentView>
         )}
-        <PaddedContentView>
-          <UserContentCard user={data} />
-        </PaddedContentView>
+        {enableContent && (
+          <PaddedContentView>
+            <UserContentCard user={data} />
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
     </AppView>
   );

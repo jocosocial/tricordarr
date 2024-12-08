@@ -4,6 +4,7 @@
  *
  * @TODO start moving these out to the various navigators
  */
+import {OobeProfileScreen} from '../../components/Screens/OOBE/OobeProfileScreen.tsx';
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',
@@ -58,6 +59,7 @@ export enum OobeStackComponents {
   oobeLoginScreen = 'LoginScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
   oobePreregistrationScreen = 'OobePreregistrationScreen',
+  oobeProfileScreen = 'OobeProfileScreen',
 }
 
 export enum EventStackComponents {

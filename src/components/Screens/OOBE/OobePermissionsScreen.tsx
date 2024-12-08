@@ -83,7 +83,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightText={'Next'}
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeFinishScreen)}
+        rightOnPress={() => navigation.push(OobeStackComponents.oobeProfileScreen)}
       />
     </AppView>
   );

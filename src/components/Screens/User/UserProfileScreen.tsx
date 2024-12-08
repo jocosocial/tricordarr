@@ -24,5 +24,12 @@ export const UserProfileScreen = ({route}: Props) => {
     return <LoadingView />;
   }
 
-  return <UserProfileScreenBase data={data} refetch={refetch} isLoading={isLoading} />;
+  return (
+    <UserProfileScreenBase
+      data={data}
+      refetch={refetch}
+      isLoading={isLoading}
+      enableContent={route.params.enableContent}
+    />
+  );
 };

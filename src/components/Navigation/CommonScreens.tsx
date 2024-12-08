@@ -83,6 +83,7 @@ import {PerformerHelpScreen} from '../Screens/Performer/PerformerHelpScreen.tsx'
 export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
+    enableContent?: boolean;
   };
   EditUserProfileScreen: {
     user: ProfilePublicData;
