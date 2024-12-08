@@ -19,7 +19,7 @@ export const SeamailSearchScreen = ({route}: SeamailSearchScreenProps) => {
   }
   return (
     <AppView>
-      <PaddedContentView padSides={false}>
+      <PaddedContentView padSides={false} padTop={true}>
         <SeamailSearchBar />
       </PaddedContentView>
     </AppView>
