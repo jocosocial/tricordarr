@@ -11,6 +11,7 @@ import {ImageQueryData} from '../../../libraries/Types';
 import {View} from 'react-native';
 import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
+import {ActivityIndicator} from 'react-native-paper';
 
 const {ImageTextBlurModule} = NativeModules;
 
@@ -18,8 +19,10 @@ export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const onBlur = async (newPath: string) => {
+    setRefreshing(true);
     try {
       const imageData = await RNFS.readFile(newPath, 'base64');
       await setFieldValue('image', imageData);
@@ -27,6 +30,8 @@ export const PhotostreamImageSelectionView = () => {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
         setErrorMessage(err);
       }
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -78,6 +83,7 @@ export const PhotostreamImageSelectionView = () => {
 
   return (
     <View>
+      {!values.image && refreshing && <ActivityIndicator />}
       {values.image && <AppImage mode={'scaledimage'} image={imageData} />}
       <ImageButtons
         takeImage={takeImage}
