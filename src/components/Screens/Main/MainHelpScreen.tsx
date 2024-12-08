@@ -7,6 +7,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import {useAppTheme} from '../../../styles/Theme';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 
 export const MainHelpScreen = () => {
   const {commonStyles} = useStyles();
@@ -14,10 +15,28 @@ export const MainHelpScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView isStack={true} overScroll={true}>
+        <HelpChapterTitleView title={'Header Buttons'} />
+        <HelpTopicView title={'Drawer'} icon={AppIcons.drawer}>
+          The drawer contains minor features of the app, documentation, and more. It can be accessed through a button in
+          the top left of some screens.
+        </HelpTopicView>
         <HelpTopicView title={'Context Menu'} icon={AppIcons.menu}>
           Most screens have a menu that gives you extra options. Look for in the upper right corner of the screen.
         </HelpTopicView>
+        <HelpTopicView title={'Sort'} icon={AppIcons.sort}>
+          Some lists can be sorted by different criteria. Tap this icon to access a menu of sorting options. Sometimes
+          you can long press to go back to the default.
+        </HelpTopicView>
+        <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
+          Some lists can be filtered. Tap this icon to access a menu of filtering options. You can long press the filter
+          icon to clear any active filters.
+        </HelpTopicView>
+        <HelpTopicView title={'Search'} icon={AppIcons.search}>
+          Most content is searchable. Look for a magnifying glass icon around the header menu. There may be different
+          modes of search.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Content'} />
         <HelpTopicView
           title={'Floating Action Button'}
           right={
@@ -33,22 +52,8 @@ export const MainHelpScreen = () => {
           Some screens have a floating action button in the lower right corner. This is often used to create new objects
           or access other views.
         </HelpTopicView>
-        <HelpTopicView title={'Drawer'} icon={AppIcons.drawer}>
-          The drawer contains minor features of the app, documentation, and more. It can be accessed through a button in
-          the top left of some screens.
-        </HelpTopicView>
-        <HelpTopicView title={'Moderator Actions'} icon={AppIcons.moderator}>
-          Moderator-only actions are indicated with this moderator icon. They will only appear for users with moderator
-          privileges.{' '}
-        </HelpTopicView>
         <HelpTopicView title={'Refresh'} icon={AppIcons.reload}>
           Most screens have a typical pull-to-refresh ability. But some have a dedicated button.
-        </HelpTopicView>
-        <HelpTopicView title={'Twitarr Webview'} icon={AppIcons.webview}>
-          Not all features of Twitarr have been implemented in this app. Those that aren't are outsourced to an
-          integrated browser with the Twitarr website. The first time you may need to log in since that uses a different
-          authentication method. You can also use the web view in the app as a dedicated browser for Twitarr. You can
-          access the webview directly in the Drawer.
         </HelpTopicView>
         <HelpTopicView title={'Long Press'}>
           Most items in a list can be long-pressed to open a menu of additional context-specific actions.
@@ -62,21 +67,20 @@ export const MainHelpScreen = () => {
           bottom of the list so you don't see activity in them. Users can be muted so that you don't see content from
           them.
         </HelpTopicView>
-        <HelpTopicView title={'Sort'} icon={AppIcons.sort}>
-          Some lists can be sorted by different criteria. Tap this icon to access a menu of sorting options. Sometimes
-          you can long press to go back to the default.
-        </HelpTopicView>
-        <HelpTopicView title={'Filter'} icon={AppIcons.filter}>
-          Some lists can be filtered. Tap this icon to access a menu of filtering options. You can long press the filter
-          icon to clear any active filters.
-        </HelpTopicView>
-        <HelpTopicView title={'Search'} icon={AppIcons.search}>
-          Most content is searchable. Look for a magnifying glass icon around the header menu. There may be different
-          modes of search.
-        </HelpTopicView>
         <HelpTopicView title={'Report'} icon={AppIcons.report}>
           Nearly all content can be reported to the moderators. Use this to report instances of violations of the Code
           of Conduct or other potential misbehavior. The moderator team will follow up with you usually within 24 hours.
+        </HelpTopicView>
+        <HelpTopicView title={'Moderator Actions'} icon={AppIcons.moderator}>
+          Moderator-only actions are indicated with this moderator icon. They will only appear for users with moderator
+          privileges.{' '}
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Other'} />
+        <HelpTopicView title={'Twitarr Webview'} icon={AppIcons.webview}>
+          Not all features of Twitarr have been implemented in this app. Those that aren't are outsourced to an
+          integrated browser with the Twitarr website. The first time you may need to log in since that uses a different
+          authentication method. You can also use the web view in the app as a dedicated browser for Twitarr. You can
+          access the webview directly in the Drawer.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>

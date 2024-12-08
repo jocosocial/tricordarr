@@ -71,7 +71,6 @@ export enum EventStackComponents {
 
 export enum LfgStackComponents {
   lfgOwnedScreen = 'LfgOwnedScreen',
-  lfgHelpScreen = 'LfgHelpScreen',
   lfgJoinedScreen = 'LfgJoinedScreen',
   lfgFindScreen = 'LfgFindScreen',
   lfgSettingsScreen = 'LfgSettingsScreen',

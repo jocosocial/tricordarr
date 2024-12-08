@@ -2,7 +2,6 @@ import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
@@ -63,7 +62,7 @@ export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
         leadingIcon={AppIcons.help}
         title={'Help'}
         onPress={() => {
-          navigation.push(LfgStackComponents.lfgHelpScreen);
+          navigation.push(CommonStackComponents.lfgHelpScreen);
           closeMenu();
         }}
       />

@@ -7,7 +7,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useBackHandler} from '@react-native-community/hooks';
-import {useNavigation} from '@react-navigation/native';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 interface SiteUIScreenBaseProps {
   initialUrl: string;
@@ -20,7 +20,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
   const webViewRef = useRef<WebView>(null);
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useCommonStack();
 
   const onHome = useCallback(() => {
     setWebviewUrl(appConfig.serverUrl);
@@ -29,12 +29,15 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
 
   const reload = () => webViewRef.current?.reload();
 
+  const onHelp = () => navigation.push(CommonStackComponents.siteUIHelpScreen);
+
   const getNavBarIcons = useCallback(
     () => (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <Item title={'Home'} iconName={AppIcons.home} onPress={onHome} />
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
+          <Item title={'Help'} iconName={AppIcons.help} onPress={onHelp} />
         </HeaderButtons>
       </View>
     ),
