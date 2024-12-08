@@ -2,6 +2,7 @@ import React, {PropsWithChildren, ReactNode} from 'react';
 import {Button, Card} from 'react-native-paper';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useModal} from '../Context/Contexts/ModalContext';
+import {StyleSheet} from 'react-native';
 
 interface ModalCardProps {
   title: string;
@@ -25,10 +26,14 @@ export const ModalCard = ({
   const {commonStyles} = useStyles();
   const {setModalVisible} = useModal();
 
-  const styles = {
-    card: [commonStyles.secondaryContainer],
-    text: [commonStyles.marginBottomSmall],
-  };
+  const styles = StyleSheet.create({
+    card: {
+      ...commonStyles.secondaryContainer,
+    },
+    text: {
+      ...commonStyles.marginBottomSmall,
+    },
+  });
 
   return (
     <Card style={styles.card}>

@@ -29,11 +29,17 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     primaryContainer: {
       backgroundColor: theme.colors.primaryContainer,
-      color: theme.colors.onPrimaryContainer,
+      // Disabling this from the ForumPostMessageView because it's not playing
+      // nice with the UserBylineTag privilege distinction. Since unifying all
+      // colors to higher contrast it shouldn't be a problem.
+      // color: theme.colors.onPrimaryContainer,
     },
     secondaryContainer: {
       backgroundColor: theme.colors.secondaryContainer,
-      color: theme.colors.onSecondaryContainer,
+      // Disabling this from the ForumPostMessageView because it's not playing
+      // nice with the UserBylineTag privilege distinction. Since unifying all
+      // colors to higher contrast it shouldn't be a problem.
+      // color: theme.colors.onSecondaryContainer,
     },
     primary: {
       backgroundColor: theme.colors.primary,

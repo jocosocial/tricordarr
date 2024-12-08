@@ -65,6 +65,10 @@ export const ForumPostMessageView = ({
       ...commonStyles.paddingSmall,
       ...commonStyles.roundedBorderLarge,
     },
+    authorContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
+    },
   });
 
   // Same as the button in the menu used in the menu
@@ -96,7 +100,7 @@ export const ForumPostMessageView = ({
         onLongPress={enableShowInThread ? openMenu : onLongPress}
         activeOpacity={1}
         onPress={enableShowInThread ? onPress : openMenu}>
-        <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
+        <View style={styles.authorContainer}>
           {showAuthor && (
             <>
               <View>
