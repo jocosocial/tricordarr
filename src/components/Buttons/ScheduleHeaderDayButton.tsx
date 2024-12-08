@@ -11,6 +11,7 @@ interface ScheduleHeaderDayViewProps {
   cruiseDay: CruiseDayData;
   isSelectedDay?: boolean;
   onPress: () => void;
+  disabled?: boolean;
 }
 
 export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
@@ -42,7 +43,7 @@ export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
   });
 
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+    <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress} disabled={props.disabled}>
       <View style={styles.view}>
         <Text style={styles.dayText} variant={'titleLarge'}>
           {format(props.cruiseDay.date, 'EEE')}

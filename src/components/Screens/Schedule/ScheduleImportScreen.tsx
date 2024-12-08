@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {HelpHeaderText} from '../../Text/Help/HelpHeaderText.tsx';
 import {Text} from 'react-native-paper';
 import {SchedImportForm} from '../../Forms/SchedImportForm.tsx';
 import {SchedImportFormValues} from '../../../libraries/Types/FormValues.ts';
@@ -14,6 +13,7 @@ import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutati
 import pluralize from 'pluralize';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {VEvent} from 'node-ical';
+import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 
 export const ScheduleImportScreen = () => {
   const {appConfig} = useConfig();
@@ -77,28 +77,19 @@ export const ScheduleImportScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
-        <PaddedContentView>
-          <Text>Import your Sched.com schedule favorites to Twitarr.</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <HelpHeaderText>Prerequisites</HelpHeaderText>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>You must have already created a Sched.com account for JoCo Cruise this year.</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>
-            Your personal schedule must be public, meaning others can see you in the attendee list. This only needs to
-            be set during the import. You can return your profile to private when you're done.
-          </Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text>
-            You do NOT need to have an internet package to do this! Sched.com is allowed on ship wifi without a paid
-            internet package.
-          </Text>
-        </PaddedContentView>
+      <ScrollingContentView overScroll={true}>
+        <HelpTopicView>Import your Sched.com schedule favorites to Twitarr.</HelpTopicView>
+        <HelpTopicView title={'Prerequisites'}>
+          You must have already created a Sched.com account for JoCo Cruise this year.
+        </HelpTopicView>
+        <HelpTopicView>
+          Your personal schedule must be public, meaning others can see you in the attendee list. This only needs to be
+          set during the import. You can return your profile to private when you're done.
+        </HelpTopicView>
+        <HelpTopicView>
+          You do NOT need to have an internet package to do this! Sched.com is allowed on ship wifi without a paid
+          internet package.
+        </HelpTopicView>
         <PaddedContentView>
           <SchedImportForm initialValues={{username: ''}} onSubmit={onSubmit} />
         </PaddedContentView>

@@ -9,6 +9,9 @@ interface HelpModalViewProps {
   title?: string;
 }
 
+/**
+ * This modal view is used for form input components to give the user some additional information.
+ */
 export const HelpModalView = ({text, title = 'Help'}: HelpModalViewProps) => {
   const {commonStyles} = useStyles();
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {List} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
@@ -14,7 +14,7 @@ interface SeamailListItemProps {
   fez: FezData;
 }
 
-export const SeamailListItem = ({fez}: SeamailListItemProps) => {
+const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const {profilePublicData} = useUserData();
   const navigation = useChatStack();
   let badgeCount = 0;
@@ -60,3 +60,5 @@ export const SeamailListItem = ({fez}: SeamailListItemProps) => {
     />
   );
 };
+
+export const SeamailListItem = memo(SeamailListItemInternal);
