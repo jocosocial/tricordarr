@@ -5,7 +5,6 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ScrollingContentView} from '../Content/ScrollingContentView.tsx';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
 import {PaddedContentView} from '../Content/PaddedContentView.tsx';
 import {BoldText} from '../../Text/BoldText.tsx';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
@@ -16,6 +15,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {getInitialAppConfig} from '../../../libraries/AppConfig.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {HelpTopicView} from '../Help/HelpTopicView.tsx';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -51,7 +51,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView isStack={true} overScroll={true}>
         <View style={styles.outerContainer}>
           <PaddedContentView style={styles.innerContainer}>
             <View style={styles.contentContainer}>
@@ -59,27 +59,15 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
             </View>
           </PaddedContentView>
         </View>
-        <PaddedContentView>
-          <HelpParagraphText>It's not you, it's me. Something has gone very wrong with this app.</HelpParagraphText>
-        </PaddedContentView>
-        <PaddedContentView>
-          <HelpParagraphText>
-            <BoldText>Name: </BoldText>
-            {props.error.name}
-          </HelpParagraphText>
-          <HelpParagraphText>
-            <BoldText>Message: </BoldText>
-            {props.error.message}
-          </HelpParagraphText>
-        </PaddedContentView>
-        <PaddedContentView>
-          <HelpParagraphText>You can try to recover using the buttons below.</HelpParagraphText>
-        </PaddedContentView>
+        <HelpTopicView>It's not you, it's me. Something has gone very wrong with this app.</HelpTopicView>
+        <HelpTopicView title={'Name'}>{props.error.name}</HelpTopicView>
+        <HelpTopicView title={'Message'}>{props.error.message}</HelpTopicView>
+        <HelpTopicView>You can try to recover using the buttons below.</HelpTopicView>
         <PaddedContentView>
           <PrimaryActionButton
-            buttonColor={theme.colors.twitarrPositiveButton}
-            buttonText={'Fix it All'}
-            onPress={fixAll}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            buttonText={'Reload'}
+            onPress={() => props.resetError()}
           />
         </PaddedContentView>
         <PaddedContentView>
@@ -105,9 +93,9 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         </PaddedContentView>
         <PaddedContentView>
           <PrimaryActionButton
-            buttonColor={theme.colors.twitarrNeutralButton}
-            buttonText={'Reload'}
-            onPress={() => props.resetError()}
+            buttonColor={theme.colors.twitarrPositiveButton}
+            buttonText={'Fix it All'}
+            onPress={fixAll}
           />
         </PaddedContentView>
         {showStack && (

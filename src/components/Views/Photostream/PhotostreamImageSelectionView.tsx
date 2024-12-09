@@ -11,6 +11,7 @@ import {ImageQueryData} from '../../../libraries/Types';
 import {View} from 'react-native';
 import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
+import {ActivityIndicator} from 'react-native-paper';
 
 const {ImageTextBlurModule} = NativeModules;
 
@@ -18,21 +19,28 @@ export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
   const {setErrorMessage} = useErrorHandler();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  const processImage = (image: Image) => {
-    ImageTextBlurModule.blurTextInImage(image.path, (newPath: string) => {
-      RNFS.readFile(newPath, 'base64')
-        .then(blurredImageData => {
-          setFieldValue('image', blurredImageData);
-        })
-        .catch(err => {
-          setErrorMessage(err);
-        });
-    });
+  const onBlur = async (newPath: string) => {
+    setRefreshing(true);
+    try {
+      const imageData = await RNFS.readFile(newPath, 'base64');
+      await setFieldValue('image', imageData);
+    } catch (err) {
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
+    } finally {
+      setRefreshing(false);
+    }
   };
 
-  const clearImage = () => {
-    setFieldValue('image', undefined);
+  const processImage = (image: Image) => {
+    ImageTextBlurModule.blurTextInImage(image.path, onBlur);
+  };
+
+  const clearImage = async () => {
+    await setFieldValue('image', undefined);
   };
 
   const pickImage = async () => {
@@ -46,7 +54,9 @@ export const PhotostreamImageSelectionView = () => {
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
@@ -63,7 +73,9 @@ export const PhotostreamImageSelectionView = () => {
       });
       processImage(image);
     } catch (err: any) {
-      setErrorMessage(err);
+      if (err instanceof Error && err.message !== 'User cancelled image selection') {
+        setErrorMessage(err);
+      }
     }
   };
 
@@ -71,6 +83,7 @@ export const PhotostreamImageSelectionView = () => {
 
   return (
     <View>
+      {!values.image && refreshing && <ActivityIndicator />}
       {values.image && <AppImage mode={'scaledimage'} image={imageData} />}
       <ImageButtons
         takeImage={takeImage}

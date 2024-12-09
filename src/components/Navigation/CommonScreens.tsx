@@ -57,12 +57,13 @@ import {UserDirectoryHelpScreen} from '../Screens/User/UserDirectoryHelpScreen.t
 import {ForumSettingsScreen} from '../Screens/Settings/Content/ForumSettingsScreen.tsx';
 import {ForumHelpScreen} from '../Screens/Forum/ForumHelpScreen.tsx';
 import {ScheduleHelpScreen} from '../Screens/Schedule/ScheduleHelpScreen.tsx';
-import {LfgParticipationHelpScreen} from '../Screens/LFG/LfgParticipationHelpScreen.tsx';
 import {ForumPostSearchScreen} from '../Screens/Forum/Post/ForumPostSearchScreen.tsx';
 import {SeamailHelpScreen} from '../Screens/Seamail/SeamailHelpScreen.tsx';
 import {SiteUILinkScreen} from '../Screens/SiteUI/SiteUILinkScreen.tsx';
 import {PerformerScreen} from '../Screens/Performer/PerformerScreen.tsx';
 import {PerformerHelpScreen} from '../Screens/Performer/PerformerHelpScreen.tsx';
+import {SiteUIHelpScreen} from '../Screens/SiteUI/SiteUIHelpScreen.tsx';
+import {LfgHelpScreen} from '../Screens/LFG/LfgHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -83,6 +84,7 @@ import {PerformerHelpScreen} from '../Screens/Performer/PerformerHelpScreen.tsx'
 export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
+    enableContent?: boolean;
   };
   EditUserProfileScreen: {
     user: ProfilePublicData;
@@ -188,7 +190,6 @@ export type CommonStackParamList = {
   ForumSettingsScreen: undefined;
   ForumHelpScreen: undefined;
   ScheduleHelpScreen: undefined;
-  LfgParticipationHelpScreen: undefined;
   ForumPostSearchScreen: {
     category?: CategoryData;
     forum?: ForumListData | ForumData;
@@ -199,6 +200,8 @@ export type CommonStackParamList = {
     id: string;
   };
   PerformerHelpScreen: undefined;
+  SiteUIHelpScreen: undefined;
+  LfgHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -244,12 +247,13 @@ export enum CommonStackComponents {
   forumSettingsScreen = 'ForumSettingsScreen',
   forumHelpScreen = 'ForumHelpScreen',
   scheduleHelpScreen = 'ScheduleHelpScreen',
-  lfgParticipationHelpScreen = 'LfgParticipationHelpScreen',
   forumPostSearchScreen = 'ForumPostSearchScreen',
   seamailHelpScreen = 'SeamailHelpScreen',
   siteUILinkScreen = 'SiteUILinkScreen',
   performerScreen = 'PerformerScreen',
   performerHelpScreen = 'PerformerHelpScreen',
+  siteUIHelpScreen = 'SiteUIHelpScreen',
+  lfgHelpScreen = 'LfgHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -473,11 +477,6 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{title: 'Schedule Help'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.lfgParticipationHelpScreen}
-        component={LfgParticipationHelpScreen}
-        options={{title: 'LFG Participation Help'}}
-      />
-      <Stack.Screen
         name={CommonStackComponents.forumPostSearchScreen}
         component={isForumsDisabled ? DisabledView : ForumPostSearchScreen}
         options={{title: 'Post Search'}}
@@ -501,6 +500,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.performerHelpScreen}
         component={PerformerHelpScreen}
         options={{title: 'Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.siteUIHelpScreen}
+        component={SiteUIHelpScreen}
+        options={{title: 'Webview Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgHelpScreen}
+        component={LfgHelpScreen}
+        options={{title: 'Looking For Group Help'}}
       />
     </>
   );

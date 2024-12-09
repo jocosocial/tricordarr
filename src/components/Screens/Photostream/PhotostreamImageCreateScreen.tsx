@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {usePhotostreamLocationDataQuery} from '../../Queries/Photostream/PhotostreamQueries.ts';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {PhotostreamImageCreateForm} from '../../Forms/Photostream/PhotostreamImageCreateForm.tsx';
 import {PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
@@ -13,6 +13,10 @@ import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/M
 import {useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {usePhotostreamImageUploadMutation} from '../../Queries/Photostream/PhotostreamMutations.ts';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
@@ -54,6 +58,26 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
       },
     );
   };
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   if (!locationData) {
     return <LoadingView />;

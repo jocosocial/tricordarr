@@ -1,16 +1,18 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 
 export const UserDirectoryHelpScreen = () => {
   return (
     <AppView>
-      <ScrollingContentView>
-        <PaddedContentView>
-          <Text>Directory Help!</Text>
-        </PaddedContentView>
+      <ScrollingContentView isStack={true} overScroll={true}>
+        <HelpChapterTitleView title={'General'} />
+        <HelpTopicView>
+          Use the directory to find other Twitarr users. Searches by username and Display Name. You must enter at least
+          three characters to search.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

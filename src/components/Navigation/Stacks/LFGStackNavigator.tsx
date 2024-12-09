@@ -2,7 +2,6 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {LfgHelpScreen} from '../../Screens/LFG/LfgHelpScreen';
 import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen';
 import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen';
 import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
@@ -17,7 +16,6 @@ import {MainStack} from './MainStackNavigator';
 import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
 
 export type LfgStackParamList = CommonStackParamList & {
-  LfgHelpScreen: undefined;
   LfgJoinedScreen: undefined;
   LfgFindScreen: undefined;
   LfgOwnedScreen: undefined;
@@ -36,11 +34,6 @@ export const LfgStackNavigator = () => {
     <Stack.Navigator
       initialRouteName={appConfig.schedule.defaultLfgScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
-      <Stack.Screen
-        name={LfgStackComponents.lfgHelpScreen}
-        component={LfgHelpScreen}
-        options={{title: 'Looking For Group Help'}}
-      />
       <Stack.Screen
         name={LfgStackComponents.lfgJoinedScreen}
         component={LfgJoinedScreen}

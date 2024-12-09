@@ -1,5 +1,5 @@
 import {Field, useField, useFormikContext} from 'formik';
-import {ContentPostMentionSuggestionsView} from '../../Views/ContentPostMentionSuggestionsView';
+import {ContentPostMentionSuggestionsView} from '../../Views/Content/ContentPostMentionSuggestionsView.tsx';
 import {MentionInput} from 'react-native-controlled-mentions';
 import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';

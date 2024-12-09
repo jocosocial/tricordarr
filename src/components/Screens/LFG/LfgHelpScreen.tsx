@@ -1,79 +1,57 @@
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import React from 'react';
-import {ListSection} from '../../Lists/ListSection.tsx';
-import {ListSubheader} from '../../Lists/ListSubheader.tsx';
-import {HelpSectionView} from '../../Views/Help/HelpSectionView.tsx';
-import {HelpParagraphText} from '../../Text/Help/HelpParagraphText.tsx';
+import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
+import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 
 export const LfgHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView overScroll={true} isStack={true}>
-        <ListSection>
-          <ListSubheader>About</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <HelpSectionView>
-              <HelpParagraphText>
-                LFGs are small(ish) community organized events. Use them to play a board game, go on an excursion, eat
-                at a restaurant, or do any other group activity.
-              </HelpParagraphText>
-            </HelpSectionView>
-            <HelpSectionView>
-              <HelpParagraphText>
-                If you're looking for something to do and want to meet some new people: check out the LFGs, find an
-                activity that sounds fun, and join up.
-              </HelpParagraphText>
-            </HelpSectionView>
-          </PaddedContentView>
-        </ListSection>
-        <ListSection>
-          <ListSubheader>Limitations</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <HelpSectionView>
-              <HelpParagraphText>
-                LFGs are meant for small groups doing an activity together. All of the event rooms on the ship are for
-                actual scheduled Events. JoCo Cruise does not provide logistical or technical support for LFGs.
-              </HelpParagraphText>
-            </HelpSectionView>
-            <HelpSectionView>
-              <HelpParagraphText>
-                LFGs are not a reservation system of any sort. Luckily, LFGs have built-in chat, so you can come up with
-                a backup plan with everyone and meet somewhere else/play a different game/eat at a different restaurant.
-              </HelpParagraphText>
-            </HelpSectionView>
-            <HelpSectionView>
-              <HelpParagraphText>
-                People of all ages read Twitt-Arr and LFGs are a public forum like the rest of Twitt-Arr. Please use the
-                usual discretion and keep the Code of Conduct in mind.
-              </HelpParagraphText>
-            </HelpSectionView>
-          </PaddedContentView>
-        </ListSection>
-        <ListSection>
-          <ListSubheader>Filters</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <HelpSectionView>
-              <HelpParagraphText>
-                You can filter LFGs by using the filter menus at the top of the screen. A filter is active if the menu
-                icon is blue and the item in the list is slightly highlighted. Long press the menu button to clear all
-                active filters.
-              </HelpParagraphText>
-            </HelpSectionView>
-          </PaddedContentView>
-        </ListSection>
-        <ListSection>
-          <ListSubheader>Settings</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <HelpSectionView>
-              <HelpParagraphText>
-                You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the
-                settings. Tap the menu in the upper right of any LFG screen and select Settings.
-              </HelpParagraphText>
-            </HelpSectionView>
-          </PaddedContentView>
-        </ListSection>
+        <HelpChapterTitleView title={'General'} />
+        <HelpTopicView>
+          LFGs are small(ish) community organized events. Use them to play a board game, go on an excursion, eat at a
+          restaurant, or do any other group activity.
+        </HelpTopicView>
+        <HelpTopicView>
+          If you're looking for something to do and want to meet some new people: check out the LFGs, find an activity
+          that sounds fun, and join up.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Limitations'} />
+        <HelpTopicView>
+          LFGs are meant for small groups doing an activity together. All of the event rooms on the ship are for actual
+          scheduled Events. JoCo Cruise does not provide logistical or technical support for LFGs.
+        </HelpTopicView>
+        <HelpTopicView>
+          LFGs are not a reservation system of any sort. Luckily, LFGs have built-in chat, so you can come up with a
+          backup plan with everyone and meet somewhere else/play a different game/eat at a different restaurant.
+        </HelpTopicView>
+        <HelpTopicView>
+          People of all ages read Twitt-Arr and LFGs are a public forum like the rest of Twitt-Arr. Please use the usual
+          discretion and keep the Code of Conduct in mind.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Customization'} />
+        <HelpTopicView title={'Filters'} icon={AppIcons.filter}>
+          You can filter LFGs by using the filter menus at the top of the screen. A filter is active if the menu icon is
+          blue and the item in the list is slightly highlighted. Long press the menu button to clear all active filters.
+        </HelpTopicView>
+        <HelpTopicView title={'Settings'} icon={AppIcons.settings}>
+          You can change the default LFG screen (Find, Joined, Owned) and filter past LFGs by default in the settings.
+          Tap the menu in the upper right of any LFG screen and select Settings.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Participation'} />
+        <HelpTopicView>Don't just add random people to your LFG. It's not nice.</HelpTopicView>
+        <HelpTopicView>If you add people to your LFG, those people should already expect to be added.</HelpTopicView>
+        <HelpTopicView>
+          Same idea with removing people: those removed should know why. Don't remove people who signed up just to bump
+          your friend off the waitlist.
+        </HelpTopicView>
+        <HelpTopicView>
+          If you schedule a "Drink Like a Pirate" LFG and someone joins and asks if they can come as a ninja instead,
+          you may tell them it's more of a pirate thing and you may need to remove them to make room for more pirate
+          participants.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

@@ -17,7 +17,7 @@ interface SeamailListQueryOptions {
 
 export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailListQueryOptions) => {
   const queryParams = {
-    ...(search && {search: search}),
+    search: search,
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
     type: [FezType.closed, FezType.open],
