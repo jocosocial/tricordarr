@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {useAnnouncementsQuery} from '../Queries/Alert/AnnouncementQueries.ts';
-import {AnnouncementData} from '../../libraries/Structs/ControllerStructs';
-import {AnnouncementCard} from '../Cards/MainScreen/AnnouncementCard';
-import {PaddedContentView} from './Content/PaddedContentView';
+import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts';
+import {AnnouncementData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AnnouncementCard} from '../../Cards/MainScreen/AnnouncementCard.tsx';
+import {PaddedContentView} from '../Content/PaddedContentView.tsx';
 
 /**
  * A card to display an announcement from the API.
  */
-export const MainAnnouncementView = () => {
+export const TodayAnnouncementView = () => {
   const {data} = useAnnouncementsQuery();
   const [announcements, setAnnouncements] = useState<AnnouncementData[]>([]);
 
