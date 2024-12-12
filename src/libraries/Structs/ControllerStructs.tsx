@@ -967,3 +967,16 @@ export interface PerformerResponseData {
   /// Pagination info.
   paginator: Paginator;
 }
+
+export interface TimeZoneChangeRecord {
+  activeDate: string;
+  timeZoneAbbrev: string;
+  timeZoneID: string;
+}
+
+export interface TimeZoneChangeData {
+  records: TimeZoneChangeRecord[];
+  currentTimeZoneAbbrev: string;
+  currentTimeZoneID: string;
+  currentOffsetSeconds: number;
+}

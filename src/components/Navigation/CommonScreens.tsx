@@ -64,6 +64,8 @@ import {PerformerScreen} from '../Screens/Performer/PerformerScreen.tsx';
 import {PerformerHelpScreen} from '../Screens/Performer/PerformerHelpScreen.tsx';
 import {SiteUIHelpScreen} from '../Screens/SiteUI/SiteUIHelpScreen.tsx';
 import {LfgHelpScreen} from '../Screens/LFG/LfgHelpScreen.tsx';
+import {MainTimeZoneScreen} from '../Screens/Main/MainTimeZoneScreen.tsx';
+import {TimeZoneHelpScreen} from '../Screens/Main/TimeZoneHelpScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -202,6 +204,8 @@ export type CommonStackParamList = {
   PerformerHelpScreen: undefined;
   SiteUIHelpScreen: undefined;
   LfgHelpScreen: undefined;
+  MainTimeZoneScreen: undefined;
+  TimeZoneHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -254,6 +258,8 @@ export enum CommonStackComponents {
   performerHelpScreen = 'PerformerHelpScreen',
   siteUIHelpScreen = 'SiteUIHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
+  mainTimeZoneScreen = 'MainTimeZoneScreen',
+  timeZoneHelpScreen = 'TimeZoneHelpScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -510,6 +516,16 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
         options={{title: 'Looking For Group Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.mainTimeZoneScreen}
+        component={MainTimeZoneScreen}
+        options={{title: 'Time Zones'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.timeZoneHelpScreen}
+        component={TimeZoneHelpScreen}
+        options={{title: 'Time Zone Help'}}
       />
     </>
   );

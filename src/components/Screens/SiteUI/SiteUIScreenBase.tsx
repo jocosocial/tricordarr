@@ -29,7 +29,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
 
   const reload = () => webViewRef.current?.reload();
 
-  const onHelp = () => navigation.push(CommonStackComponents.siteUIHelpScreen);
+  const onHelp = useCallback(() => navigation.push(CommonStackComponents.siteUIHelpScreen), [navigation]);
 
   const getNavBarIcons = useCallback(
     () => (
@@ -41,7 +41,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
         </HeaderButtons>
       </View>
     ),
-    [onHome],
+    [onHelp, onHome],
   );
 
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {

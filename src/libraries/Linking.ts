@@ -52,6 +52,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             PhotostreamScreen: 'photostream',
             MicroKaraokeListScreen: 'microkaraoke',
             PerformerListScreen: 'performers',
+            MainTimeZoneScreen: 'time',
           },
         },
         SeamailTab: {
