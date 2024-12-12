@@ -126,6 +126,8 @@ export interface UserNotificationData {
   serverTime: string;
   /// Server Time Zone offset, in seconds from UTC. One hour before UTC is -3600. EST  timezone is -18000.
   serverTimeOffset: number;
+  /// The geopolitical region identifier that identifies the time zone -- e.g. "America/Los Angeles"
+  serverTimeZoneID: string;
   /// Human-readable time zone name, like "EDT"
   serverTimeZone: string;
   /// Features that are turned off by the server. If the `appName` for a feature is `all`, the feature is disabled at the API layer.
@@ -149,15 +151,30 @@ export interface UserNotificationData {
   forumMentionCount?: number;
   /// Number of forum post @mentions the user has not read. 0 if not logged in.
   newForumMentionCount?: number;
+  /// The number of Seamail chats the user's been added to but not yet viewed. Does not include Seamails the user creates. Chats counted here will continue
+  /// to be counted here and not in `newSeamailMessageCount` even if there are also new messages--until the user views the chat and clears the notification.
+  addedToSeamailCount: number;
+  /// The number of LFGs the user's been added to but not yet viewed. Doesn't include LFGs the user created nor ones they Joined by their own action.
+  /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newFezMessageCount`.
+  addedToLFGCount: number;
+  /// The number of Private Events the user's been added to but not yet viewed. Doesn't include PEs the user created.
+  /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newPrivateEventMessageCount`.
+  addedToPrivateEventCount: number;
   /// Count of # of Seamail threads with new messages. NOT total # of new messages-a single seamail thread with 10 new messages counts as 1. 0 if not logged in.
   newSeamailMessageCount?: number;
   /// Count of # of Fezzes with new messages. 0 if not logged in.
-  newFezMessageCount?: number;
+  newFezMessageCount: number;
+  /// Count of # of Private Events with new messages. 0 if not logged in.
+  newPrivateEventMessageCount: number;
   /// The start time of the earliest event that the user has followed with a start time > now. nil if not logged in or no matching event.
   nextFollowedEventTime?: string;
   /// The event ID of the next future event the user has followed. This event's start time should always be == nextFollowedEventTime.
   /// If the user has favorited multiple events that start at the same time, this will be random among them.
   nextFollowedEventID?: string;
+
+  /// The number of Micro Karaoke songs the user has contributed to and can now view.
+  microKaraokeFinishedSongCount?: number;
+
   /// The start time of the earliest LFG that the user has joined with a start time > now. nil if not logged in or no matching LFG.
   nextJoinedLFGTime?: string;
   /// The LFG ID of the next future LFG the user has joined. This LFGs's start time should always be == nextJoinedLFGTime.

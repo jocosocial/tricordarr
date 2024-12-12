@@ -46,21 +46,11 @@ export const ScheduleLfgFilterMenu = () => {
     />
   );
 
-  const filterableFezTypes = [
-    FezType.activity,
-    FezType.dining,
-    FezType.gaming,
-    FezType.meetup,
-    FezType.music,
-    FezType.other,
-    FezType.shore,
-  ];
-
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       <Divider bold={true} />
-      {filterableFezTypes.map(fezType => {
+      {FezType.lfgTypes.map(fezType => {
         return (
           <SelectableMenuItem
             key={fezType}
