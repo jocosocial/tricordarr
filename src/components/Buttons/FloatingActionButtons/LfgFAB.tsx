@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
-import {useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
 import {BaseFABGroup} from './BaseFABGroup';
 
 interface LfgFABProps {

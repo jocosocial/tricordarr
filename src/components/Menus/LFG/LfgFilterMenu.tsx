@@ -7,7 +7,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 
-export const ScheduleLfgFilterMenu = () => {
+export const LfgFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();

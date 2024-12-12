@@ -67,6 +67,7 @@ export enum AppIcons {
   search = 'magnify',
   // LFG
   lfg = 'account-multiple',
+  lfgFormer = 'account-cancel',
   lfgJoined = 'account-multiple',
   lfgOwned = 'account-multiple-check-outline',
   lfgFind = 'human-greeting-variant',

@@ -4,10 +4,10 @@ import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ScheduleLfgFilterMenu} from '../../Menus/LFG/ScheduleLfgFilterMenu';
+import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
 import {useFilter} from '../../Context/Contexts/FilterContext';
-import {ScheduleLfgCruiseDayFilterMenu} from '../../Menus/LFG/ScheduleLfgCruiseDayFilterMenu';
-import {ScheduleLfgListMenu} from '../../Menus/LFG/ScheduleLfgListMenu';
+import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx';
+import {LfgListActionsMenu} from '../../Menus/LFG/LfgListActionsMenu.tsx';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {useIsFocused} from '@react-navigation/native';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
@@ -22,9 +22,10 @@ import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlashList} from '@shopify/flash-list';
+import {FezListEndpoints} from '../../../libraries/Types';
 
 interface LfgJoinedScreenProps {
-  endpoint: 'open' | 'joined' | 'owner';
+  endpoint: FezListEndpoints;
 }
 
 export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
@@ -53,9 +54,9 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <ScheduleLfgCruiseDayFilterMenu />
-          <ScheduleLfgFilterMenu />
-          <ScheduleLfgListMenu />
+          <LfgCruiseDayFilterMenu />
+          <LfgFilterMenu />
+          <LfgListActionsMenu />
         </HeaderButtons>
       </View>
     );

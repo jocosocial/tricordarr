@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import {Menu} from 'react-native-paper';
+import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
-import {useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
-export const ScheduleLfgListMenu = () => {
+export const LfgListActionsMenu = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useLFGStackNavigation();
   const route = useLFGStackRoute();
@@ -27,6 +26,16 @@ export const ScheduleLfgListMenu = () => {
 
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+      {route.name !== LfgStackComponents.lfgFormerScreen && (
+        <>
+          <Menu.Item
+            leadingIcon={AppIcons.lfgFormer}
+            title={'Former LFGs'}
+            onPress={() => handleNavigation(LfgStackComponents.lfgFormerScreen)}
+          />
+          <Divider bold={true} />
+        </>
+      )}
       <Menu.Item
         leadingIcon={AppIcons.settings}
         title={'Settings'}

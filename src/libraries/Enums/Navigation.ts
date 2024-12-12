@@ -4,7 +4,6 @@
  *
  * @TODO start moving these out to the various navigators
  */
-import {OobeProfileScreen} from '../../components/Screens/OOBE/OobeProfileScreen.tsx';
 
 export enum BottomTabComponents {
   homeTab = 'HomeTab',
@@ -67,14 +66,6 @@ export enum EventStackComponents {
   eventSettingsScreen = 'EventSettingsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
-}
-
-export enum LfgStackComponents {
-  lfgOwnedScreen = 'LfgOwnedScreen',
-  lfgJoinedScreen = 'LfgJoinedScreen',
-  lfgFindScreen = 'LfgFindScreen',
-  lfgSettingsScreen = 'LfgSettingsScreen',
-  lfgCreateScreen = 'LfgCreateScreen',
 }
 
 export enum ForumStackComponents {

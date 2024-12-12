@@ -9,13 +9,13 @@ import {View} from 'react-native';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {BooleanField} from '../../Forms/Fields/BooleanField';
 import {HelperText, SegmentedButtons, Text} from 'react-native-paper';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {SegmentedButtonType} from '../../../libraries/Types';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 import {ListSection} from '../../Lists/ListSection.tsx';
 import {PushNotificationConfig} from '../../../libraries/AppConfig.ts';
 import {contentNotificationCategories} from '../../../libraries/Notifications/Content.ts';
+import {LfgStackComponents} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();

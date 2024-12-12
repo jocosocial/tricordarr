@@ -2,6 +2,7 @@ import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
+import {FezListEndpoints} from '../../../libraries/Types';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
@@ -33,7 +34,7 @@ interface LfgListQueryOptions {
   cruiseDay?: number;
   fezType?: keyof typeof FezType;
   hidePast?: boolean;
-  endpoint?: 'open' | 'joined' | 'owner';
+  endpoint?: FezListEndpoints;
   excludeFezType?: FezType[];
   options?: {};
 }

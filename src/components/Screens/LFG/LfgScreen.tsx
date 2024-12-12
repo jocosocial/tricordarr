@@ -14,7 +14,7 @@ import {getDurationString} from '../../../libraries/DateTime';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ScheduleLfgMenu} from '../../Menus/LFG/ScheduleLfgMenu';
+import {LfgActionsMenu} from '../../Menus/LFG/LfgActionsMenu.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
@@ -132,7 +132,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
               onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: lfg.fezID})}
             />
           )}
-          {lfg && <ScheduleLfgMenu fezData={lfg} />}
+          {lfg && <LfgActionsMenu fezData={lfg} />}
         </HeaderButtons>
       </View>
     );
