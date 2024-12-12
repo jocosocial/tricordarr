@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {OobeStackComponents} from '../../../libraries/Enums/Navigation';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {OobeWelcomeScreen} from '../../Screens/OOBE/OobeWelcomeScreen';
@@ -28,6 +27,19 @@ export type OobeStackParamList = CommonStackParamList & {
   OobePreregistrationScreen: undefined;
   OobeProfileScreen: undefined;
 };
+
+export enum OobeStackComponents {
+  oobeWelcomeScreen = 'OobeWelcomeScreen',
+  oobeServerScreen = 'OobeServerScreen',
+  oobeConductScreen = 'OobeConductScreen',
+  oobeAccountScreen = 'OobeAccountScreen',
+  oobeRegisterScreen = 'RegisterScreen',
+  oobeFinishScreen = 'OobeFinishScreen',
+  oobeLoginScreen = 'LoginScreen',
+  oobePermissionsScreen = 'OobePermissionsScreen',
+  oobePreregistrationScreen = 'OobePreregistrationScreen',
+  oobeProfileScreen = 'OobeProfileScreen',
+}
 
 export const OobeStackNavigator = () => {
   const {screenOptions} = useStyles();

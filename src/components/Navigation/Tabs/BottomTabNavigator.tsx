@@ -3,7 +3,6 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {AppIcon} from '../../Icons/AppIcon';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {ChatStackNavigator, ChatStackParamList} from '../Stacks/ChatStackNavigator.tsx';
-import {BottomTabComponents} from '../../../libraries/Enums/Navigation';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigator';
@@ -30,6 +29,14 @@ export type BottomTabParamList = {
   ForumsTab: NavigatorScreenParams<ForumStackParamList>;
   LfgTab: NavigatorScreenParams<LfgStackParamList>;
 };
+
+export enum BottomTabComponents {
+  homeTab = 'HomeTab',
+  seamailTab = 'SeamailTab',
+  forumsTab = 'ForumsTab',
+  scheduleTab = 'ScheduleTab',
+  lfgTab = 'LfgTab',
+}
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();

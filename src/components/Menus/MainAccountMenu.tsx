@@ -4,10 +4,10 @@ import React, {useState} from 'react';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {TouchableOpacity} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {SettingsStackScreenComponents} from '../../libraries/Enums/Navigation';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator';
 import {CommonStackComponents} from '../Navigation/CommonScreens';
+import {SettingsStackScreenComponents} from '../Navigation/Stacks/SettingsStackNavigator.tsx';
 
 export const MainAccountMenu = () => {
   const {profilePublicData} = useUserData();

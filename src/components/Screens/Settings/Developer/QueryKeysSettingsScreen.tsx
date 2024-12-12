@@ -8,8 +8,10 @@ import {Divider, Text} from 'react-native-paper';
 import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation.ts';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,

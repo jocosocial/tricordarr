@@ -22,8 +22,10 @@ import {CacheManager} from '@georstat/react-native-image-cache';
 import {getDirSize} from '../../../../libraries/Storage/ImageStorage.ts';
 import {filesize} from 'filesize';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation.ts';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 

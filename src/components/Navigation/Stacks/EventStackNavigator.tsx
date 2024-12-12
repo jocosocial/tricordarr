@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
@@ -20,6 +19,13 @@ export type EventStackParamList = CommonStackParamList & {
   ScheduleDayScreen: undefined;
   ScheduleImportScreen: undefined;
 };
+
+export enum EventStackComponents {
+  eventSearchScreen = 'EventSearchScreen',
+  eventSettingsScreen = 'EventSettingsScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleImportScreen = 'ScheduleImportScreen',
+}
 
 export const EventStackNavigator = () => {
   const {screenOptions} = useStyles();

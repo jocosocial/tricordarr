@@ -1,10 +1,12 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {EventStackComponents, ForumStackComponents, ChatStackScreenComponents} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
 import type {PathConfigMap} from '@react-navigation/core';
 import {MainStackComponents} from '../components/Navigation/Stacks/MainStackNavigator.tsx';
 import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
+import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
+import {EventStackComponents} from '../components/Navigation/Stacks/EventStackNavigator.tsx';
+import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;

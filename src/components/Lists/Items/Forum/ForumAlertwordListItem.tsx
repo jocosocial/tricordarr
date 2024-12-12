@@ -1,7 +1,6 @@
-import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
 import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
 import React from 'react';
-import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {Text} from 'react-native-paper';
 import {View} from 'react-native';
 import {useStyles} from '../../../Context/Contexts/StyleContext';

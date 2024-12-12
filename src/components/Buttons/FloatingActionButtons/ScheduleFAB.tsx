@@ -1,8 +1,11 @@
 import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  EventStackComponents,
+  useEventStackNavigation,
+  useEventStackRoute,
+} from '../../Navigation/Stacks/EventStackNavigator';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 

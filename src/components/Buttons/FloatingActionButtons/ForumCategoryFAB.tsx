@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {BaseFAB} from './BaseFAB.tsx';
 

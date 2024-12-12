@@ -5,11 +5,13 @@ import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNav
 import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {ListSection} from '../../Lists/ListSection';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
 import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem';
 import {useAuth} from '../../Context/Contexts/AuthContext';

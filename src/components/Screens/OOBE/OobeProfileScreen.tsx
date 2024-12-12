@@ -1,9 +1,8 @@
 import {AppView} from '../../Views/AppView.tsx';
-import {OobeStackComponents} from '../../../libraries/Enums/Navigation.ts';
 import {OobeButtonsView} from '../../Views/OobeButtonsView.tsx';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator.tsx';
+import {OobeStackComponents, OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';

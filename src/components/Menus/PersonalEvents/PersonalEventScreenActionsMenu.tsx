@@ -8,8 +8,7 @@ import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {EventStackComponents, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
   event: PersonalEventData;

@@ -3,8 +3,7 @@ import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation.ts';
-import {useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
+import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
 
 export const ForumCategoriesScreenSearchMenu = () => {
   const [visible, setVisible] = React.useState(false);

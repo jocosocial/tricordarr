@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {EventStackComponents, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 

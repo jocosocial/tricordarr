@@ -1,7 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
-import {ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {AppView} from '../../../Views/AppView';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {ForumCreateForm} from '../../../Forms/Forum/ForumCreateForm.tsx';

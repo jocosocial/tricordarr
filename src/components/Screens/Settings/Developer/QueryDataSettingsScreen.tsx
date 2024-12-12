@@ -3,8 +3,10 @@ import {AppView} from '../../../Views/AppView.tsx';
 import {RefreshControl, ScrollView} from 'react-native';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SettingsStackParamList} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation.ts';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {Query, useQueryClient} from '@tanstack/react-query';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import JSONTree from 'react-native-json-tree';
