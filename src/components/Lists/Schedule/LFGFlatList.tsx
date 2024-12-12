@@ -20,6 +20,8 @@ interface LFGFlatListProps {
   hasNextPage?: boolean;
   handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
+  renderItem?: ({item}: {item: FezData}) => React.JSX.Element;
+  showReportButton?: boolean;
 }
 
 export const LFGFlatList = ({
@@ -31,20 +33,24 @@ export const LFGFlatList = ({
   handleLoadNext,
   handleLoadPrevious,
   hasNextPage,
+  renderItem,
+  showReportButton,
+  listHeader,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
-  const renderItem = useCallback(
+  const renderItemDefault = useCallback(
     ({item}: {item: FezData}) => {
       return (
         <LfgCard
           lfg={item}
           showDay={true}
           onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezID})}
+          showReportButton={showReportButton}
         />
       );
     },
-    [navigation],
+    [navigation, showReportButton],
   );
 
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);
@@ -54,7 +60,7 @@ export const LFGFlatList = ({
       listRef={listRef}
       keyExtractor={keyExtractor}
       items={items}
-      renderItem={renderItem}
+      renderItem={renderItem || renderItemDefault}
       separator={separator}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
@@ -62,6 +68,7 @@ export const LFGFlatList = ({
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
       estimatedItemSize={161}
+      listHeader={listHeader}
     />
   );
 };

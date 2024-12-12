@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
@@ -26,9 +26,12 @@ import {FezListEndpoints} from '../../../libraries/Types';
 
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;
+  enableFilters?: boolean;
+  showReportButton?: boolean;
+  listHeader?: ReactElement;
 }
 
-export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
+export const LfgListScreen = ({endpoint, enableFilters = true, showReportButton, listHeader}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
@@ -54,13 +57,17 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <LfgCruiseDayFilterMenu />
-          <LfgFilterMenu />
+          {enableFilters && (
+            <>
+              <LfgCruiseDayFilterMenu />
+              <LfgFilterMenu />
+            </>
+          )}
           <LfgListActionsMenu />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn]);
+  }, [enableFilters, isLoggedIn]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
@@ -139,6 +146,8 @@ export const LfgListScreen = ({endpoint}: LfgJoinedScreenProps) => {
         onScrollThreshold={onScrollThreshold}
         handleLoadNext={fetchNextPage}
         hasNextPage={hasNextPage}
+        showReportButton={showReportButton}
+        listHeader={listHeader}
       />
       <LfgFAB showLabel={showFabLabel} />
     </AppView>

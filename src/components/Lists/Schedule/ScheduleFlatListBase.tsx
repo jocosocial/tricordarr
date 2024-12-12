@@ -61,7 +61,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   }, [items, separator]);
 
   const renderListFooter = useCallback(() => {
-    if (items.length === 0) {
+    if (items.length <= 1) {
       return <></>;
     }
     if (hasNextPage) {
