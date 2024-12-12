@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {MainScreen} from '../../Screens/Main/MainScreen';
+import {TodayScreen} from '../../Screens/Main/TodayScreen.tsx';
 import {SettingsStackNavigator, SettingsStackParamList} from './SettingsStackNavigator.tsx';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
@@ -75,7 +75,7 @@ export const MainStackNavigator = () => {
 
   return (
     <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
-      <MainStack.Screen name={MainStackComponents.mainScreen} component={MainScreen} options={{title: 'Today'}} />
+      <MainStack.Screen name={MainStackComponents.mainScreen} component={TodayScreen} options={{title: 'Today'}} />
       <MainStack.Screen
         name={MainStackComponents.mainSettingsScreen}
         component={SettingsStackNavigator}

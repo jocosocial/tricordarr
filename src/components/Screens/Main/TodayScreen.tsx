@@ -27,7 +27,7 @@ import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
-export const MainScreen = ({navigation}: Props) => {
+export const TodayScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
   // These queries are disabled to prevent bombarding the server on app launch. Some will fire anyway such as themes or
   // announcements but typically have a higher than usual stale time.
