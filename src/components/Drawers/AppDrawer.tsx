@@ -86,6 +86,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => handleDrawerNav('tricordarr://photostream')}
                 />
               )}
+              {/*This is Beta!*/}
               {hasVerified && appConfig.enableDeveloperOptions && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
