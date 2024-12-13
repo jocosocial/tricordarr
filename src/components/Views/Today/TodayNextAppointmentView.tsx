@@ -4,12 +4,6 @@ import React from 'react';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 import {NextLFGCard} from '../../Cards/MainScreen/NextLFGCard.tsx';
 
-interface NextEvent {
-  startTime: Date;
-  id: string;
-  type: 'lfg' | 'event';
-}
-
 export const TodayNextAppointmentView = () => {
   const {data} = useUserNotificationDataQuery();
 
@@ -17,49 +11,34 @@ export const TodayNextAppointmentView = () => {
     return <></>;
   }
 
-  const nextEvent: NextEvent | undefined =
-    data.nextFollowedEventTime && data.nextFollowedEventID
-      ? {
-          startTime: new Date(data.nextFollowedEventTime),
-          id: data.nextFollowedEventID,
-          type: 'event',
-        }
-      : undefined;
-  // LFG also includes PersonalEvent now.
-  const nextLfg: NextEvent | undefined =
-    data.nextJoinedLFGTime && data.nextJoinedLFGID
-      ? {
-          startTime: new Date(data.nextJoinedLFGTime),
-          id: data.nextJoinedLFGID,
-          type: 'lfg',
-        }
-      : undefined;
+  /**
+   * Show the next of the two given dates. Or both if they are the same
+   */
+  const shouldShow = (a?: string, b?: string): boolean => {
+    // Make them both dates if they exist, else undefined which is basically false-y.
+    const aTime = a ? new Date(a) : undefined;
+    const bTime = b ? new Date(b) : undefined;
 
-  const getNextAppointment = () => {
-    if (nextEvent) {
-      if (nextLfg) {
-        return [nextEvent, nextLfg].sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0];
+    // The first date is the one we are looking to show, and we're comparing it against the second.
+    if (aTime) {
+      if (bTime) {
+        return aTime.getTime() <= bTime.getTime();
       }
-      return nextEvent;
-    } else if (nextLfg) {
-      return nextLfg;
+      return true;
     }
-    return;
+    return false;
   };
-
-  const nextAppointment = getNextAppointment();
-  console.log(nextAppointment);
 
   return (
     <>
-      {nextAppointment?.type === 'event' && (
+      {data.nextFollowedEventID && shouldShow(data.nextFollowedEventTime, data.nextJoinedLFGTime) && (
         <PaddedContentView>
-          <NextEventCard eventID={nextAppointment.id} />
+          <NextEventCard eventID={data.nextFollowedEventID} />
         </PaddedContentView>
       )}
-      {nextAppointment?.type === 'lfg' && (
+      {data.nextJoinedLFGID && shouldShow(data.nextJoinedLFGTime, data.nextFollowedEventTime) && (
         <PaddedContentView>
-          <NextLFGCard lfgID={nextAppointment.id} />
+          <NextLFGCard lfgID={data.nextJoinedLFGID} />
         </PaddedContentView>
       )}
     </>
