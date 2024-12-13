@@ -1,12 +1,12 @@
 import React from 'react';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase';
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {StyleSheet} from 'react-native';
 
 interface EventCardProps {
-  eventData: PersonalEventData;
+  eventData: FezData;
   onPress?: () => void;
   showDay?: boolean;
   marker?: ScheduleCardMarkerType;

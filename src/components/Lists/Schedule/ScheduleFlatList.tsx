@@ -1,4 +1,4 @@
-import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
@@ -12,6 +12,7 @@ import useDateTime from '../../../libraries/DateTime.ts';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 import {FlashList} from '@shopify/flash-list';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
@@ -25,7 +26,7 @@ interface ScheduleFlatListProps<TItem> {
   onScrollThreshold?: (condition: boolean) => void;
 }
 
-export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEventData>({
+export const ScheduleFlatList = <TItem extends EventData | FezData>({
   items,
   refreshControl,
   separator = 'time',
@@ -42,9 +43,9 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
   const renderItem = useCallback(
     ({item}: {item: TItem}) => {
       const marker = getScheduleItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
-      return (
-        <>
-          {'fezID' in item && (
+      if ('fezID' in item) {
+        if (FezType.isLFGType(item.fezType)) {
+          return (
             <LfgCard
               lfg={item}
               onPress={() =>
@@ -55,26 +56,27 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
               marker={marker}
               showLfgIcon={true}
             />
-          )}
-          {'eventID' in item && (
-            <EventCardListItem
-              eventData={item}
-              onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
-              marker={marker}
-              setRefreshing={setRefreshing}
-            />
-          )}
-          {'personalEventID' in item && (
+          );
+        } else {
+          return (
             <PersonalEventCardListItem
               eventData={item}
-              onPress={() =>
-                commonNavigation.push(CommonStackComponents.personalEventScreen, {eventID: item.personalEventID})
-              }
+              onPress={() => commonNavigation.push(CommonStackComponents.personalEventScreen, {eventID: item.fezID})}
               marker={marker}
             />
-          )}
-        </>
-      );
+          );
+        }
+      } else if ('eventID' in item) {
+        return (
+          <EventCardListItem
+            eventData={item}
+            onPress={() => commonNavigation.push(CommonStackComponents.eventScreen, {eventID: item.eventID})}
+            marker={marker}
+            setRefreshing={setRefreshing}
+          />
+        );
+      }
+      return <></>;
     },
     [appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate, setRefreshing, commonNavigation],
   );
@@ -82,8 +84,6 @@ export const ScheduleFlatList = <TItem extends EventData | FezData | PersonalEve
   const keyExtractor = (item: TItem) => {
     if ('fezID' in item) {
       return item.fezID;
-    } else if ('personalEventID' in item) {
-      return item.personalEventID;
     } else {
       return item.eventID;
     }

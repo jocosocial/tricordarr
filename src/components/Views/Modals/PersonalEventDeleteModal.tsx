@@ -5,7 +5,7 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
 import React from 'react';
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
@@ -18,7 +18,7 @@ const ModalContent = () => {
 };
 
 interface PersonalEventDeleteModalProps {
-  personalEvent: PersonalEventData;
+  personalEvent: FezData;
   handleNavigation?: boolean;
 }
 
@@ -33,7 +33,7 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
   const onSubmit = () => {
     deleteMutation.mutate(
       {
-        personalEventID: personalEvent.personalEventID,
+        personalEventID: personalEvent.fezID,
       },
       {
         onSuccess: async () => {

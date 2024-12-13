@@ -1,7 +1,7 @@
 import React, {Dispatch, ReactNode, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
@@ -10,7 +10,7 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 
 interface PersonalEventCardActionsMenuProps {
   anchor: React.JSX.Element;
-  eventData: PersonalEventData;
+  eventData: FezData;
   menuVisible: boolean;
   setMenuVisible: Dispatch<SetStateAction<boolean>>;
   setRefreshing?: Dispatch<SetStateAction<boolean>>;
@@ -55,7 +55,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView personalEvent={props.eventData} />)}
+        onPress={() => handleModal(<ReportModalView fez={props.eventData} />)}
       />
     </Menu>
   );

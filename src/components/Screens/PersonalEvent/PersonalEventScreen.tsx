@@ -19,6 +19,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
 import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
 import {UserChipsListItem} from '../../Lists/Items/UserChipsListItem.tsx';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -105,25 +106,25 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
                 description={getDurationString(eventData.startTime, eventData.endTime, eventData.timeZoneID, true)}
                 title={'Date'}
               />
-              {eventData.location && (
-                <DataFieldListItem
+              <DataFieldListItem
+                itemStyle={styles.item}
+                left={() => getIcon(AppIcons.map)}
+                description={eventData.location}
+                title={'Location'}
+                onPress={handleLocation}
+              />
+              <DataFieldListItem
+                itemStyle={styles.item}
+                left={() => getIcon(AppIcons.description)}
+                description={eventData.info}
+                title={'Description'}
+              />
+              {eventData.fezType === FezType.privateEvent && (
+                <UserChipsListItem
+                  users={eventData.members?.participants}
                   itemStyle={styles.item}
-                  left={() => getIcon(AppIcons.map)}
-                  description={eventData.location}
-                  title={'Location'}
-                  onPress={handleLocation}
+                  title={'Participants'}
                 />
-              )}
-              {eventData.description && (
-                <DataFieldListItem
-                  itemStyle={styles.item}
-                  left={() => getIcon(AppIcons.description)}
-                  description={eventData.description}
-                  title={'Description'}
-                />
-              )}
-              {eventData.participants.length > 0 && (
-                <UserChipsListItem users={eventData.participants} itemStyle={styles.item} title={'Participants'} />
               )}
             </ListSection>
           </PaddedContentView>

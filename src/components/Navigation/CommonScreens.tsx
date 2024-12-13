@@ -9,7 +9,6 @@ import {
   FezData,
   ForumData,
   ForumListData,
-  PersonalEventData,
   PostData,
   ProfilePublicData,
   UserHeader,
@@ -179,7 +178,7 @@ export type CommonStackParamList = {
   AccessibilitySettingsScreen: undefined;
   ImageSettingsScreen: undefined;
   PersonalEventEditScreen: {
-    personalEvent: PersonalEventData;
+    personalEvent: FezData;
   };
   PersonalEventCreateScreen: {
     cruiseDay?: number;

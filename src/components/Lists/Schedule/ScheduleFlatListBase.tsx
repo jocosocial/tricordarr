@@ -4,7 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
-import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
 import {styleDefaults} from '../../../styles';
@@ -27,7 +27,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   hasNextPage?: boolean;
 }
 
-export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
+export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   items,
   separator,
   refreshControl,

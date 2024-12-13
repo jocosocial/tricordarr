@@ -1,6 +1,6 @@
 import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from './Types';
 import {InfiniteData} from '@tanstack/react-query';
-import {EventData, FezData, FezListData, PersonalEventData} from './Structs/ControllerStructs.tsx';
+import {EventData, FezData, FezListData} from './Structs/ControllerStructs.tsx';
 import {EventType} from './Enums/EventType.ts';
 import {calcCruiseDayTime, getTimeZoneOffset} from './DateTime.ts';
 import {parseISO} from 'date-fns';
@@ -20,8 +20,8 @@ export const buildScheduleList = (
   lfgJoinedData?: InfiniteData<FezListData>,
   lfgOpenData?: InfiniteData<FezListData>,
   eventData?: EventData[],
-  personalEventData?: PersonalEventData[],
-): (FezData | EventData | PersonalEventData)[] => {
+  personalEventData?: InfiniteData<FezListData>,
+): (FezData | EventData)[] => {
   let anyPersonalFilter =
     filterSettings.eventLfgFilter || filterSettings.eventFavoriteFilter || filterSettings.eventPersonalFilter;
 
@@ -51,9 +51,12 @@ export const buildScheduleList = (
     });
   }
 
-  let personalEventList: PersonalEventData[] = [];
+  let personalEventList: FezData[] = [];
   if (filterSettings.eventPersonalFilter || !anyPersonalFilter) {
-    personalEventList = personalEventData || [];
+    // personalEventList = personalEventData.pages.map || [];
+    if (personalEventData?.pages) {
+      personalEventData.pages.map(page => (personalEventList = personalEventList.concat(page.fezzes)));
+    }
   }
 
   // The order of the combinedList is important. In the event of a tie for start time, personalEvents should
@@ -80,7 +83,7 @@ export const buildScheduleList = (
  */
 export const getScheduleScrollIndex = (
   nowDayTime: CruiseDayTime,
-  itemList: (EventData | FezData | PersonalEventData)[],
+  itemList: (EventData | FezData)[],
   cruiseStartDate: Date,
   cruiseEndDate: Date,
   portTimeZoneID: string,
@@ -149,7 +152,7 @@ export const getScheduleScrollIndex = (
 };
 
 export const getScheduleItemMarker = (
-  item: EventData | FezData | PersonalEventData,
+  item: EventData | FezData,
   portTimeZoneID: string,
   nowDate: Date,
   startDate: Date,

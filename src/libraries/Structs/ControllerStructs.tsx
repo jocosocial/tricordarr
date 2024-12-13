@@ -826,34 +826,34 @@ export interface PhotostreamUploadData {
   locationName?: string;
 }
 
-export interface PersonalEventData {
-  personalEventID: string;
-  title: string;
-  description?: string;
-  startTime: string;
-  endTime: string;
-  timeZone: string;
-  timeZoneID: string;
-  location?: string;
-  lastUpdateTime: string;
-  owner: UserHeader;
-  participants: UserHeader[];
-}
-
-export interface PersonalEventContentData {
-  /// The title for the PersonalEvent.
-  title: string;
-  /// A description of the PersonalEvent.
-  description?: string;
-  /// The starting time for the PersonalEvent.
-  startTime: string;
-  /// The ending time for the PersonalEvent.
-  endTime: string;
-  /// The location for the PersonalEvent.
-  location?: string;
-  /// Users to invite to this PersonalEvent.
-  participants: string[];
-}
+// export interface PersonalEventData {
+//   personalEventID: string;
+//   title: string;
+//   description?: string;
+//   startTime: string;
+//   endTime: string;
+//   timeZone: string;
+//   timeZoneID: string;
+//   location?: string;
+//   lastUpdateTime: string;
+//   owner: UserHeader;
+//   participants: UserHeader[];
+// }
+//
+// export interface PersonalEventContentData {
+//   /// The title for the PersonalEvent.
+//   title: string;
+//   /// A description of the PersonalEvent.
+//   description?: string;
+//   /// The starting time for the PersonalEvent.
+//   startTime: string;
+//   /// The ending time for the PersonalEvent.
+//   endTime: string;
+//   /// The location for the PersonalEvent.
+//   location?: string;
+//   /// Users to invite to this PersonalEvent.
+//   participants: string[];
+// }
 
 interface SwiftarrClientConfigV1 {
   latestVersion: string;

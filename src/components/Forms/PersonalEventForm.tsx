@@ -1,4 +1,4 @@
-import {PersonalEventFormValues} from '../../libraries/Types/FormValues.ts';
+import {FezFormValues} from '../../libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {DateValidation, InfoStringValidation} from '../../libraries/ValidationSchema.ts';
@@ -18,8 +18,8 @@ import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
 import {useModal} from '../Context/Contexts/ModalContext.ts';
 
 interface PersonalEventFormProps {
-  onSubmit: (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => void;
-  initialValues: PersonalEventFormValues;
+  onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
+  initialValues: FezFormValues;
   buttonText?: string;
 }
 

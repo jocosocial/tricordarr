@@ -1,4 +1,4 @@
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -8,10 +8,11 @@ import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {EventStackComponents, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
-  event: PersonalEventData;
+  event: FezData;
 }
 
 export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActionsMenuProps) => {
@@ -44,14 +45,14 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView personalEvent={props.event} />)}
+        onPress={() => handleModal(<ReportModalView fez={props.event} />)}
       />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
         onPress={() => {
           closeMenu();
-          navigation.push(EventStackComponents.personalEventHelpScreen);
+          navigation.push(CommonStackComponents.scheduleHelpScreen);
         }}
       />
     </Menu>
