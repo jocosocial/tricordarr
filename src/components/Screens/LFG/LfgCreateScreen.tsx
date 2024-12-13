@@ -63,6 +63,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
       hours: getApparentCruiseDate(startDate, adjustedCruiseDayToday).getHours() + 1,
       minutes: 0,
     },
+    initialUsers: [],
   };
 
   return (

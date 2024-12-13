@@ -1,8 +1,10 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useCallback} from 'react';
 import {List} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {TextStyle, ViewStyle} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
 
 interface DataFieldListItemProps {
   title?: string;
@@ -11,7 +13,8 @@ interface DataFieldListItemProps {
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
   itemStyle?: ViewStyle;
-  left?: () => ReactNode;
+  // left?: () => ReactNode;
+  icon?: string;
 }
 
 /**
@@ -24,10 +27,10 @@ export const DataFieldListItem = ({
   titleStyle,
   descriptionStyle,
   itemStyle,
-  left,
+  icon,
 }: DataFieldListItemProps) => {
   const {commonStyles} = useStyles();
-  const styles = {
+  const styles = StyleSheet.create({
     title: {
       ...commonStyles.fontSizeLabel,
       ...titleStyle,
@@ -36,12 +39,24 @@ export const DataFieldListItem = ({
       ...commonStyles.fontSizeDefault,
       ...descriptionStyle,
     },
-  };
+    item: {
+      ...commonStyles.paddingHorizontal,
+      ...itemStyle,
+    },
+    icon: {
+      ...commonStyles.paddingTopSmall,
+    },
+  });
+
+  const getIcon = useCallback(
+    () => (icon ? <AppIcon icon={icon} style={styles.icon} /> : undefined),
+    [icon, styles.icon],
+  );
 
   return (
     <List.Item
-      left={left}
-      style={itemStyle}
+      left={getIcon}
+      style={styles.item}
       titleStyle={styles.title}
       descriptionStyle={styles.description}
       description={description}

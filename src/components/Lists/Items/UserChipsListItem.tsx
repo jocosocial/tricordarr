@@ -36,6 +36,10 @@ export const UserChipsListItem = ({
     icon: {
       ...commonStyles.paddingTopSmall,
     },
+    item: {
+      ...commonStyles.paddingHorizontal,
+      ...itemStyle,
+    },
   });
 
   const getIcon = () => <AppIcon icon={icon} style={styles.icon} />;
@@ -61,7 +65,7 @@ export const UserChipsListItem = ({
       onPress={onPress}
       title={title}
       titleStyle={styles.title}
-      style={itemStyle}
+      style={styles.item}
       description={userChips}
       left={() => getIcon()}
     />
