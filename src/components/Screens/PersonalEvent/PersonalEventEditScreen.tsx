@@ -77,6 +77,7 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
       hours: startDate.getHours(),
       minutes: startDate.getMinutes(),
     },
+    initialUsers: [],
   };
 
   return (

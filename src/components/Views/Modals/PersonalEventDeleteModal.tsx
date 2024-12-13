@@ -42,7 +42,9 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
           }
           setModalVisible(false);
           setInfoMessage('Successfully deleted this event.');
-          await queryClient.invalidateQueries(['/personalevents']);
+          // @TODO do the forum thingy
+          await queryClient.invalidateQueries(['/fez/owner']);
+          await queryClient.invalidateQueries(['/fez/joined']);
         },
       },
     );

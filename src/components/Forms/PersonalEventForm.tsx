@@ -11,7 +11,6 @@ import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
 import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
-import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {TextInput} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
@@ -26,6 +25,7 @@ interface PersonalEventFormProps {
 const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   startDate: DateValidation,
+  info: InfoStringValidation,
 });
 
 const locationHelpContent = [
@@ -54,8 +54,8 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} />
           <TextField
             viewStyle={styles.inputContainer}
-            name={'description'}
-            label={'Description'}
+            name={'info'}
+            label={'Info'}
             multiline={true}
             numberOfLines={3}
           />
@@ -74,14 +74,6 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
           </View>
           <View style={[commonStyles.paddingBottom]}>
             <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
-          </View>
-          <View style={[commonStyles.paddingBottom]}>
-            <UserChipsField
-              name={'participants'}
-              label={'Participants'}
-              labelSubtext={'You can only add users that have favorited you.'}
-              searchFavorersOnly={true}
-            />
           </View>
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}

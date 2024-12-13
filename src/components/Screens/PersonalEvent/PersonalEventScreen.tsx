@@ -86,6 +86,8 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
+  console.log(eventData.fezType);
+
   return (
     <AppView>
       <ScrollingContentView

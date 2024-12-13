@@ -3,7 +3,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import React from 'react';
-import {PersonalEventFormValues} from '../../../libraries/Types/FormValues.ts';
+import {FezFormValues} from '../../../libraries/Types/FormValues.ts';
 import {usePersonalEventCreateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
@@ -11,6 +11,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
@@ -18,42 +19,52 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
   const queryClient = useQueryClient();
   const {startDate, adjustedCruiseDayToday} = useCruise();
 
-  const onSubmit = (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => {
+  const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);
 
     createMutation.mutate(
       {
         personalEventContentData: {
           title: values.title,
-          description: values.description,
+          info: values.info,
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
           location: values.location,
-          participants: values.participants.map(p => p.userID),
+          minCapacity: Number(values.minCapacity),
+          maxCapacity: Number(values.maxCapacity),
+          initialUsers: [],
+          // @TODO determine based on the participation
+          fezType: FezType.privateEvent,
         },
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries(['/personalevents']);
+          // @TODO the thingy
+          await queryClient.invalidateQueries(['/fez/owner']);
+          await queryClient.invalidateQueries(['/fez/joined']);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
       },
     );
   };
-  const initialValues: PersonalEventFormValues = {
+  const initialValues: FezFormValues = {
     title: '',
     startDate: getApparentCruiseDate(
       startDate,
       route.params.cruiseDay !== undefined ? route.params.cruiseDay : adjustedCruiseDayToday,
     ),
     duration: '30',
-    description: undefined,
+    info: '',
     startTime: {
       hours: new Date().getHours() + 1,
       minutes: 0,
     },
-    participants: [],
+    // @TODO
+    fezType: FezType.personalEvent,
+    minCapacity: '0',
+    maxCapacity: '1',
+    initialUsers: [],
   };
   return (
     <AppView>

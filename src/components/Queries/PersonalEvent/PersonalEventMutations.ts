@@ -29,7 +29,7 @@ export const usePersonalEventCreateMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   const personalEventCreateQueryHandler = async ({personalEventContentData}: PersonalEventCreateMutationProps) => {
-    return await apiPost<FezData, FezContentData>('/personalevents/create', personalEventContentData);
+    return await apiPost<FezData, FezContentData>('/fez/create', personalEventContentData);
   };
 
   return useTokenAuthMutation(personalEventCreateQueryHandler);

@@ -125,16 +125,6 @@ export interface StartTime {
   minutes: number;
 }
 
-export interface PersonalEventFormValues {
-  title: string;
-  description: string;
-  location: string;
-  participants: UserHeader[];
-  startDate: Date;
-  duration: string;
-  startTime: StartTime;
-}
-
 export interface SchedImportFormValues {
   username: string;
 }

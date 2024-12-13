@@ -82,6 +82,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
       hours: startDate.getHours(),
       minutes: startDate.getMinutes(),
     },
+    initialUsers: [],
   };
 
   return (
