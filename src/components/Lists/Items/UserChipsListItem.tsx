@@ -14,6 +14,7 @@ interface UserChipsListItemProps {
   titleStyle?: TextStyle;
   itemStyle?: ViewStyle;
   icon?: string;
+  onPress?: () => void;
 }
 
 export const UserChipsListItem = ({
@@ -22,6 +23,7 @@ export const UserChipsListItem = ({
   users = [],
   title = 'Users',
   icon = AppIcons.group,
+  onPress,
 }: UserChipsListItemProps) => {
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
@@ -56,6 +58,7 @@ export const UserChipsListItem = ({
 
   return (
     <List.Item
+      onPress={onPress}
       title={title}
       titleStyle={styles.title}
       style={itemStyle}

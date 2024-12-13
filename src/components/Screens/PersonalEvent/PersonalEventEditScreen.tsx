@@ -12,7 +12,6 @@ import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libr
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {
@@ -32,7 +31,7 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
           location: values.location,
-          fezType: FezType.privateEvent, // @TODO
+          fezType: values.fezType,
           minCapacity: Number(values.minCapacity),
           maxCapacity: Number(values.maxCapacity),
           initialUsers: [],
@@ -84,7 +83,7 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          <PersonalEventForm initialValues={initialValues} onSubmit={onSubmit} />
+          <PersonalEventForm initialValues={initialValues} onSubmit={onSubmit} create={false} />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>

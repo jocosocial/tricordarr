@@ -30,11 +30,10 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
           location: values.location,
-          minCapacity: Number(values.minCapacity),
-          maxCapacity: Number(values.maxCapacity),
-          initialUsers: [],
-          // @TODO determine based on the participation
-          fezType: FezType.privateEvent,
+          minCapacity: 0,
+          maxCapacity: 0,
+          initialUsers: values.initialUsers.map(u => u.userID),
+          fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.privateEvent,
         },
       },
       {
@@ -60,10 +59,9 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
       hours: new Date().getHours() + 1,
       minutes: 0,
     },
-    // @TODO
     fezType: FezType.personalEvent,
     minCapacity: '0',
-    maxCapacity: '1',
+    maxCapacity: '0',
     initialUsers: [],
   };
   return (

@@ -275,15 +275,22 @@ export namespace FezData {
    * @param fez This particular chat.
    */
   export const getParticipantLabel = (fez: FezData) => {
+    var minimumSuffix = '';
+    if (fez.minParticipants !== 0) {
+      minimumSuffix = `, ${fez.minParticipants} minimum`;
+    }
     if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} attendees, ${fez.minParticipants} minimum`;
+      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
     }
     const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} participants`;
+    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
+      'participant',
+      fez.maxParticipants,
+    )}`;
     if (fez.participantCount >= fez.maxParticipants) {
       attendeeCountString = 'Full';
     }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted, ${fez.minParticipants} minimum`;
+    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
   };
 
   const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {

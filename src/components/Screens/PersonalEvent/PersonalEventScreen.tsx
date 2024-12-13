@@ -86,7 +86,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
-  console.log(eventData.fezType);
+  console.log(eventData);
 
   return (
     <AppView>
@@ -126,6 +126,11 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
                   users={eventData.members?.participants}
                   itemStyle={styles.item}
                   title={'Participants'}
+                  onPress={() =>
+                    navigation.push(CommonStackComponents.lfgParticipationScreen, {
+                      fezID: eventData.fezID,
+                    })
+                  }
                 />
               )}
             </ListSection>

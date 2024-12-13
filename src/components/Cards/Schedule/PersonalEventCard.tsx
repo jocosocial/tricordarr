@@ -4,6 +4,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {useAppTheme} from '../../../styles/Theme';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
 import {StyleSheet} from 'react-native';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface EventCardProps {
   eventData: FezData;
@@ -44,6 +45,11 @@ export const PersonalEventCard = ({
       onLongPress={onLongPress}
       marker={marker}
       titleHeader={titleHeader}
+      participation={
+        eventData.members && eventData.fezType === FezType.privateEvent
+          ? FezData.getParticipantLabel(eventData)
+          : undefined
+      }
     />
   );
 };
