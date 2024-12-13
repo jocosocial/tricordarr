@@ -6,16 +6,21 @@ import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
 
 export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {lfg, setLfg} = useTwitarr();
+  const {data} = useFezQuery({
+    fezID: route.params.fezID,
+  });
+  const lfg = data?.pages[0];
+  const queryClient = useQueryClient();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -25,8 +30,8 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: response => {
-          setLfg(response.data);
+        onSuccess: async () => {
+          await queryClient.invalidateQueries([`/fez/${route.params.fezID}`]);
           navigation.goBack();
         },
       },

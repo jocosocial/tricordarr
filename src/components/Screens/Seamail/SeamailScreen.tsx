@@ -11,7 +11,7 @@ import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
@@ -54,7 +54,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
-  } = useSeamailQuery({fezID: route.params.fezID});
+  } = useFezQuery({fezID: route.params.fezID});
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

@@ -17,7 +17,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {WebSocketState} from '../../../libraries/Network/Websockets';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -30,7 +30,7 @@ export const SeamailDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez, dispatchFezList} = useTwitarr();
   const {fezSocket} = useSocket();
-  const {refetch, isRefetching} = useSeamailQuery({fezID: route.params.fezID});
+  const {refetch, isRefetching} = useFezQuery({fezID: route.params.fezID});
   const {profilePublicData} = useUserData();
 
   const onParticipantRemove = (fezID: string, userID: string) => {

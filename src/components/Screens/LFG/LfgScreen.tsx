@@ -4,7 +4,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {ListSection} from '../../Lists/ListSection';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -39,7 +39,7 @@ import {useQueryClient} from '@tanstack/react-query';
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
 export const LfgScreen = ({navigation, route}: Props) => {
-  const {data, refetch, isFetching} = useSeamailQuery({
+  const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.fezID,
   });
   const {commonStyles} = useStyles();

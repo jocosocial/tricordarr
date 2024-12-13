@@ -9,7 +9,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
@@ -58,7 +58,7 @@ export const LfgChatScreen = ({route, navigation}: Props) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     // isError,
-  } = useSeamailQuery({fezID: route.params.fezID});
+  } = useFezQuery({fezID: route.params.fezID});
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

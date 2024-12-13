@@ -13,24 +13,21 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {guessDeckNumber} from '../../../libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
-import {usePersonalEventQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.ts';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
 import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
 import {UserChipsListItem} from '../../Lists/Items/UserChipsListItem.tsx';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
 export const PersonalEventScreen = ({navigation, route}: Props) => {
-  const {
-    data: eventData,
-    refetch,
-    isFetching,
-  } = usePersonalEventQuery({
-    eventID: route.params.eventID,
+  const {data, refetch, isFetching} = useFezQuery({
+    fezID: route.params.eventID,
   });
+  const eventData = data?.pages[0];
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
@@ -82,11 +79,9 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
     });
   }, [getNavButtons, navigation]);
 
-  if (!eventData) {
+  if (!data) {
     return <LoadingView />;
   }
-
-  console.log(eventData);
 
   return (
     <AppView>

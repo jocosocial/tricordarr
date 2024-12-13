@@ -2,7 +2,6 @@ import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {TitleTag} from '../../Text/Tags/TitleTag';
@@ -11,7 +10,7 @@ import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
@@ -23,21 +22,27 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {LfgLeaveModal} from '../../Views/Modals/LfgLeaveModal';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
 export const LfgParticipationScreen = ({navigation, route}: Props) => {
-  const {lfg, setLfg} = useTwitarr();
-  const {refetch} = useSeamailQuery({fezID: route.params.fezID});
+  const {data, refetch, isFetching} = useFezQuery({
+    fezID: route.params.fezID,
+  });
+  const lfg = data?.pages[0];
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
+  const queryClient = useQueryClient();
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    refetch().then(() => setRefreshing(false));
+    await refetch();
+    setRefreshing(false);
   };
 
   const onParticipantRemove = (fezData: FezData, userID: string) => {
@@ -56,8 +61,8 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: response => {
-          setLfg(response.data);
+        onSuccess: async () => {
+          await queryClient.invalidateQueries([`/fez/${fezData.fezID}`]);
         },
         onSettled: () => setRefreshing(false),
       },
@@ -94,14 +99,14 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
           action: 'join',
         },
         {
-          onSuccess: response => {
-            setLfg(response.data);
+          onSuccess: async () => {
+            await queryClient.invalidateQueries([`/fez/${lfg.fezID}`]);
           },
           onSettled: () => setRefreshing(false),
         },
       );
     }
-  }, [lfg, membershipMutation, profilePublicData, setLfg, setModalContent, setModalVisible]);
+  }, [lfg, membershipMutation, profilePublicData, queryClient, setModalContent, setModalVisible]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -121,21 +126,27 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView
+        refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
         <PaddedContentView>
           <TouchableOpacity onLongPress={() => Clipboard.setString(lfg.title)}>
             <TitleTag>Title</TitleTag>
             <Text>{lfg.title}</Text>
           </TouchableOpacity>
         </PaddedContentView>
-        <PaddedContentView>
-          <TitleTag>Minimum Needed</TitleTag>
-          <Text>{lfg.minParticipants}</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <TitleTag>Maximum Allowed</TitleTag>
-          <Text>{lfg.maxParticipants === 0 ? 'Unlimited' : lfg.maxParticipants}</Text>
-        </PaddedContentView>
+        {FezType.isLFGType(lfg.fezType) && (
+          <>
+            <PaddedContentView>
+              <TitleTag>Minimum Needed</TitleTag>
+              <Text>{lfg.minParticipants}</Text>
+            </PaddedContentView>
+
+            <PaddedContentView>
+              <TitleTag>Maximum Allowed</TitleTag>
+              <Text>{lfg.maxParticipants === 0 ? 'Unlimited' : lfg.maxParticipants}</Text>
+            </PaddedContentView>
+          </>
+        )}
         <PaddedContentView padBottom={false}>
           <TitleTag>Participants ({lfg.participantCount})</TitleTag>
         </PaddedContentView>

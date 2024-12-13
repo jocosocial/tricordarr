@@ -1,5 +1,5 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery.ts';
-import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthPaginationQuery} from '../TokenAuthQuery.ts';
+import {FezListData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface FezJoinedQueryParams {
@@ -43,8 +43,4 @@ export const usePersonalEventsQuery = ({
     ...(matchID && {matchID: matchID}),
     ...(lfgTypes !== undefined && {lfgtypes: lfgTypes}),
   });
-};
-
-export const usePersonalEventQuery = ({eventID}: {eventID: string}) => {
-  return useTokenAuthQuery<FezData>(`/fez/${eventID}`);
 };

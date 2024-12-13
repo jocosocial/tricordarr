@@ -6,7 +6,7 @@ import {FezListEndpoints} from '../../../libraries/Types';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
-interface SeamailQueryProps {
+interface FezQueryProps {
   fezID: string;
 }
 
@@ -26,7 +26,7 @@ export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailList
   return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, queryParams);
 };
 
-export const useSeamailQuery = ({fezID}: SeamailQueryProps) => {
+export const useFezQuery = ({fezID}: FezQueryProps) => {
   return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`);
 };
 

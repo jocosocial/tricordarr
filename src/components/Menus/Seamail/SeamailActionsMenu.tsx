@@ -11,7 +11,7 @@ import {useFezMuteMutation} from '../../Queries/Fez/FezMuteMutations.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {FezListActions} from '../../Reducers/Fez/FezListReducers';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
+import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 
@@ -28,7 +28,7 @@ export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: Seama
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
   const {dispatchFezList, setFez} = useTwitarr();
-  const {remove} = useSeamailQuery({fezID: fez.fezID});
+  const {remove} = useFezQuery({fezID: fez.fezID});
   const commonNavigation = useCommonStack();
 
   const openMenu = () => setVisible(true);
