@@ -11,6 +11,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {useQueryClient} from '@tanstack/react-query';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface FezChatActionsMenuProps {
   fez: FezData;
@@ -86,7 +87,10 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          commonNavigation.push(CommonStackComponents.seamailHelpScreen);
+          const helpRoute = FezType.getHelpRoute(fez.fezType);
+          if (helpRoute) {
+            commonNavigation.push(helpRoute);
+          }
         }}
       />
     </Menu>

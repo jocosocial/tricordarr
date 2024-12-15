@@ -1,3 +1,5 @@
+import {CommonStackComponents} from '../../components/Navigation/CommonScreens.tsx';
+
 /**
  * Lifted from https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Enumerations/FezType.swift
  * These have to stay lower-case in the values since those are what get POST'd to the server.
@@ -80,5 +82,15 @@ export namespace FezType {
       return 'Private Event Chat';
     }
     return 'Unknown Chat';
+  };
+
+  export const getHelpRoute = (fezType: FezType) => {
+    if (FezType.isLFGType(fezType)) {
+      return CommonStackComponents.lfgHelpScreen;
+    } else if (FezType.isSeamailType(fezType)) {
+      return CommonStackComponents.seamailHelpScreen;
+    } else if (FezType.isPrivateEventType(fezType)) {
+      return CommonStackComponents.scheduleHelpScreen;
+    }
   };
 }
