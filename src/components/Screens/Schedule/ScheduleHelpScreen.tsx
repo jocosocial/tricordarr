@@ -46,7 +46,7 @@ export const ScheduleHelpScreen = () => {
         </PaddedContentView>
         <PaddedContentView>
           <ScheduleItemCardBase
-            title={'Personal Event'}
+            title={'Personal/Private Event'}
             cardStyle={{backgroundColor: theme.colors.twitarrOrange}}
             description={
               'Private calendar entries created by you within the Twitarr system for you and your friends. Useful for a single-app schedule for your day.'
@@ -103,6 +103,12 @@ export const ScheduleHelpScreen = () => {
           Performer Profiles for Shadow Cruise organizers can only be created before sailing. Long press the event in
           the Schedule screen and select Set Organizer to fill out the form. If you wish to create one while on board
           contact the TwitarrTeam for assistance. All profile content is subject to moderator review.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Personal Events'} />
+        <HelpTopicView>
+          You can add guests to your personal events. This will automatically create a Seamail chat for it. You can add
+          or remove users later on. If you have already created your personal event you cannot add users later. You'll
+          need to create a new personal event and add them at the time of creation.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>
