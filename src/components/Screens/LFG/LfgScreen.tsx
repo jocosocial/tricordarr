@@ -117,5 +117,5 @@ export const LfgScreen = ({navigation, route}: Props) => {
     };
   }, [isFocused, notificationHandler, notificationSocket]);
 
-  return <ScheduleItemScreenBase refreshing={isFetching} onRefresh={refetch} eventData={lfg} />;
+  return <ScheduleItemScreenBase refreshing={isFetching} onRefresh={refetch} eventData={lfg} showLfgChat={showChat} />;
 };

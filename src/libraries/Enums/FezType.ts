@@ -70,4 +70,15 @@ export namespace FezType {
   export const privateEventTypes: FezType[] = [FezType.privateEvent, FezType.personalEvent];
 
   export const isPrivateEventType = (fezType: FezType) => privateEventTypes.some(t => t === fezType);
+
+  export const getTitle = (fezType: FezType): string => {
+    if (FezType.isLFGType(fezType)) {
+      return 'LFG';
+    } else if (FezType.isSeamailType(fezType)) {
+      return 'Seamail';
+    } else if (FezType.isPrivateEventType(fezType)) {
+      return 'Private Event';
+    }
+    return 'Unknown';
+  };
 }
