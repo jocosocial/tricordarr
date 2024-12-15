@@ -4,7 +4,7 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu.tsx';
+import {FezChatActionsMenu} from '../../Menus/Fez/FezChatActionsMenu.tsx';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
@@ -70,7 +70,6 @@ export const FezChatScreen = ({route}: Props) => {
     setRefreshing(false);
   }, [refetch, refetchUserNotificationData]);
 
-  // @TODO rename SeamailActionsMenu to FezActionsMenu
   const getNavButtons = useCallback(() => {
     if (!fez) {
       return <></>;
@@ -78,7 +77,7 @@ export const FezChatScreen = ({route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <SeamailActionsMenu fez={fez} onRefresh={onRefresh} />
+          <FezChatActionsMenu fez={fez} onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );

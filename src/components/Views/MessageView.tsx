@@ -3,7 +3,7 @@ import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag';
-import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
+import {FezPostActionsMenu} from '../Menus/Fez/FezPostActionsMenu.tsx';
 import {FezPostData} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
 import Clipboard from '@react-native-clipboard/clipboard';
