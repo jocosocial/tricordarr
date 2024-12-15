@@ -1,7 +1,6 @@
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {getScheduleItemMarker} from '../../../libraries/Schedule.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
@@ -13,6 +12,7 @@ import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 import {FlashList} from '@shopify/flash-list';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
@@ -46,15 +46,15 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       if ('fezID' in item) {
         if (FezType.isLFGType(item.fezType)) {
           return (
-            <LfgCard
-              lfg={item}
+            <FezCard
+              fez={item}
               onPress={() =>
                 commonNavigation.push(CommonStackComponents.lfgScreen, {
                   fezID: item.fezID,
                 })
               }
               marker={marker}
-              showLfgIcon={true}
+              showIcon={true}
             />
           );
         } else {

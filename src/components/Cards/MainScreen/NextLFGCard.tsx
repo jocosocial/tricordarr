@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {useFezQuery} from '../../Queries/Fez/FezQueries';
-import {LfgCard} from '../Schedule/LfgCard';
+import {FezCard} from '../Schedule/FezCard.tsx';
 
 export const NextLFGCard = ({lfgID}: {lfgID: string}) => {
   const {data} = useFezQuery({fezID: lfgID});
@@ -11,9 +11,8 @@ export const NextLFGCard = ({lfgID}: {lfgID: string}) => {
   return (
     <View>
       {data && (
-        <LfgCard
-          lfg={data.pages[0]}
-          showLfgIcon={false}
+        <FezCard
+          fez={data.pages[0]}
           showDay={true}
           onPress={() => commonNavigation.push(CommonStackComponents.lfgScreen, {fezID: lfgID})}
           titleHeader={'Your next LFG:'}

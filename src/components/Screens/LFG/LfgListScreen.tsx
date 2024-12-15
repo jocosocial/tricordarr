@@ -27,11 +27,11 @@ import {FezListEndpoints} from '../../../libraries/Types';
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;
   enableFilters?: boolean;
-  showReportButton?: boolean;
+  enableReportOnly?: boolean;
   listHeader?: ReactElement;
 }
 
-export const LfgListScreen = ({endpoint, enableFilters = true, showReportButton, listHeader}: LfgJoinedScreenProps) => {
+export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly, listHeader}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
@@ -146,7 +146,7 @@ export const LfgListScreen = ({endpoint, enableFilters = true, showReportButton,
         onScrollThreshold={onScrollThreshold}
         handleLoadNext={fetchNextPage}
         hasNextPage={hasNextPage}
-        showReportButton={showReportButton}
+        enableReportOnly={enableReportOnly}
         listHeader={listHeader}
       />
       <LfgFAB showLabel={showFabLabel} />

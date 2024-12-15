@@ -1,12 +1,12 @@
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 import {FlashList} from '@shopify/flash-list';
+import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
 
 interface LFGFlatListProps {
   items: FezData[];
@@ -21,7 +21,7 @@ interface LFGFlatListProps {
   handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
   renderItem?: ({item}: {item: FezData}) => React.JSX.Element;
-  showReportButton?: boolean;
+  enableReportOnly?: boolean;
 }
 
 export const LFGFlatList = ({
@@ -34,7 +34,7 @@ export const LFGFlatList = ({
   handleLoadPrevious,
   hasNextPage,
   renderItem,
-  showReportButton,
+  enableReportOnly,
   listHeader,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
@@ -42,15 +42,15 @@ export const LFGFlatList = ({
   const renderItemDefault = useCallback(
     ({item}: {item: FezData}) => {
       return (
-        <LfgCard
-          lfg={item}
+        <FezCard
+          fez={item}
           showDay={true}
           onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezID})}
-          showReportButton={showReportButton}
+          enableReportOnly={enableReportOnly}
         />
       );
     },
-    [navigation, showReportButton],
+    [navigation, enableReportOnly],
   );
 
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);

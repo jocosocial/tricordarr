@@ -162,13 +162,11 @@ export const ScheduleItemScreenBase = ({
                       }
                     />
                   )}
-                  {!FezType.isPrivateEventType(eventData.fezType) && (
-                    <DataFieldListItem
-                      icon={AppIcons.type}
-                      description={FezType.getLabel(eventData.fezType)}
-                      title={'Type'}
-                    />
-                  )}
+                  <DataFieldListItem
+                    icon={AppIcons.type}
+                    description={FezType.getLabel(eventData.fezType)}
+                    title={'Type'}
+                  />
                 </>
               )}
             </ListSection>
