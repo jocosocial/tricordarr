@@ -35,8 +35,6 @@ export const ChatFlatList = ({
   fezPostData,
   scrollButtonPosition,
 }: ChatFlatListProps) => {
-  const invertList = fez.members && fez.members.readCount === fez.members.postCount;
-
   const renderHeader = () => {
     return hasPreviousPage ? <LoadingPreviousHeader /> : <FezPostListHeader />;
   };
@@ -64,6 +62,7 @@ export const ChatFlatList = ({
 
   return (
     <AppFlatList
+      invertList={true}
       flatListRef={flatListRef}
       renderItem={renderItem}
       data={fezPostData}
@@ -75,7 +74,6 @@ export const ChatFlatList = ({
       handleLoadPrevious={handleLoadPrevious}
       maintainViewPosition={maintainViewPosition}
       renderItemSeparator={SpaceDivider}
-      invertList={invertList}
       scrollButtonPosition={scrollButtonPosition}
     />
   );
