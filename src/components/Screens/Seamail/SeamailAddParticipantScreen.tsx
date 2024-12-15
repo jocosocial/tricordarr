@@ -6,16 +6,14 @@ import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
 
 export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {setFez} = useTwitarr();
-  const {dispatchFezList} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const onPress = (user: UserHeader) => {
     participantMutation.mutate(
@@ -25,12 +23,12 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
         userID: user.userID,
       },
       {
-        onSuccess: response => {
-          setFez(response.data);
-          dispatchFezList({
-            type: FezListActions.updateFez,
-            fez: response.data,
-          });
+        onSuccess: async () => {
+          await Promise.all([
+            queryClient.invalidateQueries(['/fez/joined']),
+            queryClient.invalidateQueries(['/fez/owned']),
+            queryClient.invalidateQueries([`/fez/${route.params.fez.fezID}`]),
+          ]);
           navigation.goBack();
         },
       },

@@ -6,10 +6,9 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailFAB} from '../../Buttons/FloatingActionButtons/SeamailFAB';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {FezListActions, useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ChatStackParamList, ChatStackScreenComponents} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {useIsFocused} from '@react-navigation/native';
@@ -24,12 +23,12 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const {fezList, dispatchFezList, setFez} = useTwitarr();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
     useSeamailListQuery({
       forUser: asPrivilegedUser,
@@ -41,7 +40,9 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const [showFabLabel, setShowFabLabel] = useState(true);
+  const [fezList, dispatchFezList] = useFezListReducer([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
+  const queryClient = useQueryClient();
 
   const handleLoadNext = () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -80,24 +81,26 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        if (fezList.some(f => f.fezID === socketMessage.contentID)) {
-          dispatchFezList({
-            type: FezListActions.incrementPostCount,
-            fezID: socketMessage.contentID,
-          });
-          dispatchFezList({
-            type: FezListActions.moveToTop,
-            fezID: socketMessage.contentID,
-          });
-        } else {
-          // This is kinda a lazy way out, but it works.
-          // Not using onRefresh() so that we don't show the sudden refreshing circle.
-          // Hopefully that's a decent idea.
-          refetch();
-        }
+        // if (fezList.some(f => f.fezID === socketMessage.contentID)) {
+        //   dispatchFezList({
+        //     type: FezListActions.incrementPostCount,
+        //     fezID: socketMessage.contentID,
+        //   });
+        //   dispatchFezList({
+        //     type: FezListActions.moveToTop,
+        //     fezID: socketMessage.contentID,
+        //   });
+        queryClient.invalidateQueries(['/fez/joined']);
+        queryClient.invalidateQueries(['/fez/owned']);
+      } else {
+        // This is kinda a lazy way out, but it works.
+        // Not using onRefresh() so that we don't show the sudden refreshing circle.
+        // Hopefully that's a decent idea.
+        refetch();
       }
+      // }
     },
-    [dispatchFezList, fezList, refetch],
+    [queryClient, refetch],
   );
 
   const getNavButtons = useCallback(() => {
@@ -133,12 +136,11 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   useEffect(() => {
     if (isFocused) {
       closeFezSocket();
-      setFez(undefined);
     }
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [isFocused, closeFezSocket, setFez, navigation, getNavButtons]);
+  }, [isFocused, closeFezSocket, navigation, getNavButtons]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

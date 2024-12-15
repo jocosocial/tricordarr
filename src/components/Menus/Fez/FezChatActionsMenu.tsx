@@ -8,11 +8,9 @@ import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem.tsx';
 import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem.tsx';
 import {useFezMuteMutation} from '../../Queries/Fez/FezMuteMutations.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext.ts';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers.ts';
-import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface FezChatActionsMenuProps {
   fez: FezData;
@@ -26,9 +24,8 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
-  const {dispatchFezList, setFez} = useTwitarr();
-  const {remove} = useFezQuery({fezID: fez.fezID});
   const commonNavigation = useCommonStack();
+  const queryClient = useQueryClient();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -49,22 +46,27 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
         fezID: fez.fezID,
       },
       {
-        onSuccess: () => {
-          if (fez.members) {
-            const newFezData: FezData = {
-              ...fez,
-              members: {
-                ...fez.members,
-                isMuted: !fez.members?.isMuted,
-              },
-            };
-            setFez(newFezData);
-            dispatchFezList({
-              type: FezListActions.updateFez,
-              fez: newFezData,
-            });
-            remove();
-          }
+        onSuccess: async () => {
+          // if (fez.members) {
+          // const newFezData: FezData = {
+          //   ...fez,
+          //   members: {
+          //     ...fez.members,
+          //     isMuted: !fez.members?.isMuted,
+          //   },
+          // };
+          await Promise.all([
+            queryClient.invalidateQueries([`/fez/${fez.fezID}`]),
+            queryClient.invalidateQueries(['/fez/joined']),
+            queryClient.invalidateQueries(['/fez/owned']),
+          ]);
+          // setFez(newFezData);
+          // dispatchFezList({
+          //   type: FezListActions.updateFez,
+          //   fez: newFezData,
+          // });
+          // remove();
+          // }
         },
         onSettled: () => closeMenu(),
       },
