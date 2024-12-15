@@ -42,16 +42,17 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         action: 'unjoin',
       },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           setLfg(response.data);
           setModalVisible(false);
           dispatchLfgList({
             type: FezListActions.updateFez,
             fez: response.data,
           });
-          queryClient.invalidateQueries({queryKey: ['/fez/open']});
-          queryClient.invalidateQueries({queryKey: ['/fez/joined']});
-          queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
+          const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );

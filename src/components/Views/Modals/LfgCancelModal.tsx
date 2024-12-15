@@ -42,12 +42,13 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
         fezID: fezData.fezID,
       },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           setInfoMessage('Successfully canceled this LFG.');
-          queryClient.invalidateQueries(['/fez/owner']);
-          queryClient.invalidateQueries(['/fez/joined']);
-          queryClient.invalidateQueries(['/fez/open']);
-          queryClient.invalidateQueries(['/notification/global']);
+          const invalidations = FezData.getCacheKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
+
           setLfg(response.data);
           dispatchLfgList({
             type: FezListActions.updateFez,

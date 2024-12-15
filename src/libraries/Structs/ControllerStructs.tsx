@@ -325,6 +325,14 @@ export namespace FezData {
     }
     return fezData.members.participants.length >= fezData.maxParticipants;
   };
+
+  export const getCacheKeys = (fezID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/fez/joined'], ['/fez/owner'], ['/fez/open'], ['/fez/former']];
+    if (fezID) {
+      queryKeys.push([`/fez/${fezID}`]);
+    }
+    return queryKeys;
+  };
 }
 
 export interface FezListData {
@@ -634,7 +642,7 @@ export namespace ForumListData {
    * @param categoryID Optional string of the category ID.
    * @param forumID Optional string of the Forum ID.
    */
-  export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
+  export const getCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
     let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes'], ['/forum/unread']];
     if (forumID) {
       queryKeys.push([`/forum/${forumID}`]);

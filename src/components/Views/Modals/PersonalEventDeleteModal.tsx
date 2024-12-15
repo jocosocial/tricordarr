@@ -42,9 +42,10 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
           }
           setModalVisible(false);
           setInfoMessage('Successfully deleted this event.');
-          // @TODO do the forum thingy
-          await queryClient.invalidateQueries(['/fez/owner']);
-          await queryClient.invalidateQueries(['/fez/joined']);
+          const invalidations = FezData.getCacheKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );

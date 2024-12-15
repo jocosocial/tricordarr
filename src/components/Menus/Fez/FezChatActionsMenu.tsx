@@ -47,26 +47,10 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
       },
       {
         onSuccess: async () => {
-          // if (fez.members) {
-          // const newFezData: FezData = {
-          //   ...fez,
-          //   members: {
-          //     ...fez.members,
-          //     isMuted: !fez.members?.isMuted,
-          //   },
-          // };
-          await Promise.all([
-            queryClient.invalidateQueries([`/fez/${fez.fezID}`]),
-            queryClient.invalidateQueries(['/fez/joined']),
-            queryClient.invalidateQueries(['/fez/owned']),
-          ]);
-          // setFez(newFezData);
-          // dispatchFezList({
-          //   type: FezListActions.updateFez,
-          //   fez: newFezData,
-          // });
-          // remove();
-          // }
+          const invalidations = FezData.getCacheKeys(fez.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
         onSettled: () => closeMenu(),
       },

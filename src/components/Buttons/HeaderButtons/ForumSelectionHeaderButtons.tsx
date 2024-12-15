@@ -50,7 +50,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         },
       });
     });
-    const invalidationQueryKeys = ForumListData.getForumCacheKeys(props.categoryID);
+    const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID);
     invalidationQueryKeys.forEach(key => queryClient.invalidateQueries(key));
     props.setRefreshing(false);
   };

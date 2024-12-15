@@ -12,6 +12,7 @@ import {CommonStackComponents, CommonStackParamList} from '../../Navigation/Comm
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
@@ -38,9 +39,10 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: async () => {
-          // @TODO the thingy
-          await queryClient.invalidateQueries(['/fez/owner']);
-          await queryClient.invalidateQueries(['/fez/joined']);
+          const invalidations = FezData.getCacheKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

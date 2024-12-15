@@ -155,7 +155,7 @@ export const FezChatScreen = ({route}: Props) => {
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
-          onSuccess: response => {
+          onSuccess: async response => {
             formikHelpers.resetForm();
             dispatchFezPostsData({
               type: FezPostsActions.appendPost,
@@ -168,7 +168,10 @@ export const FezChatScreen = ({route}: Props) => {
             // });
             // Mark stale so that it refetches with your new posts
             // Some day this should just update the query data.
-            queryClient.invalidateQueries([`/fez/${route.params.fezID}`]);
+            const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
@@ -221,7 +224,10 @@ export const FezChatScreen = ({route}: Props) => {
       //   fezID: fez.fezID,
       // });
       // @TODO does this invalidation do what is necessary without the dispatch above?
-      queryClient.invalidateQueries(['/fez/joined']);
+      const invalidations = FezData.getCacheKeys().map(key => {
+        return queryClient.invalidateQueries(key);
+      });
+      Promise.all(invalidations);
       if (appConfig.markReadCancelPush) {
         console.log('[FezChatScreen.tsx] auto canceling notifications.');
         notifee.cancelDisplayedNotification(fez.fezID);

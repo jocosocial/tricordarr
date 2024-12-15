@@ -34,7 +34,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
   const {appConfig} = useConfig();
 
-  const invalidationQueryKeys = ForumListData.getForumCacheKeys(props.categoryID, props.forumListData.forumID);
+  const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID, props.forumListData.forumID);
 
   const handleMarkAsRead = useCallback(
     async (swipeable: SwipeableMethods) => {

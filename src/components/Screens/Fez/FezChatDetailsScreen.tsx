@@ -42,15 +42,11 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
         userID: userID,
       },
       {
-        onSuccess: response => {
-          // @TODO improve the handling of all of these invalidates
-          queryClient.invalidateQueries(['/fez/joined']);
-          queryClient.invalidateQueries([`/fez/${fezID}`]);
-          //
-          // dispatchFezList({
-          //   type: FezListActions.updateFez,
-          //   fez: response.data,
-          // });
+        onSuccess: async response => {
+          const invalidations = FezData.getCacheKeys(fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
           setFez(response.data);
         },
       },

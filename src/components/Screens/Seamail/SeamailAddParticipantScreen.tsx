@@ -2,7 +2,7 @@ import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
@@ -24,11 +24,10 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: async () => {
-          await Promise.all([
-            queryClient.invalidateQueries(['/fez/joined']),
-            queryClient.invalidateQueries(['/fez/owned']),
-            queryClient.invalidateQueries([`/fez/${route.params.fez.fezID}`]),
-          ]);
+          const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
           navigation.goBack();
         },
       },

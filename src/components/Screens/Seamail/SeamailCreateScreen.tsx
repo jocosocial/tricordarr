@@ -50,10 +50,12 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
       fezMutation.mutate(
         {fezContentData: contentData},
         {
-          onSuccess: response => {
+          onSuccess: async response => {
             setNewSeamail(response.data);
-            queryClient.invalidateQueries(['/fez/joined']);
-            queryClient.invalidateQueries(['/fez/owned']);
+            const invalidations = FezData.getCacheKeys().map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);

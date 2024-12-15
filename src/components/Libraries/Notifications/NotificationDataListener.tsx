@@ -42,6 +42,7 @@ export const NotificationDataListener = () => {
         }
         case NotificationTypeData.addedToPrivateEvent: {
           queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+          queryClient.invalidateQueries({queryKey: ['/fez/former']});
           break;
         }
       }

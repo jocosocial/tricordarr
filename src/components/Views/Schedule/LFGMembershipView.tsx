@@ -44,16 +44,17 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
           action: 'join',
         },
         {
-          onSuccess: response => {
+          onSuccess: async response => {
             setLfg(response.data);
             // This only does part of what we need
             dispatchLfgList({
               type: FezListActions.updateFez,
               fez: response.data,
             });
-            queryClient.invalidateQueries({queryKey: ['/fez/open']});
-            queryClient.invalidateQueries({queryKey: ['/fez/joined']});
-            queryClient.invalidateQueries({queryKey: [`/fez/${lfg.fezID}`]});
+            const invalidations = FezData.getCacheKeys(lfg.fezID).map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
           },
           onSettled: () => {
             setRefreshing(false);

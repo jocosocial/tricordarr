@@ -14,6 +14,7 @@ import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/Person
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import notifee from '@notifee/react-native';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {
@@ -41,13 +42,10 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: async () => {
-          // @TODO use the Forum style .invalidationKeys() thing
-          await Promise.all([
-            queryClient.invalidateQueries([`/fez/${route.params.personalEvent.fezID}`]),
-            queryClient.invalidateQueries(['/fez/owner']),
-            queryClient.invalidateQueries(['/fez/joined']),
-            queryClient.invalidateQueries(['/notification/global']),
-          ]);
+          const invalidations = FezData.getCacheKeys(route.params.personalEvent.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

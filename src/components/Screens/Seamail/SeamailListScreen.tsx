@@ -24,6 +24,7 @@ import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -90,8 +91,10 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         //     type: FezListActions.moveToTop,
         //     fezID: socketMessage.contentID,
         //   });
-        queryClient.invalidateQueries(['/fez/joined']);
-        queryClient.invalidateQueries(['/fez/owned']);
+        const invalidations = FezData.getCacheKeys().map(key => {
+          return queryClient.invalidateQueries(key);
+        });
+        Promise.all(invalidations);
       } else {
         // This is kinda a lazy way out, but it works.
         // Not using onRefresh() so that we don't show the sudden refreshing circle.
