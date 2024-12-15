@@ -1,32 +1,32 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {TitleTag} from '../../Text/Tags/TitleTag';
-import {ListSection} from '../../Lists/ListSection';
-import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
-import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
-import {LoadingView} from '../../Views/Static/LoadingView';
-import {FezType} from '../../../libraries/Enums/FezType';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {TitleTag} from '../../Text/Tags/TitleTag.tsx';
+import {ListSection} from '../../Lists/ListSection.tsx';
+import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem.tsx';
+import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem.tsx';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {WebSocketState} from '../../../libraries/Network/Websockets';
+import {useTwitarr} from '../../Context/Contexts/TwitarrContext.ts';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {WebSocketState} from '../../../libraries/Network/Websockets.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useSocket} from '../../Context/Contexts/SocketContext';
-import {useFezQuery} from '../../Queries/Fez/FezQueries';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
+import {useSocket} from '../../Context/Contexts/SocketContext.ts';
+import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
+import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
+import {FezListActions} from '../../Reducers/Fez/FezListReducers.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailDetailsScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 
-export const SeamailDetailsScreen = ({route, navigation}: Props) => {
+export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {fez, setFez, dispatchFezList} = useTwitarr();
   const {fezSocket} = useSocket();

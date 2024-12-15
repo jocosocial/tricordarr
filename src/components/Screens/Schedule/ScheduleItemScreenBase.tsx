@@ -137,7 +137,14 @@ export const ScheduleItemScreenBase = ({
                       icon={AppIcons.chat}
                       description={getChatDescription}
                       title={'Chat'}
-                      onPress={() => navigation.push(CommonStackComponents.lfgChatScreen, {fezID: eventData.fezID})}
+                      onPress={() =>
+                        navigation.push(
+                          FezType.isPrivateEventType(eventData.fezType)
+                            ? CommonStackComponents.privateEventChatScreen
+                            : CommonStackComponents.lfgChatScreen,
+                          {fezID: eventData.fezID},
+                        )
+                      }
                     />
                   )}
                   <DataFieldListItem icon={AppIcons.description} description={eventData.info} title={'Description'} />

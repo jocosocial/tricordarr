@@ -71,14 +71,14 @@ export namespace FezType {
 
   export const isPrivateEventType = (fezType: FezType) => privateEventTypes.some(t => t === fezType);
 
-  export const getTitle = (fezType: FezType): string => {
+  export const getChatTitle = (fezType: FezType): string => {
     if (FezType.isLFGType(fezType)) {
-      return 'LFG';
+      return 'LFG Chat';
     } else if (FezType.isSeamailType(fezType)) {
-      return 'Seamail';
+      return 'Seamail Chat';
     } else if (FezType.isPrivateEventType(fezType)) {
-      return 'Private Event';
+      return 'Private Event Chat';
     }
-    return 'Unknown';
+    return 'Unknown Chat';
   };
 }

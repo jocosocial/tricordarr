@@ -35,12 +35,10 @@ import {ForumPostPinnedScreen} from '../Screens/Forum/Post/ForumPostPinnedScreen
 import {ConfigServerUrlScreen} from '../Screens/Settings/Config/ConfigServerUrlScreen';
 import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScreen';
 import {SeamailAddParticipantScreen} from '../Screens/Seamail/SeamailAddParticipantScreen';
-import {SeamailScreen} from '../Screens/Seamail/SeamailScreen';
-import {SeamailDetailsScreen} from '../Screens/Seamail/SeamailDetailsScreen';
+import {FezChatDetailsScreen} from '../Screens/Fez/FezChatDetailsScreen.tsx';
 import {LfgScreen} from '../Screens/LFG/LfgScreen';
 import {LfgParticipationScreen} from '../Screens/LFG/LfgParticipationScreen';
 import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen';
-import {LfgChatScreen} from '../Screens/LFG/LfgChatScreen';
 import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
 import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen';
 import {AccessibilitySettingsScreen} from '../Screens/Settings/AccessibilitySettingsScreen.tsx';
@@ -65,6 +63,8 @@ import {SiteUIHelpScreen} from '../Screens/SiteUI/SiteUIHelpScreen.tsx';
 import {LfgHelpScreen} from '../Screens/LFG/LfgHelpScreen.tsx';
 import {MainTimeZoneScreen} from '../Screens/Main/MainTimeZoneScreen.tsx';
 import {TimeZoneHelpScreen} from '../Screens/Main/TimeZoneHelpScreen.tsx';
+import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
+import {FezType} from '../../libraries/Enums/FezType.ts';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -147,11 +147,10 @@ export type CommonStackParamList = {
   ForumPostHashtagScreen: {
     hashtag: string;
   };
-  SeamailScreen: {
+  SeamailChatScreen: {
     fezID: string;
-    title: string;
   };
-  SeamailDetailsScreen: {
+  FezChatDetailsScreen: {
     fezID: string;
   };
   SeamailAddParticipantScreen: {
@@ -205,6 +204,9 @@ export type CommonStackParamList = {
   LfgHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
+  PrivateEventChatScreen: {
+    fezID: string;
+  };
 };
 
 export enum CommonStackComponents {
@@ -228,8 +230,8 @@ export enum CommonStackComponents {
   forumPostPinnedScreen = 'ForumPostPinnedScreen',
   configServerUrl = 'ConfigServerUrlScreen',
   forumPostHashtagScreen = 'ForumPostHashtagScreen',
-  seamailScreen = 'SeamailScreen',
-  seamailDetailsScreen = 'SeamailDetailsScreen',
+  seamailChatScreen = 'SeamailChatScreen',
+  fezChatDetailsScreen = 'FezChatDetailsScreen',
   seamailAddParticipantScreen = 'SeamailAddParticipantScreen',
   lfgScreen = 'LfgScreen',
   lfgParticipationScreen = 'LfgParticipationScreen',
@@ -259,6 +261,7 @@ export enum CommonStackComponents {
   lfgHelpScreen = 'LfgHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
+  privateEventChatScreen = 'PrivateEventChatScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -268,6 +271,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
+  const isPersonalEventDisabled = getIsDisabled(SwiftarrFeature.personalevents);
 
   return (
     <>
@@ -368,18 +372,18 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{title: 'Hashtag'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.seamailScreen}
-        component={isSeamailDisabled ? DisabledView : SeamailScreen}
+        name={CommonStackComponents.seamailChatScreen}
+        component={isSeamailDisabled ? DisabledView : FezChatScreen}
         // The simple headerTitle string below gets overwritten in the SeamailScreen component.
         // This is here as a performance optimization.
         // The reason it renders in the component is that deep linking doesnt pass in the title
         // so it has to figure it out.
-        options={{title: 'Seamail Chat'}}
+        options={{title: FezType.getChatTitle(FezType.open)}}
       />
       <Stack.Screen
-        name={CommonStackComponents.seamailDetailsScreen}
-        component={isSeamailDisabled ? DisabledView : SeamailDetailsScreen}
-        options={() => ({title: 'Seamail Details'})}
+        name={CommonStackComponents.fezChatDetailsScreen}
+        component={isSeamailDisabled ? DisabledView : FezChatDetailsScreen}
+        options={() => ({title: 'Chat Details'})}
       />
       <Stack.Screen
         name={CommonStackComponents.seamailAddParticipantScreen}
@@ -403,8 +407,8 @@ export const CommonScreens = (Stack: typeof MainStack) => {
       />
       <Stack.Screen
         name={CommonStackComponents.lfgChatScreen}
-        component={isLfgDisabled ? DisabledView : LfgChatScreen}
-        options={{title: 'LFG Chat'}}
+        component={isLfgDisabled ? DisabledView : FezChatScreen}
+        options={{title: FezType.getChatTitle(FezType.activity)}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgEditScreen}
@@ -525,6 +529,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.timeZoneHelpScreen}
         component={TimeZoneHelpScreen}
         options={{title: 'Time Zone Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.privateEventChatScreen}
+        component={isPersonalEventDisabled ? DisabledView : FezChatScreen}
+        options={{title: FezType.getChatTitle(FezType.privateEvent)}}
       />
     </>
   );

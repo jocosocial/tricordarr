@@ -11,10 +11,10 @@ interface FezHeaderTitleProps {
 const FezHeaderTitle = ({fez}: FezHeaderTitleProps) => {
   const navigation = useCommonStack();
   const onPress = () =>
-    navigation.push(CommonStackComponents.seamailDetailsScreen, {
+    navigation.push(CommonStackComponents.fezChatDetailsScreen, {
       fezID: fez.fezID,
     });
-  return <NavHeaderTitle title={`${FezType.getTitle(fez.fezType)} Chat`} onPress={onPress} />;
+  return <NavHeaderTitle title={FezType.getChatTitle(fez.fezType)} onPress={onPress} />;
 };
 
 // This exists to prevent defining the component during render, because the navigator

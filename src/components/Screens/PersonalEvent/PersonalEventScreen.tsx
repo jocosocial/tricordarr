@@ -64,7 +64,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
       title: eventData?.fezType === FezType.privateEvent ? 'Private Event' : 'Personal Event',
     });
     if (appConfig.markReadCancelPush && eventData) {
-      console.log('[SeamailScreen.tsx] auto canceling notifications.');
+      console.log('[PersonalEventScreen.tsx] auto canceling notifications.');
       notifee.cancelDisplayedNotification(eventData.fezID);
     }
   }, [getNavButtons, navigation, eventData, appConfig.markReadCancelPush]);

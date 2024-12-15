@@ -81,7 +81,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           {
             onSuccess: () => {
               setSubmitting(false);
-              navigation.replace(CommonStackComponents.seamailScreen, {
+              navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: newSeamail.fezID,
                 title: newSeamail.title,
               });

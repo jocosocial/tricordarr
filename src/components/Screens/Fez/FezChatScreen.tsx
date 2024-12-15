@@ -1,37 +1,45 @@
-import {useFezQuery} from '../Queries/Fez/FezQueries.ts';
+import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton.tsx';
-import {SeamailActionsMenu} from '../Menus/Seamail/SeamailActionsMenu.tsx';
-import {SocketFezMemberChangeData} from '../../libraries/Structs/SocketStructs.ts';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
-import {useSocket} from '../Context/Contexts/SocketContext.ts';
-import {getSeamailHeaderTitle} from '../Navigation/Components/FezHeaderTitle.tsx';
-import {useCommonStack} from '../Navigation/CommonScreens.tsx';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu.tsx';
+import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSocket} from '../../Context/Contexts/SocketContext.ts';
+import {getSeamailHeaderTitle} from '../../Navigation/Components/FezHeaderTitle.tsx';
+import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
-import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
-import {LoadingView} from '../Views/Static/LoadingView.tsx';
-import {AppView} from '../Views/AppView.tsx';
-import {ListTitleView} from '../Views/ListTitleView.tsx';
-import {PostAsUserBanner} from '../Banners/PostAsUserBanner.tsx';
-import {FezMutedView} from '../Views/Static/FezMutedView.tsx';
-import {ChatFlatList} from '../Lists/ChatFlatList.tsx';
-import {ContentPostForm} from '../Forms/ContentPostForm.tsx';
-import {FezData, PostContentData} from '../../libraries/Structs/ControllerStructs.tsx';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {AppView} from '../../Views/AppView.tsx';
+import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner.tsx';
+import {FezMutedView} from '../../Views/Static/FezMutedView.tsx';
+import {ChatFlatList} from '../../Lists/ChatFlatList.tsx';
+import {ContentPostForm} from '../../Forms/ContentPostForm.tsx';
+import {FezData, PostContentData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {FezPostsActions, useFezPostsReducer} from '../Reducers/Fez/FezPostsReducers.ts';
-import {useFezPostMutation} from '../Queries/Fez/FezPostMutations.ts';
+import {FezPostsActions, useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers.ts';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-interface FezChatScreenBaseProps {
-  fezID: string;
-}
+type Props = NativeStackScreenProps<
+  CommonStackParamList,
+  | CommonStackComponents.lfgChatScreen
+  | CommonStackComponents.seamailChatScreen
+  | CommonStackComponents.privateEventChatScreen
+>;
 
-export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
+/**
+ * Common screen for Fez chats. All features [Seamail, LFG, PrivateEvent] can
+ * be enabled/disabled independently so the typing logic above is a bit different.
+ */
+export const FezChatScreen = ({route}: Props) => {
   const {
     data,
     refetch,
@@ -41,7 +49,7 @@ export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
-  } = useFezQuery({fezID: fezID});
+  } = useFezQuery({fezID: route.params.fezID});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const [refreshing, setRefreshing] = useState(false);
@@ -146,7 +154,7 @@ export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
         });
       }
       fezPostMutation.mutate(
-        {fezID: fezID, postContentData: values},
+        {fezID: route.params.fezID, postContentData: values},
         {
           onSuccess: response => {
             formikHelpers.resetForm();
@@ -161,13 +169,13 @@ export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
             // });
             // Mark stale so that it refetches with your new posts
             // Some day this should just update the query data.
-            queryClient.invalidateQueries([`/fez/${fezID}`]);
+            queryClient.invalidateQueries([`/fez/${route.params.fezID}`]);
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, fezPostMutation, fezID, setFez, queryClient, dispatchFezPostsData],
+    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData],
   );
 
   // Initial set useEffect
@@ -199,6 +207,8 @@ export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
     if (fez) {
       navigation.setOptions({
         headerRight: getNavButtons,
+        // Annoying there doesn't seem to be a way to access the current title
+        // so the result of the function should match the navigator.
         headerTitle: getSeamailHeaderTitle(fez),
       });
     } else {
@@ -218,7 +228,7 @@ export const FezChatScreenBase = ({fezID}: FezChatScreenBaseProps) => {
       // @TODO does this invalidation do what is necessary without the dispatch above?
       queryClient.invalidateQueries(['/fez/joined']);
       if (appConfig.markReadCancelPush) {
-        console.log('[SeamailScreen.tsx] auto canceling notifications.');
+        console.log('[FezChatScreen.tsx] auto canceling notifications.');
         notifee.cancelDisplayedNotification(fez.fezID);
       }
       refetchUserNotificationData();
