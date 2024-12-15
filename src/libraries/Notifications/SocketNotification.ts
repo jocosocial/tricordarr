@@ -126,7 +126,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'Personal Event Starting';
-      url = `/personalevents/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}`;
       break;
     case NotificationTypeData.addedToPrivateEvent:
       channel = eventChannel;

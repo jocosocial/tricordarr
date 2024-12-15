@@ -11,6 +11,7 @@ import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
 import notifee from '@notifee/react-native';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -19,6 +20,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.eventID,
   });
+  const {profilePublicData} = useUserData();
   const eventData = data?.pages[0];
 
   const getNavButtons = useCallback(() => {
@@ -27,14 +29,16 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
           {eventData && (
             <>
-              <HeaderEditButton
-                iconName={AppIcons.eventEdit}
-                onPress={() =>
-                  navigation.push(CommonStackComponents.personalEventEditScreen, {
-                    personalEvent: eventData,
-                  })
-                }
-              />
+              {eventData.owner.userID === profilePublicData?.header.userID && (
+                <HeaderEditButton
+                  iconName={AppIcons.eventEdit}
+                  onPress={() =>
+                    navigation.push(CommonStackComponents.personalEventEditScreen, {
+                      personalEvent: eventData,
+                    })
+                  }
+                />
+              )}
               <PersonalEventScreenActionsMenu event={eventData} />
             </>
           )}

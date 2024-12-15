@@ -30,6 +30,10 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MainScreen: 'home',
             AboutScreen: 'about',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
+            // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
+            // falling through to the default route. This is what we do in the UI, so oh well.
+            // Perhaps I should make a PR to Swiftarr to change that?
+            PersonalEventScreen: 'privateevent/:eventID',
             SiteUILinkScreen: '*', // Catch-all wildcard
             MainSettingsScreen: {
               // Disable this to prevent doubling up on the SettingsScreen after going back.
@@ -75,7 +79,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           screens: {
             ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',
-            PersonalEventScreen: 'personalevents/:eventID',
           },
         },
         ForumsTab: {

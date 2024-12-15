@@ -13,6 +13,7 @@ import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries.ts';
 import {useTwitarr} from '../../Context/Contexts/TwitarrContext.ts';
 import {StyleSheet} from 'react-native';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface LFGMembershipViewProps {
   lfg: FezData;
@@ -79,6 +80,8 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
     },
   });
 
+  const lfgNoun = FezType.isPrivateEventType(lfg.fezType) ? 'Private Event' : 'LFG';
+
   return (
     <View style={styles.outerContainer}>
       {profilePublicData && lfg.owner.userID !== profilePublicData.header.userID && (
@@ -86,7 +89,9 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
           {(FezData.isParticipant(lfg, profilePublicData?.header) ||
             FezData.isWaitlist(lfg, profilePublicData?.header)) && (
             <PrimaryActionButton
-              buttonText={FezData.isWaitlist(lfg, profilePublicData.header) ? 'Leave the waitlist' : 'Leave this LFG'}
+              buttonText={
+                FezData.isWaitlist(lfg, profilePublicData.header) ? 'Leave the waitlist' : `Leave this ${lfgNoun}`
+              }
               onPress={handleMembershipPress}
               buttonColor={theme.colors.twitarrNegativeButton}
               isLoading={refreshing}
