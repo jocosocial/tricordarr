@@ -60,7 +60,6 @@ export const FezChatScreen = ({route}: Props) => {
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
   const flatListRef = useRef<FlatList>(null);
-  // @TODO does this need to be in context state for child pages?
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
 
@@ -161,11 +160,6 @@ export const FezChatScreen = ({route}: Props) => {
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
-            // @TODO invalidate the list
-            // dispatchFezList({
-            //   type: FezListActions.addSelfPost,
-            //   fezID: route.params.fezID,
-            // });
             // Mark stale so that it refetches with your new posts
             // Some day this should just update the query data.
             const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
@@ -219,11 +213,6 @@ export const FezChatScreen = ({route}: Props) => {
   // Mark as Read useEffect
   useEffect(() => {
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      // dispatchFezList({
-      //   type: FezListActions.markAsRead,
-      //   fezID: fez.fezID,
-      // });
-      // @TODO does this invalidation do what is necessary without the dispatch above?
       const invalidations = FezData.getCacheKeys().map(key => {
         return queryClient.invalidateQueries(key);
       });
@@ -240,7 +229,6 @@ export const FezChatScreen = ({route}: Props) => {
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background
   // so some day some debouncing should be implemented.
-  // @TODO consider invalidation or see if React Query has a refetchOnVisible?
   useEffect(() => {
     if (appStateVisible === 'active') {
       refetch();
