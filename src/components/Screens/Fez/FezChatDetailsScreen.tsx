@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
@@ -12,26 +12,27 @@ import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem.tsx
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext.ts';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {WebSocketState} from '../../../libraries/Network/Websockets.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
 import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 
 export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
-  const {fez, setFez, dispatchFezList} = useTwitarr();
+  const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});
   const {fezSocket} = useSocket();
-  const {refetch, isRefetching} = useFezQuery({fezID: route.params.fezID});
+  const [fez, setFez] = useState<FezData>();
   const {profilePublicData} = useUserData();
+  const queryClient = useQueryClient();
 
   const onParticipantRemove = (fezID: string, userID: string) => {
     participantMutation.mutate(
@@ -42,10 +43,14 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: response => {
-          dispatchFezList({
-            type: FezListActions.updateFez,
-            fez: response.data,
-          });
+          // @TODO improve the handling of all of these invalidates
+          queryClient.invalidateQueries(['/fez/joined']);
+          queryClient.invalidateQueries([`/fez/${fezID}`]);
+          //
+          // dispatchFezList({
+          //   type: FezListActions.updateFez,
+          //   fez: response.data,
+          // });
           setFez(response.data);
         },
       },
@@ -73,6 +78,13 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
     });
   }, [getHeaderRight, navigation]);
 
+  // Initial set useEffect
+  useEffect(() => {
+    if (data) {
+      setFez(data?.pages[0]);
+    }
+  }, [data, setFez]);
+
   if (!fez) {
     return <LoadingView />;
   }
@@ -81,7 +93,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <TouchableOpacity onLongPress={() => Clipboard.setString(fez?.title)}>
             <TitleTag>Title</TitleTag>

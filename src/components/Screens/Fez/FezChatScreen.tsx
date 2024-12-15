@@ -195,7 +195,7 @@ export const FezChatScreen = ({route}: Props) => {
     if (fez) {
       let newSocket = openFezSocket(fez.fezID);
       if (fezSocket && newSocket) {
-        console.log(`[SeamailScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${fez.fezID}`);
+        console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
         fezSocket.addEventListener('message', fezSocketMessageHandler);
       }
     }
@@ -209,10 +209,6 @@ export const FezChatScreen = ({route}: Props) => {
         // Annoying there doesn't seem to be a way to access the current title
         // so the result of the function should match the navigator.
         headerTitle: getSeamailHeaderTitle(fez),
-      });
-    } else {
-      navigation.setOptions({
-        headerTitle: 'Loading...',
       });
     }
   }, [fez, getNavButtons, navigation]);
