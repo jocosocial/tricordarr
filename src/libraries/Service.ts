@@ -105,12 +105,6 @@ const fgsWorker = async () => {
   console.log('[Service.ts] Worker startup complete.');
 };
 
-const dummyFgsWorker = async () => {
-  console.info('ZZZ DUMMY HELLO');
-  // const appConfig = await getAppConfig();
-  fgsWorkerTimer = setInterval(() => console.log(`yyyy HELLO HEALTH YES at ${new Date().toISOString()}`), 1000);
-};
-
 /**
  * Notifee exposes an API to register a foreground service worker task that runs when the notification
  * has been triggered. Android 14 changes some of the laws around workers so this entire thing may be
@@ -121,7 +115,7 @@ const dummyFgsWorker = async () => {
 export const registerFgsWorker = () => {
   console.log('[Service.ts] Registering foreground service worker function.');
   notifee.registerForegroundService(() => {
-    return new Promise(dummyFgsWorker);
+    return new Promise(fgsWorker);
   });
 };
 
