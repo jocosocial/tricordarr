@@ -98,6 +98,11 @@ const defaultAppConfig: AppConfig = {
     moderatorForumMention: true,
     twitarrTeamForumMention: true,
     personalEventStarting: true,
+    addedToSeamail: true,
+    addedToLFG: true,
+    addedToPrivateEvent: true,
+    privateEventUnreadMsg: true,
+    microKaraokeSongReady: true,
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,

@@ -91,6 +91,31 @@ export const contentNotificationCategories: ContentNotificationCategories = {
     title: 'Twarrt Mention',
     disabled: true,
   },
+  addedToSeamail: {
+    configKey: 'addedToSeamail',
+    title: 'Added To Seamail',
+    description: 'You have been added to a Seamail conversation between other users.',
+  },
+  addedToLFG: {
+    configKey: 'addedToLFG',
+    title: 'Added To LFG',
+    description: 'You have been added to an LFG chat conversation.',
+  },
+  addedToPrivateEvent: {
+    configKey: 'addedToPrivateEvent',
+    title: 'Added To Private Event',
+    description: 'Added to a private calendar event created by another user.',
+  },
+  privateEventUnreadMsg: {
+    configKey: 'privateEventUnreadMsg',
+    title: 'Unread Private Event Message',
+    description: 'Unread chat message in a private event conversation.',
+  },
+  microKaraokeSongReady: {
+    configKey: 'microKaraokeSongReady',
+    title: 'MicroKaraoke Song Ready',
+    description: 'A new song has completed and is available to view.',
+  },
 };
 
 export async function generateContentNotification(

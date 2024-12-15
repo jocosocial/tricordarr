@@ -49,6 +49,8 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   console.log('[SocketNotification.ts] Responding to message with type', notificationType);
 
   // Figure out what we want to display and how to display it.
+  // Whenever you add notification types here, there needs to be entries in
+  // AppConfig for them as well.
   switch (notificationType) {
     case NotificationTypeData.seamailUnreadMsg:
       channel = seamailChannel;
@@ -149,6 +151,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       break;
   }
 
+  console.info(`[SocketNotification.ts] Calling generateContentNotification() for type ${notificationType}`);
   await generateContentNotification(
     notificationData.contentID,
     title,
