@@ -24,7 +24,8 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
   });
   const {profilePublicData} = useUserData();
   const eventData = data?.pages[0];
-  const showChat = FezData.isParticipant(eventData, profilePublicData?.header);
+  const showChat =
+    eventData?.fezType === FezType.privateEvent && FezData.isParticipant(eventData, profilePublicData?.header);
 
   const getNavButtons = useCallback(() => {
     return (
