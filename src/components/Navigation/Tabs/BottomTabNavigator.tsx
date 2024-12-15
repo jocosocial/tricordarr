@@ -100,6 +100,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />
       <Tab.Screen

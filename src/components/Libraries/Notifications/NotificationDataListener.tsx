@@ -40,6 +40,10 @@ export const NotificationDataListener = () => {
           queryClient.invalidateQueries({queryKey: [`/fez/${notificationData.contentID}`]});
           break;
         }
+        case NotificationTypeData.addedToPrivateEvent: {
+          queryClient.invalidateQueries({queryKey: ['/fez/joined']});
+          break;
+        }
       }
     },
     [queryClient, refetchAnnouncements, refetchUserNotificationData],
