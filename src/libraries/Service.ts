@@ -102,6 +102,7 @@ const fgsWorker = async () => {
   // Start a regular socket health check to help ensure the socket stays open.
   // Or at least yell at the user when it fails.
   fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
+  console.log('[Service.ts] Worker startup complete.');
 };
 
 /**

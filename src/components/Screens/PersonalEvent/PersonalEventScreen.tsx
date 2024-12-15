@@ -9,10 +9,13 @@ import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx
 import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
 import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
+import notifee from '@notifee/react-native';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
 export const PersonalEventScreen = ({navigation, route}: Props) => {
+  const {appConfig} = useConfig();
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.eventID,
   });
@@ -44,7 +47,11 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-  }, [getNavButtons, navigation]);
+    if (appConfig.markReadCancelPush && eventData) {
+      console.log('[SeamailScreen.tsx] auto canceling notifications.');
+      notifee.cancelDisplayedNotification(eventData.fezID);
+    }
+  }, [getNavButtons, navigation, eventData, appConfig.markReadCancelPush]);
 
   return <ScheduleItemScreenBase eventData={eventData} onRefresh={refetch} refreshing={isFetching} />;
 };

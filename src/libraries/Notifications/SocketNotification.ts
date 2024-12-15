@@ -126,6 +126,27 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       title = 'Personal Event Starting';
       url = `/personalevents/${notificationData.contentID}`;
       break;
+    case NotificationTypeData.addedToPrivateEvent:
+      channel = eventChannel;
+      pressActionID = PressAction.personalEvent;
+      title = 'Added to Private Event';
+      url = `/privateevent/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.addedToLFG:
+      channel = lfgChannel;
+      pressActionID = PressAction.lfg;
+      title = 'Added to LFG';
+      url = `/lfg/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.addedToSeamail:
+      channel = seamailChannel;
+      pressActionID = PressAction.seamail;
+      title = 'Added to Seamail';
+      url = `/seamail/${notificationData.contentID}`;
+      break;
+    default:
+      console.warn(`[SocketNotification.ts] Ignoring event of type ${notificationType}`);
+      break;
   }
 
   await generateContentNotification(
