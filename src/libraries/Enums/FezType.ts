@@ -92,5 +92,8 @@ export namespace FezType {
     } else if (FezType.isPrivateEventType(fezType)) {
       return CommonStackComponents.scheduleHelpScreen;
     }
+    // Default is gonna be Seamail. MainHelp isn't part of Common and I'm not sure
+    // yet if I want to do that just for this.
+    return CommonStackComponents.seamailHelpScreen;
   };
 }

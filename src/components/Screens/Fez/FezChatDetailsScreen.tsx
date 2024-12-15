@@ -60,7 +60,11 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
           <Item
             title={'Help'}
             iconName={AppIcons.help}
-            onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
+            onPress={() => {
+              if (fez) {
+                navigation.push(FezType.getHelpRoute(fez.fezType));
+              }
+            }}
           />
         </HeaderButtons>
       </View>

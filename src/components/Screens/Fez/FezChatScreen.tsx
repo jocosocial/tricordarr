@@ -8,7 +8,7 @@ import {FezChatActionsMenu} from '../../Menus/Fez/FezChatActionsMenu.tsx';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
-import {getSeamailHeaderTitle} from '../../Navigation/Components/FezHeaderTitle.tsx';
+import {getFezHeaderTitle} from '../../Navigation/Components/FezHeaderTitle.tsx';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
@@ -205,7 +205,7 @@ export const FezChatScreen = ({route}: Props) => {
         headerRight: getNavButtons,
         // Annoying there doesn't seem to be a way to access the current title
         // so the result of the function should match the navigator.
-        headerTitle: getSeamailHeaderTitle(fez),
+        headerTitle: getFezHeaderTitle(fez),
       });
     }
   }, [fez, getNavButtons, navigation]);

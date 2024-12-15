@@ -19,4 +19,4 @@ const FezHeaderTitle = ({fez}: FezHeaderTitleProps) => {
 
 // This exists to prevent defining the component during render, because the navigator
 // requires a () => Element not an Element. Because.... reasons?
-export const getSeamailHeaderTitle = (fez: FezData) => () => <FezHeaderTitle fez={fez} />;
+export const getFezHeaderTitle = (fez: FezData) => () => <FezHeaderTitle fez={fez} />;
