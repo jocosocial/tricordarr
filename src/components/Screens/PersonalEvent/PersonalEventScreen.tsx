@@ -42,7 +42,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
               )}
               {eventData.owner.userID === profilePublicData?.header.userID && (
                 <HeaderEditButton
-                  iconName={AppIcons.eventEdit}
+                  iconName={AppIcons.edit}
                   onPress={() =>
                     navigation.push(CommonStackComponents.personalEventEditScreen, {
                       personalEvent: eventData,
@@ -56,7 +56,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [eventData, navigation, profilePublicData?.header.userID]);
+  }, [eventData, navigation, profilePublicData?.header.userID, showChat]);
 
   useEffect(() => {
     navigation.setOptions({

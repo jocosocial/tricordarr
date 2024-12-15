@@ -47,7 +47,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
           )}
           {lfg && lfg.owner.userID === profilePublicData?.header.userID && (
             <HeaderEditButton
-              iconName={AppIcons.lfgEdit}
+              iconName={AppIcons.edit}
               onPress={() =>
                 navigation.push(CommonStackComponents.lfgEditScreen, {
                   fez: lfg,

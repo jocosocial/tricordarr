@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
@@ -12,6 +12,8 @@ import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libr
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
+import notifee from '@notifee/react-native';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {
@@ -78,6 +80,12 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
     },
     initialUsers: [],
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: route.params.personalEvent.fezType === FezType.privateEvent ? 'Edit Private Event' : 'Edit Personal Event',
+    });
+  }, [navigation, route.params.personalEvent.fezType]);
 
   return (
     <AppView>

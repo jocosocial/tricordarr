@@ -33,7 +33,7 @@ export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenu
       {props.eventData.owner.userID === profilePublicData?.header.userID && (
         <>
           <Menu.Item
-            leadingIcon={AppIcons.eventEdit}
+            leadingIcon={AppIcons.edit}
             title={'Edit'}
             onPress={() => {
               closeMenu();
