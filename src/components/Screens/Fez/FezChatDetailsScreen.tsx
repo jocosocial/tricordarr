@@ -29,7 +29,7 @@ type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.
 export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});
-  const {fezSocket} = useSocket();
+  const {fezSockets} = useSocket();
   const [fez, setFez] = useState<FezData>();
   const {profilePublicData} = useUserData();
   const queryClient = useQueryClient();
@@ -69,7 +69,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [navigation],
+    [fez, navigation],
   );
 
   useEffect(() => {
@@ -90,6 +90,8 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   }
 
   const manageUsers = fez.fezType === FezType.open && fez.owner.userID === profilePublicData?.header.userID;
+
+  const fezSocket = fezSockets[fez.fezID];
 
   return (
     <AppView>

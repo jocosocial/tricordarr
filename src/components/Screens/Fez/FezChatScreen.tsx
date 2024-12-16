@@ -54,7 +54,7 @@ export const FezChatScreen = ({route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {fezSocket, openFezSocket} = useSocket();
+  const {fezSockets, openFezSocket} = useSocket();
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
@@ -84,6 +84,7 @@ export const FezChatScreen = ({route}: Props) => {
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
+      console.info('[FezChatScreen.tsx] fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
       if ('joined' in socketMessage) {
         // Then it's SocketFezMemberChangeData
@@ -190,13 +191,18 @@ export const FezChatScreen = ({route}: Props) => {
   // with rendering.
   useEffect(() => {
     if (fez) {
-      let newSocket = openFezSocket(fez.fezID);
-      if (fezSocket && newSocket) {
+      const hasNewSocket = openFezSocket(fez.fezID);
+      const fezSocket = fezSockets[fez.fezID];
+      if (hasNewSocket && fezSocket) {
         console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
         fezSocket.addEventListener('message', fezSocketMessageHandler);
+      } else {
+        console.log(
+          `[FezChatScreen.tsx] Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType}): hasNewSocket ${hasNewSocket}, socket ${fezSocket}`,
+        );
       }
     }
-  }, [fez, fezSocket, fezSocketMessageHandler, openFezSocket]);
+  }, [fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
 
   // Navigation useEffect
   useEffect(() => {
@@ -239,6 +245,9 @@ export const FezChatScreen = ({route}: Props) => {
   if (!fez) {
     return <LoadingView />;
   }
+
+  console.info('WAAAAAAA');
+  console.info(fezSockets[fez.fezID]);
 
   return (
     <AppView>

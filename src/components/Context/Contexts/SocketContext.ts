@@ -1,11 +1,11 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import {WebSocketStorage} from '../../Reducers/Fez/FezSocketReducer.ts';
 
 interface SocketContextType {
-  fezSocket?: ReconnectingWebSocket;
-  setFezSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
+  fezSockets: WebSocketStorage;
   openFezSocket: (fezID: string) => boolean;
-  closeFezSocket: () => void;
+  closeFezSocket: (fezID: string) => void;
   notificationSocket?: ReconnectingWebSocket;
   setNotificationSocket: Dispatch<SetStateAction<ReconnectingWebSocket | undefined>>;
   closeNotificationSocket: () => void;

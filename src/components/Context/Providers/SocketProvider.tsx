@@ -4,11 +4,12 @@ import {buildWebSocket} from '../../../libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useAuth} from '../Contexts/AuthContext';
+import {useWebSocketStorageReducer, WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
   const {isLoggedIn} = useAuth();
   const [notificationSocket, setNotificationSocket] = useState<ReconnectingWebSocket>();
-  const [fezSocket, setFezSocket] = useState<ReconnectingWebSocket>();
+  const [fezSockets, dispatchFezSockets] = useWebSocketStorageReducer({});
   const {appConfig} = useConfig();
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
 
@@ -26,18 +27,25 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         console.log('[SocketProvider.tsx] FezSocket is disabled. Skipping open.');
         return false;
       }
+      const fezSocket = fezSockets[fezID];
       console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
       let returnState = false;
       if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
         console.log('[SocketProvider.tsx] FezSocket already exists. Skipping buildWebSocket.');
       } else {
-        buildWebSocket(fezID).then(ws => setFezSocket(ws));
+        buildWebSocket(fezID).then(ws =>
+          dispatchFezSockets({
+            type: WebSocketStorageActions.upsert,
+            key: fezID,
+            socket: ws,
+          }),
+        );
         returnState = true;
       }
       console.log(`[SocketProvider.tsx] FezSocket open complete! State: ${fezSocket?.readyState}`);
       return returnState;
     },
-    [appConfig.enableFezSocket, fezSocket],
+    [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
   );
 
   const openNotificationSocket = useCallback(() => {
@@ -59,16 +67,28 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
 
   // Socket Close
 
-  const closeFezSocket = useCallback(() => {
-    console.log('[SocketProvider.tsx] FezSocket is closing.');
-    if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
-      fezSocket.close();
-      setFezSocket(undefined);
-    } else {
-      console.log(`[SocketProvider.tsx] FezSocket ineligible for close. State: ${fezSocket?.readyState}`);
-    }
-    console.log(`[SocketProvider.tsx] FezSocket close complete. State: ${fezSocket?.readyState}`);
-  }, [fezSocket]);
+  const closeFezSocket = useCallback(
+    (fezID: string) => {
+      console.log('[SocketProvider.tsx] FezSocket is closing.');
+      if (!appConfig.enableFezSocket) {
+        console.log('[SocketProvider.tsx] FezSocket is disabled. Skipping close.');
+        return;
+      }
+      const fezSocket = fezSockets[fezID];
+      console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
+      if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CLOSED)) {
+        fezSocket.close();
+        dispatchFezSockets({
+          type: WebSocketStorageActions.delete,
+          key: fezID,
+        });
+      } else {
+        console.log(`[SocketProvider.tsx] FezSocket ineligible for close. State: ${fezSocket?.readyState}`);
+      }
+      console.log(`[SocketProvider.tsx] FezSocket close complete. State: ${fezSocket?.readyState}`);
+    },
+    [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
+  );
 
   const closeNotificationSocket = useCallback(() => {
     console.log('[SocketProvider.tsx] NotificationSocket is closing.');
@@ -102,18 +122,17 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       console.log('[SocketProvider.tsx] NotificationSocket is disabled. Explicitly closing.');
       closeNotificationSocket();
     }
-    if (!appConfig.enableFezSocket) {
-      console.log('[SocketProvider.tsx] FezSocket is disabled. Explicitly closing.');
-      closeFezSocket();
-    }
+    // if (!appConfig.enableFezSocket) {
+    //   console.log('[SocketProvider.tsx] FezSocket is disabled. Explicitly closing.');
+    //   closeFezSocket();
+    // }
     console.log('[SocketProvider.tsx] Finished socket close useEffect.');
   }, [appConfig.enableFezSocket, appConfig.enableNotificationSocket, closeFezSocket, closeNotificationSocket]);
 
   return (
     <SocketContext.Provider
       value={{
-        fezSocket,
-        setFezSocket,
+        fezSockets,
         openFezSocket,
         closeFezSocket,
         notificationSocket,
