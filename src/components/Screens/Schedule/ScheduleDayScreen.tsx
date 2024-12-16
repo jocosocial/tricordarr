@@ -3,7 +3,7 @@ import {ScheduleHeaderView} from '../../Views/Schedule/ScheduleHeaderView.tsx';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {EventStackComponents, EventStackParamList} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {ScheduleStackComponents, ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
@@ -26,7 +26,7 @@ import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderSch
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 
-type Props = NativeStackScreenProps<EventStackParamList, EventStackComponents.scheduleDayScreen>;
+type Props = NativeStackScreenProps<ScheduleStackParamList, ScheduleStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);

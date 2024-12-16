@@ -6,7 +6,7 @@ import {ChatStackNavigator, ChatStackParamList} from '../Stacks/ChatStackNavigat
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigator';
-import {EventStackNavigator, EventStackParamList} from '../Stacks/EventStackNavigator';
+import {ScheduleStackNavigator, ScheduleStackParamList} from '../Stacks/ScheduleStackNavigator.tsx';
 import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
@@ -25,7 +25,7 @@ function getBadgeDisplayValue(input: number | undefined) {
 export type BottomTabParamList = {
   HomeTab: NavigatorScreenParams<MainStackParamList>;
   SeamailTab: NavigatorScreenParams<ChatStackParamList>;
-  ScheduleTab: NavigatorScreenParams<EventStackParamList>;
+  ScheduleTab: NavigatorScreenParams<ScheduleStackParamList>;
   ForumsTab: NavigatorScreenParams<ForumStackParamList>;
   LfgTab: NavigatorScreenParams<LfgStackParamList>;
 };
@@ -96,7 +96,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name={BottomTabComponents.scheduleTab}
-        component={EventStackNavigator}
+        component={ScheduleStackNavigator}
         options={{
           title: 'Schedule',
           tabBarIcon: () => getIcon(AppIcons.events),

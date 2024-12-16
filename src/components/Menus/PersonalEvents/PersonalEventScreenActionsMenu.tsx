@@ -8,7 +8,7 @@ import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
@@ -19,7 +19,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
   const [visible, setVisible] = useState(false);
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
-  const navigation = useEventStackNavigation();
+  const navigation = useScheduleStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

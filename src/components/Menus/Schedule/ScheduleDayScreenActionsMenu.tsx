@@ -2,20 +2,20 @@ import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {EventStackComponents, useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+import {ScheduleStackComponents, useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
   const [visible, setVisible] = useState(false);
-  const navigation = useEventStackNavigation();
+  const navigation = useScheduleStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (component: EventStackComponents | CommonStackComponents) => {
+  const handleNavigation = (component: ScheduleStackComponents | CommonStackComponents) => {
     navigation.push(component);
     closeMenu();
   };
@@ -26,12 +26,12 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => voi
       <Menu.Item
         title={'Import'}
         leadingIcon={AppIcons.schedImport}
-        onPress={() => handleNavigation(EventStackComponents.scheduleImportScreen)}
+        onPress={() => handleNavigation(ScheduleStackComponents.scheduleImportScreen)}
       />
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}
-        onPress={() => handleNavigation(EventStackComponents.eventSettingsScreen)}
+        onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
       />
       <Menu.Item
         title={'Help'}

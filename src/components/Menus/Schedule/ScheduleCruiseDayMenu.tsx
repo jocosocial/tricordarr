@@ -5,23 +5,26 @@ import {Item} from 'react-navigation-header-buttons';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {format} from 'date-fns';
 import {
-  EventStackComponents,
-  EventStackParamList,
-  useEventStackNavigation,
-} from '../../Navigation/Stacks/EventStackNavigator.tsx';
+  ScheduleStackComponents,
+  ScheduleStackParamList,
+  useScheduleStackNavigation,
+} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {RouteProp} from '@react-navigation/native';
 import {CruiseDayMenuItem} from '../Items/CruiseDayMenuItem.tsx';
 
 interface ScheduleCruiseDayMenuProps {
   scrollToNow: () => void;
-  screen: EventStackComponents.eventDayScreen | EventStackComponents.eventYourDayScreen;
-  route: RouteProp<EventStackParamList, EventStackComponents.eventDayScreen | EventStackComponents.eventYourDayScreen>;
+  screen: ScheduleStackComponents.eventDayScreen | ScheduleStackComponents.eventYourDayScreen;
+  route: RouteProp<
+    ScheduleStackParamList,
+    ScheduleStackComponents.eventDayScreen | ScheduleStackComponents.eventYourDayScreen
+  >;
 }
 
 export const ScheduleCruiseDayMenu = ({scrollToNow, route, screen}: ScheduleCruiseDayMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
-  const navigation = useEventStackNavigation();
+  const navigation = useScheduleStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

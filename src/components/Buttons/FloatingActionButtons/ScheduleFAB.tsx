@@ -2,10 +2,10 @@ import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {
-  EventStackComponents,
-  useEventStackNavigation,
-  useEventStackRoute,
-} from '../../Navigation/Stacks/EventStackNavigator';
+  ScheduleStackComponents,
+  useScheduleStackNavigation,
+  useScheduleStackRoute,
+} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
@@ -15,10 +15,10 @@ interface ScheduleFABProps {
 }
 
 export const ScheduleFAB = (props: ScheduleFABProps) => {
-  const navigation = useEventStackNavigation();
-  const route = useEventStackRoute();
+  const navigation = useScheduleStackNavigation();
+  const route = useScheduleStackRoute();
 
-  const handleNavigation = (component: EventStackComponents | CommonStackComponents) => {
+  const handleNavigation = (component: ScheduleStackComponents | CommonStackComponents) => {
     if (route.name === component) {
       return;
     }
@@ -40,7 +40,7 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     FabGroupAction({
       icon: AppIcons.eventSearch,
       label: 'Search',
-      onPress: () => handleNavigation(EventStackComponents.eventSearchScreen),
+      onPress: () => handleNavigation(ScheduleStackComponents.eventSearchScreen),
     }),
   ];
 
