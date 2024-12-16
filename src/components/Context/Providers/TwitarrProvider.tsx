@@ -1,11 +1,10 @@
-import React, {useState, PropsWithChildren} from 'react';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
+import React, {PropsWithChildren} from 'react';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import URLParse from 'url-parse';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
-  const [searchString, setSearchString] = useState('');
   const {appConfig} = useConfig();
 
   const openAppUrl = (appUrl: string) => {
@@ -41,8 +40,6 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   return (
     <TwitarrContext.Provider
       value={{
-        searchString,
-        setSearchString,
         openWebUrl,
       }}>
       {children}

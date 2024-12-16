@@ -1,8 +1,6 @@
-import {useContext, createContext, Dispatch, SetStateAction} from 'react';
+import {useContext, createContext} from 'react';
 
 interface TwitarrContextType {
-  searchString: string;
-  setSearchString: Dispatch<SetStateAction<string>>;
   openWebUrl: (url: string) => void;
 }
 
