@@ -27,6 +27,7 @@ import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {FezPostsActions, useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers.ts';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
 
 type Props = NativeStackScreenProps<
   CommonStackParamList,
@@ -54,7 +55,7 @@ export const FezChatScreen = ({route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {fezSockets, openFezSocket} = useSocket();
+  const {fezSockets, openFezSocket, dispatchFezSockets} = useSocket();
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
@@ -190,19 +191,24 @@ export const FezChatScreen = ({route}: Props) => {
   // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
   // with rendering.
   useEffect(() => {
-    if (fez) {
-      const hasNewSocket = openFezSocket(fez.fezID);
-      const fezSocket = fezSockets[fez.fezID];
-      if (hasNewSocket && fezSocket) {
-        console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
-        fezSocket.addEventListener('message', fezSocketMessageHandler);
-      } else {
-        console.log(
-          `[FezChatScreen.tsx] Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType}): hasNewSocket ${hasNewSocket}, socket ${fezSocket}`,
-        );
+    const handleFezSocket = async () => {
+      if (fez) {
+        const newSocketInfo = await openFezSocket(fez.fezID);
+        if (newSocketInfo.isNew && newSocketInfo.ws) {
+          console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
+          newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
+          dispatchFezSockets({
+            type: WebSocketStorageActions.upsert,
+            key: fez.fezID,
+            socket: newSocketInfo.ws,
+          });
+        } else {
+          console.log(`[FezChatScreen.tsx] Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
+        }
       }
-    }
-  }, [fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
+    };
+    handleFezSocket();
+  }, [dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
 
   // Navigation useEffect
   useEffect(() => {
@@ -245,9 +251,6 @@ export const FezChatScreen = ({route}: Props) => {
   if (!fez) {
     return <LoadingView />;
   }
-
-  console.info('WAAAAAAA');
-  console.info(fezSockets[fez.fezID]);
 
   return (
     <AppView>

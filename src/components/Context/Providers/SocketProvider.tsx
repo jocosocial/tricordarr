@@ -1,6 +1,6 @@
 import React, {useState, PropsWithChildren, useCallback, useEffect} from 'react';
 import {SocketContext} from '../Contexts/SocketContext';
-import {buildWebSocket} from '../../../libraries/Network/Websockets';
+import {buildWebSocket, OpenFezSocket} from '../../../libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {useConfig} from '../Contexts/ConfigContext';
 import {useAuth} from '../Contexts/AuthContext';
@@ -22,30 +22,35 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
    * Returns a boolean whether a new socket was created or not.
    */
   const openFezSocket = useCallback(
-    (fezID: string) => {
+    async (fezID: string): Promise<OpenFezSocket> => {
       if (!appConfig.enableFezSocket) {
         console.log('[SocketProvider.tsx] FezSocket is disabled. Skipping open.');
-        return false;
+        return {
+          isNew: false,
+        };
       }
-      const fezSocket = fezSockets[fezID];
-      console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${fezSocket?.readyState}`);
-      let returnState = false;
-      if (fezSocket && (fezSocket.readyState === WebSocket.OPEN || fezSocket.readyState === WebSocket.CONNECTING)) {
+      const existingSocket = fezSockets[fezID];
+      console.log(`[SocketProvider.tsx] FezSocket enabled for ${fezID}. State: ${existingSocket?.readyState}`);
+      let isNew = false;
+      let ws: ReconnectingWebSocket;
+      if (
+        existingSocket &&
+        (existingSocket.readyState === WebSocket.OPEN || existingSocket.readyState === WebSocket.CONNECTING)
+      ) {
         console.log('[SocketProvider.tsx] FezSocket already exists. Skipping buildWebSocket.');
+        ws = existingSocket;
       } else {
-        buildWebSocket(fezID).then(ws =>
-          dispatchFezSockets({
-            type: WebSocketStorageActions.upsert,
-            key: fezID,
-            socket: ws,
-          }),
-        );
-        returnState = true;
+        const newSocket = await buildWebSocket(fezID);
+        isNew = true;
+        ws = newSocket;
       }
-      console.log(`[SocketProvider.tsx] FezSocket open complete! State: ${fezSocket?.readyState}`);
-      return returnState;
+      console.log(`[SocketProvider.tsx] FezSocket open complete! State: ${existingSocket?.readyState}`);
+      return {
+        isNew: isNew,
+        ws: ws,
+      };
     },
-    [appConfig.enableFezSocket, dispatchFezSockets, fezSockets],
+    [appConfig.enableFezSocket, fezSockets],
   );
 
   const openNotificationSocket = useCallback(() => {
@@ -133,6 +138,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
     <SocketContext.Provider
       value={{
         fezSockets,
+        dispatchFezSockets,
         openFezSocket,
         closeFezSocket,
         notificationSocket,

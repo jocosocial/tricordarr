@@ -100,3 +100,8 @@ export const WebSocketState = {
   // I made this one up.
   69: 'Uninitialized',
 } as const;
+
+export interface OpenFezSocket {
+  ws?: ReconnectingWebSocket;
+  isNew: boolean;
+}
