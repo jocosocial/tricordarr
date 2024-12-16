@@ -7,6 +7,7 @@ import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts'
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -36,13 +37,14 @@ export const NotificationDataListener = () => {
           refetchAnnouncements();
           break;
         }
-        case NotificationTypeData.seamailUnreadMsg: {
-          queryClient.invalidateQueries({queryKey: [`/fez/${notificationData.contentID}`]});
-          break;
-        }
-        case NotificationTypeData.addedToPrivateEvent: {
-          queryClient.invalidateQueries({queryKey: ['/fez/joined']});
-          queryClient.invalidateQueries({queryKey: ['/fez/former']});
+        case (NotificationTypeData.seamailUnreadMsg,
+        NotificationTypeData.addedToPrivateEvent,
+        NotificationTypeData.addedToLFG,
+        NotificationTypeData.addedToSeamail): {
+          const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          Promise.all(invalidations);
           break;
         }
       }

@@ -61,7 +61,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
             SeamailTab: 'seamail',
-            SeamailScreen: 'seamail/:fezID',
+            SeamailChatScreen: 'seamail/:fezID',
             KrakenTalkReceiveScreen: 'phonecall/:callID/from/:callerUserID/:callerUsername',
           },
         },
