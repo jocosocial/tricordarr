@@ -8,8 +8,6 @@ import React from 'react';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useQueryClient} from '@tanstack/react-query';
 import {useFezCancelMutation} from '../../Queries/Fez/FezMutations.ts';
 
@@ -33,7 +31,6 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
-  const {setLfg, dispatchLfgList} = useTwitarr();
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
@@ -42,18 +39,12 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
         fezID: fezData.fezID,
       },
       {
-        onSuccess: async response => {
+        onSuccess: async () => {
           setInfoMessage('Successfully canceled this LFG.');
           const invalidations = FezData.getCacheKeys().map(key => {
             return queryClient.invalidateQueries(key);
           });
           await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
-
-          setLfg(response.data);
-          dispatchLfgList({
-            type: FezListActions.updateFez,
-            fez: response.data,
-          });
           setModalVisible(false);
         },
       },

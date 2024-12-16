@@ -1,20 +1,11 @@
 import React, {useState, PropsWithChildren} from 'react';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {TwitarrContext} from '../Contexts/TwitarrContext';
-import {useFezListReducer} from '../../Reducers/Fez/FezListReducers';
-import {useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import URLParse from 'url-parse';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
-  const [fez, setFez] = useState<FezData>();
-  const [fezList, dispatchFezList] = useFezListReducer([]);
-  const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer();
   const [searchString, setSearchString] = useState('');
-  const [lfgList, dispatchLfgList] = useFezListReducer([]);
-  const [lfg, setLfg] = useState<FezData>();
-  const [lfgPostsData, dispatchLfgPostsData] = useFezPostsReducer();
   const {appConfig} = useConfig();
 
   const openAppUrl = (appUrl: string) => {
@@ -50,20 +41,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   return (
     <TwitarrContext.Provider
       value={{
-        fez,
-        setFez,
-        fezList,
-        dispatchFezList,
-        fezPostsData,
-        dispatchFezPostsData,
         searchString,
         setSearchString,
-        lfgList,
-        dispatchLfgList,
-        lfg,
-        setLfg,
-        lfgPostsData,
-        dispatchLfgPostsData,
         openWebUrl,
       }}>
       {children}

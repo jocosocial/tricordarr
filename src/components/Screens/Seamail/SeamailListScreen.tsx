@@ -6,7 +6,6 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {SeamailFAB} from '../../Buttons/FloatingActionButtons/SeamailFAB';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FezListActions, useFezListReducer} from '../../Reducers/Fez/FezListReducers';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -41,7 +40,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {commonStyles} = useStyles();
   const {profilePublicData} = useUserData();
   const [showFabLabel, setShowFabLabel] = useState(true);
-  const [fezList, dispatchFezList] = useFezListReducer([]);
+  const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const queryClient = useQueryClient();
 
@@ -53,17 +52,9 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   useEffect(() => {
     if (data && data.pages) {
-      dispatchFezList({
-        type: FezListActions.set,
-        fezList: data.pages.flatMap(p => p.fezzes),
-      });
-    } else {
-      dispatchFezList({
-        type: FezListActions.set,
-        fezList: [],
-      });
+      setFezList(data.pages.flatMap(p => p.fezzes));
     }
-  }, [data, dispatchFezList]);
+  }, [data]);
 
   const onRefresh = useCallback(() => {
     refetch().finally(() => {
@@ -71,26 +62,10 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
     });
   }, [refetch, refetchUserNotificationData]);
 
-  // Why was this here?
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     onRefresh();
-  //   }
-  // }, [asPrivilegedUser, onRefresh, isLoggedIn]);
-
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
-        // if (fezList.some(f => f.fezID === socketMessage.contentID)) {
-        //   dispatchFezList({
-        //     type: FezListActions.incrementPostCount,
-        //     fezID: socketMessage.contentID,
-        //   });
-        //   dispatchFezList({
-        //     type: FezListActions.moveToTop,
-        //     fezID: socketMessage.contentID,
-        //   });
         const invalidations = FezData.getCacheKeys().map(key => {
           return queryClient.invalidateQueries(key);
         });
@@ -137,9 +112,6 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   }, [notificationHandler, notificationSocket]);
 
   useEffect(() => {
-    if (isFocused) {
-      closeFezSocket();
-    }
     navigation.setOptions({
       headerRight: getNavButtons,
     });

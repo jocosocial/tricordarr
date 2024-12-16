@@ -10,12 +10,10 @@ import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx
 import {LfgListActionsMenu} from '../../Menus/LFG/LfgListActionsMenu.tsx';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {useIsFocused} from '@react-navigation/native';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
@@ -23,6 +21,7 @@ import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx'
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {FezListEndpoints} from '../../../libraries/Types';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;
@@ -44,11 +43,12 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
     });
   const navigation = useLFGStackNavigation();
   const isFocused = useIsFocused();
-  const {setLfg, lfgList, dispatchLfgList} = useTwitarr();
-  const {notificationSocket, closeFezSocket} = useSocket();
+  const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
   const listRef = useRef<FlashList<FezData>>(null);
+  const queryClient = useQueryClient();
+  const [fezList, setFezList] = useState<FezData[]>([]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
@@ -73,24 +73,18 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
     (event: WebSocketMessageEvent) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
-        if (lfgList.some(f => f.fezID === socketMessage.contentID)) {
-          dispatchLfgList({
-            type: FezListActions.incrementPostCount,
-            fezID: socketMessage.contentID,
-          });
-          dispatchLfgList({
-            type: FezListActions.moveToTop,
-            fezID: socketMessage.contentID,
-          });
-        } else {
-          // This is kinda a lazy way out, but it works.
-          // Not using onRefresh() so that we don't show the sudden refreshing circle.
-          // Hopefully that's a decent idea.
-          refetch();
-        }
+        const invalidations = FezData.getCacheKeys().map(key => {
+          return queryClient.invalidateQueries(key);
+        });
+        Promise.all(invalidations);
+      } else {
+        // This is kinda a lazy way out, but it works.
+        // Not using onRefresh() so that we don't show the sudden refreshing circle.
+        // Hopefully that's a decent idea.
+        refetch();
       }
     },
-    [dispatchLfgList, lfgList, refetch],
+    [queryClient, refetch],
   );
 
   useEffect(() => {
@@ -110,20 +104,13 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
     navigation.setOptions({
       headerRight: getNavButtons,
     });
-    if (isFocused) {
-      closeFezSocket();
-      setLfg(undefined);
-    }
-  }, [closeFezSocket, getNavButtons, isFocused, navigation, setLfg]);
+  }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && data.pages && isFocused) {
-      dispatchLfgList({
-        type: FezListActions.set,
-        fezList: data.pages.flatMap(p => p.fezzes),
-      });
+    if (data && data.pages) {
+      setFezList(data.pages.flatMap(p => p.fezzes));
     }
-  }, [data, dispatchLfgList, isFocused]);
+  }, [data]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -138,7 +125,7 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
       <TimezoneWarningView />
       <LFGFlatList
         listRef={listRef}
-        items={lfgList}
+        items={fezList}
         refreshControl={
           <RefreshControl refreshing={isFetching || isFetchingNextPage || isFetchingPreviousPage} onRefresh={refetch} />
         }

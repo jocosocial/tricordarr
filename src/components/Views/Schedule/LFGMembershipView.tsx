@@ -7,11 +7,9 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {LfgLeaveModal} from '../Modals/LfgLeaveModal.tsx';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries.ts';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext.ts';
 import {StyleSheet} from 'react-native';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 
@@ -27,7 +25,6 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);
   const membershipMutation = useFezMembershipMutation();
-  const {setLfg, dispatchLfgList} = useTwitarr();
 
   const handleMembershipPress = useCallback(() => {
     if (!lfg || !profilePublicData) {
@@ -44,13 +41,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
           action: 'join',
         },
         {
-          onSuccess: async response => {
-            setLfg(response.data);
-            // This only does part of what we need
-            dispatchLfgList({
-              type: FezListActions.updateFez,
-              fez: response.data,
-            });
+          onSuccess: async () => {
             const invalidations = FezData.getCacheKeys(lfg.fezID).map(key => {
               return queryClient.invalidateQueries(key);
             });
@@ -62,16 +53,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         },
       );
     }
-  }, [
-    dispatchLfgList,
-    lfg,
-    membershipMutation,
-    profilePublicData,
-    queryClient,
-    setLfg,
-    setModalContent,
-    setModalVisible,
-  ]);
+  }, [lfg, membershipMutation, profilePublicData, queryClient, setModalContent, setModalVisible]);
 
   const styles = StyleSheet.create({
     outerContainer: {

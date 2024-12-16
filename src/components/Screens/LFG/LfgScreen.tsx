@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFezQuery} from '../../Queries/Fez/FezQueries';
@@ -8,7 +8,6 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {LfgActionsMenu} from '../../Menus/LFG/LfgActionsMenu.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
@@ -24,8 +23,8 @@ export const LfgScreen = ({navigation, route}: Props) => {
     fezID: route.params.fezID,
   });
   const {profilePublicData} = useUserData();
-  const {lfg, setLfg} = useTwitarr();
-  const {closeFezSocket, notificationSocket} = useSocket();
+  const [lfg, setLfg] = useState<FezData>();
+  const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();
   const {hasModerator} = usePrivilege();
 
@@ -68,11 +67,10 @@ export const LfgScreen = ({navigation, route}: Props) => {
   }, [getNavButtons, navigation]);
 
   useEffect(() => {
-    if (data && isFocused) {
+    if (data) {
       setLfg(data.pages[0]);
-      closeFezSocket();
     }
-  }, [closeFezSocket, data, setLfg, isFocused]);
+  }, [data, setLfg]);
 
   // Mark as Read. Even though you may not have "read" it (tapping the Chat screen)
   // the API considers the GET in this screen as you reading it.

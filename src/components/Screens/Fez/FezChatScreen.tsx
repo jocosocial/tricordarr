@@ -55,7 +55,7 @@ export const FezChatScreen = ({route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const [refreshing, setRefreshing] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {fezSockets, openFezSocket, dispatchFezSockets} = useSocket();
+  const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
@@ -208,7 +208,12 @@ export const FezChatScreen = ({route}: Props) => {
       }
     };
     handleFezSocket();
-  }, [dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
+    return () => {
+      if (fez) {
+        closeFezSocket(fez.fezID);
+      }
+    };
+  }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
 
   // Navigation useEffect
   useEffect(() => {

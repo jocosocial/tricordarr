@@ -9,9 +9,7 @@ import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
 import {LfgCanceledView} from '../../Views/Static/LfgCanceledView';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
@@ -20,7 +18,6 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
-  const {setLfg, dispatchLfgList} = useTwitarr();
   const {appConfig} = useConfig();
   const offset = getEventTimezoneOffset(
     appConfig.portTimeZoneID,
@@ -48,12 +45,7 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
         },
       },
       {
-        onSuccess: async response => {
-          setLfg(response.data);
-          dispatchLfgList({
-            type: FezListActions.updateFez,
-            fez: response.data,
-          });
+        onSuccess: async () => {
           navigation.goBack();
           const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
             return queryClient.invalidateQueries(key);
