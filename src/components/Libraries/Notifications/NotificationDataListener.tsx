@@ -37,10 +37,14 @@ export const NotificationDataListener = () => {
           refetchAnnouncements();
           break;
         }
-        case (NotificationTypeData.seamailUnreadMsg,
-        NotificationTypeData.addedToPrivateEvent,
-        NotificationTypeData.addedToLFG,
-        NotificationTypeData.addedToSeamail): {
+        // The order matters here! Not the specifics of which case but that they
+        // all fall through together.
+        case NotificationTypeData.seamailUnreadMsg:
+        case NotificationTypeData.privateEventUnreadMsg:
+        case NotificationTypeData.fezUnreadMsg:
+        case NotificationTypeData.addedToPrivateEvent:
+        case NotificationTypeData.addedToLFG:
+        case NotificationTypeData.addedToSeamail: {
           const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
             return queryClient.invalidateQueries(key);
           });

@@ -25,17 +25,19 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     navigation.push(component);
   };
 
-  const handleCreateNavigation = () => {
-    navigation.push(CommonStackComponents.personalEventCreateScreen, {
-      cruiseDay: props.selectedDay,
-    });
-  };
-
   const actions = [
     FabGroupAction({
       icon: AppIcons.new,
       label: 'Create Personal Event',
-      onPress: handleCreateNavigation,
+      onPress: () =>
+        navigation.push(CommonStackComponents.personalEventCreateScreen, {
+          cruiseDay: props.selectedDay,
+        }),
+    }),
+    FabGroupAction({
+      icon: AppIcons.personalEvent,
+      label: 'Private Events',
+      onPress: () => navigation.push(ScheduleStackComponents.schedulePrivateEventScreen),
     }),
     FabGroupAction({
       icon: AppIcons.eventSearch,

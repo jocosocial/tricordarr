@@ -4,8 +4,8 @@ import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface FezJoinedQueryParams {
   cruiseDay?: number;
-  includeType?: [keyof FezType];
-  excludeType?: [keyof FezType];
+  includeType?: FezType[];
+  excludeType?: FezType[];
   onlyNew?: boolean;
   start?: number;
   limit?: number;
@@ -15,7 +15,7 @@ interface FezJoinedQueryParams {
   lfgTypes?: boolean;
 }
 
-interface PersonalEventsQueryOptions extends Omit<FezJoinedQueryParams, 'includeType'> {
+interface PersonalEventsQueryOptions extends FezJoinedQueryParams {
   options?: {};
 }
 
@@ -30,10 +30,11 @@ export const usePersonalEventsQuery = ({
   matchID,
   lfgTypes,
   options = {},
+  includeType = [FezType.privateEvent, FezType.personalEvent],
 }: PersonalEventsQueryOptions) => {
   return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, {
     ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
-    type: [FezType.privateEvent, FezType.personalEvent],
+    type: includeType,
     ...(excludeType && {excludetype: excludeType}),
     ...(onlyNew !== undefined && {onlynew: onlyNew}),
     ...(start !== undefined && {start: start}),
