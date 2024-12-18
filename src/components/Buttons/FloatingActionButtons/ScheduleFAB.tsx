@@ -1,8 +1,11 @@
 import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useEventStackNavigation, useEventStackRoute} from '../../Navigation/Stacks/EventStackNavigator';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
+import {
+  ScheduleStackComponents,
+  useScheduleStackNavigation,
+  useScheduleStackRoute,
+} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
@@ -12,32 +15,34 @@ interface ScheduleFABProps {
 }
 
 export const ScheduleFAB = (props: ScheduleFABProps) => {
-  const navigation = useEventStackNavigation();
-  const route = useEventStackRoute();
+  const navigation = useScheduleStackNavigation();
+  const route = useScheduleStackRoute();
 
-  const handleNavigation = (component: EventStackComponents | CommonStackComponents) => {
+  const handleNavigation = (component: ScheduleStackComponents | CommonStackComponents) => {
     if (route.name === component) {
       return;
     }
     navigation.push(component);
   };
 
-  const handleCreateNavigation = () => {
-    navigation.push(CommonStackComponents.personalEventCreateScreen, {
-      cruiseDay: props.selectedDay,
-    });
-  };
-
   const actions = [
     FabGroupAction({
       icon: AppIcons.new,
       label: 'Create Personal Event',
-      onPress: handleCreateNavigation,
+      onPress: () =>
+        navigation.push(CommonStackComponents.personalEventCreateScreen, {
+          cruiseDay: props.selectedDay,
+        }),
+    }),
+    FabGroupAction({
+      icon: AppIcons.personalEvent,
+      label: 'Private Events',
+      onPress: () => navigation.push(ScheduleStackComponents.schedulePrivateEventScreen),
     }),
     FabGroupAction({
       icon: AppIcons.eventSearch,
       label: 'Search',
-      onPress: () => handleNavigation(EventStackComponents.eventSearchScreen),
+      onPress: () => handleNavigation(ScheduleStackComponents.eventSearchScreen),
     }),
   ];
 

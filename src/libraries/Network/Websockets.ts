@@ -62,6 +62,7 @@ export const buildWebSocket = async (fezID?: string) => {
   // Swiftarr should probably fix this some day.
   const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
+  console.log(`Websockets.ts built new socket to ${wsUrl}`);
 
   // https://www.npmjs.com/package/reconnecting-websocket
   return new ReconnectingWebSocket(wsUrl, [], {
@@ -99,3 +100,8 @@ export const WebSocketState = {
   // I made this one up.
   69: 'Uninitialized',
 } as const;
+
+export interface OpenFezSocket {
+  ws?: ReconnectingWebSocket;
+  isNew: boolean;
+}

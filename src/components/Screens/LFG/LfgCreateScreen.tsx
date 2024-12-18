@@ -2,8 +2,7 @@ import React from 'react';
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
+import {LfgStackComponents, LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator';
 import {LfgForm} from '../../Forms/LfgForm';
 import {FezFormValues} from '../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
@@ -64,6 +63,7 @@ export const LfgCreateScreen = ({navigation}: Props) => {
       hours: getApparentCruiseDate(startDate, adjustedCruiseDayToday).getHours() + 1,
       minutes: 0,
     },
+    initialUsers: [],
   };
 
   return (

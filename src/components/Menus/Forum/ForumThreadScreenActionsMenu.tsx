@@ -128,7 +128,7 @@ export const ForumThreadScreenActionsMenu = ({
           <Menu.Item
             dense={false}
             title={'Edit'}
-            leadingIcon={AppIcons.forumEdit}
+            leadingIcon={AppIcons.edit}
             onPress={() => {
               closeMenu();
               commonNavigation.push(CommonStackComponents.forumThreadEditScreen, {

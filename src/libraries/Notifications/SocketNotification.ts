@@ -49,6 +49,8 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   console.log('[SocketNotification.ts] Responding to message with type', notificationType);
 
   // Figure out what we want to display and how to display it.
+  // Whenever you add notification types here, there needs to be entries in
+  // AppConfig for them as well.
   switch (notificationType) {
     case NotificationTypeData.seamailUnreadMsg:
       channel = seamailChannel;
@@ -124,10 +126,32 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       channel = eventChannel;
       pressActionID = PressAction.personalEvent;
       title = 'Personal Event Starting';
-      url = `/personalevents/${notificationData.contentID}`;
+      url = `/privateevent/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.addedToPrivateEvent:
+      channel = eventChannel;
+      pressActionID = PressAction.personalEvent;
+      title = 'Added to Private Event';
+      url = `/privateevent/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.addedToLFG:
+      channel = lfgChannel;
+      pressActionID = PressAction.lfg;
+      title = 'Added to LFG';
+      url = `/lfg/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.addedToSeamail:
+      channel = seamailChannel;
+      pressActionID = PressAction.seamail;
+      title = 'Added to Seamail';
+      url = `/seamail/${notificationData.contentID}`;
+      break;
+    default:
+      console.warn(`[SocketNotification.ts] Ignoring event of type ${notificationType}`);
       break;
   }
 
+  console.info(`[SocketNotification.ts] Calling generateContentNotification() for type ${notificationType}`);
   await generateContentNotification(
     notificationData.contentID,
     title,

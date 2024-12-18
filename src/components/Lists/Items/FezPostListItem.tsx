@@ -59,7 +59,7 @@ const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
       )}
       {messageOnRight && <MessageSpacerView />}
       <MessageViewContainer>
-        <MessageView fezPost={fezPost} messageOnRight={messageOnRight} showAuthor={showAuthor} />
+        <MessageView fez={fez} fezPost={fezPost} messageOnRight={messageOnRight} showAuthor={showAuthor} />
         {fezPost.image && <ContentPostImage image={fezPost.image} messageOnRight={messageOnRight} />}
       </MessageViewContainer>
       {!messageOnRight && <MessageSpacerView />}

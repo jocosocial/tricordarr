@@ -1,11 +1,12 @@
 import {Snackbar, Text} from 'react-native-paper';
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {useAppTheme} from '../../styles/Theme';
 import {Animated, StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import {StringOrError} from '../../libraries/Types';
 
 export interface SnackBarBaseProps {
   message: string | undefined;
-  setMessage: Dispatch<SetStateAction<string | undefined>>;
+  setMessage: (e: StringOrError) => void;
   actionLabel?: string;
   duration?: number;
   messagePrefix?: string;

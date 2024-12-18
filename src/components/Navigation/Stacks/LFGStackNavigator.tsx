@@ -4,7 +4,6 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen';
 import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen';
-import {LfgStackComponents} from '../../../libraries/Enums/Navigation';
 import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen';
 import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
@@ -14,6 +13,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen';
+import {LfgFormerScreen} from '../../Screens/LFG/LfgFormerScreen.tsx';
 
 export type LfgStackParamList = CommonStackParamList & {
   LfgJoinedScreen: undefined;
@@ -21,7 +21,17 @@ export type LfgStackParamList = CommonStackParamList & {
   LfgOwnedScreen: undefined;
   LfgSettingsScreen: undefined;
   LfgCreateScreen: undefined;
+  LfgFormerScreen: undefined;
 };
+
+export enum LfgStackComponents {
+  lfgOwnedScreen = 'LfgOwnedScreen',
+  lfgJoinedScreen = 'LfgJoinedScreen',
+  lfgFindScreen = 'LfgFindScreen',
+  lfgSettingsScreen = 'LfgSettingsScreen',
+  lfgCreateScreen = 'LfgCreateScreen',
+  lfgFormerScreen = 'LfgFormerScreen',
+}
 
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
@@ -58,6 +68,11 @@ export const LfgStackNavigator = () => {
         name={LfgStackComponents.lfgCreateScreen}
         component={LfgCreateScreen}
         options={{title: 'New LFG'}}
+      />
+      <Stack.Screen
+        name={LfgStackComponents.lfgFormerScreen}
+        component={isDisabled ? DisabledView : LfgFormerScreen}
+        options={{title: 'Former Groups'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

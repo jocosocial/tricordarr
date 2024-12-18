@@ -50,7 +50,8 @@ export interface ChangeUsernameFormValues {
 
 export interface FezFormValues {
   title: string;
-  location: string;
+  // The site UI requires location, but the API does not.
+  location?: string;
   fezType: FezType;
   startDate: Date;
   duration: string;
@@ -61,6 +62,8 @@ export interface FezFormValues {
     hours: number;
     minutes: number;
   };
+  // Only used for private events
+  initialUsers: UserHeader[];
 }
 
 export interface SeamailFormValues {
@@ -120,16 +123,6 @@ export interface ServerUrlFormValues {
 export interface StartTime {
   hours: number;
   minutes: number;
-}
-
-export interface PersonalEventFormValues {
-  title: string;
-  description?: string;
-  location?: string;
-  participants: UserHeader[];
-  startDate: Date;
-  duration: string;
-  startTime: StartTime;
 }
 
 export interface SchedImportFormValues {

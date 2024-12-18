@@ -1,4 +1,4 @@
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
@@ -8,18 +8,18 @@ import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {useEventStackNavigation} from '../../Navigation/Stacks/EventStackNavigator.tsx';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation.ts';
+import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
-  event: PersonalEventData;
+  event: FezData;
 }
 
 export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
-  const navigation = useEventStackNavigation();
+  const navigation = useScheduleStackNavigation();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -45,14 +45,14 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}
-        onPress={() => handleModal(<ReportModalView personalEvent={props.event} />)}
+        onPress={() => handleModal(<ReportModalView fez={props.event} />)}
       />
       <Menu.Item
         leadingIcon={AppIcons.help}
         title={'Help'}
         onPress={() => {
           closeMenu();
-          navigation.push(EventStackComponents.personalEventHelpScreen);
+          navigation.push(CommonStackComponents.scheduleHelpScreen);
         }}
       />
     </Menu>

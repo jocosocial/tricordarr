@@ -5,6 +5,8 @@ export const useMicroKaraokeSonglistQuery = () => {
   return useTokenAuthQuery<MicroKaraokeCompletedSong[]>('/microkaraoke/songlist');
 };
 
-export const useMicroKaraokeSongQuery = (songID: number) => {
-  return useTokenAuthQuery<MicroKaraokeSongManifest>(`/microkaraoke/song/${songID}`);
+export const useMicroKaraokeSongQuery = (songID: number, enabled = true) => {
+  return useTokenAuthQuery<MicroKaraokeSongManifest>(`/microkaraoke/song/${songID}`, {
+    enabled: enabled,
+  });
 };

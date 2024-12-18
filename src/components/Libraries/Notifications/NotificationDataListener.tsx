@@ -7,6 +7,7 @@ import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts'
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -36,8 +37,18 @@ export const NotificationDataListener = () => {
           refetchAnnouncements();
           break;
         }
-        case NotificationTypeData.seamailUnreadMsg: {
-          queryClient.invalidateQueries({queryKey: [`/fez/${notificationData.contentID}`]});
+        // The order matters here! Not the specifics of which case but that they
+        // all fall through together.
+        case NotificationTypeData.seamailUnreadMsg:
+        case NotificationTypeData.privateEventUnreadMsg:
+        case NotificationTypeData.fezUnreadMsg:
+        case NotificationTypeData.addedToPrivateEvent:
+        case NotificationTypeData.addedToLFG:
+        case NotificationTypeData.addedToSeamail: {
+          const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          Promise.all(invalidations);
           break;
         }
       }

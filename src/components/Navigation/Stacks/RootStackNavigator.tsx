@@ -29,6 +29,7 @@ export const RootStackNavigator = () => {
   const {appConfig} = useConfig();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setEnableSelection, dispatchSelectedForums} = useSelection();
+  const {setErrorMessage} = useErrorHandler();
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
@@ -47,6 +48,7 @@ export const RootStackNavigator = () => {
           dispatchSelectedForums({
             type: ForumListDataSelectionActions.clear,
           });
+          setErrorMessage(undefined);
         },
       }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />

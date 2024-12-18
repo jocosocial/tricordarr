@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useDailyThemeQuery} from '../Queries/Alert/DailyThemeQueries.ts';
-import {useCruise} from '../Context/Contexts/CruiseContext';
-import {DailyThemeData} from '../../libraries/Structs/ControllerStructs';
-import {PaddedContentView} from './Content/PaddedContentView';
-import {DailyThemeCard} from '../Cards/MainScreen/DailyThemeCard';
+import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries.ts';
+import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
+import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PaddedContentView} from '../Content/PaddedContentView.tsx';
+import {DailyThemeCard} from '../../Cards/MainScreen/DailyThemeCard.tsx';
 
-export const MainThemeView = () => {
+export const TodayThemeView = () => {
   const {data: dailyThemeData} = useDailyThemeQuery();
   const {cruiseLength, adjustedCruiseDayIndex} = useCruise();
   const [dailyTheme, setDailyTheme] = useState<DailyThemeData>();

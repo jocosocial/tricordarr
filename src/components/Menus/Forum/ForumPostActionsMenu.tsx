@@ -59,7 +59,7 @@ export const ForumPostActionsMenu = ({
         <>
           <Menu.Item
             dense={false}
-            leadingIcon={AppIcons.postEdit}
+            leadingIcon={AppIcons.edit}
             title={'Edit'}
             onPress={() => {
               closeMenu();

@@ -1,4 +1,4 @@
-import {PersonalEventFormValues} from '../../libraries/Types/FormValues.ts';
+import {FezFormValues} from '../../libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {DateValidation, InfoStringValidation} from '../../libraries/ValidationSchema.ts';
@@ -11,28 +11,35 @@ import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
 import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
-import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {TextInput} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
 import {useModal} from '../Context/Contexts/ModalContext.ts';
+import {UserChipsField} from './Fields/UserChipsField.tsx';
 
 interface PersonalEventFormProps {
-  onSubmit: (values: PersonalEventFormValues, helpers: FormikHelpers<PersonalEventFormValues>) => void;
-  initialValues: PersonalEventFormValues;
+  onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
+  initialValues: FezFormValues;
   buttonText?: string;
+  create?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   startDate: DateValidation,
+  info: InfoStringValidation,
 });
 
 const locationHelpContent = [
   "Personal Events are not a reservation system. You can't claim a room or even a table by scheduling an event there.",
 ];
 
-export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}: PersonalEventFormProps) => {
+export const PersonalEventForm = ({
+  onSubmit,
+  initialValues,
+  buttonText = 'Save',
+  create = true,
+}: PersonalEventFormProps) => {
   const {commonStyles} = useStyles();
   const styles = {
     inputContainer: [],
@@ -54,8 +61,8 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
           <TextField viewStyle={styles.inputContainer} name={'title'} label={'Title'} />
           <TextField
             viewStyle={styles.inputContainer}
-            name={'description'}
-            label={'Description'}
+            name={'info'}
+            label={'Info'}
             multiline={true}
             numberOfLines={3}
           />
@@ -75,14 +82,11 @@ export const PersonalEventForm = ({onSubmit, initialValues, buttonText = 'Save'}
           <View style={[commonStyles.paddingBottom]}>
             <DurationPickerField name={'duration'} label={'Duration'} value={values.duration} />
           </View>
-          <View style={[commonStyles.paddingBottom]}>
-            <UserChipsField
-              name={'participants'}
-              label={'Participants'}
-              labelSubtext={'You can only add users that have favorited you.'}
-              searchFavorersOnly={true}
-            />
-          </View>
+          {create && (
+            <View style={[commonStyles.paddingBottom]}>
+              <UserChipsField name={'initialUsers'} label={'Invitees (Optional)'} />
+            </View>
+          )}
           <PrimaryActionButton
             disabled={!values.title || isSubmitting || !isValid || !dirty}
             isLoading={isSubmitting}

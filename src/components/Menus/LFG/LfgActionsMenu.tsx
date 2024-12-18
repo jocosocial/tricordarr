@@ -11,7 +11,7 @@ import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 
-export const ScheduleLfgMenu = ({fezData}: {fezData: FezData}) => {
+export const LfgActionsMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useLFGStackNavigation();
   const {hasModerator} = usePrivilege();

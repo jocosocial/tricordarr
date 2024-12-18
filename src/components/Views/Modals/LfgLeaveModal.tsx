@@ -8,16 +8,20 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {useQueryClient} from '@tanstack/react-query';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 const ModalContent = ({fezData}: {fezData: FezData}) => {
   const {commonStyles} = useStyles();
   return (
     <Text style={[commonStyles.marginBottomSmall]}>
-      Leave group {fezData.title}? If this group has limited capacity you may not be able to re-join. If you were on the
-      wait list you'll lose your place in the queue.
+      Leave {fezData.title}?{' '}
+      {FezType.isLFGType(fezData.fezType) && (
+        <Text>
+          If this group has limited capacity you may not be able to re-join. If you were on the wait list you'll lose
+          your place in the queue.
+        </Text>
+      )}
     </Text>
   );
 };
@@ -26,7 +30,6 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
-  const {setLfg, dispatchLfgList} = useTwitarr();
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
@@ -36,16 +39,12 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         action: 'unjoin',
       },
       {
-        onSuccess: response => {
-          setLfg(response.data);
+        onSuccess: async () => {
           setModalVisible(false);
-          dispatchLfgList({
-            type: FezListActions.updateFez,
-            fez: response.data,
+          const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
           });
-          queryClient.invalidateQueries({queryKey: ['/fez/open']});
-          queryClient.invalidateQueries({queryKey: ['/fez/joined']});
-          queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
+          await Promise.all(invalidations);
         },
       },
     );

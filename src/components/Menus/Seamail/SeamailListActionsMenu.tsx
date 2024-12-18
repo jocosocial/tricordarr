@@ -2,8 +2,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import * as React from 'react';
-import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
-import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
+import {ChatStackScreenComponents, useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 export const SeamailListActionsMenu = () => {

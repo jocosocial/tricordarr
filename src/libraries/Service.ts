@@ -102,6 +102,7 @@ const fgsWorker = async () => {
   // Start a regular socket health check to help ensure the socket stays open.
   // Or at least yell at the user when it fails.
   fgsWorkerTimer = setInterval(fgsWorkerHealthcheck, appConfig.fgsWorkerHealthTimer);
+  console.log('[Service.ts] Worker startup complete.');
 };
 
 /**
@@ -173,6 +174,8 @@ export async function startForegroundServiceWorker() {
   if (ws && ws.readyState === WebSocket.OPEN) {
     console.log('[Service.ts] Worker assumed to be running since websocket is open.');
     return;
+  } else {
+    console.log('[Service.ts] Worker assumed to not be running since socket doesnt exist or is not open.');
   }
 
   // This actually starts the worker. You should see a log message when the worker function

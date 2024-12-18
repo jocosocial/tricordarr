@@ -1,32 +1,47 @@
-import {useTokenAuthQuery} from '../TokenAuthQuery.ts';
-import {PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthPaginationQuery} from '../TokenAuthQuery.ts';
+import {FezListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
-interface PersonalEventsQueryOptions {
+interface FezJoinedQueryParams {
   cruiseDay?: number;
-  date?: Date;
-  time?: Date;
-  joined?: boolean;
-  owned?: boolean;
+  includeType?: FezType[];
+  excludeType?: FezType[];
+  onlyNew?: boolean;
+  start?: number;
+  limit?: number;
+  search?: string;
+  hidePast?: boolean;
+  matchID?: string;
+  lfgTypes?: boolean;
+}
+
+interface PersonalEventsQueryOptions extends FezJoinedQueryParams {
   options?: {};
 }
 
 export const usePersonalEventsQuery = ({
   cruiseDay,
-  joined,
-  owned,
-  date,
-  time,
+  excludeType,
+  onlyNew,
+  start,
+  limit,
+  search,
+  hidePast,
+  matchID,
+  lfgTypes,
   options = {},
+  includeType = [FezType.privateEvent, FezType.personalEvent],
 }: PersonalEventsQueryOptions) => {
-  return useTokenAuthQuery<PersonalEventData[]>('/personalevents', options, {
+  return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, {
     ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
-    ...(date && {date: date.toISOString()}),
-    ...(time && {time: time.toISOString()}),
-    ...(joined && {joined: joined}),
-    ...(owned && {owned: owned}),
+    type: includeType,
+    ...(excludeType && {excludetype: excludeType}),
+    ...(onlyNew !== undefined && {onlynew: onlyNew}),
+    ...(start !== undefined && {start: start}),
+    ...(limit !== undefined && {limit: limit}),
+    ...(search && {search: search}),
+    ...(hidePast !== undefined && {hidePast: hidePast}),
+    ...(matchID && {matchID: matchID}),
+    ...(lfgTypes !== undefined && {lfgtypes: lfgTypes}),
   });
-};
-
-export const usePersonalEventQuery = ({eventID}: {eventID: string}) => {
-  return useTokenAuthQuery<PersonalEventData>(`/personalevents/${eventID}`);
 };

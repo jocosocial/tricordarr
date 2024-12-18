@@ -59,13 +59,14 @@ if (__DEV__) {
 }
 
 console.log('[App.tsx] Tricordarr start!');
+// Declare what the Foreground Service worker function should be.
+// After the configureAxios() was deprecated and removed, this was acting kinda
+// weird. Moved it further up in this file.
+registerFgsWorker();
 
 // Time and locale setup, used in various places within the app.
 TimeAgo.addDefaultLocale(en);
 registerTranslation('en', paperEn);
-
-// Declare what the Foreground Service worker function should be.
-registerFgsWorker();
 
 // Set up image caching
 configureImageCache();

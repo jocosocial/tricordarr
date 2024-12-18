@@ -6,8 +6,11 @@ import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {ListSection} from '../../../Lists/ListSection';
 import {AppIcons} from '../../../../libraries/Enums/Icons';
 import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem';
-import {SettingsStackParamList, useSettingsStack} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsStackScreenComponents} from '../../../../libraries/Enums/Navigation';
+import {
+  SettingsStackParamList,
+  SettingsStackScreenComponents,
+  useSettingsStack,
+} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {useModal} from '../../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
 import {ListSubheader} from '../../../Lists/ListSubheader';

@@ -5,20 +5,17 @@ import {PerformerChip} from '../../../Chips/PerformerChip.tsx';
 import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens.tsx';
 import {DataFieldListItem} from '../DataFieldListItem.tsx';
 import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
-import {AppIcon} from '../../../Icons/AppIcon.tsx';
 import {PerformerHeaderData} from '../../../../libraries/Structs/ControllerStructs.tsx';
 
 interface EventPerformerListItemProps {
-  iconStyle: StyleProp<ViewStyle>;
-  itemStyle: ViewStyle;
+  iconStyle?: StyleProp<ViewStyle>;
+  itemStyle?: ViewStyle;
   performers: PerformerHeaderData[];
 }
 
 export const EventPerformerListItem = (props: EventPerformerListItemProps) => {
   const {commonStyles} = useStyles();
   const navigation = useCommonStack();
-
-  const getIcon = (icon: string) => <AppIcon icon={icon} style={props.iconStyle} />;
 
   const getDescription = () => {
     return (
@@ -45,7 +42,7 @@ export const EventPerformerListItem = (props: EventPerformerListItemProps) => {
   return (
     <DataFieldListItem
       itemStyle={props.itemStyle}
-      left={() => getIcon(AppIcons.performer)}
+      icon={AppIcons.performer}
       title={'Featuring'}
       description={getDescription}
     />

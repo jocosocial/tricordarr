@@ -1,12 +1,12 @@
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {LfgCard} from '../../Cards/Schedule/LfgCard.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 import {FlashList} from '@shopify/flash-list';
+import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
 
 interface LFGFlatListProps {
   items: FezData[];
@@ -20,6 +20,8 @@ interface LFGFlatListProps {
   hasNextPage?: boolean;
   handleLoadPrevious?: () => void;
   handleLoadNext?: () => void;
+  renderItem?: ({item}: {item: FezData}) => React.JSX.Element;
+  enableReportOnly?: boolean;
 }
 
 export const LFGFlatList = ({
@@ -31,20 +33,24 @@ export const LFGFlatList = ({
   handleLoadNext,
   handleLoadPrevious,
   hasNextPage,
+  renderItem,
+  enableReportOnly,
+  listHeader,
 }: LFGFlatListProps) => {
   const navigation = useLFGStackNavigation();
 
-  const renderItem = useCallback(
+  const renderItemDefault = useCallback(
     ({item}: {item: FezData}) => {
       return (
-        <LfgCard
-          lfg={item}
+        <FezCard
+          fez={item}
           showDay={true}
           onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezID})}
+          enableReportOnly={enableReportOnly}
         />
       );
     },
-    [navigation],
+    [navigation, enableReportOnly],
   );
 
   const keyExtractor = useCallback((item: FezData) => item.fezID, []);
@@ -54,7 +60,7 @@ export const LFGFlatList = ({
       listRef={listRef}
       keyExtractor={keyExtractor}
       items={items}
-      renderItem={renderItem}
+      renderItem={renderItem || renderItemDefault}
       separator={separator}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
@@ -62,6 +68,7 @@ export const LFGFlatList = ({
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
       estimatedItemSize={161}
+      listHeader={listHeader}
     />
   );
 };

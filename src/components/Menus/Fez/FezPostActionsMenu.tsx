@@ -1,23 +1,22 @@
 import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {FezPostData} from '../../libraries/Structs/ControllerStructs';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {ReportModalView} from '../Views/Modals/ReportModalView';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
-import {FezType} from '../../libraries/Enums/FezType';
+import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface FezPostActionsMenuProps {
   visible: boolean;
   closeMenu: () => void;
   anchor: ReactNode;
   fezPost: FezPostData;
+  fez: FezData;
 }
 
-export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost}: FezPostActionsMenuProps) => {
+export const FezPostActionsMenu = ({visible, closeMenu, anchor, fezPost, fez}: FezPostActionsMenuProps) => {
   const {setModalContent, setModalVisible} = useModal();
-  const {fez} = useTwitarr();
 
   const handleReport = () => {
     closeMenu();

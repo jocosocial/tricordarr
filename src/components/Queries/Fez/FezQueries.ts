@@ -2,10 +2,11 @@ import {FezData, FezListData} from '../../../libraries/Structs/ControllerStructs
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
+import {FezListEndpoints} from '../../../libraries/Types';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 
-interface SeamailQueryProps {
+interface FezQueryProps {
   fezID: string;
 }
 
@@ -25,7 +26,7 @@ export const useSeamailListQuery = ({forUser, search, options = {}}: SeamailList
   return useTokenAuthPaginationQuery<FezListData>('/fez/joined', options, queryParams);
 };
 
-export const useSeamailQuery = ({fezID}: SeamailQueryProps) => {
+export const useFezQuery = ({fezID}: FezQueryProps) => {
   return useTokenAuthPaginationQuery<FezData>(`/fez/${fezID}`);
 };
 
@@ -33,9 +34,10 @@ interface LfgListQueryOptions {
   cruiseDay?: number;
   fezType?: keyof typeof FezType;
   hidePast?: boolean;
-  endpoint?: 'open' | 'joined' | 'owner';
+  endpoint?: FezListEndpoints;
   excludeFezType?: FezType[];
   options?: {};
+  lfgTypesOnly?: boolean;
 }
 
 export const useLfgListQuery = ({
@@ -45,6 +47,7 @@ export const useLfgListQuery = ({
   hidePast = false,
   endpoint = 'open',
   options = {},
+  lfgTypesOnly = true,
 }: LfgListQueryOptions) => {
   const queryParams = {
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
@@ -53,6 +56,7 @@ export const useLfgListQuery = ({
     ...(fezType !== undefined && {type: fezType}),
     ...(hidePast !== undefined && {hidePast: hidePast}),
     ...(excludeFezType && {excludetype: excludeFezType}),
+    lfgtypes: lfgTypesOnly,
   };
   return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, options, queryParams);
 };

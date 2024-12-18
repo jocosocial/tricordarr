@@ -1,41 +1,38 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem';
-import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem';
+import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem.tsx';
+import {PostAsTwitarrTeamMenuItem} from '../Items/PostAsTwitarrTeamMenuItem.tsx';
 import {useFezMuteMutation} from '../../Queries/Fez/FezMuteMutations.ts';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
-import {ReloadMenuItem} from '../Items/ReloadMenuItem';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
+import {useQueryClient} from '@tanstack/react-query';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
-interface SeamailActionsMenuProps {
+interface FezChatActionsMenuProps {
   fez: FezData;
   enableDetails?: boolean;
   onRefresh: () => void;
 }
 
-export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: SeamailActionsMenuProps) => {
+export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezChatActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
-  const seamailNavigation = useChatStack();
+  const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
-  const {dispatchFezList, setFez} = useTwitarr();
-  const {remove} = useSeamailQuery({fezID: fez.fezID});
   const commonNavigation = useCommonStack();
+  const queryClient = useQueryClient();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const detailsAction = () => {
-    seamailNavigation.push(CommonStackComponents.seamailDetailsScreen, {fezID: fez.fezID});
+    navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fez.fezID});
     closeMenu();
   };
 
@@ -50,22 +47,11 @@ export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: Seama
         fezID: fez.fezID,
       },
       {
-        onSuccess: () => {
-          if (fez.members) {
-            const newFezData: FezData = {
-              ...fez,
-              members: {
-                ...fez.members,
-                isMuted: !fez.members?.isMuted,
-              },
-            };
-            setFez(newFezData);
-            dispatchFezList({
-              type: FezListActions.updateFez,
-              fez: newFezData,
-            });
-            remove();
-          }
+        onSuccess: async () => {
+          const invalidations = FezData.getCacheKeys(fez.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
         onSettled: () => closeMenu(),
       },
@@ -101,7 +87,10 @@ export const SeamailActionsMenu = ({fez, enableDetails = true, onRefresh}: Seama
         leadingIcon={AppIcons.help}
         onPress={() => {
           closeMenu();
-          commonNavigation.push(CommonStackComponents.seamailHelpScreen);
+          const helpRoute = FezType.getHelpRoute(fez.fezType);
+          if (helpRoute) {
+            commonNavigation.push(helpRoute);
+          }
         }}
       />
     </Menu>

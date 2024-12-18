@@ -35,7 +35,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
 
   const getAvatar = () => <FezAvatarImage fez={fez} />;
   const onPress = () =>
-    navigation.push(CommonStackComponents.seamailScreen, {
+    navigation.push(CommonStackComponents.seamailChatScreen, {
       title: fez.title,
       fezID: fez.fezID,
     });

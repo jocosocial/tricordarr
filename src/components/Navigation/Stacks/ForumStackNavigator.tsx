@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
@@ -45,6 +44,21 @@ export type ForumStackParamList = CommonStackParamList & {
     categoryId: string;
   };
 };
+
+export enum ForumStackComponents {
+  forumCategoriesScreen = 'ForumCategoriesScreen',
+  forumCategoryScreen = 'ForumCategoryScreen',
+  forumPostMentionScreen = 'ForumPostMentionScreen',
+  forumPostSelfScreen = 'ForumPostSelfScreen',
+  forumPostFavoriteScreen = 'ForumPostFavoriteScreen',
+  forumFavoritesScreen = 'ForumFavoritesScreen',
+  forumMutesScreen = 'ForumMutesScreen',
+  forumOwnedScreen = 'ForumOwnedScreen',
+  forumRecentScreen = 'ForumRecentScreen',
+  forumThreadSearchScreen = 'ForumThreadSearchScreen',
+  forumThreadCreateScreen = 'ForumThreadCreateScreen',
+  forumPostAlertwordScreen = 'ForumPostAlertwordScreen',
+}
 
 export const ForumStackNavigator = () => {
   const {screenOptions} = useStyles();

@@ -4,7 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
-import {EventData, FezData, PersonalEventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
 import {styleDefaults} from '../../../styles';
@@ -27,7 +27,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   hasNextPage?: boolean;
 }
 
-export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData | EventData>({
+export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   items,
   separator,
   refreshControl,
@@ -61,7 +61,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
   }, [items, separator]);
 
   const renderListFooter = useCallback(() => {
-    if (items.length === 0) {
+    if (items.length <= 1) {
       return <></>;
     }
     if (hasNextPage) {
@@ -102,10 +102,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | PersonalEventData |
     if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
-    const leadingDate = new Date(leadingItem.startTime);
-    const trailingDate = new Date(trailingItem.startTime);
-    const leadingTimeMarker = leadingDate.getDay();
-    const trailingTimeMarker = trailingDate.getDay();
+    // The timeZoneIDs are required to accurately calculate the marker.
+    if (!leadingItem.timeZoneID || !trailingItem.timeZoneID) {
+      return <SpaceDivider />;
+    }
+    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID);
+    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID);
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }

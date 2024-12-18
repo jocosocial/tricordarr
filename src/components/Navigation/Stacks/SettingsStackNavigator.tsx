@@ -4,7 +4,6 @@ import {NetworkInfoSettings} from '../../Screens/Settings/Developer/NetworkInfoS
 import {ServerConnectionSettingsScreen} from '../../Screens/Settings/Notifications/ServerConnectionSettingsScreen.tsx';
 import {SettingsScreen} from '../../Screens/Settings/SettingsScreen';
 import {TestNotificationScreen} from '../../Screens/Settings/Developer/TestNotificationScreen';
-import {SettingsStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {TestErrorScreen} from '../../Screens/Settings/Developer/TestErrorScreen';
 import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
@@ -57,6 +56,33 @@ export type SettingsStackParamList = CommonStackParamList & {
     queryHash: string;
   };
 };
+
+export enum SettingsStackScreenComponents {
+  settings = 'SettingsScreen',
+  networkInfoSettings = 'NetworkInfoSettingsScreen',
+  serverConnectionSettings = 'ServerConnectionSettingsScreen',
+  testNotification = 'TestNotificationScreen',
+  testError = 'TestErrorScreen',
+  socketSettings = 'SocketSettingsScreen',
+  pushNotificationSettings = 'PushNotificationSettingsScreen',
+  oobeSettings = 'OobeSettingsScreen',
+  changePassword = 'ChangePasswordScreen',
+  changeUsername = 'ChangeUsernameScreen',
+  login = 'LoginScreen',
+  accountManagement = 'AccountManagementScreen',
+  eventSettings = 'EventSettingsScreen',
+  lfgSettings = 'LfgSettingsScreen',
+  featureSettingsScreen = 'FeatureSettingsScreen',
+  notificationPollerSettingsScreen = 'NotificationPollerSettingsScreen',
+  loadingSettingScreen = 'LoadingSettingScreen',
+  registerScreen = 'RegisterScreen',
+  cruiseSettingsScreen = 'CruiseSettingsScreen',
+  userInfoSettingsScreen = 'UserInfoSettingsScreen',
+  aboutSettingsScreen = 'AboutSettingsScreen',
+  querySettingsScreen = 'QuerySettingsScreen',
+  queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
+  queryDataSettingsScreen = 'QueryDataSettingsScreen',
+}
 
 export const SettingsStackNavigator = () => {
   const {screenOptions} = useStyles();

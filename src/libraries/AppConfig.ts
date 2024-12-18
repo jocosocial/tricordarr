@@ -2,9 +2,9 @@ import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from './Storage';
 import {NotificationTypeData} from './Structs/SocketStructs';
-import {LfgStackComponents} from './Enums/Navigation';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from './Network/APIClient';
 import {ForumSort, ForumSortDirection} from './Enums/ForumSortFilter.ts';
+import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -98,6 +98,11 @@ const defaultAppConfig: AppConfig = {
     moderatorForumMention: true,
     twitarrTeamForumMention: true,
     personalEventStarting: true,
+    addedToSeamail: true,
+    addedToLFG: true,
+    addedToPrivateEvent: true,
+    privateEventUnreadMsg: true,
+    microKaraokeSongReady: true,
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,

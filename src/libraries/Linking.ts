@@ -1,14 +1,13 @@
 import {LinkingOptions} from '@react-navigation/native';
-import {
-  EventStackComponents,
-  ForumStackComponents,
-  LfgStackComponents,
-  ChatStackScreenComponents,
-} from './Enums/Navigation';
 import {RootStackParamList} from '../components/Navigation/Stacks/RootStackNavigator';
 import Config from 'react-native-config';
 import type {PathConfigMap} from '@react-navigation/core';
 import {MainStackComponents} from '../components/Navigation/Stacks/MainStackNavigator.tsx';
+import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
+import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
+import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {LfgJoinedScreen} from '../components/Screens/LFG/LfgJoinedScreen.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -32,6 +31,10 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MainScreen: 'home',
             AboutScreen: 'about',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
+            // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
+            // falling through to the default route. This is what we do in the UI, so oh well.
+            // Perhaps I should make a PR to Swiftarr to change that?
+            PersonalEventScreen: 'privateevent/:eventID',
             SiteUILinkScreen: '*', // Catch-all wildcard
             MainSettingsScreen: {
               // Disable this to prevent doubling up on the SettingsScreen after going back.
@@ -52,13 +55,14 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             PhotostreamScreen: 'photostream',
             MicroKaraokeListScreen: 'microkaraoke',
             PerformerListScreen: 'performers',
+            MainTimeZoneScreen: 'time',
           },
         },
         SeamailTab: {
           initialRouteName: ChatStackScreenComponents.seamailListScreen,
           screens: {
             SeamailTab: 'seamail',
-            SeamailScreen: 'seamail/:fezID',
+            SeamailChatScreen: 'seamail/:fezID',
             KrakenTalkReceiveScreen: 'phonecall/:callID/from/:callerUserID/:callerUsername',
           },
         },
@@ -69,14 +73,14 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             LfgScreen: 'lfg/:fezID',
             LfgChatScreen: 'lfg/:fezID/chat',
             LfgHelpScreen: 'lfg/faq',
+            LfgJoinedScreen: 'lfg/joined',
           },
         },
         ScheduleTab: {
-          initialRouteName: EventStackComponents.scheduleDayScreen,
+          initialRouteName: ScheduleStackComponents.scheduleDayScreen,
           screens: {
             ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',
-            PersonalEventScreen: 'personalevents/:eventID',
           },
         },
         ForumsTab: {

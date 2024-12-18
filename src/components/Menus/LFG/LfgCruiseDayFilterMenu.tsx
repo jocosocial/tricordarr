@@ -7,7 +7,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 
-export const ScheduleLfgCruiseDayFilterMenu = () => {
+export const LfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();

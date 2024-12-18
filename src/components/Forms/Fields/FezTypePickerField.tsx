@@ -6,21 +6,12 @@ interface FezTypePickerFieldProps {
   name: string;
   label: string;
   value: FezType;
+  choices?: FezType[];
 }
-
-const choices = [
-  FezType.activity,
-  FezType.dining,
-  FezType.gaming,
-  FezType.meetup,
-  FezType.music,
-  FezType.shore,
-  FezType.other,
-];
 
 const getTitle = (choice: FezType | undefined) => FezType.getLabel(choice);
 
-export const FezTypePickerField = ({name, label, value}: FezTypePickerFieldProps) => {
+export const FezTypePickerField = ({name, label, value, choices = FezType.lfgTypes}: FezTypePickerFieldProps) => {
   return (
     <PickerField<FezType | undefined> name={name} label={label} value={value} choices={choices} getTitle={getTitle} />
   );

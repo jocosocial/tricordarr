@@ -5,8 +5,7 @@ import {StyleSheet, View} from 'react-native';
 import {commonStyles} from '../../../../styles';
 import {Text} from 'react-native-paper';
 import pluralize from 'pluralize';
-import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {ForumStackComponents} from '../../../../libraries/Enums/Navigation';
+import {ForumStackComponents, useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 
 export const ForumMentionsCategoryListItem = () => {

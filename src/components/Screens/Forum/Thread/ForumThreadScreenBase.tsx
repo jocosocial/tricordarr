@@ -72,8 +72,8 @@ export const ForumThreadScreenBase = ({
   const [maintainViewPosition, setMaintainViewPosition] = useState(true);
   // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
   // to care about. It's all in the category (ForumListData) queries.
-  const markReadInvalidationKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID);
-  const otherInvalidationKeys = ForumListData.getForumCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
+  const markReadInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID);
+  const otherInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID, data?.pages[0].forumID);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

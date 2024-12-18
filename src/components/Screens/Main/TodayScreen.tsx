@@ -5,7 +5,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {MainAnnouncementView} from '../../Views/MainAnnouncementView';
+import {TodayAnnouncementView} from '../../Views/Today/TodayAnnouncementView.tsx';
 import {RefreshControl, View} from 'react-native';
 import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries.ts';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts';
@@ -16,18 +16,21 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {ModeratorCard} from '../../Cards/MainScreen/ModeratorCard';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {MainThemeView} from '../../Views/MainThemeView';
-import {MainNextEventView} from '../../Views/MainNextEventView';
+import {TodayThemeView} from '../../Views/Today/TodayThemeView.tsx';
+import {TodayNextAppointmentView} from '../../Views/Today/TodayNextAppointmentView.tsx';
 import {MainAccountMenu} from '../../Menus/MainAccountMenu';
-import {MainHeaderView} from '../../Views/MainHeaderView';
+import {TodayHeaderView} from '../../Views/Today/TodayHeaderView.tsx';
 import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
-import {MainTimezoneWarningView} from '../../Views/MainTimezoneWarningView.tsx';
+import {TodayTimezoneWarningView} from '../../Views/Today/TodayTimezoneWarningView.tsx';
 import {TodayAppUpdateView} from '../../Views/TodayAppUpdateView.tsx';
 import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.ts';
+import {NotificationsMenu} from '../../Menus/NotificationsMenu.tsx';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
-export const MainScreen = ({navigation}: Props) => {
+export const TodayScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
   // These queries are disabled to prevent bombarding the server on app launch. Some will fire anyway such as themes or
   // announcements but typically have a higher than usual stale time.
@@ -57,10 +60,13 @@ export const MainScreen = ({navigation}: Props) => {
   const getRightMainHeaderButtons = useCallback(() => {
     return (
       <View>
-        <MainAccountMenu />
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          {isLoggedIn && <NotificationsMenu />}
+          <MainAccountMenu />
+        </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [isLoggedIn]);
 
   const getTitle = useCallback(() => <TodayHeaderTitle />, []);
 
@@ -77,11 +83,11 @@ export const MainScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <MainHeaderView />
-        <MainTimezoneWarningView />
-        <MainAnnouncementView />
-        <MainThemeView />
-        <MainNextEventView />
+        <TodayHeaderView />
+        <TodayTimezoneWarningView />
+        <TodayAnnouncementView />
+        <TodayThemeView />
+        <TodayNextAppointmentView />
         {hasModerator && (
           <PaddedContentView padBottom={false}>
             <ModeratorCard />

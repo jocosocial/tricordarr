@@ -1,7 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SeamailListScreen} from '../../Screens/Seamail/SeamailListScreen';
-import {ChatStackScreenComponents} from '../../../libraries/Enums/Navigation';
 import {useNavigation} from '@react-navigation/native';
 import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
@@ -34,6 +33,14 @@ export type ChatStackParamList = CommonStackParamList & {
 };
 
 const ChatStack = createNativeStackNavigator<ChatStackParamList>();
+
+export enum ChatStackScreenComponents {
+  seamailListScreen = 'SeamailListScreen',
+  krakentalkCreateScreen = 'KrakenTalkCreateScreen',
+  seamailSearchScreen = 'SeamailSearchScreen',
+  krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
+  seamailSettingsScreen = 'SeamailSettingsScreen',
+}
 
 export const ChatStackNavigator = () => {
   const {screenOptions} = useStyles();

@@ -21,7 +21,7 @@ export const SeamailAccountButtons = () => {
     let tempButtons: SegmentedButtonType[] = [];
     if (hasModerator) {
       const moderatorIcon = userNotificationData?.moderatorData?.newModeratorSeamailMessageCount
-        ? () => <AppIcon size={18} icon={AppIcons.notification} color={theme.colors.error} />
+        ? () => <AppIcon size={18} icon={AppIcons.notificationShow} color={theme.colors.error} />
         : AppIcons.moderator;
       tempButtons.push({
         value: PrivilegedUserAccounts.moderator,
@@ -33,7 +33,7 @@ export const SeamailAccountButtons = () => {
 
     if (hasTwitarrTeam) {
       const twitarrTeamIcon = userNotificationData?.moderatorData?.newTTSeamailMessageCount
-        ? () => <AppIcon size={18} icon={AppIcons.notification} color={theme.colors.error} />
+        ? () => <AppIcon size={18} icon={AppIcons.notificationShow} color={theme.colors.error} />
         : AppIcons.moderator;
       tempButtons.push({
         value: PrivilegedUserAccounts.TwitarrTeam,
@@ -48,7 +48,7 @@ export const SeamailAccountButtons = () => {
       tempButtons.unshift({
         value: profilePublicData.header.username,
         label: profilePublicData.header.displayName || profilePublicData.header.username,
-        icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notification : AppIcons.user,
+        icon: userNotificationData?.newSeamailMessageCount ? AppIcons.notificationShow : AppIcons.user,
         onPress: () => clearPrivileges(),
       });
     }

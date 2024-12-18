@@ -45,7 +45,8 @@ export enum AppIcons {
   twitarteam = 'check-decagram',
   tho = 'shield-crown',
   home = 'home',
-  notification = 'bell-badge',
+  notificationNone = 'bell',
+  notificationShow = 'bell-badge',
   forum = 'forum',
   events = 'calendar',
   settings = 'cog',
@@ -67,9 +68,11 @@ export enum AppIcons {
   search = 'magnify',
   // LFG
   lfg = 'account-multiple',
+  lfgFormer = 'account-cancel',
   lfgJoined = 'account-multiple',
   lfgOwned = 'account-multiple-check-outline',
   lfgFind = 'human-greeting-variant',
+  edit = 'pencil',
   description = 'text-box',
   type = 'shape',
   join = 'account-plus',
@@ -83,7 +86,6 @@ export enum AppIcons {
   download = 'download',
   imageDisabled = 'image-off',
   post = 'comment',
-  postEdit = 'comment-edit',
   postRemove = 'comment-remove',
   postSearch = 'comment-search',
   postSelf = 'comment-account',
@@ -94,7 +96,6 @@ export enum AppIcons {
   locked = 'lock',
   recent = 'history',
   text = 'text',
-  forumEdit = 'playlist-edit',
   altAccount = 'account-switch',
   decks = 'elevator',
   dailyTheme = 'drama-masks',
@@ -107,7 +108,6 @@ export enum AppIcons {
   show = 'eye',
   hide = 'eye-off',
   passed = 'check-circle-outline',
-  eventEdit = 'calendar-edit', // I wanted -outline but it's not available in my version
   eventCreate = 'calendar-plus', // I wanted -outline but it's not available in my version
   personalEvent = 'calendar-account', // I wanted -outline but it's not available in my version
   schedImport = 'calendar-import',

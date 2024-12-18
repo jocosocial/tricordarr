@@ -11,9 +11,8 @@ import {ForumCategoryListItemBase} from '../../Lists/Items/Forum/ForumCategoryLi
 import {ForumMentionsCategoryListItem} from '../../Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {ForumStackComponents} from '../../../libraries/Enums/Navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, ForumStackParamList} from '../../Navigation/Stacks/ForumStackNavigator';
 import {useIsFocused} from '@react-navigation/native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '../../Menus/Forum/ForumCategoriesScreenActionsMenu';

@@ -9,12 +9,11 @@ import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {SeamailFormValues} from '../../../libraries/Types/FormValues.ts';
 import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 
@@ -27,7 +26,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const [newSeamail, setNewSeamail] = useState<FezData>();
   const [submitting, setSubmitting] = useState(false);
   const {setErrorMessage} = useErrorHandler();
-  const {dispatchFezList} = useTwitarr();
+  const queryClient = useQueryClient();
 
   const initialFormValues: SeamailFormValues = {
     fezType: FezType.open,
@@ -51,12 +50,12 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
       fezMutation.mutate(
         {fezContentData: contentData},
         {
-          onSuccess: response => {
+          onSuccess: async response => {
             setNewSeamail(response.data);
-            dispatchFezList({
-              type: FezListActions.insert,
-              fez: response.data,
+            const invalidations = FezData.getCacheKeys().map(key => {
+              return queryClient.invalidateQueries(key);
             });
+            await Promise.all(invalidations);
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
@@ -69,7 +68,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         },
       );
     },
-    [dispatchFezList, fezMutation],
+    [queryClient, fezMutation],
   );
 
   // Handler for pushing the FezPost submit button.
@@ -81,9 +80,8 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           {
             onSuccess: () => {
               setSubmitting(false);
-              navigation.replace(CommonStackComponents.seamailScreen, {
+              navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: newSeamail.fezID,
-                title: newSeamail.title,
               });
             },
           },

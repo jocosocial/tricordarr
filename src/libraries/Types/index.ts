@@ -13,7 +13,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-export type StringOrError = string | Error;
+export type StringOrError = string | Error | undefined;
 
 // Taken from the WebSocket class.
 export type WebSocketOptions = {
@@ -120,3 +120,5 @@ export interface FlatListSeparatorProps<TItem> {
 }
 
 export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
+
+export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';

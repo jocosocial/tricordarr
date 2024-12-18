@@ -52,6 +52,21 @@ export const LfgHelpScreen = () => {
           you may tell them it's more of a pirate thing and you may need to remove them to make room for more pirate
           participants.
         </HelpTopicView>
+        <HelpChapterTitleView title={'Group Lists'} />
+        <HelpTopicView icon={AppIcons.lfgJoined} title={'Joined'}>
+          These are LFGs that you have joined. This also includes any LFGs that you created.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.lfgOwned} title={'Owned'}>
+          These are LFGs that you have created.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.lfgFind} title={'Find'}>
+          These are LFGs created by others that you can join.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.lfgFormer} title={'Former'}>
+          These are Seamails, LFGs and Personal Events that you were previously a member of, but have since left or been
+          removed from. You can use this to report any content that you can no longer access. You still will be unable
+          to directly view the content.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

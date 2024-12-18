@@ -1,6 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {EventStackComponents} from '../../../libraries/Enums/Navigation';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useDrawer} from '../../Context/Contexts/DrawerContext';
@@ -13,37 +12,47 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
 import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.tsx';
+import {SchedulePrivateEventScreen} from '../../Screens/Schedule/SchedulePrivateEventScreen.tsx';
 
-export type EventStackParamList = CommonStackParamList & {
+export type ScheduleStackParamList = CommonStackParamList & {
   EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
   ScheduleDayScreen: undefined;
   ScheduleImportScreen: undefined;
+  SchedulePrivateEventScreen: undefined;
 };
 
-export const EventStackNavigator = () => {
+export enum ScheduleStackComponents {
+  eventSearchScreen = 'EventSearchScreen',
+  eventSettingsScreen = 'EventSettingsScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleImportScreen = 'ScheduleImportScreen',
+  schedulePrivateEventScreen = 'SchedulePrivateEventScreen',
+}
+
+export const ScheduleStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<EventStackParamList>();
+  const Stack = createNativeStackNavigator<ScheduleStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
   return (
     <Stack.Navigator
-      initialRouteName={EventStackComponents.scheduleDayScreen}
+      initialRouteName={ScheduleStackComponents.scheduleDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
-        name={EventStackComponents.eventSearchScreen}
+        name={ScheduleStackComponents.eventSearchScreen}
         component={EventSearchScreen}
         options={{title: 'Search Events'}}
       />
       <Stack.Screen
-        name={EventStackComponents.eventSettingsScreen}
+        name={ScheduleStackComponents.eventSettingsScreen}
         component={EventSettingsScreen}
         options={{title: 'Schedule Settings'}}
       />
       <Stack.Screen
-        name={EventStackComponents.scheduleDayScreen}
+        name={ScheduleStackComponents.scheduleDayScreen}
         component={isDisabled ? DisabledView : ScheduleDayScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
@@ -51,15 +60,20 @@ export const EventStackNavigator = () => {
         }}
       />
       <Stack.Screen
-        name={EventStackComponents.scheduleImportScreen}
+        name={ScheduleStackComponents.scheduleImportScreen}
         component={ScheduleImportScreen}
         options={{title: 'Schedule Import'}}
+      />
+      <Stack.Screen
+        name={ScheduleStackComponents.schedulePrivateEventScreen}
+        component={isDisabled ? DisabledView : SchedulePrivateEventScreen}
+        options={{title: 'Private Events'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
   );
 };
 
-export const useEventStackNavigation = () => useNavigation<NativeStackNavigationProp<EventStackParamList>>();
+export const useScheduleStackNavigation = () => useNavigation<NativeStackNavigationProp<ScheduleStackParamList>>();
 
-export const useEventStackRoute = () => useRoute<RouteProp<EventStackParamList>>();
+export const useScheduleStackRoute = () => useRoute<RouteProp<ScheduleStackParamList>>();

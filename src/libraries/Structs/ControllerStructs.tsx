@@ -126,6 +126,8 @@ export interface UserNotificationData {
   serverTime: string;
   /// Server Time Zone offset, in seconds from UTC. One hour before UTC is -3600. EST  timezone is -18000.
   serverTimeOffset: number;
+  /// The geopolitical region identifier that identifies the time zone -- e.g. "America/Los Angeles"
+  serverTimeZoneID: string;
   /// Human-readable time zone name, like "EDT"
   serverTimeZone: string;
   /// Features that are turned off by the server. If the `appName` for a feature is `all`, the feature is disabled at the API layer.
@@ -149,15 +151,30 @@ export interface UserNotificationData {
   forumMentionCount?: number;
   /// Number of forum post @mentions the user has not read. 0 if not logged in.
   newForumMentionCount?: number;
+  /// The number of Seamail chats the user's been added to but not yet viewed. Does not include Seamails the user creates. Chats counted here will continue
+  /// to be counted here and not in `newSeamailMessageCount` even if there are also new messages--until the user views the chat and clears the notification.
+  addedToSeamailCount: number;
+  /// The number of LFGs the user's been added to but not yet viewed. Doesn't include LFGs the user created nor ones they Joined by their own action.
+  /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newFezMessageCount`.
+  addedToLFGCount: number;
+  /// The number of Private Events the user's been added to but not yet viewed. Doesn't include PEs the user created.
+  /// If a chat the user was added to (but hasn't yet viewed) gets new messages, that chat is counted in this total and not in `newPrivateEventMessageCount`.
+  addedToPrivateEventCount: number;
   /// Count of # of Seamail threads with new messages. NOT total # of new messages-a single seamail thread with 10 new messages counts as 1. 0 if not logged in.
   newSeamailMessageCount?: number;
   /// Count of # of Fezzes with new messages. 0 if not logged in.
-  newFezMessageCount?: number;
+  newFezMessageCount: number;
+  /// Count of # of Private Events with new messages. 0 if not logged in.
+  newPrivateEventMessageCount: number;
   /// The start time of the earliest event that the user has followed with a start time > now. nil if not logged in or no matching event.
   nextFollowedEventTime?: string;
   /// The event ID of the next future event the user has followed. This event's start time should always be == nextFollowedEventTime.
   /// If the user has favorited multiple events that start at the same time, this will be random among them.
   nextFollowedEventID?: string;
+
+  /// The number of Micro Karaoke songs the user has contributed to and can now view.
+  microKaraokeFinishedSongCount?: number;
+
   /// The start time of the earliest LFG that the user has joined with a start time > now. nil if not logged in or no matching LFG.
   nextJoinedLFGTime?: string;
   /// The LFG ID of the next future LFG the user has joined. This LFGs's start time should always be == nextJoinedLFGTime.
@@ -170,6 +187,47 @@ export interface UserNotificationData {
   /// Will be nil for non-moderator accounts.
   moderatorData?: ModeratorNotificationData;
   /// Notification counts that are only relevant for Moderators (and TwitarrTeam).
+}
+
+export namespace UserNotificationData {
+  const valueOrZero = (value?: number) => value || 0;
+  export const totalNewCount = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return (
+      valueOrZero(data.newAnnouncementCount) +
+      valueOrZero(data.newTwarrtMentionCount) +
+      valueOrZero(data.newForumMentionCount) +
+      valueOrZero(data.newSeamailMessageCount) +
+      valueOrZero(data.newFezMessageCount) +
+      valueOrZero(data.newPrivateEventMessageCount) +
+      valueOrZero(data.addedToSeamailCount) +
+      valueOrZero(data.addedToLFGCount) +
+      valueOrZero(data.addedToPrivateEventCount)
+    );
+  };
+
+  export const totalNewSeamail = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newSeamailMessageCount) + valueOrZero(data.addedToSeamailCount);
+  };
+
+  export const totalNewLFG = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newFezMessageCount) + valueOrZero(data.addedToLFGCount);
+  };
+
+  export const totalNewPrivateEvent = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
+  };
 }
 
 export interface Paginator {
@@ -258,15 +316,22 @@ export namespace FezData {
    * @param fez This particular chat.
    */
   export const getParticipantLabel = (fez: FezData) => {
+    var minimumSuffix = '';
+    if (fez.minParticipants !== 0) {
+      minimumSuffix = `, ${fez.minParticipants} minimum`;
+    }
     if (fez.maxParticipants === 0) {
-      return `${fez.participantCount} attendees, ${fez.minParticipants} minimum`;
+      return `${fez.participantCount} ${pluralize('attendee', fez.participantCount)}${minimumSuffix}`;
     }
     const waitlistCount: number = fez.members?.waitingList.length || 0;
-    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} participants`;
+    let attendeeCountString = `${fez.participantCount}/${fez.maxParticipants} ${pluralize(
+      'participant',
+      fez.maxParticipants,
+    )}`;
     if (fez.participantCount >= fez.maxParticipants) {
       attendeeCountString = 'Full';
     }
-    return `${attendeeCountString}, ${waitlistCount} waitlisted, ${fez.minParticipants} minimum`;
+    return `${attendeeCountString}, ${waitlistCount} waitlisted${minimumSuffix}`;
   };
 
   const isMember = (members: UserHeader[] | undefined, user: UserHeader) => {
@@ -300,6 +365,14 @@ export namespace FezData {
       return false;
     }
     return fezData.members.participants.length >= fezData.maxParticipants;
+  };
+
+  export const getCacheKeys = (fezID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/fez/joined'], ['/fez/owner'], ['/fez/open'], ['/fez/former']];
+    if (fezID) {
+      queryKeys.push([`/fez/${fezID}`]);
+    }
+    return queryKeys;
   };
 }
 
@@ -610,7 +683,7 @@ export namespace ForumListData {
    * @param categoryID Optional string of the category ID.
    * @param forumID Optional string of the Forum ID.
    */
-  export const getForumCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
+  export const getCacheKeys = (categoryID?: string, forumID?: string): QueryKey[] => {
     let queryKeys: QueryKey[] = [['/forum/search'], ['/forum/favorites'], ['/forum/mutes'], ['/forum/unread']];
     if (forumID) {
       queryKeys.push([`/forum/${forumID}`]);
@@ -809,34 +882,34 @@ export interface PhotostreamUploadData {
   locationName?: string;
 }
 
-export interface PersonalEventData {
-  personalEventID: string;
-  title: string;
-  description?: string;
-  startTime: string;
-  endTime: string;
-  timeZone: string;
-  timeZoneID: string;
-  location?: string;
-  lastUpdateTime: string;
-  owner: UserHeader;
-  participants: UserHeader[];
-}
-
-export interface PersonalEventContentData {
-  /// The title for the PersonalEvent.
-  title: string;
-  /// A description of the PersonalEvent.
-  description?: string;
-  /// The starting time for the PersonalEvent.
-  startTime: string;
-  /// The ending time for the PersonalEvent.
-  endTime: string;
-  /// The location for the PersonalEvent.
-  location?: string;
-  /// Users to invite to this PersonalEvent.
-  participants: string[];
-}
+// export interface PersonalEventData {
+//   personalEventID: string;
+//   title: string;
+//   description?: string;
+//   startTime: string;
+//   endTime: string;
+//   timeZone: string;
+//   timeZoneID: string;
+//   location?: string;
+//   lastUpdateTime: string;
+//   owner: UserHeader;
+//   participants: UserHeader[];
+// }
+//
+// export interface PersonalEventContentData {
+//   /// The title for the PersonalEvent.
+//   title: string;
+//   /// A description of the PersonalEvent.
+//   description?: string;
+//   /// The starting time for the PersonalEvent.
+//   startTime: string;
+//   /// The ending time for the PersonalEvent.
+//   endTime: string;
+//   /// The location for the PersonalEvent.
+//   location?: string;
+//   /// Users to invite to this PersonalEvent.
+//   participants: string[];
+// }
 
 interface SwiftarrClientConfigV1 {
   latestVersion: string;
@@ -966,4 +1039,17 @@ export interface PerformerResponseData {
   performers: PerformerHeaderData[];
   /// Pagination info.
   paginator: Paginator;
+}
+
+export interface TimeZoneChangeRecord {
+  activeDate: string;
+  timeZoneAbbrev: string;
+  timeZoneID: string;
+}
+
+export interface TimeZoneChangeData {
+  records: TimeZoneChangeRecord[];
+  currentTimeZoneAbbrev: string;
+  currentTimeZoneID: string;
+  currentOffsetSeconds: number;
 }

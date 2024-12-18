@@ -3,8 +3,8 @@ import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag';
-import {FezPostActionsMenu} from '../Menus/FezPostActionsMenu';
-import {FezPostData} from '../../libraries/Structs/ControllerStructs';
+import {FezPostActionsMenu} from '../Menus/Fez/FezPostActionsMenu.tsx';
+import {FezData, FezPostData} from '../../libraries/Structs/ControllerStructs';
 import {ContentText} from '../Text/ContentText';
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -12,13 +12,14 @@ interface MessageViewProps {
   fezPost: FezPostData;
   messageOnRight?: boolean;
   showAuthor?: boolean;
+  fez: FezData;
 }
 
 /**
  * This is a View container for a text message in the style of Android Messages or Signal.
  * It only contains the message itself.
  */
-export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: MessageViewProps) => {
+export const MessageView = ({fezPost, messageOnRight = false, showAuthor, fez}: MessageViewProps) => {
   const {commonStyles} = useStyles();
   const [menuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);
@@ -52,6 +53,7 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor}: Messa
           closeMenu={closeMenu}
           anchor={<ContentText textStyle={styles.messageText} text={fezPost.text} />}
           fezPost={fezPost}
+          fez={fez}
         />
         {fezPost.timestamp && (
           <RelativeTimeTag date={new Date(fezPost.timestamp)} style={styles.messageDateText} variant={'labelSmall'} />

@@ -1,50 +1,46 @@
-import {AppView} from '../../Views/AppView';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {PostContentData} from '../../../libraries/Structs/ControllerStructs';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {SeamailActionsMenu} from '../../Menus/Seamail/SeamailActionsMenu';
-import {LoadingView} from '../../Views/Static/LoadingView';
-import {ContentPostForm} from '../../Forms/ContentPostForm';
-import {FormikHelpers} from 'formik';
-import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
-import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs';
-import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
-import {useTwitarr} from '../../Context/Contexts/TwitarrContext';
-import {useSeamailQuery} from '../../Queries/Fez/FezQueries';
-import {FezListActions} from '../../Reducers/Fez/FezListReducers';
-import {useSocket} from '../../Context/Contexts/SocketContext';
-import {FezPostsActions} from '../../Reducers/Fez/FezPostsReducers';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
-import {getSeamailHeaderTitle} from '../../Navigation/Components/SeamailHeaderTitle';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {ListTitleView} from '../../Views/ListTitleView';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {FezChatActionsMenu} from '../../Menus/Fez/FezChatActionsMenu.tsx';
+import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
+import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSocket} from '../../Context/Contexts/SocketContext.ts';
+import {getFezHeaderTitle} from '../../Navigation/Components/FezHeaderTitle.tsx';
+import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
-import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {FezMutedView} from '../../Views/Static/FezMutedView';
-import {useAppState} from '@react-native-community/hooks';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import notifee from '@notifee/react-native';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import notifee from '@notifee/react-native';
+import {useAppState} from '@react-native-community/hooks';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {AppView} from '../../Views/AppView.tsx';
+import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {PostAsUserBanner} from '../../Banners/PostAsUserBanner.tsx';
+import {FezMutedView} from '../../Views/Static/FezMutedView.tsx';
 import {ChatFlatList} from '../../Lists/ChatFlatList.tsx';
+import {ContentPostForm} from '../../Forms/ContentPostForm.tsx';
+import {FezData, PostContentData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FormikHelpers} from 'formik';
+import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {FezPostsActions, useFezPostsReducer} from '../../Reducers/Fez/FezPostsReducers.ts';
+import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
 
-export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailScreen>;
+type Props = NativeStackScreenProps<
+  CommonStackParamList,
+  | CommonStackComponents.lfgChatScreen
+  | CommonStackComponents.seamailChatScreen
+  | CommonStackComponents.privateEventChatScreen
+>;
 
-export const SeamailScreen = ({route, navigation}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const flatListRef = useRef<FlatList>(null);
-  const {fez, setFez} = useTwitarr();
-  const {fezSocket, openFezSocket} = useSocket();
-  const fezPostMutation = useFezPostMutation();
-  const {dispatchFezList, fezPostsData, dispatchFezPostsData} = useTwitarr();
-  const {setErrorMessage} = useErrorHandler();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const queryClient = useQueryClient();
-  const appStateVisible = useAppState();
-  const {appConfig} = useConfig();
-
+/**
+ * Common screen for Fez chats. All features [Seamail, LFG, PrivateEvent] can
+ * be enabled/disabled independently so the typing logic above is a bit different.
+ */
+export const FezChatScreen = ({route}: Props) => {
   const {
     data,
     refetch,
@@ -54,14 +50,24 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
-  } = useSeamailQuery({fezID: route.params.fezID});
+  } = useFezQuery({fezID: route.params.fezID});
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const fezPostMutation = useFezPostMutation();
+  const [refreshing, setRefreshing] = useState(false);
+  const {setErrorMessage} = useErrorHandler();
+  const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
+  const navigation = useCommonStack();
+  const queryClient = useQueryClient();
+  const {appConfig} = useConfig();
+  const appStateVisible = useAppState();
+  const flatListRef = useRef<FlatList>(null);
+  const [fez, setFez] = useState<FezData>();
+  const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    refetch().finally(() => {
-      refetchUserNotificationData();
-      setRefreshing(false);
-    });
+    await Promise.all([refetchUserNotificationData(), refetch()]);
+    setRefreshing(false);
   }, [refetch, refetchUserNotificationData]);
 
   const getNavButtons = useCallback(() => {
@@ -71,7 +77,7 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <SeamailActionsMenu fez={fez} onRefresh={onRefresh} />
+          <FezChatActionsMenu fez={fez} onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
@@ -79,12 +85,13 @@ export const SeamailScreen = ({route, navigation}: Props) => {
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {
+      console.info('[FezChatScreen.tsx] fezSocketMessageHandler responding event', event);
       const socketMessage = JSON.parse(event.data);
       if ('joined' in socketMessage) {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this seamail.`;
+        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this LFG.`;
         setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.
@@ -96,7 +103,6 @@ export const SeamailScreen = ({route, navigation}: Props) => {
         //  After all that, the server still considers the message unread until you do a GET containing it
         //  So dynamically putting messages to the screen will help the local state but that's it.
         //  And confuse any other client applications.
-        console.log('[SeamailScreen.tsx] fezSocketMessageHandler performing refetch.');
         refetch();
         // if (socketFezPostData.author.userID !== profilePublicData.header.userID) {
         //   dispatchFezPostsData({
@@ -127,10 +133,12 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   };
 
+  // @TODO Disabling this since the new list component can dynamically load
+  // in both directions
   // This will always load all future pages. Hopefully this isn't a bad thing.
-  if (hasNextPage) {
-    handleLoadNext();
-  }
+  // if (hasNextPage) {
+  //   handleLoadNext();
+  // }
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
@@ -148,28 +156,27 @@ export const SeamailScreen = ({route, navigation}: Props) => {
       fezPostMutation.mutate(
         {fezID: route.params.fezID, postContentData: values},
         {
-          onSuccess: response => {
+          onSuccess: async response => {
             formikHelpers.resetForm();
             dispatchFezPostsData({
               type: FezPostsActions.appendPost,
               fezPostData: response.data,
             });
-            dispatchFezList({
-              type: FezListActions.addSelfPost,
-              fezID: route.params.fezID,
-            });
             // Mark stale so that it refetches with your new posts
             // Some day this should just update the query data.
-            queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
+            const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
           },
           onSettled: () => formikHelpers.setSubmitting(false),
         },
       );
     },
-    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData, dispatchFezList],
+    [fez, fezPostMutation, route.params.fezID, setFez, queryClient, dispatchFezPostsData],
   );
 
-  // Initial set
+  // Initial set useEffect
   useEffect(() => {
     if (data) {
       dispatchFezPostsData({
@@ -180,49 +187,62 @@ export const SeamailScreen = ({route, navigation}: Props) => {
     }
   }, [data, dispatchFezPostsData, setFez]);
 
-  // Socket
+  // Socket useEffect
   // Don't put anything else in this useEffect. The socket stuff can get a little over-excited
   // with rendering.
   useEffect(() => {
-    if (fez) {
-      let newSocket = openFezSocket(fez.fezID);
-      if (fezSocket && newSocket) {
-        console.log(`[SeamailScreen.tsx] Adding fezSocketMessageHandler to fezSocket for fez ${fez.fezID}`);
-        fezSocket.addEventListener('message', fezSocketMessageHandler);
+    const handleFezSocket = async () => {
+      if (fez) {
+        const newSocketInfo = await openFezSocket(fez.fezID);
+        if (newSocketInfo.isNew && newSocketInfo.ws) {
+          console.log(`[FezChatScreen.tsx] Adding handler to fezSocket for fez ${fez.fezID} (${fez.fezType})`);
+          newSocketInfo.ws.addEventListener('message', fezSocketMessageHandler);
+          dispatchFezSockets({
+            type: WebSocketStorageActions.upsert,
+            key: fez.fezID,
+            socket: newSocketInfo.ws,
+          });
+        } else {
+          console.log(`[FezChatScreen.tsx] Skipping fezSocket handler for fez ${fez.fezID} (${fez.fezType})`);
+        }
       }
-    }
-  }, [fez, fezSocket, fezSocketMessageHandler, openFezSocket]);
+    };
+    handleFezSocket();
+    return () => {
+      if (fez) {
+        closeFezSocket(fez.fezID);
+      }
+    };
+  }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
 
-  // Navigation
+  // Navigation useEffect
   useEffect(() => {
     if (fez) {
       navigation.setOptions({
         headerRight: getNavButtons,
-        headerTitle: getSeamailHeaderTitle(fez.fezID),
-      });
-    } else {
-      navigation.setOptions({
-        headerTitle: 'Loading...',
+        // Annoying there doesn't seem to be a way to access the current title
+        // so the result of the function should match the navigator.
+        headerTitle: getFezHeaderTitle(fez),
       });
     }
   }, [fez, getNavButtons, navigation]);
 
-  // Mark as Read
+  // Mark as Read useEffect
   useEffect(() => {
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
-      dispatchFezList({
-        type: FezListActions.markAsRead,
-        fezID: fez.fezID,
+      const invalidations = FezData.getCacheKeys().map(key => {
+        return queryClient.invalidateQueries(key);
       });
-      queryClient.invalidateQueries(['/fez/joined']);
+      Promise.all(invalidations);
       if (appConfig.markReadCancelPush) {
-        console.log('[SeamailScreen.tsx] auto canceling notifications.');
+        console.log('[FezChatScreen.tsx] auto canceling notifications.');
         notifee.cancelDisplayedNotification(fez.fezID);
       }
       refetchUserNotificationData();
     }
-  }, [dispatchFezList, fez, queryClient, refetchUserNotificationData, appConfig.markReadCancelPush]);
+  }, [fez, queryClient, refetchUserNotificationData, appConfig.markReadCancelPush]);
 
+  // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background
   // so some day some debouncing should be implemented.
