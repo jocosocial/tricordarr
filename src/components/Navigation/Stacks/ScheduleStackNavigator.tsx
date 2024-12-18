@@ -19,7 +19,7 @@ export type ScheduleStackParamList = CommonStackParamList & {
   EventSettingsScreen: undefined;
   ScheduleDayScreen: undefined;
   ScheduleImportScreen: undefined;
-  SchedulePrivateEventScreen: undefined;
+  SchedulePrivateEventsScreen: undefined;
 };
 
 export enum ScheduleStackComponents {
@@ -27,7 +27,7 @@ export enum ScheduleStackComponents {
   eventSettingsScreen = 'EventSettingsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
-  schedulePrivateEventScreen = 'SchedulePrivateEventScreen',
+  schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
 }
 
 export const ScheduleStackNavigator = () => {
@@ -65,7 +65,7 @@ export const ScheduleStackNavigator = () => {
         options={{title: 'Schedule Import'}}
       />
       <Stack.Screen
-        name={ScheduleStackComponents.schedulePrivateEventScreen}
+        name={ScheduleStackComponents.schedulePrivateEventsScreen}
         component={isDisabled ? DisabledView : SchedulePrivateEventsScreen}
         options={{title: 'Private Events'}}
       />
