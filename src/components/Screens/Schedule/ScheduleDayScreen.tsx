@@ -56,6 +56,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     data: lfgOpenData,
     isLoading: isLfgOpenLoading,
     refetch: refetchLfgOpen,
+    hasNextPage: openHasNextPage,
+    fetchNextPage: openFetchNextPage,
   } = useLfgListQuery({
     cruiseDay: selectedCruiseDay - 1,
     endpoint: 'open',
@@ -67,6 +69,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     data: lfgJoinedData,
     isLoading: isLfgJoinedLoading,
     refetch: refetchLfgJoined,
+    hasNextPage: joinedHasNextPage,
+    fetchNextPage: joinedFetchNextPage,
   } = useLfgListQuery({
     cruiseDay: selectedCruiseDay - 1,
     endpoint: 'joined',
@@ -78,6 +82,8 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     data: personalEventData,
     isLoading: isPersonalEventLoading,
     refetch: refetchPersonalEvents,
+    hasNextPage: personalHasNextPage,
+    fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
@@ -149,6 +155,26 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
       setScrollNowIndex(index);
     }
   }, [appConfig.portTimeZoneID, endDate, minutelyUpdatingDate, scheduleList, startDate]);
+
+  useEffect(() => {
+    console.log('[ScheduleDayScreen.tsx] Firing pagination useEffect');
+    if (openHasNextPage) {
+      openFetchNextPage();
+    }
+    if (joinedHasNextPage) {
+      joinedFetchNextPage();
+    }
+    if (personalHasNextPage) {
+      personalFetchNextPage();
+    }
+  }, [
+    joinedFetchNextPage,
+    joinedHasNextPage,
+    openFetchNextPage,
+    openHasNextPage,
+    personalFetchNextPage,
+    personalHasNextPage,
+  ]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

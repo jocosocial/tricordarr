@@ -17,7 +17,6 @@ export const NotificationsMenu = () => {
   const closeMenu = () => setVisible(false);
 
   const anyNew = UserNotificationData.totalNewCount(data) !== 0;
-  console.log(data);
 
   const handleUrl = (url: string) => {
     Linking.openURL(url);
