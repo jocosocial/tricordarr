@@ -102,10 +102,12 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
     if (!leadingItem.startTime || !trailingItem.startTime || !trailingItem.timeZoneID) {
       return <SpaceDivider />;
     }
-    const leadingDate = new Date(leadingItem.startTime);
-    const trailingDate = new Date(trailingItem.startTime);
-    const leadingTimeMarker = leadingDate.getDay();
-    const trailingTimeMarker = trailingDate.getDay();
+    // The timeZoneIDs are required to accurately calculate the marker.
+    if (!leadingItem.timeZoneID || !trailingItem.timeZoneID) {
+      return <SpaceDivider />;
+    }
+    const leadingTimeMarker = getDayMarker(leadingItem.startTime, leadingItem.timeZoneID);
+    const trailingTimeMarker = getDayMarker(trailingItem.startTime, trailingItem.timeZoneID);
     if (leadingTimeMarker === trailingTimeMarker) {
       return <SpaceDivider />;
     }

@@ -168,6 +168,12 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
   return `${formattedTime} ${moment.tz(timeZoneID).zoneAbbr()}`;
 };
 
+/**
+ * Generate an arbitrary time marker for a given moment (date + timezone). This is used
+ * to determine whether to show a spacer between two events in a list.
+ * @param dateTimeStr String of the Date.
+ * @param timeZoneID String of the Time Zone ID.
+ */
 export const getDayMarker = (dateTimeStr: string, timeZoneID: string) => {
   return getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd MMM Do');
 };
