@@ -24,6 +24,7 @@ import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
@@ -127,29 +128,29 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
+        isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
-        <PaddedContentView>
-          <TouchableOpacity onLongPress={() => Clipboard.setString(lfg.title)}>
-            <TitleTag>Title</TitleTag>
-            <Text>{lfg.title}</Text>
-          </TouchableOpacity>
-        </PaddedContentView>
+        <DataFieldListItem title={'Title'} description={lfg.title} />
+        <DataFieldListItem title={'Hosted By'} />
+        <FezParticipantListItem
+          onPress={() =>
+            navigation.push(CommonStackComponents.userProfileScreen, {
+              userID: lfg.owner.userID,
+            })
+          }
+          user={lfg.owner}
+          fez={lfg}
+        />
         {FezType.isLFGType(lfg.fezType) && (
           <>
-            <PaddedContentView>
-              <TitleTag>Minimum Needed</TitleTag>
-              <Text>{lfg.minParticipants}</Text>
-            </PaddedContentView>
-
-            <PaddedContentView>
-              <TitleTag>Maximum Allowed</TitleTag>
-              <Text>{lfg.maxParticipants === 0 ? 'Unlimited' : lfg.maxParticipants}</Text>
-            </PaddedContentView>
+            <DataFieldListItem title={'Minimum Needed'} description={lfg.minParticipants} />
+            <DataFieldListItem
+              title={'Maximum Allowed'}
+              description={lfg.maxParticipants === 0 ? 'Unlimited' : lfg.maxParticipants}
+            />
           </>
         )}
-        <PaddedContentView padBottom={false}>
-          <TitleTag>Participants ({lfg.participantCount})</TitleTag>
-        </PaddedContentView>
+        <DataFieldListItem title={`Participants (${lfg.participantCount})`} />
         <PaddedContentView padSides={false}>
           <ListSection>
             {manageUsers && !isFull && (

@@ -8,7 +8,7 @@ import {AppIcon} from '../../Icons/AppIcon.tsx';
 
 interface DataFieldListItemProps {
   title?: string;
-  description?: string | (() => ReactNode);
+  description?: string | number | (() => ReactNode);
   onPress?: () => void;
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
@@ -40,7 +40,7 @@ export const DataFieldListItem = ({
       ...descriptionStyle,
     },
     item: {
-      ...commonStyles.paddingHorizontal,
+      ...(icon ? commonStyles.paddingHorizontal : undefined),
       ...itemStyle,
     },
     icon: {
@@ -64,7 +64,9 @@ export const DataFieldListItem = ({
       title={title}
       onPress={onPress}
       onLongPress={() =>
-        description && typeof description === 'string' ? Clipboard.setString(description) : undefined
+        description && (typeof description === 'string' || typeof description === 'number')
+          ? Clipboard.setString(description.toString())
+          : undefined
       }
     />
   );
