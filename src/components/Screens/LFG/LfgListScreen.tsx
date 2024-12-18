@@ -37,7 +37,7 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
     useLfgListQuery({
       endpoint: endpoint,
       fezType: lfgTypeFilter,
-      // @TODO we intend to fix this some day. Upstream Swiftarr issue.
+      // @TODO we intend to change this some day. Upstream Swiftarr issue.
       cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
       hidePast: lfgHidePastFilter,
     });

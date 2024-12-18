@@ -7,7 +7,11 @@ import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 
-export const LfgFilterMenu = () => {
+interface LfgFilterMenuProps {
+  showTypes?: boolean;
+}
+
+export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();
@@ -49,17 +53,21 @@ export const LfgFilterMenu = () => {
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
-      <Divider bold={true} />
-      {FezType.lfgTypes.map(fezType => {
-        return (
-          <SelectableMenuItem
-            key={fezType}
-            selected={lfgTypeFilter === fezType}
-            title={FezType.getLabel(fezType)}
-            onPress={() => handleFilterSelection(fezType)}
-          />
-        );
-      })}
+      {showTypes && (
+        <>
+          <Divider bold={true} />
+          {FezType.lfgTypes.map(fezType => {
+            return (
+              <SelectableMenuItem
+                key={fezType}
+                selected={lfgTypeFilter === fezType}
+                title={FezType.getLabel(fezType)}
+                onPress={() => handleFilterSelection(fezType)}
+              />
+            );
+          })}
+        </>
+      )}
     </Menu>
   );
 };

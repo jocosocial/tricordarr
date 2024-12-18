@@ -9,15 +9,19 @@ import {FlashList} from '@shopify/flash-list';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
-import {ScheduleEventFilterMenu} from '../../Menus/Schedule/ScheduleEventFilterMenu.tsx';
-import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScreenActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx';
+import {useFilter} from '../../Context/Contexts/FilterContext.ts';
+import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
 
 export const SchedulePrivateEventScreen = () => {
+  const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
   const {data, isFetching, refetch} = usePersonalEventsQuery({
     includeType: [FezType.privateEvent],
+    // @TODO we intend to change this some day. Upstream Swiftarr issue.
+    cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
+    hidePast: lfgHidePastFilter,
   });
   const listRef = useRef<FlashList<FezData>>(null);
   const navigation = useCommonStack();
@@ -26,6 +30,8 @@ export const SchedulePrivateEventScreen = () => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <LfgCruiseDayFilterMenu />
+          <LfgFilterMenu showTypes={false} />
           <Item
             title={'Help'}
             iconName={AppIcons.help}
