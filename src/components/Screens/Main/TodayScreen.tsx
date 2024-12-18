@@ -24,6 +24,9 @@ import {TodayHeaderTitle} from '../../Navigation/Components/TodayHeaderTitle';
 import {TodayTimezoneWarningView} from '../../Views/Today/TodayTimezoneWarningView.tsx';
 import {TodayAppUpdateView} from '../../Views/TodayAppUpdateView.tsx';
 import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.ts';
+import {NotificationsMenu} from '../../Menus/NotificationsMenu.tsx';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
@@ -57,10 +60,13 @@ export const TodayScreen = ({navigation}: Props) => {
   const getRightMainHeaderButtons = useCallback(() => {
     return (
       <View>
-        <MainAccountMenu />
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          {isLoggedIn && <NotificationsMenu />}
+          <MainAccountMenu />
+        </HeaderButtons>
       </View>
     );
-  }, []);
+  }, [isLoggedIn]);
 
   const getTitle = useCallback(() => <TodayHeaderTitle />, []);
 

@@ -7,6 +7,7 @@ import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNaviga
 import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
 import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {LfgJoinedScreen} from '../components/Screens/LFG/LfgJoinedScreen.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -72,6 +73,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             LfgScreen: 'lfg/:fezID',
             LfgChatScreen: 'lfg/:fezID/chat',
             LfgHelpScreen: 'lfg/faq',
+            LfgJoinedScreen: 'lfg/joined',
           },
         },
         ScheduleTab: {

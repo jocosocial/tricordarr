@@ -189,6 +189,47 @@ export interface UserNotificationData {
   /// Notification counts that are only relevant for Moderators (and TwitarrTeam).
 }
 
+export namespace UserNotificationData {
+  const valueOrZero = (value?: number) => value || 0;
+  export const totalNewCount = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return (
+      valueOrZero(data.newAnnouncementCount) +
+      valueOrZero(data.newTwarrtMentionCount) +
+      valueOrZero(data.newForumMentionCount) +
+      valueOrZero(data.newSeamailMessageCount) +
+      valueOrZero(data.newFezMessageCount) +
+      valueOrZero(data.newPrivateEventMessageCount) +
+      valueOrZero(data.addedToSeamailCount) +
+      valueOrZero(data.addedToLFGCount) +
+      valueOrZero(data.addedToPrivateEventCount)
+    );
+  };
+
+  export const totalNewSeamail = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newSeamailMessageCount) + valueOrZero(data.addedToSeamailCount);
+  };
+
+  export const totalNewLFG = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newFezMessageCount) + valueOrZero(data.addedToLFGCount);
+  };
+
+  export const totalNewPrivateEvent = (data?: UserNotificationData) => {
+    if (!data) {
+      return 0;
+    }
+    return valueOrZero(data.newPrivateEventMessageCount) + valueOrZero(data.addedToPrivateEventCount);
+  };
+}
+
 export interface Paginator {
   /// The total number of items returnable by the request.
   total: number;
