@@ -1,5 +1,4 @@
 import {AppView} from '../../Views/AppView.tsx';
-import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
@@ -14,10 +13,11 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
+import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 
-export const SchedulePrivateEventScreen = () => {
+export const SchedulePrivateEventsScreen = () => {
   const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
-  const {data, isFetching, refetch} = usePersonalEventsQuery({
+  const {data, isFetching, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
     includeType: [FezType.privateEvent],
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
@@ -54,11 +54,13 @@ export const SchedulePrivateEventScreen = () => {
 
   return (
     <AppView>
-      <ScheduleFlatList
+      <LFGFlatList
         items={data.pages.flatMap(p => p.fezzes)}
         listRef={listRef}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         separator={'day'}
+        hasNextPage={hasNextPage}
+        handleLoadNext={fetchNextPage}
       />
     </AppView>
   );

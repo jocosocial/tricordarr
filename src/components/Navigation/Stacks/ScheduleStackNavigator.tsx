@@ -12,7 +12,7 @@ import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
 import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.tsx';
-import {SchedulePrivateEventScreen} from '../../Screens/Schedule/SchedulePrivateEventScreen.tsx';
+import {SchedulePrivateEventsScreen} from '../../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
 
 export type ScheduleStackParamList = CommonStackParamList & {
   EventSearchScreen: undefined;
@@ -66,7 +66,7 @@ export const ScheduleStackNavigator = () => {
       />
       <Stack.Screen
         name={ScheduleStackComponents.schedulePrivateEventScreen}
-        component={isDisabled ? DisabledView : SchedulePrivateEventScreen}
+        component={isDisabled ? DisabledView : SchedulePrivateEventsScreen}
         options={{title: 'Private Events'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
