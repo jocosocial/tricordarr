@@ -41,8 +41,8 @@ https://reactnative.dev/docs/signed-apk-android
 Edit android/app/build.gradle with appropriate version info.
 
 Version number plan:
-* Major = Cruise Year (1 == 2022, 2 == 2023, consider using the actual year?)
-* Minor = Release number to Play Store. Moves in lockstep with buildCode or whatever.
+* Major = Cruise Year (2023, 2024, etc)
+* Minor = Release number to Play Store. Moves in lockstep with `versionCode`.
 
 ```
 cd android
