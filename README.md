@@ -112,3 +112,21 @@ Layout Consideration
 
 ### FABs
 * Screens where there is a "create" action should have that Create be in the form of a FAB
+
+Known Issues
+------------
+```
+ ERROR  Warning: A props object containing a "key" prop is being spread into JSX:
+  let props = {key: someKey, route: ..., borderless: ..., centered: ..., rippleColor: ..., onPress: ..., onLongPress: ..., testID: ..., accessibilityLabel: ..., accessibilityRole: ..., accessibilityState: ..., style: ..., children: ...};
+  <Touchable {...props} />
+React keys must be passed directly to JSX without using spread:
+  let props = {route: ..., borderless: ..., centered: ..., rippleColor: ..., onPress: ..., onLongPress: ..., testID: ..., accessibilityLabel: ..., accessibilityRole: ..., accessibilityState: ..., style: ..., children: ...};
+  <Touchable key={someKey} {...props} />
+```
+https://github.com/callstack/react-native-paper/issues/4401 (PR: https://github.com/callstack/react-native-paper/pull/4494)
+
+```
+ ERROR  Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.
+    in TextInput.Icon (created by Formik)
+```
+Fixed in react-native-paper 5.12.5

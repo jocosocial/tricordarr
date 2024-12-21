@@ -10895,9 +10895,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper@npm:^5.11.1":
-  version: 5.12.3
-  resolution: "react-native-paper@npm:5.12.3"
+"react-native-paper@npm:^5.12.5":
+  version: 5.12.5
+  resolution: "react-native-paper@npm:5.12.5"
   dependencies:
     "@callstack/react-theme-provider": ^3.0.9
     color: ^3.1.2
@@ -10907,7 +10907,7 @@ __metadata:
     react-native: "*"
     react-native-safe-area-context: "*"
     react-native-vector-icons: "*"
-  checksum: 927a8948d220fb59cb4dae2f12f3b4dc2173b9cd42e38dc74a0f25584a69978555a260c140db973f8401f7fef394dee3ec42c90b6134deeb3aa462291fd0ce5f
+  checksum: 35ce56e0bb19c46ce85adc47a504527b7ec455d1a15f3ace0d6fd438abd51b1fe30e1b44351950e16d6376ddbc18ecc94b558e267767d0a9fd886a5f66a4c322
   languageName: node
   linkType: hard
 
@@ -12556,7 +12556,7 @@ __metadata:
     react-native-image-viewing: ^0.2.2
     react-native-json-tree: ^1.3.0
     react-native-mime-types: ^2.4.0
-    react-native-paper: ^5.11.1
+    react-native-paper: ^5.12.5
     react-native-paper-dates: ^0.22.19
     react-native-permissions: ^3.6.1
     react-native-reanimated: ^3.16.1
