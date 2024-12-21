@@ -1,13 +1,16 @@
 buildscript {
     ext {
+        // https://developer.android.com/tools/releases/build-tools
         buildToolsVersion = "34.0.0"
-        // React-Native minSdkVersion is 23 (Android 6 Marshmallow).
+        // React-Native 0.76 minSdkVersion is 24 (Android 7 Nougat).
         // My arbitrarily-imposed minSdkVersion is 30 (Android 11 Red Velvet Cake)
         minSdkVersion = 30
-        compileSdkVersion = 34
-        targetSdkVersion = 34
-        ndkVersion = "26.1.10909125"
-        kotlinVersion = "1.9.22"
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        // https://developer.android.com/ndk/downloads
+        ndkVersion = "27.2.12479018"
+        // https://kotlinlang.org/docs/releases.html
+        kotlinVersion = "1.9.25"
     }
     repositories {
         google()
