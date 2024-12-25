@@ -11,7 +11,7 @@ interface ForumCategoryListItemProps {
 export const ForumCategoryListItem = ({category}: ForumCategoryListItemProps) => {
   const forumNavigation = useForumStackNavigation();
 
-  const getThreadCount = () => <Text variant={'bodyMedium'}>{category.numThreads} threads</Text>;
+  const getThreadCount = () => <Text variant={'bodyMedium'}>{category.paginator.total} threads</Text>;
   const onPress = () => forumNavigation.push(ForumStackComponents.forumCategoryScreen, {category: category});
 
   return (

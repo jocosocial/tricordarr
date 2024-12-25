@@ -12,7 +12,6 @@ import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
-import {CategoryDataQueryResponse} from '../../Queries/Forum/ForumCategoryQueries.ts';
 import {AxiosError} from 'axios';
 
 interface ForumThreadListViewProps {
@@ -23,14 +22,10 @@ interface ForumThreadListViewProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;
   fetchNextPage: (
     options?: FetchNextPageOptions | undefined,
-  ) => Promise<
-    InfiniteQueryObserverResult<CategoryDataQueryResponse | ForumSearchData, AxiosError<ErrorResponse, any>>
-  >;
+  ) => Promise<InfiniteQueryObserverResult<CategoryData | ForumSearchData, AxiosError<ErrorResponse, any>>>;
   fetchPreviousPage: (
     options?: FetchNextPageOptions | undefined,
-  ) => Promise<
-    InfiniteQueryObserverResult<CategoryDataQueryResponse | ForumSearchData, AxiosError<ErrorResponse, any>>
-  >;
+  ) => Promise<InfiniteQueryObserverResult<CategoryData | ForumSearchData, AxiosError<ErrorResponse, any>>>;
   isFetchingNextPage: boolean;
   isFetchingPreviousPage: boolean;
   title?: string;

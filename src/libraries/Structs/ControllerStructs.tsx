@@ -706,10 +706,10 @@ export interface CategoryData {
   isRestricted: boolean;
   /// if TRUE, this category is for Event Forums, and is prepopulated with forum threads for each Schedule Event.
   isEventCategory: boolean;
-  /// The number of threads in this category
-  numThreads: number;
   /// The threads in the category. Only populated for /categories/ID.
   forumThreads?: [ForumListData];
+  /// Pagination of the results
+  paginator: Paginator;
 }
 
 export interface ForumData {
