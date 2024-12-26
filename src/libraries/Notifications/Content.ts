@@ -116,6 +116,16 @@ export const contentNotificationCategories: ContentNotificationCategories = {
     title: 'MicroKaraoke Song Ready',
     description: 'A new song has completed and is available to view.',
   },
+  lfgCanceled: {
+    configKey: 'lfgCanceled',
+    title: 'LFG Canceled',
+    description: "An LFG that you have joined has been canceled by it's creator",
+  },
+  privateEventCanceled: {
+    configKey: 'privateEventCanceled',
+    title: 'Private Event Canceled',
+    description: "A Private Event that you have joined has been canceled by it's creator",
+  },
 };
 
 export async function generateContentNotification(

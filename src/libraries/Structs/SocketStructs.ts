@@ -42,6 +42,10 @@ export enum NotificationTypeData {
   addedToLFG = 'addedToLFG',
   /// The creator of the event has added this user.
   addedToPrivateEvent = 'addedToPrivateEvent',
+  /// A Private Event the user has joined has been canceled.
+  privateEventCanceled = 'privateEventCanceled',
+  /// An LFG the user has joined has been canceled.
+  lfgCanceled = 'lfgCanceled',
 
   // New Chat Messages
   /// A participant in a Chat the user is a member of has posted a new message.
