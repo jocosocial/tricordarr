@@ -5,7 +5,12 @@ import React from 'react';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 
-export const AppUpdateCard = () => {
+interface AppUpdateCardProps {
+  currentVersion: string;
+  latestVersion: string;
+}
+
+export const AppUpdateCard = (props: AppUpdateCardProps) => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
@@ -38,7 +43,10 @@ export const AppUpdateCard = () => {
               <Text style={styles.text}>Tricordarr is out of date.</Text>
             </View>
             <View>
-              <Text>Update to the latest version to ensure a smooth experience.</Text>
+              <Text>
+                Update to the latest version ({props.latestVersion}) to ensure a smooth experience. You are currently
+                running version {props.currentVersion}.
+              </Text>
             </View>
           </Card.Content>
         </View>

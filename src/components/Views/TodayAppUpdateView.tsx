@@ -3,14 +3,15 @@ import React from 'react';
 import {PaddedContentView} from './Content/PaddedContentView.tsx';
 import {useClientConfigQuery} from '../Queries/Client/ClientQueries.ts';
 import DeviceInfo from 'react-native-device-info';
+import {compareVersions} from 'compare-versions';
 
 export const TodayAppUpdateView = () => {
   const {data} = useClientConfigQuery();
 
-  if (data?.spec.latestVersion !== DeviceInfo.getVersion()) {
+  if (data && compareVersions(DeviceInfo.getVersion(), data.spec.latestVersion) < 0) {
     return (
       <PaddedContentView>
-        <AppUpdateCard />
+        <AppUpdateCard latestVersion={data.spec.latestVersion} currentVersion={DeviceInfo.getVersion()} />
       </PaddedContentView>
     );
   }
