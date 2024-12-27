@@ -38,7 +38,7 @@ Releasing
 ---------
 https://reactnative.dev/docs/signed-apk-android
 
-Edit android/app/build.gradle with appropriate version info.
+Edit `android/app/build.gradle` with appropriate version info.
 
 Version number plan:
 * Major = Cruise Year (2023, 2024, etc)
