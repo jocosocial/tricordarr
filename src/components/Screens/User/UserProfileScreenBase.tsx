@@ -30,6 +30,7 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 import {HeaderProfileFavoriteButton} from '../../Buttons/HeaderButtons/HeaderProfileFavoriteButton.tsx';
 import {HeaderProfileSeamailButton} from '../../Buttons/HeaderButtons/HeaderProfileSeamailButton.tsx';
 import {UserProfileSelfActionsMenu} from '../../Menus/User/UserProfileSelfActionsMenu.tsx';
+import {StyleSheet} from 'react-native';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -116,10 +117,18 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
     }
   }, [blocks, favorites, getNavButtons, mutes, commonNavigation, data]);
 
-  const styles = {
-    listContentCenter: [commonStyles.flexRow, commonStyles.justifyCenter],
-    button: [commonStyles.marginHorizontalSmall],
-  };
+  const styles = StyleSheet.create({
+    listContentCenter: {
+      ...commonStyles.flexRow,
+      ...commonStyles.justifyCenter,
+    },
+    button: {
+      ...commonStyles.marginHorizontalSmall,
+    },
+    titleText: {
+      ...commonStyles.textCenter,
+    },
+  });
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -140,15 +149,15 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
-          <PaddedContentView padTop={true} padBottom={false} style={[styles.listContentCenter]}>
+          <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>
             <Text selectable={true}>{data.message}</Text>
           </PaddedContentView>
         )}
-        <PaddedContentView padTop={true} style={[styles.listContentCenter]}>
+        <PaddedContentView padTop={true} style={styles.listContentCenter}>
           <UserProfileAvatar user={data} setRefreshing={setRefreshing} />
         </PaddedContentView>
-        <PaddedContentView style={[styles.listContentCenter]}>
-          <Text selectable={true} variant={'headlineMedium'}>
+        <PaddedContentView style={styles.listContentCenter}>
+          <Text selectable={true} variant={'headlineMedium'} style={styles.titleText}>
             {isFavorite && (
               <>
                 <AppIcon color={theme.colors.twitarrYellow} icon={'star'} />
