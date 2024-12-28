@@ -1,7 +1,5 @@
 import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import React, {useCallback, useEffect} from 'react';
-import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LfgStackComponents, LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
@@ -10,6 +8,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {LFGSearchBar} from '../../Search/LFGSearchBar.tsx';
 
 type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScreen>;
 
@@ -44,10 +43,8 @@ export const LfgSearchScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
-        <ListTitleView title={getTitle()} />
-        <Text>Wee</Text>
-      </ScrollingContentView>
+      <ListTitleView title={getTitle()} />
+      <LFGSearchBar endpoint={route.params.endpoint} />
     </AppView>
   );
 };

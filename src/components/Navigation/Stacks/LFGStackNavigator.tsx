@@ -25,7 +25,7 @@ export type LfgStackParamList = CommonStackParamList & {
   LfgCreateScreen: undefined;
   LfgFormerScreen: undefined;
   LfgSearchScreen: {
-    endpoint?: FezListEndpoints;
+    endpoint: FezListEndpoints;
   };
 };
 
@@ -83,7 +83,7 @@ export const LfgStackNavigator = () => {
       <Stack.Screen
         name={LfgStackComponents.lfgSearchScreen}
         component={isDisabled ? DisabledView : LfgSearchScreen}
-        options={{title: 'Search'}}
+        options={{title: 'Search LFGs'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>
