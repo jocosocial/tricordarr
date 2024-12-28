@@ -8,7 +8,6 @@ import {FezChatActionsMenu} from '../../Menus/Fez/FezChatActionsMenu.tsx';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
-import {getFezHeaderTitle} from '../../Navigation/Components/FezHeaderTitle.tsx';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
@@ -28,6 +27,8 @@ import {FezPostsActions, useFezPostsReducer} from '../../Reducers/Fez/FezPostsRe
 import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {NavHeaderTitle} from '../../Text/NavHeaderTitle.tsx';
 
 type Props = NativeStackScreenProps<
   CommonStackParamList,
@@ -215,17 +216,23 @@ export const FezChatScreen = ({route}: Props) => {
     };
   }, [closeFezSocket, dispatchFezSockets, fez, fezSocketMessageHandler, fezSockets, openFezSocket]);
 
+  const getFezHeaderTitle = useCallback(() => {
+    if (fez) {
+      const onPress = () =>
+        navigation.push(CommonStackComponents.fezChatDetailsScreen, {
+          fezID: fez.fezID,
+        });
+      return <NavHeaderTitle onPress={onPress} title={FezType.getChatTitle(fez.fezType)} />;
+    }
+  }, [fez, navigation]);
+
   // Navigation useEffect
   useEffect(() => {
-    if (fez) {
-      navigation.setOptions({
-        headerRight: getNavButtons,
-        // Annoying there doesn't seem to be a way to access the current title
-        // so the result of the function should match the navigator.
-        headerTitle: getFezHeaderTitle(fez),
-      });
-    }
-  }, [fez, getNavButtons, navigation]);
+    navigation.setOptions({
+      headerRight: getNavButtons,
+      headerTitle: getFezHeaderTitle,
+    });
+  }, [getFezHeaderTitle, getNavButtons, navigation]);
 
   // Mark as Read useEffect
   useEffect(() => {
