@@ -84,7 +84,7 @@ export const PersonalEventForm = ({
           </View>
           {create && (
             <View style={[commonStyles.paddingBottom]}>
-              <UserChipsField name={'initialUsers'} label={'Invitees (Optional)'} />
+              <UserChipsField name={'initialUsers'} label={'Participants (Optional)'} />
             </View>
           )}
           <PrimaryActionButton
