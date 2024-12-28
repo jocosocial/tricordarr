@@ -10,8 +10,8 @@ interface ScheduleFilterContextType {
   setEventFavoriteFilter: Dispatch<SetStateAction<boolean>>;
   lfgCruiseDayFilter?: number;
   setLfgCruiseDayFilter: Dispatch<SetStateAction<number | undefined>>;
-  lfgTypeFilter?: keyof typeof FezType;
-  setLfgTypeFilter: Dispatch<SetStateAction<keyof typeof FezType | undefined>>;
+  lfgTypeFilter?: FezType;
+  setLfgTypeFilter: Dispatch<SetStateAction<FezType | undefined>>;
   lfgHidePastFilter: boolean;
   setLfgHidePastFilter: Dispatch<SetStateAction<boolean>>;
   forumSortOrder?: ForumSort;

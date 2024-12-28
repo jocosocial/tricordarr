@@ -20,10 +20,10 @@ export const useFezQuery = ({fezID}: FezQueryProps) => {
 // Mostly mirrors https://github.com/jocosocial/swiftarr/blob/master/Sources/swiftarr/Controllers/FezController.swift
 interface FezListQueryOptions {
   cruiseDay?: number;
-  fezType?: FezType[];
+  fezType?: FezType | FezType[];
   hidePast?: boolean;
   endpoint?: FezListEndpoints;
-  excludeFezType?: FezType[];
+  excludeFezType?: FezType | FezType[];
   options?: {};
   lfgTypesOnly?: boolean;
   onlyNew?: boolean;
