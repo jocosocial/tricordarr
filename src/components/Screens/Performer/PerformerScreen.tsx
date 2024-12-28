@@ -67,6 +67,10 @@ export const PerformerScreen = ({route, navigation}: Props) => {
     eventCardContainer: {
       ...commonStyles.paddingBottomSmall,
     },
+    titleContentContainer: {
+      ...commonStyles.flexColumn,
+      ...commonStyles.alignItemsCenter,
+    },
   });
 
   const getHeaderButtons = useCallback(() => {
@@ -88,18 +92,6 @@ export const PerformerScreen = ({route, navigation}: Props) => {
   if (!data) {
     return <LoadingView />;
   }
-
-  const getTitle = (title?: string, organization?: string) => {
-    if (title && organization) {
-      return `${title} of ${organization}`;
-    } else if (title && !organization) {
-      return title;
-    } else if (organization && !title) {
-      return organization;
-    }
-  };
-
-  const title = getTitle(data.title, data.organization);
 
   return (
     <AppView>
@@ -130,9 +122,12 @@ export const PerformerScreen = ({route, navigation}: Props) => {
             {data.pronouns}
           </Text>
         </PaddedContentView>
-        {title && (
+        {(data.title || data.organization) && (
           <PaddedContentView style={styles.listContentContainer}>
-            <Text>{title}</Text>
+            <View style={styles.titleContentContainer}>
+              {data.title && <Text>{data.title}</Text>}
+              {data.organization && <Text>{data.organization}</Text>}
+            </View>
           </PaddedContentView>
         )}
         {data.bio && (

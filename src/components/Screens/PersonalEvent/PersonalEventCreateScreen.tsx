@@ -4,7 +4,6 @@ import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import React from 'react';
 import {FezFormValues} from '../../../libraries/Types/FormValues.ts';
-import {usePersonalEventCreateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -13,10 +12,11 @@ import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
-  const createMutation = usePersonalEventCreateMutation();
+  const createMutation = useFezCreateMutation();
   const queryClient = useQueryClient();
   const {startDate, adjustedCruiseDayToday} = useCruise();
 
@@ -25,7 +25,7 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
 
     createMutation.mutate(
       {
-        personalEventContentData: {
+        fezContentData: {
           title: values.title,
           info: values.info,
           startTime: startTime.toISOString(),

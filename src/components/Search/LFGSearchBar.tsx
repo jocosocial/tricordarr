@@ -1,24 +1,30 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {useEventsQuery} from '../Queries/Events/EventQueries.ts';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
-import {EventData} from '../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {TimeDivider} from '../Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '../Lists/Schedule/ScheduleFlatList.tsx';
 import {FlashList} from '@shopify/flash-list';
+import {useLfgListQuery} from '../Queries/Fez/FezQueries.ts';
 import {SearchBarBase} from './SearchBarBase.tsx';
+import {FezListEndpoints} from '../../libraries/Types';
 
-export const EventSearchBar = () => {
+interface LFGSearchBarProps {
+  endpoint: FezListEndpoints;
+}
+
+export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
-  const {data, refetch, isFetching, remove} = useEventsQuery({
+  const {data, refetch, isFetching, remove} = useLfgListQuery({
     search: searchQuery,
     options: {
       enabled: queryEnable,
     },
+    endpoint: endpoint,
   });
-  const listRef = useRef<FlashList<EventData>>(null);
+  const listRef = useRef<FlashList<FezData>>(null);
 
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
@@ -44,7 +50,8 @@ export const EventSearchBar = () => {
   }, [remove]);
 
   // Deal with some undefined issues below by defaulting to empty list.
-  const eventList = data || [];
+  let lfgList: FezData[] = [];
+  data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
 
   return (
     <>
@@ -52,7 +59,7 @@ export const EventSearchBar = () => {
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}
-        items={eventList}
+        items={lfgList}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} enabled={!!searchQuery} />}
         separator={'day'}
       />

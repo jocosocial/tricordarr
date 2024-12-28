@@ -10,16 +10,15 @@ import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {usePersonalEventUpdateMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
-import notifee from '@notifee/react-native';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
-  const updateMutation = usePersonalEventUpdateMutation();
+  const updateMutation = useFezUpdateMutation();
   const queryClient = useQueryClient();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
@@ -27,8 +26,8 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
 
     updateMutation.mutate(
       {
-        personalEventID: route.params.personalEvent.fezID,
-        personalEventContentData: {
+        fezID: route.params.personalEvent.fezID,
+        fezContentData: {
           title: values.title,
           info: values.info,
           startTime: startTime.toISOString(),

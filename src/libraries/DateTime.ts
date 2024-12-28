@@ -174,7 +174,10 @@ export const getTimeMarker = (dateTimeStr: string, timeZoneID: string) => {
  * @param dateTimeStr String of the Date.
  * @param timeZoneID String of the Time Zone ID.
  */
-export const getDayMarker = (dateTimeStr: string, timeZoneID: string) => {
+export const getDayMarker = (dateTimeStr?: string, timeZoneID?: string) => {
+  if (!dateTimeStr || !timeZoneID) {
+    return;
+  }
   return getBoatTimeMoment(dateTimeStr, timeZoneID).format('dddd MMM Do');
 };
 
