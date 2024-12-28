@@ -1,5 +1,4 @@
 import {AppView} from '../../Views/AppView.tsx';
-import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import React, {useCallback, useEffect, useRef} from 'react';
@@ -14,11 +13,12 @@ import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
+import {usePersonalEventsQuery} from '../../Queries/Fez/FezQueries.ts';
 
 export const SchedulePrivateEventsScreen = () => {
   const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
   const {data, isFetching, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
-    includeType: [FezType.privateEvent],
+    fezType: [FezType.privateEvent],
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,

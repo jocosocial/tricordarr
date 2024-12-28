@@ -9,8 +9,8 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
-import {usePersonalEventDeleteMutation} from '../../Queries/PersonalEvent/PersonalEventMutations.ts';
 import {useNavigation} from '@react-navigation/native';
+import {useFezDeleteMutation} from '../../Queries/Fez/FezMutations.ts';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -26,14 +26,14 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
   const {setInfoMessage} = useErrorHandler();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
-  const deleteMutation = usePersonalEventDeleteMutation();
+  const deleteMutation = useFezDeleteMutation();
   const queryClient = useQueryClient();
   const navigation = useNavigation();
 
   const onSubmit = () => {
     deleteMutation.mutate(
       {
-        personalEventID: personalEvent.fezID,
+        fezID: personalEvent.fezID,
       },
       {
         onSuccess: async () => {

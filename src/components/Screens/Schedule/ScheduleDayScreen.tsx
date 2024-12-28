@@ -13,8 +13,7 @@ import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScre
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.ts';
-import {useLfgListQuery} from '../../Queries/Fez/FezQueries.ts';
-import {usePersonalEventsQuery} from '../../Queries/PersonalEvent/PersonalEventQueries.ts';
+import {useLfgListQuery, usePersonalEventsQuery} from '../../Queries/Fez/FezQueries.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';

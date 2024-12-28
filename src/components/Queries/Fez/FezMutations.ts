@@ -1,6 +1,7 @@
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 import {FezContentData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
+import {WithFezID} from '../../../libraries/Types';
 
 interface FezCreateMutationProps {
   fezContentData: FezContentData;
@@ -30,16 +31,22 @@ export const useFezUpdateMutation = () => {
   return useTokenAuthMutation(fezUpdateQueryHandler);
 };
 
-interface FezCancelMutationProps {
-  fezID: string;
-}
-
 export const useFezCancelMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
-  const cancelQueryHandler = async ({fezID}: FezCancelMutationProps) => {
+  const cancelQueryHandler = async ({fezID}: WithFezID) => {
     return await apiPost<FezData>(`/fez/${fezID}/cancel`);
   };
 
   return useTokenAuthMutation(cancelQueryHandler);
+};
+
+export const useFezDeleteMutation = () => {
+  const {apiDelete} = useSwiftarrQueryClient();
+
+  const deleteQueryHandler = async ({fezID}: WithFezID) => {
+    return await apiDelete(`/fez/${fezID}`);
+  };
+
+  return useTokenAuthMutation(deleteQueryHandler);
 };

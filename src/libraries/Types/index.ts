@@ -122,3 +122,7 @@ export interface FlatListSeparatorProps<TItem> {
 export type ScheduleFlatListSeparator = 'day' | 'time' | 'none';
 
 export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
+
+export interface WithFezID {
+  fezID: string;
+}
