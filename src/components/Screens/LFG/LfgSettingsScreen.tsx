@@ -78,7 +78,7 @@ export const LfgSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>

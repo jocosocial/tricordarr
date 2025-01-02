@@ -53,7 +53,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       return <SpaceDivider />;
     }
 
-    let label = getTimeMarker(firstItem.startTime, firstItem.timeZoneID);
+    let label: string | undefined = getTimeMarker(firstItem.startTime, firstItem.timeZoneID);
     if (separator === 'day') {
       label = getDayMarker(firstItem.startTime, firstItem.timeZoneID);
     }

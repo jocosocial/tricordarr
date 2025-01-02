@@ -2,7 +2,7 @@ import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'rea
 import {AppView} from '../../Views/AppView';
 import {useLfgListQuery} from '../../Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
 import {useFilter} from '../../Context/Contexts/FilterContext';
@@ -11,7 +11,7 @@ import {LfgListActionsMenu} from '../../Menus/LFG/LfgListActionsMenu.tsx';
 import {LfgFAB} from '../../Buttons/FloatingActionButtons/LfgFAB';
 import {useIsFocused} from '@react-navigation/native';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {LoadingView} from '../../Views/Static/LoadingView';
@@ -22,6 +22,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {FezListEndpoints} from '../../../libraries/Types';
 import {useQueryClient} from '@tanstack/react-query';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;
@@ -59,6 +60,15 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           {enableFilters && (
             <>
+              <Item
+                title={'Search'}
+                iconName={AppIcons.search}
+                onPress={() =>
+                  navigation.push(LfgStackComponents.lfgSearchScreen, {
+                    endpoint: endpoint,
+                  })
+                }
+              />
               <LfgCruiseDayFilterMenu />
               <LfgFilterMenu />
             </>
@@ -67,7 +77,7 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
         </HeaderButtons>
       </View>
     );
-  }, [enableFilters, isLoggedIn]);
+  }, [enableFilters, endpoint, isLoggedIn, navigation]);
 
   const notificationHandler = useCallback(
     (event: WebSocketMessageEvent) => {

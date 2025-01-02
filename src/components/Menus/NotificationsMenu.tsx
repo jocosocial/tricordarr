@@ -7,7 +7,6 @@ import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries
 import {UserNotificationData} from '../../libraries/Structs/ControllerStructs.tsx';
 import pluralize from 'pluralize';
 import {Linking} from 'react-native';
-import {useCommonStack} from '../Navigation/CommonScreens.tsx';
 
 export const NotificationsMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -34,6 +33,7 @@ export const NotificationsMenu = () => {
           onPress={openMenu}
         />
       }>
+      {!anyNew && <Menu.Item leadingIcon={AppIcons.notificationNone} title={'No new notifications'} />}
       {!!data?.newForumMentionCount && (
         <>
           <Menu.Item
@@ -72,6 +72,7 @@ export const NotificationsMenu = () => {
           onPress={() => handleUrl('tricordarr://lfg/joined')}
         />
       )}
+      <Divider bold={true} />
       <Menu.Item
         title={'Notification Settings'}
         leadingIcon={AppIcons.settings}

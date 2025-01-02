@@ -5515,6 +5515,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"compare-versions@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "compare-versions@npm:6.1.1"
+  checksum: 73fe6c4f52d22efe28f0a3be10df2afd704e10b3593360cd963e86b33a7a263c263b41a1361b69c30a0fe68bfa70fef90860c1cf2ef41502629d4402890fcd57
+  languageName: node
+  linkType: hard
+
 "compressible@npm:~2.0.16":
   version: 2.0.18
   resolution: "compressible@npm:2.0.18"
@@ -12524,6 +12531,7 @@ __metadata:
     babel-jest: ^29.6.3
     babel-plugin-transform-remove-console: ^6.9.4
     base-64: ^1.0.0
+    compare-versions: ^6.1.1
     date-fns: ^2.30.0
     eslint: ^8.0
     eslint-plugin-jest: ^28.6.0

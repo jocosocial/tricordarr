@@ -15,6 +15,7 @@ import {NotificationTypeData, SocketNotificationData} from '../../../libraries/S
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
+import {NavHeaderTitle} from '../../Text/NavHeaderTitle.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
@@ -60,11 +61,22 @@ export const LfgScreen = ({navigation, route}: Props) => {
     );
   }, [lfg, navigation, profilePublicData, showChat]);
 
+  const getHeaderTitle = useCallback(() => {
+    const onPress = () =>
+      navigation.push(CommonStackComponents.lfgParticipationScreen, {
+        fezID: route.params.fezID,
+      });
+    if (lfg) {
+      return <NavHeaderTitle title={'Looking For Group'} onPress={onPress} />;
+    }
+  }, [lfg, navigation, route.params.fezID]);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
+      headerTitle: getHeaderTitle,
     });
-  }, [getNavButtons, navigation]);
+  }, [getNavButtons, lfg, navigation, getHeaderTitle]);
 
   useEffect(() => {
     if (data) {
