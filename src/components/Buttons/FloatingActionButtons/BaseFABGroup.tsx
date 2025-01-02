@@ -7,6 +7,7 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {StyleSheet} from 'react-native';
 import {FabGroupActionType} from '../../../libraries/Types';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface BaseFABProps {
   actions: FabGroupActionType[];
@@ -29,6 +30,7 @@ export const BaseFABGroup = ({
   const theme = useAppTheme();
   const {open} = state;
   const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -37,15 +39,10 @@ export const BaseFABGroup = ({
       backgroundColor: backgroundColor ? backgroundColor : theme.colors.inverseSurface,
     },
     group: {
-      // ...commonStyles.fabBase,
-      // backgroundColor: 'pink',
-      // right: 69,
-      margin: 0,
-      marginBottom: -20,
+      // This is all fucking stupid.
+      marginBottom: -1 * insets.bottom,
     },
   });
-
-  console.log(styles.group);
 
   return (
     <FAB.Group

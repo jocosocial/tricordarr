@@ -109,7 +109,7 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     return <LoadingView />;
   }
 
-  if (data?.pages[0].numThreads === 0 && forumListData.length === 0) {
+  if (data?.pages[0].paginator.total === 0 && forumListData.length === 0) {
     return (
       <AppView>
         <ForumEmptyListView onRefresh={onRefresh} refreshing={refreshing} />
