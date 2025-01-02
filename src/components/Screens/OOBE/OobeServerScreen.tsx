@@ -60,7 +60,15 @@ export const OobeServerScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
-          <Text>Do not change this unless instructed to do so by the Twitarr Dev Team or THO.</Text>
+          <Text>
+            Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs or other network
+            blockers.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            Do not change this unless instructed to do so by the Twitarr Dev Team or THO. Or you know what you're doing.
+          </Text>
         </PaddedContentView>
         <PaddedContentView>
           <ServerUrlSettingForm

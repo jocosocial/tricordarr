@@ -30,7 +30,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
-    <AppView>
+    <AppView noHeader={true}>
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
           <Text style={styles.text} variant={'displayLarge'}>
@@ -39,12 +39,6 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>The un/semi-official on-board social media platform of the JoCo Cruise.</Text>
-        </PaddedContentView>
-        <PaddedContentView>
-          <Text style={styles.text}>
-            Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs or other network
-            blockers.
-          </Text>
         </PaddedContentView>
         <PaddedContentView>
           <AppImage

@@ -10,22 +10,31 @@ import {ConnectionDisruptedView} from './Warnings/ConnectionDisruptedView.tsx';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
 import {UnsavedChangesView} from './Warnings/UnsavedChangesView.tsx';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-type AppViewProps = PropsWithChildren<{}>;
+interface AppViewProps extends PropsWithChildren {
+  noHeader?: boolean;
+}
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children}: AppViewProps) => {
+export const AppView = ({children, noHeader = false}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();
+  // https://reactnavigation.org/docs/6.x/handling-safe-area
+  const insets = useSafeAreaInsets();
 
   const styles = StyleSheet.create({
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
+      paddingTop: noHeader ? insets.top : undefined,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
     },
   });
 
