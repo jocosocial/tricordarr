@@ -146,6 +146,18 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       title = 'Added to Seamail';
       url = `/seamail/${notificationData.contentID}`;
       break;
+    case NotificationTypeData.privateEventCanceled:
+      channel = eventChannel;
+      pressActionID = PressAction.event;
+      title = 'Private Event Canceled';
+      url = `/privateevent/${notificationData.contentID}`;
+      break;
+    case NotificationTypeData.lfgCanceled:
+      channel = lfgChannel;
+      pressActionID = PressAction.lfg;
+      title = 'LFG Canceled';
+      url = `/lfg/${notificationData.contentID}`;
+      break;
     default:
       console.warn(`[SocketNotification.ts] Ignoring event of type ${notificationType}`);
       break;

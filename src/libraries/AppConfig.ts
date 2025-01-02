@@ -103,6 +103,8 @@ const defaultAppConfig: AppConfig = {
     addedToPrivateEvent: true,
     privateEventUnreadMsg: true,
     microKaraokeSongReady: true,
+    privateEventCanceled: true,
+    lfgCanceled: true,
   },
   fgsWorkerHealthTimer: 20000, // 20000 == 20 seconds
   oobeCompletedVersion: 0,

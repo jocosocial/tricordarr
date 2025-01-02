@@ -44,6 +44,8 @@ export const NotificationDataListener = () => {
         case NotificationTypeData.fezUnreadMsg:
         case NotificationTypeData.addedToPrivateEvent:
         case NotificationTypeData.addedToLFG:
+        case NotificationTypeData.lfgCanceled:
+        case NotificationTypeData.privateEventCanceled:
         case NotificationTypeData.addedToSeamail: {
           const invalidations = FezData.getCacheKeys(notificationData.contentID).map(key => {
             return queryClient.invalidateQueries(key);
