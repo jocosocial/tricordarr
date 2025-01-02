@@ -20,7 +20,7 @@ export const OobeConductScreen = ({navigation}: Props) => {
   }
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView
         isStack={false}
         style={commonStyles.marginBottomZero}

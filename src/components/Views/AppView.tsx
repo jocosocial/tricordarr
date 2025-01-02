@@ -13,14 +13,14 @@ import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface AppViewProps extends PropsWithChildren {
-  noHeader?: boolean;
+  safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];
 }
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children, noHeader = false}: AppViewProps) => {
+export const AppView = ({children, safeEdges}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();
@@ -31,10 +31,10 @@ export const AppView = ({children, noHeader = false}: AppViewProps) => {
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
-      paddingTop: noHeader ? insets.top : undefined,
-      paddingBottom: noHeader ? insets.bottom : undefined,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
+      paddingTop: safeEdges?.includes('top') ? insets.top : undefined,
+      paddingBottom: safeEdges?.includes('bottom') ? insets.bottom : undefined,
+      paddingLeft: safeEdges?.includes('left') ? insets.left : undefined,
+      paddingRight: safeEdges?.includes('right') ? insets.right : undefined,
     },
   });
 

@@ -57,7 +57,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
   }, [getHeaderTitle, navigation]);
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <PaddedContentView>
           <Text>
