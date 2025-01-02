@@ -43,7 +43,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
   };
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView isStack={true}>
         <ListSection>
           <ListSubheader>Notifications</ListSubheader>

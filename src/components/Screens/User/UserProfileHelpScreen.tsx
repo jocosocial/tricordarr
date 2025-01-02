@@ -8,7 +8,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 export const UserProfileHelpScreen = () => {
   const {commonStyles} = useStyles();
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView>
         <PaddedContentView>
           <Text>

@@ -143,7 +143,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
   }
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
