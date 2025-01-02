@@ -279,4 +279,10 @@ export const commonStyles = StyleSheet.create({
   minHeightLarge: {
     minHeight: styleDefaults.marginSize * 2,
   },
+  fabBase: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });

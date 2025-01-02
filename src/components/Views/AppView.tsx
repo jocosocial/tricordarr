@@ -32,7 +32,7 @@ export const AppView = ({children, noHeader = false}: AppViewProps) => {
       ...commonStyles.background,
       ...commonStyles.flex,
       paddingTop: noHeader ? insets.top : undefined,
-      paddingBottom: insets.bottom,
+      paddingBottom: noHeader ? insets.bottom : undefined,
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
