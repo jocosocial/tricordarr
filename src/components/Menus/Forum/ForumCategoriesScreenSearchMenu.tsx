@@ -4,6 +4,7 @@ import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ForumCategoriesScreenSearchMenu = () => {
   const [visible, setVisible] = React.useState(false);
@@ -13,7 +14,7 @@ export const ForumCategoriesScreenSearchMenu = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Search'} iconName={AppIcons.search} onPress={openMenu} />}>
@@ -35,6 +36,6 @@ export const ForumCategoriesScreenSearchMenu = () => {
           forumNavigation.push(ForumStackComponents.forumThreadSearchScreen, {});
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

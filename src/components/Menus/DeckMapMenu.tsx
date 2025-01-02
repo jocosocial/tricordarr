@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {Dispatch, SetStateAction, useState} from 'react';
 import {DeckData, ShipDecks} from '../../libraries/Ship';
 import {SelectableMenuItem} from './Items/SelectableMenuItem.tsx';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 
 interface DeckMapMenuProps {
   shipDeck: DeckData;
@@ -13,6 +14,7 @@ interface DeckMapMenuProps {
 
 export const DeckMapMenu = (props: DeckMapMenuProps) => {
   const [visible, setVisible] = useState(false);
+  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -23,7 +25,7 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}>
@@ -37,6 +39,6 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
           />
         );
       })}
-    </Menu>
+    </AppHeaderMenu>
   );
 };

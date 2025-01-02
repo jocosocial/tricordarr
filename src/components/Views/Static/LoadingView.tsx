@@ -13,7 +13,7 @@ interface LoadingViewProps {
 export const LoadingView = (props: LoadingViewProps) => {
   const {commonStyles} = useStyles();
   return (
-    <AppView>
+    <AppView noHeader={true}>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
         <ActivityIndicator />

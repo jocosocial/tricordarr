@@ -6,7 +6,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {LfgActionsMenu} from '../../Menus/LFG/LfgActionsMenu.tsx';
+import {LfgScreenActionsMenu} from '../../Menus/LFG/LfgScreenActionsMenu.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
@@ -55,7 +55,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
               }
             />
           )}
-          {lfg && <LfgActionsMenu fezData={lfg} />}
+          {lfg && <LfgScreenActionsMenu fezData={lfg} />}
         </HeaderButtons>
       </View>
     );

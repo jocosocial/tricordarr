@@ -10,8 +10,9 @@ import {LfgCancelModal} from '../../Views/Modals/LfgCancelModal';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
-export const LfgActionsMenu = ({fezData}: {fezData: FezData}) => {
+export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useLFGStackNavigation();
   const {hasModerator} = usePrivilege();
@@ -30,7 +31,7 @@ export const LfgActionsMenu = ({fezData}: {fezData: FezData}) => {
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {fezData.owner.userID === profilePublicData?.header.userID && (
         <Menu.Item
           leadingIcon={AppIcons.cancel}
@@ -66,6 +67,6 @@ export const LfgActionsMenu = ({fezData}: {fezData: FezData}) => {
           closeMenu();
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

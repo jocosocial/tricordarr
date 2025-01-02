@@ -3,8 +3,9 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
-export const UserDirectoryActionsMenu = () => {
+export const UserDirectoryScreenActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -16,7 +17,7 @@ export const UserDirectoryActionsMenu = () => {
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
       onDismiss={closeMenu}>
@@ -41,6 +42,6 @@ export const UserDirectoryActionsMenu = () => {
         leadingIcon={AppIcons.help}
         onPress={() => handleNavigation(CommonStackComponents.userDirectoryHelpScreen)}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

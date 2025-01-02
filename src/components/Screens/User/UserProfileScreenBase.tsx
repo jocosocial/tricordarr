@@ -8,7 +8,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {UserProfileActionsMenu} from '../../Menus/User/UserProfileActionsMenu.tsx';
+import {UserProfileScreenActionsMenu} from '../../Menus/User/UserProfileScreenActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
@@ -81,7 +81,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <>
               <HeaderProfileSeamailButton profile={data} />
               <HeaderProfileFavoriteButton profile={data} />
-              <UserProfileActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
+              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
             </>
           )}
         </HeaderButtons>

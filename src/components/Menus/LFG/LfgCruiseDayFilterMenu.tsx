@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {format} from 'date-fns';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const LfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -39,7 +39,7 @@ export const LfgCruiseDayFilterMenu = () => {
   );
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {cruiseDays.map(day => {
         return (
           <SelectableMenuItem
@@ -50,6 +50,6 @@ export const LfgCruiseDayFilterMenu = () => {
           />
         );
       })}
-    </Menu>
+    </AppHeaderMenu>
   );
 };

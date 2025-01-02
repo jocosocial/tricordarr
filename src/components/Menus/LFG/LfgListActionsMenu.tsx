@@ -4,6 +4,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const LfgListActionsMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -25,7 +26,7 @@ export const LfgListActionsMenu = () => {
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {route.name !== LfgStackComponents.lfgFormerScreen && (
         <>
           <Menu.Item
@@ -46,6 +47,6 @@ export const LfgListActionsMenu = () => {
         title={'Help'}
         onPress={() => handleNavigation(CommonStackComponents.lfgHelpScreen)}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

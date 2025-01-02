@@ -121,12 +121,14 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     safeMarginTop: {
       marginTop: inset.top,
     },
+    safePaddingVertical: {
+      marginTop: inset.top,
+      marginBottom: inset.bottom,
+    },
   });
 
   const screenOptions = {
-    headerStyle: {
-      backgroundColor: theme.colors.background,
-    },
+    headerStyle: themedStyles.background,
     headerTitleStyle: {
       color: theme.colors.onBackground,
     },

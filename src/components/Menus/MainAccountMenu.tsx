@@ -8,6 +8,7 @@ import {useAuth} from '../Context/Contexts/AuthContext';
 import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator';
 import {CommonStackComponents} from '../Navigation/CommonScreens';
 import {SettingsStackScreenComponents} from '../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 
 export const MainAccountMenu = () => {
   const {profilePublicData} = useUserData();
@@ -54,7 +55,7 @@ export const MainAccountMenu = () => {
   const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={isMenuVisible}
       anchor={<TouchableOpacity onPress={() => setIsMenuVisible(true)}>{getAvatarImage()}</TouchableOpacity>}
       onDismiss={closeMenu}>
@@ -72,6 +73,6 @@ export const MainAccountMenu = () => {
       <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

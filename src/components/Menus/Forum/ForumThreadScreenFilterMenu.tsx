@@ -5,6 +5,7 @@ import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ForumThreadScreenFilterMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -33,7 +34,7 @@ export const ForumThreadScreenFilterMenu = () => {
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem
         title={'Favorites'}
         leadingIcon={AppIcons.favorite}
@@ -58,6 +59,6 @@ export const ForumThreadScreenFilterMenu = () => {
         selected={forumFilter === ForumFilter.unread}
         onPress={() => handleFilterSelection(ForumFilter.unread)}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

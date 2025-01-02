@@ -3,6 +3,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ForumCategoryScreenActionsMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -12,7 +13,7 @@ export const ForumCategoryScreenActionsMenu = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -32,6 +33,6 @@ export const ForumCategoryScreenActionsMenu = () => {
           commonNavigation.push(CommonStackComponents.forumHelpScreen);
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

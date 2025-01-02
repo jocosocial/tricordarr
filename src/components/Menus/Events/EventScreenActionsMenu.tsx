@@ -8,6 +8,7 @@ import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface EventScreenActionsMenuProps {
   event: EventData;
@@ -27,7 +28,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -47,6 +48,6 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
         />
       )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

@@ -19,7 +19,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
+import {SeamailListScreenActionsMenu} from '../../Menus/Seamail/SeamailListScreenActionsMenu.tsx';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
@@ -94,7 +94,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
               })
             }
           />
-          <SeamailListActionsMenu />
+          <SeamailListScreenActionsMenu />
         </HeaderButtons>
       </View>
     );

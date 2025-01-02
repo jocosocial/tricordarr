@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface ForumCategoryScreenSearchMenuProps {
   category: CategoryData;
@@ -18,7 +19,7 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Search'} iconName={AppIcons.search} onPress={openMenu} />}>
@@ -44,6 +45,6 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
           });
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

@@ -5,6 +5,7 @@ import {EventType} from '../../../libraries/Enums/EventType.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -67,7 +68,7 @@ export const ScheduleEventFilterMenu = () => {
   );
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
       <SelectableMenuItem title={'Personal Events'} onPress={handlePersonalSelection} selected={eventPersonalFilter} />
       <SelectableMenuItem title={'LFGs'} onPress={handleLfgSelection} selected={eventLfgFilter} />
@@ -82,6 +83,6 @@ export const ScheduleEventFilterMenu = () => {
           />
         );
       })}
-    </Menu>
+    </AppHeaderMenu>
   );
 };
