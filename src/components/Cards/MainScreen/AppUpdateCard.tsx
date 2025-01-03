@@ -4,6 +4,7 @@ import {Linking, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
+import {AndroidColor} from '@notifee/react-native';
 
 interface AppUpdateCardProps {
   currentVersion: string;
@@ -16,6 +17,7 @@ export const AppUpdateCard = (props: AppUpdateCardProps) => {
   const styles = StyleSheet.create({
     card: {
       ...commonStyles.twitarrNegative,
+      ...commonStyles.onTwitarrButton,
     },
     content: {
       ...commonStyles.marginVertical,
@@ -25,9 +27,12 @@ export const AppUpdateCard = (props: AppUpdateCardProps) => {
       ...commonStyles.alignItemsCenter,
       ...commonStyles.marginBottomSmall,
     },
-    text: {
+    headerText: {
       ...commonStyles.onTwitarrButton,
       ...commonStyles.bold,
+    },
+    bodyText: {
+      ...commonStyles.onTwitarrButton,
     },
   });
 
@@ -39,11 +44,11 @@ export const AppUpdateCard = (props: AppUpdateCardProps) => {
         <View>
           <Card.Content style={styles.content}>
             <View style={styles.textWrapper}>
-              <AppIcon icon={AppIcons.twitarr} />
-              <Text style={styles.text}>Tricordarr is out of date.</Text>
+              <AppIcon icon={AppIcons.twitarr} color={AndroidColor.WHITE} />
+              <Text style={styles.headerText}>Tricordarr is out of date.</Text>
             </View>
             <View>
-              <Text>
+              <Text style={styles.bodyText}>
                 Update to the latest version ({props.latestVersion}) to ensure a smooth experience. You are currently
                 running version {props.currentVersion}.
               </Text>
