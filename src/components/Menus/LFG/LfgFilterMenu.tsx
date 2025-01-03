@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useFilter} from '../../Context/Contexts/FilterContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface LfgFilterMenuProps {
   showTypes?: boolean;
@@ -24,7 +25,7 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
     closeMenu();
   };
 
-  const handleFilterSelection = (newValue: keyof typeof FezType) => {
+  const handleFilterSelection = (newValue: FezType) => {
     if (newValue === lfgTypeFilter) {
       setLfgTypeFilter(undefined);
     } else {
@@ -51,7 +52,7 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   );
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       {showTypes && (
         <>
@@ -68,6 +69,6 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
           })}
         </>
       )}
-    </Menu>
+    </AppHeaderMenu>
   );
 };

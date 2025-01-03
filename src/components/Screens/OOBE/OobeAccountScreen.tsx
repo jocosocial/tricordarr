@@ -30,7 +30,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
   };
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       {!isLoggedIn && (
         <ScrollingContentView isStack={false}>
           <PaddedContentView>

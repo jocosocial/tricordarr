@@ -4,9 +4,11 @@ import {useAppTheme} from '../../../styles/Theme';
 import {commonStyles, styleDefaults} from '../../../styles';
 import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const theme = useAppTheme();
+  const inset = useSafeAreaInsets();
 
   const themedStyles = StyleSheet.create({
     ...commonStyles,
@@ -116,15 +118,18 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: AndroidColor.WHITE,
       opacity: 0.7,
     },
+    safeMarginTop: {
+      marginTop: inset.top,
+    },
+    safePaddingVertical: {
+      paddingTop: inset.top,
+      paddingBottom: inset.bottom,
+    },
   });
 
   const screenOptions = {
-    headerStyle: {
-      backgroundColor: theme.colors.background,
-    },
-    headerTitleStyle: {
-      color: theme.colors.onBackground,
-    },
+    headerStyle: themedStyles.background,
+    headerTitleStyle: themedStyles.background,
     headerTintColor: theme.colors.onBackground,
   };
 

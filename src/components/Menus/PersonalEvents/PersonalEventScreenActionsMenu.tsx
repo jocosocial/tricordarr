@@ -10,6 +10,7 @@ import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
 import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
   event: FezData;
@@ -31,7 +32,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -55,6 +56,6 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           navigation.push(CommonStackComponents.scheduleHelpScreen);
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

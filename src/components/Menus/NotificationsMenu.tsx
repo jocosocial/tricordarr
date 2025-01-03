@@ -7,6 +7,7 @@ import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries
 import {UserNotificationData} from '../../libraries/Structs/ControllerStructs.tsx';
 import pluralize from 'pluralize';
 import {Linking} from 'react-native';
+import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 
 export const NotificationsMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -23,7 +24,7 @@ export const NotificationsMenu = () => {
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={
@@ -53,7 +54,7 @@ export const NotificationsMenu = () => {
       )}
       {!!data?.newSeamailMessageCount && (
         <Menu.Item
-          title={`${data?.newSeamailMessageCount} new ${pluralize('seamail', data?.newSeamailMessageCount)} messages`}
+          title={`${data?.newSeamailMessageCount} new seamail messages`}
           leadingIcon={AppIcons.seamail}
           onPress={() => handleUrl('tricordarr://seamail')}
         />
@@ -78,6 +79,6 @@ export const NotificationsMenu = () => {
         leadingIcon={AppIcons.settings}
         onPress={() => handleUrl('tricordarr://settings/pushnotifications')}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

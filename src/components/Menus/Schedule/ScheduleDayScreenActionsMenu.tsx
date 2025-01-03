@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {ScheduleStackComponents, useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
   const [visible, setVisible] = useState(false);
@@ -21,7 +22,7 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => voi
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {onRefresh && <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />}
       <Menu.Item
         title={'Import'}
@@ -38,6 +39,6 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => voi
         leadingIcon={AppIcons.help}
         onPress={() => handleNavigation(CommonStackComponents.scheduleHelpScreen)}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

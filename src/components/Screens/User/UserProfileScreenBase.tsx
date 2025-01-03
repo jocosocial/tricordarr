@@ -8,7 +8,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {UserProfileActionsMenu} from '../../Menus/User/UserProfileActionsMenu.tsx';
+import {UserProfileScreenActionsMenu} from '../../Menus/User/UserProfileScreenActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
@@ -37,8 +37,15 @@ interface UserProfileScreenBaseProps {
   refetch: () => Promise<any>;
   isLoading: boolean;
   enableContent?: boolean;
+  oobe?: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
+export const UserProfileScreenBase = ({
+  data,
+  refetch,
+  isLoading,
+  enableContent = true,
+  oobe = false,
+}: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -67,7 +74,9 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <Item
               title={'Edit'}
               iconName={AppIcons.edituser}
-              onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
+              onPress={() =>
+                commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data, oobe: oobe})
+              }
             />
             <UserProfileSelfActionsMenu />
           </HeaderButtons>
@@ -81,7 +90,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <>
               <HeaderProfileSeamailButton profile={data} />
               <HeaderProfileFavoriteButton profile={data} />
-              <UserProfileActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
+              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} oobe={oobe} />
             </>
           )}
         </HeaderButtons>
@@ -143,7 +152,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
   }
 
   return (
-    <AppView>
+    <AppView safeEdges={oobe ? ['bottom'] : []}>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>

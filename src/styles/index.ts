@@ -14,6 +14,7 @@ export const styleDefaults = {
   listScrollThreshold: 450,
   // Used for square crops in User Avatar and Photostream
   imageSquareCropDimension: 2048,
+  overScrollHeight: 100, // marginSize * 5
 };
 
 export const commonStyles = StyleSheet.create({
@@ -24,7 +25,7 @@ export const commonStyles = StyleSheet.create({
     marginHorizontal: styleDefaults.marginSize,
   },
   overscroll: {
-    marginBottom: styleDefaults.marginSize * 4,
+    marginBottom: styleDefaults.overScrollHeight,
   },
   displayNone: {
     display: 'none',
@@ -278,5 +279,11 @@ export const commonStyles = StyleSheet.create({
   },
   minHeightLarge: {
     minHeight: styleDefaults.marginSize * 2,
+  },
+  fabBase: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

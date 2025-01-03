@@ -12,6 +12,7 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface FezChatActionsMenuProps {
   fez: FezData;
@@ -19,7 +20,7 @@ interface FezChatActionsMenuProps {
   onRefresh: () => void;
 }
 
-export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezChatActionsMenuProps) => {
+export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}: FezChatActionsMenuProps) => {
   const [visible, setVisible] = React.useState(false);
   const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
@@ -59,7 +60,7 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -93,6 +94,6 @@ export const FezChatActionsMenu = ({fez, enableDetails = true, onRefresh}: FezCh
           }
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

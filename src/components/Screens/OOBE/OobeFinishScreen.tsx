@@ -33,7 +33,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
   };
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
           <OobeNoteCard />

@@ -51,6 +51,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
 import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
 import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -90,7 +91,8 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
    * StyleProvider needs PaperProvider for theming.
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
-   * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback
+   * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback.
+   * LoadingProvider requires SafeAreaProvider since it's the first usage of AppView.
    */
   return (
     <GestureHandlerRootView>
@@ -100,43 +102,45 @@ function App(): React.JSX.Element {
             <ErrorHandlerProvider>
               <AuthProvider>
                 <SwiftarrQueryClientProvider>
-                  <LoadingProvider>
-                    <CriticalErrorProvider>
-                      <UserDataProvider>
-                        <PrivilegeProvider>
-                          <SocketProvider>
-                            <TwitarrProvider>
-                              <UserRelationsProvider>
-                                <UserNotificationDataProvider>
-                                  <FeatureProvider>
-                                    <ModalProvider>
-                                      <Portal.Host>
-                                        <HeaderButtonsProvider stackType={'native'}>
-                                          <CruiseProvider>
-                                            <DrawerProvider>
-                                              <FilterProvider>
-                                                <SelectionProvider>
-                                                  <AppEventHandler />
-                                                  <ForegroundService />
-                                                  <NotificationDataListener />
-                                                  <NotificationDataPoller />
-                                                  <RootStackNavigator />
-                                                </SelectionProvider>
-                                              </FilterProvider>
-                                            </DrawerProvider>
-                                          </CruiseProvider>
-                                        </HeaderButtonsProvider>
-                                      </Portal.Host>
-                                    </ModalProvider>
-                                  </FeatureProvider>
-                                </UserNotificationDataProvider>
-                              </UserRelationsProvider>
-                            </TwitarrProvider>
-                          </SocketProvider>
-                        </PrivilegeProvider>
-                      </UserDataProvider>
-                    </CriticalErrorProvider>
-                  </LoadingProvider>
+                  <SafeAreaProvider>
+                    <LoadingProvider>
+                      <CriticalErrorProvider>
+                        <UserDataProvider>
+                          <PrivilegeProvider>
+                            <SocketProvider>
+                              <TwitarrProvider>
+                                <UserRelationsProvider>
+                                  <UserNotificationDataProvider>
+                                    <FeatureProvider>
+                                      <ModalProvider>
+                                        <Portal.Host>
+                                          <HeaderButtonsProvider stackType={'native'}>
+                                            <CruiseProvider>
+                                              <DrawerProvider>
+                                                <FilterProvider>
+                                                  <SelectionProvider>
+                                                    <AppEventHandler />
+                                                    <ForegroundService />
+                                                    <NotificationDataListener />
+                                                    <NotificationDataPoller />
+                                                    <RootStackNavigator />
+                                                  </SelectionProvider>
+                                                </FilterProvider>
+                                              </DrawerProvider>
+                                            </CruiseProvider>
+                                          </HeaderButtonsProvider>
+                                        </Portal.Host>
+                                      </ModalProvider>
+                                    </FeatureProvider>
+                                  </UserNotificationDataProvider>
+                                </UserRelationsProvider>
+                              </TwitarrProvider>
+                            </SocketProvider>
+                          </PrivilegeProvider>
+                        </UserDataProvider>
+                      </CriticalErrorProvider>
+                    </LoadingProvider>
+                  </SafeAreaProvider>
                 </SwiftarrQueryClientProvider>
               </AuthProvider>
             </ErrorHandlerProvider>

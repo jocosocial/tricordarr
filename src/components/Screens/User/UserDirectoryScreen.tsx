@@ -12,7 +12,7 @@ import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/M
 import {View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {UserDirectoryActionsMenu} from '../../Menus/User/UserDirectoryActionsMenu.tsx';
+import {UserDirectoryScreenActionsMenu} from '../../Menus/User/UserDirectoryScreenActionsMenu.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 export const UserDirectoryScreen = ({navigation}: Props) => {
@@ -25,7 +25,7 @@ export const UserDirectoryScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <UserDirectoryActionsMenu />
+          <UserDirectoryScreenActionsMenu />
         </HeaderButtons>
       </View>
     );

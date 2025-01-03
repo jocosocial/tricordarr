@@ -8,7 +8,7 @@ import {OobeConductScreen} from '../../Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '../../Screens/OOBE/OobeFinishScreen';
 import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen';
 import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen';
-import {RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
+import {OobeRegisterScreen, RegisterScreen} from '../../Screens/Settings/Account/RegisterScreen';
 import {OobePermissionsScreen} from '../../Screens/OOBE/OobePermissionsScreen.tsx';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
@@ -72,7 +72,7 @@ export const OobeStackNavigator = () => {
       <Stack.Screen name={OobeStackComponents.oobeLoginScreen} component={LoginScreen} options={{title: 'Login'}} />
       <Stack.Screen
         name={OobeStackComponents.oobeRegisterScreen}
-        component={RegisterScreen}
+        component={OobeRegisterScreen}
         options={{title: 'Register'}}
       />
       <Stack.Screen

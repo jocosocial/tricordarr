@@ -11,6 +11,8 @@ import {useAuth} from '../Context/Contexts/AuthContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {StyleSheet} from 'react-native';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
@@ -20,6 +22,14 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {tokenData} = useAuth();
   const {profilePublicData} = useUserData();
   const {appConfig} = useConfig();
+  const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    drawer: {
+      ...commonStyles.background,
+      ...commonStyles.safePaddingVertical,
+    },
+  });
 
   const handleDrawerNav = (url: string) => {
     Linking.openURL(url);
@@ -49,7 +59,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
 
   return (
     <Drawer
-      drawerStyle={{backgroundColor: theme.colors.background}}
+      drawerStyle={styles.drawer}
       open={drawerOpen}
       onOpen={() => setDrawerOpen(true)}
       onClose={() => setDrawerOpen(false)}

@@ -18,7 +18,7 @@ export const OobeProfileScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
 
   return (
-    <AppView>
+    <AppView safeEdges={['bottom']}>
       <ScrollingContentView>
         <PaddedContentView>
           <Text>
@@ -35,6 +35,7 @@ export const OobeProfileScreen = ({navigation}: Props) => {
                 navigation.push(CommonStackComponents.userProfileScreen, {
                   userID: tokenData?.userID,
                   enableContent: false,
+                  oobe: true,
                 });
               }
             }}

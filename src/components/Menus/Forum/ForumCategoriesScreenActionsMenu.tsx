@@ -3,6 +3,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ForumCategoriesScreenActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
@@ -12,7 +13,7 @@ export const ForumCategoriesScreenActionsMenu = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -52,6 +53,6 @@ export const ForumCategoriesScreenActionsMenu = () => {
           commonNavigation.push(CommonStackComponents.forumHelpScreen);
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

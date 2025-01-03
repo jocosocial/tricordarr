@@ -13,14 +13,16 @@ import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
   isMuted: boolean;
   isBlocked: boolean;
+  oobe?: boolean;
 }
 
-export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
+export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}: UserProfileActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
@@ -59,11 +61,13 @@ export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfil
   };
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {
+      oobe: oobe,
+    });
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -123,6 +127,6 @@ export const UserProfileActionsMenu = ({profile, isMuted, isBlocked}: UserProfil
       )}
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

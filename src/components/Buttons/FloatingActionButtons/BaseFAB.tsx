@@ -4,6 +4,7 @@ import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 interface BaseFABProps {
   icon?: IconSource;
@@ -27,6 +28,7 @@ export const BaseFAB = ({
 }: BaseFABProps) => {
   const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
+  const {commonStyles} = useStyles();
 
   const colorInternal = color
     ? color
@@ -36,10 +38,7 @@ export const BaseFAB = ({
 
   const styles = StyleSheet.create({
     fab: {
-      position: 'absolute',
-      margin: 16,
-      right: 0,
-      bottom: 0,
+      ...commonStyles.fabBase,
       backgroundColor: backgroundColor
         ? backgroundColor
         : asPrivilegedUser

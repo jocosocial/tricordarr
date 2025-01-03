@@ -6,6 +6,7 @@ import {useFilter} from '../../Context/Contexts/FilterContext';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface ForumThreadScreenSortMenuProps {
   category?: CategoryData;
@@ -50,7 +51,7 @@ export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps)
   };
 
   return (
-    <Menu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {props.category && props.category.isEventCategory && (
         <SelectableMenuItem
           title={ForumSort.getLabel(ForumSort.event)}
@@ -90,6 +91,6 @@ export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps)
         selected={forumSortDirection === ForumSortDirection.descending}
         onPress={() => handleDirectionSelection(ForumSortDirection.descending)}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

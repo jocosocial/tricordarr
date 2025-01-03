@@ -53,12 +53,7 @@ export const ForumThreadFlatList = ({
       return <LoadingNextFooter />;
     }
     if (forumListData.length !== 0) {
-      return (
-        <>
-          <Divider bold={true} />
-          <EndResultsFooter />
-        </>
-      );
+      return <EndResultsFooter />;
     }
     return <SpaceDivider />;
   }, [forumListData.length, hasNextPage]);

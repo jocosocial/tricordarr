@@ -18,6 +18,7 @@ import {ModerateMenuItem} from '../Items/ModerateMenuItem';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
 import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -104,7 +105,7 @@ export const ForumThreadScreenActionsMenu = ({
   };
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -178,6 +179,6 @@ export const ForumThreadScreenActionsMenu = ({
         </>
       )}
       <Menu.Item onPress={handleHelp} title={'Help'} leadingIcon={AppIcons.help} />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

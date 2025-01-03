@@ -15,11 +15,10 @@ import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {SeamailListActionsMenu} from '../../Menus/Seamail/SeamailListActionsMenu';
+import {SeamailListScreenActionsMenu} from '../../Menus/Seamail/SeamailListScreenActionsMenu.tsx';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
@@ -29,10 +28,9 @@ type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatSta
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
-    useSeamailListQuery({
-      forUser: asPrivilegedUser,
-    });
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
+    forUser: asPrivilegedUser,
+  });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
@@ -94,7 +92,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
               })
             }
           />
-          <SeamailListActionsMenu />
+          <SeamailListScreenActionsMenu />
         </HeaderButtons>
       </View>
     );
@@ -131,11 +129,6 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         // For some reason, SegmentedButtons hates the flex in PaddedContentView.
         <View style={[commonStyles.margin]}>
           <SeamailAccountButtons />
-        </View>
-      )}
-      {isFetched && fezList.length === 0 && (
-        <View key={'noResults'} style={[commonStyles.paddingSmall]}>
-          <Text>No Results</Text>
         </View>
       )}
       <SeamailFlatList

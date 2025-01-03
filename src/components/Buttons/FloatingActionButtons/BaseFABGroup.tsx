@@ -6,6 +6,8 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {StyleSheet} from 'react-native';
 import {FabGroupActionType} from '../../../libraries/Types';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface BaseFABProps {
   actions: FabGroupActionType[];
@@ -27,12 +29,18 @@ export const BaseFABGroup = ({
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const {open} = state;
+  const {commonStyles} = useStyles();
+  const insets = useSafeAreaInsets();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
   const styles = StyleSheet.create({
-    fabGroup: {
+    button: {
       backgroundColor: backgroundColor ? backgroundColor : theme.colors.inverseSurface,
+    },
+    group: {
+      // This is all fucking stupid.
+      marginBottom: -1 * insets.bottom,
     },
   });
 
@@ -42,7 +50,8 @@ export const BaseFABGroup = ({
       visible={true}
       icon={icon ? icon : AppIcons.menu}
       color={color ? color : theme.colors.inverseOnSurface}
-      fabStyle={styles.fabGroup}
+      fabStyle={styles.button}
+      style={styles.group}
       label={openLabel ? (open || showLabel ? openLabel : undefined) : undefined}
       actions={actions}
       onStateChange={onStateChange}

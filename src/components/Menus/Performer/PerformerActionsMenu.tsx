@@ -1,11 +1,11 @@
 import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Divider, Menu} from 'react-native-paper';
-import * as React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {PerformerData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface PerformerActionsMenuProps {
   performerData?: PerformerData;
@@ -24,7 +24,7 @@ export const PerformerActionsMenu = ({performerData}: PerformerActionsMenuProps)
   const performerID = performerData?.header.id;
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -68,6 +68,6 @@ export const PerformerActionsMenu = ({performerData}: PerformerActionsMenuProps)
           navigation.push(CommonStackComponents.performerHelpScreen);
         }}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

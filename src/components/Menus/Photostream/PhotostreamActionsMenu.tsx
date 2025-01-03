@@ -4,6 +4,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const PhotostreamActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);
@@ -13,7 +14,7 @@ export const PhotostreamActionsMenu = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
+    <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -33,6 +34,6 @@ export const PhotostreamActionsMenu = () => {
         }}
         leadingIcon={AppIcons.help}
       />
-    </Menu>
+    </AppHeaderMenu>
   );
 };

@@ -4,7 +4,7 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {FezChatActionsMenu} from '../../Menus/Fez/FezChatActionsMenu.tsx';
+import {FezChatScreenActionsMenu} from '../../Menus/Fez/FezChatScreenActionsMenu.tsx';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
@@ -78,7 +78,7 @@ export const FezChatScreen = ({route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <FezChatActionsMenu fez={fez} onRefresh={onRefresh} />
+          <FezChatScreenActionsMenu fez={fez} onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
@@ -92,7 +92,7 @@ export const FezChatScreen = ({route}: Props) => {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this LFG.`;
+        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
         setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.

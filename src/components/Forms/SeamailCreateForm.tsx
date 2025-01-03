@@ -41,8 +41,7 @@ const InnerSeamailCreateForm = () => {
     <PaddedContentView>
       <DirtyDetectionField />
       <UserChipsField name={'initialUsers'} label={'Participants'} />
-      <Text>Subject</Text>
-      <TextField name={'title'} />
+      <TextField name={'title'} label={'Subject'} />
       <BooleanField
         name={'fezType'}
         label={'Open Chat'}
