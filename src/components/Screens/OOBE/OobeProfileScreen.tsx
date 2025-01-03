@@ -35,6 +35,7 @@ export const OobeProfileScreen = ({navigation}: Props) => {
                 navigation.push(CommonStackComponents.userProfileScreen, {
                   userID: tokenData?.userID,
                   enableContent: false,
+                  oobe: true,
                 });
               }
             }}

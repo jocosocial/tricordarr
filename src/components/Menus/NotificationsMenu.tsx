@@ -54,7 +54,7 @@ export const NotificationsMenu = () => {
       )}
       {!!data?.newSeamailMessageCount && (
         <Menu.Item
-          title={`${data?.newSeamailMessageCount} new ${pluralize('seamail', data?.newSeamailMessageCount)} messages`}
+          title={`${data?.newSeamailMessageCount} new seamail messages`}
           leadingIcon={AppIcons.seamail}
           onPress={() => handleUrl('tricordarr://seamail')}
         />

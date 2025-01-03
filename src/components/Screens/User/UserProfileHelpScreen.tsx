@@ -4,11 +4,15 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-export const UserProfileHelpScreen = () => {
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileHelpScreen>;
+
+export const UserProfileHelpScreen = ({route}: Props) => {
   const {commonStyles} = useStyles();
   return (
-    <AppView safeEdges={['bottom']}>
+    <AppView safeEdges={route.params?.oobe ? ['bottom'] : []}>
       <ScrollingContentView>
         <PaddedContentView>
           <Text>

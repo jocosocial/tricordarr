@@ -31,6 +31,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
+      // I hate all of this shit.
       paddingTop: safeEdges?.includes('top') ? insets.top : undefined,
       paddingBottom: safeEdges?.includes('bottom') ? insets.bottom : undefined,
       paddingLeft: safeEdges?.includes('left') ? insets.left : undefined,

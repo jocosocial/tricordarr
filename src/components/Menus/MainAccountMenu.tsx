@@ -47,6 +47,13 @@ export const MainAccountMenu = () => {
     });
   };
 
+  const handleRegister = () => {
+    closeMenu();
+    mainNavigation.push(MainStackComponents.mainSettingsScreen, {
+      screen: SettingsStackScreenComponents.registerScreen,
+    });
+  };
+
   const handleHelp = () => {
     closeMenu();
     mainNavigation.push(MainStackComponents.mainHelpScreen);
@@ -67,7 +74,10 @@ export const MainAccountMenu = () => {
           <Menu.Item leadingIcon={AppIcons.user} title={'Manage Account'} onPress={handleManage} />
         </>
       ) : (
-        <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} />
+        <>
+          <Menu.Item leadingIcon={AppIcons.user} title={'Login'} onPress={handleLogin} />
+          <Menu.Item leadingIcon={AppIcons.registrationCode} title={'Register'} onPress={handleRegister} />
+        </>
       )}
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />

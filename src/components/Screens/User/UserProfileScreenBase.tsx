@@ -37,8 +37,15 @@ interface UserProfileScreenBaseProps {
   refetch: () => Promise<any>;
   isLoading: boolean;
   enableContent?: boolean;
+  oobe?: boolean;
 }
-export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
+export const UserProfileScreenBase = ({
+  data,
+  refetch,
+  isLoading,
+  enableContent = true,
+  oobe = false,
+}: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
@@ -67,7 +74,9 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <Item
               title={'Edit'}
               iconName={AppIcons.edituser}
-              onPress={() => commonNavigation.push(CommonStackComponents.editUserProfileScreen, {user: data})}
+              onPress={() =>
+                commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data, oobe: oobe})
+              }
             />
             <UserProfileSelfActionsMenu />
           </HeaderButtons>
@@ -81,7 +90,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
             <>
               <HeaderProfileSeamailButton profile={data} />
               <HeaderProfileFavoriteButton profile={data} />
-              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
+              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} oobe={oobe} />
             </>
           )}
         </HeaderButtons>
@@ -143,7 +152,7 @@ export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent =
   }
 
   return (
-    <AppView safeEdges={['bottom']}>
+    <AppView safeEdges={oobe ? ['bottom'] : []}>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>

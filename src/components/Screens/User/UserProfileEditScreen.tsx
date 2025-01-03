@@ -13,9 +13,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.editUserProfileScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
 
-export const EditUserProfileScreen = ({route, navigation}: Props) => {
+export const UserProfileEditScreen = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();
   const {profilePublicData, setProfilePublicData} = useUserData();
   const queryClient = useQueryClient();
@@ -65,7 +65,7 @@ export const EditUserProfileScreen = ({route, navigation}: Props) => {
   };
 
   return (
-    <AppView safeEdges={['bottom']}>
+    <AppView safeEdges={route.params.oobe ? ['bottom'] : []}>
       <ScrollingContentView>
         <PaddedContentView>
           <UserProfileForm initialValues={initialValues} onSubmit={onSubmit} />

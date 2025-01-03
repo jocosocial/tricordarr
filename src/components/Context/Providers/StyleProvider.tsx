@@ -121,12 +121,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     safeMarginTop: {
       marginTop: inset.top,
     },
-    safePaddingTop: {
-      paddingTop: inset.top,
-    },
     safePaddingVertical: {
-      marginTop: inset.top,
-      marginBottom: inset.bottom,
+      paddingTop: inset.top,
+      paddingBottom: inset.bottom,
     },
   });
 

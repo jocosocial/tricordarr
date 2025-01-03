@@ -13,7 +13,7 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '../../libraries/Structs/ControllerStructs';
-import {EditUserProfileScreen} from '../Screens/User/EditUserProfileScreen';
+import {UserProfileEditScreen} from '../Screens/User/UserProfileEditScreen.tsx';
 import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
 import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
 import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
@@ -86,9 +86,11 @@ export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
     enableContent?: boolean;
+    oobe?: boolean;
   };
   EditUserProfileScreen: {
     user: ProfilePublicData;
+    oobe?: boolean;
   };
   UserPrivateNoteScreen: {
     user: ProfilePublicData;
@@ -182,7 +184,9 @@ export type CommonStackParamList = {
   PersonalEventCreateScreen: {
     cruiseDay?: number;
   };
-  UserProfileHelpScreen: undefined;
+  UserProfileHelpScreen: {
+    oobe?: boolean;
+  };
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -211,7 +215,7 @@ export type CommonStackParamList = {
 
 export enum CommonStackComponents {
   userProfileScreen = 'UserProfileScreen',
-  editUserProfileScreen = 'EditUserProfileScreen',
+  userProfileEditScreen = 'EditUserProfileScreen',
   userPrivateNoteScreen = 'UserPrivateNoteScreen',
   userRegCodeScreen = 'UserRegCodeScreen',
   usernameProfileScreen = 'UsernameProfileScreen',
@@ -286,8 +290,8 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.editUserProfileScreen}
-        component={isUsersDisabled ? DisabledView : EditUserProfileScreen}
+        name={CommonStackComponents.userProfileEditScreen}
+        component={isUsersDisabled ? DisabledView : UserProfileEditScreen}
         options={{title: 'Edit Profile'}}
       />
       <Stack.Screen

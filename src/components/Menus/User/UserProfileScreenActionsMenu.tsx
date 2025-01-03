@@ -19,9 +19,10 @@ interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
   isMuted: boolean;
   isBlocked: boolean;
+  oobe?: boolean;
 }
 
-export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: UserProfileActionsMenuProps) => {
+export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}: UserProfileActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
@@ -60,7 +61,9 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked}: User
   };
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {
+      oobe: oobe,
+    });
   };
 
   return (
