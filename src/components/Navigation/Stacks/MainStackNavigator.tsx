@@ -25,6 +25,8 @@ import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
 import {BoardgameListScreen} from '../../Screens/Boardgames/BoardgameListScreen.tsx';
 import {BoardgameScreen} from '../../Screens/Boardgames/BoardgameScreen.tsx';
 import {BoardgameHelpScreen} from '../../Screens/Boardgames/BoardgameHelpScreen.tsx';
+import {BoardgameRecommendScreen} from '../../Screens/Boardgames/BoardgameRecommendScreen.tsx';
+import {BoardgameSearchScreen} from '../../Screens/Boardgames/BoardgameSearchScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -52,6 +54,8 @@ export type MainStackParamList = CommonStackParamList & {
     boardgame: BoardgameData;
   };
   BoardgameHelpScreen: undefined;
+  BoardgameRecommendScreen: undefined;
+  BoardgameSearchScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -74,6 +78,8 @@ export enum MainStackComponents {
   boardgameListScreen = 'BoardgameListScreen',
   boardgameScreen = 'BoardgameScreen',
   boardgameHelpScreen = 'BoardgameHelpScreen',
+  boardgameRecommendScreen = 'BoardgameRecommendScreen',
+  boardgameSearchScreen = 'BoardgameSearchScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -166,6 +172,16 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.boardgameHelpScreen}
         component={BoardgameHelpScreen}
         options={{title: 'Board Game Help'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameSearchScreen}
+        component={BoardgameSearchScreen}
+        options={{title: 'Search'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameRecommendScreen}
+        component={BoardgameRecommendScreen}
+        options={{title: 'Game Guide'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

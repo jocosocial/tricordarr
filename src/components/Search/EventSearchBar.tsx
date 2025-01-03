@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {useEventsQuery} from '../Queries/Events/EventQueries.ts';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
@@ -38,17 +38,18 @@ export const EventSearchBar = () => {
     }
   };
 
-  // Clear search results when you go back or otherwise unmount this screen.
-  useEffect(() => {
-    return () => remove();
-  }, [remove]);
-
   // Deal with some undefined issues below by defaulting to empty list.
   const eventList = data || [];
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
+      <SearchBarBase
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+        remove={remove}
+      />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}

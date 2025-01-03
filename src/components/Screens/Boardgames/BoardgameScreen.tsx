@@ -45,7 +45,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         },
       );
     }
-  }, [data, favoriteMutation, refetch]);
+  }, [data, favoriteMutation, queryClient]);
 
   const getNavButtons = useCallback(
     () => (
