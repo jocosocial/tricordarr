@@ -1,14 +1,24 @@
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 import {Text} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 export const EndResultsFooter = () => {
+  const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    outerContainer: {
+      ...commonStyles.paddingHorizontal,
+      ...commonStyles.overscroll,
+    },
+  });
+
   return (
-    <PaddedContentView>
+    <View style={styles.outerContainer}>
       <FlexCenteredContentView>
         <Text variant={'labelMedium'}>End of Results</Text>
       </FlexCenteredContentView>
-    </PaddedContentView>
+    </View>
   );
 };
