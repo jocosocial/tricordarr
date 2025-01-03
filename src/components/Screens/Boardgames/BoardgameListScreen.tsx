@@ -13,6 +13,7 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {MenuAnchor} from '../../Menus/MenuAnchor.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {BoardgameGuideFAB} from '../../Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
 
@@ -31,6 +32,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
     isFetching,
   } = useBoardgamesQuery({favorite: favorites});
   const {isLoggedIn} = useAuth();
+  const [expandFab, setExpandFab] = useState(true);
 
   const handleLoadNext = async () => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -70,6 +72,10 @@ export const BoardgameListScreen = ({navigation}: Props) => {
     [favorites, navigation],
   );
 
+  const onScrollThreshold = useCallback((condition: boolean) => {
+    setExpandFab(!condition);
+  }, []);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavButtons,
@@ -97,6 +103,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
       />
+      <BoardgameGuideFAB showLabel={expandFab} />
     </AppView>
   );
 };

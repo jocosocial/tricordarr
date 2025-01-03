@@ -18,6 +18,7 @@ interface BoardgameFlatListProps {
   hasPreviousPage?: boolean;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
+  listHeader?: React.ComponentType<any>;
 }
 
 export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
@@ -28,9 +29,7 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
   }, []);
 
   const renderItem = useCallback(({item}: {item: BoardgameData}) => {
-    console.log('Calling RenderItem');
     return <BoardgameListItem boardgame={item} />;
-    // return <></>;
   }, []);
 
   const getListHeader = useCallback(() => {
@@ -59,7 +58,7 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
       renderItem={renderItem}
       data={props.items}
       keyExtractor={(item: BoardgameData) => item.gameID}
-      renderListHeader={getListHeader}
+      renderListHeader={props.listHeader || getListHeader}
       renderListFooter={getListFooter}
       renderItemSeparator={getListSeparator}
       onScrollThreshold={props.onScrollThreshold}

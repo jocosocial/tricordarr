@@ -89,6 +89,7 @@ export const MainStackNavigator = () => {
   const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
   const isPhotostreamDisabled = getIsDisabled(SwiftarrFeature.photostream);
   const isMicroKaraokeDisabled = getIsDisabled(SwiftarrFeature.microkaraoke);
+  const isGamesDisabled = getIsDisabled(SwiftarrFeature.gameslist);
 
   return (
     <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
@@ -160,27 +161,27 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameListScreen}
-        component={BoardgameListScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameListScreen}
         options={{title: 'Board Games'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameScreen}
-        component={BoardgameScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameScreen}
         options={{title: 'Board Game'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameHelpScreen}
-        component={BoardgameHelpScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameHelpScreen}
         options={{title: 'Board Game Help'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameSearchScreen}
-        component={BoardgameSearchScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameSearchScreen}
         options={{title: 'Search'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameRecommendScreen}
-        component={BoardgameRecommendScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameRecommendScreen}
         options={{title: 'Game Guide'}}
       />
       {CommonScreens(MainStack)}
