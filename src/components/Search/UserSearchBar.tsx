@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import {HelperText, Searchbar} from 'react-native-paper';
 import {UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {ListSection} from '../Lists/ListSection';
 import {UserListItem} from '../Lists/Items/UserListItem';
@@ -13,6 +13,7 @@ interface UserSearchBarProps {
   dataHeaders?: UserHeader[];
   useProvidedData?: boolean;
   favorers?: boolean;
+  label?: string;
 }
 
 /**
@@ -25,6 +26,7 @@ export const UserSearchBar = ({
   onPress,
   clearOnPress = false,
   favorers = false,
+  label = 'Search for users',
 }: UserSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const {data} = useUserMatchQuery({searchQuery: searchQuery, favorers: favorers});
@@ -38,10 +40,13 @@ export const UserSearchBar = ({
     }
   };
 
+  const showHelper = searchQuery.length < 2 && searchQuery !== '';
+
   // https://stackoverflow.com/questions/8668174/indexof-method-in-an-object-array
   return (
     <View>
-      <Searchbar placeholder={'Search for users'} onChangeText={onChangeSearch} value={searchQuery} />
+      <Searchbar placeholder={label} onChangeText={onChangeSearch} value={searchQuery} />
+      {showHelper && <HelperText type={'error'}>Must enter at least two characters to search.</HelperText>}
       <ListSection>
         {data &&
           data

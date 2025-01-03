@@ -92,7 +92,7 @@ export const FezChatScreen = ({route}: Props) => {
         // Then it's SocketFezMemberChangeData
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
-        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this LFG.`;
+        let changeString = `User ${memberChangeData.user.username} has ${changeActionString} this chat.`;
         setErrorMessage(changeString);
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.

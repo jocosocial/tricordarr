@@ -1,6 +1,5 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Text} from 'react-native-paper';
 import {FastField, useField} from 'formik';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
@@ -12,13 +11,11 @@ interface UserChipsFieldProps {
   name: string;
   allowRemoveSelf?: boolean;
   label?: string;
-  labelSubtext?: string;
   searchFavorersOnly?: boolean;
 }
 export const UserChipsField = ({
   name,
   label,
-  labelSubtext,
   allowRemoveSelf = false,
   searchFavorersOnly = false,
 }: UserChipsFieldProps) => {
@@ -51,20 +48,13 @@ export const UserChipsField = ({
     <FastField name={name}>
       {() => (
         <View style={styles.parentContainer}>
-          {label && (
-            <>
-              <View style={[commonStyles.paddingBottomSmall]}>
-                <Text>{label}</Text>
-              </View>
-              {labelSubtext && (
-                <View style={[commonStyles.paddingBottomSmall]}>
-                  <Text variant={'labelLarge'}>{labelSubtext}</Text>
-                </View>
-              )}
-            </>
-          )}
           <View style={styles.searchBarContainer}>
-            <UserSearchBar excludeHeaders={field.value} onPress={addUserHeader} favorers={searchFavorersOnly} />
+            <UserSearchBar
+              label={label}
+              excludeHeaders={field.value}
+              onPress={addUserHeader}
+              favorers={searchFavorersOnly}
+            />
           </View>
           <View style={commonStyles.chipContainer}>
             {field.value.flatMap((user: UserHeader) => (
