@@ -7387,7 +7387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-entities@npm:^2.4.0":
+"html-entities@npm:^2.4.0, html-entities@npm:^2.5.2":
   version: 2.5.2
   resolution: "html-entities@npm:2.5.2"
   checksum: b23f4a07d33d49ade1994069af4e13d31650e3fb62621e92ae10ecdf01d1a98065c78fd20fdc92b4c7881612210b37c275f2c9fba9777650ab0d6f2ceb3b99b6
@@ -12547,6 +12547,7 @@ __metadata:
     eslint-plugin-jest: ^28.6.0
     filesize: ^10.1.6
     formik: ^2.2.9
+    html-entities: ^2.5.2
     humanize-duration: ^3.31.0
     javascript-time-ago: ^2.5.9
     jest: ^29.2.1

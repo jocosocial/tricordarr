@@ -1,9 +1,9 @@
 import {Text} from 'react-native-paper';
 import {View} from 'react-native';
 import React from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
-export const NoResultsView = () => {
+export const NoResultsHeader = () => {
   const {commonStyles} = useStyles();
 
   return (

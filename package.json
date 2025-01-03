@@ -38,6 +38,7 @@
     "date-fns": "^2.30.0",
     "filesize": "^10.1.6",
     "formik": "^2.2.9",
+    "html-entities": "^2.5.2",
     "humanize-duration": "^3.31.0",
     "javascript-time-ago": "^2.5.9",
     "moment-timezone": "^0.5.43",

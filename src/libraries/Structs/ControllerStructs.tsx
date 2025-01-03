@@ -1053,3 +1053,126 @@ export interface TimeZoneChangeData {
   currentTimeZoneID: string;
   currentOffsetSeconds: number;
 }
+
+/// Parameters for the game recommender engine. Pass these values in, get back a `BoardgameResponseData` with a
+/// list of games filtered to match the criteria, and sorted based on how well they match the criteria. The sort takes into account each games'
+/// overall rating from BGG, the recommended number of players (not just min and max allowed players), the average playtime,
+/// and the complexity score of the game.
+///
+/// Sent to these methods as the JSON  request body:
+/// * `GET /api/v3/boardgames/recommend`
+export interface BoardgameRecommendationData {
+  /// How many players are going to play
+  numPlayers: number;
+  /// How much time they have, in minutes
+  timeToPlay: number;
+  /// If nonzero, limit results to games appropriate for this player age. Does not factor into the sort criteria. That is, if you
+  /// request games appropriate for 14 years olds, games appropriate for ages 18 and older will be filtered out, but games appropriate
+  /// for ages 1 and up won't be ranked any lower than games rated for 14 year olds.
+  maxAge: number;
+  /// If nonzero, filter OUT games with a minAge lower than this age. Useful for filtering out games intended for young children. Does not factor into the sort criteria.
+  minAge: number;
+  /// Desired complexity in the range [1...5], or zero to not consider complexity in rankings.
+  complexity: number;
+}
+
+/// Wraps an array of `BoardgameData` with info needed to paginate the result set.
+///
+/// Returned by:
+/// * `GET /api/v3/boardgames`
+export interface BoardgameResponseData {
+  /// Array of boardgames.
+  gameArray: [BoardgameData];
+  /// Total games in result set, and the start and limit into the found set.
+  paginator: Paginator;
+}
+
+/// Used to obtain a list of board games.
+///
+/// Each year there's a list of boardgames published that'll be brought onboard for the games library. The board game data is produced
+/// by running a script that pulls game data from `http://boardgamegeek.com`'s API and merging it with the games library table.
+///
+/// Games in the library may not match anything in BGG's database (or we can't find a match), so all the BGG fields are optional.
+///
+/// Returned by:
+/// * `GET /api/v3/boardgames` (inside `BoardgameResponseData`)
+/// * `GET /api/v3/boardgames/:boardgameID`
+/// * `GET /api/v3/boardgames/expansions/:boardgameID`
+///
+/// See `BoardgameController.getBoardgames(_:)`, `BoardgameController.getExpansions(_:)`.
+export interface BoardgameData {
+  // The database ID for this game. Used to request a list of expansion sets for a game.
+  gameID: string;
+  /// Name from the JoCo boardgame list
+  gameName: string;
+  /// How many copies are being brought aboard.
+  numCopies: number;
+  /// Some games each year are loaned to the library by specific people.
+  donatedBy?: string;
+  /// Any notes on the game (specific printing, wear and tear)
+  notes?: string;
+
+  /// From BoardGameGeek's API.
+  yearPublished?: string;
+  /// From BGG's API. Usually several paragraphs.
+  gameDescription?: string;
+  /// BGG's 'subdomain' value. Games can have multiple values, but often have none. BGG currently lists 8 subdomains.
+  gameTypes: string[];
+  /// BGG's 'category' value. Games can have multiple values. BGG currently lists 84 categories.
+  categories: string[];
+  /// BGG's 'mechanic' value. Games can have multiple values. BGG currently lists 192 mechanics.
+  mechanics: string[];
+
+  /// From BGG's API.
+  minPlayers?: number;
+  /// From BGG's API.
+  maxPlayers?: number;
+  /// From BGG's API. This is the value from the "numPlayers" poll that got the highest number of "Best" votes.
+  suggestedPlayers?: number;
+
+  /// From BGG's API. Playtime in minutes.
+  minPlayingTime?: number;
+  /// From BGG's API. Playtime in minutes.
+  maxPlayingTime?: number;
+  /// From BGG's API. Playtime in minutes.
+  avgPlayingTime?: number;
+
+  /// From BGG's API. Suggested min player age in years. Min age could be determined by complexity or content.
+  minAge?: number;
+  /// From BGG's API. How many BGG reviewers submitted ratings.
+  numRatings?: number;
+  /// From BGG's API. Average game rating. Members can rate games with scores in the range 1...10
+  avgRating?: number;
+  /// From BGG's API. Members can score a games' complexity on a scale of 1...5, where 1 is Light and 5 is Heavy.
+  complexity?: number;
+
+  /// TRUE if this entry is an expansion for another game. Weirdly, the games library may not actually have the base game.
+  /// At any rate, the base game is usually a requirement to play an expansion, and both must be checked out together.
+  isExpansion: boolean;
+  /// TRUE if this game has expansions that can be played with it.
+  hasExpansions: boolean;
+  /// TRUE if the user has favorited the game. FALSE if no one is logged in.
+  isFavorite: boolean;
+}
+
+export namespace BoardgameData {
+  export const getPlayers = (boardgame: BoardgameData) => {
+    if (boardgame.minPlayers && boardgame.maxPlayers) {
+      if (boardgame.minPlayers < boardgame.maxPlayers) {
+        return `${boardgame.minPlayers}-${boardgame.maxPlayers} Players`;
+      } else {
+        return `${boardgame.minPlayers} Players`;
+      }
+    }
+  };
+
+  export const getPlayingTime = (boardgame: BoardgameData) => {
+    if (boardgame.minPlayingTime && boardgame.maxPlayingTime) {
+      if (boardgame.minPlayingTime < boardgame.maxPlayingTime) {
+        return `${boardgame.minPlayingTime}-${boardgame.maxPlayingTime} minutes`;
+      } else {
+        return `${boardgame.minPlayingTime} minutes`;
+      }
+    }
+  };
+}

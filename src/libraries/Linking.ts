@@ -8,6 +8,7 @@ import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNa
 import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
 import {LfgJoinedScreen} from '../components/Screens/LFG/LfgJoinedScreen.tsx';
+import {BoardgameListScreen} from '../components/Screens/Boardgames/BoardgameListScreen.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -56,6 +57,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             MicroKaraokeListScreen: 'microkaraoke',
             PerformerListScreen: 'performers',
             MainTimeZoneScreen: 'time',
+            BoardgameListScreen: 'boardgames',
           },
         },
         SeamailTab: {

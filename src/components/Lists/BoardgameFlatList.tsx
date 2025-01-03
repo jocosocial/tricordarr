@@ -1,14 +1,15 @@
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps} from 'react-native';
-import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
-import {AppFlatList} from '../AppFlatList.tsx';
-import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
-import {NoResultsHeader} from '../Headers/NoResultsHeader.tsx';
+import {AppFlatList} from './AppFlatList.tsx';
+import {EndResultsFooter} from './Footers/EndResultsFooter.tsx';
+import {NoResultsHeader} from './Headers/NoResultsHeader.tsx';
+import {BoardgameListItem} from './Items/BoardgameListItem.tsx';
+import {BoardgameData} from '../../libraries/Structs/ControllerStructs.tsx';
+import {LoadingNextFooter} from './Footers/LoadingNextFooter.tsx';
 
-interface SeamailFlatListProps {
-  fezList: FezData[];
+interface BoardgameFlatListProps {
+  items: BoardgameData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   onEndReached?: () => void;
   onScrollThreshold?: (condition: boolean) => void;
@@ -18,39 +19,39 @@ interface SeamailFlatListProps {
   handleLoadPrevious?: () => void;
 }
 
-export const SeamailFlatList = (props: SeamailFlatListProps) => {
-  const flatListRef = useRef<FlatList<FezData>>(null);
+export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
+  const flatListRef = useRef<FlatList<BoardgameData>>(null);
 
   const getListSeparator = useCallback(() => {
-    if (props.fezList.length > 0) {
-      return <Divider bold={true} />;
-    }
-    return <></>;
-  }, [props.fezList]);
+    return <Divider bold={true} />;
+  }, []);
 
-  const renderItem = ({item}: {item: FezData}) => <SeamailListItem fez={item} />;
+  const renderItem = ({item}: {item: BoardgameData}) => <BoardgameListItem boardgame={item} />;
 
   const getListHeader = useCallback(() => {
-    if (props.fezList.length > 0) {
+    if (props.items.length > 0) {
       return <Divider bold={true} />;
     }
     return <NoResultsHeader />;
-  }, [props.fezList.length]);
+  }, [props.items.length]);
 
   const getListFooter = useCallback(() => {
-    if (props.fezList.length > 0) {
+    if (props.hasNextPage) {
+      return <LoadingNextFooter />;
+    }
+    if (props.items.length > 0) {
       return <EndResultsFooter />;
     }
     return null;
-  }, [props.fezList.length]);
+  }, [props.items.length, props.hasNextPage]);
 
   return (
     <AppFlatList
       flatListRef={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}
-      data={props.fezList}
-      keyExtractor={(item: FezData) => item.fezID}
+      data={props.items}
+      keyExtractor={(item: BoardgameData) => item.gameID}
       renderItemSeparator={getListSeparator}
       renderListHeader={getListHeader}
       renderListFooter={getListFooter}

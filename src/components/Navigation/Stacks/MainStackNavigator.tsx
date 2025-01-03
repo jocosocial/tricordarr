@@ -6,7 +6,7 @@ import {TodayScreen} from '../../Screens/Main/TodayScreen.tsx';
 import {SettingsStackNavigator, SettingsStackParamList} from './SettingsStackNavigator.tsx';
 import {AboutScreen} from '../../Screens/Main/AboutScreen';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
-import {DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
+import {BoardgameData, DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
@@ -22,6 +22,9 @@ import {MicroKaraokeListScreen} from '../../Screens/MicroKaraoke/MicroKaraokeLis
 import {MicroKaraokeSongScreen} from '../../Screens/MicroKaraoke/MicroKaraokeSongScreen.tsx';
 import {PerformerListScreen} from '../../Screens/Performer/PerformerListScreen.tsx';
 import {PerformerType} from '../../Queries/Performer/PerformerQueries.ts';
+import {BoardgameListScreen} from '../../Screens/Boardgames/BoardgameListScreen.tsx';
+import {BoardgameScreen} from '../../Screens/Boardgames/BoardgameScreen.tsx';
+import {BoardgameHelpScreen} from '../../Screens/Boardgames/BoardgameHelpScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -44,6 +47,11 @@ export type MainStackParamList = CommonStackParamList & {
   PerformerListScreen: {
     performerType?: PerformerType;
   };
+  BoardgameListScreen: undefined;
+  BoardgameScreen: {
+    boardgame: BoardgameData;
+  };
+  BoardgameHelpScreen: undefined;
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -63,6 +71,9 @@ export enum MainStackComponents {
   microKaraokeListScreen = 'MicroKaraokeListScreen',
   microKaraokeSongScreen = 'MicroKaraokeSongScreen',
   performerListScreen = 'PerformerListScreen',
+  boardgameListScreen = 'BoardgameListScreen',
+  boardgameScreen = 'BoardgameScreen',
+  boardgameHelpScreen = 'BoardgameHelpScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -140,6 +151,21 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.performerListScreen}
         component={isPerformersDisabled ? DisabledView : PerformerListScreen}
         options={{title: 'Performers'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameListScreen}
+        component={BoardgameListScreen}
+        options={{title: 'Board Games'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameScreen}
+        component={BoardgameScreen}
+        options={{title: 'Board Game'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameHelpScreen}
+        component={BoardgameHelpScreen}
+        options={{title: 'Board Game Help'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>
