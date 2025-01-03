@@ -15,7 +15,6 @@ import {SeamailFlatList} from '../../Lists/Seamail/SeamailFlatList';
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
@@ -131,11 +130,6 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
         // For some reason, SegmentedButtons hates the flex in PaddedContentView.
         <View style={[commonStyles.margin]}>
           <SeamailAccountButtons />
-        </View>
-      )}
-      {isFetched && fezList.length === 0 && (
-        <View key={'noResults'} style={[commonStyles.paddingSmall]}>
-          <Text>No Results</Text>
         </View>
       )}
       <SeamailFlatList
