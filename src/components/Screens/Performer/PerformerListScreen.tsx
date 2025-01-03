@@ -14,6 +14,8 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {PerformerListActionsMenu} from '../../Menus/Performer/PerformerListActionsMenu.tsx';
+import {useAuth} from '../../Context/Contexts/AuthContext.ts';
+import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
@@ -22,6 +24,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching, hasNextPage, fetchNextPage, isLoading} = usePerformersQuery(performerType);
   const flatListRef = useRef<FlatList<PerformerHeaderData>>(null);
   const {commonStyles, styleDefaults} = useStyles();
+  const {isLoggedIn} = useAuth();
 
   const styles = StyleSheet.create({
     cardContainer: {
@@ -76,6 +79,10 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
   }, [navigation, getHeaderButtons]);
 
   const performers = data?.pages.flatMap(p => p.performers) || [];
+
+  if (!isLoggedIn) {
+    return <NotLoggedInView />;
+  }
 
   if (isLoading) {
     return <LoadingView />;

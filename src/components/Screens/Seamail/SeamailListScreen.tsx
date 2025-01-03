@@ -28,10 +28,9 @@ type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatSta
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
-  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isFetched, isLoading} =
-    useSeamailListQuery({
-      forUser: asPrivilegedUser,
-    });
+  const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
+    forUser: asPrivilegedUser,
+  });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
   const {isLoggedIn} = useAuth();
