@@ -1,12 +1,17 @@
+import React from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-export const SiteUIHelpScreen = () => {
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIHelpScreen>;
+
+export const SiteUIHelpScreen = ({route}: Props) => {
   return (
-    <AppView>
+    <AppView safeEdges={route.params?.oobe ? ['bottom'] : []}>
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>

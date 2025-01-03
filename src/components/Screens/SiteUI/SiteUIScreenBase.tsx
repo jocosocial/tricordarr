@@ -12,9 +12,10 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 interface SiteUIScreenBaseProps {
   initialUrl: string;
   initialKey?: string;
+  oobe?: boolean;
 }
 
-export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBaseProps) => {
+export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScreenBaseProps) => {
   const {appConfig} = useConfig();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
@@ -29,7 +30,10 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
 
   const reload = () => webViewRef.current?.reload();
 
-  const onHelp = useCallback(() => navigation.push(CommonStackComponents.siteUIHelpScreen), [navigation]);
+  const onHelp = useCallback(
+    () => navigation.push(CommonStackComponents.siteUIHelpScreen, {oobe: oobe}),
+    [navigation, oobe],
+  );
 
   const getNavBarIcons = useCallback(
     () => (
@@ -75,7 +79,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
   });
 
   return (
-    <AppView>
+    <AppView safeEdges={oobe ? ['bottom'] : []}>
       <WebView
         source={{uri: webviewUrl}}
         key={key}

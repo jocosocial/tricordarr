@@ -204,7 +204,9 @@ export type CommonStackParamList = {
     id: string;
   };
   PerformerHelpScreen: undefined;
-  SiteUIHelpScreen: undefined;
+  SiteUIHelpScreen: {
+    oobe?: boolean;
+  };
   LfgHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;

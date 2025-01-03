@@ -4,5 +4,5 @@ import {SiteUIScreenBase} from '../SiteUI/SiteUIScreenBase.tsx';
 
 export const OobePreregistrationScreen = () => {
   const {appConfig} = useConfig();
-  return <SiteUIScreenBase initialUrl={appConfig.preRegistrationServerUrl} />;
+  return <SiteUIScreenBase initialUrl={appConfig.preRegistrationServerUrl} oobe={true} />;
 };
