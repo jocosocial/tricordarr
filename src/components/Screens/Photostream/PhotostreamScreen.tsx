@@ -14,6 +14,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {Text} from 'react-native-paper';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {AppFlatList} from '../../Lists/AppFlatList.tsx';
+import {EndResultsFooter} from '../../Lists/Footers/EndResultsFooter.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
@@ -85,6 +86,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
         maintainViewPosition={false}
+        renderListFooter={EndResultsFooter}
       />
       <PhotostreamFAB showLabel={expandFab} />
     </AppView>

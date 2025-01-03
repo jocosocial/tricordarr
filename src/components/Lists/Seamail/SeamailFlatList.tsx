@@ -39,12 +39,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
 
   const getListFooter = useCallback(() => {
     if (props.fezList.length > 0) {
-      return (
-        <View>
-          <Divider bold={true} />
-          <EndResultsFooter />
-        </View>
-      );
+      return <EndResultsFooter />;
     }
     return null;
   }, [props.fezList.length]);
