@@ -524,7 +524,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
-        options={{title: 'Looking For Group Help'}}
+        options={{title: 'Looking For Group (LFG) Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}
