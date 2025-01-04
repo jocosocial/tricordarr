@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailListQuery} from '../Queries/Fez/FezQueries';
-import {Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, RefreshControl} from 'react-native';
 import {SeamailFlatList} from '../Lists/Seamail/SeamailFlatList';
+import {SearchBarBase} from './SearchBarBase.tsx';
 
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,31 +53,30 @@ export const SeamailSearchBar = () => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data && queryEnable) {
       let fezDataList: FezData[] = [];
       data.pages.map(page => {
         fezDataList = fezDataList.concat(page.fezzes);
       });
       setFezList(fezDataList);
     }
-  }, [data]);
+  }, [data, queryEnable]);
 
   return (
-    <View>
-      <Searchbar
+    <>
+      <SearchBarBase
         placeholder={'Search seamail messages'}
-        onIconPress={onSearch}
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        onSubmitEditing={onSearch}
-        onClearIconPress={onClear}
-        style={[commonStyles.marginBottomSmall, commonStyles.marginHorizontal]}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        searchQuery={searchQuery}
+        onClear={onClear}
+        style={commonStyles.marginBottom}
       />
       <SeamailFlatList
         fezList={fezList}
         refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={onRefresh} />}
         onEndReached={handleLoadNext}
       />
-    </View>
+    </>
   );
 };
