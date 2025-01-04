@@ -4,24 +4,27 @@ import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {FlexCenteredContentView} from '../../Views/Content/FlexCenteredContentView.tsx';
 
-export const NoResultsHeader = () => {
+export const NoResultsFooter = () => {
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
-    outerContainer: {
+    innerContainer: {
       ...commonStyles.paddingHorizontal,
       ...commonStyles.overscroll,
+    },
+    outerContainer: {
+      ...commonStyles.paddingTop,
     },
   });
 
   return (
-    <>
+    <View style={styles.outerContainer}>
       <Divider bold={true} />
-      <View style={styles.outerContainer}>
+      <View style={styles.innerContainer}>
         <FlexCenteredContentView>
           <Text variant={'labelMedium'}>No Results</Text>
         </FlexCenteredContentView>
       </View>
-    </>
+    </View>
   );
 };

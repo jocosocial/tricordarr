@@ -2,7 +2,7 @@ import {RefreshControlProps} from 'react-native';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
 import {EndResultsFooter} from './Footers/EndResultsFooter.tsx';
-import {NoResultsHeader} from './Headers/NoResultsHeader.tsx';
+import {NoResultsFooter} from './Footers/NoResultsFooter.tsx';
 import {BoardgameListItem} from './Items/BoardgameListItem.tsx';
 import {BoardgameData} from '../../libraries/Structs/ControllerStructs.tsx';
 import {LoadingNextFooter} from './Footers/LoadingNextFooter.tsx';
@@ -36,7 +36,7 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
     if (props.items.length > 0) {
       return <Divider bold={true} />;
     }
-    return <NoResultsHeader />;
+    return <></>;
   }, [props.items.length]);
 
   const getListFooter = useCallback(() => {
@@ -47,7 +47,7 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
       return <EndResultsFooter />;
     }
     if (props.items.length === 0) {
-      return <NoResultsHeader />;
+      return <NoResultsFooter />;
     }
     return null;
   }, [props.items.length, props.hasNextPage]);

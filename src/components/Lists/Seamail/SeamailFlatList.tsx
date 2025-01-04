@@ -4,7 +4,7 @@ import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
-import {NoResultsHeader} from '../Headers/NoResultsHeader.tsx';
+import {NoResultsFooter} from '../Footers/NoResultsFooter.tsx';
 import {AppFlatList} from '../AppFlatList.tsx';
 
 interface SeamailFlatListProps {
@@ -34,12 +34,15 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
     if (props.fezList.length > 0) {
       return <Divider bold={true} />;
     }
-    return <NoResultsHeader />;
+    return <></>;
   }, [props.fezList.length]);
 
   const getListFooter = useCallback(() => {
     if (props.fezList.length > 0) {
       return <EndResultsFooter />;
+    }
+    if (props.fezList.length === 0) {
+      return <NoResultsFooter />;
     }
     return null;
   }, [props.fezList.length]);
