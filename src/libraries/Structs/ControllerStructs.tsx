@@ -1175,4 +1175,12 @@ export namespace BoardgameData {
       }
     }
   };
+  export const getCacheKeys = (boardgameID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/boardgames']];
+    if (boardgameID) {
+      queryKeys.push([`/boardgames/${boardgameID}`]);
+      queryKeys.push([`/boardgames/expansions/${boardgameID}`]);
+    }
+    return queryKeys;
+  };
 }

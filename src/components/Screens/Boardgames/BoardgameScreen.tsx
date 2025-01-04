@@ -14,6 +14,9 @@ import {useBoardgameQuery} from '../../Queries/Boardgames/BoardgameQueries.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {useBoardgameFavoriteMutation} from '../../Queries/Boardgames/BoardgameMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 
@@ -37,20 +40,25 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         },
         {
           onSuccess: async () => {
-            await Promise.all([
-              queryClient.invalidateQueries(['/boardgames']),
-              queryClient.invalidateQueries([`/boardgames/${data.gameID}`]),
-            ]);
+            const invalidations = BoardgameData.getCacheKeys(data.gameID).map(key => {
+              return queryClient.invalidateQueries(key);
+            });
+            await Promise.all(invalidations);
           },
         },
       );
     }
   }, [data, favoriteMutation, queryClient]);
 
+  const onCreate = () => {
+    navigation.push(CommonStackComponents.lfgHelpScreen);
+  };
+
   const getNavButtons = useCallback(
     () => (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
           <Item
             title={'Favorite'}
             iconName={data?.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
@@ -77,20 +85,43 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
+  const players = BoardgameData.getPlayers(data);
+  const playingTime = BoardgameData.getPlayingTime(data);
+
   return (
     <AppView>
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
-        <DataFieldListItem title={'Players'} description={BoardgameData.getPlayers(data)} />
-        <DataFieldListItem title={'Playing Time'} description={BoardgameData.getPlayingTime(data)} />
-        <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating} />
-        <DataFieldListItem title={'Year'} description={data.yearPublished} />
-        <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity} />
-        <DataFieldListItem title={'Description'} description={decodeHtml(data.gameDescription)} />
-        <DataFieldListItem title={'Categories'} description={data.categories.join(', ')} />
-        <DataFieldListItem title={'Mechanics'} description={data.mechanics.join(', ')} />
+        {players && <DataFieldListItem title={'Players'} description={players} />}
+        {playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}
+        {data.avgRating && <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating.toFixed(2)} />}
+        {data.yearPublished && <DataFieldListItem title={'Year'} description={data.yearPublished} />}
+        {data.complexity && <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity.toFixed(0)} />}
+        {data.gameDescription && (
+          <DataFieldListItem title={'Description'} description={decodeHtml(data.gameDescription)} />
+        )}
+        {data.gameTypes.length > 0 && (
+          <DataFieldListItem title={'Game Types'} description={data.gameTypes.join(', ')} />
+        )}
+        {data.categories.length > 0 && (
+          <DataFieldListItem title={'Categories'} description={data.categories.join(', ')} />
+        )}
+        {data.mechanics.length > 0 && <DataFieldListItem title={'Mechanics'} description={data.mechanics.join(', ')} />}
+        {data.donatedBy && <DataFieldListItem title={'Donated By'} description={data.donatedBy} />}
+        {(data.isExpansion || data.hasExpansions) && (
+          <PaddedContentView padTop={true}>
+            <PrimaryActionButton
+              buttonText={'Expansions'}
+              onPress={() =>
+                navigation.push(MainStackComponents.boardgameExpansionsScreen, {
+                  boardgameID: route.params.boardgame.gameID,
+                })
+              }
+            />
+          </PaddedContentView>
+        )}
       </ScrollingContentView>
     </AppView>
   );

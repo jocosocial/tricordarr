@@ -46,11 +46,12 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
     if (props.items.length > 0) {
       return <EndResultsFooter />;
     }
+    if (props.items.length === 0) {
+      return <NoResultsHeader />;
+    }
     return null;
   }, [props.items.length, props.hasNextPage]);
 
-  console.log(props.items.length);
-  // @TODO deal with fetching next page
   return (
     <AppFlashList<BoardgameData>
       flatListRef={flatListRef}
@@ -62,8 +63,6 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
       renderListFooter={getListFooter}
       renderItemSeparator={getListSeparator}
       onScrollThreshold={props.onScrollThreshold}
-      // hasPreviousPage={props.hasPreviousPage}
-      // handleLoadPrevious={props.handleLoadPrevious}
       handleLoadNext={props.handleLoadNext}
       estimatedItemSize={70}
     />

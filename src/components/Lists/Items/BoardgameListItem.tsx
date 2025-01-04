@@ -76,7 +76,7 @@ const BoardgameListItemInternal = ({boardgame}: BoardgameListItemProps) => {
 
   const styles = StyleSheet.create({
     item: {
-      ...commonStyles.paddingHorizontalSmall,
+      ...commonStyles.paddingHorizontal,
     },
     text: {
       ...commonStyles.onBackground,

@@ -6,6 +6,7 @@ import React, {useState} from 'react';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {useBoardgameRecommendMutation} from '../../Queries/Boardgames/BoardgameMutations.ts';
 import {BoardgameFlatList} from '../../Lists/BoardgameFlatList.tsx';
+import {Divider} from 'react-native-paper';
 
 const defaultValues: BoardgameRecommendationData = {
   numPlayers: 2,
@@ -18,13 +19,18 @@ const defaultValues: BoardgameRecommendationData = {
 const ListHeader = ({
   initialValues,
   onSubmit,
+  games,
 }: {
   initialValues: BoardgameRecommendationData;
   onSubmit: (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => void;
+  games: BoardgameData[];
 }) => (
-  <PaddedContentView padTop={true}>
-    <BoardgameRecommendationForm initialValues={initialValues} onSubmit={onSubmit} />
-  </PaddedContentView>
+  <>
+    <PaddedContentView padTop={true}>
+      <BoardgameRecommendationForm initialValues={initialValues} onSubmit={onSubmit} />
+    </PaddedContentView>
+    {games.length > 0 && <Divider bold={true} />}
+  </>
 );
 
 export const BoardgameRecommendScreen = () => {
@@ -33,7 +39,7 @@ export const BoardgameRecommendScreen = () => {
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
 
   const onSubmit = (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => {
-    console.log(values);
+    setFieldValues(values);
     guideMutation.mutate(
       {
         recommendationData: values,
@@ -41,16 +47,13 @@ export const BoardgameRecommendScreen = () => {
       {
         onSuccess: response => {
           setGames(response.data.gameArray);
-          setFieldValues(values);
-          // @TODO why is this blinking before change
-          helpers.resetForm({values: values});
         },
         onSettled: () => helpers.setSubmitting(false),
       },
     );
   };
 
-  const getHeader = () => <ListHeader onSubmit={onSubmit} initialValues={fieldValues} />;
+  const getHeader = () => <ListHeader onSubmit={onSubmit} initialValues={fieldValues} games={games} />;
 
   return (
     <AppView>

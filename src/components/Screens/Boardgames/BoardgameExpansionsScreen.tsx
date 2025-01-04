@@ -1,6 +1,6 @@
 import {AppView} from '../../Views/AppView.tsx';
 import {BoardgameFlatList} from '../../Lists/BoardgameFlatList.tsx';
-import {useBoardgamesQuery} from '../../Queries/Boardgames/BoardgameQueries.ts';
+import {useBoardgameExpansionsQuery, useBoardgamesQuery} from '../../Queries/Boardgames/BoardgameQueries.ts';
 import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -15,10 +15,9 @@ import {MenuAnchor} from '../../Menus/MenuAnchor.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
 import {BoardgameGuideFAB} from '../../Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
+type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 
-export const BoardgameListScreen = ({navigation}: Props) => {
-  const [favorites, setFavorites] = useState(false);
+export const BoardgameExpansionsScreen = ({navigation, route}: Props) => {
   const {
     data,
     hasNextPage,
@@ -30,7 +29,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
     isFetchingPreviousPage,
     refetch,
     isFetching,
-  } = useBoardgamesQuery({favorite: favorites});
+  } = useBoardgameExpansionsQuery({boardgameID: route.params.boardgameID});
   const {isLoggedIn} = useAuth();
 
   const handleLoadNext = async () => {
@@ -50,17 +49,6 @@ export const BoardgameListScreen = ({navigation}: Props) => {
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
           <Item
-            title={'Search'}
-            iconName={AppIcons.search}
-            onPress={() => navigation.push(MainStackComponents.boardgameSearchScreen)}
-          />
-          <MenuAnchor
-            title={'Favorites'}
-            iconName={AppIcons.favorite}
-            onPress={() => setFavorites(!favorites)}
-            active={favorites}
-          />
-          <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
@@ -68,7 +56,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [favorites, navigation],
+    [navigation],
   );
 
   useEffect(() => {
@@ -89,7 +77,6 @@ export const BoardgameListScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <ListTitleView title={favorites ? 'Your Favorites' : 'All Games'} />
       <BoardgameFlatList
         items={items}
         hasNextPage={hasNextPage}
@@ -98,7 +85,6 @@ export const BoardgameListScreen = ({navigation}: Props) => {
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
       />
-      <BoardgameGuideFAB showLabel={true} />
     </AppView>
   );
 };

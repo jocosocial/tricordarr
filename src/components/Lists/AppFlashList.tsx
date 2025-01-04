@@ -29,6 +29,7 @@ interface AppFlashListProps<TItem> {
   contentContainerStyle?: StyleProp<ViewStyle>;
   columnWrapperStyle?: StyleProp<ViewStyle>;
   estimatedItemSize?: number;
+  extraData?: any;
 }
 
 export const AppFlashList = <TItem,>({
@@ -49,6 +50,7 @@ export const AppFlashList = <TItem,>({
   numColumns,
   estimatedItemSize,
   handleLoadNext,
+  extraData,
 }: AppFlashListProps<TItem>) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -97,6 +99,7 @@ export const AppFlashList = <TItem,>({
         numColumns={numColumns}
         estimatedItemSize={estimatedItemSize}
         onEndReached={handleLoadNext}
+        extraData={extraData}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
