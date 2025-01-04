@@ -1,12 +1,11 @@
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {RefreshControlProps} from 'react-native';
+import {FlatList, RefreshControlProps} from 'react-native';
 import {SeamailListItem} from '../Items/SeamailListItem';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
 import {NoResultsHeader} from '../Headers/NoResultsHeader.tsx';
-import {AppFlashList} from '../AppFlashList.tsx';
-import {FlashList} from '@shopify/flash-list';
+import {AppFlatList} from '../AppFlatList.tsx';
 
 interface SeamailFlatListProps {
   fezList: FezData[];
@@ -20,7 +19,7 @@ interface SeamailFlatListProps {
 }
 
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
-  const flatListRef = useRef<FlashList<FezData>>(null);
+  const flatListRef = useRef<FlatList<FezData>>(null);
 
   const getListSeparator = useCallback(() => {
     if (props.fezList.length > 0) {
@@ -46,7 +45,7 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
   }, [props.fezList.length]);
 
   return (
-    <AppFlashList
+    <AppFlatList
       flatListRef={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}
@@ -57,7 +56,9 @@ export const SeamailFlatList = (props: SeamailFlatListProps) => {
       renderListFooter={getListFooter}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
-      estimatedItemSize={86}
+      hasNextPage={props.hasNextPage}
+      hasPreviousPage={props.hasPreviousPage}
+      handleLoadPrevious={props.handleLoadPrevious}
     />
   );
 };
