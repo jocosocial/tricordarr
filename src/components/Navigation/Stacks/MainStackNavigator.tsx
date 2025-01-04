@@ -28,6 +28,7 @@ import {BoardgameHelpScreen} from '../../Screens/Boardgames/BoardgameHelpScreen.
 import {BoardgameRecommendScreen} from '../../Screens/Boardgames/BoardgameRecommendScreen.tsx';
 import {BoardgameSearchScreen} from '../../Screens/Boardgames/BoardgameSearchScreen.tsx';
 import {BoardgameExpansionsScreen} from '../../Screens/Boardgames/BoardgameExpansionsScreen.tsx';
+import {BoardgameCreateLfgScreen} from '../../Screens/Boardgames/BoardgameCreateLfgScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
@@ -60,6 +61,9 @@ export type MainStackParamList = CommonStackParamList & {
   BoardgameExpansionsScreen: {
     boardgameID: string;
   };
+  BoardgameCreateLfgScreen: {
+    boardgame: BoardgameData;
+  };
 };
 
 export const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -85,6 +89,7 @@ export enum MainStackComponents {
   boardgameRecommendScreen = 'BoardgameRecommendScreen',
   boardgameSearchScreen = 'BoardgameSearchScreen',
   boardgameExpansionsScreen = 'BoardgameExpansionsScreen',
+  boardgameCreateLfgScreen = 'BoardgameCreateLfgScreen',
 }
 
 export const MainStackNavigator = () => {
@@ -193,6 +198,11 @@ export const MainStackNavigator = () => {
         name={MainStackComponents.boardgameExpansionsScreen}
         component={isGamesDisabled ? DisabledView : BoardgameExpansionsScreen}
         options={{title: 'Expansions'}}
+      />
+      <MainStack.Screen
+        name={MainStackComponents.boardgameCreateLfgScreen}
+        component={isGamesDisabled ? DisabledView : BoardgameCreateLfgScreen}
+        options={{title: 'Create LFG'}}
       />
       {CommonScreens(MainStack)}
     </MainStack.Navigator>

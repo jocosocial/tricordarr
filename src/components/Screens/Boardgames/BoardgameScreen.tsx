@@ -16,7 +16,6 @@ import {useBoardgameFavoriteMutation} from '../../Queries/Boardgames/BoardgameMu
 import {useQueryClient} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 
@@ -50,20 +49,28 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
     }
   }, [data, favoriteMutation, queryClient]);
 
-  const onCreate = () => {
-    navigation.push(CommonStackComponents.lfgHelpScreen);
-  };
+  const onCreate = useCallback(() => {
+    if (data) {
+      navigation.push(MainStackComponents.boardgameCreateLfgScreen, {
+        boardgame: data,
+      });
+    }
+  }, [data, navigation]);
 
   const getNavButtons = useCallback(
     () => (
       <View>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
-          <Item
-            title={'Favorite'}
-            iconName={data?.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
-            onPress={onFavorite}
-          />
+          {data && (
+            <>
+              <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
+              <Item
+                title={'Favorite'}
+                iconName={data?.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
+                onPress={onFavorite}
+              />
+            </>
+          )}
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -72,7 +79,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     ),
-    [data?.isFavorite, navigation, onFavorite],
+    [data, navigation, onCreate, onFavorite],
   );
 
   useEffect(() => {
