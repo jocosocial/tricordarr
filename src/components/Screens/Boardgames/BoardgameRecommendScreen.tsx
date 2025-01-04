@@ -2,11 +2,17 @@ import {AppView} from '../../Views/AppView.tsx';
 import {BoardgameRecommendationForm} from '../../Forms/BoardgameRecommendationForm.tsx';
 import {BoardgameData, BoardgameRecommendationData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {useBoardgameRecommendMutation} from '../../Queries/Boardgames/BoardgameMutations.ts';
 import {BoardgameFlatList} from '../../Lists/BoardgameFlatList.tsx';
 import {Divider} from 'react-native-paper';
+import {View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const defaultValues: BoardgameRecommendationData = {
   numPlayers: 2,
@@ -33,7 +39,9 @@ const ListHeader = ({
   </>
 );
 
-export const BoardgameRecommendScreen = () => {
+type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
+
+export const BoardgameRecommendScreen = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);
@@ -54,6 +62,27 @@ export const BoardgameRecommendScreen = () => {
   };
 
   const getHeader = () => <ListHeader onSubmit={onSubmit} initialValues={fieldValues} games={games} />;
+
+  const getNavButtons = useCallback(
+    () => (
+      <View>
+        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    ),
+    [navigation],
+  );
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   return (
     <AppView>
