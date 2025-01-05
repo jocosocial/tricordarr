@@ -10,6 +10,7 @@ nvm install lts/hydrogen
 nvm use lts/hydrogen (v18.20.4)
 
 yarn install --immutable --immutable-cache
+patch-package
 
 npx react-native start
 
