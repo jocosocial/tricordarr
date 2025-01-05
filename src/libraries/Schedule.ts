@@ -97,7 +97,6 @@ export const getScheduleScrollIndex = (
     }
     const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
     const tzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
-    // console.info('nowDayTime', nowDayTime, 'tzOffset', tzOffset, 'itemStartDayTime', itemStartDayTime);
     if (nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes) {
       // The current i index is the next event in the schedule. Put another way,
       // it's the first upcoming event.
@@ -126,7 +125,6 @@ export const getScheduleScrollIndex = (
       return i - 1;
     }
   }
-  // console.info('STILL HERE');
   // If we have ScheduleItems but Now is beyond the last one of the day, simply set the index to the last possible item.
   if (itemList.length > 0) {
     // I have no idea why all of this was here if it was so "simple".
@@ -147,7 +145,6 @@ export const getScheduleScrollIndex = (
     return itemList.length - 1;
   }
   // List of zero or any other situation, just return 0 (start of list);
-  // console.info('[Schedule.ts] getScheduleScrollIndex got 0?');
   return 0;
 };
 
@@ -182,6 +179,12 @@ export const getScheduleItemMarker = (
   }
 };
 
+/**
+ * Returns a string identifier of a schedule item. Convention is this is "HH:MM" which indicates
+ * a block of time that we care about for things like rendering separators or determining when
+ * "now" is and if this is block we are in.
+ * @param date Date object to generate the ID for.
+ */
 export const getScheduleListTimeSeparatorID = (date: Date) => `${date.getHours()}:${date.getMinutes()}`;
 
 export const getCalFeedFromUrl = async (feedUrl: string) => {
