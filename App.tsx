@@ -6,8 +6,6 @@
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
 import {Portal} from 'react-native-paper';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
 import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
@@ -51,7 +49,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
 import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
 import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -66,7 +64,6 @@ console.log('[App.tsx] Tricordarr start!');
 registerFgsWorker();
 
 // Time and locale setup, used in various places within the app.
-TimeAgo.addDefaultLocale(en);
 registerTranslation('en', paperEn);
 
 // Set up image caching

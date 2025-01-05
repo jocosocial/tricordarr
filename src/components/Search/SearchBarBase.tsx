@@ -1,7 +1,7 @@
-import {Searchbar} from 'react-native-paper';
-import React from 'react';
+import {HelperText, Searchbar} from 'react-native-paper';
+import React, {useEffect} from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
 
 interface SearchBarBaseProps {
   onSearch?: () => void;
@@ -9,6 +9,9 @@ interface SearchBarBaseProps {
   searchQuery: string;
   onClear?: () => void;
   placeholder?: string;
+  minLength?: number;
+  style?: ViewStyle;
+  remove?: () => void;
 }
 
 export const SearchBarBase = ({
@@ -17,25 +20,47 @@ export const SearchBarBase = ({
   searchQuery,
   onClear,
   placeholder = 'Search',
+  minLength = 3,
+  style,
+  remove,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
+  const [showHelp, setShowHelp] = React.useState(false);
 
   const styles = StyleSheet.create({
     searchBar: {
       ...commonStyles.marginTop,
       ...commonStyles.marginHorizontal,
+      ...style,
     },
   });
 
+  const onIconPress = () => {
+    if (searchQuery.length < minLength) {
+      setShowHelp(true);
+    } else {
+      setShowHelp(false);
+      onSearch ? onSearch() : undefined;
+    }
+  };
+
+  // Clear search results when you go back or otherwise unmount this screen.
+  useEffect(() => {
+    return () => (remove ? remove() : undefined);
+  }, [remove]);
+
   return (
-    <Searchbar
-      placeholder={placeholder}
-      onIconPress={onSearch}
-      onChangeText={onChangeSearch}
-      value={searchQuery}
-      onSubmitEditing={onSearch}
-      onClearIconPress={onClear}
-      style={styles.searchBar}
-    />
+    <>
+      <Searchbar
+        placeholder={placeholder}
+        onIconPress={onIconPress}
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onSubmitEditing={onSearch}
+        onClearIconPress={onClear}
+        style={styles.searchBar}
+      />
+      {showHelp && <HelperText type={'error'}>{`Must enter >${minLength - 1} characters to search`}</HelperText>}
+    </>
   );
 };

@@ -6,7 +6,7 @@ import {useAppTheme} from '../../styles/Theme.ts';
 interface MenuAnchorProps {
   active?: boolean;
   onPress: () => void;
-  onLongPress: () => void;
+  onLongPress?: () => void;
   iconName?: string;
   title: string;
 }

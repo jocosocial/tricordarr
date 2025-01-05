@@ -69,6 +69,6 @@
       https://developer.android.com/develop/background-work/services/fg-service-types
       https://notifee.app/react-native/docs/android/foreground-service
       -->
-      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="dataSync" />
+      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="dataSync" tools:replace="android:foregroundServiceType" />
     </application>
 </manifest>

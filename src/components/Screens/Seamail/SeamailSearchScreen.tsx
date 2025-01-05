@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
 import {AppView} from '../../Views/AppView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {SeamailSearchBar} from '../../Search/SeamailSearchBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ChatStackParamList, ChatStackScreenComponents} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
@@ -43,9 +42,7 @@ export const SeamailSearchScreen = ({navigation, route}: SeamailSearchScreenProp
   }
   return (
     <AppView>
-      <PaddedContentView padSides={false} padTop={true}>
-        <SeamailSearchBar />
-      </PaddedContentView>
+      <SeamailSearchBar />
     </AppView>
   );
 };

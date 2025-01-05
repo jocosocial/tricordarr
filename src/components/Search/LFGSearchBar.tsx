@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
@@ -44,18 +44,19 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
     }
   };
 
-  // Clear search results when you go back or otherwise unmount this screen.
-  useEffect(() => {
-    return () => remove();
-  }, [remove]);
-
   // Deal with some undefined issues below by defaulting to empty list.
   let lfgList: FezData[] = [];
   data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
 
   return (
     <>
-      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
+      <SearchBarBase
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+        remove={remove}
+      />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}

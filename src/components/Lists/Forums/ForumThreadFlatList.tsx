@@ -1,14 +1,15 @@
-import {FlatList, RefreshControlProps} from 'react-native';
+import {RefreshControlProps} from 'react-native';
 import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef} from 'react';
 import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
 import {Divider} from 'react-native-paper';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
-import {AppFlatList} from '../AppFlatList.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';
+import {AppFlashList} from '../AppFlashList.tsx';
+import {FlashList} from '@shopify/flash-list';
 
 interface ForumThreadFlatListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -34,7 +35,7 @@ export const ForumThreadFlatList = ({
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
 }: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlatList<ForumListData>>(null);
+  const flatListRef = useRef<FlashList<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
@@ -76,7 +77,7 @@ export const ForumThreadFlatList = ({
   const renderItemSeparator = () => <Divider bold={true} />;
 
   return (
-    <AppFlatList
+    <AppFlashList
       flatListRef={flatListRef}
       renderListHeader={renderListHeader}
       renderListFooter={renderListFooter}
@@ -87,9 +88,8 @@ export const ForumThreadFlatList = ({
       maintainViewPosition={maintainViewPosition}
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
-      hasNextPage={hasNextPage}
-      hasPreviousPage={hasPreviousPage}
       renderItemSeparator={renderItemSeparator}
+      estimatedItemSize={106}
     />
   );
 };

@@ -34,10 +34,12 @@ export const DataFieldListItem = ({
     title: {
       ...commonStyles.fontSizeLabel,
       ...titleStyle,
+      ...commonStyles.onBackground,
     },
     description: {
       ...commonStyles.fontSizeDefault,
       ...descriptionStyle,
+      ...commonStyles.onBackground,
     },
     item: {
       ...(icon ? commonStyles.paddingHorizontal : undefined),

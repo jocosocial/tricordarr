@@ -9,6 +9,7 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {StyleSheet} from 'react-native';
 
 interface SeamailListItemProps {
   fez: FezData;
@@ -22,13 +23,17 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     badgeCount = fez.members.postCount - fez.members.readCount;
   }
 
-  const styles = {
+  const styles = StyleSheet.create({
     item: {
       ...commonStyles.paddingHorizontal,
     },
-    title: badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined,
-    description: badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined,
-  };
+    title: {
+      ...(badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined),
+    },
+    description: {
+      ...(badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined),
+    },
+  });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
@@ -36,7 +41,6 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const getAvatar = () => <FezAvatarImage fez={fez} />;
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailChatScreen, {
-      title: fez.title,
       fezID: fez.fezID,
     });
   const getRight = () => {

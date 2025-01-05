@@ -13,8 +13,13 @@ import {useEffect, useState, useRef} from 'react';
 import {CruiseDayData, CruiseDayTime, StartEndTime} from './Types';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
-import TimeAgo from 'javascript-time-ago';
 import {StartTime} from './Types/FormValues.ts';
+
+// https://github.com/catamphetamine/javascript-time-ago/issues/9
+// Used to be in App.tsx then I moved here so that tests would work.
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addDefaultLocale(en);
 
 const thresholdMap = {
   second: {
@@ -125,8 +130,10 @@ export const getCruiseDayData = (startDate: Date, cruiseDayIndex: number): Cruis
  * Lifted from https://github.com/jocosocial/swiftarr/blob/70d83bc65e1a70557e6eb12ed941ea01973aca27/Sources/App/Resources/Assets/js/swiftarr.js#L470
  * We somewhat arbitrarily pick 3:00AM boat time as the breaker for when days roll over. But really it just serves as a
  * point in time that we can do maths again.
- * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted forward three hours (02:00UTC, 21:00EST)
+ * For example: An event at 05:00UTC (00:00EST aka Midnight) will be adjusted backwards three hours (02:00UTC, 21:00EST)
  * and if the client is in EST will result in a return value of 1260 (21 hours * 60 minutes, plus 00 minutes).
+ * @TODO this has a bug with events schedule between 00:00-03:00UTC on embarkation day
+ * @TODO behavior gets weird with DST, seems to work but eeek.
  * @param dateValue
  * @param cruiseStartDate
  * @param cruiseEndDate
@@ -138,7 +145,7 @@ export const calcCruiseDayTime: (dateValue: Date, cruiseStartDate: Date, cruiseE
 ) => {
   // Subtract 3 hours so the 'day' divider for events is 3AM. NOT doing timezone math here.
   let adjustedDate = new Date(dateValue.getTime() - 3 * 60 * 60 * 1000);
-
+  // Day index of the cruiseStartDate, an integer 0 (Sunday) through 6 (Saturday).
   let cruiseStartDay = cruiseStartDate.getDay();
   // Hackish. StartDate is midnight EST, which makes getDay return the day before in [PCM]ST.
   if (cruiseStartDate.getHours() > 12) {

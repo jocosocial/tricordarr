@@ -130,6 +130,26 @@ export const LfgSettingsScreen = () => {
                   helperText={contentNotificationCategories.joinedLFGStarting.description}
                   style={commonStyles.paddingHorizontal}
                 />
+                <BooleanField
+                  key={contentNotificationCategories.addedToLFG.configKey}
+                  name={contentNotificationCategories.addedToLFG.configKey}
+                  label={contentNotificationCategories.addedToLFG.title}
+                  value={appConfig.pushNotifications.addedToLFG}
+                  onPress={() => toggleValue(contentNotificationCategories.addedToLFG.configKey)}
+                  disabled={!hasNotificationPermission}
+                  helperText={contentNotificationCategories.addedToLFG.description}
+                  style={commonStyles.paddingHorizontal}
+                />
+                <BooleanField
+                  key={contentNotificationCategories.lfgCanceled.configKey}
+                  name={contentNotificationCategories.lfgCanceled.configKey}
+                  label={contentNotificationCategories.lfgCanceled.title}
+                  value={appConfig.pushNotifications.lfgCanceled}
+                  onPress={() => toggleValue(contentNotificationCategories.lfgCanceled.configKey)}
+                  disabled={!hasNotificationPermission}
+                  helperText={contentNotificationCategories.lfgCanceled.description}
+                  style={commonStyles.paddingHorizontal}
+                />
               </ListSection>
             </View>
           </Formik>

@@ -107,7 +107,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/boardgames`)}
+                onPress={() => handleDrawerNav('tricordarr://boardgames')}
               />
               <PaperDrawer.Item
                 label={'Karaoke'}

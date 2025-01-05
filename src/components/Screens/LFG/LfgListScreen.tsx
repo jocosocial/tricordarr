@@ -29,9 +29,16 @@ interface LfgJoinedScreenProps {
   enableFilters?: boolean;
   enableReportOnly?: boolean;
   listHeader?: ReactElement;
+  showFab?: boolean;
 }
 
-export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly, listHeader}: LfgJoinedScreenProps) => {
+export const LfgListScreen = ({
+  endpoint,
+  enableFilters = true,
+  enableReportOnly,
+  listHeader,
+  showFab = true,
+}: LfgJoinedScreenProps) => {
   const {lfgTypeFilter, lfgHidePastFilter, lfgCruiseDayFilter} = useFilter();
   const {isLoggedIn} = useAuth();
   const {data, isFetching, refetch, isLoading, fetchNextPage, isFetchingPreviousPage, isFetchingNextPage, hasNextPage} =
@@ -146,7 +153,7 @@ export const LfgListScreen = ({endpoint, enableFilters = true, enableReportOnly,
         enableReportOnly={enableReportOnly}
         listHeader={listHeader}
       />
-      <LfgFAB showLabel={showFabLabel} />
+      {showFab && <LfgFAB showLabel={showFabLabel} />}
     </AppView>
   );
 };

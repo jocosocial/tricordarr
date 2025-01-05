@@ -126,6 +126,36 @@ export const EventSettingsScreen = () => {
                   helperText={contentNotificationCategories.personalEventStarting.description}
                   style={commonStyles.paddingHorizontal}
                 />
+                <BooleanField
+                  key={contentNotificationCategories.addedToPrivateEvent.configKey}
+                  name={contentNotificationCategories.addedToPrivateEvent.configKey}
+                  label={contentNotificationCategories.addedToPrivateEvent.title}
+                  value={appConfig.pushNotifications.addedToPrivateEvent}
+                  onPress={() => toggleValue(contentNotificationCategories.addedToPrivateEvent.configKey)}
+                  disabled={!hasNotificationPermission}
+                  helperText={contentNotificationCategories.addedToPrivateEvent.description}
+                  style={commonStyles.paddingHorizontal}
+                />
+                <BooleanField
+                  key={contentNotificationCategories.privateEventCanceled.configKey}
+                  name={contentNotificationCategories.privateEventCanceled.configKey}
+                  label={contentNotificationCategories.privateEventCanceled.title}
+                  value={appConfig.pushNotifications.privateEventCanceled}
+                  onPress={() => toggleValue(contentNotificationCategories.privateEventCanceled.configKey)}
+                  disabled={!hasNotificationPermission}
+                  helperText={contentNotificationCategories.privateEventCanceled.description}
+                  style={commonStyles.paddingHorizontal}
+                />
+                <BooleanField
+                  key={contentNotificationCategories.privateEventUnreadMsg.configKey}
+                  name={contentNotificationCategories.privateEventUnreadMsg.configKey}
+                  label={contentNotificationCategories.privateEventUnreadMsg.title}
+                  value={appConfig.pushNotifications.privateEventUnreadMsg}
+                  onPress={() => toggleValue(contentNotificationCategories.privateEventUnreadMsg.configKey)}
+                  disabled={!hasNotificationPermission}
+                  helperText={contentNotificationCategories.privateEventUnreadMsg.description}
+                  style={commonStyles.paddingHorizontal}
+                />
               </ListSection>
             </View>
           </Formik>
