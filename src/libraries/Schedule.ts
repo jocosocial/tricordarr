@@ -97,6 +97,12 @@ export const getScheduleScrollIndex = (
     }
     const itemStartDayTime = calcCruiseDayTime(parseISO(scheduleItem.startTime), cruiseStartDate, cruiseEndDate);
     const tzOffset = getTimeZoneOffset(portTimeZoneID, scheduleItem.timeZoneID, scheduleItem.startTime);
+    // ScheduleItems that are present in the early hours of the day (00:00-03:00)
+    // mess with the detection since their dayMinutes are large (coming from the previous day).
+    // Skip these for consideration of the now index.
+    if (nowDayTime.cruiseDay !== itemStartDayTime.cruiseDay) {
+      continue;
+    }
     if (nowDayTime.dayMinutes - tzOffset <= itemStartDayTime.dayMinutes) {
       // The current i index is the next event in the schedule. Put another way,
       // it's the first upcoming event.
