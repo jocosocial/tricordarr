@@ -10,6 +10,7 @@ import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
 import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface LfgCreateScreenBaseProps {
   title?: string;
@@ -32,6 +33,7 @@ export const LfgCreateScreenBase = ({
   const navigation = useCommonStack();
   const fezMutation = useFezCreateMutation();
   const {startDate, adjustedCruiseDayToday} = useCruise();
+  const queryClient = useQueryClient();
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     helpers.setSubmitting(true);
@@ -52,10 +54,11 @@ export const LfgCreateScreenBase = ({
         },
       },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           navigation.replace(CommonStackComponents.lfgScreen, {
             fezID: response.data.fezID,
           });
+          await queryClient.invalidateQueries(['/notification/global'])
         },
         onSettled: () => {
           helpers.setSubmitting(false);
