@@ -6,10 +6,10 @@ A [Twitarr](https://github.com/jocosocial/swiftarr) client.
 Quick Start
 -----------
 ```
-nvm install lts/hydrogen
-nvm use lts/hydrogen (v18.20.4)
+nvm install lts/jod
+nvm use lts/jod (v22.13.0)
 
-yarn install --immutable --immutable-cache
+npm clean-install
 patch-package
 
 npx react-native start
