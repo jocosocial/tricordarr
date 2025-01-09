@@ -14,6 +14,10 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import moment from 'moment-timezone';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
+import {DataTableCell} from '../../Tables/DataTableCell.tsx';
 
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';
@@ -21,13 +25,19 @@ const getCleanISOString = (dateString: string): string => {
 
 const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
   const [showID, setShowID] = useState(false);
+  const {commonStyles} = useStyles();
   return (
     <DataTable.Row>
-      <DataTable.Cell onLongPress={() => Clipboard.setString(record.activeDate)}>
-        {getCleanISOString(record.activeDate)}
-      </DataTable.Cell>
-      <DataTable.Cell onPress={() => setShowID(!showID)} onLongPress={() => Clipboard.setString(record.timeZoneID)}>
-        {showID ? record.timeZoneID : record.timeZoneAbbrev}
+      <DataTableCell value={getCleanISOString(record.activeDate)} />
+      <DataTable.Cell
+        onPress={() => setShowID(!showID)}
+        onLongPress={() => Clipboard.setString(record.timeZoneID)}
+        style={commonStyles.paddingVerticalTiny}>
+        <Text>
+          {record.timeZoneID}
+          {'\n'}
+          {record.timeZoneAbbrev} (UTC{moment.tz(record.timeZoneID).utcOffset()})
+        </Text>
       </DataTable.Cell>
     </DataTable.Row>
   );
@@ -36,6 +46,11 @@ const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
 export const MainTimeZoneScreen = () => {
   const {data, refetch, isFetching, isInitialLoading} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
+  const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();
+
+  const refresh = async () => {
+    await Promise.all([refetch(), refetchNotificationData()]);
+  };
 
   const getNavBarIcons = useCallback(
     () => (
@@ -66,7 +81,7 @@ export const MainTimeZoneScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
         <ListTitleView title={'Check Device Time'} />
         <PaddedContentView padTop={true}>
           <Text>
@@ -84,12 +99,35 @@ export const MainTimeZoneScreen = () => {
         <DataTable>
           <DataTable.Header>
             <DataTable.Title>Effective Date (UTC)</DataTable.Title>
-            <DataTable.Title>Time Zone (tap for ID)</DataTable.Title>
+            <DataTable.Title>Details</DataTable.Title>
           </DataTable.Header>
           {data?.records.map((record, index) => {
             return <TimeZoneListItem key={index} record={record} />;
           })}
         </DataTable>
+        {notificationData && (
+          <>
+            <ListTitleView title={'Server Time Information'} />
+            <DataTable>
+              <DataTable.Row>
+                <DataTable.Cell>Time</DataTable.Cell>
+                <DataTableCell value={notificationData.serverTime} />
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>Time Zone ID</DataTable.Cell>
+                <DataTableCell value={notificationData.serverTimeZoneID} />
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>Time Zone Abbreviation</DataTable.Cell>
+                <DataTableCell value={notificationData.serverTimeZone} />
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell>UTC Offset</DataTable.Cell>
+                <DataTableCell value={notificationData.serverTimeOffset / 60} />
+              </DataTable.Row>
+            </DataTable>
+          </>
+        )}
       </ScrollingContentView>
     </AppView>
   );
