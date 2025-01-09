@@ -6,7 +6,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ScheduleStackComponents, ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {ScheduleEventFilterMenu} from '../../Menus/Schedule/ScheduleEventFilterMenu.tsx';
 import {ScheduleDayScreenActionsMenu} from '../../Menus/Schedule/ScheduleDayScreenActionsMenu.tsx';
@@ -24,6 +24,7 @@ import {FlashList} from '@shopify/flash-list';
 import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderScheduleYourDayButton.tsx';
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
+import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 
 type Props = NativeStackScreenProps<ScheduleStackParamList, ScheduleStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
@@ -123,11 +124,16 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
           <HeaderScheduleYourDayButton />
           <ScheduleEventFilterMenu />
+          <Item
+            title={'Search'}
+            iconName={AppIcons.search}
+            onPress={() => navigation.push(ScheduleStackComponents.eventSearchScreen)}
+          />
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh]);
+  }, [isLoggedIn, onRefresh, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
