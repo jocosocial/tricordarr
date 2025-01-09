@@ -99,6 +99,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       estimatedItemSize={120}
+      extraData={minutelyUpdatingDate}
     />
   );
 };
