@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
-import {StyleProp, StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {getDurationString} from '../../../libraries/DateTime';
 import {ScheduleCardMarkerType} from '../../../libraries/Types';
