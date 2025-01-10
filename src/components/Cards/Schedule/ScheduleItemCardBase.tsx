@@ -68,6 +68,20 @@ export const ScheduleItemCardBase = ({
     titleText: {
       ...commonStyles.bold,
       ...commonStyles.onTwitarrButton,
+      // I am convinced there is a regression in Android 15 or RN 0.76 on A15
+      // because everything worked without it. Now for certain string lengths
+      // an extra blank line gets drawn in the Text element. Happens with Paper
+      // and Native components. The combination of lineHeight + fontWeight +
+      // fontSize seem to be the trigger.
+      // import {Text as NativeText} from 'react-native';
+      // const nativeTextStyle: TextStyle = {
+      //   fontWeight: 'bold',
+      //   fontSize: 16,
+      //   lineHeight: 24,
+      //   backgroundColor: 'pink',
+      // };
+      // <NativeText style={nativeTextStyle}>Theme: Robot Day</NativeText>
+      lineHeight: undefined,
     },
     titleContainer: {
       ...commonStyles.flexRow,

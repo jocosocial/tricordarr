@@ -34,7 +34,7 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
           minCapacity: 0,
           maxCapacity: 0,
           initialUsers: values.initialUsers.map(u => u.userID),
-          fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.privateEvent,
+          fezType: values.initialUsers.length > 0 ? FezType.privateEvent : FezType.personalEvent,
         },
       },
       {

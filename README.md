@@ -6,10 +6,10 @@ A [Twitarr](https://github.com/jocosocial/swiftarr) client.
 Quick Start
 -----------
 ```
-nvm install lts/hydrogen
-nvm use lts/hydrogen (v18.20.4)
+nvm install lts/jod
+nvm use lts/jod (v22.13.0)
 
-yarn install --immutable --immutable-cache
+npm clean-install
 patch-package
 
 npx react-native start
@@ -108,7 +108,7 @@ Layout Consideration
 ### Screen Headers / Menus
 * Most screens should have an Actions Menu (three dots) in the upper right.
 * Common actions, then privileged actions separated on both sides by divider, help
-* Other than the Menu, acceptable Header buttons are [Filter, Sort, maybe Search?].
+* Other than the Menu, acceptable Header buttons are [Filter, Sort, Search].
 * If just help, skip the menu and use that as the icon where the menu would be
 
 ### FABs
