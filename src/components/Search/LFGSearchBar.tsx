@@ -8,6 +8,7 @@ import {FlashList} from '@shopify/flash-list';
 import {useLfgListQuery} from '../Queries/Fez/FezQueries.ts';
 import {SearchBarBase} from './SearchBarBase.tsx';
 import {FezListEndpoints} from '../../libraries/Types';
+import {useFilter} from '../Context/Contexts/FilterContext.ts';
 
 interface LFGSearchBarProps {
   endpoint: FezListEndpoints;
@@ -17,8 +18,10 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {setErrorMessage} = useErrorHandler();
+  const {lfgHidePastFilter} = useFilter();
   const {data, refetch, isFetching, remove} = useLfgListQuery({
     search: searchQuery,
+    hidePast: lfgHidePastFilter,
     options: {
       enabled: queryEnable,
     },
@@ -46,7 +49,9 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
 
   // Deal with some undefined issues below by defaulting to empty list.
   let lfgList: FezData[] = [];
-  data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+  searchQuery && data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
+
+  console.log(searchQuery);
 
   return (
     <>
