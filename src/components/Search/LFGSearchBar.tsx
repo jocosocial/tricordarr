@@ -51,8 +51,6 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   let lfgList: FezData[] = [];
   searchQuery && data?.pages.map(page => (lfgList = lfgList.concat(page.fezzes)));
 
-  console.log(searchQuery);
-
   return (
     <>
       <SearchBarBase
