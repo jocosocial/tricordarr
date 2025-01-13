@@ -16,6 +16,7 @@ interface ContentTextProps {
   textVariant?: VariantProp<never>;
   hashtagOnPress?: (tag: string) => void;
   mentionOnPress?: (username: string) => void;
+  forceMarkdown?: boolean;
 }
 
 /**
@@ -23,7 +24,14 @@ interface ContentTextProps {
  * @TODO this may need cleaned up and refactored to be more generic with content views.
  * Right now it's just announcements.
  */
-export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, mentionOnPress}: ContentTextProps) => {
+export const ContentText = ({
+  textStyle,
+  text,
+  textVariant,
+  hashtagOnPress,
+  mentionOnPress,
+  forceMarkdown,
+}: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {data} = useUserKeywordQuery({
     keywordType: 'alertwords',
@@ -105,7 +113,7 @@ export const ContentText = ({textStyle, text, textVariant, hashtagOnPress, menti
   });
 
   const markdownIdentifier = '<Markdown>';
-  if (text.startsWith(markdownIdentifier)) {
+  if (forceMarkdown || text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
     return <Markdown style={markdownStyle}>{strippedText}</Markdown>;
   }
