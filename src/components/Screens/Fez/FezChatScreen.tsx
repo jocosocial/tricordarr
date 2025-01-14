@@ -236,7 +236,10 @@ export const FezChatScreen = ({route}: Props) => {
 
   // Mark as Read useEffect
   useEffect(() => {
+    console.log('[FezChatScreen.tsx] Mark As Read useEffect');
     if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+      // This does not invalidate the current key because that's how we determine
+      // where the NEW marker goes.
       const invalidations = FezData.getCacheKeys().map(key => {
         return queryClient.invalidateQueries(key);
       });
@@ -245,19 +248,37 @@ export const FezChatScreen = ({route}: Props) => {
         console.log('[FezChatScreen.tsx] auto canceling notifications.');
         notifee.cancelDisplayedNotification(fez.fezID);
       }
-      refetchUserNotificationData();
     }
-  }, [fez, queryClient, refetchUserNotificationData, appConfig.markReadCancelPush]);
+  }, [fez, queryClient, appConfig.markReadCancelPush]);
 
   // Visible useEffect
   // Reload on so that when the user taps a Seamail notification while this screen is active in the background
   // it will update with the latest data. This refetches a little aggressively when coming from the background
   // so some day some debouncing should be implemented.
   useEffect(() => {
-    if (appStateVisible === 'active') {
-      refetch();
-    }
+    const checkInitial = async () => {
+      const initialNotification = await notifee.getInitialNotification();
+      if (initialNotification && appStateVisible === 'active') {
+        await refetch();
+      }
+    };
+    console.log('[FezChatScreen.tsx] Triggering appStateVisible useEffect', appStateVisible);
+    checkInitial();
   }, [appStateVisible, refetch]);
+
+  // When the screen unmounts, refetch the current Fez.
+  // This doesn't do an invalidation so that the local data is fresh if the
+  // user goes back in quickly. queryClient.invalidateQueries([`/fez/${fez.fezID}`]);
+  // would be the invalidation.
+  useEffect(() => {
+    return () => {
+      console.log('[FezChatScreen.tsx] useEffect return is running.');
+      if (fez && fez.members && fez.members.readCount !== fez.members.postCount) {
+        refetch();
+      }
+      refetchUserNotificationData();
+    };
+  }, [fez, refetch, refetchUserNotificationData]);
 
   // This is kinda hax for the fezPostData below
   if (!fez) {
