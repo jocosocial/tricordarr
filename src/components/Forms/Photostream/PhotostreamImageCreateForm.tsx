@@ -8,6 +8,8 @@ import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {PhotostreamImageSelectionView} from '../../Views/Photostream/PhotostreamImageSelectionView.tsx';
+import {Text} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
 
 interface PhotostreamImageCreateFormProps {
   onSubmit: (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => void;
@@ -34,6 +36,16 @@ export const PhotostreamImageCreateForm = ({
 }: PhotostreamImageCreateFormProps) => {
   const {commonStyles} = useStyles();
 
+  const styles = StyleSheet.create({
+    fieldWrapper: commonStyles.paddingBottom,
+    submitButton: commonStyles.marginTopSmall,
+    textWrapper: {
+      ...commonStyles.flexRow,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.paddingBottomSmall,
+    },
+  });
+
   const getLocationTitle = (value: string | undefined) => {
     if (value) {
       return value.toString();
@@ -50,7 +62,7 @@ export const PhotostreamImageCreateForm = ({
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
           <PhotostreamImageSelectionView />
-          <View style={[commonStyles.paddingBottom]}>
+          <View style={styles.fieldWrapper}>
             <PickerField<string>
               name={'locationName'}
               label={'Location'}
@@ -60,7 +72,7 @@ export const PhotostreamImageCreateForm = ({
               addUndefinedOption={true}
             />
           </View>
-          <View style={[commonStyles.paddingBottom]}>
+          <View style={styles.fieldWrapper}>
             <PickerField<EventData>
               name={'eventData'}
               label={'Event'}
@@ -70,10 +82,16 @@ export const PhotostreamImageCreateForm = ({
               addUndefinedOption={true}
             />
           </View>
+          <View style={styles.textWrapper}>
+            <Text variant={'labelMedium'}>
+              You can only post one image every five minutes. It cannot be removed except by moderators. Any text will
+              be automatically blurred. Choose wisely!
+            </Text>
+          </View>
           <PrimaryActionButton
             disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}
-            viewStyle={[commonStyles.marginTopSmall]}
+            viewStyle={styles.submitButton}
             onPress={handleSubmit}
             buttonText={'Post'}
           />

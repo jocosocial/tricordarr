@@ -18,6 +18,7 @@ const validationSchema = Yup.object().shape({
   retry: Yup.number().required(),
   staleTimeMinutes: Yup.number().required(),
   disruptionThreshold: Yup.number().required(),
+  imageStaleTimeDays: Yup.number().required(),
 });
 
 export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
@@ -76,14 +77,14 @@ export const QuerySettingsForm = (props: QuerySettingsFormProps) => {
             unit={'day'}
           />
           <SliderField
-            value={values.imageStaleTimeHours}
-            maximumValue={24}
+            value={values.imageStaleTimeDays}
+            maximumValue={30}
             minimumValue={1}
             step={1}
             label={'Image Stale Time'}
-            name={'imageStaleTimeHours'}
+            name={'imageStaleTimeDays'}
             helperText={'Amount of time for image response data to be considered fresh before automatically refreshed.'}
-            unit={'hour'}
+            unit={'day'}
           />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}

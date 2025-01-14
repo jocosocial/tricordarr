@@ -51,13 +51,14 @@ export const UserProfileEditScreen = ({route, navigation}: Props) => {
       },
       {
         onSettled: () => helpers.setSubmitting(false),
-        onSuccess: response => {
+        onSuccess: async response => {
           if (profilePublicData && profilePublicData.header.userID === route.params.user.header.userID) {
             setProfilePublicData(response.data);
           }
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
-            return response.data;
-          });
+          await Promise.all([
+            queryClient.invalidateQueries([`/users/${route.params.user.header.userID}/profile`]),
+            queryClient.invalidateQueries([`/users/find/${route.params.user.header.username}`]),
+          ]);
           navigation.goBack();
         },
       },
