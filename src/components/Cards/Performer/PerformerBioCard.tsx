@@ -1,7 +1,8 @@
-import {Card, Text} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';
+import {ContentText} from '../../Text/ContentText.tsx';
 
 interface PerformerBioCardProps {
   bio?: string;
@@ -23,7 +24,7 @@ export const PerformerBioCard = (props: PerformerBioCardProps) => {
   return (
     <Card style={styles.bioCard}>
       <Card.Content>
-        <Text selectable={true}>{props.bio}</Text>
+        <ContentText text={props.bio} forceMarkdown={true} />
       </Card.Content>
     </Card>
   );

@@ -58,8 +58,7 @@ export const EventScreen = ({navigation, route}: Props) => {
             <>
               <Item
                 title={'Favorite'}
-                color={eventData.isFavorite ? theme.colors.twitarrYellow : undefined}
-                iconName={AppIcons.favorite}
+                iconName={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
                 onPress={() => handleFavorite(eventData)}
               />
               {eventData.forum && (

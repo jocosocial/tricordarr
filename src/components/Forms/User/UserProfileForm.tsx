@@ -64,6 +64,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             name={'roomNumber'}
             label={'Cabin Number'}
             autoCapitalize={'words'}
+            keyboardType={'numeric'}
           />
           <PickerField
             viewStyle={styles.pickerContainer}
@@ -73,7 +74,13 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             choices={['red', 'gold', 'sro', '']}
             getTitle={value => DinnerTeam.getLabel(value as DinnerTeam)}
           />
-          <TextField viewStyle={styles.inputContainer} name={'email'} label={'Email'} />
+          <TextField
+            viewStyle={styles.inputContainer}
+            name={'email'}
+            label={'Email'}
+            autoCapitalize={'none'}
+            keyboardType={'email-address'}
+          />
           <TextField
             viewStyle={styles.inputContainer}
             name={'message'}
