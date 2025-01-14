@@ -101,12 +101,14 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
-        {players && <DataFieldListItem title={'Players'} description={players} />}
-        {playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}
-        {data.avgRating && <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating.toFixed(2)} />}
-        {data.yearPublished && <DataFieldListItem title={'Year'} description={data.yearPublished} />}
-        {data.complexity && <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity.toFixed(0)} />}
-        {data.gameDescription && (
+        {!!players && <DataFieldListItem title={'Players'} description={players} />}
+        {!!playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}
+        {!!data.avgRating && <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating.toFixed(2)} />}
+        {!!data.yearPublished && <DataFieldListItem title={'Year'} description={data.yearPublished} />}
+        {!!data.complexity && data.complexity > 0 && (
+          <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity.toFixed(0)} />
+        )}
+        {!!data.gameDescription && (
           <DataFieldListItem title={'Description'} description={decodeHtml(data.gameDescription)} />
         )}
         {data.gameTypes.length > 0 && (
@@ -116,7 +118,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
           <DataFieldListItem title={'Categories'} description={data.categories.join(', ')} />
         )}
         {data.mechanics.length > 0 && <DataFieldListItem title={'Mechanics'} description={data.mechanics.join(', ')} />}
-        {data.donatedBy && <DataFieldListItem title={'Donated By'} description={data.donatedBy} />}
+        {!!data.donatedBy && <DataFieldListItem title={'Donated By'} description={data.donatedBy} />}
         {(data.isExpansion || data.hasExpansions) && (
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
