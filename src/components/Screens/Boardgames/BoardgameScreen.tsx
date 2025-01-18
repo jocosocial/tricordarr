@@ -16,6 +16,7 @@ import {useBoardgameFavoriteMutation} from '../../Queries/Boardgames/BoardgameMu
 import {useQueryClient} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {HeaderFavoriteButton} from '../../Buttons/HeaderButtons/HeaderFavoriteButton.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 
@@ -64,11 +65,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
           {data && (
             <>
               <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
-              <Item
-                title={'Favorite'}
-                iconName={data?.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
-                onPress={onFavorite}
-              />
+              <HeaderFavoriteButton isFavorite={data.isFavorite} onPress={onFavorite} />
             </>
           )}
           <Item

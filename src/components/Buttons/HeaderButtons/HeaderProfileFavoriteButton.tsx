@@ -5,6 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteMutations.ts';
+import {HeaderFavoriteButton} from './HeaderFavoriteButton.tsx';
 
 interface HeaderProfileFavoriteButtonProps {
   profile: ProfilePublicData;
@@ -45,11 +46,5 @@ export const HeaderProfileFavoriteButton = (props: HeaderProfileFavoriteButtonPr
     }
   };
 
-  return (
-    <Item
-      iconName={props.profile.isFavorite ? AppIcons.unfavorite : AppIcons.favorite}
-      title={props.profile.isFavorite ? 'Unfavorite' : 'Favorite'}
-      onPress={handleFavorite}
-    />
-  );
+  return <HeaderFavoriteButton isFavorite={props.profile.isFavorite} onPress={handleFavorite} />;
 };
