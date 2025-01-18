@@ -5,7 +5,6 @@ import {useDrawer} from '../Context/Contexts/DrawerContext';
 import {PropsWithChildren} from 'react';
 import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
-import {useAppTheme} from '../../styles/Theme';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
@@ -16,7 +15,6 @@ import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
-  const theme = useAppTheme();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const {tokenData} = useAuth();
@@ -139,7 +137,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
                 icon={AppIcons.faq}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/faq`)}
+                onPress={() => handleDrawerNav('tricordarr://faq')}
               />
               <PaperDrawer.Item
                 label={'Code of Conduct'}
@@ -149,12 +147,12 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
               <PaperDrawer.Item
                 label={'About Twitarr (Service)'}
                 icon={AppIcons.twitarr}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/about`)}
+                onPress={() => handleDrawerNav('tricordarr://about')}
               />
               <PaperDrawer.Item
                 label={'About Tricordarr (App)'}
                 icon={AppIcons.tricordarr}
-                onPress={() => handleDrawerNav('tricordarr://about')}
+                onPress={() => handleDrawerNav('tricordarr://about-app')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Advanced'} showDivider={false}>

@@ -4,7 +4,7 @@ import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {TodayScreen} from '../../Screens/Main/TodayScreen.tsx';
 import {SettingsStackNavigator, SettingsStackParamList} from './SettingsStackNavigator.tsx';
-import {AboutScreen} from '../../Screens/Main/AboutScreen';
+import {AboutTricordarrScreen} from '../../Screens/Main/AboutTricordarrScreen.tsx';
 import {UserDirectoryScreen} from '../../Screens/User/UserDirectoryScreen';
 import {BoardgameData, DailyThemeData} from '../../../libraries/Structs/ControllerStructs';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
@@ -29,11 +29,15 @@ import {BoardgameRecommendScreen} from '../../Screens/Boardgames/BoardgameRecomm
 import {BoardgameSearchScreen} from '../../Screens/Boardgames/BoardgameSearchScreen.tsx';
 import {BoardgameExpansionsScreen} from '../../Screens/Boardgames/BoardgameExpansionsScreen.tsx';
 import {BoardgameCreateLfgScreen} from '../../Screens/Boardgames/BoardgameCreateLfgScreen.tsx';
+import {AboutTwitarrScreen} from '../../Screens/Main/AboutTwitarrScreen.tsx';
+import {FaqScreen} from '../../Screens/Main/FaqScreen.tsx';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;
   MainSettingsScreen: NavigatorScreenParams<SettingsStackParamList>;
-  AboutScreen: undefined;
+  AboutTwitarrScreen: undefined;
+  AboutTricordarrScreen: undefined;
+  FaqScreen: undefined;
   UserDirectoryScreen: undefined;
   DailyThemeScreen: {
     dailyTheme: DailyThemeData;
@@ -71,7 +75,9 @@ export const MainStack = createNativeStackNavigator<MainStackParamList>();
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
   mainSettingsScreen = 'MainSettingsScreen',
-  aboutScreen = 'AboutScreen',
+  aboutTwitarrScreen = 'AboutTwitarrScreen',
+  aboutTricordarrScreen = 'AboutTricordarrScreen',
+  faqScreen = 'FaqScreen',
   userDirectoryScreen = 'UserDirectoryScreen',
   dailyThemeScreen = 'DailyThemeScreen',
   mainHelpScreen = 'MainHelpScreen',
@@ -110,10 +116,16 @@ export const MainStackNavigator = () => {
         options={{headerShown: false}}
       />
       <MainStack.Screen
-        name={MainStackComponents.aboutScreen}
-        component={AboutScreen}
+        name={MainStackComponents.aboutTricordarrScreen}
+        component={AboutTricordarrScreen}
         options={{title: 'About Tricordarr'}}
       />
+      <MainStack.Screen
+        name={MainStackComponents.aboutTwitarrScreen}
+        component={AboutTwitarrScreen}
+        options={{title: 'About Twitarr'}}
+      />
+      <MainStack.Screen name={MainStackComponents.faqScreen} component={FaqScreen} options={{title: 'FAQ'}} />
       <MainStack.Screen
         name={MainStackComponents.userDirectoryScreen}
         component={isUsersDisabled ? DisabledView : UserDirectoryScreen}

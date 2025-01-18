@@ -7,8 +7,6 @@ import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNaviga
 import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
 import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
-import {LfgJoinedScreen} from '../components/Screens/LFG/LfgJoinedScreen.tsx';
-import {BoardgameListScreen} from '../components/Screens/Boardgames/BoardgameListScreen.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -30,7 +28,9 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           initialRouteName: MainStackComponents.mainScreen,
           screens: {
             MainScreen: 'home',
-            AboutScreen: 'about',
+            AboutTricordarrScreen: 'about-app',
+            AboutTwitarrScreen: 'about',
+            FaqScreen: 'faq',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
             // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
             // falling through to the default route. This is what we do in the UI, so oh well.

@@ -7,6 +7,7 @@ interface SwiftarrQueryClientContextType {
   setErrorCount: Dispatch<SetStateAction<number>>;
   disruptionDetected: boolean;
   ServerQueryClient: AxiosInstance;
+  PublicQueryClient: AxiosInstance;
   apiGet: <TData, TQueryParams>(
     url: string,
     queryParams?: TQueryParams,
@@ -19,6 +20,11 @@ interface SwiftarrQueryClientContextType {
   ) => Promise<AxiosResponse<TResponseData, TResponseData>>;
   apiDelete: <TResponseData = void>(url: string) => Promise<AxiosResponse<TResponseData, TResponseData>>;
   queryKeyExtraData: QueryKey;
+  publicGet: <TData, TQueryParams>(
+    url: string,
+    queryParams?: TQueryParams,
+    config?: AxiosRequestConfig,
+  ) => Promise<AxiosResponse<TData>>;
 }
 
 export const SwiftarrQueryClientContext = createContext(<SwiftarrQueryClientContextType>{});
