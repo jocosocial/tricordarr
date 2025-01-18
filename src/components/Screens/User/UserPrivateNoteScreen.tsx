@@ -13,6 +13,7 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userPrivateNoteScreen>;
 
@@ -34,12 +35,10 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
-            return {
-              ...route.params.user,
-              note: values.note,
-            };
+          const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
+            return queryClient.invalidateQueries(key);
           });
+          Promise.all(invalidations);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),
@@ -52,13 +51,11 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
         userID: route.params.user.header.userID,
       },
       {
-        onSuccess: () => {
-          queryClient.setQueryData([`/users/${route.params.user.header.userID}/profile`, undefined], () => {
-            return {
-              ...route.params.user,
-              note: undefined,
-            };
+        onSuccess: async () => {
+          const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
+            return queryClient.invalidateQueries(key);
           });
+          await Promise.all(invalidations);
           navigation.goBack();
         },
       },

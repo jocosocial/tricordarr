@@ -50,6 +50,10 @@ export namespace UserHeader {
   export const contains = (headers: UserHeader[], header: UserHeader) => {
     return headers.map(h => h.userID).includes(header.userID);
   };
+
+  export const getCacheKeys = (header: UserHeader): QueryKey[] => {
+    return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`]];
+  };
 }
 
 export interface ProfilePublicData {

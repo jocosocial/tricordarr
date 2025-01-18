@@ -2,7 +2,7 @@ import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppView} from '../../Views/AppView';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
-import {UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
+import {UserHeader, UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserProfileForm} from '../../Forms/User/UserProfileForm.tsx';
@@ -55,10 +55,10 @@ export const UserProfileEditScreen = ({route, navigation}: Props) => {
           if (profilePublicData && profilePublicData.header.userID === route.params.user.header.userID) {
             setProfilePublicData(response.data);
           }
-          await Promise.all([
-            queryClient.invalidateQueries([`/users/${route.params.user.header.userID}/profile`]),
-            queryClient.invalidateQueries([`/users/find/${route.params.user.header.username}`]),
-          ]);
+          const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
           navigation.goBack();
         },
       },
