@@ -5,7 +5,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {RefreshControl} from 'react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {UserListItem} from '../../Lists/Items/UserListItem';
@@ -17,13 +16,14 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
 export const BlockUsersScreen = ({navigation}: Props) => {
-  const {blocks, setBlocks} = useUserRelations();
   const {hasModerator} = usePrivilege();
   const userBlockMutation = useUserBlockMutation();
-  const {isLoading, refetch, isRefetching} = useUserBlocksQuery();
+  const {data, isFetching, refetch} = useUserBlocksQuery();
+  const queryClient = useQueryClient();
 
   const handleUnblockUser = (userHeader: UserHeader) => {
     userBlockMutation.mutate(
@@ -32,8 +32,11 @@ export const BlockUsersScreen = ({navigation}: Props) => {
         userID: userHeader.userID,
       },
       {
-        onSuccess: () => {
-          setBlocks(blocks.filter(m => m.userID !== userHeader.userID));
+        onSuccess: async () => {
+          const invalidations = UserHeader.getRelationKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );
@@ -46,34 +49,35 @@ export const BlockUsersScreen = ({navigation}: Props) => {
         userID: userHeader.userID,
       },
       {
-        onSuccess: () => {
-          setBlocks(blocks.concat(userHeader));
+        onSuccess: async () => {
+          const invalidations = UserHeader.getRelationKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );
   };
 
-  if (isLoading) {
+  if (data === undefined) {
     return <LoadingView />;
   }
 
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={
-          <RefreshControl refreshing={isRefetching || userBlockMutation.isLoading} onRefresh={refetch} />
-        }>
+        refreshControl={<RefreshControl refreshing={isFetching || userBlockMutation.isLoading} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={blocks} onPress={handleBlockUser} />
+          <UserSearchBar excludeHeaders={data} onPress={handleBlockUser} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Blocked Users:</Text>
-          {blocks.length === 0 && <ItalicText>You have not blocked any users.</ItalicText>}
-          {blocks.map((relatedUserHeader, i) => (
+          {data.length === 0 && <ItalicText>You have not blocked any users.</ItalicText>}
+          {data.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
               userHeader={relatedUserHeader}

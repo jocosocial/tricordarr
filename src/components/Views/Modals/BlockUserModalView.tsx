@@ -5,10 +5,10 @@ import {ModalCard} from '../../Cards/ModalCard';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ModeratorBlockText, UserBlockText} from '../../Text/UserRelationsText';
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface BlockUserModalViewProps {
   user: UserHeader;
@@ -28,7 +28,7 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
   const blockMutation = useUserBlockMutation();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
-  const {blocks, setBlocks} = useUserRelations();
+  const queryClient = useQueryClient();
 
   const onSubmit = () => {
     blockMutation.mutate(
@@ -38,7 +38,10 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
       },
       {
         onSuccess: () => {
-          setBlocks(blocks.concat([user]));
+          const invalidations = UserHeader.getRelationKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          Promise.all(invalidations);
           setModalVisible(false);
         },
       },

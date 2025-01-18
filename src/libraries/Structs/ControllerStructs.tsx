@@ -47,12 +47,20 @@ export interface UserHeader {
 }
 
 export namespace UserHeader {
-  export const contains = (headers: UserHeader[], header: UserHeader) => {
+  export const contains = (headers: UserHeader[] = [], header: UserHeader) => {
     return headers.map(h => h.userID).includes(header.userID);
   };
 
   export const getCacheKeys = (header: UserHeader): QueryKey[] => {
     return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`]];
+  };
+
+  export const getRelationKeys = (header?: UserHeader): QueryKey[] => {
+    const keys = [['/users/favorites'], ['/users/blocks'], ['/users/mutes']];
+    if (header) {
+      return getCacheKeys(header).concat(keys);
+    }
+    return keys;
   };
 }
 

@@ -1,8 +1,5 @@
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import React from 'react';
-import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {Item} from 'react-navigation-header-buttons';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
+import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteMutations.ts';
 import {HeaderFavoriteButton} from './HeaderFavoriteButton.tsx';
@@ -13,37 +10,23 @@ interface HeaderProfileFavoriteButtonProps {
 
 export const HeaderProfileFavoriteButton = (props: HeaderProfileFavoriteButtonProps) => {
   const favoriteMutation = useUserFavoriteMutation();
-  const {favorites, setFavorites} = useUserRelations();
   const queryClient = useQueryClient();
 
   const handleFavorite = () => {
-    if (props.profile.isFavorite) {
-      favoriteMutation.mutate(
-        {
-          userID: props.profile.header.userID,
-          action: 'unfavorite',
+    favoriteMutation.mutate(
+      {
+        userID: props.profile.header.userID,
+        action: props.profile.isFavorite ? 'unfavorite' : 'favorite',
+      },
+      {
+        onSuccess: async () => {
+          const invalidations = UserHeader.getRelationKeys(props.profile.header).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
-        {
-          onSuccess: async () => {
-            setFavorites(favorites.filter(m => m.userID !== props.profile.header.userID));
-            await queryClient.invalidateQueries([`/users/${props.profile.header.userID}/profile`]);
-          },
-        },
-      );
-    } else {
-      favoriteMutation.mutate(
-        {
-          userID: props.profile.header.userID,
-          action: 'favorite',
-        },
-        {
-          onSuccess: async () => {
-            setFavorites(favorites.concat([props.profile.header]));
-            await queryClient.invalidateQueries([`/users/${props.profile.header.userID}/profile`]);
-          },
-        },
-      );
-    }
+      },
+    );
   };
 
   return <HeaderFavoriteButton isFavorite={props.profile.isFavorite} onPress={handleFavorite} />;

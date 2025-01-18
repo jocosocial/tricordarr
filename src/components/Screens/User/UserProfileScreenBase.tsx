@@ -11,7 +11,6 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserProfileScreenActionsMenu} from '../../Menus/User/UserProfileScreenActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {UserContentCard} from '../../Cards/UserProfile/UserContentCard';
 import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
@@ -29,6 +28,9 @@ import {HeaderProfileFavoriteButton} from '../../Buttons/HeaderButtons/HeaderPro
 import {HeaderProfileSeamailButton} from '../../Buttons/HeaderButtons/HeaderProfileSeamailButton.tsx';
 import {UserProfileSelfActionsMenu} from '../../Menus/User/UserProfileSelfActionsMenu.tsx';
 import {StyleSheet} from 'react-native';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -49,9 +51,11 @@ export const UserProfileScreenBase = ({
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-  const {mutes, refetchMutes, blocks, refetchBlocks, refetchFavorites} = useUserRelations();
   const commonNavigation = useCommonStack();
   const {isLoggedIn} = useAuth();
+  const {refetch: refetchFavorites} = useUserFavoritesQuery();
+  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
+  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -103,12 +107,12 @@ export const UserProfileScreenBase = ({
     setIsBlocked(false);
     if (data) {
       // Determine if the user should be blocked, muted, etc.
-      mutes.map(mutedUserHeader => {
+      mutes?.map(mutedUserHeader => {
         if (mutedUserHeader.userID === data.header.userID) {
           setIsMuted(true);
         }
       });
-      blocks.map(blockedUserHeader => {
+      blocks?.map(blockedUserHeader => {
         if (blockedUserHeader.userID === data.header.userID) {
           setIsBlocked(true);
         }
