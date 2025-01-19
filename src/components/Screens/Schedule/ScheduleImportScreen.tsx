@@ -14,6 +14,7 @@ import pluralize from 'pluralize';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {VEvent} from 'node-ical';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const ScheduleImportScreen = () => {
   const {appConfig} = useConfig();
@@ -21,11 +22,13 @@ export const ScheduleImportScreen = () => {
   const eventFavoriteMutation = useEventFavoriteMutation();
   const [log, setLog] = useState<string[]>([]);
   const {setErrorMessage} = useErrorHandler();
+  const queryClient = useQueryClient();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
     setLog([]);
+    await queryClient.invalidateQueries(['/events']);
     let successCount = 0,
       skipCount = 0;
     await refetch();
@@ -44,6 +47,8 @@ export const ScheduleImportScreen = () => {
       return;
     }
 
+    const mutations = [];
+
     for (const schedEvent of schedEvents) {
       const schedEventUid = getEventUid(schedEvent.uid);
       const twitarrEvent = twitarrEvents.find(e => e.uid === schedEventUid);
@@ -55,23 +60,23 @@ export const ScheduleImportScreen = () => {
         skipCount += 1;
         continue;
       }
-      eventFavoriteMutation.mutate(
-        {
+      mutations.push(
+        eventFavoriteMutation.mutateAsync({
           eventID: twitarrEvent.eventID,
           action: 'favorite',
-        },
-        {
-          onSuccess: () => (successCount += 1),
-        },
+        }),
       );
     }
+    await Promise.allSettled(mutations);
+    successCount = mutations.length;
     writeLog('');
     if (successCount === 0 && skipCount === 0) {
       writeLog('Found no events to import. Check username and prerequisites above.');
     } else {
-      writeLog(`Successfully imported ${successCount} ${pluralize('event', successCount)}.`);
-      writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)}.`);
+      writeLog(`Successfully processed ${successCount} ${pluralize('event', successCount)}.`);
+      writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)} already favorited.`);
     }
+    await queryClient.invalidateQueries(['/events']);
     helpers.setSubmitting(false);
   };
 
@@ -94,8 +99,8 @@ export const ScheduleImportScreen = () => {
           <SchedImportForm initialValues={{username: ''}} onSubmit={onSubmit} />
         </PaddedContentView>
         <PaddedContentView>
-          {log.map(line => (
-            <Text selectable={true} variant={'bodySmall'}>
+          {log.map((line, index) => (
+            <Text key={index} selectable={true} variant={'bodySmall'}>
               {line}
             </Text>
           ))}
