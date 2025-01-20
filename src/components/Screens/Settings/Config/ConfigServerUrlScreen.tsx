@@ -29,6 +29,7 @@ export const ConfigServerUrlScreen = () => {
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
+  const {setErrorMessage} = useErrorHandler();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = appConfig.serverUrl;
@@ -50,6 +51,7 @@ export const ConfigServerUrlScreen = () => {
         queryClient.clear();
       });
     }
+    setErrorMessage(undefined);
   };
 
   useEffect(() => {
