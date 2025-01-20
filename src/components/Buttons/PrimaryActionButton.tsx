@@ -3,6 +3,7 @@ import React from 'react';
 import {useAppTheme} from '../../styles/Theme';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 interface PrimaryActionButtonProps {
   buttonText: string;
@@ -14,6 +15,7 @@ interface PrimaryActionButtonProps {
   style?: StyleProp<ViewStyle>;
   isLoading?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
+  icon?: IconSource;
 }
 
 /**
@@ -29,6 +31,7 @@ export const PrimaryActionButton = ({
   style = {},
   isLoading = false,
   viewStyle,
+  icon,
 }: PrimaryActionButtonProps) => {
   const theme = useAppTheme();
 
@@ -46,7 +49,7 @@ export const PrimaryActionButton = ({
         style={[buttonStyle, style]}
         mode={mode}
         onPress={onPress}
-        icon={isLoading ? getLoadingIcon : undefined}
+        icon={isLoading ? getLoadingIcon : icon}
         disabled={disabled}>
         {buttonText}
       </Button>
