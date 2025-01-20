@@ -3,7 +3,7 @@ import React from 'react';
 import {TextFieldProps} from './TextField';
 import {useField, useFormikContext} from 'formik';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {View} from 'react-native';
+import {Keyboard, View} from 'react-native';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -56,6 +56,9 @@ export const SuggestedTextField = ({
     <Menu
       visible={visible}
       onDismiss={closeMenu}
+      // onScroll is a patch I added
+      // @ts-ignore
+      onScroll={() => Keyboard.dismiss()}
       anchor={
         <View style={viewStyle}>
           <TextInput
