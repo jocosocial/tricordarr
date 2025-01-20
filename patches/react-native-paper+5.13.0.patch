@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.tsx b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
+index db5e9a1..123377c 100644
+--- a/node_modules/react-native-paper/src/components/Menu/Menu.tsx
++++ b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
+@@ -89,6 +89,10 @@ export type Props = {
+    * Inner ScrollView prop
+    */
+   keyboardShouldPersistTaps?: ScrollViewProps['keyboardShouldPersistTaps'];
++  /**
++   * Fires at most once per frame during scrolling of the inner ScrollView.
++   */
++  onScroll?: ScrollViewProps['onScroll'];
+   /**
+    * testID to be used on tests.
+    */
+@@ -195,6 +199,7 @@ const Menu = ({
+   children,
+   theme: themeOverrides,
+   keyboardShouldPersistTaps,
++  onScroll,
+ }: Props) => {
+   const theme = useInternalTheme(themeOverrides);
+   const [rendered, setRendered] = React.useState(visible);
+@@ -671,6 +676,7 @@ const Menu = ({
+                 {(scrollableMenuHeight && (
+                   <ScrollView
+                     keyboardShouldPersistTaps={keyboardShouldPersistTaps}
++                    onScroll={onScroll}
+                   >
+                     {children}
+                   </ScrollView>

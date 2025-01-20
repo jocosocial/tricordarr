@@ -12,6 +12,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {EventScreenActionsMenu} from '../../Menus/Events/EventScreenActionsMenu';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
+import {HeaderFavoriteButton} from '../../Buttons/HeaderButtons/HeaderFavoriteButton.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
@@ -56,11 +57,7 @@ export const EventScreen = ({navigation, route}: Props) => {
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
           {eventData && (
             <>
-              <Item
-                title={'Favorite'}
-                iconName={eventData.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
-                onPress={() => handleFavorite(eventData)}
-              />
+              <HeaderFavoriteButton isFavorite={eventData.isFavorite} onPress={() => handleFavorite(eventData)} />
               {eventData.forum && (
                 <Item
                   title={'Forum'}

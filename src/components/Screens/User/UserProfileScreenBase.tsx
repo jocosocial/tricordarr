@@ -11,12 +11,10 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserProfileScreenActionsMenu} from '../../Menus/User/UserProfileScreenActionsMenu.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {BlockedOrMutedBanner} from '../../Banners/BlockedOrMutedBanner';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {UserContentCard} from '../../Cards/UserProfile/UserContentCard';
 import {UserAboutCard} from '../../Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '../../Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '../../Cards/UserProfile/UserNoteCard';
-import {AppIcon} from '../../Icons/AppIcon';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {useAuth} from '../../Context/Contexts/AuthContext';
@@ -24,13 +22,15 @@ import {NotLoggedInView} from '../../Views/Static/NotLoggedInView';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '../../Views/UserProfileAvatar';
 import {ErrorView} from '../../Views/Static/ErrorView';
-import {useAppTheme} from '../../../styles/Theme';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import {HeaderProfileFavoriteButton} from '../../Buttons/HeaderButtons/HeaderProfileFavoriteButton.tsx';
 import {HeaderProfileSeamailButton} from '../../Buttons/HeaderButtons/HeaderProfileSeamailButton.tsx';
 import {UserProfileSelfActionsMenu} from '../../Menus/User/UserProfileSelfActionsMenu.tsx';
 import {StyleSheet} from 'react-native';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
+import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
+import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -49,13 +49,13 @@ export const UserProfileScreenBase = ({
   const [refreshing, setRefreshing] = useState(false);
   const {profilePublicData} = useUserData();
   const {commonStyles} = useStyles();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-  const {mutes, refetchMutes, blocks, refetchBlocks, favorites, refetchFavorites} = useUserRelations();
   const commonNavigation = useCommonStack();
   const {isLoggedIn} = useAuth();
-  const theme = useAppTheme();
+  const {refetch: refetchFavorites} = useUserFavoritesQuery();
+  const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
+  const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -96,35 +96,29 @@ export const UserProfileScreenBase = ({
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, data, profilePublicData?.header.userID, isMuted, isBlocked, commonNavigation]);
+  }, [isLoggedIn, data, profilePublicData?.header.userID, isMuted, isBlocked, oobe, commonNavigation]);
 
   useEffect(() => {
     commonNavigation.setOptions({
       headerRight: getNavButtons,
     });
     // Reset the mute/block state before re-determining.
-    setIsFavorite(false);
     setIsMuted(false);
     setIsBlocked(false);
     if (data) {
       // Determine if the user should be blocked, muted, etc.
-      favorites.map(favoriteUserHeader => {
-        if (favoriteUserHeader.userID === data.header.userID) {
-          setIsFavorite(true);
-        }
-      });
-      mutes.map(mutedUserHeader => {
+      mutes?.map(mutedUserHeader => {
         if (mutedUserHeader.userID === data.header.userID) {
           setIsMuted(true);
         }
       });
-      blocks.map(blockedUserHeader => {
+      blocks?.map(blockedUserHeader => {
         if (blockedUserHeader.userID === data.header.userID) {
           setIsBlocked(true);
         }
       });
     }
-  }, [blocks, favorites, getNavButtons, mutes, commonNavigation, data]);
+  }, [blocks, getNavButtons, mutes, commonNavigation, data]);
 
   const styles = StyleSheet.create({
     listContentCenter: {
@@ -167,12 +161,6 @@ export const UserProfileScreenBase = ({
         </PaddedContentView>
         <PaddedContentView style={styles.listContentCenter}>
           <Text selectable={true} variant={'headlineMedium'} style={styles.titleText}>
-            {isFavorite && (
-              <>
-                <AppIcon color={theme.colors.twitarrYellow} icon={'star'} />
-                &nbsp;
-              </>
-            )}
             <UserBylineTag user={data.header} includePronoun={false} variant={'headlineMedium'} />
           </Text>
         </PaddedContentView>

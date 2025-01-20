@@ -8,10 +8,10 @@ import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu';
 import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useAppTheme} from '../../../styles/Theme';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -40,8 +40,8 @@ export const ForumPostMessageView = ({
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
   const theme = useAppTheme();
-  const {favorites} = useUserRelations();
   const commonNavigation = useCommonStack();
+  const {data: favorites} = useUserFavoritesQuery();
 
   const styles = StyleSheet.create({
     messageView: {

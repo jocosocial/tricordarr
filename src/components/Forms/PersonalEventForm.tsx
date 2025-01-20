@@ -16,6 +16,9 @@ import {AppIcons} from '../../libraries/Enums/Icons.ts';
 import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
 import {useModal} from '../Context/Contexts/ModalContext.ts';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
+import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
+import {getUserSuggestedLocations, publicLocationSuggestions} from '../../libraries/Ship.ts';
+import {useUserData} from '../Context/Contexts/UserDataContext.ts';
 
 interface PersonalEventFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -28,6 +31,7 @@ const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
   startDate: DateValidation,
   info: InfoStringValidation,
+  location: InfoStringValidation,
 });
 
 const locationHelpContent = [
@@ -46,6 +50,7 @@ export const PersonalEventForm = ({
     buttonContainer: [commonStyles.marginTopSmall],
   };
   const {setModalVisible, setModalContent} = useModal();
+  const {profilePublicData} = useUserData();
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();
@@ -66,12 +71,13 @@ export const PersonalEventForm = ({
             multiline={true}
             numberOfLines={3}
           />
-          <TextField
+          <SuggestedTextField
             viewStyle={styles.inputContainer}
             name={'location'}
             label={'Location'}
             autoCapitalize={'words'}
-            right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
+            right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} disabled={isSubmitting} />}
+            suggestions={getUserSuggestedLocations(profilePublicData)}
           />
           <View style={[commonStyles.paddingBottom]}>
             <DatePickerField name={'startDate'} />

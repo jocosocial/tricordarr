@@ -45,6 +45,31 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
 
   /**
+   * Raw
+   */
+  const PublicQueryClient = useMemo(() => {
+    const client = axios.create({
+      baseURL: `${appConfig.serverUrl}`,
+      headers: {
+        'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
+        // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
+        'Cache-Control': 'no-store',
+      },
+      timeout: appConfig.apiClientConfig.requestTimeout,
+      timeoutErrorMessage: 'Tricordarr/Axios request timeout.',
+    });
+    client.interceptors.request.use(async config => {
+      // This logs even when the response is returned from cache.
+      console.info(
+        `Public Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
+        config.params,
+      );
+      return config;
+    });
+    return client;
+  }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl]);
+
+  /**
    * Bonus data to inject into the clients query keys.
    * Some day there may be more than one in which case this could need to be smarter.
    */
@@ -87,6 +112,16 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       return await ServerQueryClient.delete<TResponseData, AxiosResponse<TResponseData, TResponseData>>(url);
     },
     [ServerQueryClient],
+  );
+
+  const publicGet = useCallback(
+    async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
+      return await PublicQueryClient.get<TData, AxiosResponse<TData, TData>>(url, {
+        params: queryParams,
+        ...config,
+      });
+    },
+    [PublicQueryClient],
   );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -173,6 +208,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         apiPost,
         apiDelete,
         ServerQueryClient,
+        PublicQueryClient,
+        publicGet,
       }}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}

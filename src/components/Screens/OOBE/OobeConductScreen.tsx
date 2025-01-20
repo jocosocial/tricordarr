@@ -4,11 +4,12 @@ import {OobeStackComponents, OobeStackParamList} from '../../Navigation/Stacks/O
 import {AppView} from '../../Views/AppView';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
-import {ConductView} from '../../Views/Static/ConductView';
 import {useConductQuery} from '../../Queries/PublicQueries';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {ContentText} from '../../Text/ContentText.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;
 
@@ -22,10 +23,12 @@ export const OobeConductScreen = ({navigation}: Props) => {
   return (
     <AppView safeEdges={['bottom']}>
       <ScrollingContentView
-        isStack={false}
+        isStack={true}
         style={commonStyles.marginBottomZero}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <ConductView docs={[data.guidelines, data.codeofconduct, data.twitarrconduct]} />
+        <PaddedContentView>
+          <ContentText text={data} forceMarkdown={true} />
+        </PaddedContentView>
         <OobeButtonsView
           leftOnPress={() => navigation.goBack()}
           rightText={'I Agree'}

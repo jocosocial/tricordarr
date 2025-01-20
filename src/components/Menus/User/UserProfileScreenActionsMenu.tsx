@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext.ts';
 import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
@@ -14,6 +13,7 @@ import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScre
 import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;
@@ -27,9 +27,9 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
-  const {mutes, setMutes, blocks, setBlocks} = useUserRelations();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
+  const queryClient = useQueryClient();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -82,7 +82,10 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
               {userID: profile.header.userID, action: 'unblock'},
               {
                 onSuccess: () => {
-                  setBlocks(blocks.filter(m => m.userID !== profile.header.userID));
+                  const invalidations = UserHeader.getRelationKeys().map(key => {
+                    return queryClient.invalidateQueries(key);
+                  });
+                  Promise.all(invalidations);
                   closeMenu();
                 },
               },
@@ -101,7 +104,10 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
               {userID: profile.header.userID, action: 'unmute'},
               {
                 onSuccess: () => {
-                  setMutes(mutes.filter(m => m.userID !== profile.header.userID));
+                  const invalidations = UserHeader.getRelationKeys().map(key => {
+                    return queryClient.invalidateQueries(key);
+                  });
+                  Promise.all(invalidations);
                   closeMenu();
                 },
               },

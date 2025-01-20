@@ -15,7 +15,6 @@ import {ForegroundService} from './src/components/Libraries/Notifications/Foregr
 import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
 import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
 import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
-import {UserRelationsProvider} from './src/components/Context/Providers/UserRelationsProvider';
 import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
 import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
@@ -84,7 +83,6 @@ function App(): React.JSX.Element {
    * These were of course not determined when I did the big refactor around LFGs/Forums
    * when it would have been useful...
    *
-   * ModalProvider needs UserRelationsProvider for blocks/mutes/favorites to mutate successfully.
    * SwiftarrQueryClientProvider needs ConfigProvider for cache busting.
    * StyleProvider needs PaperProvider for theming.
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
@@ -106,31 +104,29 @@ function App(): React.JSX.Element {
                           <PrivilegeProvider>
                             <SocketProvider>
                               <TwitarrProvider>
-                                <UserRelationsProvider>
-                                  <UserNotificationDataProvider>
-                                    <FeatureProvider>
-                                      <ModalProvider>
-                                        <Portal.Host>
-                                          <HeaderButtonsProvider stackType={'native'}>
-                                            <CruiseProvider>
-                                              <DrawerProvider>
-                                                <FilterProvider>
-                                                  <SelectionProvider>
-                                                    <AppEventHandler />
-                                                    <ForegroundService />
-                                                    <NotificationDataListener />
-                                                    <NotificationDataPoller />
-                                                    <RootStackNavigator />
-                                                  </SelectionProvider>
-                                                </FilterProvider>
-                                              </DrawerProvider>
-                                            </CruiseProvider>
-                                          </HeaderButtonsProvider>
-                                        </Portal.Host>
-                                      </ModalProvider>
-                                    </FeatureProvider>
-                                  </UserNotificationDataProvider>
-                                </UserRelationsProvider>
+                                <UserNotificationDataProvider>
+                                  <FeatureProvider>
+                                    <ModalProvider>
+                                      <Portal.Host>
+                                        <HeaderButtonsProvider stackType={'native'}>
+                                          <CruiseProvider>
+                                            <DrawerProvider>
+                                              <FilterProvider>
+                                                <SelectionProvider>
+                                                  <AppEventHandler />
+                                                  <ForegroundService />
+                                                  <NotificationDataListener />
+                                                  <NotificationDataPoller />
+                                                  <RootStackNavigator />
+                                                </SelectionProvider>
+                                              </FilterProvider>
+                                            </DrawerProvider>
+                                          </CruiseProvider>
+                                        </HeaderButtonsProvider>
+                                      </Portal.Host>
+                                    </ModalProvider>
+                                  </FeatureProvider>
+                                </UserNotificationDataProvider>
                               </TwitarrProvider>
                             </SocketProvider>
                           </PrivilegeProvider>

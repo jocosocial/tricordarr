@@ -30,3 +30,26 @@ export function useOpenQuery<TData, TQueryParams = Object, TError extends Error 
     ...options,
   });
 }
+
+export function usePublicQuery<TData, TQueryParams = Object, TError extends Error = AxiosError<ErrorResponse>>(
+  endpoint: string,
+  // Reminder: onError is deprecated. It's in SwiftarrQueryClientProvider.tsx instead.
+  options?: Omit<UseQueryOptions<TData, TError, TData>, 'initialData' | 'queryKey'> & {
+    initialData?: () => undefined;
+  },
+  queryParams?: TQueryParams,
+): UseQueryResult<TData, TError> {
+  const {disruptionDetected, publicGet, queryKeyExtraData} = useSwiftarrQueryClient();
+
+  return useQuery<TData, TError, TData>({
+    enabled: !disruptionDetected,
+    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+    queryFn: options?.queryFn
+      ? options.queryFn
+      : async () => {
+          const response = await publicGet<TData, TQueryParams>(endpoint, queryParams);
+          return response.data;
+        },
+    ...options,
+  });
+}

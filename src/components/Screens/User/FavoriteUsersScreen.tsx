@@ -5,7 +5,6 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView';
 import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
-import {useUserRelations} from '../../Context/Contexts/UserRelationsContext';
 import {RefreshControl} from 'react-native';
 import {UserListItem} from '../../Lists/Items/UserListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
@@ -16,12 +15,13 @@ import {LoadingView} from '../../Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteMutations.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 export const FavoriteUsersScreen = ({navigation}: Props) => {
-  const {favorites, setFavorites} = useUserRelations();
   const userFavoriteMutation = useUserFavoriteMutation();
-  const {isLoading, isRefetching, refetch} = useUserFavoritesQuery();
+  const {data, isFetching, refetch} = useUserFavoritesQuery();
+  const queryClient = useQueryClient();
 
   const handleUnfavoriteUser = (userHeader: UserHeader) => {
     userFavoriteMutation.mutate(
@@ -30,8 +30,11 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
         userID: userHeader.userID,
       },
       {
-        onSuccess: () => {
-          setFavorites(favorites.filter(m => m.userID !== userHeader.userID));
+        onSuccess: async () => {
+          const invalidations = UserHeader.getRelationKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );
@@ -44,14 +47,17 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
         userID: userHeader.userID,
       },
       {
-        onSuccess: () => {
-          setFavorites(favorites.concat(userHeader));
+        onSuccess: async () => {
+          const invalidations = UserHeader.getRelationKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
         },
       },
     );
   };
 
-  if (isLoading) {
+  if (data === undefined) {
     return <LoadingView />;
   }
 
@@ -59,18 +65,18 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         refreshControl={
-          <RefreshControl refreshing={isRefetching || userFavoriteMutation.isLoading} onRefresh={refetch} />
+          <RefreshControl refreshing={isFetching || userFavoriteMutation.isLoading} onRefresh={refetch} />
         }>
         <PaddedContentView>
           <UserFavoriteText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={favorites} onPress={handleFavoriteUser} />
+          <UserSearchBar excludeHeaders={data} onPress={handleFavoriteUser} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>
-          {favorites.length === 0 && <ItalicText>You have not favorited any users.</ItalicText>}
-          {favorites.map((relatedUserHeader, i) => (
+          {data.length === 0 && <ItalicText>You have not favorited any users.</ItalicText>}
+          {data.map((relatedUserHeader, i) => (
             <UserListItem
               key={i}
               userHeader={relatedUserHeader}

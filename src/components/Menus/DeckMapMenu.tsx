@@ -4,7 +4,6 @@ import {Item} from 'react-navigation-header-buttons';
 import {Dispatch, SetStateAction, useState} from 'react';
 import {DeckData, ShipDecks} from '../../libraries/Ship';
 import {SelectableMenuItem} from './Items/SelectableMenuItem.tsx';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 
 interface DeckMapMenuProps {
@@ -14,7 +13,6 @@ interface DeckMapMenuProps {
 
 export const DeckMapMenu = (props: DeckMapMenuProps) => {
   const [visible, setVisible] = useState(false);
-  const {commonStyles} = useStyles();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);

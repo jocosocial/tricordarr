@@ -16,6 +16,7 @@ import {useBoardgameFavoriteMutation} from '../../Queries/Boardgames/BoardgameMu
 import {useQueryClient} from '@tanstack/react-query';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {HeaderFavoriteButton} from '../../Buttons/HeaderButtons/HeaderFavoriteButton.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 
@@ -64,11 +65,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
           {data && (
             <>
               <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
-              <Item
-                title={'Favorite'}
-                iconName={data?.isFavorite ? AppIcons.favorite : AppIcons.toggleFavorite}
-                onPress={onFavorite}
-              />
+              <HeaderFavoriteButton isFavorite={data.isFavorite} onPress={onFavorite} />
             </>
           )}
           <Item
@@ -101,12 +98,14 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
-        {players && <DataFieldListItem title={'Players'} description={players} />}
-        {playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}
-        {data.avgRating && <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating.toFixed(2)} />}
-        {data.yearPublished && <DataFieldListItem title={'Year'} description={data.yearPublished} />}
-        {data.complexity && <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity.toFixed(0)} />}
-        {data.gameDescription && (
+        {!!players && <DataFieldListItem title={'Players'} description={players} />}
+        {!!playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}
+        {!!data.avgRating && <DataFieldListItem title={'Rating (1-10)'} description={data.avgRating.toFixed(2)} />}
+        {!!data.yearPublished && <DataFieldListItem title={'Year'} description={data.yearPublished} />}
+        {!!data.complexity && data.complexity > 0 && (
+          <DataFieldListItem title={'Complexity (1-5)'} description={data.complexity.toFixed(0)} />
+        )}
+        {!!data.gameDescription && (
           <DataFieldListItem title={'Description'} description={decodeHtml(data.gameDescription)} />
         )}
         {data.gameTypes.length > 0 && (
@@ -116,7 +115,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
           <DataFieldListItem title={'Categories'} description={data.categories.join(', ')} />
         )}
         {data.mechanics.length > 0 && <DataFieldListItem title={'Mechanics'} description={data.mechanics.join(', ')} />}
-        {data.donatedBy && <DataFieldListItem title={'Donated By'} description={data.donatedBy} />}
+        {!!data.donatedBy && <DataFieldListItem title={'Donated By'} description={data.donatedBy} />}
         {(data.isExpansion || data.hasExpansions) && (
           <PaddedContentView padTop={true}>
             <PrimaryActionButton

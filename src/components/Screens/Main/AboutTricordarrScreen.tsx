@@ -19,7 +19,7 @@ import DeviceInfo from 'react-native-device-info';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard.tsx';
 import {encode as base64_encode} from 'base-64';
 
-export const AboutScreen = () => {
+export const AboutTricordarrScreen = () => {
   const {commonStyles} = useStyles();
   return (
     <AppView>

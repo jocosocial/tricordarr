@@ -71,7 +71,8 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       url = '/home';
       pressActionID = PressAction.home;
       title = 'Announcement';
-      markAsReadUrl = '/user/notification/global';
+      markAsReadUrl = '/notification/global';
+      autoCancel = true;
       break;
     case NotificationTypeData.alertwordPost:
       channel = forumChannel;

@@ -22,6 +22,7 @@ import {SuggestedTextField} from './Fields/SuggestedTextField';
 import {DatePickerField} from './Fields/DatePickerField';
 import {TimePickerField} from './Fields/TimePickerField';
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
+import {publicLocationSuggestions} from '../../libraries/Ship.ts';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -48,29 +49,6 @@ const locationHelpContent = [
 ];
 
 const maximumHelpContent = ['Use 0 for unlimited'];
-
-const locationSuggestions = [
-  'Atrium, Deck 1, Midship',
-  'Gallery Bar, Deck 2, Forward',
-  'Billboard Onboard, Deck 2, Forward',
-  'Rolling Stone Lounge, Deck 2, Midship',
-  'Pinnacle Bar, Deck 2, Midship',
-  "Explorer's Lounge, Deck 2, Aft",
-  'Lower Main Dining Room, Deck 2, Aft',
-  'Ocean Bar, Deck 3, Midship',
-  'Upper Main Dining Room, Deck 3, Aft',
-  'Lido Bar, Deck 9, Midship',
-  'Lido Pool Area, Deck 9, Midship',
-  'Sea View Bar, Deck 9, Aft',
-  'Lido Market, Deck 9, Aft',
-  'Sea View Pool Area, Deck 9, Aft',
-  "Crow's Nest (Ten Forward), Deck 10, Forward",
-  'Shuffleboard Court, Deck 10, Midship',
-  'High Score Arcade, Deck 10, Midship',
-  'Hang 10, Deck 10, Midship',
-  'Ready Room, Deck 10, Forward',
-  'Sports Court, Deck 11, Forward',
-];
 
 export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFormProps) => {
   const {commonStyles} = useStyles();
@@ -102,9 +80,9 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
             viewStyle={styles.inputContainer}
             name={'location'}
             label={'Location'}
-            right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} />}
+            right={<TextInput.Icon icon={AppIcons.info} onPress={handleLocationInfo} disabled={isSubmitting} />}
             autoCapitalize={'words'}
-            suggestions={locationSuggestions}
+            suggestions={publicLocationSuggestions}
           />
           <View style={[commonStyles.paddingBottom]}>
             <FezTypePickerField name={'fezType'} label={'Type'} value={values.fezType} />

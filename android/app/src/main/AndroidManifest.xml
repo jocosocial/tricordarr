@@ -11,11 +11,12 @@
     But just to be safe I'm doing it here too.
     https://developer.android.com/develop/background-work/services/fg-service-types#data-sync
     Android 14 changed the permissions with Foreground Services a lot. See the <service /> below.
-    Android 15 introduced a 6-hour timer for background FGS.
+    Android 15 introduced a 6-hour timer for background FGS using type dataSync.
+    Switching to remoteMessaging instead after looking at HomeAssistant.
     https://developer.android.com/about/versions/15/behavior-changes-15
     -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
     <!--
     Camera permission for taking pictures to upload to the service. Is non-essential.
     -->
@@ -69,6 +70,6 @@
       https://developer.android.com/develop/background-work/services/fg-service-types
       https://notifee.app/react-native/docs/android/foreground-service
       -->
-      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="dataSync" tools:replace="android:foregroundServiceType" />
+      <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="remoteMessaging" tools:replace="android:foregroundServiceType" />
     </application>
 </manifest>
