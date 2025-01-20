@@ -65,6 +65,7 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
     minCapacity: '0',
     maxCapacity: '0',
     initialUsers: [],
+    location: '',
   };
   return (
     <AppView>

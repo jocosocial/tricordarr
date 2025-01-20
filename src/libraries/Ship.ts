@@ -23,6 +23,7 @@ import deck10 from '../../assets/map/deck10.png';
 import deck11 from '../../assets/map/deck11.png';
 // @ts-ignore
 import deck12 from '../../assets/map/deck12.png';
+import {ProfilePublicData} from './Structs/ControllerStructs.tsx';
 
 export interface DeckData {
   number: number;
@@ -74,4 +75,36 @@ export const guessDeckNumber = (location?: string): number | undefined => {
   }
   // No deck number found.
   return undefined;
+};
+
+export const publicLocationSuggestions = [
+  'Atrium, Deck 1, Midship',
+  'Gallery Bar, Deck 2, Forward',
+  'Billboard Onboard, Deck 2, Forward',
+  'Rolling Stone Lounge, Deck 2, Midship',
+  'Pinnacle Bar, Deck 2, Midship',
+  "Explorer's Lounge, Deck 2, Aft",
+  'Lower Main Dining Room, Deck 2, Aft',
+  'Ocean Bar, Deck 3, Midship',
+  'Upper Main Dining Room, Deck 3, Aft',
+  'Lido Bar, Deck 9, Midship',
+  'Lido Pool Area, Deck 9, Midship',
+  'Sea View Bar, Deck 9, Aft',
+  'Lido Market, Deck 9, Aft',
+  'Sea View Pool Area, Deck 9, Aft',
+  "Crow's Nest (Ten Forward), Deck 10, Forward",
+  'Shuffleboard Court, Deck 10, Midship',
+  'High Score Arcade, Deck 10, Midship',
+  'Hang 10, Deck 10, Midship',
+  'Ready Room, Deck 10, Forward',
+  'Sports Court, Deck 11, Forward',
+];
+
+export const getUserSuggestedLocations = (profilePublicData?: ProfilePublicData) => {
+  if (profilePublicData) {
+    return [`Room ${profilePublicData.roomNumber}`]
+      .concat(publicLocationSuggestions)
+      .concat(['That place where I put that thing that time']);
+  }
+  return publicLocationSuggestions;
 };
