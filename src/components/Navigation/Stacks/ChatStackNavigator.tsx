@@ -14,10 +14,12 @@ import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiv
 import {MainStack} from './MainStackNavigator';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {SeamailSettingsScreen} from '../../Screens/Seamail/SeamailSettingsScreen.tsx';
+import {SeamailArchivedScreen} from '../../Screens/Seamail/SeamailArchivedScreen.tsx';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {
   SeamailListScreen: undefined;
+  SeamailArchivedScreen: undefined;
   KrakenTalkCreateScreen?: {
     initialUserHeader?: UserHeader;
   };
@@ -40,6 +42,7 @@ export enum ChatStackScreenComponents {
   seamailSearchScreen = 'SeamailSearchScreen',
   krakenTalkReceiveScreen = 'KrakenTalkReceiveScreen',
   seamailSettingsScreen = 'SeamailSettingsScreen',
+  seamailArchivedScreen = 'SeamailArchivedScreen',
 }
 
 export const ChatStackNavigator = () => {
@@ -77,6 +80,11 @@ export const ChatStackNavigator = () => {
         name={ChatStackScreenComponents.seamailSettingsScreen}
         component={SeamailSettingsScreen}
         options={{title: 'Seamail Settings'}}
+      />
+      <ChatStack.Screen
+        name={ChatStackScreenComponents.seamailArchivedScreen}
+        component={SeamailArchivedScreen}
+        options={{title: 'Archived Seamail'}}
       />
       {CommonScreens(ChatStack as typeof MainStack)}
     </ChatStack.Navigator>
