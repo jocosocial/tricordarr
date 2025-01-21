@@ -13,6 +13,7 @@ import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useFezArchiveMutation} from '../../Queries/Fez/FezArchiveMutations.ts';
 
 interface FezChatActionsMenuProps {
   fez: FezData;
@@ -25,6 +26,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
   const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
+  const archiveMutation = useFezArchiveMutation();
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
@@ -59,6 +61,28 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
     );
   };
 
+  const handleArchive = () => {
+    if (!fez.members) {
+      return;
+    }
+    const action = fez.members.isArchived ? 'unarchive' : 'archive';
+    archiveMutation.mutate(
+      {
+        action: action,
+        fezID: fez.fezID,
+      },
+      {
+        onSuccess: async () => {
+          const invalidations = FezData.getCacheKeys(fez.fezID).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
+        },
+        onSettled: () => closeMenu(),
+      },
+    );
+  };
+
   return (
     <AppHeaderMenu
       visible={visible}
@@ -68,12 +92,22 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
       <Divider bold={true} />
       {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}
       {fez.members && (
-        <Menu.Item
-          leadingIcon={AppIcons.mute}
-          onPress={handleMute}
-          title={'Mute'}
-          style={fez.members.isMuted ? commonStyles.surfaceVariant : undefined}
-        />
+        <>
+          <Menu.Item
+            leadingIcon={AppIcons.mute}
+            onPress={handleMute}
+            title={'Mute'}
+            style={fez.members.isMuted ? commonStyles.surfaceVariant : undefined}
+          />
+          {FezType.isSeamailType(fez.fezType) && (
+            <Menu.Item
+              leadingIcon={AppIcons.archive}
+              onPress={handleArchive}
+              title={'Archive'}
+              style={fez.members.isArchived ? commonStyles.surfaceVariant : undefined}
+            />
+          )}
+        </>
       )}
       {(hasModerator || hasTwitarrTeam) && (
         <>

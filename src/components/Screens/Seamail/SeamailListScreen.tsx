@@ -23,6 +23,7 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ListTitleView} from '../../Views/ListTitleView.tsx';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 

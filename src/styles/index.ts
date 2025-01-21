@@ -104,6 +104,9 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  justifyContentStart: {
+    justifyContent: 'flex-start',
+  },
   justifyContentEnd: {
     justifyContent: 'flex-end',
   },

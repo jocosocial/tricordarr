@@ -125,4 +125,5 @@ export enum AppIcons {
   instagram = 'instagram',
   performer = 'piano',
   official = 'shield-check',
+  archive = 'archive',
 }
