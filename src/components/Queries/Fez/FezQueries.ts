@@ -30,6 +30,7 @@ interface FezListQueryOptions {
   search?: string;
   matchID?: string;
   forUser?: keyof typeof PrivilegedUserAccounts;
+  archived?: boolean;
 }
 
 export const useFezListQuery = ({
@@ -43,6 +44,7 @@ export const useFezListQuery = ({
   search,
   matchID,
   forUser,
+  archived,
 }: FezListQueryOptions) => {
   const queryParams = {
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
@@ -57,6 +59,7 @@ export const useFezListQuery = ({
     ...(search && {search: search}),
     ...(matchID && {matchID: matchID}),
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
+    ...(archived !== undefined && {archived: archived}),
   };
   return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, options, queryParams);
 };
@@ -94,6 +97,7 @@ export const useSeamailListQuery = ({
   search,
   matchID,
   forUser,
+  archived,
 }: FezListQueryOptions) => {
   return useFezListQuery({
     cruiseDay,
@@ -105,6 +109,7 @@ export const useSeamailListQuery = ({
     search,
     matchID,
     forUser,
+    archived,
   });
 };
 

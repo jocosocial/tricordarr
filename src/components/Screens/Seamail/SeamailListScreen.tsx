@@ -23,13 +23,16 @@ import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQuer
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ListTitleView} from '../../Views/ListTitleView.tsx';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
+  const [archived, setArchived] = useState(false);
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
     forUser: asPrivilegedUser,
+    archived: archived,
   });
   const {notificationSocket, closeFezSocket} = useSocket();
   const isFocused = useIsFocused();
@@ -92,11 +95,11 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
               })
             }
           />
-          <SeamailListScreenActionsMenu />
+          <SeamailListScreenActionsMenu archived={archived} setArchived={setArchived} />
         </HeaderButtons>
       </View>
     );
-  }, [asPrivilegedUser, navigation]);
+  }, [archived, asPrivilegedUser, navigation]);
 
   useEffect(() => {
     if (notificationSocket) {
@@ -125,11 +128,17 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   return (
     <AppView>
-      {profilePublicData && (hasTwitarrTeam || hasModerator) && (
-        // For some reason, SegmentedButtons hates the flex in PaddedContentView.
-        <View style={[commonStyles.margin]}>
-          <SeamailAccountButtons />
-        </View>
+      {archived ? (
+        <ListTitleView title={'Archived'} />
+      ) : (
+        <>
+          {profilePublicData && (hasTwitarrTeam || hasModerator) && (
+            // For some reason, SegmentedButtons hates the flex in PaddedContentView.
+            <View style={[commonStyles.margin]}>
+              <SeamailAccountButtons />
+            </View>
+          )}
+        </>
       )}
       <SeamailFlatList
         fezList={fezList}
