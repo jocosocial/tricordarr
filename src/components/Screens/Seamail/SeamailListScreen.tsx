@@ -24,6 +24,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {SeamailFilterMenu} from '../../Menus/Seamail/SeamailFilterMenu.tsx';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -95,7 +96,8 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
               })
             }
           />
-          <SeamailListScreenActionsMenu archived={archived} setArchived={setArchived} />
+          <SeamailFilterMenu archived={archived} setArchived={setArchived} />
+          <SeamailListScreenActionsMenu />
         </HeaderButtons>
       </View>
     );
