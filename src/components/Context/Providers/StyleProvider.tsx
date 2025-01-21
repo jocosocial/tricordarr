@@ -87,7 +87,7 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: theme.colors.onErrorContainer,
     },
     onTwitarrButton: {
-      color: AndroidColor.WHITE,
+      color: theme.colors.onTwitarrPositiveButton,
     },
     borderBottom: {
       borderBottomColor: theme.colors.onBackground,
