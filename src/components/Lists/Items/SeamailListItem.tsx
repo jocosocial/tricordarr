@@ -2,7 +2,6 @@ import React, {memo} from 'react';
 import {List} from 'react-native-paper';
 import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezAvatarImage} from '../../Images/FezAvatarImage';
-import {commonStyles} from '../../../styles';
 import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
@@ -10,6 +9,8 @@ import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {StyleSheet} from 'react-native';
+import {SeamailListItemSwipeable} from '../../Swipeables/SeamailListItemSwipeable.tsx';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 interface SeamailListItemProps {
   fez: FezData;
@@ -18,6 +19,7 @@ interface SeamailListItemProps {
 const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const {profilePublicData} = useUserData();
   const navigation = useChatStack();
+  const {commonStyles} = useStyles();
   let badgeCount = 0;
   if (fez.members) {
     badgeCount = fez.members.postCount - fez.members.readCount;
@@ -26,6 +28,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const styles = StyleSheet.create({
     item: {
       ...commonStyles.paddingHorizontal,
+      ...commonStyles.background,
     },
     title: {
       ...(badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined),
@@ -51,17 +54,19 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   };
 
   return (
-    <List.Item
-      style={styles.item}
-      title={fez.title}
-      titleStyle={styles.title}
-      titleNumberOfLines={0}
-      description={description}
-      descriptionStyle={styles.description}
-      onPress={onPress}
-      left={getAvatar}
-      right={getRight}
-    />
+    <SeamailListItemSwipeable fez={fez}>
+      <List.Item
+        style={styles.item}
+        title={fez.title}
+        titleStyle={styles.title}
+        titleNumberOfLines={0}
+        description={description}
+        descriptionStyle={styles.description}
+        onPress={onPress}
+        left={getAvatar}
+        right={getRight}
+      />
+    </SeamailListItemSwipeable>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useCallback, useState} from 'react';
-import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
+import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
 import {SwipeableButton} from '../Buttons/SwipeableButton.tsx';
 import {AppIcons} from '../../libraries/Enums/Icons.ts';
@@ -11,7 +11,7 @@ import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
 import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.ts';
 import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.ts';
-import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {BaseSwipeable} from './BaseSwipeable.tsx';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {
   forumListData: ForumListData;
@@ -32,7 +32,6 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   const {hasModerator} = usePrivilege();
   const pinMutation = useForumPinMutation();
   const {refetch} = useForumThreadQuery(props.forumListData.forumID, undefined, {enabled: false});
-  const {appConfig} = useConfig();
 
   const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID, props.forumListData.forumID);
 
@@ -192,14 +191,8 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
   };
 
   return (
-    <Swipeable
-      enabled={props.enabled}
-      renderRightActions={appConfig.userPreferences.reverseSwipeOrientation ? renderLeftPanel : renderRightPanel}
-      renderLeftActions={appConfig.userPreferences.reverseSwipeOrientation ? renderRightPanel : renderLeftPanel}
-      overshootFriction={8}
-      overshootRight={false}
-      overshootLeft={false}>
+    <BaseSwipeable enabled={props.enabled} renderLeftPanel={renderLeftPanel} renderRightPanel={renderRightPanel}>
       {props.children}
-    </Swipeable>
+    </BaseSwipeable>
   );
 };
