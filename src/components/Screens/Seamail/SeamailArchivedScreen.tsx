@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import {useSeamailListQuery} from '../../Queries/Fez/FezQueries.ts';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {AppView} from '../../Views/AppView.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
 
 export const SeamailArchivedScreen = () => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isFetching} = useSeamailListQuery({
@@ -26,7 +25,6 @@ export const SeamailArchivedScreen = () => {
 
   return (
     <AppView>
-      <ListTitleView title={'Archived'} />
       <SeamailFlatList
         fezList={fezList}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
