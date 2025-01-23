@@ -15,6 +15,9 @@ export const AccessibilitySettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [useSystemTheme, setUseSystemTheme] = useState(appConfig.accessibility.useSystemTheme);
   const [darkMode, setDarkMode] = useState(appConfig.accessibility.darkMode);
+  const [reverseSwipeOrientation, setReverseSwipeOrientation] = React.useState(
+    appConfig.userPreferences.reverseSwipeOrientation,
+  );
 
   const toggleSystemTheme = () => {
     const newValue = !appConfig.accessibility.useSystemTheme;
@@ -40,35 +43,61 @@ export const AccessibilitySettingsScreen = () => {
     setDarkMode(newValue);
   };
 
+  const handleOrientation = () => {
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        reverseSwipeOrientation: !reverseSwipeOrientation,
+      },
+    });
+    setReverseSwipeOrientation(!reverseSwipeOrientation);
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
         <ListSection>
           <ListSubheader>Theme</ListSubheader>
         </ListSection>
-        <PaddedContentView padSides={false}>
-          <Formik initialValues={{}} onSubmit={() => {}}>
-            <View>
-              <BooleanField
-                name={'useSystemTheme'}
-                label={'Use System Theme'}
-                onPress={toggleSystemTheme}
-                value={useSystemTheme}
-                helperText={'Match your devices color scheme automatically.'}
-                style={commonStyles.paddingHorizontal}
-              />
-              <BooleanField
-                name={'darkMode'}
-                label={'Dark Mode'}
-                onPress={toggleDarkMode}
-                value={darkMode}
-                helperText={'White or light text on black or dark background.'}
-                disabled={useSystemTheme}
-                style={commonStyles.paddingHorizontal}
-              />
-            </View>
-          </Formik>
-        </PaddedContentView>
+        <Formik initialValues={{}} onSubmit={() => {}}>
+          <View>
+            <BooleanField
+              name={'useSystemTheme'}
+              label={'Use System Theme'}
+              onPress={toggleSystemTheme}
+              value={useSystemTheme}
+              helperText={'Match your devices color scheme automatically.'}
+              style={commonStyles.paddingHorizontal}
+            />
+            <BooleanField
+              name={'darkMode'}
+              label={'Dark Mode'}
+              onPress={toggleDarkMode}
+              value={darkMode}
+              helperText={'White or light text on black or dark background.'}
+              disabled={useSystemTheme}
+              style={commonStyles.paddingHorizontal}
+            />
+          </View>
+        </Formik>
+        <ListSection>
+          <ListSubheader>Interaction</ListSubheader>
+        </ListSection>
+        <Formik initialValues={{}} onSubmit={() => {}}>
+          <View>
+            <BooleanField
+              name={'reverseSwipeOrientation'}
+              label={'Reverse Swipe Orientation'}
+              onPress={handleOrientation}
+              style={commonStyles.paddingHorizontal}
+              helperText={
+                'Switch the Left and Right swipe actions for swipeable items such as Forum Threads and Seamails. Could be useful if you are left-handed.'
+              }
+              value={reverseSwipeOrientation}
+            />
+          </View>
+        </Formik>
       </ScrollingContentView>
     </AppView>
   );
