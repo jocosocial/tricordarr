@@ -61,6 +61,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   } = useLfgListQuery({
     cruiseDay: selectedCruiseDay - 1,
     endpoint: 'open',
+    hidePast: false,
     options: {
       enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs,
     },
@@ -74,6 +75,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   } = useLfgListQuery({
     cruiseDay: selectedCruiseDay - 1,
     endpoint: 'joined',
+    hidePast: false,
     options: {
       enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs,
     },

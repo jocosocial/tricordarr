@@ -74,7 +74,7 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
   };
 
   return (
-    <BaseSwipeable onSwipeableWillOpen={() => handleArchive()} renderRightPanel={renderArchivePanel}>
+    <BaseSwipeable onSwipeableWillOpen={() => handleArchive()} renderRightPanel={renderArchivePanel} friction={0.5}>
       {props.children}
     </BaseSwipeable>
   );

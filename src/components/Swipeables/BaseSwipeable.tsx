@@ -21,6 +21,7 @@ export interface BaseSwipeableProps extends PropsWithChildren {
   leftThreshold?: number;
   rightThreshold?: number;
   overshootFriction?: number;
+  friction?: number;
 }
 
 export const BaseSwipeable = ({
@@ -35,6 +36,7 @@ export const BaseSwipeable = ({
   rightThreshold,
   overshootFriction = 8,
   onSwipeableWillOpen,
+  friction = 1,
 }: BaseSwipeableProps) => {
   const {appConfig} = useConfig();
   return (
@@ -47,6 +49,7 @@ export const BaseSwipeable = ({
       leftThreshold={leftThreshold}
       rightThreshold={rightThreshold}
       onSwipeableWillOpen={onSwipeableWillOpen}
+      friction={friction}
       overshootRight={overshootRight}
       overshootLeft={overshootLeft}>
       {children}
