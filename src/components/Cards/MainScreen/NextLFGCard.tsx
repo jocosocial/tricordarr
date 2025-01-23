@@ -15,7 +15,7 @@ export const NextLFGCard = ({lfgID}: {lfgID: string}) => {
           fez={data.pages[0]}
           showDay={true}
           onPress={() => commonNavigation.push(CommonStackComponents.lfgScreen, {fezID: lfgID})}
-          titleHeader={'Your next LFG:'}
+          titleHeader={'Your next appointment:'}
         />
       )}
     </View>
