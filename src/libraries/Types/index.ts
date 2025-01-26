@@ -12,6 +12,8 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
+import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
+import Button from 'react-native-paper/lib/typescript/components/Button/Button';
 
 export type StringOrError = string | Error | undefined;
 
@@ -125,4 +127,15 @@ export type FezListEndpoints = 'open' | 'joined' | 'owner' | 'former';
 
 export interface WithFezID {
   fezID: string;
+}
+
+export interface SnackbarPayload {
+  action?: $RemoveChildren<typeof Button> & {
+    label: string;
+  };
+  duration?: number;
+  message?: string;
+  messageType?: 'info' | 'error' | 'success';
+  style?: StyleProp<ViewStyle>;
+  elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }

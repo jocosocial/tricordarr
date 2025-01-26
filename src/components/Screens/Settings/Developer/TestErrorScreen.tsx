@@ -13,10 +13,13 @@ import {RefreshControl} from 'react-native';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext';
 import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
 import {useOpenQuery} from '../../../Queries/OpenQuery.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {BaseFABGroup} from '../../../Buttons/FloatingActionButtons/BaseFABGroup.tsx';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();
-  const {setErrorMessage, setErrorBanner, errorBanner, errorMessage} = useErrorHandler();
+  const {setErrorBanner, errorBanner} = useErrorHandler();
+  const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const {refetch: refetchErrorQuery, isFetching: isFetchingError} = useOpenQuery('/nonexistant', {
@@ -53,11 +56,11 @@ export const TestErrorScreen = () => {
             onPress={() => setErrorBanner('This is a banner error.')}
             style={[commonStyles.marginTopSmall]}
           />
-          <Text>Snackbar: {errorMessage}</Text>
+          <Text>Snackbar: {snackbarPayload?.message}</Text>
           <PrimaryActionButton
             buttonText="Snackbar"
             buttonColor={theme.colors.twitarrNegativeButton}
-            onPress={() => setErrorMessage('This is a snackbar error.')}
+            onPress={() => setSnackbarPayload({message: 'This is a snackbar error.'})}
             style={[commonStyles.marginTopSmall]}
           />
           <Text>Modal</Text>
@@ -87,6 +90,7 @@ export const TestErrorScreen = () => {
           />
         </PaddedContentView>
       </ScrollingContentView>
+      <BaseFABGroup actions={[]} />
     </AppView>
   );
 };

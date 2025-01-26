@@ -10,6 +10,8 @@ import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {useAppTheme} from '../../styles/Theme.ts';
+import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
+import {SnackbarPayload} from '../../libraries/Types';
 
 interface SeamailListItemSwipeableProps extends PropsWithChildren {
   fez: FezData;
@@ -21,6 +23,7 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
   const {commonStyles} = useStyles();
   const {appConfig} = useConfig();
   const theme = useAppTheme();
+  const {setSnackbarPayload} = useSnackbar();
 
   const styles = StyleSheet.create({
     swipeRow: {
@@ -33,25 +36,29 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
     },
   });
 
-  const handleArchive = () => {
-    if (!props.fez.members) {
-      return;
-    }
-    const action = props.fez.members.isArchived ? 'unarchive' : 'archive';
-    archiveMutation.mutate(
-      {
-        action: action,
-        fezID: props.fez.fezID,
+  const handleArchive = async (isArchived: boolean) => {
+    const action = isArchived ? 'unarchive' : 'archive';
+    await archiveMutation.mutateAsync({
+      action: action,
+      fezID: props.fez.fezID,
+    });
+    const archivedPayload: SnackbarPayload = {
+      message: 'Archived successfully.',
+      action: {
+        label: 'Undo',
+        // Inverse because we've already performed the action but haven't refreshed props yet.
+        onPress: () => handleArchive(!isArchived),
       },
-      {
-        onSuccess: async () => {
-          const invalidations = FezData.getCacheKeys(props.fez.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
-          });
-          await Promise.all(invalidations);
-        },
-      },
-    );
+    };
+    const undoPayload: SnackbarPayload = {
+      message: 'Restored successfully.',
+      duration: 3000,
+    };
+    setSnackbarPayload(action === 'archive' ? archivedPayload : undoPayload);
+    const invalidations = FezData.getCacheKeys(props.fez.fezID).map(key => {
+      return queryClient.invalidateQueries(key);
+    });
+    await Promise.all(invalidations);
   };
 
   const renderArchivePanel = () => {
@@ -73,8 +80,14 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
     );
   };
 
+  // Helps with Typescript typing
+  const fezMembersData = props.fez.members;
+
   return (
-    <BaseSwipeable onSwipeableWillOpen={() => handleArchive()} renderRightPanel={renderArchivePanel} friction={0.5}>
+    <BaseSwipeable
+      onSwipeableWillOpen={fezMembersData ? () => handleArchive(fezMembersData.isArchived) : undefined}
+      renderRightPanel={renderArchivePanel}
+      friction={0.5}>
       {props.children}
     </BaseSwipeable>
   );

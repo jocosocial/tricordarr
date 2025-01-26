@@ -8,6 +8,7 @@ import {StyleSheet} from 'react-native';
 import {FabGroupActionType} from '../../../libraries/Types';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 interface BaseFABProps {
   actions: FabGroupActionType[];
@@ -29,8 +30,9 @@ export const BaseFABGroup = ({
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
   const {open} = state;
-  const {commonStyles} = useStyles();
+  const {styleDefaults} = useStyles();
   const insets = useSafeAreaInsets();
+  const {snackbarPayload} = useSnackbar();
 
   const onStateChange = ({open}: {open: boolean}) => setState({open});
 
@@ -41,6 +43,7 @@ export const BaseFABGroup = ({
     group: {
       // This is all fucking stupid.
       marginBottom: -1 * insets.bottom,
+      bottom: snackbarPayload ? styleDefaults.overScrollHeight * 0.75 : 0,
     },
   });
 

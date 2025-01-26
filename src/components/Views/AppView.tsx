@@ -11,6 +11,7 @@ import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientCon
 import {UnsavedChangesView} from './Warnings/UnsavedChangesView.tsx';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {AppSnackbar} from '../Snackbars/AppSnackbar.tsx';
 
 interface AppViewProps extends PropsWithChildren {
   safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];
@@ -55,6 +56,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
         <Portal>
           <ErrorBanner />
           <AppModal />
+          <AppSnackbar />
           <ErrorSnackbar />
           <InfoSnackbar />
         </Portal>
