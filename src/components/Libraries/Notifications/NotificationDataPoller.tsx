@@ -7,10 +7,11 @@ import {useQueryClient} from '@tanstack/react-query';
 
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
-  const {appConfig} = useConfig();
-  const enablePolling = isLoggedIn && !isLoading && appConfig.enableNotificationPolling;
+  const {appConfig, oobeCompleted} = useConfig();
+  const enablePolling = oobeCompleted && isLoggedIn && !isLoading && appConfig.enableNotificationPolling;
   const {} = useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
+    enabled: enablePolling,
   });
   const appState = useAppState();
   const queryClient = useQueryClient();

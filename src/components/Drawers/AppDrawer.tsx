@@ -15,11 +15,11 @@ import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
+  const {appConfig, oobeCompleted} = useConfig();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {data: userNotificationData} = useUserNotificationDataQuery();
+  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
   const {tokenData} = useAuth();
   const {profilePublicData} = useUserData();
-  const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({

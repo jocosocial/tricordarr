@@ -6,7 +6,7 @@ import {differenceInCalendarDays, differenceInDays} from 'date-fns';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
-  const {appConfig} = useConfig();
+  const {appConfig, oobeCompleted} = useConfig();
   // The hourlyUpdatingDate is a Date that will trigger a state refresh every hour on the hour.
   const hourlyUpdatingDate = useDateTime('hour');
   // We use 3AM as the day rollover point because many people stay up late. This is done in Swiftarr and elsewhere here.
@@ -36,7 +36,7 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
 
   // Figure out of the device is in the wrong time zone.
-  const {data: userNotificationData} = useUserNotificationDataQuery();
+  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
   // .getTimezoneOffset() reports in minutes and from the opposite perspective
   // as the server. Server says "you're -4" whereas device says "they're +4".
   const deviceTimeOffset = new Date().getTimezoneOffset() * -60;

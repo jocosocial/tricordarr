@@ -13,7 +13,7 @@ import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientCon
  */
 export const AppEventHandler = () => {
   const linkTo = useLinkTo();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {apiGet} = useSwiftarrQueryClient();
 
   // Foreground events occur when the app is front and center in the users view.

@@ -39,7 +39,7 @@ export enum BottomTabComponents {
 }
 
 export const BottomTabNavigator = () => {
-  const {data: userNotificationData} = useUserNotificationDataQuery();
+  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
   const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
   function getIcon(icon: string) {

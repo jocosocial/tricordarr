@@ -18,7 +18,7 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, oobeCompleted} = useConfig();
   const {refetch: refetchClientConfig, data: clientConfigData} = useClientConfigQuery();
 
   const updateClientConfig = useCallback(async () => {
@@ -41,13 +41,16 @@ export const LoginScreen = () => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
           await signIn(response.data);
-          await Promise.all([startForegroundServiceWorker(), updateClientConfig()]);
+          if (oobeCompleted) {
+            await startForegroundServiceWorker();
+          }
+          await updateClientConfig();
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, navigation, signIn, updateClientConfig],
+    [loginMutation, navigation, signIn, updateClientConfig, oobeCompleted],
   );
 
   return (

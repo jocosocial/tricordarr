@@ -61,7 +61,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     client.interceptors.request.use(async config => {
       // This logs even when the response is returned from cache.
       console.info(
-        `Public Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.url}`,
+        `Public Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.baseURL}${config.url}`,
         config.params,
       );
       return config;
