@@ -1,10 +1,8 @@
 import React, {PropsWithChildren} from 'react';
 import {KeyboardAvoidingView, StyleSheet, View} from 'react-native';
 import {Portal} from 'react-native-paper';
-import {ErrorSnackbar} from '../Snackbars/ErrorSnackbar';
 import {ErrorBanner} from '../Banners/ErrorBanner.tsx';
 import {AppModal} from '../Modals/AppModal';
-import {InfoSnackbar} from '../Snackbars/InfoSnackbar';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {ConnectionDisruptedView} from './Warnings/ConnectionDisruptedView.tsx';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
@@ -57,8 +55,6 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
           <ErrorBanner />
           <AppModal />
           <AppSnackbar />
-          <ErrorSnackbar />
-          <InfoSnackbar />
         </Portal>
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}

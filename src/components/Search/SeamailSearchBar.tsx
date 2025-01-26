@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {useSeamailListQuery} from '../Queries/Fez/FezQueries';
@@ -9,7 +8,6 @@ import {SearchBarBase} from './SearchBarBase.tsx';
 
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const {setErrorMessage} = useErrorHandler();
   const [queryEnable, setQueryEnable] = useState(false);
   const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, remove} = useSeamailListQuery({
     search: searchQuery,
@@ -32,7 +30,7 @@ export const SeamailSearchBar = () => {
   };
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
-      setErrorMessage('Search string must be >2 characters');
+      setQueryEnable(false);
     } else {
       setQueryEnable(true);
       refetch();

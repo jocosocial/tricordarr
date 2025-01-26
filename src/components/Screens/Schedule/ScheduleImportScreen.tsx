@@ -15,13 +15,14 @@ import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {VEvent} from 'node-ical';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 import {useQueryClient} from '@tanstack/react-query';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 export const ScheduleImportScreen = () => {
   const {appConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
   const [log, setLog] = useState<string[]>([]);
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const queryClient = useQueryClient();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
@@ -42,7 +43,7 @@ export const ScheduleImportScreen = () => {
       const schedUrl = `${appConfig.schedBaseUrl}/${values.username}.ics`;
       schedEvents = await getCalFeedFromUrl(schedUrl);
     } catch (error) {
-      setErrorMessage(String(error));
+      setSnackbarPayload({message: String(error), messageType: 'error'});
       helpers.setSubmitting(false);
       return;
     }

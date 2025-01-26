@@ -9,17 +9,17 @@ import {Text} from 'react-native-paper';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
 
 import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 
 export const ChangePasswordScreen = () => {
   const {profilePublicData} = useUserData();
   const navigation = useNavigation();
   const {appConfig} = useConfig();
   const passwordMutation = useUserPasswordMutation();
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const onSubmit = (values: ChangePasswordFormValues, helper: FormikHelpers<ChangePasswordFormValues>) => {
     passwordMutation.mutate(
       {
@@ -30,7 +30,7 @@ export const ChangePasswordScreen = () => {
       },
       {
         onSuccess: () => {
-          setInfoMessage('Successfully changed password!');
+          setSnackbarPayload({message: 'Successfully changed password!'});
           navigation.goBack();
         },
         onSettled: () => helper.setSubmitting(false),

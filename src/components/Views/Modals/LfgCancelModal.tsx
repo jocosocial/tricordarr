@@ -1,4 +1,3 @@
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
@@ -10,6 +9,7 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useFezCancelMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -27,7 +27,7 @@ const ModalContent = () => {
 };
 
 export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
@@ -40,7 +40,7 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: async () => {
-          setInfoMessage('Successfully canceled this LFG.');
+          setSnackbarPayload({message: 'Successfully canceled this LFG.', messageType: 'info'});
           const invalidations = FezData.getCacheKeys().map(key => {
             return queryClient.invalidateQueries(key);
           });

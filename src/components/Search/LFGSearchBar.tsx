@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
 import {TimeDivider} from '../Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '../Lists/Schedule/ScheduleFlatList.tsx';
@@ -17,7 +16,6 @@ interface LFGSearchBarProps {
 export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {setErrorMessage} = useErrorHandler();
   const {lfgHidePastFilter} = useFilter();
   const {data, refetch, isFetching, remove} = useLfgListQuery({
     search: searchQuery,
@@ -40,7 +38,6 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
-      setErrorMessage('Search string must be >2 characters');
       setQueryEnable(false);
     } else {
       setQueryEnable(true);

@@ -4,16 +4,16 @@ import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from
 import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
 import {Query, QueryKey} from '@tanstack/react-query';
 import {useConfig} from '../Contexts/ConfigContext';
-import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import {ErrorResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useAuth} from '../Contexts/AuthContext.ts';
 import DeviceInfo from 'react-native-device-info';
+import {useSnackbar} from '../Contexts/SnackbarContext.ts';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {tokenData, isLoggedIn} = useAuth();
 
   /**
@@ -154,7 +154,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       console.log('[SwiftarrQueryClientProvider.tsx]', error);
       setErrorCount(errorCount + 1);
       if (!disruptionDetected) {
-        setErrorMessage(errorString);
+        setSnackbarPayload({message: errorString, messageType: 'error'});
       }
     },
     onSuccess: (data, query) => {

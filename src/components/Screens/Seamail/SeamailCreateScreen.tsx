@@ -7,7 +7,6 @@ import {SeamailCreateForm} from '../../Forms/SeamailCreateForm';
 import {FormikProps} from 'formik';
 import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {PostAsUserBanner} from '../../Banners/PostAsUserBanner';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
@@ -25,7 +24,6 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const fezPostMutation = useFezPostMutation();
   const [newSeamail, setNewSeamail] = useState<FezData>();
   const [submitting, setSubmitting] = useState(false);
-  const {setErrorMessage} = useErrorHandler();
   const queryClient = useQueryClient();
 
   const initialFormValues: SeamailFormValues = {
@@ -87,11 +85,11 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           },
         );
       } else {
-        setErrorMessage('Seamail is empty?');
+        console.error('Seamail is empty?');
         setSubmitting(false);
       }
     },
-    [fezPostMutation, navigation, newSeamail, setErrorMessage],
+    [fezPostMutation, navigation, newSeamail],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.

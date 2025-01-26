@@ -9,6 +9,7 @@ import {LighterScreen} from '../../Screens/Main/LighterScreen';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;
@@ -29,7 +30,7 @@ export const RootStackNavigator = () => {
   const {appConfig} = useConfig();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setEnableSelection, dispatchSelectedForums} = useSelection();
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   let initialRouteName = RootStackComponents.oobeNavigator;
   if (appConfig.oobeCompletedVersion >= appConfig.oobeExpectedVersion) {
@@ -48,7 +49,7 @@ export const RootStackNavigator = () => {
           dispatchSelectedForums({
             type: ForumListDataSelectionActions.clear,
           });
-          setErrorMessage(undefined);
+          setSnackbarPayload(undefined);
         },
       }}>
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />

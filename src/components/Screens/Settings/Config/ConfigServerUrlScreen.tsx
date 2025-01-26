@@ -18,6 +18,7 @@ import {ServerHealthcheckResultView} from '../../../Views/Settings/ServerHealthc
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
@@ -29,7 +30,7 @@ export const ConfigServerUrlScreen = () => {
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = appConfig.serverUrl;
@@ -51,7 +52,7 @@ export const ConfigServerUrlScreen = () => {
         queryClient.clear();
       });
     }
-    setErrorMessage(undefined);
+    setSnackbarPayload(undefined);
   };
 
   useEffect(() => {

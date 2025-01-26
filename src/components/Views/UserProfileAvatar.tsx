@@ -4,7 +4,6 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarMutations.ts';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import {APIImage} from '../Images/APIImage';
@@ -13,6 +12,7 @@ import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
 import {useUserProfileQuery} from '../Queries/Users/UserProfileQueries.ts';
 import {ImageButtons} from '../Buttons/ImageButtons.tsx';
 import {styleDefaults} from '../../styles';
+import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -23,7 +23,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const {commonStyles} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const userProfileQuery = useUserProfileQuery(user.header.userID);
   const {profilePublicData} = useUserData();
   const {getIsDisabled} = useFeature();
@@ -47,7 +47,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };
@@ -66,7 +66,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };

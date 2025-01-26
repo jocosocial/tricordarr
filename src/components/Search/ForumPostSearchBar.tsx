@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
-import {Searchbar} from 'react-native-paper';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries.ts';
@@ -10,6 +9,7 @@ import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {CategoryData, ForumData, ForumListData, PostData} from '../../libraries/Structs/ControllerStructs';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
+import {SearchBarBase} from './SearchBarBase.tsx';
 
 interface ForumPostSearchBarProps {
   category?: CategoryData;
@@ -19,7 +19,6 @@ interface ForumPostSearchBarProps {
 export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [queryEnable, setQueryEnable] = useState(false);
-  const {setErrorMessage} = useErrorHandler();
   const {
     data,
     refetch,
@@ -65,11 +64,9 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
-      setErrorMessage('Search string must be >2 characters');
       setQueryEnable(false);
     } else {
       setQueryEnable(true);
-      console.log('[ForumPostSearchBar.tsx] Refetching results');
       refetch();
       Keyboard.dismiss();
     }
@@ -118,17 +115,13 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   return (
     <>
-      <View style={[commonStyles.marginVerticalSmall, commonStyles.marginHorizontal]}>
-        <Searchbar
-          placeholder={'Search for forum posts'}
-          onIconPress={onSearch}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          onSubmitEditing={onSearch}
-          onClearIconPress={onClear}
-          style={[commonStyles.marginVerticalSmall]}
-        />
-      </View>
+      <SearchBarBase
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+        remove={remove}
+      />
       <View style={[commonStyles.flex]}>
         <ForumPostFlatList
           flatListRef={flatListRef}

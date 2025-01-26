@@ -7,13 +7,13 @@ import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useNavigation} from '@react-navigation/native';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {ChangeUsernameForm} from '../../../Forms/User/ChangeUsernameForm.tsx';
 import {useUserProfileQuery} from '../../../Queries/Users/UserProfileQueries.ts';
 import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 import {useUserUsernameMutation} from '../../../Queries/User/UserMutations.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 
 export const ChangeUsernameScreen = () => {
   const {profilePublicData} = useUserData();
@@ -23,7 +23,7 @@ export const ChangeUsernameScreen = () => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {refetch: refetchProfilePublicData} = useUserProfileQuery(profilePublicData?.header.userID);
 
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onSubmit = (values: ChangeUsernameFormValues, helper: FormikHelpers<ChangeUsernameFormValues>) => {
     usernameMutation.mutate(
@@ -34,7 +34,7 @@ export const ChangeUsernameScreen = () => {
         onSuccess: () => {
           refetchProfilePublicData().then(() =>
             refetchUserNotificationData().then(() => {
-              setInfoMessage('Successfully changed username!');
+              setSnackbarPayload({message: 'Successfully changed username!'});
               navigation.goBack();
             }),
           );

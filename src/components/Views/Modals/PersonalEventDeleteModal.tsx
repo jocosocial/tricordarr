@@ -1,4 +1,3 @@
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
@@ -11,6 +10,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import {useFezDeleteMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -23,7 +23,7 @@ interface PersonalEventDeleteModalProps {
 }
 
 export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true}: PersonalEventDeleteModalProps) => {
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const deleteMutation = useFezDeleteMutation();
@@ -41,7 +41,7 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
             navigation.goBack();
           }
           setModalVisible(false);
-          setInfoMessage('Successfully deleted this event.');
+          setSnackbarPayload({message: 'Successfully deleted this event.', messageType: 'info'});
           const invalidations = FezData.getCacheKeys().map(key => {
             return queryClient.invalidateQueries(key);
           });
