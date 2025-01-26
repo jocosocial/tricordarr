@@ -3,16 +3,18 @@ import {StyleSheet} from 'react-native';
 import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 import {Snackbar, Text} from 'react-native-paper';
 import {useAppTheme} from '../../styles/Theme.ts';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+// import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export const AppSnackbar = () => {
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const theme = useAppTheme();
-  const {styleDefaults} = useStyles();
+  // const {styleDefaults} = useStyles();
 
   const styles = StyleSheet.create({
     snackbar: {
-      marginBottom: styleDefaults.overScrollHeight,
+      // For some reason this is undefined.
+      // marginBottom: styleDefaults.overScrollHeight,
+      marginBottom: 100,
     },
     // Snackbar uses .onSurface color, so we need to invert
     // any custom text.
