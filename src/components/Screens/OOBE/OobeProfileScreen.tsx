@@ -42,6 +42,24 @@ export const OobeProfileScreen = ({navigation}: Props) => {
             disabled={!tokenData}
           />
         </PaddedContentView>
+        <PaddedContentView>
+          <Text>
+            You can optionally follow official and shadow events in the schedule. This will add them to your in-app day
+            planner and generate reminder notifications.
+          </Text>
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonText={'View Events'}
+            buttonColor={theme.colors.twitarrNeutralButton}
+            onPress={() => {
+              if (tokenData) {
+                navigation.push(OobeStackComponents.oobeScheduleScreen);
+              }
+            }}
+            disabled={!tokenData}
+          />
+        </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}

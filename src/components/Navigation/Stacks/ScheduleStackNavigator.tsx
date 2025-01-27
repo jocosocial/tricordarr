@@ -11,7 +11,6 @@ import {DisabledView} from '../../Views/Static/DisabledView';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
-import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.tsx';
 import {SchedulePrivateEventsScreen} from '../../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
 
 export type ScheduleStackParamList = CommonStackParamList & {
@@ -26,7 +25,6 @@ export enum ScheduleStackComponents {
   eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
-  scheduleImportScreen = 'ScheduleImportScreen',
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
 }
 
@@ -58,11 +56,6 @@ export const ScheduleStackNavigator = () => {
           headerLeft: getLeftMainHeaderButtons,
           title: 'Schedule',
         }}
-      />
-      <Stack.Screen
-        name={ScheduleStackComponents.scheduleImportScreen}
-        component={ScheduleImportScreen}
-        options={{title: 'Schedule Import'}}
       />
       <Stack.Screen
         name={ScheduleStackComponents.schedulePrivateEventsScreen}

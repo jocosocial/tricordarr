@@ -65,6 +65,7 @@ import {MainTimeZoneScreen} from '../Screens/Main/MainTimeZoneScreen.tsx';
 import {TimeZoneHelpScreen} from '../Screens/Main/TimeZoneHelpScreen.tsx';
 import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
+import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -213,6 +214,7 @@ export type CommonStackParamList = {
   PrivateEventChatScreen: {
     fezID: string;
   };
+  ScheduleImportScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -268,6 +270,7 @@ export enum CommonStackComponents {
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
+  scheduleImportScreen = 'ScheduleImportScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -540,6 +543,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.privateEventChatScreen}
         component={isPersonalEventDisabled ? DisabledView : FezChatScreen}
         options={{title: FezType.getChatTitle(FezType.privateEvent)}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleImportScreen}
+        component={ScheduleImportScreen}
+        options={{title: 'Schedule Import'}}
       />
     </>
   );

@@ -171,6 +171,9 @@ export const getInitialAppConfig = () => {
   if (Config.PORT_TIME_ZONE_ID) {
     config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
   }
+  if (Config.SCHED_URL) {
+    config.schedBaseUrl = Config.SCHED_URL;
+  }
   if (Config.PREREGISTRATION_SERVER_URL) {
     config.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
   } else {

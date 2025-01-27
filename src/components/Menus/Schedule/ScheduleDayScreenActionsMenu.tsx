@@ -7,7 +7,11 @@ import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
-export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => void}) => {
+interface ScheduleDayScreenActionsMenuProps {
+  onRefresh?: () => void;
+  oobe?: boolean;
+}
+export const ScheduleDayScreenActionsMenu = ({onRefresh, oobe}: ScheduleDayScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const navigation = useScheduleStackNavigation();
 
@@ -27,13 +31,15 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: {onRefresh?: () => voi
       <Menu.Item
         title={'Import'}
         leadingIcon={AppIcons.schedImport}
-        onPress={() => handleNavigation(ScheduleStackComponents.scheduleImportScreen)}
+        onPress={() => handleNavigation(CommonStackComponents.scheduleImportScreen)}
       />
-      <Menu.Item
-        title={'Settings'}
-        leadingIcon={AppIcons.settings}
-        onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
-      />
+      {!oobe && (
+        <Menu.Item
+          title={'Settings'}
+          leadingIcon={AppIcons.settings}
+          onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
+        />
+      )}
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}
