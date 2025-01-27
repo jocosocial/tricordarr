@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {PropsWithChildren} from 'react';
 import {AuthContext} from '../Contexts/AuthContext';
 import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer';
@@ -11,24 +11,28 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   });
   const isLoggedIn = !!authState.tokenData;
 
+  const loadStoredTokenData = useCallback(async () => {
+    const tokenStringData = await TokenStringData.getLocal();
+    if (tokenStringData) {
+      return JSON.parse(tokenStringData) as TokenStringData;
+    }
+  }, []);
+
+  const restoreTokenData = useCallback(async () => {
+    const tokenData = await loadStoredTokenData();
+    if (tokenData) {
+      dispatchAuthState({
+        type: AuthActions.restore,
+        tokenData: tokenData,
+      });
+    } else {
+      console.log('[AuthProvider.tsx] No token data found in local encrypted storage.');
+    }
+  }, [dispatchAuthState, loadStoredTokenData]);
+
   useEffect(() => {
-    const restoreTokenData = async () => {
-      const tokenStringData = await TokenStringData.getLocal();
-      if (tokenStringData) {
-        return JSON.parse(tokenStringData) as TokenStringData;
-      }
-    };
-    restoreTokenData().then(tokenData => {
-      if (tokenData) {
-        dispatchAuthState({
-          type: AuthActions.restore,
-          tokenData: tokenData,
-        });
-      } else {
-        console.log('[AuthProvider.tsx] No token data found in local encrypted storage.');
-      }
-    });
-  }, [dispatchAuthState]);
+    restoreTokenData();
+  }, [restoreTokenData]);
 
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(
@@ -50,8 +54,9 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
           type: AuthActions.signOut,
         });
       },
+      restore: async () => await restoreTokenData(),
     }),
-    [dispatchAuthState],
+    [dispatchAuthState, restoreTokenData],
   );
 
   return (

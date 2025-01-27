@@ -9,20 +9,22 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppTheme} from '../../../styles/Theme';
 import {OobeButtonsView} from '../../Views/OobeButtonsView';
 import {useAuth} from '../../Context/Contexts/AuthContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ListSection} from '../../Lists/ListSection';
 import {MinorActionListItem} from '../../Lists/Items/MinorActionListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../Views/Modals/LogoutModal';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
-  const {isLoggedIn} = useAuth();
-  const {profilePublicData} = useUserData();
+  const {isLoggedIn, tokenData} = useAuth();
+  const {data: profilePublicData} = useUserProfileQuery(tokenData?.userID, {
+    enabled: !!tokenData,
+  });
   const {setModalContent, setModalVisible} = useModal();
   const {preRegistrationMode} = useConfig();
 

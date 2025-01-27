@@ -4,6 +4,7 @@ import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
 interface AuthContextType {
   signIn: (tokenData: TokenStringData, noPersist?: boolean) => Promise<void>;
   signOut: () => Promise<void>;
+  restore: () => Promise<void>;
   tokenData: TokenStringData | null;
   isLoggedIn: boolean;
   isLoading: boolean;
