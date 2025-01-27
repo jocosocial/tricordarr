@@ -17,7 +17,7 @@ import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
 import {useModal} from '../Context/Contexts/ModalContext.ts';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
-import {getUserSuggestedLocations, publicLocationSuggestions} from '../../libraries/Ship.ts';
+import {getUserSuggestedLocations} from '../../libraries/Ship.ts';
 import {useUserData} from '../Context/Contexts/UserDataContext.ts';
 
 interface PersonalEventFormProps {
