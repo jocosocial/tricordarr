@@ -16,7 +16,7 @@ interface EventCardActionsMenuProps {
 }
 export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
   const commonNavigation = useCommonStack();
-  const {enablePreregistration} = useConfig();
+  const {preRegistrationAvailable} = useConfig();
 
   const closeMenu = () => props.setMenuVisible(false);
 
@@ -42,7 +42,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
               id: props.eventData.eventID,
             });
           }}
-          disabled={!enablePreregistration}
+          disabled={!preRegistrationAvailable}
         />
       )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}

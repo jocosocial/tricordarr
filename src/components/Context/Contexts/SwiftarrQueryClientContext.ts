@@ -25,6 +25,7 @@ interface SwiftarrQueryClientContextType {
     queryParams?: TQueryParams,
     config?: AxiosRequestConfig,
   ) => Promise<AxiosResponse<TData>>;
+  serverUrl: string;
 }
 
 export const SwiftarrQueryClientContext = createContext(<SwiftarrQueryClientContextType>{});

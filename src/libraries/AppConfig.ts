@@ -200,6 +200,14 @@ export const getAppConfig = async () => {
   if (Config.OOBE_VERSION) {
     appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
   }
+  if (Config.PREREGISTRATION_SERVER_URL) {
+    appConfig.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
+  }
+  if (Config.PREREGISTRATION_END_DATE) {
+    const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
+    // Because Javascript, Fools!
+    appConfig.preRegistrationEndDate = new Date(year, month - 1, day);
+  }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
   appConfig.preRegistrationEndDate = new Date(appConfig.preRegistrationEndDate);

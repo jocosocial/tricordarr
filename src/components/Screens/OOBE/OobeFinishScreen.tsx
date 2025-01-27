@@ -11,11 +11,12 @@ import {startForegroundServiceWorker} from '../../../libraries/Service';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard';
 import {MainStackComponents} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {BottomTabComponents} from '../../Navigation/Tabs/BottomTabNavigator.tsx';
+import {OobePreRegistrationCompleteCard} from '../../Cards/OobePreRegistrationCompleteCard.tsx';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
 export const OobeFinishScreen = ({navigation}: Props) => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
   const rootNavigation = useRootStack();
 
   const onFinish = async () => {
@@ -36,10 +37,15 @@ export const OobeFinishScreen = ({navigation}: Props) => {
     <AppView safeEdges={['bottom']}>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          <OobeNoteCard />
+          {preRegistrationMode ? <OobePreRegistrationCompleteCard /> : <OobeNoteCard />}
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Finish'} rightOnPress={onFinish} />
+      <OobeButtonsView
+        leftOnPress={() => navigation.goBack()}
+        rightText={'Finish'}
+        rightOnPress={onFinish}
+        rightDisabled={preRegistrationMode}
+      />
     </AppView>
   );
 };

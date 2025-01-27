@@ -3,9 +3,11 @@ import React, {PropsWithChildren} from 'react';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import URLParse from 'url-parse';
+import {useSwiftarrQueryClient} from '../Contexts/SwiftarrQueryClientContext.ts';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   const openAppUrl = (appUrl: string) => {
     if (appUrl.includes('/fez')) {
@@ -24,8 +26,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
    */
   const openWebUrl = (url: string) => {
     const linkUrlObject = new URLParse(url);
-    if (url.startsWith(appConfig.serverUrl)) {
-      let appUrl = url.replace(appConfig.serverUrl, 'tricordarr:/');
+    if (url.startsWith(serverUrl)) {
+      let appUrl = url.replace(serverUrl, 'tricordarr:/');
       openAppUrl(appUrl);
       return;
     } else if (appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)) {

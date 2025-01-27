@@ -8,18 +8,19 @@ import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
 import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {useNavigation} from '@react-navigation/native';
 
 import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
 import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const ChangePasswordScreen = () => {
   const {profilePublicData} = useUserData();
   const navigation = useNavigation();
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const passwordMutation = useUserPasswordMutation();
   const {setSnackbarPayload} = useSnackbar();
+
   const onSubmit = (values: ChangePasswordFormValues, helper: FormikHelpers<ChangePasswordFormValues>) => {
     passwordMutation.mutate(
       {
@@ -47,7 +48,7 @@ export const ChangePasswordScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text>
-            Changing password for user {profilePublicData.header.username} on server {appConfig.serverUrl}.
+            Changing password for user {profilePublicData.header.username} on server {serverUrl}.
           </Text>
         </PaddedContentView>
         <PaddedContentView>

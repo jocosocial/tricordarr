@@ -2,7 +2,7 @@ import {createContext, useContext} from 'react';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
 
 interface AuthContextType {
-  signIn: (tokenData: TokenStringData) => Promise<void>;
+  signIn: (tokenData: TokenStringData, noPersist?: boolean) => Promise<void>;
   signOut: () => Promise<void>;
   tokenData: TokenStringData | null;
   isLoggedIn: boolean;

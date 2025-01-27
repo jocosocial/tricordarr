@@ -27,13 +27,13 @@ export const ConfigServerUrlScreen = () => {
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, serverUrl} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
-    const oldServerUrl = appConfig.serverUrl;
+    const oldServerUrl = serverUrl;
     updateAppConfig({
       ...appConfig,
       serverUrl: values.serverUrl,
@@ -73,8 +73,8 @@ export const ConfigServerUrlScreen = () => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(appConfig.serverUrl),
-              serverUrl: appConfig.serverUrl,
+              serverChoice: ServerChoices.fromUrl(serverUrl),
+              serverUrl: serverUrl,
             }}
           />
         </PaddedContentView>

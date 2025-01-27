@@ -4,12 +4,12 @@ import {Linking, StyleSheet, TouchableOpacity} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const TimezoneWarningView = () => {
   const {commonStyles} = useStyles();
   const {showTimeZoneWarning} = useCruise();
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const commonStack = useCommonStack();
   const onPress = () => {
     commonStack.push(CommonStackComponents.siteUIScreen, {
@@ -20,7 +20,7 @@ export const TimezoneWarningView = () => {
   // The WebView seems to be reporting the wrong time. It sticks with a device default
   // and not what its currently set to.
   // This here for debugging.
-  const onLongPress = () => Linking.openURL(`${appConfig.serverUrl}/time`);
+  const onLongPress = () => Linking.openURL(`${serverUrl}/time`);
 
   const styles = StyleSheet.create({
     headerView: {

@@ -90,6 +90,7 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback.
    * LoadingProvider requires SafeAreaProvider since it's the first usage of AppView.
    * SnackbarProvider shouldn't need anything.
+   * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider
    */
   return (
     <GestureHandlerRootView>

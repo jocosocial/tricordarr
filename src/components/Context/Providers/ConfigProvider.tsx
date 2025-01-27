@@ -10,6 +10,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
   const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<PermissionStatus | undefined>();
+  const [preRegistrationMode, setPreRegistrationMode] = useState<boolean>(false);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -34,7 +35,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
-  const enablePreregistration = new Date() > appConfig.preRegistrationEndDate;
+  const preRegistrationAvailable = new Date() > appConfig.preRegistrationEndDate;
 
   return (
     <ConfigContext.Provider
@@ -46,7 +47,9 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         setHasNotificationPermission,
         notificationPermissionStatus,
         setNotificationPermissionStatus,
-        enablePreregistration,
+        preRegistrationAvailable,
+        preRegistrationMode,
+        setPreRegistrationMode,
       }}>
       {children}
     </ConfigContext.Provider>

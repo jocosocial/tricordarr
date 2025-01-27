@@ -14,6 +14,7 @@ import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 interface ServerUrlFormProps {
   initialValues: ServerUrlFormValues;
   onSubmit: (values: ServerUrlFormValues, helpers: FormikHelpers<ServerUrlFormValues>) => void;
+  disabled?: boolean;
 }
 
 const validationSchema = Yup.object().shape({
@@ -37,6 +38,7 @@ export const ServerUrlSettingForm = (props: ServerUrlFormProps) => {
               onSelect={c => {
                 setFieldValue('serverUrl', c?.serverUrl);
               }}
+              disabled={props.disabled}
             />
           </View>
           <TextField

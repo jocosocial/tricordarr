@@ -1,16 +1,16 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {SiteUIScreenBase} from './SiteUIScreenBase.tsx';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
 export const SiteUIScreen = ({route}: Props) => {
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   const getInitialUrl = () => {
-    let newUrl = appConfig.serverUrl;
+    let newUrl = serverUrl;
 
     if (route.params.moderate) {
       newUrl += '/moderate';

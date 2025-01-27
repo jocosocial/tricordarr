@@ -10,6 +10,8 @@ import {UnsavedChangesView} from './Warnings/UnsavedChangesView.tsx';
 import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AppSnackbar} from '../Snackbars/AppSnackbar.tsx';
+import {PreRegistrationWarningView} from './Warnings/PreRegistrationWarningView.tsx';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 
 interface AppViewProps extends PropsWithChildren {
   safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];
@@ -25,6 +27,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
+  const {preRegistrationMode} = useConfig();
 
   const styles = StyleSheet.create({
     appView: {
@@ -56,6 +59,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
           <AppModal />
           <AppSnackbar />
         </Portal>
+        {preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
       </KeyboardAvoidingView>

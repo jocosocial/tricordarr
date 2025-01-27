@@ -17,7 +17,7 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const commonNavigation = useCommonStack();
-  const {enablePreregistration} = useConfig();
+  const {preRegistrationAvailable} = useConfig();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -44,7 +44,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
               id: props.event.eventID,
             });
           }}
-          disabled={!enablePreregistration}
+          disabled={!preRegistrationAvailable}
         />
       )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />

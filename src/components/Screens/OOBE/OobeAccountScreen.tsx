@@ -15,6 +15,7 @@ import {MinorActionListItem} from '../../Lists/Items/MinorActionListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../Views/Modals/LogoutModal';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
@@ -23,6 +24,7 @@ export const OobeAccountScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useAuth();
   const {profilePublicData} = useUserData();
   const {setModalContent, setModalVisible} = useModal();
+  const {preRegistrationMode} = useConfig();
 
   const handleLogoutModal = (allDevices = false) => {
     setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
@@ -52,6 +54,14 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               onPress={() => navigation.push(OobeStackComponents.oobeLoginScreen)}
             />
           </PaddedContentView>
+          {preRegistrationMode && (
+            <PaddedContentView>
+              <Text>
+                Credentials will not be saved in pre-registration mode. If you close the app and want to return, you'll
+                need to log in again. This will not be the case once on-board.
+              </Text>
+            </PaddedContentView>
+          )}
         </ScrollingContentView>
       )}
       {isLoggedIn && profilePublicData && (

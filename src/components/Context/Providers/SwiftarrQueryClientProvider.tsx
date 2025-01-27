@@ -11,17 +11,21 @@ import DeviceInfo from 'react-native-device-info';
 import {useSnackbar} from '../Contexts/SnackbarContext.ts';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, oobeCompleted} = useConfig();
+  const {appConfig, oobeCompleted, preRegistrationMode} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
   const {setSnackbarPayload} = useSnackbar();
   const {tokenData, isLoggedIn} = useAuth();
+  const serverUrl = useMemo(
+    () => (preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl),
+    [appConfig.preRegistrationServerUrl, appConfig.serverUrl, preRegistrationMode],
+  );
 
   /**
    * Establish the primary query client. Some day there may be multiple of these.
    */
   const ServerQueryClient = useMemo(() => {
     const client = axios.create({
-      baseURL: `${appConfig.serverUrl}${appConfig.urlPrefix}`,
+      baseURL: `${serverUrl}${appConfig.urlPrefix}`,
       headers: {
         ...(isLoggedIn && tokenData ? {Authorization: `Bearer ${tokenData.token}`} : undefined),
         ...(isLoggedIn && tokenData ? {'X-Swiftarr-User': tokenData.userID} : undefined),
@@ -42,14 +46,14 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       return config;
     });
     return client;
-  }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
+  }, [appConfig.apiClientConfig.requestTimeout, serverUrl, appConfig.urlPrefix, isLoggedIn, tokenData]);
 
   /**
    * Raw
    */
   const PublicQueryClient = useMemo(() => {
     const client = axios.create({
-      baseURL: `${appConfig.serverUrl}`,
+      baseURL: serverUrl,
       headers: {
         'X-Swiftarr-Client': `${DeviceInfo.getApplicationName()} ${DeviceInfo.getVersion()}`,
         // https://www.reddit.com/r/reactnative/comments/15frmyb/is_axios_caching/
@@ -67,13 +71,13 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       return config;
     });
     return client;
-  }, [appConfig.apiClientConfig.requestTimeout, appConfig.serverUrl]);
+  }, [appConfig.apiClientConfig.requestTimeout, serverUrl]);
 
   /**
    * Bonus data to inject into the clients query keys.
    * Some day there may be more than one in which case this could need to be smarter.
    */
-  const queryKeyExtraData: QueryKey = [appConfig.serverUrl, tokenData?.userID];
+  const queryKeyExtraData: QueryKey = [serverUrl, tokenData?.userID];
 
   const apiGet = useCallback(
     async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
@@ -210,6 +214,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         ServerQueryClient,
         PublicQueryClient,
         publicGet,
+        serverUrl,
       }}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}

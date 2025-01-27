@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {WebView, WebViewNavigation} from 'react-native-webview';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useBackHandler} from '@react-native-community/hooks';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface SiteUIScreenBaseProps {
   initialUrl: string;
@@ -16,7 +16,7 @@ interface SiteUIScreenBaseProps {
 }
 
 export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScreenBaseProps) => {
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
   const [key, setKey] = useState(initialKey);
@@ -24,9 +24,9 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   const navigation = useCommonStack();
 
   const onHome = useCallback(() => {
-    setWebviewUrl(appConfig.serverUrl);
+    setWebviewUrl(serverUrl);
     setKey(String(Date.now()));
-  }, [appConfig.serverUrl]);
+  }, [serverUrl]);
 
   const reload = () => webViewRef.current?.reload();
 

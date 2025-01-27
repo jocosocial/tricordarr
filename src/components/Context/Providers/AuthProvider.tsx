@@ -33,8 +33,12 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(
     () => ({
-      signIn: async (tokenData: TokenStringData) => {
-        await TokenStringData.setLocal(tokenData);
+      signIn: async (tokenData: TokenStringData, noPersist: boolean = false) => {
+        if (!noPersist) {
+          await TokenStringData.setLocal(tokenData);
+        } else {
+          console.log('[AuthProvider.tsx] Not persisting TokenStringData.');
+        }
         dispatchAuthState({
           type: AuthActions.signIn,
           tokenData: tokenData,
