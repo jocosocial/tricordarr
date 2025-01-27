@@ -1,4 +1,4 @@
-import {KeywordData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {KeywordData, ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '../TokenAuthQuery';
 import {KeywordType} from '../../../libraries/Types';
 
@@ -13,6 +13,6 @@ export const useUserKeywordQuery = ({keywordType, options}: KeywordQueryProps) =
   return useTokenAuthQuery<KeywordData>(`/user/${keywordType}`, options);
 };
 
-export const useUserFindQuery = (username: string) => {
-  return useTokenAuthQuery<UserHeader>(`/users/find/${username}`);
+export const useUserProfileQuery = <TData = ProfilePublicData>(options: TokenAuthQueryOptionsType<TData> = {}) => {
+  return useTokenAuthQuery<TData>('/user/profile', options);
 };

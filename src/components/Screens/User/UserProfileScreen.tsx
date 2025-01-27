@@ -1,17 +1,17 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
 import {UserProfileScreenBase} from './UserProfileScreenBase';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 import {LoadingView} from '../../Views/Static/LoadingView';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUsersProfileQuery} from '../../Queries/Users/UsersQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
 
 export const UserProfileScreen = ({route}: Props) => {
-  const {data, refetch, isLoading} = useUserProfileQuery(route.params.userID);
+  const {data, refetch, isLoading} = useUsersProfileQuery(route.params.userID);
 
   // Moved these out of the UserRelationsProvider so that they wouldn't get refetched on app startup.
   // isLoading means that there is no data in the cache. They'll auto refetch (enabled is implicitly true here)

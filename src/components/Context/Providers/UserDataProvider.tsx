@@ -3,14 +3,15 @@ import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {UserDataContext} from '../Contexts/UserDataContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useAuth} from '../Contexts/AuthContext';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
+
+import {useUsersProfileQuery} from '../../Queries/Users/UsersQueries.ts';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
   const {tokenData} = useAuth();
-  const {data: profileQueryData, error: profileQueryError} = useUserProfileQuery(tokenData?.userID, {
+  const {data: profileQueryData, error: profileQueryError} = useUsersProfileQuery(tokenData?.userID, {
     enabled: !!tokenData,
   });
 

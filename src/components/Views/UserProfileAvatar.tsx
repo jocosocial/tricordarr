@@ -9,10 +9,10 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 import {APIImage} from '../Images/APIImage';
 import {useFeature} from '../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
-import {useUserProfileQuery} from '../Queries/Users/UserProfileQueries.ts';
 import {ImageButtons} from '../Buttons/ImageButtons.tsx';
 import {styleDefaults} from '../../styles';
 import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
+import {useUsersProfileQuery} from '../Queries/Users/UsersQueries.ts';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -24,7 +24,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const userProfileQuery = useUserProfileQuery(user.header.userID);
+  const userProfileQuery = useUsersProfileQuery(user.header.userID);
   const {profilePublicData} = useUserData();
   const {getIsDisabled} = useFeature();
 

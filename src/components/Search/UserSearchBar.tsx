@@ -4,7 +4,8 @@ import {HelperText, Searchbar} from 'react-native-paper';
 import {UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {ListSection} from '../Lists/ListSection';
 import {UserListItem} from '../Lists/Items/UserListItem';
-import {useUserMatchQuery} from '../Queries/Users/UserMatchQueries.ts';
+
+import {useUserMatchQuery} from '../Queries/Users/UsersQueries.ts';
 
 interface UserSearchBarProps {
   excludeHeaders?: UserHeader[];
