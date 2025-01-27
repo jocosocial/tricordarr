@@ -11,9 +11,9 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useAppTheme} from '../../../styles/Theme.ts';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeProfileScreen>;
+type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 
-export const OobeProfileScreen = ({navigation}: Props) => {
+export const OobeUserDataScreen = ({navigation}: Props) => {
   const {tokenData} = useAuth();
   const theme = useAppTheme();
 
@@ -45,7 +45,8 @@ export const OobeProfileScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <Text>
             You can optionally follow official and shadow events in the schedule. This will add them to your in-app day
-            planner and generate reminder notifications.
+            planner and generate reminder notifications. If you have simultaneous internet and Twitarr access you can
+            also import from a Sched.com account.
           </Text>
         </PaddedContentView>
         <PaddedContentView>

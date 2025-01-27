@@ -4,14 +4,16 @@ import {UserDataContext} from '../Contexts/UserDataContext';
 import {useErrorHandler} from '../Contexts/ErrorHandlerContext';
 import {useAuth} from '../Contexts/AuthContext';
 import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
+import {useConfig} from '../Contexts/ConfigContext.ts';
 
 // https://reactnavigation.org/docs/auth-flow/
 export const UserDataProvider = ({children}: PropsWithChildren) => {
   const [profilePublicData, setProfilePublicData] = useState<ProfilePublicData>();
   const {setErrorBanner} = useErrorHandler();
+  const {preRegistrationMode} = useConfig();
   const {tokenData} = useAuth();
   const {data: profileQueryData, error: profileQueryError} = useUserProfileQuery(tokenData?.userID, {
-    enabled: !!tokenData,
+    enabled: preRegistrationMode ? false : !!tokenData,
   });
 
   useEffect(() => {

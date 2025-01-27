@@ -13,7 +13,7 @@ import {OobePermissionsScreen} from '../../Screens/OOBE/OobePermissionsScreen.ts
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
 import {OobePreregistrationScreen} from '../../Screens/OOBE/OobePreregistrationScreen.tsx';
-import {OobeProfileScreen} from '../../Screens/OOBE/OobeProfileScreen.tsx';
+import {OobeUserDataScreen} from '../../Screens/OOBE/OobeUserDataScreen.tsx';
 import {OobeScheduleScreen} from '../../Screens/OOBE/OobeScheduleScreen.tsx';
 
 export type OobeStackParamList = CommonStackParamList & {
@@ -26,7 +26,7 @@ export type OobeStackParamList = CommonStackParamList & {
   RegisterScreen: undefined;
   OobePermissionsScreen: undefined;
   OobePreregistrationScreen: undefined;
-  OobeProfileScreen: undefined;
+  OobeUserDataScreen: undefined;
   OobeScheduleScreen: undefined;
 };
 
@@ -40,7 +40,7 @@ export enum OobeStackComponents {
   oobeLoginScreen = 'LoginScreen',
   oobePermissionsScreen = 'OobePermissionsScreen',
   oobePreregistrationScreen = 'OobePreregistrationScreen',
-  oobeProfileScreen = 'OobeProfileScreen',
+  oobeUserDataScreen = 'OobeUserDataScreen',
   oobeScheduleScreen = 'OobeScheduleScreen',
 }
 
@@ -94,9 +94,9 @@ export const OobeStackNavigator = () => {
         options={{title: 'Pre-Registration'}}
       />
       <Stack.Screen
-        name={OobeStackComponents.oobeProfileScreen}
-        component={OobeProfileScreen}
-        options={{title: 'User Profile'}}
+        name={OobeStackComponents.oobeUserDataScreen}
+        component={OobeUserDataScreen}
+        options={{title: 'User Data'}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeScheduleScreen}
