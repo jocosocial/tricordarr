@@ -29,6 +29,13 @@ export const TodayNextAppointmentView = () => {
   //   }
   //   return false;
   // };
+  // const showAppointment = () => {
+  //   if (!data.nextJoinedLFGTime) {
+  //     return false;
+  //   }
+  //   const lfgBoatTime = calcCruiseDayTime(new Date(data.nextJoinedLFGTime), startDate, endDate);
+  //   return lfgBoatTime.cruiseDay === adjustedCruiseDayToday;
+  // };
 
   return (
     <>

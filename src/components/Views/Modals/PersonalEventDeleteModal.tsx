@@ -42,9 +42,11 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
           }
           setModalVisible(false);
           setSnackbarPayload({message: 'Successfully deleted this event.', messageType: 'info'});
-          const invalidations = FezData.getCacheKeys().map(key => {
-            return queryClient.invalidateQueries(key);
-          });
+          const invalidations = FezData.getCacheKeys()
+            .map(key => {
+              return queryClient.invalidateQueries(key);
+            })
+            .concat([queryClient.invalidateQueries(['/notification/global'])]);
           await Promise.all(invalidations);
         },
       },
