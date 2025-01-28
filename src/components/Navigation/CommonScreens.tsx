@@ -67,7 +67,6 @@ import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
-import {ScheduleDayScreen} from '../Screens/Schedule/ScheduleDayScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
