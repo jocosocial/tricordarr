@@ -13,7 +13,7 @@ interface DataFieldListItemProps {
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
   itemStyle?: ViewStyle;
-  // left?: () => ReactNode;
+  left?: () => ReactNode;
   icon?: string;
 }
 
@@ -28,6 +28,7 @@ export const DataFieldListItem = ({
   descriptionStyle,
   itemStyle,
   icon,
+  left,
 }: DataFieldListItemProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
@@ -57,7 +58,7 @@ export const DataFieldListItem = ({
 
   return (
     <List.Item
-      left={getIcon}
+      left={left || getIcon}
       style={styles.item}
       titleStyle={styles.title}
       descriptionStyle={styles.description}

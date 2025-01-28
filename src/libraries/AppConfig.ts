@@ -200,12 +200,7 @@ export const getAppConfig = async () => {
   let appConfig = JSON.parse(rawConfig) as AppConfig;
   // Certain keys should always be loaded from the app environment.
   // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
-  if (Config.OOBE_VERSION) {
-    appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
-  }
-  if (Config.PREREGISTRATION_SERVER_URL) {
-    appConfig.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
-  }
+  // Avoid putting things from the SwiftarrClientData endpoint in here. It's confusing.
   if (Config.PREREGISTRATION_END_DATE) {
     const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
     // Because Javascript, Fools!

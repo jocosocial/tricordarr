@@ -173,7 +173,7 @@ export const ScheduleItemScreenBase = ({
                       }
                     />
                   )}
-                  {FezType.isLFGType(eventData.fezType) && (
+                  {FezType.isLFGType(eventData.fezType) && showLfgChat && (
                     <DataFieldListItem
                       icon={AppIcons.group}
                       description={FezData.getParticipantLabel(eventData)}
@@ -187,6 +187,16 @@ export const ScheduleItemScreenBase = ({
                     icon={AppIcons.type}
                     description={FezType.getLabel(eventData.fezType)}
                     title={'Type'}
+                  />
+                  <DataFieldListItem
+                    title={'Hosted By'}
+                    icon={AppIcons.user}
+                    onPress={() =>
+                      navigation.push(CommonStackComponents.userProfileScreen, {
+                        userID: eventData.owner.userID,
+                      })
+                    }
+                    description={getUserBylineString(eventData.owner, true, true)}
                   />
                 </>
               )}
