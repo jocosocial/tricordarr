@@ -113,7 +113,7 @@ const defaultAppConfig: AppConfig = {
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
   schedule: {
-    hidePastLfgs: true,
+    hidePastLfgs: false,
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
