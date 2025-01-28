@@ -5,6 +5,7 @@ import {useAppTheme} from '../../../styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {useAppState} from '@react-native-community/hooks';
+// @ts-ignore
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
 import {ListSection} from '../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
@@ -36,10 +37,8 @@ export const BatteryOptimizationSettingsView = () => {
 
       <PaddedContentView padTop={true}>
         <Text style={commonStyles.marginBottomSmall}>
-          By default, Android will apply battery optimization to all apps on your device. However this means the
-          background worker which this app relies on can be shut down at almost any time, resulting in missed push
-          notifications. You can disable Battery Optimization here to potentially get more reliable notifications. Press
-          the button below, then select "Allow" in the dialog that appears.
+          You can disable Battery Optimization here to potentially get more reliable notifications. Press the button
+          below, then select "Allow" in the dialog that appears.
         </Text>
         <PrimaryActionButton
           buttonText={optEnabled ? 'Disable Optimization' : 'Already disabled'}
