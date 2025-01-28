@@ -11,11 +11,11 @@ import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
-  const {tokenData} = useAuth();
-  const {error: profileQueryError} = useUserProfileQuery({
-    enabled: !!tokenData,
-  });
-  const {setErrorBanner} = useErrorHandler();
+  // const {tokenData} = useAuth();
+  // const {error: profileQueryError} = useUserProfileQuery({
+  //   enabled: !!tokenData,
+  // });
+  // const {setErrorBanner} = useErrorHandler();
 
   const openAppUrl = (appUrl: string) => {
     if (appUrl.includes('/fez')) {
@@ -48,13 +48,13 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
   };
 
   // @TODO sus
-  useEffect(() => {
-    if (tokenData && profileQueryError && profileQueryError.response) {
-      if (profileQueryError.response.status === 401) {
-        setErrorBanner('You are not logged in (or your token is no longer valid). Please log in again.');
-      }
-    }
-  }, [profileQueryError, setErrorBanner, tokenData]);
+  // useEffect(() => {
+  //   if (tokenData && profileQueryError && profileQueryError.response) {
+  //     if (profileQueryError.response.status === 401) {
+  //       setErrorBanner('You are not logged in (or your token is no longer valid). Please log in again.');
+  //     }
+  //   }
+  // }, [profileQueryError, setErrorBanner, tokenData]);
 
   return (
     <TwitarrContext.Provider

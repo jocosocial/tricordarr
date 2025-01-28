@@ -16,7 +16,6 @@ import DeviceInfo from 'react-native-device-info';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useFocusEffect} from '@react-navigation/native';
-import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
@@ -24,7 +23,6 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {preRegistrationAvailable, setPreRegistrationMode} = useConfig();
   const theme = useAppTheme();
-  const {restore} = useAuth();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -39,7 +37,6 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   useFocusEffect(() => {
     console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
     setPreRegistrationMode(false);
-    restore();
   });
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
