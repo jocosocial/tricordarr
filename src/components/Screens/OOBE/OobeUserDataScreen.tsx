@@ -64,7 +64,7 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
                 buttonColor={theme.colors.twitarrNeutralButton}
                 onPress={() => {
                   if (tokenData) {
-                    navigation.push(CommonStackComponents.scheduleDayScreen);
+                    navigation.push(OobeStackComponents.oobeScheduleDayScreen);
                   }
                 }}
                 disabled={!tokenData}

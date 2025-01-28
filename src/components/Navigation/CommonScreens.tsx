@@ -218,7 +218,6 @@ export type CommonStackParamList = {
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
-  ScheduleDayScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -276,7 +275,6 @@ export enum CommonStackComponents {
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   eventSearchScreen = 'EventSearchScreen',
-  scheduleDayScreen = 'ScheduleDayScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -287,7 +285,6 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
   const isPersonalEventDisabled = getIsDisabled(SwiftarrFeature.personalevents);
-  const isScheduleDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
   return (
     <>
@@ -555,14 +552,6 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.scheduleImportScreen}
         component={ScheduleImportScreen}
         options={{title: 'Schedule Import'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.scheduleDayScreen}
-        component={isScheduleDisabled ? DisabledView : ScheduleDayScreen}
-        options={{
-          // headerLeft: getLeftMainHeaderButtons,
-          title: 'Schedule',
-        }}
       />
       <Stack.Screen
         name={CommonStackComponents.eventSearchScreen}
