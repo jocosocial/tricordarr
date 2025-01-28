@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {ProfilePublicData} from '../../libraries/Structs/ControllerStructs';
+import {ProfilePublicData, UserHeader} from '../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
@@ -13,6 +13,7 @@ import {styleDefaults} from '../../styles';
 import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 import {useUsersProfileQuery} from '../Queries/Users/UsersQueries.ts';
 import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -24,9 +25,10 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const avatarDeleteMutation = useUserImageDeleteMutation();
   const avatarMutation = useUserAvatarMutation();
   const {setSnackbarPayload} = useSnackbar();
-  const userProfileQuery = useUsersProfileQuery(user.header.userID);
+  const usersProfileQuery = useUsersProfileQuery(user.header.userID);
   const {data: profilePublicData} = useUserProfileQuery();
   const {getIsDisabled} = useFeature();
+  const queryClient = useQueryClient();
 
   const styles = StyleSheet.create({
     image: {
@@ -71,8 +73,11 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     }
   };
 
-  const onSuccess = () => {
-    userProfileQuery.refetch();
+  const onSuccess = async () => {
+    const invalidations = UserHeader.getCacheKeys(user.header).map(key => {
+      return queryClient.invalidateQueries(key);
+    });
+    await Promise.all(invalidations);
   };
 
   const processImage = (image: Image) => {
@@ -98,12 +103,12 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   useEffect(() => {
-    setRefreshing(avatarMutation.isLoading || userProfileQuery.isRefetching);
-  }, [avatarMutation.isLoading, setRefreshing, userProfileQuery.isRefetching]);
+    setRefreshing(avatarMutation.isLoading || usersProfileQuery.isRefetching);
+  }, [avatarMutation.isLoading, setRefreshing, usersProfileQuery.isRefetching]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 
-  if (!userProfileQuery.data) {
+  if (!usersProfileQuery.data) {
     return <></>;
   }
 

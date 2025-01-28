@@ -36,6 +36,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
   const preRegistrationAvailable = new Date() <= appConfig.preRegistrationEndDate;
+  console.log(appConfig.preRegistrationEndDate);
 
   return (
     <ConfigContext.Provider

@@ -47,7 +47,7 @@ export const UserProfileScreenBase = ({
   oobe = false,
 }: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {data: profilePublicData} = useUserProfileQuery();
+  const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -59,9 +59,21 @@ export const UserProfileScreenBase = ({
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetch(), refetchFavorites(), refetchMutes(), refetchBlocks()]);
+    let refreshes = [refetch(), refetchFavorites(), refetchMutes(), refetchBlocks()];
+    if (data?.header.userID === profilePublicData?.header.userID) {
+      refreshes.push(refetchSelf());
+    }
+    await Promise.all(refreshes);
     setRefreshing(false);
-  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks]);
+  }, [
+    refetch,
+    refetchFavorites,
+    refetchMutes,
+    refetchBlocks,
+    data?.header.userID,
+    profilePublicData?.header.userID,
+    refetchSelf,
+  ]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {

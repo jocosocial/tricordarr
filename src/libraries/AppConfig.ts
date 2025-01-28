@@ -182,7 +182,7 @@ export const getInitialAppConfig = () => {
   if (Config.PREREGISTRATION_END_DATE) {
     const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
     // Because Javascript, Fools!
-    config.preRegistrationEndDate = new Date(year, month - 1, day);
+    config.preRegistrationEndDate = new Date(year, month - 1, day, 23, 59, 59);
   }
   return config;
 };
@@ -204,7 +204,7 @@ export const getAppConfig = async () => {
   if (Config.PREREGISTRATION_END_DATE) {
     const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
     // Because Javascript, Fools!
-    appConfig.preRegistrationEndDate = new Date(year, month - 1, day);
+    appConfig.preRegistrationEndDate = new Date(year, month - 1, day, 23, 59, 59);
   }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);

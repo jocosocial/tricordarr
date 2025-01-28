@@ -51,7 +51,7 @@ export const UserProfileForm = ({onSubmit, initialValues}: UserProfileFormProps)
             viewStyle={styles.inputContainer}
             name={'preferredPronoun'}
             label={'Pronouns'}
-            autoCapitalize={'words'}
+            autoCapitalize={'none'}
           />
           <TextField
             viewStyle={styles.inputContainer}

@@ -64,14 +64,19 @@ export const OobeServerScreen = ({navigation}: Props) => {
         {!preRegistrationMode && (
           <PaddedContentView>
             <Text>
-              Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs or other network
-              blockers.
+              Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
+              other network blockers.
             </Text>
           </PaddedContentView>
         )}
         <PaddedContentView>
           <Text>
-            Do not change this unless instructed to do so by the Twitarr Dev Team or THO. Or you know what you're doing.
+            Do not change this unless instructed to do so by the Twitarr Dev Team or THO.
+            {preRegistrationMode ? (
+              <Text> Should be set to Start during pre-registration.</Text>
+            ) : (
+              <Text> Should be set to Production when on-board.</Text>
+            )}
           </Text>
         </PaddedContentView>
         <PaddedContentView>

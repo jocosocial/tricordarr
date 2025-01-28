@@ -11,8 +11,9 @@ import {useModal} from '../../../Context/Contexts/ModalContext';
 import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView';
 import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {useUserCreateQuery} from '../../../Queries/User/UserMutations.ts';
+import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
 
 const RegisterScreenBase = () => {
   const createMutation = useUserCreateQuery();
@@ -21,6 +22,7 @@ const RegisterScreenBase = () => {
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
+  const {preRegistrationMode} = useConfig();
 
   const onPress = useCallback(() => {
     setModalVisible(false);
@@ -42,7 +44,7 @@ const RegisterScreenBase = () => {
           };
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
-              signIn(response.data).then(() => {
+              signIn(response.data, preRegistrationMode).then(() => {
                 setModalOnDismiss(onDismiss);
                 setModalContent(
                   <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
@@ -62,7 +64,17 @@ const RegisterScreenBase = () => {
         },
       });
     },
-    [createMutation, loginMutation, onDismiss, onPress, setModalContent, setModalOnDismiss, setModalVisible, signIn],
+    [
+      createMutation,
+      loginMutation,
+      onDismiss,
+      onPress,
+      setModalContent,
+      setModalOnDismiss,
+      setModalVisible,
+      signIn,
+      preRegistrationMode,
+    ],
   );
 
   return (

@@ -36,7 +36,7 @@ export const PickerField = <TData,>({
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
-  const {setFieldValue} = useFormikContext();
+  const {setFieldValue, isSubmitting} = useFormikContext();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -88,7 +88,7 @@ export const PickerField = <TData,>({
             contentStyle={styles.content}
             style={styles.button}
             onPress={openMenu}
-            disabled={disabled}
+            disabled={disabled || isSubmitting}
             mode={anchorButtonMode}>
             {label} ({getTitle(value)})
           </Button>

@@ -3,6 +3,11 @@ import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {getDayMarker} from '../../libraries/DateTime.ts';
+import {Image} from 'react-native';
+// @ts-ignore
+import preregistration from '../../../assets/preregistration.jpg';
+import {encode as base64_encode} from 'base-64';
+import {AppImage} from '../Images/AppImage.tsx';
 
 export const OobePreRegistrationCompleteCard = () => {
   const {commonStyles} = useStyles();
@@ -17,6 +22,15 @@ export const OobePreRegistrationCompleteCard = () => {
           nothing for it to do until you board the ship. Other than pack.
         </Text>
       </Card.Content>
+      <AppImage
+        image={{
+          dataURI: Image.resolveAssetSource(preregistration).uri,
+          mimeType: 'image/jpeg',
+          fileName: 'preregistration.jpg',
+          base64: base64_encode(preregistration),
+        }}
+        mode={'cardcover'}
+      />
     </Card>
   );
 };
