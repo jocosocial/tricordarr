@@ -19,6 +19,7 @@ import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {CacheManager} from '@georstat/react-native-image-cache';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
@@ -47,10 +48,10 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      signOut().then(() => {
-        clearPrivileges();
-        queryClient.clear();
-      });
+      await signOut();
+      clearPrivileges();
+      queryClient.clear();
+      await CacheManager.clearCache();
     }
     setSnackbarPayload(undefined);
   };

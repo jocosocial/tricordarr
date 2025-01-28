@@ -6,7 +6,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {LfgCancelModal} from '../../Views/Modals/LfgCancelModal';
+import {FezCancelModal} from '../../Views/Modals/FezCancelModal.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
@@ -36,7 +36,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         <Menu.Item
           leadingIcon={AppIcons.cancel}
           title={'Cancel'}
-          onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
+          onPress={() => handleModal(<FezCancelModal fezData={fezData} />)}
           disabled={fezData.cancelled}
         />
       )}

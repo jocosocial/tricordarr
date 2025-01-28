@@ -40,7 +40,7 @@ export const ScheduleStackNavigator = () => {
       <Stack.Screen
         name={ScheduleStackComponents.schedulePrivateEventsScreen}
         component={isDisabled ? DisabledView : SchedulePrivateEventsScreen}
-        options={{title: 'Private Events'}}
+        options={{title: 'Personal Events'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

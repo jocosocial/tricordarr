@@ -7,6 +7,7 @@ import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
 import {ScheduleFlatListSeparator} from '../../../libraries/Types';
 import {FlashList} from '@shopify/flash-list';
 import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
 interface LFGFlatListProps {
   items: FezData[];
@@ -45,7 +46,13 @@ export const LFGFlatList = ({
         <FezCard
           fez={item}
           showDay={true}
-          onPress={() => navigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezID})}
+          onPress={() => {
+            if (FezType.isLFGType(item.fezType)) {
+              navigation.push(CommonStackComponents.lfgScreen, {fezID: item.fezID});
+            } else if (FezType.isPrivateEventType(item.fezType)) {
+              navigation.push(CommonStackComponents.personalEventScreen, {eventID: item.fezID});
+            }
+          }}
           enableReportOnly={enableReportOnly}
         />
       );

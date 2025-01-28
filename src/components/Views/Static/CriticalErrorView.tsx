@@ -16,6 +16,7 @@ import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {getInitialAppConfig} from '../../../libraries/AppConfig.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {HelpTopicView} from '../Help/HelpTopicView.tsx';
+import {CacheManager} from '@georstat/react-native-image-cache';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -75,6 +76,13 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Clear Query Cache'}
             onPress={() => queryClient.clear()}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
+          <PrimaryActionButton
+            buttonColor={theme.colors.twitarrNegativeButton}
+            buttonText={'Clear Image Cache'}
+            onPress={async () => await CacheManager.clearCache()}
           />
         </PaddedContentView>
         <PaddedContentView>
