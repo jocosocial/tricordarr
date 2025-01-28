@@ -93,8 +93,6 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     },
   });
 
-  console.log(personalEventData?.pages[0]);
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (oobeCompleted) {
