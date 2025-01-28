@@ -66,6 +66,8 @@ import {TimeZoneHelpScreen} from '../Screens/Main/TimeZoneHelpScreen.tsx';
 import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
+import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
+import {ScheduleDayScreen} from '../Screens/Schedule/ScheduleDayScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -215,6 +217,8 @@ export type CommonStackParamList = {
     fezID: string;
   };
   ScheduleImportScreen: undefined;
+  EventSearchScreen: undefined;
+  ScheduleDayScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -271,6 +275,8 @@ export enum CommonStackComponents {
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
+  eventSearchScreen = 'EventSearchScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -281,6 +287,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
   const isPersonalEventDisabled = getIsDisabled(SwiftarrFeature.personalevents);
+  const isScheduleDisabled = getIsDisabled(SwiftarrFeature.schedule);
 
   return (
     <>
@@ -548,6 +555,19 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.scheduleImportScreen}
         component={ScheduleImportScreen}
         options={{title: 'Schedule Import'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleDayScreen}
+        component={isScheduleDisabled ? DisabledView : ScheduleDayScreen}
+        options={{
+          // headerLeft: getLeftMainHeaderButtons,
+          title: 'Schedule',
+        }}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventSearchScreen}
+        component={EventSearchScreen}
+        options={{title: 'Search Events'}}
       />
     </>
   );

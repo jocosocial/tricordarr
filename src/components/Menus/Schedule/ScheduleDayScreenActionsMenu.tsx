@@ -6,14 +6,15 @@ import {ScheduleStackComponents, useScheduleStackNavigation} from '../../Navigat
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 interface ScheduleDayScreenActionsMenuProps {
   onRefresh?: () => void;
-  oobe?: boolean;
 }
-export const ScheduleDayScreenActionsMenu = ({onRefresh, oobe}: ScheduleDayScreenActionsMenuProps) => {
+export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
   const navigation = useScheduleStackNavigation();
+  const {oobeCompleted} = useConfig();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -33,13 +34,12 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh, oobe}: ScheduleDayScree
         leadingIcon={AppIcons.schedImport}
         onPress={() => handleNavigation(CommonStackComponents.scheduleImportScreen)}
       />
-      {!oobe && (
-        <Menu.Item
-          title={'Settings'}
-          leadingIcon={AppIcons.settings}
-          onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
-        />
-      )}
+      <Menu.Item
+        title={'Settings'}
+        leadingIcon={AppIcons.settings}
+        onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
+        disabled={!oobeCompleted}
+      />
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}

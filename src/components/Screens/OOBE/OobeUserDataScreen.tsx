@@ -10,12 +10,14 @@ import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useAppTheme} from '../../../styles/Theme.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 
 export const OobeUserDataScreen = ({navigation}: Props) => {
   const {tokenData} = useAuth();
   const theme = useAppTheme();
+  const {preRegistrationMode} = useConfig();
 
   return (
     <AppView safeEdges={['bottom']}>
@@ -49,13 +51,18 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
             also import from a Sched.com account.
           </Text>
         </PaddedContentView>
+        {preRegistrationMode && (
+          <PaddedContentView>
+            <Text>You are in pre-registration mode. The schedule may not be available yet.</Text>
+          </PaddedContentView>
+        )}
         <PaddedContentView>
           <PrimaryActionButton
             buttonText={'View Events'}
             buttonColor={theme.colors.twitarrNeutralButton}
             onPress={() => {
               if (tokenData) {
-                navigation.push(OobeStackComponents.oobeScheduleScreen);
+                navigation.push(CommonStackComponents.scheduleDayScreen);
               }
             }}
             disabled={!tokenData}

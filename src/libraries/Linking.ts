@@ -5,8 +5,8 @@ import type {PathConfigMap} from '@react-navigation/core';
 import {MainStackComponents} from '../components/Navigation/Stacks/MainStackNavigator.tsx';
 import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
 import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
-import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {CommonStackComponents} from '../components/Navigation/CommonScreens.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -75,7 +75,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           },
         },
         ScheduleTab: {
-          initialRouteName: ScheduleStackComponents.scheduleDayScreen,
+          initialRouteName: CommonStackComponents.scheduleDayScreen,
           screens: {
             ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',

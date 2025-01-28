@@ -3,7 +3,6 @@ import {ScheduleHeaderView} from '../../Views/Schedule/ScheduleHeaderView.tsx';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleStackComponents, ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ScheduleFAB} from '../../Buttons/FloatingActionButtons/ScheduleFAB.tsx';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -25,8 +24,9 @@ import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderSch
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-type Props = NativeStackScreenProps<ScheduleStackParamList, ScheduleStackComponents.scheduleDayScreen>;
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
@@ -35,7 +35,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   const listRef = useRef<FlashList<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {appConfig} = useConfig();
+  const {appConfig, oobeCompleted} = useConfig();
   const {scheduleFilterSettings} = useFilter();
   const [scrollNowIndex, setScrollNowIndex] = useState(0);
   const minutelyUpdatingDate = useDateTime('minute');
@@ -44,7 +44,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
 
   const {
     data: eventData,
-    isLoading: isEventLoading,
+    isFetching: isEventFetching,
     refetch: refetchEvents,
   } = useEventsQuery({
     cruiseDay: selectedCruiseDay,
@@ -54,7 +54,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   });
   const {
     data: lfgOpenData,
-    isLoading: isLfgOpenLoading,
+    isFetching: isLfgOpenFetching,
     refetch: refetchLfgOpen,
     hasNextPage: openHasNextPage,
     fetchNextPage: openFetchNextPage,
@@ -63,12 +63,12 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && oobeCompleted,
     },
   });
   const {
     data: lfgJoinedData,
-    isLoading: isLfgJoinedLoading,
+    isFetching: isLfgJoinedFetching,
     refetch: refetchLfgJoined,
     hasNextPage: joinedHasNextPage,
     fetchNextPage: joinedFetchNextPage,
@@ -77,27 +77,31 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && oobeCompleted,
     },
   });
   const {
     data: personalEventData,
-    isLoading: isPersonalEventLoading,
+    isFetching: isPersonalEventFetching,
     refetch: refetchPersonalEvents,
     hasNextPage: personalHasNextPage,
     fetchNextPage: personalFetchNextPage,
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: isLoggedIn,
+      enabled: isLoggedIn && oobeCompleted,
     },
   });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetchEvents(), refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents()]);
+    if (oobeCompleted) {
+      await Promise.all([refetchEvents(), refetchLfgJoined(), refetchLfgOpen(), refetchPersonalEvents()]);
+    } else {
+      await Promise.all([refetchEvents()]);
+    }
     setRefreshing(false);
-  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents]);
+  }, [refetchEvents, refetchLfgJoined, refetchLfgOpen, refetchPersonalEvents, oobeCompleted]);
 
   const scrollToNow = useCallback(() => {
     if (scheduleList.length === 0 || !listRef.current) {
@@ -129,7 +133,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
           <Item
             title={'Search'}
             iconName={AppIcons.search}
-            onPress={() => navigation.push(ScheduleStackComponents.eventSearchScreen)}
+            onPress={() => navigation.push(CommonStackComponents.eventSearchScreen)}
           />
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
@@ -153,6 +157,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
       personalEventData,
     );
     setScheduleList(listData);
+    console.log('[ScheduleDayScreen.tsx] Finished buildScheduleList useEffect.');
   }, [scheduleFilterSettings, lfgJoinedData, lfgOpenData, eventData, personalEventData]);
 
   useEffect(() => {
@@ -190,10 +195,10 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
   // Returning the <LoadingView /> would lose the position tracking of the <ScheduleHeaderView />
   // list, so we rely on the <RefreshControl /> spinner instead.
   const isRefreshing =
-    (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedLoading) ||
-    (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenLoading) ||
-    isEventLoading ||
-    isPersonalEventLoading ||
+    (appConfig.schedule.eventsShowJoinedLfgs && isLfgJoinedFetching) ||
+    (appConfig.schedule.eventsShowOpenLfgs && isLfgOpenFetching) ||
+    isEventFetching ||
+    isPersonalEventFetching ||
     refreshing;
 
   return (
@@ -214,7 +219,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
           onScrollThreshold={onScrollThreshold}
         />
       </View>
-      <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />
+      {oobeCompleted && <ScheduleFAB selectedDay={selectedCruiseDay} showLabel={showFabLabel} />}
     </AppView>
   );
 };
