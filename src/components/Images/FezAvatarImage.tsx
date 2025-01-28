@@ -1,17 +1,17 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {styleDefaults} from '../../styles';
 import {UserAvatarImage} from './UserAvatarImage';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {FezData} from '../../libraries/Structs/ControllerStructs';
+import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 interface FezAvatarImageProps {
   fez: FezData;
 }
 
 export const FezAvatarImage = ({fez}: FezAvatarImageProps) => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
 
   // More than 1 other person makes this a group chat.

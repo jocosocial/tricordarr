@@ -15,17 +15,28 @@ import {encode as base64_encode} from 'base-64';
 import DeviceInfo from 'react-native-device-info';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useFocusEffect} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {enablePreregistration} = useConfig();
+  const {preRegistrationAvailable, setPreRegistrationMode} = useConfig();
   const theme = useAppTheme();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
     image: commonStyles.roundedBorderLarge,
+  });
+
+  const onPreRegistrationPress = () => {
+    setPreRegistrationMode(true);
+    navigation.push(OobeStackComponents.oobeServerScreen);
+  };
+
+  useFocusEffect(() => {
+    console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
+    setPreRegistrationMode(false);
   });
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
@@ -62,10 +73,10 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
       </ScrollingContentView>
       <OobeButtonsView
         rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)}
-        leftOnPress={() => navigation.push(OobeStackComponents.oobePreregistrationScreen)}
+        leftOnPress={onPreRegistrationPress}
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}
-        leftDisabled={!enablePreregistration}
+        leftDisabled={!preRegistrationAvailable}
         leftButtonTextColor={theme.colors.onTwitarrNeutralButton}
       />
     </AppView>

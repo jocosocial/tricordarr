@@ -113,7 +113,7 @@ const defaultAppConfig: AppConfig = {
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
   schedule: {
-    hidePastLfgs: true,
+    hidePastLfgs: false,
     enableLateDayFlip: true,
     eventsShowJoinedLfgs: true,
     eventsShowOpenLfgs: false,
@@ -171,6 +171,9 @@ export const getInitialAppConfig = () => {
   if (Config.PORT_TIME_ZONE_ID) {
     config.portTimeZoneID = Config.PORT_TIME_ZONE_ID;
   }
+  if (Config.SCHED_URL) {
+    config.schedBaseUrl = Config.SCHED_URL;
+  }
   if (Config.PREREGISTRATION_SERVER_URL) {
     config.preRegistrationServerUrl = Config.PREREGISTRATION_SERVER_URL;
   } else {
@@ -197,8 +200,11 @@ export const getAppConfig = async () => {
   let appConfig = JSON.parse(rawConfig) as AppConfig;
   // Certain keys should always be loaded from the app environment.
   // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
-  if (Config.OOBE_VERSION) {
-    appConfig.oobeExpectedVersion = Number(Config.OOBE_VERSION);
+  // Avoid putting things from the SwiftarrClientData endpoint in here. It's confusing.
+  if (Config.PREREGISTRATION_END_DATE) {
+    const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
+    // Because Javascript, Fools!
+    appConfig.preRegistrationEndDate = new Date(year, month - 1, day);
   }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);

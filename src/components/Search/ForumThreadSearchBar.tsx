@@ -1,7 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Keyboard, RefreshControl, View} from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import {CategoryData, ForumListData} from '../../libraries/Structs/ControllerStructs';
 import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries.ts';
@@ -13,6 +11,7 @@ import {useFilter} from '../Context/Contexts/FilterContext';
 import {ForumSort} from '../../libraries/Enums/ForumSortFilter';
 import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
+import {SearchBarBase} from './SearchBarBase.tsx';
 
 interface Props {
   category?: CategoryData;
@@ -20,7 +19,6 @@ interface Props {
 
 export const ForumThreadSearchBar = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {setErrorMessage} = useErrorHandler();
   const [enable, setEnable] = useState(false);
   const {forumSortOrder} = useFilter();
   const {
@@ -33,6 +31,7 @@ export const ForumThreadSearchBar = (props: Props) => {
     isFetchingPreviousPage,
     isFetchingNextPage,
     isFetching,
+    remove,
   } = useForumSearchQuery(
     {
       search: searchQuery,
@@ -55,6 +54,7 @@ export const ForumThreadSearchBar = (props: Props) => {
   const onClear = () => {
     setEnable(false);
     setForumList([]);
+    remove();
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -63,7 +63,7 @@ export const ForumThreadSearchBar = (props: Props) => {
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
-      setErrorMessage('Search string must be >2 characters');
+      setEnable(false);
     } else {
       setEnable(true);
       refetch();
@@ -115,17 +115,13 @@ export const ForumThreadSearchBar = (props: Props) => {
 
   return (
     <>
-      <View style={[commonStyles.marginVerticalSmall, commonStyles.marginHorizontal]}>
-        <Searchbar
-          placeholder={'Search for forums'}
-          onIconPress={onSearch}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          onSubmitEditing={onSearch}
-          onClearIconPress={onClear}
-          style={[commonStyles.marginVerticalSmall]}
-        />
-      </View>
+      <SearchBarBase
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+        remove={remove}
+      />
       <View style={[commonStyles.flex]}>
         <ForumThreadFlatList
           refreshControl={

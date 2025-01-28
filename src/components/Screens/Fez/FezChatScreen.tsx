@@ -6,7 +6,6 @@ import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {FezChatScreenActionsMenu} from '../../Menus/Fez/FezChatScreenActionsMenu.tsx';
 import {SocketFezMemberChangeData} from '../../../libraries/Structs/SocketStructs.ts';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
@@ -29,6 +28,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {NavHeaderTitle} from '../../Text/NavHeaderTitle.tsx';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 type Props = NativeStackScreenProps<
   CommonStackParamList,
@@ -55,7 +55,7 @@ export const FezChatScreen = ({route}: Props) => {
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const fezPostMutation = useFezPostMutation();
   const [refreshing, setRefreshing] = useState(false);
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {fezSockets, openFezSocket, dispatchFezSockets, closeFezSocket} = useSocket();
   const navigation = useCommonStack();
   const queryClient = useQueryClient();
@@ -93,7 +93,7 @@ export const FezChatScreen = ({route}: Props) => {
         const memberChangeData = socketMessage as SocketFezMemberChangeData;
         const changeActionString = memberChangeData.joined ? 'joined' : 'left';
         let changeString = `User ${memberChangeData.user.username} has ${changeActionString} the chat.`;
-        setErrorMessage(changeString);
+        setSnackbarPayload({message: changeString});
       } else if ('postID' in socketMessage) {
         // Don't push our own posts via the socket.
         // const socketFezPostData = socketMessage as SocketFezPostData;
@@ -113,7 +113,7 @@ export const FezChatScreen = ({route}: Props) => {
         // }
       }
     },
-    [refetch, setErrorMessage],
+    [refetch, setSnackbarPayload],
   );
 
   const handleLoadPrevious = () => {

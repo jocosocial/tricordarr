@@ -4,7 +4,6 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {ForumData} from '../../../libraries/Structs/ControllerStructs';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {Item} from 'react-navigation-header-buttons';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {ReactNode, useCallback, useState} from 'react';
@@ -19,6 +18,7 @@ import {ReloadMenuItem} from '../Items/ReloadMenuItem';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
 import {ForumThreadPinItem} from './Items/ForumThreadPinItem';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface ForumThreadActionsMenuProps {
   forumData: ForumData;
@@ -34,7 +34,7 @@ export const ForumThreadScreenActionsMenu = ({
   const [visible, setVisible] = React.useState(false);
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const commonNavigation = useCommonStack();
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);

@@ -1,4 +1,3 @@
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {useAppTheme} from '../../../styles/Theme';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
@@ -10,13 +9,16 @@ import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useFezCancelMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
+import {FezType} from '../../../libraries/Enums/FezType.ts';
 
-const ModalContent = () => {
+const ModalContent = ({fez}: {fez: FezData}) => {
   const {commonStyles} = useStyles();
+  const noun = FezType.isLFGType(fez.fezType) ? 'LFG' : 'event';
   return (
     <>
       <Text style={[commonStyles.marginBottomSmall]}>
-        Cancelling the LFG will mark the LFG as not happening and notify all participants. The LFG won't be deleted;
+        Cancelling the {noun} will mark it as not happening and notify all participants. The {noun} won't be deleted;
         participants can still create and read posts.
       </Text>
       <Text style={[commonStyles.marginBottomSmall]}>
@@ -26,8 +28,8 @@ const ModalContent = () => {
   );
 };
 
-export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
-  const {setInfoMessage} = useErrorHandler();
+export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
+  const {setSnackbarPayload} = useSnackbar();
   const {setModalVisible} = useModal();
   const theme = useAppTheme();
   const cancelMutation = useFezCancelMutation();
@@ -40,8 +42,8 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
       },
       {
         onSuccess: async () => {
-          setInfoMessage('Successfully canceled this LFG.');
-          const invalidations = FezData.getCacheKeys().map(key => {
+          setSnackbarPayload({message: 'Successfully canceled this event.', messageType: 'info'});
+          const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
             return queryClient.invalidateQueries(key);
           });
           await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
@@ -63,7 +65,12 @@ export const LfgCancelModal = ({fezData}: {fezData: FezData}) => {
 
   return (
     <View>
-      <ModalCard title={'Cancel'} closeButtonText={'Close'} content={<ModalContent />} actions={cardActions} />
+      <ModalCard
+        title={'Cancel'}
+        closeButtonText={'Close'}
+        content={<ModalContent fez={fezData} />}
+        actions={cardActions}
+      />
     </View>
   );
 };

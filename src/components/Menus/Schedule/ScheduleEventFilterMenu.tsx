@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {EventType} from '../../../libraries/Enums/EventType.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 export const ScheduleEventFilterMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -19,6 +20,7 @@ export const ScheduleEventFilterMenu = () => {
     eventLfgFilter,
     setEventLfgFilter,
   } = useFilter();
+  const {oobeCompleted} = useConfig();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -70,8 +72,18 @@ export const ScheduleEventFilterMenu = () => {
   return (
     <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
-      <SelectableMenuItem title={'Personal Events'} onPress={handlePersonalSelection} selected={eventPersonalFilter} />
-      <SelectableMenuItem title={'LFGs'} onPress={handleLfgSelection} selected={eventLfgFilter} />
+      <SelectableMenuItem
+        title={'Personal Events'}
+        onPress={handlePersonalSelection}
+        selected={eventPersonalFilter}
+        disabled={!oobeCompleted}
+      />
+      <SelectableMenuItem
+        title={'LFGs'}
+        onPress={handleLfgSelection}
+        selected={eventLfgFilter}
+        disabled={!oobeCompleted}
+      />
       <Divider bold={true} />
       {Object.keys(EventType).map(eventType => {
         return (

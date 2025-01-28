@@ -11,23 +11,27 @@ import {useEventsQuery} from '../../Queries/Events/EventQueries.ts';
 import {getCalFeedFromUrl, getEventUid} from '../../../libraries/Schedule.ts';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.ts';
 import pluralize from 'pluralize';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {VEvent} from 'node-ical';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 import {useQueryClient} from '@tanstack/react-query';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 export const ScheduleImportScreen = () => {
-  const {appConfig} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
   const {data: twitarrEvents, refetch} = useEventsQuery({});
   const eventFavoriteMutation = useEventFavoriteMutation();
   const [log, setLog] = useState<string[]>([]);
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const queryClient = useQueryClient();
 
   const writeLog = (line: string) => setLog(prevLogs => [...prevLogs, line]);
 
   const onSubmit = async (values: SchedImportFormValues, helpers: FormikHelpers<SchedImportFormValues>) => {
     setLog([]);
+    updateAppConfig({
+      ...appConfig,
+      schedBaseUrl: values.schedUrl,
+    });
     await queryClient.invalidateQueries(['/events']);
     let successCount = 0,
       skipCount = 0;
@@ -39,10 +43,10 @@ export const ScheduleImportScreen = () => {
     }
     let schedEvents: VEvent[] = [];
     try {
-      const schedUrl = `${appConfig.schedBaseUrl}/${values.username}.ics`;
+      const schedUrl = `${values.schedUrl}/${values.username}.ics`;
       schedEvents = await getCalFeedFromUrl(schedUrl);
     } catch (error) {
-      setErrorMessage(String(error));
+      setSnackbarPayload({message: String(error), messageType: 'error'});
       helpers.setSubmitting(false);
       return;
     }
@@ -96,7 +100,7 @@ export const ScheduleImportScreen = () => {
           internet package.
         </HelpTopicView>
         <PaddedContentView>
-          <SchedImportForm initialValues={{username: ''}} onSubmit={onSubmit} />
+          <SchedImportForm initialValues={{username: '', schedUrl: appConfig.schedBaseUrl}} onSubmit={onSubmit} />
         </PaddedContentView>
         <PaddedContentView>
           {log.map((line, index) => (

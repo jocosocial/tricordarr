@@ -17,15 +17,17 @@ import {ServerUrlSettingForm} from '../../Forms/Settings/ServerUrlSettingForm.ts
 import {RefreshControl} from 'react-native';
 import {ServerChoices} from '../../../libraries/Network/ServerChoices.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 export const OobeServerScreen = ({navigation}: Props) => {
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const {hasUnsavedWork} = useErrorHandler();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   const onSave = (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     updateAppConfig({
@@ -59,12 +61,14 @@ export const OobeServerScreen = ({navigation}: Props) => {
   return (
     <AppView safeEdges={['bottom']}>
       <ScrollingContentView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
-        <PaddedContentView>
-          <Text>
-            Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs or other network
-            blockers.
-          </Text>
-        </PaddedContentView>
+        {!preRegistrationMode && (
+          <PaddedContentView>
+            <Text>
+              Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs or other network
+              blockers.
+            </Text>
+          </PaddedContentView>
+        )}
         <PaddedContentView>
           <Text>
             Do not change this unless instructed to do so by the Twitarr Dev Team or THO. Or you know what you're doing.
@@ -74,8 +78,8 @@ export const OobeServerScreen = ({navigation}: Props) => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(appConfig.serverUrl),
-              serverUrl: appConfig.serverUrl,
+              serverChoice: ServerChoices.fromUrl(serverUrl),
+              serverUrl: serverUrl,
             }}
           />
         </PaddedContentView>

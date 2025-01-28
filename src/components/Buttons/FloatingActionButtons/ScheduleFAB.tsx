@@ -24,7 +24,7 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     }),
     FabGroupAction({
       icon: AppIcons.personalEvent,
-      label: 'Private Events',
+      label: 'Personal Events',
       onPress: () => navigation.push(ScheduleStackComponents.schedulePrivateEventsScreen),
     }),
   ];

@@ -18,24 +18,10 @@ import {PushNotificationConfig} from '../../../../libraries/AppConfig.ts';
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();
-  const [reverseSwipeOrientation, setReverseSwipeOrientation] = React.useState(
-    appConfig.userPreferences.reverseSwipeOrientation,
-  );
   const [defaultSortOrder, setDefaultSortOrder] = useState(appConfig.userPreferences.defaultForumSortOrder);
   const [defaultSortDirection, setDefaultSortDirection] = useState(appConfig.userPreferences.defaultForumSortDirection);
   const {setForumSortOrder, setForumSortDirection} = useFilter();
   const [highlightAlertWords, setHighlightAlertWords] = useState(appConfig.userPreferences.highlightForumAlertWords);
-
-  const handleOrientation = () => {
-    updateAppConfig({
-      ...appConfig,
-      userPreferences: {
-        ...appConfig.userPreferences,
-        reverseSwipeOrientation: !reverseSwipeOrientation,
-      },
-    });
-    setReverseSwipeOrientation(!reverseSwipeOrientation);
-  };
 
   const handleSortOrder = (value: ForumSort | undefined) => {
     updateAppConfig({
@@ -90,16 +76,6 @@ export const ForumSettingsScreen = () => {
             <View>
               <ListSection>
                 <ListSubheader>General</ListSubheader>
-                <BooleanField
-                  name={'reverseSwipeOrientation'}
-                  label={'Reverse Swipe Orientation'}
-                  onPress={handleOrientation}
-                  style={commonStyles.paddingHorizontal}
-                  helperText={
-                    'Switch the Left and Right swipe actions for swipeable items such as Forum Threads. Could be useful if you are left-handed.'
-                  }
-                  value={reverseSwipeOrientation}
-                />
                 <PickerField<ForumSort | undefined>
                   name={'defaultForumSortOrder'}
                   label={'Default Sort Order'}

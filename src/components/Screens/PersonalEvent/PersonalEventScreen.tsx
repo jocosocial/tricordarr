@@ -11,9 +11,9 @@ import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
 import notifee from '@notifee/react-native';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
@@ -22,7 +22,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.eventID,
   });
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const eventData = data?.pages[0];
   const showChat =
     eventData?.fezType === FezType.privateEvent && FezData.isParticipant(eventData, profilePublicData?.header);

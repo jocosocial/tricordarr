@@ -12,7 +12,6 @@ import {ForumThreadScreenActionsMenu} from '../../../Menus/Forum/ForumThreadScre
 import {ListTitleView} from '../../../Views/ListTitleView';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries.ts';
@@ -59,7 +58,6 @@ export const ForumThreadScreenBase = ({
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
-  const {setErrorMessage} = useErrorHandler();
   const flatListRef = useRef<FlatList<PostData>>(null);
   const {hasModerator} = usePrivilege();
   // This is used deep in the FlatList to star posts by favorite users.
@@ -154,7 +152,6 @@ export const ForumThreadScreenBase = ({
   const onPostSubmit = (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
     formikHelpers.setSubmitting(true);
     if (!data?.pages[0]) {
-      setErrorMessage('Forum Data missing? This is definitely a bug.');
       formikHelpers.setSubmitting(false);
       return;
     }

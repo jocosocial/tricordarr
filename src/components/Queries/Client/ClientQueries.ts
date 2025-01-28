@@ -1,6 +1,6 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {HealthResponse, SwiftarrClientConfig} from '../../../libraries/Structs/ControllerStructs';
-import {useOpenQuery} from '../OpenQuery.ts';
+import {useOpenQuery, usePublicQuery} from '../OpenQuery.ts';
 
 export const useHealthQuery = (options = {}) => {
   const client = useQueryClient();
@@ -25,7 +25,7 @@ export const useHealthQuery = (options = {}) => {
 };
 
 export const useClientConfigQuery = (options = {}) => {
-  return useOpenQuery<SwiftarrClientConfig>('/../../public/clients/tricordarr.json', {
+  return usePublicQuery<SwiftarrClientConfig>('/public/clients/tricordarr.json', {
     ...options,
   });
 };

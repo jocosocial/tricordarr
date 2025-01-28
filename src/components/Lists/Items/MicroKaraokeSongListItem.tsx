@@ -8,7 +8,6 @@ import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainSta
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useMicroKaraokeSongQuery} from '../../Queries/MicroKaraoke/MicroKaraokeQueries.ts';
 import RNFS from 'react-native-fs';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 
 interface MicroKaraokeSongListItemProps {
   mkSong: MicroKaraokeCompletedSong;
@@ -46,7 +45,6 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
   const [downloadedSnippets, setDownloadedSnippets] = useState(0);
   const [downloading, setDownloading] = useState(false);
   const [availableSnippets, setAvailableSnippets] = useState(0);
-  const {setErrorMessage} = useErrorHandler();
 
   const styles = StyleSheet.create({
     title: commonStyles.bold,
@@ -84,7 +82,6 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
         } catch (error) {
           console.error(`Error with url ${snippetVideoURL}`);
           console.error(error);
-          setErrorMessage(error);
         }
       }
     }

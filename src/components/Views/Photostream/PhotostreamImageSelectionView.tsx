@@ -2,7 +2,6 @@ import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useFormikContext} from 'formik';
 import {PhotostreamUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {ImageButtons} from '../../Buttons/ImageButtons.tsx';
@@ -12,12 +11,13 @@ import {View} from 'react-native';
 import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
 import {ActivityIndicator} from 'react-native-paper';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 const {ImageTextBlurModule} = NativeModules;
 
 export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {values, setFieldValue} = useFormikContext<PhotostreamUploadData>();
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -28,7 +28,7 @@ export const PhotostreamImageSelectionView = () => {
       await setFieldValue('image', imageData);
     } catch (err) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     } finally {
       setRefreshing(false);
@@ -55,7 +55,7 @@ export const PhotostreamImageSelectionView = () => {
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };
@@ -74,7 +74,7 @@ export const PhotostreamImageSelectionView = () => {
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };

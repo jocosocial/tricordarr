@@ -1,6 +1,5 @@
 import React, {memo} from 'react';
 import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserAvatarImage} from '../../Images/UserAvatarImage';
 import {MessageView} from '../../Views/MessageView';
 import {MessageViewContainer} from '../../Views/MessageViewContainer';
@@ -11,6 +10,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {ContentPostImage} from '../../Images/ContentPostImage';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {
@@ -25,7 +25,7 @@ interface FezPostListItemProps {
 }
 
 const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {asPrivilegedUser} = usePrivilege();
   const seamailNavigation = useChatStack();
 

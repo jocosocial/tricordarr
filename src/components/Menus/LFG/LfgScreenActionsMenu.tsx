@@ -6,18 +6,18 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {ReportModalView} from '../../Views/Modals/ReportModalView';
 import {useModal} from '../../Context/Contexts/ModalContext';
-import {LfgCancelModal} from '../../Views/Modals/LfgCancelModal';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {FezCancelModal} from '../../Views/Modals/FezCancelModal.tsx';
 import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const [visible, setVisible] = useState(false);
   const navigation = useLFGStackNavigation();
   const {hasModerator} = usePrivilege();
   const {setModalContent, setModalVisible} = useModal();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -36,7 +36,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
         <Menu.Item
           leadingIcon={AppIcons.cancel}
           title={'Cancel'}
-          onPress={() => handleModal(<LfgCancelModal fezData={fezData} />)}
+          onPress={() => handleModal(<FezCancelModal fezData={fezData} />)}
           disabled={fezData.cancelled}
         />
       )}

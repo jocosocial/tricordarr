@@ -62,6 +62,9 @@ export const ContentText = ({
   const {commonStyles, styleDefaults} = useStyles();
   const {data} = useUserKeywordQuery({
     keywordType: 'alertwords',
+    options: {
+      enabled: false,
+    },
   });
   const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
   const {appConfig} = useConfig();

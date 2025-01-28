@@ -3,6 +3,7 @@ import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {useOpenQuery} from './OpenQuery.ts';
 import {ImageQueryData} from '../../libraries/Types';
 import {CacheManager} from '@georstat/react-native-image-cache';
+import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 /**
  * Handler for retrieving images.
@@ -10,11 +11,12 @@ import {CacheManager} from '@georstat/react-native-image-cache';
 export const useImageQuery = (path: string, enabled: boolean = true) => {
   const {isLoggedIn} = useAuth();
   const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
 
   return useOpenQuery<ImageQueryData>(path, {
     enabled: enabled && isLoggedIn && !!path,
     queryFn: async (): Promise<ImageQueryData> => {
-      let url = `${appConfig.serverUrl}/${appConfig.urlPrefix}/${path}`;
+      let url = `${serverUrl}/${appConfig.urlPrefix}/${path}`;
       const base64Data = await CacheManager.prefetchBlob(url);
 
       const fileName = path.split('/').pop();

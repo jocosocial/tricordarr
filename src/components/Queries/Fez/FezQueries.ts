@@ -3,6 +3,7 @@ import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 import {FezListEndpoints} from '../../../libraries/Types';
+import lfgTypes = FezType.lfgTypes;
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 interface FezQueryProps {
@@ -45,6 +46,7 @@ export const useFezListQuery = ({
   matchID,
   forUser,
   archived,
+  lfgTypesOnly,
 }: FezListQueryOptions) => {
   const queryParams = {
     // Heads up, Swiftarr is case-sensitive with query params. forUser != foruser.
@@ -54,7 +56,7 @@ export const useFezListQuery = ({
     ...(hidePast !== undefined && {hidePast: hidePast}),
     ...(excludeFezType && {excludetype: excludeFezType}),
     // lfgtypes is mutually exclusive with type.
-    // lfgtypes: lfgTypesOnly,
+    ...(lfgTypesOnly && {lfgtypes: lfgTypesOnly}),
     ...(onlyNew !== undefined && {onlynew: onlyNew}),
     ...(search && {search: search}),
     ...(matchID && {matchID: matchID}),
@@ -67,7 +69,7 @@ export const useFezListQuery = ({
 export const useLfgListQuery = ({
   cruiseDay,
   fezType,
-  hidePast,
+  hidePast = true, // this matches Swiftarr behavior
   endpoint = 'open',
   options,
   onlyNew,

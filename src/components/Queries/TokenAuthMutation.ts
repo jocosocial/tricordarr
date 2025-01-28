@@ -3,7 +3,7 @@ import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
 import {MutationFunction} from '@tanstack/query-core';
 import {UseMutationResult} from '@tanstack/react-query';
 import {useMutation, UseMutationOptions} from '@tanstack/react-query';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
+import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 
 /**
  * Common mutation wrapper. Somewhat of a misnomer being called "Token Auth Mutation" because
@@ -20,10 +20,10 @@ export function useTokenAuthMutation<
   mutationFn: MutationFunction<TData, TVariables>,
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'>,
 ): UseMutationResult<TData, TError, TVariables, TContext> {
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   return useMutation<TData, TError, TVariables, TContext>(mutationFn, {
     onError: error => {
-      setErrorMessage(error.response?.data.reason || error);
+      setSnackbarPayload({message: error.response?.data.reason || error, messageType: 'error'});
     },
     ...options,
   });

@@ -8,6 +8,7 @@ import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 /**
  * Functional component to respond to Notification Socket events from Swiftarr.
@@ -16,11 +17,12 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
  */
 export const NotificationDataListener = () => {
   const {enableUserNotifications} = useUserNotificationData();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const {isLoggedIn} = useAuth();
+  const {oobeCompleted} = useConfig();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted && isLoggedIn});
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});
-  const {isLoggedIn} = useAuth();
   const queryClient = useQueryClient();
 
   const wsMessageHandler = useCallback(

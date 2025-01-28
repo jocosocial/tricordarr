@@ -5,7 +5,7 @@ import {UserSearchBar} from '../../Search/UserSearchBar';
 import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {UserChip} from '../../Chips/UserChip';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface UserChipsFieldProps {
   name: string;
@@ -20,7 +20,7 @@ export const UserChipsField = ({
   searchFavorersOnly = false,
 }: UserChipsFieldProps) => {
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const [field, _, helpers] = useField<UserHeader[]>(name);
 
   const styles = {

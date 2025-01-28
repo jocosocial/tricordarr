@@ -1,7 +1,7 @@
 import React from 'react';
 import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {SecretHeaderTitle} from './SecretHeaderTitle';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 /**
  * Header title for the SettingsScreen. This has a secret feature to enable/disable the menu of developer
@@ -9,14 +9,17 @@ import {SecretHeaderTitle} from './SecretHeaderTitle';
  */
 export const SettingsHeaderTitle = () => {
   const {appConfig, updateAppConfig} = useConfig();
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onReveal = () => {
     updateAppConfig({
       ...appConfig,
       enableDeveloperOptions: !appConfig.enableDeveloperOptions,
     });
-    setInfoMessage(`Developer options are now ${!appConfig.enableDeveloperOptions ? 'enabled' : 'disabled'}`);
+    setSnackbarPayload({
+      message: `Developer options are now ${!appConfig.enableDeveloperOptions ? 'enabled' : 'disabled'}`,
+      messageType: 'info',
+    });
   };
 
   return <SecretHeaderTitle title={'Settings'} onReveal={onReveal} />;

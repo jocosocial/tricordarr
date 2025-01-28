@@ -123,6 +123,7 @@ export const CruiseSettingsScreen = () => {
               value={adjustedCruiseDayIndex.toString()}
               reverseSplit={true}
             />
+            <SettingDataTableRow title={'Latest Version'} value={data?.spec.latestVersion} reverseSplit={true} />
           </DataTable>
         </PaddedContentView>
         <ListSubheader>Pre-Registration</ListSubheader>

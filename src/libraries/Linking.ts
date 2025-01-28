@@ -5,8 +5,8 @@ import type {PathConfigMap} from '@react-navigation/core';
 import {MainStackComponents} from '../components/Navigation/Stacks/MainStackNavigator.tsx';
 import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
 import {ForumStackComponents} from '../components/Navigation/Stacks/ForumStackNavigator.tsx';
-import {ScheduleStackComponents} from '../components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ChatStackScreenComponents} from '../components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {CommonStackComponents} from '../components/Navigation/CommonScreens.tsx';
 
 type DeepLinksConfig<ParamList extends {}> = {
   initialRouteName?: keyof ParamList;
@@ -32,10 +32,6 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             AboutTwitarrScreen: 'about',
             FaqScreen: 'faq',
             SiteUIScreen: 'twitarrtab/:timestamp?/:resource?/:id?',
-            // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
-            // falling through to the default route. This is what we do in the UI, so oh well.
-            // Perhaps I should make a PR to Swiftarr to change that?
-            PersonalEventScreen: 'privateevent/:eventID',
             SiteUILinkScreen: '*', // Catch-all wildcard
             MainSettingsScreen: {
               // Disable this to prevent doubling up on the SettingsScreen after going back.
@@ -79,10 +75,14 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
           },
         },
         ScheduleTab: {
-          initialRouteName: ScheduleStackComponents.scheduleDayScreen,
+          initialRouteName: CommonStackComponents.scheduleDayScreen,
           screens: {
             ScheduleDayScreen: 'events',
             EventScreen: 'events/:eventID',
+            // I wanted PersonalEventScreen: { paths: [one, two] } but it kept
+            // falling through to the default route. This is what we do in the UI, so oh well.
+            // Perhaps I should make a PR to Swiftarr to change that?
+            PersonalEventScreen: 'privateevent/:eventID',
           },
         },
         ForumsTab: {

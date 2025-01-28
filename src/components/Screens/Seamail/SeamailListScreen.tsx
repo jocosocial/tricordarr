@@ -17,13 +17,12 @@ import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {SeamailAccountButtons} from '../../Buttons/SegmentedButtons/SeamailAccountButtons.tsx';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {SeamailListScreenActionsMenu} from '../../Menus/Seamail/SeamailListScreenActionsMenu.tsx';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
@@ -37,7 +36,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {isLoggedIn} = useAuth();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const [fezList, setFezList] = useState<FezData[]>([]);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);

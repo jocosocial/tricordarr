@@ -4,26 +4,25 @@ import {Text} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
 import React from 'react';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useNavigation} from '@react-navigation/native';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {ChangeUsernameForm} from '../../../Forms/User/ChangeUsernameForm.tsx';
-import {useUserProfileQuery} from '../../../Queries/Users/UserProfileQueries.ts';
-import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 import {useUserUsernameMutation} from '../../../Queries/User/UserMutations.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {UserHeader} from '../../../../libraries/Structs/ControllerStructs.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const ChangeUsernameScreen = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const usernameMutation = useUserUsernameMutation();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {refetch: refetchProfilePublicData} = useUserProfileQuery(profilePublicData?.header.userID);
+  const queryClient = useQueryClient();
 
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onSubmit = (values: ChangeUsernameFormValues, helper: FormikHelpers<ChangeUsernameFormValues>) => {
     usernameMutation.mutate(
@@ -31,13 +30,13 @@ export const ChangeUsernameScreen = () => {
         userUsernameData: values,
       },
       {
-        onSuccess: () => {
-          refetchProfilePublicData().then(() =>
-            refetchUserNotificationData().then(() => {
-              setInfoMessage('Successfully changed username!');
-              navigation.goBack();
-            }),
-          );
+        onSuccess: async () => {
+          const invalidations = UserHeader.getCacheKeys(profilePublicData?.header).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
+          setSnackbarPayload({message: 'Successfully changed username!'});
+          navigation.goBack();
         },
         onSettled: () => {
           helper.setSubmitting(false);
@@ -55,7 +54,7 @@ export const ChangeUsernameScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text>
-            Changing username for user {profilePublicData.header.username} on server {appConfig.serverUrl}.
+            Changing username for user {profilePublicData.header.username} on server {serverUrl}.
           </Text>
         </PaddedContentView>
         <PaddedContentView>

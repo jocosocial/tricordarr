@@ -14,7 +14,6 @@ import LateShowImage from '../../../../assets/mainview_lateshow.jpg';
 import HappyHourImage from '../../../../assets/mainview_happy.jpg';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {AppImageViewer} from '../../Images/AppImageViewer';
 import {ImageQueryData} from '../../../libraries/Types';
 import {encode as base64_encode} from 'base-64';
@@ -25,7 +24,6 @@ import {encode as base64_encode} from 'base-64';
 export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
-  const {setErrorMessage} = useErrorHandler();
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   // Default to local, but override with the server offset.
@@ -104,10 +102,6 @@ export const MainImageCardCover = () => {
     },
   ];
 
-  const debugPress = () => {
-    setErrorMessage(Image.resolveAssetSource(sourceImage).uri);
-  };
-
   // Have to disable download since loading static images is actually really hard and I don't feel
   // like figuring it out right now.
   // https://javascript.plainenglish.io/using-images-in-react-native-668e3a835858
@@ -120,7 +114,7 @@ export const MainImageCardCover = () => {
         enableDownload={false}
         initialIndex={viewerIndex}
       />
-      <TouchableOpacity onPress={() => setIsViewerVisible(true)} onLongPress={debugPress}>
+      <TouchableOpacity onPress={() => setIsViewerVisible(true)}>
         <Card.Cover source={sourceImage} />
       </TouchableOpacity>
     </View>

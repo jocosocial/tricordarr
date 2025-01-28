@@ -101,7 +101,7 @@ export const publicLocationSuggestions = [
 ];
 
 export const getUserSuggestedLocations = (profilePublicData?: ProfilePublicData) => {
-  if (profilePublicData) {
+  if (profilePublicData?.roomNumber) {
     return [`Room ${profilePublicData.roomNumber}`]
       .concat(publicLocationSuggestions)
       .concat(['That place where I put that thing that time']);

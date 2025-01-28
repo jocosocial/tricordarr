@@ -16,6 +16,7 @@ interface PickerFieldProps<TData> {
   onSelect?: (value: TData | undefined) => void;
   anchorButtonMode?: 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
   helperText?: string;
+  disabled?: boolean;
 }
 
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
@@ -30,6 +31,7 @@ export const PickerField = <TData,>({
   onSelect,
   anchorButtonMode = 'outlined',
   helperText,
+  disabled,
 }: PickerFieldProps<TData>) => {
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -86,6 +88,7 @@ export const PickerField = <TData,>({
             contentStyle={styles.content}
             style={styles.button}
             onPress={openMenu}
+            disabled={disabled}
             mode={anchorButtonMode}>
             {label} ({getTitle(value)})
           </Button>

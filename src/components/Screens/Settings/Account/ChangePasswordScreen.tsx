@@ -6,20 +6,20 @@ import {ChangePasswordForm} from '../../../Forms/User/ChangePasswordForm.tsx';
 import {ChangePasswordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useNavigation} from '@react-navigation/native';
-
 import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 export const ChangePasswordScreen = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const passwordMutation = useUserPasswordMutation();
-  const {setInfoMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
+
   const onSubmit = (values: ChangePasswordFormValues, helper: FormikHelpers<ChangePasswordFormValues>) => {
     passwordMutation.mutate(
       {
@@ -30,7 +30,7 @@ export const ChangePasswordScreen = () => {
       },
       {
         onSuccess: () => {
-          setInfoMessage('Successfully changed password!');
+          setSnackbarPayload({message: 'Successfully changed password!'});
           navigation.goBack();
         },
         onSettled: () => helper.setSubmitting(false),
@@ -47,7 +47,7 @@ export const ChangePasswordScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <Text>
-            Changing password for user {profilePublicData.header.username} on server {appConfig.serverUrl}.
+            Changing password for user {profilePublicData.header.username} on server {serverUrl}.
           </Text>
         </PaddedContentView>
         <PaddedContentView>

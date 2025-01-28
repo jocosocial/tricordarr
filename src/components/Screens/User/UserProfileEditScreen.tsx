@@ -1,7 +1,6 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppView} from '../../Views/AppView';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserHeader, UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView';
@@ -17,7 +16,6 @@ type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.
 
 export const UserProfileEditScreen = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();
-  const {profilePublicData, setProfilePublicData} = useUserData();
   const queryClient = useQueryClient();
   const initialValues: UserProfileFormValues = {
     displayName: route.params.user.header.displayName || '',
@@ -51,10 +49,7 @@ export const UserProfileEditScreen = ({route, navigation}: Props) => {
       },
       {
         onSettled: () => helpers.setSubmitting(false),
-        onSuccess: async response => {
-          if (profilePublicData && profilePublicData.header.userID === route.params.user.header.userID) {
-            setProfilePublicData(response.data);
-          }
+        onSuccess: async () => {
           const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
             return queryClient.invalidateQueries(key);
           });

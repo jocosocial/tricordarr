@@ -8,7 +8,6 @@ import {FormikHelpers, FormikProps} from 'formik';
 import {ForumCreateData, PostContentData} from '../../../../libraries/Structs/ControllerStructs';
 import {ForumThreadValues} from '../../../../libraries/Types/FormValues';
 import {ContentPostForm} from '../../../Forms/ContentPostForm';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext';
 import {useForumCreateMutation} from '../../../Queries/Forum/ForumThreadMutationQueries.ts';
 import {PostAsUserBanner} from '../../../Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
@@ -21,14 +20,13 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const [submitting, setSubmitting] = useState(false);
-  const {setErrorMessage} = useErrorHandler();
   const forumCreateMutation = useForumCreateMutation();
   const queryClient = useQueryClient();
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     setSubmitting(true);
     if (!postFormRef.current) {
-      setErrorMessage('Post form ref undefined.');
+      console.error('Post form ref undefined.');
       setSubmitting(false);
       return;
     }

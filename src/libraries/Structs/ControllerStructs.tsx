@@ -27,10 +27,11 @@ export interface TokenStringData {
  * I really hope I don't regret doing this.
  */
 export namespace TokenStringData {
-  export const getLocal = async () => await EncryptedStorage.getItem(StorageKeys.TOKEN_STRING_DATA);
-  export const setLocal = async (data: TokenStringData) =>
-    await EncryptedStorage.setItem(StorageKeys.TOKEN_STRING_DATA, JSON.stringify(data));
-  export const clearLocal = async () => await EncryptedStorage.removeItem(StorageKeys.TOKEN_STRING_DATA);
+  export const getLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.getItem(key);
+  export const setLocal = async (key: keyof typeof StorageKeys, data: TokenStringData) => {
+    await EncryptedStorage.setItem(key, JSON.stringify(data));
+  };
+  export const clearLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.removeItem(key);
 }
 
 export interface UserHeader {
@@ -51,8 +52,13 @@ export namespace UserHeader {
     return headers.map(h => h.userID).includes(header.userID);
   };
 
-  export const getCacheKeys = (header: UserHeader): QueryKey[] => {
-    return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`]];
+  export const getCacheKeys = (header?: UserHeader): QueryKey[] => {
+    let cacheKeys: QueryKey[] = [['/user/profile']];
+    if (header) {
+      cacheKeys.push([`/users/${header.userID}/profile`]);
+      cacheKeys.push([`/users/find/${header.username}`]);
+    }
+    return cacheKeys;
   };
 
   export const getRelationKeys = (header?: UserHeader): QueryKey[] => {

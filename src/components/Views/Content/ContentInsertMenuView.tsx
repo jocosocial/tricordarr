@@ -2,11 +2,11 @@ import {ListSection} from '../../Lists/ListSection';
 import {List} from 'react-native-paper';
 import {View} from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useFormikContext} from 'formik';
 import {PostContentData} from '../../../libraries/Structs/ControllerStructs';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 interface ContentInsertMenuViewProps {
   visible: boolean;
@@ -25,7 +25,7 @@ export const ContentInsertMenuView = ({
   fieldName = 'images',
   maxPhotos,
 }: ContentInsertMenuViewProps) => {
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
   const currentPhotoCount = values.images.length;
 
@@ -52,7 +52,7 @@ export const ContentInsertMenuView = ({
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };
@@ -66,7 +66,7 @@ export const ContentInsertMenuView = ({
       processImage(image);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
-        setErrorMessage(err);
+        setSnackbarPayload({message: err.message, messageType: 'error'});
       }
     }
   };

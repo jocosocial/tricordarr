@@ -127,4 +127,5 @@ export interface StartTime {
 
 export interface SchedImportFormValues {
   username: string;
+  schedUrl: string;
 }

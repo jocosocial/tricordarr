@@ -1,5 +1,4 @@
 import React from 'react';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {AppView} from '../../../Views/AppView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
@@ -16,11 +15,12 @@ import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal';
 import {ListSubheader} from '../../../Lists/ListSubheader';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents} from '../../../Navigation/CommonScreens';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
 
   const handleLogoutModal = (allDevices = false) => {

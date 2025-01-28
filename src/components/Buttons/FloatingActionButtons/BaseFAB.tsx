@@ -5,6 +5,7 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useAppTheme} from '../../../styles/Theme.ts';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 interface BaseFABProps {
   icon?: IconSource;
@@ -28,13 +29,14 @@ export const BaseFAB = ({
 }: BaseFABProps) => {
   const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
-  const {commonStyles} = useStyles();
+  const {commonStyles, styleDefaults} = useStyles();
+  const {snackbarPayload} = useSnackbar();
 
   const colorInternal = color
     ? color
     : asPrivilegedUser
-    ? theme.colors.onErrorContainer
-    : theme.colors.inverseOnSurface;
+      ? theme.colors.onErrorContainer
+      : theme.colors.inverseOnSurface;
 
   const styles = StyleSheet.create({
     fab: {
@@ -42,8 +44,9 @@ export const BaseFAB = ({
       backgroundColor: backgroundColor
         ? backgroundColor
         : asPrivilegedUser
-        ? theme.colors.errorContainer
-        : theme.colors.inverseSurface,
+          ? theme.colors.errorContainer
+          : theme.colors.inverseSurface,
+      bottom: snackbarPayload ? styleDefaults.overScrollHeight * 0.75 : 0,
     },
   });
 

@@ -17,12 +17,12 @@ import {WebSocketState} from '../../../libraries/Network/Websockets.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSocket} from '../../Context/Contexts/SocketContext.ts';
 import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {useQueryClient} from '@tanstack/react-query';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 
@@ -31,7 +31,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});
   const {fezSockets} = useSocket();
   const [fez, setFez] = useState<FezData>();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
 
   const onParticipantRemove = (fezID: string, userID: string) => {

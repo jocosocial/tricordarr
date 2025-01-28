@@ -13,13 +13,15 @@ import {useAuth} from '../../../Context/Contexts/AuthContext';
 import {useConfig} from '../../../Context/Contexts/ConfigContext';
 import {startForegroundServiceWorker} from '../../../../libraries/Service';
 import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
+import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig, updateAppConfig} = useConfig();
-  const {refetch: refetchClientConfig, data: clientConfigData} = useClientConfigQuery();
+  const {appConfig, updateAppConfig, oobeCompleted, preRegistrationMode} = useConfig();
+  const {refetch: refetchClientConfig, data: clientConfigData} = useClientConfigQuery({enabled: false});
+  const {serverUrl} = useSwiftarrQueryClient();
 
   const updateClientConfig = useCallback(async () => {
     await refetchClientConfig();
@@ -40,21 +42,24 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
-          await signIn(response.data);
-          await Promise.all([startForegroundServiceWorker(), updateClientConfig()]);
+          await signIn(response.data, preRegistrationMode);
+          if (oobeCompleted) {
+            await startForegroundServiceWorker();
+          }
+          await updateClientConfig();
           navigation.goBack();
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, navigation, signIn, updateClientConfig],
+    [loginMutation, signIn, preRegistrationMode, oobeCompleted, updateClientConfig, navigation],
   );
 
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          <Text style={commonStyles.marginBottom}>Logging in to {appConfig.serverUrl}.</Text>
+          <Text style={commonStyles.marginBottom}>Logging in to {serverUrl}.</Text>
           <Text style={commonStyles.marginBottom}>Usernames are case-insensitive.</Text>
           <LoginForm onSubmit={onSubmit} />
         </PaddedContentView>

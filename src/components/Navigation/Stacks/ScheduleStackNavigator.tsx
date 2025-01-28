@@ -2,32 +2,26 @@ import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {EventSearchScreen} from '../../Screens/Event/EventSearchScreen';
 import {EventSettingsScreen} from '../../Screens/Event/EventSettingsScreen';
 import {useFeature} from '../../Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
 import {DisabledView} from '../../Views/Static/DisabledView';
 import {CommonScreens, CommonStackParamList} from '../CommonScreens';
 import {MainStack} from './MainStackNavigator';
-import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
-import {ScheduleImportScreen} from '../../Screens/Schedule/ScheduleImportScreen.tsx';
 import {SchedulePrivateEventsScreen} from '../../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
+import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
+import {useDrawer} from '../../Context/Contexts/DrawerContext.ts';
 
 export type ScheduleStackParamList = CommonStackParamList & {
-  EventSearchScreen: undefined;
   EventSettingsScreen: undefined;
-  ScheduleDayScreen: undefined;
-  ScheduleImportScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
+  ScheduleDayScreen: undefined;
 };
 
 export enum ScheduleStackComponents {
-  eventSearchScreen = 'EventSearchScreen',
   eventSettingsScreen = 'EventSettingsScreen',
-  scheduleDayScreen = 'ScheduleDayScreen',
-  scheduleImportScreen = 'ScheduleImportScreen',
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
 }
 
 export const ScheduleStackNavigator = () => {
@@ -42,11 +36,6 @@ export const ScheduleStackNavigator = () => {
       initialRouteName={ScheduleStackComponents.scheduleDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
-        name={ScheduleStackComponents.eventSearchScreen}
-        component={EventSearchScreen}
-        options={{title: 'Search Events'}}
-      />
-      <Stack.Screen
         name={ScheduleStackComponents.eventSettingsScreen}
         component={EventSettingsScreen}
         options={{title: 'Schedule Settings'}}
@@ -60,14 +49,9 @@ export const ScheduleStackNavigator = () => {
         }}
       />
       <Stack.Screen
-        name={ScheduleStackComponents.scheduleImportScreen}
-        component={ScheduleImportScreen}
-        options={{title: 'Schedule Import'}}
-      />
-      <Stack.Screen
         name={ScheduleStackComponents.schedulePrivateEventsScreen}
         component={isDisabled ? DisabledView : SchedulePrivateEventsScreen}
-        options={{title: 'Private Events'}}
+        options={{title: 'Personal Events'}}
       />
       {CommonScreens(Stack as typeof MainStack)}
     </Stack.Navigator>

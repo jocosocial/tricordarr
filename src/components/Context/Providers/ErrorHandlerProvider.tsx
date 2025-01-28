@@ -16,15 +16,9 @@ function getErrorMessage(e: StringOrError) {
 }
 
 export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
-  const [errorMessage, setErrorMessageString] = useState<string | undefined>();
   const [errorBanner, setErrorBannerString] = useState<string | undefined>();
-  const [infoMessage, setInfoMessage] = useState<string>();
   const [hasUnsavedWork, setHasUnsavedWork] = useState<boolean>(false);
 
-  const setErrorMessage = useCallback(
-    (e: StringOrError) => setErrorMessageString(getErrorMessage(e)),
-    [setErrorMessageString],
-  );
   const setErrorBanner = useCallback(
     (e: StringOrError) => setErrorBannerString(getErrorMessage(e)),
     [setErrorBannerString],
@@ -33,12 +27,8 @@ export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
   return (
     <ErrorHandlerContext.Provider
       value={{
-        errorMessage,
-        setErrorMessage,
         errorBanner,
         setErrorBanner,
-        infoMessage,
-        setInfoMessage,
         hasUnsavedWork,
         setHasUnsavedWork,
       }}>

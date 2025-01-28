@@ -3,8 +3,8 @@ import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {AppView} from '../AppView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const DisabledView = () => {
   const {commonStyles} = useStyles();
@@ -13,7 +13,7 @@ export const DisabledView = () => {
     innerContainer: [commonStyles.justifyCenter],
     contentContainer: [commonStyles.marginVerticalSmall, commonStyles.marginHorizontal],
   };
-  const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const commonNavigation = useCommonStack();
 
   return (
@@ -30,7 +30,7 @@ export const DisabledView = () => {
               onPress={() =>
                 commonNavigation.push(CommonStackComponents.siteUIScreen, {timestamp: new Date().toISOString()})
               }>
-              You could also check {appConfig.serverUrl} to see if there is more information available.
+              You could also check {serverUrl} to see if there is more information available.
             </Text>
           </View>
           <View style={styles.contentContainer}>

@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useUserProfileQuery} from '../../Queries/Users/UserProfileQueries.ts';
 import {UserProfileScreenBase} from './UserProfileScreenBase';
-import {useUserFindQuery} from '../../Queries/User/UserQueries.ts';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {useUserFindQuery, useUsersProfileQuery} from '../../Queries/Users/UsersQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.usernameProfileScreen>;
 
 export const UsernameProfileScreen = ({route}: Props) => {
   const [userID, setUserID] = useState('');
   const {data: lookupData} = useUserFindQuery(route.params.username);
-  const {data, refetch, isLoading} = useUserProfileQuery(userID, {
+  const {data, refetch, isLoading} = useUsersProfileQuery(userID, {
     enabled: !!userID,
   });
 

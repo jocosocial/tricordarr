@@ -7,19 +7,19 @@ import {Linking, ScrollView} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
 import {useAuth} from '../Context/Contexts/AuthContext';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
+  const {appConfig, oobeCompleted} = useConfig();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {data: userNotificationData} = useUserNotificationDataQuery();
+  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
   const {tokenData} = useAuth();
-  const {profilePublicData} = useUserData();
-  const {appConfig} = useConfig();
+  const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({

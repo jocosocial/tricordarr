@@ -3,7 +3,6 @@ import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs'
 import {Divider, Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem';
 import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem';
 import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem';
@@ -12,6 +11,7 @@ import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem';
 import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem';
 import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -32,7 +32,7 @@ export const ForumPostActionsMenu = ({
   enablePinnedPosts,
   forumData,
 }: ForumPostActionsMenuProps) => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();

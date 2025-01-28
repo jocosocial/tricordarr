@@ -8,7 +8,6 @@ import {LogBox} from 'react-native';
 import {Portal} from 'react-native-paper';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
-import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
@@ -49,6 +48,7 @@ import {CriticalErrorProvider} from './src/components/Context/Providers/Critical
 import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
 import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {SnackbarProvider} from './src/components/Context/Providers/SnackbarProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
@@ -88,6 +88,8 @@ function App(): React.JSX.Element {
    * LoadingProvider needs SwiftarrQueryClientProvider for useIsRestoring.
    * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback.
    * LoadingProvider requires SafeAreaProvider since it's the first usage of AppView.
+   * SnackbarProvider shouldn't need anything.
+   * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider
    */
   return (
     <GestureHandlerRootView>
@@ -95,12 +97,12 @@ function App(): React.JSX.Element {
         <AppNavigationThemeProvider>
           <StyleProvider>
             <ErrorHandlerProvider>
-              <AuthProvider>
-                <SwiftarrQueryClientProvider>
-                  <SafeAreaProvider>
-                    <LoadingProvider>
-                      <CriticalErrorProvider>
-                        <UserDataProvider>
+              <SnackbarProvider>
+                <AuthProvider>
+                  <SwiftarrQueryClientProvider>
+                    <SafeAreaProvider>
+                      <LoadingProvider>
+                        <CriticalErrorProvider>
                           <PrivilegeProvider>
                             <SocketProvider>
                               <TwitarrProvider>
@@ -130,12 +132,12 @@ function App(): React.JSX.Element {
                               </TwitarrProvider>
                             </SocketProvider>
                           </PrivilegeProvider>
-                        </UserDataProvider>
-                      </CriticalErrorProvider>
-                    </LoadingProvider>
-                  </SafeAreaProvider>
-                </SwiftarrQueryClientProvider>
-              </AuthProvider>
+                        </CriticalErrorProvider>
+                      </LoadingProvider>
+                    </SafeAreaProvider>
+                  </SwiftarrQueryClientProvider>
+                </AuthProvider>
+              </SnackbarProvider>
             </ErrorHandlerProvider>
           </StyleProvider>
         </AppNavigationThemeProvider>

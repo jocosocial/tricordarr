@@ -18,21 +18,23 @@ import {ServerHealthcheckResultView} from '../../../Views/Settings/ServerHealthc
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
+import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {CacheManager} from '@georstat/react-native-image-cache';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {disruptionDetected} = useSwiftarrQueryClient();
+  const {disruptionDetected, serverUrl} = useSwiftarrQueryClient();
   const {data: serverHealthData, refetch, isFetching} = useHealthQuery();
   const {hasUnsavedWork} = useErrorHandler();
-  const {setErrorMessage} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
-    const oldServerUrl = appConfig.serverUrl;
+    const oldServerUrl = serverUrl;
     updateAppConfig({
       ...appConfig,
       serverUrl: values.serverUrl,
@@ -46,12 +48,12 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      signOut().then(() => {
-        clearPrivileges();
-        queryClient.clear();
-      });
+      await signOut(preRegistrationMode);
+      clearPrivileges();
+      queryClient.clear();
+      await CacheManager.clearCache();
     }
-    setErrorMessage(undefined);
+    setSnackbarPayload(undefined);
   };
 
   useEffect(() => {
@@ -72,8 +74,8 @@ export const ConfigServerUrlScreen = () => {
           <ServerUrlSettingForm
             onSubmit={onSave}
             initialValues={{
-              serverChoice: ServerChoices.fromUrl(appConfig.serverUrl),
-              serverUrl: appConfig.serverUrl,
+              serverChoice: ServerChoices.fromUrl(serverUrl),
+              serverUrl: serverUrl,
             }}
           />
         </PaddedContentView>

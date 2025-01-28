@@ -6,6 +6,7 @@ import {useConfig} from '../Context/Contexts/ConfigContext';
 import URLParse from 'url-parse';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [
@@ -27,6 +28,7 @@ const urlPathLabelMappings = [
 export const HyperlinkText = ({children}: {children: ReactElementWithType | undefined}) => {
   const {openWebUrl} = useTwitarr();
   const {appConfig} = useConfig();
+  const {serverUrl} = useSwiftarrQueryClient();
   const {commonStyles} = useStyles();
 
   const handleLink = (linkUrl?: string) => {
@@ -45,7 +47,7 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
   const handleText = (linkUrl: string) => {
     const linkUrlObject = new URLParse(linkUrl);
     if (
-      linkUrl.startsWith(appConfig.serverUrl) ||
+      linkUrl.startsWith(serverUrl) ||
       appConfig.apiClientConfig.canonicalHostnames.includes(linkUrlObject.hostname)
     ) {
       const matchedMapping = urlPathLabelMappings.find(mapping => {

@@ -1,7 +1,6 @@
 import {UserAvatarImage} from '../Images/UserAvatarImage';
 import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {TouchableOpacity} from 'react-native';
 import {AppIcons} from '../../libraries/Enums/Icons';
 import {useAuth} from '../Context/Contexts/AuthContext';
@@ -9,9 +8,10 @@ import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackN
 import {CommonStackComponents} from '../Navigation/CommonScreens';
 import {SettingsStackScreenComponents} from '../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';
+import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 export const MainAccountMenu = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const closeMenu = () => setIsMenuVisible(false);
   const mainNavigation = useMainStack();

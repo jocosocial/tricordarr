@@ -27,7 +27,6 @@ export const OobeNoteCard = () => {
         }}
         mode={'cardcover'}
       />
-      {/*<Card.Cover source={twitarrteam} />*/}
     </Card>
   );
 };

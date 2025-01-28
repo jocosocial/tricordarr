@@ -5,13 +5,13 @@ import {View} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useAppTheme} from '../../../styles/Theme.ts';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {LfgLeaveModal} from '../Modals/LfgLeaveModal.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {useFezMembershipMutation} from '../../Queries/Fez/FezMembershipQueries.ts';
 import {StyleSheet} from 'react-native';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface LFGMembershipViewProps {
   lfg: FezData;
@@ -20,7 +20,7 @@ interface LFGMembershipViewProps {
 export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
   const {setModalVisible, setModalContent} = useModal();
   const [refreshing, setRefreshing] = useState(false);

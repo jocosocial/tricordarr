@@ -14,11 +14,12 @@ import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
 import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
 import {usePersonalEventsQuery} from '../../Queries/Fez/FezQueries.ts';
+import {SchedulePersonalEventCreateFAB} from '../../Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB.tsx';
 
 export const SchedulePrivateEventsScreen = () => {
   const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
   const {data, isFetching, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
-    fezType: [FezType.privateEvent],
+    fezType: [FezType.privateEvent, FezType.personalEvent],
     // @TODO we intend to change this some day. Upstream Swiftarr issue.
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
@@ -62,6 +63,7 @@ export const SchedulePrivateEventsScreen = () => {
         hasNextPage={hasNextPage}
         handleLoadNext={fetchNextPage}
       />
+      <SchedulePersonalEventCreateFAB />
     </AppView>
   );
 };

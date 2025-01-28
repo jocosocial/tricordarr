@@ -3,6 +3,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import {TokenStringData} from '../Structs/ControllerStructs';
 import {WebSocketOptions} from '../Types';
 import {getAppConfig} from '../AppConfig';
+import {StorageKeys} from '../Storage';
 
 /**
  * This function returns a normalized URL of a WebSocket API endpoint to connect to.
@@ -44,7 +45,7 @@ function WebSocketConstructor(options?: WebSocketOptions) {
  * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
  */
 async function getToken() {
-  const rawTokenData = await TokenStringData.getLocal();
+  const rawTokenData = await TokenStringData.getLocal(StorageKeys.TOKEN_STRING_DATA_V2);
   if (rawTokenData) {
     const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
     return tokenStringData.token;

@@ -9,6 +9,7 @@ interface SelectableMenuItemProps {
   title: string;
   onPress: () => void;
   leadingIcon?: IconSource;
+  disabled?: boolean;
 }
 
 /**
@@ -23,6 +24,7 @@ export const SelectableMenuItem = (props: SelectableMenuItemProps) => {
       trailingIcon={props.selected ? AppIcons.check : undefined}
       onPress={props.onPress}
       leadingIcon={props.leadingIcon}
+      disabled={props.disabled}
     />
   );
 };

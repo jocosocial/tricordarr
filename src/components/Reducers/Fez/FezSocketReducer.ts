@@ -8,11 +8,13 @@ export interface WebSocketStorage {
 export enum WebSocketStorageActions {
   upsert = 'UPSERT',
   delete = 'DELETE',
+  clear = 'CLEAR',
 }
 
 export type WebSocketStorageType =
   | {type: WebSocketStorageActions.upsert; key: string; socket: ReconnectingWebSocket}
-  | {type: WebSocketStorageActions.delete; key: string};
+  | {type: WebSocketStorageActions.delete; key: string}
+  | {type: WebSocketStorageActions.clear};
 
 const webSocketStorageReducer = (storage: WebSocketStorage, action: WebSocketStorageType) => {
   console.log('[WebSocketStorageReducer.ts] Got action:', action.type);
@@ -27,6 +29,10 @@ const webSocketStorageReducer = (storage: WebSocketStorage, action: WebSocketSto
       const localStorage = storage;
       delete localStorage[action.key];
       return localStorage;
+    }
+    case WebSocketStorageActions.clear: {
+      // @TODO should this also close?
+      return {};
     }
     default: {
       throw new Error(`Unknown WebSocketStorageActions: ${action}`);
