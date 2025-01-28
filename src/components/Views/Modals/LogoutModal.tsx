@@ -15,6 +15,7 @@ import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {stopForegroundServiceWorker} from '../../../libraries/Service';
 import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 interface LogoutModalContentProps {
   allDevices: boolean;
@@ -46,6 +47,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
+  const {preRegistrationMode} = useConfig();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -54,7 +56,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       type: WebSocketStorageActions.clear,
     });
     stopForegroundServiceWorker().then(() =>
-      signOut().then(() => {
+      signOut(preRegistrationMode).then(() => {
         clearPrivileges();
         queryClient.clear();
         setModalVisible(false);

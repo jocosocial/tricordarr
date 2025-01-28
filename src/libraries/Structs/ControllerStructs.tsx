@@ -27,10 +27,11 @@ export interface TokenStringData {
  * I really hope I don't regret doing this.
  */
 export namespace TokenStringData {
-  export const getLocal = async () => await EncryptedStorage.getItem(StorageKeys.TOKEN_STRING_DATA);
-  export const setLocal = async (data: TokenStringData) =>
-    await EncryptedStorage.setItem(StorageKeys.TOKEN_STRING_DATA, JSON.stringify(data));
-  export const clearLocal = async () => await EncryptedStorage.removeItem(StorageKeys.TOKEN_STRING_DATA);
+  export const getLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.getItem(key);
+  export const setLocal = async (key: keyof typeof StorageKeys, data: TokenStringData) => {
+    await EncryptedStorage.setItem(key, JSON.stringify(data));
+  };
+  export const clearLocal = async (key: keyof typeof StorageKeys) => await EncryptedStorage.removeItem(key);
 }
 
 export interface UserHeader {

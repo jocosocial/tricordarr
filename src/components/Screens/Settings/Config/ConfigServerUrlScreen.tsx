@@ -23,7 +23,7 @@ import {CacheManager} from '@georstat/react-native-image-cache';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {appConfig, updateAppConfig} = useConfig();
+  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
@@ -48,7 +48,7 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut();
+      await signOut(preRegistrationMode);
       clearPrivileges();
       queryClient.clear();
       await CacheManager.clearCache();

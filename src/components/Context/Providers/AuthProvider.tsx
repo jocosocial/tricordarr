@@ -3,8 +3,11 @@ import {PropsWithChildren} from 'react';
 import {AuthContext} from '../Contexts/AuthContext';
 import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer';
 import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
+import {useConfig} from '../Contexts/ConfigContext.ts';
+import {StorageKeys} from '../../../libraries/Storage';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
+  const {preRegistrationMode} = useConfig();
   const [authState, dispatchAuthState] = useAuthReducer({
     isLoading: true,
     tokenData: null,
@@ -12,11 +15,18 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   const isLoggedIn = !!authState.tokenData;
 
   const loadStoredTokenData = useCallback(async () => {
-    const tokenStringData = await TokenStringData.getLocal();
+    let tokenStringData: string | null;
+    if (preRegistrationMode) {
+      tokenStringData = await TokenStringData.getLocal(StorageKeys.PREREGISTRATION_TOKEN_STRING_DATA);
+      console.log('[AuthProvider.tsx] loaded preRegistration token');
+    } else {
+      tokenStringData = await TokenStringData.getLocal(StorageKeys.TOKEN_STRING_DATA_V2);
+      console.log('[AuthProvider.tsx] loaded regular token');
+    }
     if (tokenStringData) {
       return JSON.parse(tokenStringData) as TokenStringData;
     }
-  }, []);
+  }, [preRegistrationMode]);
 
   const restoreTokenData = useCallback(async () => {
     const tokenData = await loadStoredTokenData();
@@ -27,29 +37,30 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
       });
     } else {
       console.log('[AuthProvider.tsx] No token data found in local encrypted storage.');
+      dispatchAuthState({
+        type: AuthActions.signOut,
+      });
     }
   }, [dispatchAuthState, loadStoredTokenData]);
 
   useEffect(() => {
     restoreTokenData();
-  }, [restoreTokenData]);
+  }, [restoreTokenData, preRegistrationMode]);
 
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(
     () => ({
-      signIn: async (tokenData: TokenStringData, noPersist: boolean = false) => {
-        if (!noPersist) {
-          await TokenStringData.setLocal(tokenData);
-        } else {
-          console.log('[AuthProvider.tsx] Not persisting TokenStringData.');
-        }
+      signIn: async (tokenData: TokenStringData, preRegMode: boolean = false) => {
+        const key = preRegMode ? StorageKeys.PREREGISTRATION_TOKEN_STRING_DATA : StorageKeys.TOKEN_STRING_DATA_V2;
+        await TokenStringData.setLocal(key, tokenData);
         dispatchAuthState({
           type: AuthActions.signIn,
           tokenData: tokenData,
         });
       },
-      signOut: async () => {
-        await TokenStringData.clearLocal();
+      signOut: async (preRegMode: boolean = false) => {
+        const key = preRegMode ? StorageKeys.PREREGISTRATION_TOKEN_STRING_DATA : StorageKeys.TOKEN_STRING_DATA_V2;
+        await TokenStringData.clearLocal(key);
         dispatchAuthState({
           type: AuthActions.signOut,
         });
