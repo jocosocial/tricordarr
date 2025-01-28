@@ -54,14 +54,6 @@ export const OobeAccountScreen = ({navigation}: Props) => {
               onPress={() => navigation.push(OobeStackComponents.oobeLoginScreen)}
             />
           </PaddedContentView>
-          {preRegistrationMode && (
-            <PaddedContentView>
-              <Text>
-                Credentials will not be saved in pre-registration mode. If you close the app and want to return, you'll
-                need to log in again. This will not be the case once on-board.
-              </Text>
-            </PaddedContentView>
-          )}
         </ScrollingContentView>
       )}
       {isLoggedIn && profilePublicData && (
