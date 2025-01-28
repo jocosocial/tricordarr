@@ -51,8 +51,13 @@ export namespace UserHeader {
     return headers.map(h => h.userID).includes(header.userID);
   };
 
-  export const getCacheKeys = (header: UserHeader): QueryKey[] => {
-    return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`, '/user/profile']];
+  export const getCacheKeys = (header?: UserHeader): QueryKey[] => {
+    let cacheKeys: QueryKey[] = [['/user/profile']];
+    if (header) {
+      cacheKeys.push([`/users/${header.userID}/profile`]);
+      cacheKeys.push([`/users/find/${header.username}`]);
+    }
+    return cacheKeys;
   };
 
   export const getRelationKeys = (header?: UserHeader): QueryKey[] => {

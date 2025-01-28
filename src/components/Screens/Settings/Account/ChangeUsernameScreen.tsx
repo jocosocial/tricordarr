@@ -8,18 +8,19 @@ import {useNavigation} from '@react-navigation/native';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {ChangeUsernameForm} from '../../../Forms/User/ChangeUsernameForm.tsx';
-import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
 import {useUserUsernameMutation} from '../../../Queries/User/UserMutations.ts';
 import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
 import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {UserHeader} from '../../../../libraries/Structs/ControllerStructs.tsx';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const ChangeUsernameScreen = () => {
-  const {data: profilePublicData, refetch: refetchProfilePublicData} = useUserProfileQuery();
+  const {data: profilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
   const {serverUrl} = useSwiftarrQueryClient();
   const usernameMutation = useUserUsernameMutation();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
+  const queryClient = useQueryClient();
 
   const {setSnackbarPayload} = useSnackbar();
 
@@ -29,13 +30,13 @@ export const ChangeUsernameScreen = () => {
         userUsernameData: values,
       },
       {
-        onSuccess: () => {
-          refetchProfilePublicData().then(() =>
-            refetchUserNotificationData().then(() => {
-              setSnackbarPayload({message: 'Successfully changed username!'});
-              navigation.goBack();
-            }),
-          );
+        onSuccess: async () => {
+          const invalidations = UserHeader.getCacheKeys(profilePublicData?.header).map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
+          setSnackbarPayload({message: 'Successfully changed username!'});
+          navigation.goBack();
         },
         onSettled: () => {
           helper.setSubmitting(false);
