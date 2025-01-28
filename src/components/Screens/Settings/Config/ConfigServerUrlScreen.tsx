@@ -35,10 +35,18 @@ export const ConfigServerUrlScreen = () => {
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = serverUrl;
-    updateAppConfig({
-      ...appConfig,
-      serverUrl: values.serverUrl,
-    });
+    if (preRegistrationMode) {
+      updateAppConfig({
+        ...appConfig,
+        preRegistrationServerUrl: values.serverUrl,
+      });
+    } else {
+      updateAppConfig({
+        ...appConfig,
+        serverUrl: values.serverUrl,
+      });
+    }
+
     refetch().then(() =>
       formikHelpers.resetForm({
         values: {

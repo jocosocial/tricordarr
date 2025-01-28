@@ -30,10 +30,17 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();
 
   const onSave = (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
-    updateAppConfig({
-      ...appConfig,
-      serverUrl: values.serverUrl,
-    });
+    if (preRegistrationMode) {
+      updateAppConfig({
+        ...appConfig,
+        preRegistrationServerUrl: values.serverUrl,
+      });
+    } else {
+      updateAppConfig({
+        ...appConfig,
+        serverUrl: values.serverUrl,
+      });
+    }
     refetch().then(() =>
       formikHelpers.resetForm({
         values: {
