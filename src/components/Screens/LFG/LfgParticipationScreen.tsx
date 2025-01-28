@@ -10,7 +10,6 @@ import {ListSection} from '../../Lists/ListSection';
 import {FezParticipantListItem} from '../../Lists/Items/FezParticipantListItem';
 import {useFezQuery} from '../../Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {FezParticipantAddItem} from '../../Lists/Items/FezParticipantAddItem';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
@@ -23,6 +22,7 @@ import {CommonStackComponents, CommonStackParamList} from '../../Navigation/Comm
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../libraries/Enums/FezType.ts';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
@@ -33,7 +33,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const lfg = data?.pages[0];
   const [refreshing, setRefreshing] = useState(false);
   const participantMutation = useFezParticipantMutation();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
   const membershipMutation = useFezMembershipMutation();
   const queryClient = useQueryClient();

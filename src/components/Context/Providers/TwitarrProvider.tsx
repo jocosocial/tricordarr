@@ -1,13 +1,21 @@
 import {TwitarrContext} from '../Contexts/TwitarrContext';
-import React, {PropsWithChildren} from 'react';
+import React, {PropsWithChildren, useEffect} from 'react';
 import {useConfig} from '../Contexts/ConfigContext';
 import {Linking} from 'react-native';
 import URLParse from 'url-parse';
 import {useSwiftarrQueryClient} from '../Contexts/SwiftarrQueryClientContext.ts';
+import {useAuth} from '../Contexts/AuthContext.ts';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {useErrorHandler} from '../Contexts/ErrorHandlerContext.ts';
 
 export const TwitarrProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
+  const {tokenData} = useAuth();
+  const {error: profileQueryError} = useUserProfileQuery({
+    enabled: !!tokenData,
+  });
+  const {setErrorBanner} = useErrorHandler();
 
   const openAppUrl = (appUrl: string) => {
     if (appUrl.includes('/fez')) {
@@ -38,6 +46,15 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
     }
     Linking.openURL(url);
   };
+
+  // @TODO sus
+  useEffect(() => {
+    if (tokenData && profileQueryError && profileQueryError.response) {
+      if (profileQueryError.response.status === 401) {
+        setErrorBanner('You are not logged in (or your token is no longer valid). Please log in again.');
+      }
+    }
+  }, [profileQueryError, setErrorBanner, tokenData]);
 
   return (
     <TwitarrContext.Provider

@@ -4,7 +4,6 @@ import {useStyles} from '../Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useUserAvatarMutation, useUserImageDeleteMutation} from '../Queries/User/UserAvatarMutations.ts';
-import {useUserData} from '../Context/Contexts/UserDataContext';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import {APIImage} from '../Images/APIImage';
 import {useFeature} from '../Context/Contexts/FeatureContext';
@@ -13,6 +12,7 @@ import {ImageButtons} from '../Buttons/ImageButtons.tsx';
 import {styleDefaults} from '../../styles';
 import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 import {useUsersProfileQuery} from '../Queries/Users/UsersQueries.ts';
+import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 interface UserProfileAvatarProps {
   user: ProfilePublicData;
@@ -25,7 +25,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const avatarMutation = useUserAvatarMutation();
   const {setSnackbarPayload} = useSnackbar();
   const userProfileQuery = useUsersProfileQuery(user.header.userID);
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {getIsDisabled} = useFeature();
 
   const styles = StyleSheet.create({

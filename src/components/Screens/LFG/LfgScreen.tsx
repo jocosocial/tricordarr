@@ -7,7 +7,6 @@ import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
 import {LfgScreenActionsMenu} from '../../Menus/LFG/LfgScreenActionsMenu.tsx';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSocket} from '../../Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
@@ -16,6 +15,7 @@ import {CommonStackComponents, CommonStackParamList} from '../../Navigation/Comm
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
 import {NavHeaderTitle} from '../../Text/NavHeaderTitle.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
@@ -23,7 +23,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.fezID,
   });
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const [lfg, setLfg] = useState<FezData>();
   const {notificationSocket} = useSocket();
   const isFocused = useIsFocused();

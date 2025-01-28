@@ -6,16 +6,15 @@ import {ChangePasswordForm} from '../../../Forms/User/ChangePasswordForm.tsx';
 import {ChangePasswordFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {LoadingView} from '../../../Views/Static/LoadingView';
 import {useNavigation} from '@react-navigation/native';
-
 import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
 import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 export const ChangePasswordScreen = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
   const {serverUrl} = useSwiftarrQueryClient();
   const passwordMutation = useUserPasswordMutation();

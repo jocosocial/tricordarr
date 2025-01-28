@@ -5,12 +5,12 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import React from 'react';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
 import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface PersonalEventScreenActionsMenuProps {
   event: FezData;
@@ -18,7 +18,7 @@ interface PersonalEventScreenActionsMenuProps {
 
 export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActionsMenuProps) => {
   const [visible, setVisible] = useState(false);
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useScheduleStackNavigation();
 

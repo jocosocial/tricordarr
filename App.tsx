@@ -8,7 +8,6 @@ import {LogBox} from 'react-native';
 import {Portal} from 'react-native-paper';
 import {setupChannels} from './src/libraries/Notifications/Channels';
 import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
-import {UserDataProvider} from './src/components/Context/Providers/UserDataProvider';
 import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
 import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
 import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
@@ -104,37 +103,35 @@ function App(): React.JSX.Element {
                     <SafeAreaProvider>
                       <LoadingProvider>
                         <CriticalErrorProvider>
-                          <UserDataProvider>
-                            <PrivilegeProvider>
-                              <SocketProvider>
-                                <TwitarrProvider>
-                                  <UserNotificationDataProvider>
-                                    <FeatureProvider>
-                                      <ModalProvider>
-                                        <Portal.Host>
-                                          <HeaderButtonsProvider stackType={'native'}>
-                                            <CruiseProvider>
-                                              <DrawerProvider>
-                                                <FilterProvider>
-                                                  <SelectionProvider>
-                                                    <AppEventHandler />
-                                                    <ForegroundService />
-                                                    <NotificationDataListener />
-                                                    <NotificationDataPoller />
-                                                    <RootStackNavigator />
-                                                  </SelectionProvider>
-                                                </FilterProvider>
-                                              </DrawerProvider>
-                                            </CruiseProvider>
-                                          </HeaderButtonsProvider>
-                                        </Portal.Host>
-                                      </ModalProvider>
-                                    </FeatureProvider>
-                                  </UserNotificationDataProvider>
-                                </TwitarrProvider>
-                              </SocketProvider>
-                            </PrivilegeProvider>
-                          </UserDataProvider>
+                          <PrivilegeProvider>
+                            <SocketProvider>
+                              <TwitarrProvider>
+                                <UserNotificationDataProvider>
+                                  <FeatureProvider>
+                                    <ModalProvider>
+                                      <Portal.Host>
+                                        <HeaderButtonsProvider stackType={'native'}>
+                                          <CruiseProvider>
+                                            <DrawerProvider>
+                                              <FilterProvider>
+                                                <SelectionProvider>
+                                                  <AppEventHandler />
+                                                  <ForegroundService />
+                                                  <NotificationDataListener />
+                                                  <NotificationDataPoller />
+                                                  <RootStackNavigator />
+                                                </SelectionProvider>
+                                              </FilterProvider>
+                                            </DrawerProvider>
+                                          </CruiseProvider>
+                                        </HeaderButtonsProvider>
+                                      </Portal.Host>
+                                    </ModalProvider>
+                                  </FeatureProvider>
+                                </UserNotificationDataProvider>
+                              </TwitarrProvider>
+                            </SocketProvider>
+                          </PrivilegeProvider>
                         </CriticalErrorProvider>
                       </LoadingProvider>
                     </SafeAreaProvider>

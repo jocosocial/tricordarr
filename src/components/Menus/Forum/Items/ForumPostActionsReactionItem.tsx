@@ -6,10 +6,10 @@ import {LaughReaction, LoveReaction, LikeReaction} from '../../../Text/Reactions
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useForumPostQuery} from '../../../Queries/Forum/ForumPostQueries.ts';
 import {SubmitIconButton} from '../../../Buttons/IconButtons/SubmitIconButton';
 import {useAppTheme} from '../../../../styles/Theme';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 interface ForumPostActionsReactionItemProps {
   forumPost: PostData;
@@ -18,7 +18,7 @@ interface ForumPostActionsReactionItemProps {
 export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReactionItemProps) => {
   const reactionMutation = useForumPostReactionMutation();
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   const {data, isLoading, refetch} = useForumPostQuery(forumPost.postID.toString());
   const theme = useAppTheme();

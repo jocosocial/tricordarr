@@ -10,11 +10,11 @@ import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDa
 import {useAuth} from '../../Context/Contexts/AuthContext';
 import {useLogoutMutation} from '../../Queries/Auth/LogoutMutations.ts';
 import {useSocket} from '../../Context/Contexts/SocketContext';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {useSettingsStack} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {useQueryClient} from '@tanstack/react-query';
 import {stopForegroundServiceWorker} from '../../../libraries/Service';
+import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
 
 interface LogoutModalContentProps {
   allDevices: boolean;
@@ -35,7 +35,6 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const theme = useAppTheme();
   const settingsNavigation = useSettingsStack();
 
-  const {setProfilePublicData} = useUserData();
   const {setEnableUserNotifications} = useUserNotificationData();
   const {signOut} = useAuth();
   const logoutMutation = useLogoutMutation({
@@ -43,16 +42,17 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       onLogout();
     },
   });
-  const {closeNotificationSocket, closeFezSocket} = useSocket();
+  const {closeNotificationSocket, dispatchFezSockets} = useSocket();
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
-    setProfilePublicData(undefined);
     closeNotificationSocket();
-    closeFezSocket();
+    dispatchFezSockets({
+      type: WebSocketStorageActions.clear,
+    });
     stopForegroundServiceWorker().then(() =>
       signOut().then(() => {
         clearPrivileges();

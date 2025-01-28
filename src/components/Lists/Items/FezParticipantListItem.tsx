@@ -1,8 +1,8 @@
 import React from 'react';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {UserListItem} from './UserListItem';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface FezParticipantListItemProps {
   user: UserHeader;
@@ -13,7 +13,7 @@ interface FezParticipantListItemProps {
 
 export const FezParticipantListItem = ({user, fez, onRemove, onPress}: FezParticipantListItemProps) => {
   let enableDelete = true;
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
 
   // Cannot delete participant if:
   // * They (or you) are the owner.

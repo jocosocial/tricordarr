@@ -18,7 +18,7 @@ import {useModal} from '../Context/Contexts/ModalContext.ts';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
 import {getUserSuggestedLocations} from '../../libraries/Ship.ts';
-import {useUserData} from '../Context/Contexts/UserDataContext.ts';
+import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 interface PersonalEventFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
@@ -50,7 +50,7 @@ export const PersonalEventForm = ({
     buttonContainer: [commonStyles.marginTopSmall],
   };
   const {setModalVisible, setModalContent} = useModal();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();

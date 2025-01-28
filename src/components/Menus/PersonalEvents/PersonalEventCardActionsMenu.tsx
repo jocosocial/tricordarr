@@ -4,9 +4,9 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {FezData} from '../../../libraries/Structs/ControllerStructs';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface PersonalEventCardActionsMenuProps {
   anchor: React.JSX.Element;
@@ -17,7 +17,7 @@ interface PersonalEventCardActionsMenuProps {
 }
 
 export const PersonalEventCardActionsMenu = (props: PersonalEventCardActionsMenuProps) => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const closeMenu = () => props.setMenuVisible(false);
   const {setModalContent, setModalVisible} = useModal();
   const navigation = useCommonStack();

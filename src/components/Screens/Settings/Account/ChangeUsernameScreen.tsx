@@ -4,7 +4,6 @@ import {Text} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
 import React from 'react';
 import {LoadingView} from '../../../Views/Static/LoadingView';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useNavigation} from '@react-navigation/native';
 import {ChangeUsernameFormValues} from '../../../../libraries/Types/FormValues';
 import {FormikHelpers} from 'formik';
@@ -13,15 +12,14 @@ import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQ
 import {useUserUsernameMutation} from '../../../Queries/User/UserMutations.ts';
 import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {useUsersProfileQuery} from '../../../Queries/Users/UsersQueries.ts';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 export const ChangeUsernameScreen = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData, refetch: refetchProfilePublicData} = useUserProfileQuery();
   const navigation = useNavigation();
   const {serverUrl} = useSwiftarrQueryClient();
   const usernameMutation = useUserUsernameMutation();
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const {refetch: refetchProfilePublicData} = useUsersProfileQuery(profilePublicData?.header.userID);
 
   const {setSnackbarPayload} = useSnackbar();
 

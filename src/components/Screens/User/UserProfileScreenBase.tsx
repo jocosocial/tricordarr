@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Text} from 'react-native-paper';
 import {AppView} from '../../Views/AppView';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
 import {RefreshControl, View} from 'react-native';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
@@ -31,6 +30,7 @@ import {StyleSheet} from 'react-native';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 import {useUserMutesQuery} from '../../Queries/Users/UserMuteQueries.ts';
 import {useUserBlocksQuery} from '../../Queries/Users/UserBlockQueries.ts';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;
@@ -47,7 +47,7 @@ export const UserProfileScreenBase = ({
   oobe = false,
 }: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {commonStyles} = useStyles();
   const [isMuted, setIsMuted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);

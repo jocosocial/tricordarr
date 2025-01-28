@@ -2,8 +2,8 @@ import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
 import {AppView} from '../../../Views/AppView';
-import {useUserData} from '../../../Context/Contexts/UserDataContext';
 import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 const toSecureString = (originalText?: string) => {
   if (!originalText) {
@@ -20,7 +20,7 @@ const toSecureString = (originalText?: string) => {
 };
 
 export const UserInfoSettingsScreen = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {tokenData} = useAuth();
   return (
     <AppView>

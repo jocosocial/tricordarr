@@ -15,17 +15,14 @@ import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../Views/Modals/LogoutModal';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-
-import {useUsersProfileQuery} from '../../Queries/Users/UsersQueries.ts';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const theme = useAppTheme();
   const {isLoggedIn, tokenData} = useAuth();
-  const {data: profilePublicData} = useUsersProfileQuery(tokenData?.userID, {
-    enabled: !!tokenData,
-  });
+  const {data: profilePublicData} = useUserProfileQuery({enabled: !!tokenData});
   const {setModalContent, setModalVisible} = useModal();
   const {preRegistrationMode} = useConfig();
 

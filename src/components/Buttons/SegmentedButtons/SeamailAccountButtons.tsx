@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
-import {useUserData} from '../../Context/Contexts/UserDataContext.ts';
 import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel.ts';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
@@ -8,9 +7,10 @@ import {useAppTheme} from '../../../styles/Theme.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {SegmentedButtonType} from '../../../libraries/Types';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 export const SeamailAccountButtons = () => {
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam, asPrivilegedUser} = usePrivilege();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);

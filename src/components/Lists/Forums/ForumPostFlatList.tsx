@@ -7,13 +7,13 @@ import {TimeDivider} from '../Dividers/TimeDivider';
 import {SpaceDivider} from '../Dividers/SpaceDivider';
 import {timeAgo} from '../../../libraries/DateTime';
 import {LabelDivider} from '../Dividers/LabelDivider';
-import {useUserData} from '../../Context/Contexts/UserDataContext';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {AppFlatList} from '../AppFlatList.tsx';
 import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../../libraries/Types';
 import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -53,7 +53,7 @@ export const ForumPostFlatList = ({
   scrollButtonPosition,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
-  const {profilePublicData} = useUserData();
+  const {data: profilePublicData} = useUserProfileQuery();
   const {hasModerator} = usePrivilege();
 
   const styles = StyleSheet.create({

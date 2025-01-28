@@ -52,7 +52,7 @@ export namespace UserHeader {
   };
 
   export const getCacheKeys = (header: UserHeader): QueryKey[] => {
-    return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`]];
+    return [[`/users/${header.userID}/profile`], [`/users/find/${header.username}`, '/user/profile']];
   };
 
   export const getRelationKeys = (header?: UserHeader): QueryKey[] => {
