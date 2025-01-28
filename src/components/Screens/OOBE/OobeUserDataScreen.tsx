@@ -44,30 +44,34 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
             disabled={!tokenData}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <Text>
-            You can optionally follow official and shadow events in the schedule. This will add them to your in-app day
-            planner and generate reminder notifications. If you have simultaneous internet and Twitarr access you can
-            also import from a Sched.com account.
-          </Text>
-        </PaddedContentView>
         {preRegistrationMode && (
-          <PaddedContentView>
-            <Text>You are in pre-registration mode. The schedule may not be available yet.</Text>
-          </PaddedContentView>
+          <>
+            <PaddedContentView>
+              <Text>
+                You can optionally follow official and shadow events in the schedule. Would you like to do this now? You
+                can always do it later or not at all. This will add them to your in-app day planner and generate
+                reminder notifications. If you have simultaneous internet and Twitarr access you can also import from a
+                Sched.com account.
+              </Text>
+            </PaddedContentView>
+            <PaddedContentView>
+              <Text>You are in pre-registration mode. The schedule may not be available yet.</Text>
+            </PaddedContentView>
+
+            <PaddedContentView>
+              <PrimaryActionButton
+                buttonText={'View Events'}
+                buttonColor={theme.colors.twitarrNeutralButton}
+                onPress={() => {
+                  if (tokenData) {
+                    navigation.push(CommonStackComponents.scheduleDayScreen);
+                  }
+                }}
+                disabled={!tokenData}
+              />
+            </PaddedContentView>
+          </>
         )}
-        <PaddedContentView>
-          <PrimaryActionButton
-            buttonText={'View Events'}
-            buttonColor={theme.colors.twitarrNeutralButton}
-            onPress={() => {
-              if (tokenData) {
-                navigation.push(CommonStackComponents.scheduleDayScreen);
-              }
-            }}
-            disabled={!tokenData}
-          />
-        </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
