@@ -10,3 +10,7 @@ export const usePerformersQuery = (performerType: PerformerType) => {
 export const usePerformerQuery = (performer: string) => {
   return useTokenAuthQuery<PerformerData>(`/performer/${performer}`);
 };
+
+export const usePerformerSelfQuery = () => {
+  return useTokenAuthQuery<PerformerData>('/performer/self');
+};

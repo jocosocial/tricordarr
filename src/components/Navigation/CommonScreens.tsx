@@ -67,6 +67,10 @@ import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
+import {PerformerEditScreen} from '../Screens/Performer/PerformerEditScreen.tsx';
+import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
+import {PerformerCreateScreen} from '../Screens/Performer/PerformerCreateScreen.tsx';
+import {PerformerType} from '../Queries/Performer/PerformerQueries.ts';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -217,6 +221,13 @@ export type CommonStackParamList = {
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
+  PerformerEditScreen: undefined;
+  EventAddPerformerScreen: {
+    eventID: string;
+  };
+  PerformerCreateScreen: {
+    performerType: PerformerType;
+  };
 };
 
 export enum CommonStackComponents {
@@ -274,6 +285,9 @@ export enum CommonStackComponents {
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   eventSearchScreen = 'EventSearchScreen',
+  performerEditScreen = 'PerformerEditScreen',
+  eventAddPerformerScreen = 'EventAddPerformerScreen',
+  performerCreateScreen = 'PerformerCreateScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -556,6 +570,21 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.eventSearchScreen}
         component={EventSearchScreen}
         options={{title: 'Search Events'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerEditScreen}
+        component={PerformerEditScreen}
+        options={{title: 'Edit Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventAddPerformerScreen}
+        component={EventAddPerformerScreen}
+        options={{title: 'Add Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerCreateScreen}
+        component={PerformerCreateScreen}
+        options={{title: 'Create Performer'}}
       />
     </>
   );

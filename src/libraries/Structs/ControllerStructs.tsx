@@ -1204,3 +1204,37 @@ export namespace BoardgameData {
     return queryKeys;
   };
 }
+
+/// Used to create and update Performer models.
+///
+/// Used by: `POST /api/v3/performer/forEvent/:event_id`
+/// Used by: `POST /api/v3/performer/official/add`
+export interface PerformerUploadData {
+  /// If this is an existing performer that is being updated. Not required for shadow event organizers; we can find them by userID.
+  performerID?: string;
+  /// The name of the performer. Required.
+  name: string;
+  pronouns?: string;
+  /// Bio can contain Markdown.
+  bio?: string;
+  /// New photo data if we're updating it, or the name of an existing photo on the server.
+  photo: ImageUploadData;
+  /// TRUE if this is an official performer, FALSE if it's a shadow event organizer. Note that this struct can't link a Performer with a User, so can't be
+  /// used by admin/mods to create Shadow Event Organizers. The idea is that they should create their records themselves, but mods may have to edit them.
+  isOfficialPerformer: boolean;
+  organization?: string;
+  title?: string;
+  yearsAttended: number[];
+  /// Social media URLs. Should be actual URLs we put into an HREF.
+  website?: string;
+  /// Social media URLs. Should be actual URLs we put into an HREF.
+  facebookURL?: string;
+  /// Social media URLs. Should be actual URLs we put into an HREF.
+  xURL?: string;
+  /// Social media URLs. Should be actual URLs we put into an HREF.
+  instagramURL?: string;
+  /// Social media URLs. Should be actual URLs we put into an HREF.
+  youtubeURL?: string;
+  /// UIDs of events where this performer is scheduled to appear.
+  eventUIDs: string[];
+}

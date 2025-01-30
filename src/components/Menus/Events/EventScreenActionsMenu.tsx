@@ -39,9 +39,8 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
           leadingIcon={AppIcons.performer}
           onPress={() => {
             closeMenu();
-            commonNavigation.push(CommonStackComponents.siteUIScreen, {
-              resource: 'performer/shadow/addtoevent',
-              id: props.event.eventID,
+            commonNavigation.push(CommonStackComponents.eventAddPerformerScreen, {
+              eventID: props.event.eventID,
             });
           }}
           disabled={!preRegistrationAvailable}
