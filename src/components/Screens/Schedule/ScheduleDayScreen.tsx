@@ -24,9 +24,11 @@ import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderSch
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator.tsx';
+import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
+type Props = NativeStackScreenProps<ScheduleStackParamList | OobeStackParamList>;
 export const ScheduleDayScreen = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);

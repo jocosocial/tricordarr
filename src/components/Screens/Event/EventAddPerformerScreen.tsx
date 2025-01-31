@@ -11,12 +11,15 @@ import {RefreshControl} from 'react-native';
 import {PerformerProfileWarningView} from '../../Views/Warnings/PerformerProfileWarningView.tsx';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../styles/Theme.ts';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {PerformerProfileDeleteModalView} from '../../Views/Modals/PerformerProfileDeleteModalView.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 
 export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   const {data, refetch, isLoading, isFetching} = usePerformerSelfQuery();
   const theme = useAppTheme();
+  const {setModalVisible, setModalContent} = useModal();
 
   if (isLoading) {
     return <LoadingView />;
@@ -68,7 +71,10 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
               <PrimaryActionButton
                 buttonText={'Delete Profile'}
                 buttonColor={theme.colors.twitarrNegativeButton}
-                onPress={() => console.log('delete')}
+                onPress={() => {
+                  setModalContent(<PerformerProfileDeleteModalView />);
+                  setModalVisible(true);
+                }}
               />
             </PaddedContentView>
           </>
@@ -84,6 +90,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
                 onPress={() =>
                   navigation.push(CommonStackComponents.performerCreateScreen, {
                     performerType: 'shadow',
+                    eventID: route.params.eventID,
                   })
                 }
               />

@@ -7,8 +7,6 @@ import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
 import {BoardgameRecommendationData} from '../../libraries/Structs/ControllerStructs.tsx';
 import {BoardgameNumPlayersPickerField} from './Fields/Boardgames/BoardgameNumPlayersPickerField.tsx';
-import {FezTypePickerField} from './Fields/FezTypePickerField.tsx';
-import {FezType} from '../../libraries/Enums/FezType.ts';
 import {BoardgameAgePickerField} from './Fields/Boardgames/BoardgameAgePickerField.tsx';
 import {BoardgameDurationPickerField} from './Fields/Boardgames/BoardgameDurationPickerField.tsx';
 import {BoardgameComplexityPickerField} from './Fields/Boardgames/BoardgameComplexityPickerField.tsx';

@@ -606,6 +606,16 @@ export interface EventData {
   performers: PerformerHeaderData[];
 }
 
+export namespace EventData {
+  export const getCacheKeys = (eventID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/events']];
+    if (eventID) {
+      queryKeys.push([`/events/${eventID}`]);
+    }
+    return queryKeys;
+  };
+}
+
 export interface UserProfileUploadData {
   /// Basic info about the user--their ID, username, displayname, and avatar image. May be nil on POST.
   header?: UserHeader;
@@ -1052,6 +1062,16 @@ export interface PerformerData {
   /// Although we track the User who created a Performer model for their shadow event for moderation purposes, the User behind the Performer
   /// shouldn't be shown to everyone.
   user?: UserHeader;
+}
+
+export namespace PerformerData {
+  export const getCacheKeys = (performerID?: string): QueryKey[] => {
+    let queryKeys: QueryKey[] = [['/performer/official'], ['/performer/shadow'], ['/performer/self']];
+    if (performerID) {
+      queryKeys.push([`/performer/${performerID}`]);
+    }
+    return queryKeys;
+  };
 }
 
 export interface PerformerResponseData {

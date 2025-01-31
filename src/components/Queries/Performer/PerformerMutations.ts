@@ -11,7 +11,7 @@ export const usePerformerCreateMutation = () => {
   }
 
   const queryHandler = async (props: QueryHandlerProps) => {
-    return await apiPost(`/api/v3/performer/forEvent/${props.eventID}`, props.performerData);
+    return await apiPost(`/performer/forevent/${props.eventID}`, props.performerData);
   };
 
   return useTokenAuthMutation(queryHandler);
@@ -21,7 +21,7 @@ export const usePerformerDeleteMutation = () => {
   const {apiDelete} = useSwiftarrQueryClient();
 
   const queryHandler = async () => {
-    return await apiDelete('/performer/self/performer');
+    return await apiDelete('/performer/self');
   };
 
   return useTokenAuthMutation(queryHandler);

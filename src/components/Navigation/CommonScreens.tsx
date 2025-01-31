@@ -227,6 +227,7 @@ export type CommonStackParamList = {
   };
   PerformerCreateScreen: {
     performerType: PerformerType;
+    eventID: string;
   };
 };
 

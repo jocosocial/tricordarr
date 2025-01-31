@@ -18,7 +18,5 @@ export const PerformerEditScreen = () => {
     return <LoadingView />;
   }
 
-  console.log(data);
-
   return <PerformerScreenBase performerData={data} onRefresh={onRefresh} isFetching={isFetching} />;
 };

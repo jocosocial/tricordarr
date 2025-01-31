@@ -30,7 +30,7 @@ export const NumberValidation = Yup.string()
   .matches(/^[0-9]+$/, 'Must be an integer.')
   .required('Integer required');
 
-export const FezTypeValidation = Yup.string().oneOf(Object.values(FezType), 'Invalid type selected');
+export const FezTypeValidation = Yup.string().oneOf(Object.values(typeof FezType), 'Invalid type selected');
 
 export const DateValidation = Yup.date().required('Date is required');
 
@@ -40,6 +40,10 @@ export const RoomNumberValidation = Yup.string()
   .optional()
   .min(4, 'If specified, must be minimum 4 characters')
   .max(20);
+
+export const OptionalURLValidation = Yup.string().url().optional();
+
+export const OptionalBioStringValidation = Yup.string().max(2000).optional();
 
 export const ForumPostTextValidation = Yup.string()
   .required('Post is required.')
