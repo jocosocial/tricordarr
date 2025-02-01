@@ -67,7 +67,7 @@ import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
-import {PerformerEditScreen} from '../Screens/Performer/PerformerEditScreen.tsx';
+import {PerformerSelfScreen} from '../Screens/Performer/PerformerSelfScreen.tsx';
 import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
 import {PerformerCreateScreen} from '../Screens/Performer/PerformerCreateScreen.tsx';
 import {PerformerType} from '../Queries/Performer/PerformerQueries.ts';
@@ -221,7 +221,7 @@ export type CommonStackParamList = {
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
-  PerformerEditScreen: undefined;
+  PerformerSelfScreen: undefined;
   EventAddPerformerScreen: {
     eventID: string;
   };
@@ -286,7 +286,7 @@ export enum CommonStackComponents {
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   eventSearchScreen = 'EventSearchScreen',
-  performerEditScreen = 'PerformerEditScreen',
+  performerSelfScreen = 'PerformerSelfScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
 }
@@ -573,9 +573,9 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         options={{title: 'Search Events'}}
       />
       <Stack.Screen
-        name={CommonStackComponents.performerEditScreen}
-        component={PerformerEditScreen}
-        options={{title: 'Edit Performer'}}
+        name={CommonStackComponents.performerSelfScreen}
+        component={PerformerSelfScreen}
+        options={{title: 'Your Performer Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventAddPerformerScreen}

@@ -11,6 +11,7 @@ interface ListTitleViewProps {
   subtitleVariant?: keyof typeof MD3TypescaleKey;
 }
 
+// @TODO dedupe with BaseWarningView
 export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: ListTitleViewProps) => {
   const {commonStyles} = useStyles();
 
@@ -26,6 +27,9 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: 
       ...commonStyles.alignItemsCenter,
       ...commonStyles.flex,
     },
+    text: {
+      ...commonStyles.onBackground,
+    },
   });
 
   if (!title) {
@@ -36,7 +40,11 @@ export const ListTitleView = ({title, subtitle, subtitleVariant = 'bodySmall'}: 
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <BoldText>{title}</BoldText>
-        {subtitle && <Text variant={subtitleVariant}>{subtitle}</Text>}
+        {subtitle && (
+          <Text style={styles.text} variant={subtitleVariant}>
+            {subtitle}
+          </Text>
+        )}
       </View>
     </View>
   );

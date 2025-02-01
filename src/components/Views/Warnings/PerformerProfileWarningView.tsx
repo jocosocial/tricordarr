@@ -1,11 +1,11 @@
 import React from 'react';
-import {BaseWarningView} from './BaseWarningView.tsx';
+import {ListTitleView} from '../ListTitleView.tsx';
 
 export const PerformerProfileWarningView = () => {
   return (
-    <BaseWarningView
-      title={'This is only for the Event Organizer'}
-      message={'If you want to attend this event this is not for you.'}
+    <ListTitleView
+      title={'This area is only for the Event Organizer'}
+      subtitle={'If you want to attend this event this area is not for you.'}
     />
   );
 };
