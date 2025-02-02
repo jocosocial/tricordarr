@@ -2,6 +2,7 @@ import {useTokenAuthMutation} from '../TokenAuthMutation';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 import {PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
+// @TODO make this self create and move the forevent to a new mutation
 export const usePerformerCreateMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
@@ -12,6 +13,20 @@ export const usePerformerCreateMutation = () => {
 
   const queryHandler = async (props: QueryHandlerProps) => {
     return await apiPost(`/performer/forevent/${props.eventID}`, props.performerData);
+  };
+
+  return useTokenAuthMutation(queryHandler);
+};
+
+export const usePerformerDeleteForEventMutation = () => {
+  const {apiDelete} = useSwiftarrQueryClient();
+
+  interface QueryHandlerProps {
+    eventID: string;
+  }
+
+  const queryHandler = async (props: QueryHandlerProps) => {
+    return await apiDelete(`/performer/forevent/${props.eventID}`);
   };
 
   return useTokenAuthMutation(queryHandler);
