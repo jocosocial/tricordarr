@@ -20,8 +20,27 @@ export const usePerformerCreateMutation = () => {
 export const usePerformerDeleteMutation = () => {
   const {apiDelete} = useSwiftarrQueryClient();
 
-  const queryHandler = async () => {
-    return await apiDelete('/performer/self');
+  interface QueryHandlerProps {
+    performerID?: string;
+  }
+
+  const queryHandler = async ({performerID = 'self'}: QueryHandlerProps) => {
+    return await apiDelete(`/performer/${performerID}`);
+  };
+
+  return useTokenAuthMutation(queryHandler);
+};
+
+export const usePerformerEditMutation = () => {
+  const {apiPost} = useSwiftarrQueryClient();
+
+  interface QueryHandlerProps {
+    performerID?: string;
+    performerData: PerformerUploadData;
+  }
+
+  const queryHandler = async ({performerID = 'self', performerData}: QueryHandlerProps) => {
+    return await apiPost(`/performer/${performerID}`, performerData);
   };
 
   return useTokenAuthMutation(queryHandler);

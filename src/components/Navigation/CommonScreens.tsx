@@ -9,6 +9,7 @@ import {
   FezData,
   ForumData,
   ForumListData,
+  PerformerData,
   PostData,
   ProfilePublicData,
   UserHeader,
@@ -71,6 +72,7 @@ import {PerformerSelfScreen} from '../Screens/Performer/PerformerSelfScreen.tsx'
 import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
 import {PerformerCreateScreen} from '../Screens/Performer/PerformerCreateScreen.tsx';
 import {PerformerType} from '../Queries/Performer/PerformerQueries.ts';
+import {PerformerEditScreen} from '../Screens/Performer/PerformerEditScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -229,6 +231,9 @@ export type CommonStackParamList = {
     performerType: PerformerType;
     eventID: string;
   };
+  PerformerEditScreen: {
+    performerData: PerformerData;
+  };
 };
 
 export enum CommonStackComponents {
@@ -289,6 +294,7 @@ export enum CommonStackComponents {
   performerSelfScreen = 'PerformerSelfScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
+  performerEditScreen = 'PerformerEditScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -586,6 +592,11 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.performerCreateScreen}
         component={PerformerCreateScreen}
         options={{title: 'Create Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerEditScreen}
+        component={PerformerEditScreen}
+        options={{title: 'Edit Performer'}}
       />
     </>
   );

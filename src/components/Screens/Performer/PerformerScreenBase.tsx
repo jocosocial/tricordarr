@@ -81,12 +81,14 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
         isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
-          <APIImage
-            thumbPath={`/image/thumb/${performerData.header.photo}`}
-            fullPath={`/image/full/${performerData.header.photo}`}
-            mode={'image'}
-            style={styles.image}
-          />
+          {performerData.header.photo && (
+            <APIImage
+              thumbPath={`/image/thumb/${performerData.header.photo}`}
+              fullPath={`/image/full/${performerData.header.photo}`}
+              mode={'image'}
+              style={styles.image}
+            />
+          )}
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer} padBottom={false}>
           <Text variant={'headlineMedium'} selectable={true}>

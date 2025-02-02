@@ -25,8 +25,16 @@ export const PerformerSelfScreen = ({navigation}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          {data?.user?.userID === tokenData?.userID && (
-            <Item title={'Edit'} onPress={() => console.log('edit')} iconName={AppIcons.edit} />
+          {data && data.user?.userID === tokenData?.userID && (
+            <Item
+              title={'Edit'}
+              onPress={() =>
+                navigation.push(CommonStackComponents.performerEditScreen, {
+                  performerData: data,
+                })
+              }
+              iconName={AppIcons.edit}
+            />
           )}
           <PerformerActionsMenu performerData={data} />
         </HeaderButtons>

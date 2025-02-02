@@ -26,15 +26,18 @@ export const PerformerProfileDeleteModalView = () => {
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: async () => {
-        const invalidations = PerformerData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries(key);
-        });
-        await Promise.all(invalidations);
-        setModalVisible(false);
+    deleteMutation.mutate(
+      {},
+      {
+        onSuccess: async () => {
+          const invalidations = PerformerData.getCacheKeys().map(key => {
+            return queryClient.invalidateQueries(key);
+          });
+          await Promise.all(invalidations);
+          setModalVisible(false);
+        },
       },
-    });
+    );
   };
 
   const cardActions = (
