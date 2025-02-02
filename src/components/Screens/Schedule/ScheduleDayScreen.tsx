@@ -24,12 +24,10 @@ import {HeaderScheduleYourDayButton} from '../../Buttons/HeaderButtons/HeaderSch
 import {ScheduleFlatList} from '../../Lists/Schedule/ScheduleFlatList.tsx';
 import {TimezoneWarningView} from '../../Views/Warnings/TimezoneWarningView.tsx';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator.tsx';
-import {ScheduleStackParamList} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
-type Props = NativeStackScreenProps<ScheduleStackParamList | OobeStackParamList>;
-export const ScheduleDayScreen = ({navigation}: Props) => {
+type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
+export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
@@ -204,7 +202,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     refreshing;
 
   return (
-    <AppView>
+    <AppView safeEdges={route.params?.oobe ? ['bottom'] : undefined}>
       <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}

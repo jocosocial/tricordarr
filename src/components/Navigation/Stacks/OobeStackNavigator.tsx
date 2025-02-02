@@ -27,7 +27,9 @@ export type OobeStackParamList = CommonStackParamList & {
   OobePermissionsScreen: undefined;
   OobePreregistrationScreen: undefined;
   OobeUserDataScreen: undefined;
-  OobeScheduleDayScreen: undefined;
+  OobeScheduleDayScreen: {
+    oobe?: boolean;
+  };
 };
 
 export enum OobeStackComponents {

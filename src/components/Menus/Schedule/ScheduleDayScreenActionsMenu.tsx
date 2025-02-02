@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {ScheduleStackComponents, useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
@@ -21,7 +21,7 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActio
 
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 
-  const handleNavigation = (component: ScheduleStackComponents | CommonStackComponents) => {
+  const handleNavigation = (component: CommonStackComponents) => {
     navigation.push(component);
     closeMenu();
   };
@@ -37,7 +37,7 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActio
       <Menu.Item
         title={'Settings'}
         leadingIcon={AppIcons.settings}
-        onPress={() => handleNavigation(ScheduleStackComponents.eventSettingsScreen)}
+        onPress={() => handleNavigation(CommonStackComponents.eventSettingsScreen)}
         disabled={!oobeCompleted}
       />
       <Menu.Item
