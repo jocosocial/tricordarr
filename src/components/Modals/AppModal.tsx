@@ -3,6 +3,8 @@ import React from 'react';
 import {useModal} from '../Context/Contexts/ModalContext';
 import {useAppTheme} from '../../styles/Theme';
 import {commonStyles} from '../../styles';
+import {KeyboardAvoidingView} from 'react-native';
+import {Dimensions} from 'react-native';
 
 export const AppModal = () => {
   const {modalVisible, modalContent, setModalVisible, modalOnDismiss, setModalOnDismiss} = useModal();
@@ -11,6 +13,9 @@ export const AppModal = () => {
   const styles = {
     modal: {
       backgroundColor: theme.colors.backdrop,
+      // This only exists because the Report modal can be covered by the keyboard. Consider
+      // making that a screen instead and not bothering with the modal.
+      marginBottom: Dimensions.get('screen').height / 3,
     },
     content: {
       ...commonStyles.marginHorizontal,
@@ -28,7 +33,7 @@ export const AppModal = () => {
 
   return (
     <Modal contentContainerStyle={styles.content} style={styles.modal} visible={modalVisible} onDismiss={onDismiss}>
-      {modalContent}
+      <KeyboardAvoidingView behavior={'height'}>{modalContent}</KeyboardAvoidingView>
     </Modal>
   );
 };
