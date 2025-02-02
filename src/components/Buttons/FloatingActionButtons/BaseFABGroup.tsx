@@ -29,7 +29,6 @@ export const BaseFABGroup = ({
 }: BaseFABProps) => {
   const [state, setState] = useState({open: false});
   const theme = useAppTheme();
-  const {open} = state;
   const {styleDefaults} = useStyles();
   const insets = useSafeAreaInsets();
   const {snackbarPayload} = useSnackbar();
@@ -49,13 +48,13 @@ export const BaseFABGroup = ({
 
   return (
     <FAB.Group
-      open={open}
+      open={state.open}
       visible={true}
       icon={icon ? icon : AppIcons.menu}
       color={color ? color : theme.colors.inverseOnSurface}
       fabStyle={styles.button}
       style={styles.group}
-      label={openLabel ? (open || showLabel ? openLabel : undefined) : undefined}
+      label={openLabel ? (state.open || showLabel ? openLabel : undefined) : undefined}
       actions={actions}
       onStateChange={onStateChange}
     />
