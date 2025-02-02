@@ -21,30 +21,30 @@ interface ContentTextProps {
 
 // ChatGPT wrote this. Needed something to deal with newline characters appearing
 // mid-paragraph. Wish we had pre-commit linting rules, but oh well...
-const cleanMarkdownText = (text: string) => {
-  // Split text into blocks based on double newlines
-  const blocks = text.split(/\n\n/);
-
-  const cleanedBlocks = blocks.map(block => {
-    // Check if the block contains list items
-    if (/^[-*]\s+/m.test(block)) {
-      // For blocks with list items, preserve each line starting with - or *
-      return block
-        .split('\n')
-        .map(line => {
-          // If it's a list item, keep it as is; otherwise, clean it
-          return /^[-*]\s+/.test(line) ? line : line.replace(/\n+/g, ' ');
-        })
-        .join('\n'); // Rejoin with single newline to preserve formatting
-    } else {
-      // For regular paragraphs, remove single newlines
-      return block.replace(/\n+/g, ' ');
-    }
-  });
-
-  // Join the cleaned blocks with double newlines
-  return cleanedBlocks.join('\n\n');
-};
+// const cleanMarkdownText = (text: string) => {
+//   // Split text into blocks based on double newlines
+//   const blocks = text.split(/\n\n/);
+//
+//   const cleanedBlocks = blocks.map(block => {
+//     // Check if the block contains list items
+//     if (/^[-*]\s+/m.test(block)) {
+//       // For blocks with list items, preserve each line starting with - or *
+//       return block
+//         .split('\n')
+//         .map(line => {
+//           // If it's a list item, keep it as is; otherwise, clean it
+//           return /^[-*]\s+/.test(line) ? line : line.replace(/\n+/g, ' ');
+//         })
+//         .join('\n'); // Rejoin with single newline to preserve formatting
+//     } else {
+//       // For regular paragraphs, remove single newlines
+//       return block.replace(/\n+/g, ' ');
+//     }
+//   });
+//
+//   // Join the cleaned blocks with double newlines
+//   return cleanedBlocks.join('\n\n');
+// };
 
 /**
  * Text view to render content with our various filters applied. Filters such as emoji and Markdown.
@@ -145,7 +145,7 @@ export const ContentText = ({
   const markdownIdentifier = '<Markdown>';
   if (forceMarkdown || text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
-    return <Markdown style={markdownStyle}>{cleanMarkdownText(strippedText)}</Markdown>;
+    return <Markdown style={markdownStyle}>{strippedText}</Markdown>;
   }
 
   return (
