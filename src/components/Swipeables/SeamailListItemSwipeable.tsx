@@ -86,8 +86,7 @@ export const SeamailListItemSwipeable = (props: SeamailListItemSwipeableProps) =
   return (
     <BaseSwipeable
       onSwipeableWillOpen={fezMembersData ? () => handleArchive(fezMembersData.isArchived) : undefined}
-      renderRightPanel={renderArchivePanel}
-      friction={0.5}>
+      renderRightPanel={renderArchivePanel}>
       {props.children}
     </BaseSwipeable>
   );
