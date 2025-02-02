@@ -12,6 +12,7 @@ import React from 'react';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 import {TextField} from '../Fields/TextField.tsx';
+import {AvatarImageField} from '../Fields/AvatarImageField.tsx';
 
 interface ShadowPerformerFormProps<TData = PerformerUploadData> {
   onSubmit: (values: TData, helpers: FormikHelpers<TData>) => void;
@@ -42,6 +43,7 @@ export const ShadowPerformerForm = ({initialValues, onSubmit, buttonText = 'Crea
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
+          <AvatarImageField<PerformerUploadData> name={'photo'} imageData={initialValues.photo} />
           <TextField name={'name'} label={'Name'} autoCapitalize={'words'} />
           <TextField name={'pronouns'} label={'Pronouns'} autoCapitalize={'none'} />
           <TextField name={'organization'} label={'Organization'} autoCapitalize={'words'} />
