@@ -304,10 +304,13 @@ export const useRefreshingDate = (minutes: number = 5) => {
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      // Trigger a state refresh every 15 minutes
-      setLastRefresh(new Date());
-    }, minutes * 60 * 1000); // 15 minutes in milliseconds
+    const intervalId = setInterval(
+      () => {
+        // Trigger a state refresh every 15 minutes
+        setLastRefresh(new Date());
+      },
+      minutes * 60 * 1000,
+    ); // 15 minutes in milliseconds
 
     // Clear the interval on component unmount
     return () => clearInterval(intervalId);
@@ -319,6 +322,7 @@ export const useRefreshingDate = (minutes: number = 5) => {
 /**
  * Returns a Date() that pretends like we're on the sailing. Basically takes
  * "today" and transposes it to the sailing week based on the cruise startDate.
+ * This does not do anything with the current time.
  * @param startDate Start Date() of the cruise.
  * @param adjustedCruiseDayToday Day index of the cruise.
  */

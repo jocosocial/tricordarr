@@ -78,7 +78,7 @@ export const LfgCreateScreenBase = ({
     maxCapacity: String(maxCapacity),
     info: info,
     startTime: {
-      hours: getApparentCruiseDate(startDate, adjustedCruiseDayToday).getHours() + 1,
+      hours: new Date().getHours() + 1,
       minutes: 0,
     },
     initialUsers: [],
