@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../styles/Theme';
-import {useFormikContext} from 'formik';
+import {useField, useFormikContext} from 'formik';
 
 interface PickerFieldProps<TData> {
   name: string;
@@ -37,11 +37,13 @@ export const PickerField = <TData,>({
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
   const {setFieldValue, isSubmitting} = useFormikContext();
+  const [_, meta] = useField<TData>(name);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleSelect = (newValue: TData | undefined) => {
+    console.log(`[PickerField.tsx] selecting ${newValue}`);
     setFieldValue(name, newValue);
     closeMenu();
     if (onSelect) {
@@ -54,12 +56,14 @@ export const PickerField = <TData,>({
       ...commonStyles.roundedBorder,
       ...commonStyles.flex,
       minHeight: 48,
+      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
     },
     text: {
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
       ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : undefined),
+      color: meta.error ? theme.colors.error : theme.colors.onBackground,
     },
     content: {
       ...commonStyles.flexRow,
@@ -99,6 +103,7 @@ export const PickerField = <TData,>({
               </HelperText>
             </View>
           )}
+          {meta.error && <HelperText type={'error'}>{meta.error}</HelperText>}
         </View>
       }>
       {choices.map((item, index) => {

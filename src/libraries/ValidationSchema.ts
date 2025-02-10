@@ -30,7 +30,8 @@ export const NumberValidation = Yup.string()
   .matches(/^[0-9]+$/, 'Must be an integer.')
   .required('Integer required');
 
-export const FezTypeValidation = Yup.string().oneOf(Object.values(typeof FezType), 'Invalid type selected');
+// Object.values(FezType) also brings in the namespace functions which makes this very sad.
+export const LFGTypeValidation = Yup.mixed<FezType>().oneOf(FezType.lfgTypes, 'Invalid LFG type selected');
 
 export const DateValidation = Yup.date().required('Date is required');
 
