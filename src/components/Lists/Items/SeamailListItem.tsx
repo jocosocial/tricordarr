@@ -8,7 +8,6 @@ import {AppIcon} from '../../Icons/AppIcon';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {CommonStackComponents} from '../../Navigation/CommonScreens';
 import {StyleSheet} from 'react-native';
-import {SeamailListItemSwipeable} from '../../Swipeables/SeamailListItemSwipeable.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
@@ -54,19 +53,17 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   };
 
   return (
-    <SeamailListItemSwipeable fez={fez}>
-      <List.Item
-        style={styles.item}
-        title={fez.title}
-        titleStyle={styles.title}
-        titleNumberOfLines={0}
-        description={description}
-        descriptionStyle={styles.description}
-        onPress={onPress}
-        left={getAvatar}
-        right={getRight}
-      />
-    </SeamailListItemSwipeable>
+    <List.Item
+      style={styles.item}
+      title={fez.title}
+      titleStyle={styles.title}
+      titleNumberOfLines={0}
+      description={description}
+      descriptionStyle={styles.description}
+      onPress={onPress}
+      left={getAvatar}
+      right={getRight}
+    />
   );
 };
 

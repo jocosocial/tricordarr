@@ -287,8 +287,6 @@ export interface MembersOnlyData {
   posts?: [FezPostData];
   /// Whether user has muted the fez.
   isMuted: boolean;
-  /// Whether the user has archived the fez.
-  isArchived: boolean;
 }
 
 export interface FezData {

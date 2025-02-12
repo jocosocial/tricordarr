@@ -3,7 +3,6 @@ import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../libraries/Enums/FezType';
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
 import {FezListEndpoints} from '../../../libraries/Types';
-import lfgTypes = FezType.lfgTypes;
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 interface FezQueryProps {
@@ -31,7 +30,6 @@ interface FezListQueryOptions {
   search?: string;
   matchID?: string;
   forUser?: keyof typeof PrivilegedUserAccounts;
-  archived?: boolean;
 }
 
 export const useFezListQuery = ({
@@ -45,7 +43,6 @@ export const useFezListQuery = ({
   search,
   matchID,
   forUser,
-  archived,
   lfgTypesOnly,
 }: FezListQueryOptions) => {
   const queryParams = {
@@ -61,7 +58,6 @@ export const useFezListQuery = ({
     ...(search && {search: search}),
     ...(matchID && {matchID: matchID}),
     ...(forUser !== undefined && {foruser: forUser.toLowerCase()}),
-    ...(archived !== undefined && {archived: archived}),
   };
   return useTokenAuthPaginationQuery<FezListData>(`/fez/${endpoint}`, options, queryParams);
 };
@@ -99,7 +95,6 @@ export const useSeamailListQuery = ({
   search,
   matchID,
   forUser,
-  archived,
 }: FezListQueryOptions) => {
   return useFezListQuery({
     cruiseDay,
@@ -111,7 +106,6 @@ export const useSeamailListQuery = ({
     search,
     matchID,
     forUser,
-    archived,
   });
 };
 

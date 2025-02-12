@@ -12,10 +12,6 @@ export const SeamailHelpScreen = () => {
         <HelpTopicView>
           Seamail: It's like email, but at sea. Use them to send private messages to other users.
         </HelpTopicView>
-        <HelpTopicView>
-          You can swipe a Seamail conversation to archive it. This does nothing other than make your list empty. Any
-          posts to the conversation will automatically un-archive it.
-        </HelpTopicView>
         <HelpChapterTitleView title={'Types'} />
         <HelpTopicView title={'Open'}>
           Allows you add or remove users later on. Added users will be able to read all past history. This is the
