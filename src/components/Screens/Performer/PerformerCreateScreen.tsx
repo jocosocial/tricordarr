@@ -8,13 +8,13 @@ import {EventData, PerformerData, PerformerUploadData} from '../../../libraries/
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {usePerformerCreateMutation} from '../../Queries/Performer/PerformerMutations.ts';
+import {usePerformerUpsertMutation} from '../../Queries/Performer/PerformerMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerCreateScreen>;
 
 export const PerformerCreateScreen = ({route, navigation}: Props) => {
-  const performerMutation = usePerformerCreateMutation();
+  const performerMutation = usePerformerUpsertMutation();
   const queryClient = useQueryClient();
 
   const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {

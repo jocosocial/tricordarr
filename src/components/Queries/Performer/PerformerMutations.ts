@@ -2,8 +2,7 @@ import {useTokenAuthMutation} from '../TokenAuthMutation';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 import {PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
 
-// @TODO make this self create and move the forevent to a new mutation
-export const usePerformerCreateMutation = () => {
+export const usePerformerUpsertMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();
 
   interface QueryHandlerProps {
@@ -39,23 +38,9 @@ export const usePerformerDeleteMutation = () => {
     performerID?: string;
   }
 
+  // Deleting self is a user thing. Deleting by ID is a Moderator thing.
   const queryHandler = async ({performerID = 'self'}: QueryHandlerProps) => {
     return await apiDelete(`/performer/${performerID}`);
-  };
-
-  return useTokenAuthMutation(queryHandler);
-};
-
-export const usePerformerEditMutation = () => {
-  const {apiPost} = useSwiftarrQueryClient();
-
-  interface QueryHandlerProps {
-    performerID?: string;
-    performerData: PerformerUploadData;
-  }
-
-  const queryHandler = async ({performerID = 'self', performerData}: QueryHandlerProps) => {
-    return await apiPost(`/performer/${performerID}`, performerData);
   };
 
   return useTokenAuthMutation(queryHandler);

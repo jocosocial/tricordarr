@@ -19,16 +19,18 @@ export const PerformerScreen = ({route, navigation}: Props) => {
   const {data: profilePublicData} = useUserProfileQuery();
 
   const getHeaderButtons = useCallback(() => {
+    const eventID = route.params.eventID;
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          {data && profilePublicData && profilePublicData.header.userID === data?.user?.userID && (
+          {data && eventID && profilePublicData && profilePublicData.header.userID === data?.user?.userID && (
             <Item
               title={'Edit'}
               iconName={AppIcons.edit}
               onPress={() =>
                 navigation.push(CommonStackComponents.performerEditScreen, {
                   performerData: data,
+                  eventID: eventID,
                 })
               }
             />
@@ -37,13 +39,11 @@ export const PerformerScreen = ({route, navigation}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [data, navigation, profilePublicData]);
+  }, [data, navigation, profilePublicData, route]);
 
   const onRefresh = async () => {
     await refetch();
   };
-
-  console.log(data);
 
   useEffect(() => {
     navigation.setOptions({

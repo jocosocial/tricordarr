@@ -2,8 +2,8 @@ import React from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
-import {usePerformerEditMutation} from '../../Queries/Performer/PerformerMutations.ts';
-import {PerformerData, PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {usePerformerUpsertMutation} from '../../Queries/Performer/PerformerMutations.ts';
+import {EventData, PerformerData, PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import {useQueryClient} from '@tanstack/react-query';
 import {ShadowPerformerForm} from '../../Forms/Performer/ShadowPerformerForm.tsx';
@@ -13,19 +13,26 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.performerEditScreen>;
 
 export const PerformerEditScreen = ({navigation, route}: Props) => {
-  const performerMutation = usePerformerEditMutation();
+  const performerMutation = usePerformerUpsertMutation();
   const queryClient = useQueryClient();
 
   const onSubmit = (values: PerformerUploadData, helpers: FormikHelpers<PerformerUploadData>) => {
     performerMutation.mutate(
       {
         performerData: values,
+        eventID: route.params.eventID,
       },
       {
         onSuccess: async () => {
-          const invalidations = PerformerData.getCacheKeys(route.params.performerData.header.id).map(key => {
-            return queryClient.invalidateQueries(key);
-          });
+          const invalidations = PerformerData.getCacheKeys(route.params.performerData.header.id)
+            .map(key => {
+              return queryClient.invalidateQueries(key);
+            })
+            .concat(
+              EventData.getCacheKeys(route.params.eventID).map(key => {
+                return queryClient.invalidateQueries(key);
+              }),
+            );
           await Promise.all(invalidations);
           navigation.goBack();
         },

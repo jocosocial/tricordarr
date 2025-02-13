@@ -4,7 +4,7 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
 import {View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
 import React from 'react';
-import {PerformerData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, PerformerData} from '../../../libraries/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {useQueryClient} from '@tanstack/react-query';
@@ -14,7 +14,9 @@ const ModalContent = () => {
   const {commonStyles} = useStyles();
   return (
     <>
-      <Text style={[commonStyles.marginBottomSmall]}>Confirm delete performer profile? There is no recovery.</Text>
+      <Text style={[commonStyles.marginBottomSmall]}>
+        Deleting your performer profile deletes it for all events. There is no recovery. Confirm?
+      </Text>
     </>
   );
 };
@@ -30,9 +32,15 @@ export const PerformerProfileDeleteModalView = () => {
       {},
       {
         onSuccess: async () => {
-          const invalidations = PerformerData.getCacheKeys().map(key => {
-            return queryClient.invalidateQueries(key);
-          });
+          const invalidations = PerformerData.getCacheKeys()
+            .map(key => {
+              return queryClient.invalidateQueries(key);
+            })
+            .concat(
+              EventData.getCacheKeys().map(key => {
+                return queryClient.invalidateQueries(key);
+              }),
+            );
           await Promise.all(invalidations);
           setModalVisible(false);
         },

@@ -68,7 +68,6 @@ import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
-import {PerformerSelfScreen} from '../Screens/Performer/PerformerSelfScreen.tsx';
 import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
 import {PerformerCreateScreen} from '../Screens/Performer/PerformerCreateScreen.tsx';
 import {PerformerType} from '../Queries/Performer/PerformerQueries.ts';
@@ -213,6 +212,7 @@ export type CommonStackParamList = {
   SiteUILinkScreen: undefined;
   PerformerScreen: {
     id: string;
+    eventID?: string;
   };
   PerformerHelpScreen: undefined;
   SiteUIHelpScreen: ParamsWithOobe;
@@ -224,7 +224,6 @@ export type CommonStackParamList = {
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
-  PerformerSelfScreen: undefined;
   EventAddPerformerScreen: {
     eventID: string;
   };
@@ -234,6 +233,7 @@ export type CommonStackParamList = {
   };
   PerformerEditScreen: {
     performerData: PerformerData;
+    eventID: string;
   };
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
@@ -295,7 +295,6 @@ export enum CommonStackComponents {
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   eventSearchScreen = 'EventSearchScreen',
-  performerSelfScreen = 'PerformerSelfScreen',
   eventAddPerformerScreen = 'EventAddPerformerScreen',
   performerCreateScreen = 'PerformerCreateScreen',
   performerEditScreen = 'PerformerEditScreen',
@@ -586,11 +585,6 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.eventSearchScreen}
         component={EventSearchScreen}
         options={{title: 'Search Events'}}
-      />
-      <Stack.Screen
-        name={CommonStackComponents.performerSelfScreen}
-        component={PerformerSelfScreen}
-        options={{title: 'Your Performer Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.eventAddPerformerScreen}
