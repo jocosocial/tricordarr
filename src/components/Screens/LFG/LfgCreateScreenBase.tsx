@@ -58,7 +58,7 @@ export const LfgCreateScreenBase = ({
           navigation.replace(CommonStackComponents.lfgScreen, {
             fezID: response.data.fezID,
           });
-          await queryClient.invalidateQueries(['/notification/global'])
+          await queryClient.invalidateQueries(['/notification/global']);
         },
         onSettled: () => {
           helpers.setSubmitting(false);
@@ -78,7 +78,7 @@ export const LfgCreateScreenBase = ({
     maxCapacity: String(maxCapacity),
     info: info,
     startTime: {
-      hours: getApparentCruiseDate(startDate, adjustedCruiseDayToday).getHours() + 1,
+      hours: new Date().getHours() + 1,
       minutes: 0,
     },
     initialUsers: [],

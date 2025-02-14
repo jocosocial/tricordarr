@@ -89,18 +89,19 @@ function App(): React.JSX.Element {
    * SwiftarrQueryClientProvider requires ErrorHandlerProvider for global error callback.
    * LoadingProvider requires SafeAreaProvider since it's the first usage of AppView.
    * SnackbarProvider shouldn't need anything.
-   * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider
+   * TwitarrProvider needs ConfigProvider and SwiftarrQueryClientProvider.
+   * AppNavigationThemeProvider should be within SafeAreaProvider.
    */
   return (
-    <GestureHandlerRootView>
-      <ConfigProvider>
-        <AppNavigationThemeProvider>
-          <StyleProvider>
-            <ErrorHandlerProvider>
-              <SnackbarProvider>
-                <AuthProvider>
-                  <SwiftarrQueryClientProvider>
-                    <SafeAreaProvider>
+    <SafeAreaProvider>
+      <GestureHandlerRootView>
+        <ConfigProvider>
+          <AppNavigationThemeProvider>
+            <StyleProvider>
+              <ErrorHandlerProvider>
+                <SnackbarProvider>
+                  <AuthProvider>
+                    <SwiftarrQueryClientProvider>
                       <LoadingProvider>
                         <CriticalErrorProvider>
                           <PrivilegeProvider>
@@ -134,15 +135,15 @@ function App(): React.JSX.Element {
                           </PrivilegeProvider>
                         </CriticalErrorProvider>
                       </LoadingProvider>
-                    </SafeAreaProvider>
-                  </SwiftarrQueryClientProvider>
-                </AuthProvider>
-              </SnackbarProvider>
-            </ErrorHandlerProvider>
-          </StyleProvider>
-        </AppNavigationThemeProvider>
-      </ConfigProvider>
-    </GestureHandlerRootView>
+                    </SwiftarrQueryClientProvider>
+                  </AuthProvider>
+                </SnackbarProvider>
+              </ErrorHandlerProvider>
+            </StyleProvider>
+          </AppNavigationThemeProvider>
+        </ConfigProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

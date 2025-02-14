@@ -18,6 +18,10 @@ import {RefreshControl} from 'react-native';
 import {ServerChoices} from '../../../libraries/Network/ServerChoices.ts';
 import {useErrorHandler} from '../../Context/Contexts/ErrorHandlerContext.ts';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {CacheManager} from '@georstat/react-native-image-cache';
+import {useQueryClient} from '@tanstack/react-query';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
@@ -27,9 +31,14 @@ export const OobeServerScreen = ({navigation}: Props) => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
   const getHeaderTitle = useCallback(() => <OobeServerHeaderTitle />, []);
   const {hasUnsavedWork} = useErrorHandler();
+  const {clearPrivileges} = usePrivilege();
   const {serverUrl} = useSwiftarrQueryClient();
+  const queryClient = useQueryClient();
+  const {setSnackbarPayload} = useSnackbar();
 
-  const onSave = (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
+  const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
+    const oldServerUrl = serverUrl;
+    await queryClient.cancelQueries(['/client/health']);
     if (preRegistrationMode) {
       updateAppConfig({
         ...appConfig,
@@ -49,6 +58,12 @@ export const OobeServerScreen = ({navigation}: Props) => {
         },
       }),
     );
+    if (oldServerUrl !== values.serverUrl) {
+      clearPrivileges();
+      queryClient.clear();
+      await CacheManager.clearCache();
+    }
+    setSnackbarPayload(undefined);
   };
 
   useEffect(() => {

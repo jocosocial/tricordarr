@@ -139,3 +139,8 @@ export interface SnackbarPayload {
   style?: StyleProp<ViewStyle>;
   elevation?: 0 | 1 | 2 | 3 | 4 | 5 | Animated.Value;
 }
+
+// This is fucking stupid
+export interface ParamsWithOobe {
+  oobe?: boolean;
+}

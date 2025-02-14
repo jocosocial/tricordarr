@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import {TextField} from './Fields/TextField';
 import {
   DateValidation,
-  FezTypeValidation,
+  LFGTypeValidation,
   InfoStringValidation,
   NumberValidation,
 } from '../../libraries/ValidationSchema';
@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
   info: InfoStringValidation,
   minCapacity: NumberValidation.min(1).max(3),
   maxCapacity: NumberValidation.min(1).max(3),
-  fezType: FezTypeValidation,
+  fezType: LFGTypeValidation,
   startDate: DateValidation,
 });
 

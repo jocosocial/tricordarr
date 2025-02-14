@@ -14,7 +14,6 @@ import {MinorActionListItem} from '../../Lists/Items/MinorActionListItem';
 import {AppIcons} from '../../../libraries/Enums/Icons';
 import {useModal} from '../../Context/Contexts/ModalContext';
 import {LogoutDeviceModalView} from '../../Views/Modals/LogoutModal';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
@@ -24,7 +23,6 @@ export const OobeAccountScreen = ({navigation}: Props) => {
   const {isLoggedIn, tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: !!tokenData});
   const {setModalContent, setModalVisible} = useModal();
-  const {preRegistrationMode} = useConfig();
 
   const handleLogoutModal = (allDevices = false) => {
     setModalContent(<LogoutDeviceModalView allDevices={allDevices} />);
@@ -83,10 +81,26 @@ export const OobeAccountScreen = ({navigation}: Props) => {
           </PaddedContentView>
         </ScrollingContentView>
       )}
+      {isLoggedIn && !profilePublicData && (
+        <ScrollingContentView>
+          <PaddedContentView>
+            <Text>Something went wrong. Try logging out and logging in again.</Text>
+          </PaddedContentView>
+          <PaddedContentView padSides={false}>
+            <ListSection>
+              <MinorActionListItem
+                title={'Logout this device'}
+                icon={AppIcons.logout}
+                onPress={() => handleLogoutModal()}
+              />
+            </ListSection>
+          </PaddedContentView>
+        </ScrollingContentView>
+      )}
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightOnPress={() => navigation.push(OobeStackComponents.oobePermissionsScreen)}
-        rightDisabled={!isLoggedIn}
+        rightDisabled={!(isLoggedIn && profilePublicData)}
       />
     </AppView>
   );

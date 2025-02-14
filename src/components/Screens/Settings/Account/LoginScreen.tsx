@@ -20,23 +20,23 @@ export const LoginScreen = () => {
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
   const {appConfig, updateAppConfig, oobeCompleted, preRegistrationMode} = useConfig();
-  const {refetch: refetchClientConfig, data: clientConfigData} = useClientConfigQuery({enabled: false});
+  const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
   const {serverUrl} = useSwiftarrQueryClient();
 
   const updateClientConfig = useCallback(async () => {
-    await refetchClientConfig();
-    if (clientConfigData) {
-      const [year, month, day] = clientConfigData.spec.cruiseStartDate.split('-').map(Number);
+    const response = await refetchClientConfig();
+    if (response.data) {
+      const [year, month, day] = response.data.spec.cruiseStartDate.split('-').map(Number);
       updateAppConfig({
         ...appConfig,
-        cruiseLength: clientConfigData.spec.cruiseLength,
+        cruiseLength: response.data.spec.cruiseLength,
         cruiseStartDate: new Date(year, month - 1, day),
-        oobeExpectedVersion: clientConfigData.spec.oobeVersion,
-        portTimeZoneID: clientConfigData.spec.portTimeZoneID,
-        schedBaseUrl: clientConfigData.spec.schedBaseUrl,
+        oobeExpectedVersion: response.data.spec.oobeVersion,
+        portTimeZoneID: response.data.spec.portTimeZoneID,
+        schedBaseUrl: response.data.spec.schedBaseUrl,
       });
     }
-  }, [appConfig, clientConfigData, refetchClientConfig, updateAppConfig]);
+  }, [appConfig, refetchClientConfig, updateAppConfig]);
 
   const onSubmit = useCallback(
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {

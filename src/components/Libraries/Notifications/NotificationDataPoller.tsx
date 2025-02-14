@@ -9,15 +9,18 @@ export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
   const {appConfig, oobeCompleted} = useConfig();
   const enablePolling = oobeCompleted && isLoggedIn && !isLoading && appConfig.enableNotificationPolling;
-  const {} = useUserNotificationDataQuery({
+  const {data} = useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
     enabled: enablePolling,
   });
   const appState = useAppState();
   const queryClient = useQueryClient();
 
-  const logMessage = enablePolling ? 'Polling enabled.' : 'Polling disabled or conditions not met.';
-  console.log('[NotificationDataPoller.tsx]', logMessage);
+  if (!enablePolling) {
+    console.log('[NotificationDataPoller.tsx] Polling disabled or conditions not met.');
+  } else {
+    console.log(`[NotificationDataPoller.tsx] Polling enabled, response serverTime is ${data?.serverTime}`);
+  }
 
   // When the app loads (either from nothing or from background) trigger a refresh of the notification
   // data endpoint.

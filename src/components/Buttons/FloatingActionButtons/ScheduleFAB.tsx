@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction';
 import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ScheduleStackComponents, useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {BaseFABGroup} from './BaseFABGroup';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
@@ -25,7 +25,7 @@ export const ScheduleFAB = (props: ScheduleFABProps) => {
     FabGroupAction({
       icon: AppIcons.personalEvent,
       label: 'Personal Events',
-      onPress: () => navigation.push(ScheduleStackComponents.schedulePrivateEventsScreen),
+      onPress: () => navigation.push(CommonStackComponents.schedulePrivateEventsScreen),
     }),
   ];
 

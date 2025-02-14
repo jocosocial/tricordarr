@@ -188,16 +188,18 @@ export const ScheduleItemScreenBase = ({
                     description={FezType.getLabel(eventData.fezType)}
                     title={'Type'}
                   />
-                  <DataFieldListItem
-                    title={'Hosted By'}
-                    icon={AppIcons.user}
-                    onPress={() =>
-                      navigation.push(CommonStackComponents.userProfileScreen, {
-                        userID: eventData.owner.userID,
-                      })
-                    }
-                    description={getUserBylineString(eventData.owner, true, true)}
-                  />
+                  {eventData.fezType !== FezType.personalEvent && (
+                    <DataFieldListItem
+                      title={'Hosted By'}
+                      icon={AppIcons.user}
+                      onPress={() =>
+                        navigation.push(CommonStackComponents.userProfileScreen, {
+                          userID: eventData.owner.userID,
+                        })
+                      }
+                      description={getUserBylineString(eventData.owner, true, true)}
+                    />
+                  )}
                 </>
               )}
             </ListSection>

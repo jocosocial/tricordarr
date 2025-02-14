@@ -27,7 +27,7 @@ import {AppIcons} from '../../../libraries/Enums/Icons.ts';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
-export const ScheduleDayScreen = ({navigation}: Props) => {
+export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
@@ -202,7 +202,7 @@ export const ScheduleDayScreen = ({navigation}: Props) => {
     refreshing;
 
   return (
-    <AppView>
+    <AppView safeEdges={route.params?.oobe ? ['bottom'] : undefined}>
       <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}

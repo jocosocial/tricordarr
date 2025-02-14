@@ -9,6 +9,7 @@ import {
   FezData,
   ForumData,
   ForumListData,
+  PerformerData,
   PostData,
   ProfilePublicData,
   UserHeader,
@@ -67,6 +68,15 @@ import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
 import {FezType} from '../../libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
+import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
+import {PerformerCreateScreen} from '../Screens/Performer/PerformerCreateScreen.tsx';
+import {PerformerType} from '../Queries/Performer/PerformerQueries.ts';
+import {PerformerEditScreen} from '../Screens/Performer/PerformerEditScreen.tsx';
+import {EventSettingsScreen} from '../Screens/Event/EventSettingsScreen.tsx';
+import {ScheduleDayScreen} from '../Screens/Schedule/ScheduleDayScreen.tsx';
+import {SchedulePrivateEventsScreen} from '../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
+import {useDrawer} from '../Context/Contexts/DrawerContext.ts';
+import {ParamsWithOobe} from '../../libraries/Types';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -186,9 +196,7 @@ export type CommonStackParamList = {
   PersonalEventCreateScreen: {
     cruiseDay?: number;
   };
-  UserProfileHelpScreen: {
-    oobe?: boolean;
-  };
+  UserProfileHelpScreen: ParamsWithOobe;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -204,11 +212,10 @@ export type CommonStackParamList = {
   SiteUILinkScreen: undefined;
   PerformerScreen: {
     id: string;
+    eventID?: string;
   };
   PerformerHelpScreen: undefined;
-  SiteUIHelpScreen: {
-    oobe?: boolean;
-  };
+  SiteUIHelpScreen: ParamsWithOobe;
   LfgHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
@@ -217,6 +224,20 @@ export type CommonStackParamList = {
   };
   ScheduleImportScreen: undefined;
   EventSearchScreen: undefined;
+  EventAddPerformerScreen: {
+    eventID: string;
+  };
+  PerformerCreateScreen: {
+    performerType: PerformerType;
+    eventID: string;
+  };
+  PerformerEditScreen: {
+    performerData: PerformerData;
+    eventID: string;
+  };
+  EventSettingsScreen: undefined;
+  SchedulePrivateEventsScreen: undefined;
+  ScheduleDayScreen: ParamsWithOobe;
 };
 
 export enum CommonStackComponents {
@@ -274,6 +295,12 @@ export enum CommonStackComponents {
   privateEventChatScreen = 'PrivateEventChatScreen',
   scheduleImportScreen = 'ScheduleImportScreen',
   eventSearchScreen = 'EventSearchScreen',
+  eventAddPerformerScreen = 'EventAddPerformerScreen',
+  performerCreateScreen = 'PerformerCreateScreen',
+  performerEditScreen = 'PerformerEditScreen',
+  eventSettingsScreen = 'EventSettingsScreen',
+  schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
+  scheduleDayScreen = 'ScheduleDayScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -284,6 +311,8 @@ export const CommonScreens = (Stack: typeof MainStack) => {
   const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
   const isPersonalEventDisabled = getIsDisabled(SwiftarrFeature.personalevents);
+  const isScheduleDisabled = getIsDisabled(SwiftarrFeature.schedule);
+  const {getLeftMainHeaderButtons} = useDrawer();
 
   return (
     <>
@@ -556,6 +585,39 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         name={CommonStackComponents.eventSearchScreen}
         component={EventSearchScreen}
         options={{title: 'Search Events'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventAddPerformerScreen}
+        component={EventAddPerformerScreen}
+        options={{title: 'Add Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerCreateScreen}
+        component={PerformerCreateScreen}
+        options={{title: 'Create Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.performerEditScreen}
+        component={PerformerEditScreen}
+        options={{title: 'Edit Performer'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.eventSettingsScreen}
+        component={EventSettingsScreen}
+        options={{title: 'Schedule Settings'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleDayScreen}
+        component={isScheduleDisabled ? DisabledView : ScheduleDayScreen}
+        options={{
+          headerLeft: getLeftMainHeaderButtons,
+          title: 'Schedule',
+        }}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.schedulePrivateEventsScreen}
+        component={isScheduleDisabled ? DisabledView : SchedulePrivateEventsScreen}
+        options={{title: 'Personal Events'}}
       />
     </>
   );
