@@ -20,6 +20,7 @@ import {getUserBylineString} from '../../Text/Tags/UserBylineTag.tsx';
 import {Badge, Text} from 'react-native-paper';
 import pluralize from 'pluralize';
 import {LFGMembershipView} from '../../Views/Schedule/LFGMembershipView.tsx';
+import {ContentText} from '../../Text/ContentText.tsx';
 
 interface ScheduleItemScreenBaseProps {
   refreshing?: boolean;
@@ -95,6 +96,15 @@ export const ScheduleItemScreenBase = ({
     return <LoadingView />;
   }
 
+  const getInfoContent = () => {
+    if ('fezID' in eventData) {
+      return <ContentText text={eventData.info} />;
+    } else if ('eventID' in eventData) {
+      return <ContentText text={eventData.description} />;
+    }
+    return null;
+  };
+
   return (
     <AppView>
       {'fezID' in eventData && eventData.cancelled && (
@@ -124,11 +134,7 @@ export const ScheduleItemScreenBase = ({
                 <>
                   <DataFieldListItem icon={AppIcons.type} description={eventData.eventType} title={'Type'} />
                   {eventData.description && (
-                    <DataFieldListItem
-                      icon={AppIcons.description}
-                      description={eventData.description}
-                      title={'Description'}
-                    />
+                    <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
                   )}
                   {eventData.performers.length !== 0 && <EventPerformerListItem performers={eventData.performers} />}
                 </>
@@ -161,7 +167,7 @@ export const ScheduleItemScreenBase = ({
                       }
                     />
                   )}
-                  <DataFieldListItem icon={AppIcons.description} description={eventData.info} title={'Description'} />
+                  <DataFieldListItem icon={AppIcons.description} description={getInfoContent} title={'Description'} />
                   {eventData.fezType === FezType.privateEvent && (
                     <UserChipsListItem
                       users={eventData.members?.participants}
