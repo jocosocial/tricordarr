@@ -13,4 +13,5 @@ export const CustomEmoji = {
   ':tropical-drink:': require('../../../assets/emoji/small/tropical-drink.png'),
   ':wangwang:': require('../../../assets/emoji/small/wangwang.png'),
   ':zombie:': require('../../../assets/emoji/small/zombie.png'),
+  ':mbta:': require('../../../assets/emoji/small/mbta.png'),
 };

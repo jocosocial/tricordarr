@@ -27,6 +27,7 @@ import {useClientConfigQuery} from '../../Queries/Client/ClientQueries.ts';
 import {NotificationsMenu} from '../../Menus/NotificationsMenu.tsx';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
@@ -44,6 +45,7 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchBlocks} = useUserBlocksQuery({enabled: false});
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: false});
   const {refetch: refetchClient} = useClientConfigQuery({enabled: false});
+  const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
   const [refreshing, setRefreshing] = useState(false);
@@ -52,7 +54,7 @@ export const TodayScreen = ({navigation}: Props) => {
     setRefreshing(true);
     await Promise.all([refetchUserNotificationData(), refetchThemes(), refetchAnnouncements(), refetchClient()]);
     if (isLoggedIn) {
-      await Promise.all([refetchFavorites(), refetchBlocks(), refetchMutes()]);
+      await Promise.all([refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes()]);
     }
     setRefreshing(false);
   };
