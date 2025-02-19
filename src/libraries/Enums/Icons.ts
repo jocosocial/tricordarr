@@ -126,4 +126,5 @@ export enum AppIcons {
   performer = 'piano',
   official = 'shield-check',
   archive = 'archive',
+  hunts = 'puzzle',
 }

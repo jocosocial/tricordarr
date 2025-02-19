@@ -122,6 +122,11 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.dailyTheme}
                 onPress={() => handleDrawerNav('tricordarr://dailyThemes')}
               />
+              <PaperDrawer.Item
+                label={'Puzzle Hunts'}
+                icon={AppIcons.hunts}
+                onPress={() => handleDrawerNav('tricordarr://hunts')}
+              />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>
               <PaperDrawer.Item
