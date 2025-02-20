@@ -89,6 +89,7 @@ export const PhotostreamImageSelectionView = () => {
         takeImage={takeImage}
         clearImage={clearImage}
         pickImage={pickImage}
+        disableAttach={true}
         style={commonStyles.justifyCenter}
         disableDelete={!values.image}
       />
