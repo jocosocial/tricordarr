@@ -54,6 +54,7 @@ const deepLinksConf: DeepLinksConfig<RootStackParamList> = {
             PerformerListScreen: 'performers',
             MainTimeZoneScreen: 'time',
             BoardgameListScreen: 'boardgames',
+            DiningScreen: 'dining',
           },
         },
         SeamailTab: {

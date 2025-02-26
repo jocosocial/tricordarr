@@ -5,6 +5,7 @@ import {NotificationTypeData} from './Structs/SocketStructs';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from './Network/APIClient';
 import {ForumSort, ForumSortDirection} from './Enums/ForumSortFilter.ts';
 import {LfgStackComponents} from '../components/Navigation/Stacks/LFGStackNavigator.tsx';
+import {HALShips} from './Enums/Navigator.ts';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;
@@ -45,6 +46,19 @@ export interface UserPreferences {
   highlightForumAlertWords: boolean;
 }
 
+export interface NavigatorAPIConfiguration {
+  baseUrl: string;
+  apiBase: string;
+  contentRoot: string;
+}
+
+export interface NavigatorConfiguration {
+  cloud: NavigatorAPIConfiguration;
+  ship: NavigatorAPIConfiguration;
+  shipCode: keyof typeof HALShips;
+  requestTimeout: number;
+}
+
 export interface AppConfig {
   serverUrl: string;
   urlPrefix: string;
@@ -72,6 +86,7 @@ export interface AppConfig {
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
   preRegistrationEndDate: Date;
+  navigatorConfiguration: NavigatorConfiguration;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -147,6 +162,20 @@ const defaultAppConfig: AppConfig = {
   markReadCancelPush: true,
   preRegistrationServerUrl: '',
   preRegistrationEndDate: new Date(2023, 3, 5),
+  navigatorConfiguration: {
+    cloud: {
+      baseUrl: 'https://moapp-navigator.hollandamerica.com',
+      apiBase: '/ds-public/api',
+      contentRoot: '/content',
+    },
+    ship: {
+      baseUrl: 'https://navigator.hollandamerica.com',
+      apiBase: '/hal-ds-ship/api',
+      contentRoot: '/content',
+    },
+    shipCode: 'na',
+    requestTimeout: 10000,
+  },
 };
 
 /**

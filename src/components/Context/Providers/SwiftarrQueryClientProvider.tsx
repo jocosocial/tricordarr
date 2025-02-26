@@ -73,6 +73,23 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
     return client;
   }, [appConfig.apiClientConfig.requestTimeout, serverUrl]);
 
+  const NavigatorQueryClient = useMemo(() => {
+    const client = axios.create({
+      baseURL: `${appConfig.navigatorConfiguration.cloud.baseUrl}/${appConfig.navigatorConfiguration.cloud.apiBase}`,
+      timeout: appConfig.navigatorConfiguration.requestTimeout,
+      timeoutErrorMessage: 'Navigator/Axios request timeout.',
+    });
+    client.interceptors.request.use(async config => {
+      // This logs even when the response is returned from cache.
+      console.info(
+        `Navigator Query: ${config.method ? config.method.toUpperCase() : 'METHOD_UNKNOWN'} ${config.baseURL}${config.url}`,
+        config.params,
+      );
+      return config;
+    });
+    return client;
+  }, [appConfig]);
+
   /**
    * Bonus data to inject into the clients query keys.
    * Some day there may be more than one in which case this could need to be smarter.
@@ -126,6 +143,16 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       });
     },
     [PublicQueryClient],
+  );
+
+  const navigatorGet = useCallback(
+    async <TData, TQueryParams>(url: string, queryParams: TQueryParams, config?: AxiosRequestConfig) => {
+      return await NavigatorQueryClient.get<TData, AxiosResponse<TData, TData>>(url, {
+        params: queryParams,
+        ...config,
+      });
+    },
+    [NavigatorQueryClient],
   );
 
   // https://www.benoitpaul.com/blog/react-native/offline-first-tanstack-query/
@@ -215,6 +242,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         PublicQueryClient,
         publicGet,
         serverUrl,
+        NavigatorQueryClient,
+        navigatorGet,
       }}>
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}

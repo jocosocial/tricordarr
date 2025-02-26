@@ -77,6 +77,7 @@ import {ScheduleDayScreen} from '../Screens/Schedule/ScheduleDayScreen.tsx';
 import {SchedulePrivateEventsScreen} from '../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
 import {useDrawer} from '../Context/Contexts/DrawerContext.ts';
 import {ParamsWithOobe} from '../../libraries/Types';
+import {DiningScreen} from '../Screens/Dining/DiningScreen.tsx';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -238,6 +239,7 @@ export type CommonStackParamList = {
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
   ScheduleDayScreen: ParamsWithOobe;
+  DiningScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -301,6 +303,7 @@ export enum CommonStackComponents {
   eventSettingsScreen = 'EventSettingsScreen',
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
+  diningScreen = 'DiningScreen',
 }
 
 export const CommonScreens = (Stack: typeof MainStack) => {
@@ -619,6 +622,7 @@ export const CommonScreens = (Stack: typeof MainStack) => {
         component={isScheduleDisabled ? DisabledView : SchedulePrivateEventsScreen}
         options={{title: 'Personal Events'}}
       />
+      <Stack.Screen name={CommonStackComponents.diningScreen} component={DiningScreen} options={{title: 'Dining'}} />
     </>
   );
 };

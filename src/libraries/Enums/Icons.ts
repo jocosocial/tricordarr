@@ -127,4 +127,5 @@ export enum AppIcons {
   official = 'shield-check',
   archive = 'archive',
   hunts = 'puzzle',
+  dining = 'silverware',
 }

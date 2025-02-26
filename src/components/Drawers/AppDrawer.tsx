@@ -139,6 +139,13 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 icon={AppIcons.time}
                 onPress={() => handleDrawerNav('tricordarr://time')}
               />
+              {appConfig.enableDeveloperOptions && (
+                <PaperDrawer.Item
+                  label={'Dining Menus'}
+                  icon={AppIcons.dining}
+                  onPress={() => handleDrawerNav('tricordarr://dining')}
+                />
+              )}
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
                 icon={AppIcons.faq}
