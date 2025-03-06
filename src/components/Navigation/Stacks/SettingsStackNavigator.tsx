@@ -27,6 +27,7 @@ import {QuerySettingsScreen} from '../../Screens/Settings/Developer/QuerySetting
 import {CommonStackParamList} from '../CommonScreens';
 import {QueryKeysSettingsScreen} from '../../Screens/Settings/Developer/QueryKeysSettingsScreen.tsx';
 import {QueryDataSettingsScreen} from '../../Screens/Settings/Developer/QueryDataSettingsScreen.tsx';
+import {TimeSettingsScreen} from '../../Screens/Settings/Config/TimeSettingsScreen.tsx';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
@@ -55,6 +56,7 @@ export type SettingsStackParamList = CommonStackParamList & {
   QueryDataSettingsScreen: {
     queryHash: string;
   };
+  TimeSettingsScreen: undefined;
 };
 
 export enum SettingsStackScreenComponents {
@@ -82,6 +84,7 @@ export enum SettingsStackScreenComponents {
   querySettingsScreen = 'QuerySettingsScreen',
   queryKeysSettingsScreen = 'QueryKeysSettingsScreen',
   queryDataSettingsScreen = 'QueryDataSettingsScreen',
+  timeSettingsScreen = 'TimeSettingsScreen',
 }
 
 export const SettingsStackNavigator = () => {
@@ -208,6 +211,11 @@ export const SettingsStackNavigator = () => {
         name={SettingsStackScreenComponents.queryDataSettingsScreen}
         component={QueryDataSettingsScreen}
         options={{title: 'Query Data'}}
+      />
+      <Stack.Screen
+        name={SettingsStackScreenComponents.timeSettingsScreen}
+        component={TimeSettingsScreen}
+        options={{title: 'Time Settings'}}
       />
     </Stack.Navigator>
   );

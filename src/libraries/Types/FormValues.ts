@@ -90,6 +90,10 @@ export interface CruiseSettingsFormValues {
   schedBaseUrl: string;
 }
 
+export interface TimeSettingsFormValues {
+  manualTimeOffset: string;
+}
+
 export interface PreRegistrationSettingsFormValues {
   preRegistrationServerUrl: string;
   preRegistrationEndDate: Date;

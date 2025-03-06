@@ -154,9 +154,17 @@ export const getScheduleScrollIndex = (
   return 0;
 };
 
+/**
+ *
+ * @param item
+ * @param tzOffset Offset from the port time zone @TODO problem in DST for 2025.
+ * @param nowDate
+ * @param startDate Start Date() of the cruise, typically midnight in the port TZ.
+ * @param endDate End Date() of the cruise, typically midnight in the port TZ.
+ */
 export const getScheduleItemMarker = (
   item: EventData | FezData,
-  portTimeZoneID: string,
+  tzOffset: number,
   nowDate: Date,
   startDate: Date,
   endDate: Date,
@@ -169,7 +177,6 @@ export const getScheduleItemMarker = (
   const eventStartDayTime = calcCruiseDayTime(itemStartTime, startDate, endDate);
   const eventEndDayTime = calcCruiseDayTime(itemEndTime, startDate, endDate);
   const nowDayTime = calcCruiseDayTime(nowDate, startDate, endDate);
-  const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZoneID, item.startTime);
   if (
     nowDayTime.cruiseDay === eventStartDayTime.cruiseDay &&
     nowDayTime.dayMinutes - tzOffset >= eventStartDayTime.dayMinutes &&

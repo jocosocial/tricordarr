@@ -82,8 +82,8 @@ android {
         applicationId "com.tricordarr"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 27
-        versionName "2025.0.10"
+        versionCode 28
+        versionName "2025.1.0"
     }
     signingConfigs {
         debug {

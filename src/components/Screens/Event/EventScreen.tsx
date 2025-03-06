@@ -77,7 +77,7 @@ export const EventScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [eventData, handleFavorite, navigation, theme.colors.twitarrYellow]);
+  }, [eventData, handleFavorite, navigation]);
 
   useEffect(() => {
     navigation.setOptions({

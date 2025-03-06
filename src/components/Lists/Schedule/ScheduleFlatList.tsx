@@ -42,7 +42,11 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
   // https://reactnative.dev/docs/optimizing-flatlist-configuration
   const renderItem = useCallback(
     ({item}: {item: TItem}) => {
-      const marker = getScheduleItemMarker(item, appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate);
+      // const tzOffset = getTimeZoneOffset(portTimeZoneID, item.timeZoneID, item.startTime);
+      // @TODO this is a manual hack, need to undo this and understand what went wr
+      // const tzOffset = 0;
+      // console.log(tzOffset);
+      const marker = getScheduleItemMarker(item, appConfig.manualTimeOffset, minutelyUpdatingDate, startDate, endDate);
       if ('fezID' in item) {
         if (FezType.isLFGType(item.fezType)) {
           return (
@@ -99,7 +103,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
       estimatedItemSize={120}
-      extraData={minutelyUpdatingDate}
+      extraData={[minutelyUpdatingDate, appConfig.manualTimeOffset]}
     />
   );
 };

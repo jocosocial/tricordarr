@@ -51,6 +51,11 @@ export const SettingsScreen = ({navigation}: Props) => {
               description={'Theme and styling options for this app.'}
               navComponent={CommonStackComponents.accessibilitySettingsScreen}
             />
+            <SettingsNavigationListItem
+              title={'Time'}
+              description={'Clock and time settings for this app.'}
+              navComponent={SettingsStackScreenComponents.timeSettingsScreen}
+            />
           </ListSection>
           <Divider bold={true} />
           <ListSection>

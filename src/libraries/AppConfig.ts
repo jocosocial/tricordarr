@@ -72,6 +72,7 @@ export interface AppConfig {
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
   preRegistrationEndDate: Date;
+  manualTimeOffset: number;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -112,6 +113,7 @@ const defaultAppConfig: AppConfig = {
   enableDeveloperOptions: false,
   cruiseStartDate: new Date(2023, 3, 5),
   cruiseLength: 8,
+  manualTimeOffset: 60,
   schedule: {
     hidePastLfgs: false,
     enableLateDayFlip: true,
@@ -211,6 +213,11 @@ export const getAppConfig = async () => {
   appConfig.preRegistrationEndDate = new Date(appConfig.preRegistrationEndDate);
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
+  }
+
+  // "Migration"
+  if (appConfig.manualTimeOffset === undefined) {
+    appConfig.manualTimeOffset = 0;
   }
 
   // Ok now we're done
