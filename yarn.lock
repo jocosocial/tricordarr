@@ -9439,10 +9439,10 @@ react-native-safe-area-context@*, react-native-safe-area-context@^5.0.0, "react-
   resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-5.1.0.tgz"
   integrity sha512-Y4vyJX+0HPJUQNVeIJTj2/UOjbSJcB09OEwirAWDrOZ67Lz5p43AmjxSy8nnZft1rMzoh3rcPuonB6jJyHTfCw==
 
-react-native-screens@^3.35.0, "react-native-screens@>= 3.0.0":
-  version "3.35.0"
-  resolved "https://registry.npmjs.org/react-native-screens/-/react-native-screens-3.35.0.tgz"
-  integrity sha512-rmkqb/M/SQIrXwygk6pXcOhgHltYAhidf1WceO7ujAxkr6XtwmgFyd1HIztsrJa568GrAuwPdQ11I7TpVk+XsA==
+react-native-screens@^4.4.0, "react-native-screens@>= 3.0.0":
+  version "4.4.0"
+  resolved "https://registry.npmjs.org/react-native-screens/-/react-native-screens-4.4.0.tgz"
+  integrity sha512-c7zc7Zwjty6/pGyuuvh9gK3YBYqHPOxrhXfG1lF4gHlojQSmIx2piNbNaV+Uykj+RDTmFXK0e/hA+fucw/Qozg==
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
@@ -9657,7 +9657,7 @@ react-to-imperative@^0.2.0:
   resolved "https://registry.npmjs.org/react-to-imperative/-/react-to-imperative-0.2.0.tgz"
   integrity sha512-MK5hZlTkgz7yk3MZLIxoDa75d9wxAecLS6y6HPD8C/rwdv/2Zezisbs8TzEq9azkHiII9UEQJTTlSlKdiq9xsg==
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^17 || ^18", react@^18.2.0, react@^18.3.1, "react@>= 15.2.1", "react@>= 16.9.0", react@>=0.16.8, react@>=16.0, react@>=16.11.0, react@>=16.13.1, react@>=16.2.0, react@>=16.3.0, react@>=16.6.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.2.0, "react@15.x || >=16.0.0-alpha.6":
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^17 || ^18", react@^18.2.0, react@^18.3.1, "react@>= 15.2.1", "react@>= 16.9.0", react@>=0.16.8, react@>=16.0, react@>=16.11.0, react@>=16.13.1, react@>=16.2.0, react@>=16.3.0, react@>=16.6.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.2.0, "react@15.x || >=16.0.0-alpha.6", react@18.3.1:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
