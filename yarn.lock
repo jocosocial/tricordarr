@@ -1172,6 +1172,11 @@
     ieee754 "^1.2.1"
     react-native-quick-base64 "^2.0.5"
 
+"@d11/react-native-fast-image@^8.12.0":
+  version "8.12.0"
+  resolved "https://registry.npmjs.org/@d11/react-native-fast-image/-/react-native-fast-image-8.12.0.tgz"
+  integrity sha512-KxrxDa6/kS3B622K9MK3pwifjqiOEDfuCIwjDXYL1daNJ3fpBxl4VWiKPdYN5dFl01kWC5TXXxK1cD2eO/sFNw==
+
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.npmjs.org/@egjs/hammerjs/-/hammerjs-2.0.17.tgz"
@@ -8098,10 +8103,10 @@ react-devtools-core@^6.1.5:
     shell-quote "^1.6.1"
     ws "^7"
 
-react-dom@^19.1.0, react-dom@>=0.16.8:
-  version "19.1.1"
-  resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.1.1.tgz"
-  integrity sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==
+react-dom@>=0.16.8, react-dom@19.1.0:
+  version "19.1.0"
+  resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.1.0.tgz"
+  integrity sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==
   dependencies:
     scheduler "^0.26.0"
 
@@ -8184,11 +8189,6 @@ react-native-error-boundary@^1.2.7:
   version "1.2.7"
   resolved "https://registry.npmjs.org/react-native-error-boundary/-/react-native-error-boundary-1.2.7.tgz"
   integrity sha512-DCnrGp8EcjTBKd+pm3Zr03uV+NFRlhooJdTqDv7BdEUAKssSg3RQL/Cz1fZIaZUwEK9YbRlUn1/jJzWlq46dLw==
-
-react-native-fast-image@^8.6.3:
-  version "8.6.3"
-  resolved "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz"
-  integrity sha512-Sdw4ESidXCXOmQ9EcYguNY2swyoWmx53kym2zRsvi+VeFCHEdkO+WG1DK+6W81juot40bbfLNhkc63QnWtesNg==
 
 react-native-file-access@^3.1.1, react-native-file-access@>=3.0.0:
   version "3.1.1"
@@ -8414,7 +8414,7 @@ react-native-windows@^0.75.0:
     ws "^6.2.2"
     yargs "^17.6.2"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@^0.81.0, "react-native@>= 0.30.0", react-native@>=0.40.0, react-native@>=0.43.2, react-native@>=0.46.0, react-native@>=0.50.4, react-native@>=0.57, react-native@>=0.57.7, react-native@>=0.59, react-native@>=0.60.0, react-native@>=0.61.3, react-native@>=0.63.3, react-native@>=0.70, react-native@>=0.72.0, react-native@>=0.74.0:
+react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@^0.81.0, "react-native@>= 0.30.0", react-native@>=0.40.0, react-native@>=0.43.2, react-native@>=0.46.0, react-native@>=0.50.4, react-native@>=0.57, react-native@>=0.57.7, react-native@>=0.59, react-native@>=0.61.3, react-native@>=0.63.3, react-native@>=0.70, react-native@>=0.72.0, react-native@>=0.74.0:
   version "0.81.4"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.81.4.tgz"
   integrity sha512-bt5bz3A/+Cv46KcjV0VQa+fo7MKxs17RCcpzjftINlen4ZDUl0I6Ut+brQ2FToa5oD0IB0xvQHfmsg2EDqsZdQ==
@@ -8541,7 +8541,7 @@ react-to-imperative@^0.2.0:
   resolved "https://registry.npmjs.org/react-to-imperative/-/react-to-imperative-0.2.0.tgz"
   integrity sha512-MK5hZlTkgz7yk3MZLIxoDa75d9wxAecLS6y6HPD8C/rwdv/2Zezisbs8TzEq9azkHiII9UEQJTTlSlKdiq9xsg==
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^17 || ^18", "react@^18 || ^19", react@^18.2.0, react@^19.1.0, react@^19.1.1, "react@>= 15.2.1", "react@>= 16.9.0", react@>=0.16.8, react@>=16.0, react@>=16.11.0, react@>=16.13.1, react@>=16.2.0, react@>=16.3.0, react@>=16.6.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.0.0, react@>=18.2.0, "react@15.x || >=16.0.0-alpha.6", react@19.1.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^18 || ^19", react@^18.2.0, react@^19.1.0, "react@>= 15.2.1", "react@>= 16.9.0", react@>=0.16.8, react@>=16.0, react@>=16.11.0, react@>=16.13.1, react@>=16.2.0, react@>=16.3.0, react@>=16.6.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.0.0, react@>=18.2.0, "react@15.x || >=16.0.0-alpha.6", react@19.1.0:
   version "19.1.0"
   resolved "https://registry.npmjs.org/react/-/react-19.1.0.tgz"
   integrity sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, ImageURISource, StyleProp, StyleSheet} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
-import FastImage, {ImageStyle} from 'react-native-fast-image';
+import FastImage, {ImageStyle} from '@d11/react-native-fast-image';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 interface ImageDimensionProps {
