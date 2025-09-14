@@ -5,7 +5,7 @@ A [Twitarr](https://github.com/jocosocial/swiftarr) client.
 
 Quick Start
 -----------
-```
+```bash
 nvm install lts/jod
 nvm use lts/jod (v22.13.0)
 
@@ -57,7 +57,7 @@ cd android
 
 Navigation
 ----------
-```
+```ts
 // Push to ensure that back actually goes back somewhere useful.
 rootNavigation.push(RootStackComponents.rootContentScreen, {
   screen: BottomTabComponents.lfgTab,
@@ -72,7 +72,7 @@ rootNavigation.push(RootStackComponents.rootContentScreen, {
 Refresh
 -------
 To refresh without glitches:
-```
+```ts
 const onRefresh = async () => {
   setRefreshing(true);
   await Promise.all([refetch(), refetchPins()]);
@@ -131,3 +131,16 @@ https://github.com/callstack/react-native-paper/issues/4401 (PR: https://github.
     in TextInput.Icon (created by Formik)
 ```
 Fixed in react-native-paper 5.12.5
+
+Production Build
+----------------
+
+At the root of the repo need `local.properties`:
+```bash
+TRICORDARR_UPLOAD_STORE_FILE=../../Tricordarr-Upload.keystore
+TRICORDARR_UPLOAD_STORE_PASSWORD=redacted
+TRICORDARR_UPLOAD_KEY_ALIAS=tricordarr-upload
+TRICORDARR_UPLOAD_KEY_PASSWORD=redacted
+```
+
+Then put the keystore there too.
