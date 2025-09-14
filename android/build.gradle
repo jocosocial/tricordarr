@@ -10,7 +10,7 @@ buildscript {
         // https://developer.android.com/ndk/downloads
         ndkVersion = "27.2.12479018"
         // https://kotlinlang.org/docs/releases.html
-        kotlinVersion = "1.9.25"
+        kotlinVersion = "2.0.21"
     }
     repositories {
         google()

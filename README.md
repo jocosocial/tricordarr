@@ -35,6 +35,9 @@ you need `npm clean-install` for that.
 npx @rnx-kit/align-deps --requirements react-native@0.72
 ```
 
+Notes
+0.77: reanimated needed locked to 3.16 due to accelerated RN versions, 
+
 Releasing
 ---------
 https://reactnative.dev/docs/signed-apk-android
