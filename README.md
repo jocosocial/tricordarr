@@ -37,6 +37,7 @@ npx @rnx-kit/align-deps --requirements react-native@0.72
 
 Notes
 0.77: reanimated needed locked to 3.16 due to accelerated RN versions, 
+0.81: RNP patch is still needed, react-native-fast-image is toast
 
 Releasing
 ---------
