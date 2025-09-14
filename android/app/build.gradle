@@ -93,12 +93,14 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                storeFile file(MYAPP_UPLOAD_STORE_FILE)
-                storePassword MYAPP_UPLOAD_STORE_PASSWORD
-                keyAlias MYAPP_UPLOAD_KEY_ALIAS
-                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-            }
+            def keystorePropertiesFile = rootProject.file("../local.properties")
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+            storeFile file(keystoreProperties['TRICORDARR_UPLOAD_STORE_FILE'])
+            storePassword keystoreProperties['TRICORDARR_UPLOAD_STORE_PASSWORD']
+            keyAlias keystoreProperties['TRICORDARR_UPLOAD_KEY_ALIAS']
+            keyPassword keystoreProperties['TRICORDARR_UPLOAD_KEY_PASSWORD']
         }
     }
     buildTypes {
