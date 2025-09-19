@@ -6,29 +6,29 @@
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
 import {Portal} from 'react-native-paper';
-import {setupChannels} from './src/libraries/Notifications/Channels';
-import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
-import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
-import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
-import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
-import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
-import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
-import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
-import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
-import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
-import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
-import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
-import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
-import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
-import {registerFgsWorker} from './src/libraries/Service';
-import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
-import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
+import {setupChannels} from '@tricordarr/libraries/Notifications/Channels';
+import {UserNotificationDataProvider} from '@tricordarr/components/Context/Providers/UserNotificationDataProvider';
+import {setupInitialNotification} from '@tricordarr/libraries/Notifications/InitialNotification';
+import {ErrorHandlerProvider} from '@tricordarr/components/Context/Providers/ErrorHandlerProvider';
+import {ForegroundService} from '@tricordarr/components/Libraries/Notifications/ForegroundService';
+import {NotificationDataListener} from '@tricordarr/components/Libraries/Notifications/NotificationDataListener';
+import {StyleProvider} from '@tricordarr/components/Context/Providers/StyleProvider';
+import {ModalProvider} from '@tricordarr/components/Context/Providers/ModalProvider';
+import {TwitarrProvider} from '@tricordarr/components/Context/Providers/TwitarrProvider';
+import {PrivilegeProvider} from '@tricordarr/components/Context/Providers/PrivilegeProvider';
+import {SocketProvider} from '@tricordarr/components/Context/Providers/SocketProvider';
+import {AppEventHandler} from '@tricordarr/components/Navigation/AppEventHandler';
+import {AuthProvider} from '@tricordarr/components/Context/Providers/AuthProvider';
+import {ConfigProvider} from '@tricordarr/components/Context/Providers/ConfigProvider';
+import {registerFgsWorker} from '@tricordarr/libraries/Service';
+import {RootStackNavigator} from '@tricordarr/components/Navigation/Stacks/RootStackNavigator';
+import {DrawerProvider} from '@tricordarr/components/Context/Providers/DrawerProvider';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
-import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
-import {FilterProvider} from './src/components/Context/Providers/FilterProvider';
+import {CruiseProvider} from '@tricordarr/components/Context/Providers/CruiseProvider';
+import {FilterProvider} from '@tricordarr/components/Context/Providers/FilterProvider';
 import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
-import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
-import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
+import {FeatureProvider} from '@tricordarr/components/Context/Providers/FeatureProvider';
+import {NotificationDataPoller} from '@tricordarr/components/Libraries/Notifications/NotificationDataPoller';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 
@@ -40,15 +40,15 @@ import 'react-native-gesture-handler';
 // JS runtime check, which we disable here.
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/SwiftarrQueryClientProvider';
-import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
-import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
+import {SwiftarrQueryClientProvider} from '@tricordarr/components/Context/Providers/SwiftarrQueryClientProvider';
+import {LoadingProvider} from '@tricordarr/components/Context/Providers/LoadingProvider';
+import {AppNavigationThemeProvider} from '@tricordarr/components/Context/Providers/AppNavigationThemeProvider.tsx';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
-import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
-import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
+import {CriticalErrorProvider} from '@tricordarr/components/Context/Providers/CriticalErrorProvider.tsx';
+import {SelectionProvider} from '@tricordarr/components/Context/Providers/SelectionProvider.tsx';
+import {configureImageCache} from '@tricordarr/libraries/Storage/ImageStorage.ts';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {SnackbarProvider} from './src/components/Context/Providers/SnackbarProvider.tsx';
+import {SnackbarProvider} from '@tricordarr/components/Context/Providers/SnackbarProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.

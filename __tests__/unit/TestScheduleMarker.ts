@@ -1,5 +1,5 @@
-import {getScheduleItemMarker} from '../../src/libraries/Schedule.ts';
-import {EventData} from '../../src/libraries/Structs/ControllerStructs.tsx';
+import {getScheduleItemMarker} from '@tricordarr/libraries/Schedule.ts';
+import {EventData} from '@tricordarr/libraries/Structs/ControllerStructs.tsx';
 
 describe('getScheduleItemMarker', () => {
   const portTimeZoneID = 'America/New_York';

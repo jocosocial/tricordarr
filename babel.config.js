@@ -8,6 +8,15 @@ module.exports = api => {
         relativeSourceLocation: true,
       },
     ],
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        alias: {
+          '@tricordarr': './src',
+        },
+      },
+    ],
   ];
   if (babelEnv !== 'development') {
     plugins.push(['transform-remove-console', {exclude: ['error', 'warn']}]);
