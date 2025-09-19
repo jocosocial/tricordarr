@@ -7,12 +7,7 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        patterns: [
-          {
-            group: ['../src/*', './src/*', '../../src/*', '../../../src/*', '../../../../src/*'],
-            message: 'Use @tricordarr alias instead of relative imports to src directory. Replace with @tricordarr/...',
-          },
-        ],
+        "patterns": ["./*", "../*"]
       },
     ],
   },
