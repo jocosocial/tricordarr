@@ -1,12 +1,12 @@
 import React, {Dispatch, ReactNode, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal.tsx';
+import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface PersonalEventCardActionsMenuProps {
   anchor: React.JSX.Element;

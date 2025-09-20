@@ -1,20 +1,20 @@
-import {AppView} from '../../Views/AppView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx';
-import {useFilter} from '../../Context/Contexts/FilterContext.ts';
-import {LfgFilterMenu} from '../../Menus/LFG/LfgFilterMenu.tsx';
-import {LFGFlatList} from '../../Lists/Schedule/LFGFlatList.tsx';
-import {usePersonalEventsQuery} from '../../Queries/Fez/FezQueries.ts';
-import {SchedulePersonalEventCreateFAB} from '../../Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
+import {LfgCruiseDayFilterMenu} from '#src/Menus/LFG/LfgCruiseDayFilterMenu.tsx';
+import {useFilter} from '#src/Context/Contexts/FilterContext.ts';
+import {LfgFilterMenu} from '#src/Menus/LFG/LfgFilterMenu.tsx';
+import {LFGFlatList} from '#src/Lists/Schedule/LFGFlatList.tsx';
+import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries.ts';
+import {SchedulePersonalEventCreateFAB} from '#src/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB.tsx';
 
 export const SchedulePrivateEventsScreen = () => {
   const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();

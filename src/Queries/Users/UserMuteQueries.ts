@@ -1,5 +1,5 @@
 import {UserHeader} from '../../../Libraries/Structs/ControllerStructs';
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 export const useUserMutesQuery = (options = {}) => {
   return useTokenAuthQuery<UserHeader[]>('/users/mutes', options);

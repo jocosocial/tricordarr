@@ -1,14 +1,14 @@
-import {AppView} from '../../Views/AppView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgStackComponents, LfgStackParamList} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
+import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {LFGSearchBar} from '../../Search/LFGSearchBar.tsx';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
+import {LFGSearchBar} from '#src/Search/LFGSearchBar.tsx';
 
 type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScreen>;
 

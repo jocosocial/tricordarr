@@ -1,8 +1,8 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import React from 'react';
-import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
-import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {HelpChapterTitleView} from '#src/Views/Help/HelpChapterTitleView.tsx';
+import {HelpTopicView} from '#src/Views/Help/HelpTopicView.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 
 export const LfgHelpScreen = () => {

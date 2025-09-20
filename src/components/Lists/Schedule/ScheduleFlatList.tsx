@@ -1,18 +1,18 @@
-import {EventData, FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {EventData, FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {getScheduleItemMarker} from '../../../Libraries/Schedule.ts';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {EventCardListItem} from '../Items/Event/EventCardListItem.tsx';
-import {PersonalEventCardListItem} from '../Items/PersonalEvent/PersonalEventCardListItem.tsx';
-import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
-import useDateTime from '../../../Libraries/DateTime.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {getScheduleItemMarker} from '#src/Libraries/Schedule.ts';
+import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
+import {EventCardListItem} from '#src/Components/Lists/Items/Event/EventCardListItem.tsx';
+import {PersonalEventCardListItem} from '#src/Components/Lists/Items/PersonalEvent/PersonalEventCardListItem.tsx';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
+import useDateTime from '#src/Libraries/DateTime.ts';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
-import {ScheduleFlatListSeparator} from '../../../Libraries/Types/index.ts';
+import {ScheduleFlatListSeparator} from '#src/Libraries/Types/index.ts';
 import {FlashList} from '@shopify/flash-list';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
+import {FezType} from '#src/Libraries/Enums/FezType.ts';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard.tsx';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];

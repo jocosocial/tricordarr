@@ -1,11 +1,11 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {PerformerData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
 
 interface PerformerActionsMenuProps {
   performerData?: PerformerData;

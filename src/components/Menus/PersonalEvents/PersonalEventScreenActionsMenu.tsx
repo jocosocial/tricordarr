@@ -1,17 +1,17 @@
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
-import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {FezCancelModal} from '../../Views/Modals/FezCancelModal.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal.tsx';
+import {useScheduleStackNavigation} from '#src/Components/Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
+import {FezType} from '#src/Libraries/Enums/FezType.ts';
+import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal.tsx';
 
 interface PersonalEventScreenActionsMenuProps {
   event: FezData;

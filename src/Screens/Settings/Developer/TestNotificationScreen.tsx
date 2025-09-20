@@ -1,11 +1,11 @@
 import React from 'react';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton';
 import {cancelTestNotification, displayTestNotification} from '../../../../Libraries/Notifications/TestNotification';
 import {useAppTheme} from '../../../../Styles/Theme';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {AppView} from '../../../Views/AppView';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView';
+import {AppView} from '#src/Views/AppView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {generateContentNotification} from '../../../../Libraries/Notifications/Content';
 import {eventChannel} from '../../../../Libraries/Notifications/Channels';
 import {NotificationTypeData} from '../../../../Libraries/Structs/SocketStructs';

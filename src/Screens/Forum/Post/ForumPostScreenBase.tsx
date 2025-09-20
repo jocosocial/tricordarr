@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries.ts';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {LoadingView} from '../../../Views/Static/LoadingView.tsx';
-import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {ForumPostFlatList} from '#src/Lists/Forums/ForumPostFlatList.tsx';
 import {PostData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {ListTitleView} from '../../../Views/ListTitleView.tsx';
-import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries.ts';
-import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton.tsx';
-import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries.ts';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries.ts';
 import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
 import pluralize from 'pluralize';
 

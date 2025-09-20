@@ -1,9 +1,9 @@
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
-import {PaddedContentView} from '../Content/PaddedContentView.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
 import React, {PropsWithChildren} from 'react';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 
 interface HelpTopicViewProps extends PropsWithChildren {
   title?: string;

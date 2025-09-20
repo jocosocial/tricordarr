@@ -1,11 +1,11 @@
 import React from 'react';
 import {Card} from 'react-native-paper';
-import {ProfilePublicData} from '../../../Libraries/Structs/ControllerStructs';
-import {ListSection} from '../../Lists/ListSection';
-import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ProfilePublicData} from '#src/Libraries/Structs/ControllerStructs';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 import {Linking} from 'react-native';
-import {DinnerTeam} from '../../../Libraries/Enums/DinnerTeam';
+import {DinnerTeam} from '#src/Libraries/Enums/DinnerTeam';
 
 interface UserProfileCardProps {
   user: ProfilePublicData;

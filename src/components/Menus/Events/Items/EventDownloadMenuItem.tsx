@@ -1,9 +1,9 @@
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import React from 'react';
 import {Linking} from 'react-native';
-import {EventData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {EventData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useSwiftarrQueryClient} from '#src/Components/Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface EventDownloadMenuItemProps {
   closeMenu: () => void;

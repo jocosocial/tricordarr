@@ -6,33 +6,33 @@ import {
   startForegroundServiceWorker,
   stopForegroundServiceWorker,
 } from '../../../../Libraries/Service.ts';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
-import {AppView} from '../../../Views/AppView.tsx';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext.ts';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext.ts';
 import {commonStyles} from '../../../../Styles/index.ts';
 import {useBackHandler} from '@react-native-community/hooks';
 import {fgsFailedCounter} from '../../../../Libraries/Service.ts';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useAppTheme} from '../../../../Styles/Theme.ts';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
-} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+} from '#src/Navigation/Stacks/SettingsStackNavigator.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {WebSocketState} from '../../../../Libraries/Network/Websockets.ts';
-import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
+import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
 import {SocketHealthcheckData} from '../../../../Libraries/Structs/SocketStructs.ts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../../Libraries/Storage/index.ts';
-import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag.tsx';
+import {RelativeTimeTag} from '#src/Text/Tags/RelativeTimeTag.tsx';
 import {Formik} from 'formik';
-import {BooleanField} from '../../../Forms/Fields/BooleanField.tsx';
-import {SliderField} from '../../../Forms/Fields/SliderField.tsx';
-import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView.tsx';
-import {ListSection} from '../../../Lists/ListSection.tsx';
-import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
+import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
+import {SliderField} from '#src/Forms/Fields/SliderField.tsx';
+import {BatteryOptimizationSettingsView} from '#src/Views/Settings/BatteryOptimizationSettingsView.tsx';
+import {ListSection} from '#src/Lists/ListSection.tsx';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
 

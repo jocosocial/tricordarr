@@ -1,20 +1,20 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {usePhotostreamQuery} from '../../Queries/Photostream/PhotostreamQueries.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries.ts';
 import {PhotostreamImageData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {PhotostreamListItem} from '../../Lists/Items/PhotostreamListItem.tsx';
-import {PhotostreamFAB} from '../../Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
+import {PhotostreamListItem} from '#src/Lists/Items/PhotostreamListItem.tsx';
+import {PhotostreamFAB} from '#src/Buttons/FloatingActionButtons/PhotostreamFAB.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {PhotostreamActionsMenu} from '#src/Menus/Photostream/PhotostreamActionsMenu.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {Text} from 'react-native-paper';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {AppFlatList} from '../../Lists/AppFlatList.tsx';
-import {EndResultsFooter} from '../../Lists/Footers/EndResultsFooter.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppFlatList} from '#src/Lists/AppFlatList.tsx';
+import {EndResultsFooter} from '#src/Lists/Footers/EndResultsFooter.tsx';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 

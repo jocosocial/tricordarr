@@ -1,8 +1,8 @@
 import React, {Dispatch, memo, SetStateAction, useState} from 'react';
-import {FezData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {ScheduleCardMarkerType} from '../../../../Libraries/Types/index.ts';
-import {PersonalEventCardActionsMenu} from '../../../Menus/PersonalEvents/PersonalEventCardActionsMenu.tsx';
-import {FezCard} from '../../../Cards/Schedule/FezCard.tsx';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ScheduleCardMarkerType} from '#src/Libraries/Types/index.ts';
+import {PersonalEventCardActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventCardActionsMenu.tsx';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard.tsx';
 
 interface PersonalEventCardListItemProps {
   eventData: FezData;

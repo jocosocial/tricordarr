@@ -1,5 +1,5 @@
 import {UserNotificationData} from '../../../Libraries/Structs/ControllerStructs';
-import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '../TokenAuthQuery';
+import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 /**
  * Retrieve info on the number of each type of notification supported by Swiftarr.

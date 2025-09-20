@@ -1,21 +1,21 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {ModalCard} from '../../Cards/ModalCard.tsx';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext.ts';
-import {useAuth} from '../../Context/Contexts/AuthContext.ts';
-import {useLogoutMutation} from '../../Queries/Auth/LogoutMutations.ts';
-import {useSocket} from '../../Context/Contexts/SocketContext.ts';
-import {useSettingsStack} from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {useUserNotificationData} from '#src/Components/Context/Contexts/UserNotificationDataContext.ts';
+import {useAuth} from '#src/Components/Context/Contexts/AuthContext.ts';
+import {useLogoutMutation} from '#src/Components/Queries/Auth/LogoutMutations.ts';
+import {useSocket} from '#src/Components/Context/Contexts/SocketContext.ts';
+import {useSettingsStack} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {stopForegroundServiceWorker} from '../../../Libraries/Service.ts';
-import {WebSocketStorageActions} from '../../Reducers/Fez/FezSocketReducer.ts';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {stopForegroundServiceWorker} from '#src/Libraries/Service.ts';
+import {WebSocketStorageActions} from '#src/Components/Reducers/Fez/FezSocketReducer.ts';
+import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
 
 interface LogoutModalContentProps {
   allDevices: boolean;

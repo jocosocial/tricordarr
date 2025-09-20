@@ -1,19 +1,19 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {BoardgameFlatList} from '../../Lists/BoardgameFlatList.tsx';
-import {useBoardgameExpansionsQuery, useBoardgamesQuery} from '../../Queries/Boardgames/BoardgameQueries.ts';
-import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {BoardgameFlatList} from '#src/Lists/BoardgameFlatList.tsx';
+import {useBoardgameExpansionsQuery, useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries.ts';
+import {NotLoggedInView} from '#src/Views/Static/NotLoggedInView.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useAuth} from '../../Context/Contexts/AuthContext.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
 import {RefreshControl, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {MenuAnchor} from '../../Menus/MenuAnchor.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
-import {BoardgameGuideFAB} from '../../Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';
+import {MenuAnchor} from '#src/Menus/MenuAnchor.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
+import {BoardgameGuideFAB} from '#src/Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 

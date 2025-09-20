@@ -1,6 +1,6 @@
-import {FezType} from '../Enums/FezType.ts';
-import {EventData, UserHeader} from '../Structs/ControllerStructs.tsx';
-import {ServerUrlChoice} from '../Network/ServerChoices.ts';
+import {FezType} from '#src/Enums/FezType.ts';
+import {EventData, UserHeader} from '#src/Structs/ControllerStructs.tsx';
+import {ServerUrlChoice} from '#src/Network/ServerChoices.ts';
 
 export interface SettingFormValues {
   settingValue: string;

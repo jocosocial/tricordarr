@@ -2,9 +2,9 @@ import React from 'react';
 import {Keyboard, View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
 import {TextField} from './Fields/TextField.tsx';
 import {
@@ -12,17 +12,17 @@ import {
   LFGTypeValidation,
   InfoStringValidation,
   NumberValidation,
-} from '../../Libraries/ValidationSchema.ts';
-import {FezFormValues} from '../../Libraries/Types/FormValues.ts';
-import {useModal} from '../Context/Contexts/ModalContext.ts';
-import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
+} from '#src/Libraries/ValidationSchema.ts';
+import {FezFormValues} from '#src/Libraries/Types/FormValues.ts';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
 import {FezTypePickerField} from './Fields/FezTypePickerField.tsx';
 import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
 import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
-import {publicLocationSuggestions} from '../../Libraries/Ship.ts';
+import {publicLocationSuggestions} from '#src/Libraries/Ship.ts';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

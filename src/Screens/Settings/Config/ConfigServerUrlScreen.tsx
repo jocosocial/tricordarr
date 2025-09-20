@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {ServerUrlFormValues} from '../../../../Libraries/Types/FormValues.ts';
-import {useAuth} from '../../../Context/Contexts/AuthContext.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
 import {Text} from 'react-native-paper';
-import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
-import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useHealthQuery} from '#src/Queries/Client/ClientQueries.ts';
 import {RefreshControl} from 'react-native';
-import {ServerUrlSettingForm} from '../../../Forms/Settings/ServerUrlSettingForm.tsx';
+import {ServerUrlSettingForm} from '#src/Forms/Settings/ServerUrlSettingForm.tsx';
 import {ServerChoices} from '../../../../Libraries/Network/ServerChoices.ts';
-import {ServerHealthcheckResultView} from '../../../Views/Settings/ServerHealthcheckResultView.tsx';
+import {ServerHealthcheckResultView} from '#src/Views/Settings/ServerHealthcheckResultView.tsx';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
-import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
 import {CacheManager} from '@georstat/react-native-image-cache';
 
 export const ConfigServerUrlScreen = () => {

@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import {AppView} from '../../../Views/AppView';
+import {AppView} from '#src/Views/AppView';
 
 export const NetworkInfoSettings = () => {
   const [refreshing, setRefreshing] = useState(false);

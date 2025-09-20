@@ -1,4 +1,4 @@
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {RegistrationCodeUserData} from '../../../Libraries/Structs/ControllerStructs';
 
 export const useRegCodeForUserQuery = ({userID}: {userID: string}) => {

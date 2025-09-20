@@ -1,19 +1,19 @@
-import {ForumData, ForumListData, PostData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ForumData, ForumListData, PostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback} from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {ForumPostListItem} from '../Items/Forum/ForumPostListItem.tsx';
-import {TimeDivider} from '../Dividers/TimeDivider.tsx';
-import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
-import {timeAgo} from '../../../Libraries/DateTime.ts';
-import {LabelDivider} from '../Dividers/LabelDivider.tsx';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {AppFlatList} from '../AppFlatList.tsx';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../../Libraries/Types/index.ts';
-import {ForumPostListHeader} from '../Headers/ForumPostListHeader.tsx';
-import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
-import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem.tsx';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider.tsx';
+import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider.tsx';
+import {timeAgo} from '#src/Libraries/DateTime.ts';
+import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList.tsx';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Libraries/Types/index.ts';
+import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader.tsx';
+import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader.tsx';
+import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter.tsx';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface ForumPostFlatListProps {
   postList: PostData[];

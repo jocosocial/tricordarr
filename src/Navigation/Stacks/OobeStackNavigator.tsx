@@ -1,20 +1,20 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {OobeWelcomeScreen} from '../../Screens/OOBE/OobeWelcomeScreen.tsx';
-import {OobeServerScreen} from '../../Screens/OOBE/OobeServerScreen.tsx';
-import {OobeConductScreen} from '../../Screens/OOBE/OobeConductScreen.tsx';
-import {OobeFinishScreen} from '../../Screens/OOBE/OobeFinishScreen.tsx';
-import {OobeAccountScreen} from '../../Screens/OOBE/OobeAccountScreen.tsx';
-import {LoginScreen} from '../../Screens/Settings/Account/LoginScreen.tsx';
-import {OobeRegisterScreen} from '../../Screens/Settings/Account/RegisterScreen.tsx';
-import {OobePermissionsScreen} from '../../Screens/OOBE/OobePermissionsScreen.tsx';
-import {CommonScreens, CommonStackParamList} from '../CommonScreens.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen.tsx';
+import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen.tsx';
+import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen.tsx';
+import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen.tsx';
+import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen.tsx';
+import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen.tsx';
+import {OobeRegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen.tsx';
+import {OobePermissionsScreen} from '#src/Screens/OOBE/OobePermissionsScreen.tsx';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 import {MainStack} from './MainStackNavigator.tsx';
-import {OobePreregistrationScreen} from '../../Screens/OOBE/OobePreregistrationScreen.tsx';
-import {OobeUserDataScreen} from '../../Screens/OOBE/OobeUserDataScreen.tsx';
-import {ScheduleDayScreen} from '../../Screens/Schedule/ScheduleDayScreen.tsx';
+import {OobePreregistrationScreen} from '#src/Screens/OOBE/OobePreregistrationScreen.tsx';
+import {OobeUserDataScreen} from '#src/Screens/OOBE/OobeUserDataScreen.tsx';
+import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen.tsx';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;

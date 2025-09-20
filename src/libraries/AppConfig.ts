@@ -4,7 +4,7 @@ import {StorageKeys} from './Storage/index.ts';
 import {NotificationTypeData} from './Structs/SocketStructs.ts';
 import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from './Network/APIClient.ts';
 import {ForumSort, ForumSortDirection} from './Enums/ForumSortFilter.ts';
-import {LfgStackComponents} from '../Components/Navigation/Stacks/LFGStackNavigator.tsx';
+import {LfgStackComponents} from '#src/Components/Navigation/Stacks/LFGStackNavigator.tsx';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;

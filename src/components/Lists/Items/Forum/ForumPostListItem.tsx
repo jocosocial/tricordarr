@@ -1,13 +1,13 @@
 import React, {memo} from 'react';
-import {ForumData, PostData} from '../../../../Libraries/Structs/ControllerStructs';
-import {UserAvatarImage} from '../../../Images/UserAvatarImage';
-import {MessageViewContainer} from '../../../Views/MessageViewContainer';
-import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';
-import {FlatListItemContent} from '../../../Views/Content/FlatListItemContent';
-import {ContentPostImage} from '../../../Images/ContentPostImage';
-import {ForumPostMessageView} from '../../../Views/Forum/ForumPostMessageView';
-import {useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
-import {CommonStackComponents} from '../../../Navigation/CommonScreens';
+import {ForumData, PostData} from '#src/Libraries/Structs/ControllerStructs';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
+import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
+import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
+import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {ForumPostMessageView} from '#src/Components/Views/Forum/ForumPostMessageView';
+import {useForumStackNavigation} from '#src/Components/Navigation/Stacks/ForumStackNavigator';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {

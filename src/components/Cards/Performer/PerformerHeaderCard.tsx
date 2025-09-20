@@ -1,11 +1,11 @@
 import React, {memo} from 'react';
-import {PerformerHeaderData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {PerformerHeaderData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {Card, Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';
-import {APIImage} from '../../Images/APIImage.tsx';
-import {useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {APIImage} from '#src/Components/Images/APIImage.tsx';
+import {useMainStack} from '#src/Components/Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
 
 interface PerformerHeaderCardProps {
   header: PerformerHeaderData;

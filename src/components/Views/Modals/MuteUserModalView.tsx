@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
-import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ModalCard} from '../../Cards/ModalCard.tsx';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText.tsx';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
+import {UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {ModeratorMuteText, UserMuteText} from '#src/Components/Text/UserRelationsText.tsx';
+import {useUserMuteMutation} from '#src/Components/Queries/Users/UserMuteMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface MuteUserModalViewProps {

@@ -1,12 +1,12 @@
 import {IconButton, List, ProgressBar, Text} from 'react-native-paper';
 import React, {useState} from 'react';
-import {MicroKaraokeCompletedSong} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {MicroKaraokeCompletedSong} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {View, StyleSheet} from 'react-native';
-import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {useMicroKaraokeSongQuery} from '../../Queries/MicroKaraoke/MicroKaraokeQueries.ts';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {MainStackComponents, useMainStack} from '#src/Components/Navigation/Stacks/MainStackNavigator.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useMicroKaraokeSongQuery} from '#src/Components/Queries/MicroKaraoke/MicroKaraokeQueries.ts';
 import RNFS from 'react-native-fs';
 
 interface MicroKaraokeSongListItemProps {

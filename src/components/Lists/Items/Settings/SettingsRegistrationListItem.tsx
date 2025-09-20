@@ -1,6 +1,6 @@
 import {List} from 'react-native-paper';
 import React from 'react';
-import {SettingsStackScreenComponents, useSettingsStack} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {SettingsStackScreenComponents, useSettingsStack} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
 
 export const SettingsRegistrationListItem = () => {
   const navigation = useSettingsStack();

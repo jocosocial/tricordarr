@@ -8,7 +8,7 @@ import {
   ViewStyle,
   StyleSheet,
 } from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 
 interface ScrollingContentViewProps {
   isStack?: boolean;

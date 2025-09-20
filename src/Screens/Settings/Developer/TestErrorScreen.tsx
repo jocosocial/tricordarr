@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../../Styles/Theme.ts';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {AppView} from '../../../Views/AppView.tsx';
-import {useErrorHandler} from '../../../Context/Contexts/ErrorHandlerContext.ts';
-import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
-import {useModal} from '../../../Context/Contexts/ModalContext.ts';
-import {HelpModalView} from '../../../Views/Modals/HelpModalView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useModal} from '#src/Context/Contexts/ModalContext.ts';
+import {HelpModalView} from '#src/Views/Modals/HelpModalView.tsx';
 import {RefreshControl} from 'react-native';
-import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {useHealthQuery} from '../../../Queries/Client/ClientQueries.ts';
-import {useOpenQuery} from '../../../Queries/OpenQuery.ts';
-import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
-import {BaseFABGroup} from '../../../Buttons/FloatingActionButtons/BaseFABGroup.tsx';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useHealthQuery} from '#src/Queries/Client/ClientQueries.ts';
+import {useOpenQuery} from '#src/Queries/OpenQuery.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
+import {BaseFABGroup} from '#src/Buttons/FloatingActionButtons/BaseFABGroup.tsx';
 
 export const TestErrorScreen = () => {
   const theme = useAppTheme();

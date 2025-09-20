@@ -1,10 +1,10 @@
 import React from 'react';
 import {DatePickerModal} from 'react-native-paper-dates';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext';
 import {useField, useFormikContext} from 'formik';
 import {StyleSheet, View} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../../Styles/Theme';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
 import {Button} from 'react-native-paper';
 import {format} from 'date-fns';
 import {CalendarDate} from 'react-native-paper-dates/src/Date/Calendar';

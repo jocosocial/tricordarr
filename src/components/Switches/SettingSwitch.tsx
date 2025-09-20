@@ -1,7 +1,7 @@
 import {StyleProp, Switch, View, ViewStyle, StyleSheet} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface SettingSwitchProps {
   title: string;

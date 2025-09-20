@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import {callsChannel} from './Channels';
-import {PressAction} from '../Enums/Notifications';
+import {PressAction} from '#src/Libraries/Enums/Notifications';
 
 /**
  * Generate a test notification.

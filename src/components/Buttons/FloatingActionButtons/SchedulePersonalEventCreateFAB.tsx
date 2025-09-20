@@ -1,7 +1,7 @@
 import {BaseFAB} from './BaseFAB.tsx';
-import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {useScheduleStackNavigation} from '#src/Components/Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 
 export const SchedulePersonalEventCreateFAB = () => {
   const navigation = useScheduleStackNavigation();

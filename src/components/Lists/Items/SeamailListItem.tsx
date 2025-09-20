@@ -1,15 +1,15 @@
 import React, {memo} from 'react';
 import {List} from 'react-native-paper';
-import {FezAvatarImage} from '../../Images/FezAvatarImage.tsx';
-import {SeamailTimeBadge} from '../../Text/SeamailTimeBadge.tsx';
-import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {AppIcon} from '../../Icons/AppIcon.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage.tsx';
+import {SeamailTimeBadge} from '#src/Components/Text/SeamailTimeBadge.tsx';
+import {useChatStack} from '#src/Components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
 import {StyleSheet} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface SeamailListItemProps {
   fez: FezData;

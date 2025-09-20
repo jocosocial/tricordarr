@@ -2,18 +2,18 @@ import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
-import {PersonalEventScreenActionsMenu} from '../../Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
-import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
-import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
+import {HeaderEditButton} from '#src/Buttons/HeaderButtons/HeaderEditButton.tsx';
+import {PersonalEventScreenActionsMenu} from '#src/Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries.ts';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase.tsx';
 import notifee from '@notifee/react-native';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
 import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 

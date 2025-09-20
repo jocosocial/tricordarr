@@ -1,6 +1,6 @@
 import React from 'react';
 import {Banner, Text} from 'react-native-paper';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface Props {
   blocked?: boolean;

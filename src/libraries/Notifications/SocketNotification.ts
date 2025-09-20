@@ -1,4 +1,4 @@
-import {NotificationTypeData, SocketNotificationData} from '../Structs/SocketStructs';
+import {NotificationTypeData, SocketNotificationData} from '#src/Libraries/Structs/SocketStructs';
 import {
   announcementsChannel,
   callMgmtChannel,
@@ -9,9 +9,9 @@ import {
   seamailChannel,
   serviceChannel,
 } from './Channels';
-import {PressAction} from '../Enums/Notifications';
+import {PressAction} from '#src/Libraries/Enums/Notifications';
 import {generateContentNotification} from './Content';
-import {getAppConfig} from '../AppConfig';
+import {getAppConfig} from '#src/Libraries/AppConfig';
 import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
 
 /**

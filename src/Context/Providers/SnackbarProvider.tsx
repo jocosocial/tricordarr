@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useState} from 'react';
-import {SnackbarContext} from '../Contexts/SnackbarContext.ts';
+import {SnackbarContext} from '#src/Context/Contexts/SnackbarContext.ts';
 import {SnackbarPayload} from '../../../Libraries/Types/index.ts';
 
 export const SnackbarProvider = ({children}: PropsWithChildren) => {

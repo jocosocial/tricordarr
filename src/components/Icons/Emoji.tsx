@@ -1,7 +1,7 @@
-import {CustomEmoji} from '../../Libraries/Enums/Emoji';
+import {CustomEmoji} from '#src/Libraries/Enums/Emoji';
 import {Image, ImageStyle, StyleProp} from 'react-native';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface EmojiProps {
   emojiName: keyof typeof CustomEmoji;

@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../Styles/Theme';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface SocketControlViewProps {
   title: string;

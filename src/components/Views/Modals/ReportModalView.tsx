@@ -8,10 +8,10 @@ import {
   PostData,
   ProfilePublicData,
   ReportData,
-} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ReportContentForm} from '../../Forms/ReportContentForm.tsx';
-import {useReportMutation} from '../../Queries/Moderation/ModerationMutations.ts';
-import {ReportContentType} from '../../../Libraries/Enums/ReportContentType.ts';
+} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ReportContentForm} from '#src/Components/Forms/ReportContentForm.tsx';
+import {useReportMutation} from '#src/Components/Queries/Moderation/ModerationMutations.ts';
+import {ReportContentType} from '#src/Libraries/Enums/ReportContentType.ts';
 import {ReportModalSuccessView} from './ReportModalSuccessView.tsx';
 import {ReportModalErrorView} from './ReportModalErrorView.tsx';
 

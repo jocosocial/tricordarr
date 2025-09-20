@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {PropsWithChildren} from 'react';
-import {AuthContext} from '../Contexts/AuthContext.ts';
-import {AuthActions, useAuthReducer} from '../../Reducers/Auth/AuthReducer.ts';
+import {AuthContext} from '#src/Context/Contexts/AuthContext.ts';
+import {AuthActions, useAuthReducer} from '#src/Reducers/Auth/AuthReducer.ts';
 import {TokenStringData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useConfig} from '../Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {StorageKeys} from '../../../Libraries/Storage/index.ts';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {

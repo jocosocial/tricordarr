@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {usePerformerQuery} from '../../Queries/Performer/PerformerQueries.ts';
+import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries.ts';
 import {View} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
-import {PerformerActionsMenu} from '../../Menus/Performer/PerformerActionsMenu.tsx';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {PerformerActionsMenu} from '#src/Menus/Performer/PerformerActionsMenu.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
 import {PerformerScreenBase} from './PerformerScreenBase.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;

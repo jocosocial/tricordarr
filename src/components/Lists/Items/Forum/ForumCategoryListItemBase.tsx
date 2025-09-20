@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {List} from 'react-native-paper';
-import {ContentText} from '../../../Text/ContentText';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {ContentText} from '#src/Components/Text/ContentText';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface ForumCategoryListItemBaseProps {
   title: string;

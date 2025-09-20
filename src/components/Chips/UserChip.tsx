@@ -1,8 +1,8 @@
 import React from 'react';
 import {Chip} from 'react-native-paper';
-import {UserAvatarImage} from '../Images/UserAvatarImage';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {UserHeader} from '../../Libraries/Structs/ControllerStructs';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {UserHeader} from '#src/Libraries/Structs/ControllerStructs';
 
 type UserChipProps = {
   onClose?: () => void;

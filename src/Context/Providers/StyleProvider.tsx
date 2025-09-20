@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {StyleContext} from '../Contexts/StyleContext';
+import {StyleContext} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '../../../Styles/Theme';
 import {commonStyles, styleDefaults} from '../../../Styles';
 import {StyleSheet} from 'react-native';

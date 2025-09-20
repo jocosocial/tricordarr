@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {CategoryData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ForumStackComponents, useForumStackNavigation} from '#src/Components/Navigation/Stacks/ForumStackNavigator.tsx';
+import {CategoryData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {BaseFAB} from './BaseFAB.tsx';
 
 interface ForumFABProps {

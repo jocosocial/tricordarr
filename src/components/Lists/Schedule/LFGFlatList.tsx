@@ -1,13 +1,13 @@
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useLFGStackNavigation} from '#src/Components/Navigation/Stacks/LFGStackNavigator.tsx';
 import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
-import {ScheduleFlatListSeparator} from '../../../Libraries/Types/index.ts';
+import {ScheduleFlatListSeparator} from '#src/Libraries/Types/index.ts';
 import {FlashList} from '@shopify/flash-list';
-import {FezCard} from '../../Cards/Schedule/FezCard.tsx';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard.tsx';
+import {FezType} from '#src/Libraries/Enums/FezType.ts';
 
 interface LFGFlatListProps {
   items: FezData[];

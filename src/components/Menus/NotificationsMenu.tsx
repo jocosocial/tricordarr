@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {useState} from 'react';
-import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
-import {UserNotificationData} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {useUserNotificationDataQuery} from '#src/Components/Queries/Alert/NotificationQueries.ts';
+import {UserNotificationData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import pluralize from 'pluralize';
 import {Linking} from 'react-native';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';

@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
-import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {HelpChapterTitleView} from '#src/Views/Help/HelpChapterTitleView.tsx';
+import {HelpTopicView} from '#src/Views/Help/HelpTopicView.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIHelpScreen>;
 

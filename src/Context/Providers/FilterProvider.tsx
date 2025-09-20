@@ -1,7 +1,7 @@
 import React, {PropsWithChildren, useState} from 'react';
-import {FilterContext} from '../Contexts/FilterContext.ts';
+import {FilterContext} from '#src/Context/Contexts/FilterContext.ts';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {useConfig} from '../Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {ForumFilter, ForumSortDirection, ForumSort} from '../../../Libraries/Enums/ForumSortFilter.ts';
 import {ScheduleFilterSettings} from '../../../Libraries/Types/index.ts';
 import {EventType} from '../../../Libraries/Enums/EventType.ts';

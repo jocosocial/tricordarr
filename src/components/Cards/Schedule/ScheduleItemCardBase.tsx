@@ -1,13 +1,13 @@
 import React, {ReactNode} from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {getDurationString} from '../../../Libraries/DateTime';
-import {ScheduleCardMarkerType} from '../../../Libraries/Types';
-import {EventCardNowView} from '../../Views/Schedule/EventCardNowView';
-import {EventCardSoonView} from '../../Views/Schedule/EventCardSoonView';
-import {UserHeader} from '../../../Libraries/Structs/ControllerStructs';
-import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {getDurationString} from '#src/Libraries/DateTime';
+import {ScheduleCardMarkerType} from '#src/Libraries/Types';
+import {EventCardNowView} from '#src/Components/Views/Schedule/EventCardNowView';
+import {EventCardSoonView} from '#src/Components/Views/Schedule/EventCardSoonView';
+import {UserHeader} from '#src/Libraries/Structs/ControllerStructs';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 
 interface ScheduleItemCardBaseProps {
   title: string;

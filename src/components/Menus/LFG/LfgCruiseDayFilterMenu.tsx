@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
 import {format} from 'date-fns';
-import {useFilter} from '../../Context/Contexts/FilterContext.ts';
-import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
-import {MenuAnchor} from '../MenuAnchor.tsx';
-import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {useFilter} from '#src/Components/Context/Contexts/FilterContext.ts';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem.tsx';
+import {MenuAnchor} from '#src/Components/Menus/MenuAnchor.tsx';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
 
 export const LfgCruiseDayFilterMenu = () => {
   const [visible, setVisible] = useState(false);

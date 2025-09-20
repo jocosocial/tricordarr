@@ -1,10 +1,10 @@
 import {Text} from 'react-native-paper';
 import React from 'react';
 import {Linking, StyleSheet, TouchableOpacity} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useSwiftarrQueryClient} from '#src/Components/Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const TimezoneWarningView = () => {
   const {commonStyles} = useStyles();

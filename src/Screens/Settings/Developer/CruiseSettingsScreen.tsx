@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {AppView} from '../../../Views/AppView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {CruiseSettingsForm} from '../../../Forms/Settings/CruiseSettingsForm.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {CruiseSettingsForm} from '#src/Forms/Settings/CruiseSettingsForm.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../../Styles/Theme.ts';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
-import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
-import {useCruise} from '../../../Context/Contexts/CruiseContext.ts';
-import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries.ts';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
+import {useCruise} from '#src/Context/Contexts/CruiseContext.ts';
+import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
 import {DataTable} from 'react-native-paper';
-import {PreRegistrationSettingsForm} from '../../../Forms/Settings/PreRegistrationSettingsForm.tsx';
+import {PreRegistrationSettingsForm} from '#src/Forms/Settings/PreRegistrationSettingsForm.tsx';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

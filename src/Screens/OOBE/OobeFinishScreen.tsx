@@ -1,17 +1,17 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '../../Navigation/Stacks/OobeStackNavigator.tsx';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {RootStackComponents, useRootStack} from '../../Navigation/Stacks/RootStackNavigator.tsx';
-import {OobeButtonsView} from '../../Views/OobeButtonsView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator.tsx';
+import {OobeButtonsView} from '#src/Views/OobeButtonsView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {startForegroundServiceWorker} from '../../../Libraries/Service.ts';
-import {OobeNoteCard} from '../../Cards/OobeNoteCard.tsx';
-import {MainStackComponents} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {BottomTabComponents} from '../../Navigation/Tabs/BottomTabNavigator.tsx';
-import {OobePreRegistrationCompleteCard} from '../../Cards/OobePreRegistrationCompleteCard.tsx';
+import {OobeNoteCard} from '#src/Cards/OobeNoteCard.tsx';
+import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator.tsx';
+import {OobePreRegistrationCompleteCard} from '#src/Cards/OobePreRegistrationCompleteCard.tsx';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 

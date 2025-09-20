@@ -1,11 +1,11 @@
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {NumberValidation} from '../../Libraries/ValidationSchema.ts';
+import {NumberValidation} from '#src/Libraries/ValidationSchema.ts';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
-import {BoardgameRecommendationData} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {BoardgameRecommendationData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {BoardgameNumPlayersPickerField} from './Fields/Boardgames/BoardgameNumPlayersPickerField.tsx';
 import {BoardgameAgePickerField} from './Fields/Boardgames/BoardgameAgePickerField.tsx';
 import {BoardgameDurationPickerField} from './Fields/Boardgames/BoardgameDurationPickerField.tsx';

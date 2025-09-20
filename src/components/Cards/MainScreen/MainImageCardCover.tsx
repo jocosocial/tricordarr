@@ -1,21 +1,21 @@
 import {Card} from 'react-native-paper';
 import React, {useState} from 'react';
 // @ts-ignore
-import DayImage from '../../../../assets/mainview_day.jpg';
+import DayImage from '#assets/mainview_day.jpg';
 // @ts-ignore
-import NightImage from '../../../../assets/mainview_night.jpg';
+import NightImage from '#assets/mainview_night.jpg';
 // @ts-ignore
-import SunsetImage from '../../../../assets/mainview_sunset.jpg';
+import SunsetImage from '#assets/mainview_sunset.jpg';
 // @ts-ignore
-import MainShowImage from '../../../../assets/mainview_mainshow.jpg';
+import MainShowImage from '#assets/mainview_mainshow.jpg';
 // @ts-ignore
-import LateShowImage from '../../../../assets/mainview_lateshow.jpg';
+import LateShowImage from '#assets/mainview_lateshow.jpg';
 // @ts-ignore
-import HappyHourImage from '../../../../assets/mainview_happy.jpg';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
+import HappyHourImage from '#assets/mainview_happy.jpg';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {AppImageViewer} from '../../Images/AppImageViewer';
-import {ImageQueryData} from '../../../Libraries/Types';
+import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {ImageQueryData} from '#src/Libraries/Types';
 import {encode as base64_encode} from 'base-64';
 
 /**

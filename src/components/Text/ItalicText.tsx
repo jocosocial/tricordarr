@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 import {Text} from 'react-native-paper';
 
 export const ItalicText = ({children}: PropsWithChildren) => {

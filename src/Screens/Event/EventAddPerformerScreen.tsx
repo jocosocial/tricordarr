@@ -1,26 +1,26 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
-import {AppView} from '../../Views/AppView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {usePerformerSelfQuery} from '../../Queries/Performer/PerformerQueries.ts';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries.ts';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {RefreshControl} from 'react-native';
-import {PerformerProfileWarningView} from '../../Views/Warnings/PerformerProfileWarningView.tsx';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {PerformerProfileWarningView} from '#src/Views/Warnings/PerformerProfileWarningView.tsx';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
 import {useAppTheme} from '../../../Styles/Theme.ts';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {PerformerProfileDeleteModalView} from '../../Views/Modals/PerformerProfileDeleteModalView.tsx';
-import {useEventQuery} from '../../Queries/Events/EventQueries.ts';
+import {useModal} from '#src/Context/Contexts/ModalContext.ts';
+import {PerformerProfileDeleteModalView} from '#src/Views/Modals/PerformerProfileDeleteModalView.tsx';
+import {useEventQuery} from '#src/Queries/Events/EventQueries.ts';
 import {
   usePerformerUpsertMutation,
   usePerformerDeleteForEventMutation,
-} from '../../Queries/Performer/PerformerMutations.ts';
+} from '#src/Queries/Performer/PerformerMutations.ts';
 import {EventData, PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useQueryClient} from '@tanstack/react-query';
-import {ListSubheader} from '../../Lists/ListSubheader.tsx';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 

@@ -1,5 +1,5 @@
 import {PostSearchData} from '../../../Libraries/Structs/ControllerStructs';
-import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
 
 export interface ForumPostSearchQueryParams {
   search?: string;

@@ -1,9 +1,9 @@
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
-import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
-import {FloatingScrollButtonPosition} from '../../Libraries/Types/index.ts';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {FloatingScrollButtonPosition} from '#src/Libraries/Types/index.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import {FlashList, ListRenderItem} from '@shopify/flash-list';
 
 interface AppFlashListProps<TItem> {

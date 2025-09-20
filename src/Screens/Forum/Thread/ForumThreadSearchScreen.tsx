@@ -1,9 +1,9 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ForumThreadSearchBar} from '../../../Search/ForumThreadSearchBar.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ForumThreadSearchBar} from '#src/Search/ForumThreadSearchBar.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {ListTitleView} from '../../../Views/ListTitleView.tsx';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
 
 export type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadSearchScreen>;
 

@@ -1,21 +1,21 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries.ts';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {LfgScreenActionsMenu} from '../../Menus/LFG/LfgScreenActionsMenu.tsx';
-import {useSocket} from '../../Context/Contexts/SocketContext.ts';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
+import {LfgScreenActionsMenu} from '#src/Menus/LFG/LfgScreenActionsMenu.tsx';
+import {useSocket} from '#src/Context/Contexts/SocketContext.ts';
 import {useIsFocused} from '@react-navigation/native';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext.ts';
 import {NotificationTypeData, SocketNotificationData} from '../../../Libraries/Structs/SocketStructs.ts';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
-import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
-import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
-import {NavHeaderTitle} from '../../Text/NavHeaderTitle.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase.tsx';
+import {HeaderEditButton} from '#src/Buttons/HeaderButtons/HeaderEditButton.tsx';
+import {NavHeaderTitle} from '#src/Text/NavHeaderTitle.tsx';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 

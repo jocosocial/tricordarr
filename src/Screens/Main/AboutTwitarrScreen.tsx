@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {useHelpTextQuery} from '../../Queries/PublicQueries.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {useHelpTextQuery} from '#src/Queries/PublicQueries.ts';
 import {RefreshControl} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
-import {ContentText} from '../../Text/ContentText.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {ContentText} from '#src/Text/ContentText.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 
 export const AboutTwitarrScreen = () => {
   const {data, refetch, isFetching} = useHelpTextQuery();

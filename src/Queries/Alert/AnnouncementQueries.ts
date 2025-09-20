@@ -1,5 +1,5 @@
 import {AnnouncementData} from '../../../Libraries/Structs/ControllerStructs';
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 export const useAnnouncementsQuery = (options = {}) => {
   return useTokenAuthQuery<AnnouncementData[]>('/notification/announcements', {

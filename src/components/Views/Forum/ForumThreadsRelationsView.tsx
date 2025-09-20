@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {LoadingView} from '../Static/LoadingView.tsx';
-import {ForumSort} from '../../../Libraries/Enums/ForumSortFilter.ts';
-import {useFilter} from '../../Context/Contexts/FilterContext.ts';
-import {ForumRelationQueryType, useForumRelationQuery} from '../../Queries/Forum/ForumThreadRelationQueries.ts';
-import {NotLoggedInView} from '../Static/NotLoggedInView.tsx';
-import {useAuth} from '../../Context/Contexts/AuthContext.ts';
-import {CategoryData, ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView.tsx';
+import {ForumSort} from '#src/Libraries/Enums/ForumSortFilter.ts';
+import {useFilter} from '#src/Components/Context/Contexts/FilterContext.ts';
+import {ForumRelationQueryType, useForumRelationQuery} from '#src/Components/Queries/Forum/ForumThreadRelationQueries.ts';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView.tsx';
+import {useAuth} from '#src/Components/Context/Contexts/AuthContext.ts';
+import {CategoryData, ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {ForumEmptyListView} from './ForumEmptyListView.tsx';
 import {ForumThreadListView} from './ForumThreadListView.tsx';
 import pluralize from 'pluralize';

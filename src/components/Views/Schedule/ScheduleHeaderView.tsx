@@ -1,10 +1,10 @@
 import React, {Dispatch, SetStateAction, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {ScheduleHeaderDayButton} from '../../Buttons/ScheduleHeaderDayButton.tsx';
-import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton.tsx';
+import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
 import {FlashList} from '@shopify/flash-list';
-import {CruiseDayData} from '../../../Libraries/Types/index.ts';
+import {CruiseDayData} from '#src/Libraries/Types/index.ts';
 
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;

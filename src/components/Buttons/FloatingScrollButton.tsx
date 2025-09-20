@@ -1,10 +1,10 @@
 import {IconButton} from 'react-native-paper';
 import {View} from 'react-native';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {AppIcons} from '../../Libraries/Enums/Icons';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {FloatingScrollButtonPosition} from '../../Libraries/Types';
+import {FloatingScrollButtonPosition} from '#src/Libraries/Types';
 
 interface FloatingScrollButtonProps {
   onPress: () => void;

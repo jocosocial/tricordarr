@@ -1,7 +1,7 @@
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
 import React from 'react';
-import {useAppTheme} from '../../../Styles/Theme.ts';
+import {useAppTheme} from '#src/Styles/Theme.ts';
 
 interface HeaderFavoriteButtonProps {
   onPress?: () => void;

@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
-import {useDrawer} from '../Context/Contexts/DrawerContext.ts';
+import {useDrawer} from '#src/Components/Context/Contexts/DrawerContext.ts';
 import {PropsWithChildren} from 'react';
 import {Linking, ScrollView} from 'react-native';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
-import {useAuth} from '../Context/Contexts/AuthContext.ts';
-import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
-import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {useAuth} from '#src/Components/Context/Contexts/AuthContext.ts';
+import {useUserNotificationDataQuery} from '#src/Components/Queries/Alert/NotificationQueries.ts';
+import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
 import {StyleSheet} from 'react-native';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();

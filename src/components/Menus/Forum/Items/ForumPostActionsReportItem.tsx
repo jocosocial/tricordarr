@@ -1,9 +1,9 @@
-import {ReportModalView} from '../../../Views/Modals/ReportModalView';
+import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import React from 'react';
-import {PostData} from '../../../../Libraries/Structs/ControllerStructs';
-import {useModal} from '../../../Context/Contexts/ModalContext';
+import {PostData} from '#src/Libraries/Structs/ControllerStructs';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../../Libraries/Enums/Icons';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
 
 interface ForumPostActionsReportItemProps {
   closeMenu: () => void;

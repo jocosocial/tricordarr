@@ -1,17 +1,17 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
 import {FezContentData, FezData, PostContentData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {ContentPostForm} from '../../Forms/ContentPostForm.tsx';
-import {SeamailCreateForm} from '../../Forms/SeamailCreateForm.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {ContentPostForm} from '#src/Forms/ContentPostForm.tsx';
+import {SeamailCreateForm} from '#src/Forms/SeamailCreateForm.tsx';
 import {FormikProps} from 'formik';
-import {useFezPostMutation} from '../../Queries/Fez/FezPostMutations.ts';
+import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {PostAsUserBanner} from '../../Banners/PostAsUserBanner.tsx';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {PostAsUserBanner} from '#src/Banners/PostAsUserBanner.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 import {SeamailFormValues} from '../../../Libraries/Types/FormValues.ts';
-import {useFezCreateMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;

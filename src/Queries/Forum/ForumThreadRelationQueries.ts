@@ -1,4 +1,4 @@
-import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
 import {ForumSearchData} from '../../../Libraries/Structs/ControllerStructs';
 
 export interface ForumRelationQueryParams {

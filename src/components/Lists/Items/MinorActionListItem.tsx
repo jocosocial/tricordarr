@@ -1,7 +1,7 @@
 import {List} from 'react-native-paper';
-import {AppIcon} from '../../Icons/AppIcon';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import React from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface MinorActionListItemProps {
   title: string;

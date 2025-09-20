@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {SeamailSearchBar} from '../../Search/SeamailSearchBar.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {SeamailSearchBar} from '#src/Search/SeamailSearchBar.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ChatStackParamList, ChatStackScreenComponents} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {NotImplementedView} from '../../Views/Static/NotImplementedView.tsx';
+import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator.tsx';
+import {NotImplementedView} from '#src/Views/Static/NotImplementedView.tsx';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
 
 type SeamailSearchScreenProps = NativeStackScreenProps<
   ChatStackParamList,

@@ -1,16 +1,16 @@
 import React, {PropsWithChildren, useCallback, useState} from 'react';
 import {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SharedValue} from 'react-native-reanimated';
-import {SwipeableButton} from '../Buttons/SwipeableButton.tsx';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
-import {useAppTheme} from '../../Styles/Theme.ts';
-import {ForumListData} from '../../Libraries/Structs/ControllerStructs.tsx';
-import {useForumRelationMutation} from '../Queries/Forum/ForumThreadRelationMutations.ts';
+import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useForumRelationMutation} from '#src/Components/Queries/Forum/ForumThreadRelationMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
-import {useForumPinMutation} from '../Queries/Forum/ForumThreadPinMutations.ts';
-import {useForumThreadQuery} from '../Queries/Forum/ForumThreadQueries.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {useForumPinMutation} from '#src/Components/Queries/Forum/ForumThreadPinMutations.ts';
+import {useForumThreadQuery} from '#src/Components/Queries/Forum/ForumThreadQueries.ts';
 import {BaseSwipeable} from './BaseSwipeable.tsx';
 
 interface ForumThreadListItemSwipeableProps extends PropsWithChildren {

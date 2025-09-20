@@ -11,7 +11,7 @@ import {
 import {HelperText, TextInput} from 'react-native-paper';
 import {Field, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
-import {useAppTheme} from '../../../Styles/Theme';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export interface TextFieldProps {
   name: string;

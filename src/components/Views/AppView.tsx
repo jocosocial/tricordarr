@@ -1,17 +1,17 @@
 import React, {PropsWithChildren} from 'react';
 import {KeyboardAvoidingView, StyleSheet, View} from 'react-native';
 import {Portal} from 'react-native-paper';
-import {ErrorBanner} from '../Banners/ErrorBanner.tsx';
-import {AppModal} from '../Modals/AppModal.tsx';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {ErrorBanner} from '#src/Components/Banners/ErrorBanner.tsx';
+import {AppModal} from '#src/Components/Modals/AppModal.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import {ConnectionDisruptedView} from './Warnings/ConnectionDisruptedView.tsx';
-import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useSwiftarrQueryClient} from '#src/Components/Context/Contexts/SwiftarrQueryClientContext.ts';
 import {UnsavedChangesView} from './Warnings/UnsavedChangesView.tsx';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
+import {useErrorHandler} from '#src/Components/Context/Contexts/ErrorHandlerContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {AppSnackbar} from '../Snackbars/AppSnackbar.tsx';
+import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar.tsx';
 import {PreRegistrationWarningView} from './Warnings/PreRegistrationWarningView.tsx';
-import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
 
 interface AppViewProps extends PropsWithChildren {
   safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];

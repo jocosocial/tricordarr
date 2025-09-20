@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {SubmitIconButton} from '../Buttons/IconButtons/SubmitIconButton';
-import {PostContentData} from '../../Libraries/Structs/ControllerStructs';
-import {AppIcons} from '../../Libraries/Enums/Icons';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
+import {PostContentData} from '#src/Libraries/Structs/ControllerStructs';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext';
 import {IconButton} from 'react-native-paper';
-import {PrivilegedUserAccounts} from '../../Libraries/Enums/UserAccessLevel';
-import {ContentInsertMenuView} from '../Views/Content/ContentInsertMenuView';
+import {PrivilegedUserAccounts} from '#src/Libraries/Enums/UserAccessLevel';
+import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
 import {EmojiPickerField} from './Fields/EmojiPickerField';
-import {ContentInsertPhotosView} from '../Views/Content/ContentInsertPhotosView';
-import {ContentPostLengthView} from '../Views/Content/ContentPostLengthView';
+import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
+import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
 import {MentionTextField} from './Fields/MentionTextField';
 
 interface ContentPostFormProps {

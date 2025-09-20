@@ -1,16 +1,16 @@
 import React, {memo} from 'react';
-import {FezData, FezPostData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {UserAvatarImage} from '../../Images/UserAvatarImage.tsx';
-import {MessageView} from '../../Views/MessageView.tsx';
-import {MessageViewContainer} from '../../Views/MessageViewContainer.tsx';
-import {MessageSpacerView} from '../../Views/MessageSpacerView.tsx';
-import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView.tsx';
-import {FlatListItemContent} from '../../Views/Content/FlatListItemContent.tsx';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {ContentPostImage} from '../../Images/ContentPostImage.tsx';
-import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {FezData, FezPostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage.tsx';
+import {MessageView} from '#src/Components/Views/MessageView.tsx';
+import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer.tsx';
+import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView.tsx';
+import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView.tsx';
+import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {ContentPostImage} from '#src/Components/Images/ContentPostImage.tsx';
+import {useChatStack} from '#src/Components/Navigation/Stacks/ChatStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {

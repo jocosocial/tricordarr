@@ -1,14 +1,14 @@
-import {UserAvatarImage} from '../Images/UserAvatarImage.tsx';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage.tsx';
 import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
-import {useAuth} from '../Context/Contexts/AuthContext.ts';
-import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator.tsx';
-import {CommonStackComponents} from '../Navigation/CommonScreens.tsx';
-import {SettingsStackScreenComponents} from '../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useAuth} from '#src/Components/Context/Contexts/AuthContext.ts';
+import {MainStackComponents, useMainStack} from '#src/Components/Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
+import {SettingsStackScreenComponents} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';
-import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 export const MainAccountMenu = () => {
   const {data: profilePublicData} = useUserProfileQuery();

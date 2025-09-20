@@ -1,13 +1,13 @@
-import {MaterialHeaderButton} from '../MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import React, {Dispatch, SetStateAction} from 'react';
-import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
-import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
+import {useSelection} from '#src/Components/Context/Contexts/SelectionContext.ts';
+import {ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useForumRelationMutation} from '#src/Components/Queries/Forum/ForumThreadRelationMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
-import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
+import {ForumListDataSelectionActions} from '#src/Components/Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 interface ForumSelectionHeaderButtonsProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;

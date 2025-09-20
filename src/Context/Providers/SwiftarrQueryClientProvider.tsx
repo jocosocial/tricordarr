@@ -1,14 +1,14 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../Libraries/Network/APIClient.ts';
-import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext.ts';
+import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
 import {Query, QueryKey} from '@tanstack/react-query';
-import {useConfig} from '../Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
 import {ErrorResponse} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useAuth} from '../Contexts/AuthContext.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
 import DeviceInfo from 'react-native-device-info';
-import {useSnackbar} from '../Contexts/SnackbarContext.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted, preRegistrationMode} = useConfig();

@@ -1,21 +1,21 @@
 import React from 'react';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {AppView} from '../../../Views/AppView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {ListSection} from '../../../Lists/ListSection.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ListSection} from '#src/Lists/ListSection.tsx';
 import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
-import {MinorActionListItem} from '../../../Lists/Items/MinorActionListItem.tsx';
+import {MinorActionListItem} from '#src/Lists/Items/MinorActionListItem.tsx';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
   useSettingsStack,
-} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {useModal} from '../../../Context/Contexts/ModalContext.ts';
-import {LogoutDeviceModalView} from '../../../Views/Modals/LogoutModal.tsx';
-import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
+} from '#src/Navigation/Stacks/SettingsStackNavigator.tsx';
+import {useModal} from '#src/Context/Contexts/ModalContext.ts';
+import {LogoutDeviceModalView} from '#src/Views/Modals/LogoutModal.tsx';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents} from '../../../Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
 export const AccountManagementScreen = ({navigation}: Props) => {

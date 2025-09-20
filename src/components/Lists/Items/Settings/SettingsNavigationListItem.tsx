@@ -1,6 +1,6 @@
 import React from 'react';
 import {List} from 'react-native-paper';
-import {SettingsStackParamList, useSettingsStack} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {SettingsStackParamList, useSettingsStack} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
 
 interface NavigationListItemProps {
   title: string;

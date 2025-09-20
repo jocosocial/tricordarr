@@ -1,8 +1,8 @@
 import {Snackbar, Text} from 'react-native-paper';
 import React from 'react';
-import {useAppTheme} from '../../Styles/Theme';
+import {useAppTheme} from '#src/Styles/Theme';
 import {Animated, StyleProp, StyleSheet, ViewStyle} from 'react-native';
-import {StringOrError} from '../../Libraries/Types';
+import {StringOrError} from '#src/Libraries/Types';
 
 export interface SnackBarBaseProps {
   message: string | undefined;

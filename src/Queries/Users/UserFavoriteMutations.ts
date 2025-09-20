@@ -1,5 +1,5 @@
-import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation.ts';
 
 interface UserFavoriteMutationProps {
   userID: string;

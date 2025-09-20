@@ -1,5 +1,5 @@
 import {DailyThemeData} from '../../../Libraries/Structs/ControllerStructs';
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 export const useDailyThemeQuery = (options = {}) => {
   return useTokenAuthQuery<DailyThemeData[]>('/notification/dailythemes', {

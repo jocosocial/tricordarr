@@ -1,17 +1,17 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {ChangePasswordForm} from '../../../Forms/User/ChangePasswordForm.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ChangePasswordForm} from '#src/Forms/User/ChangePasswordForm.tsx';
 import {ChangePasswordFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {Text} from 'react-native-paper';
-import {LoadingView} from '../../../Views/Static/LoadingView.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
 import {useNavigation} from '@react-navigation/native';
-import {useUserPasswordMutation} from '../../../Queries/User/UserMutations.ts';
-import {useSnackbar} from '../../../Context/Contexts/SnackbarContext.ts';
-import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {useUserPasswordMutation} from '#src/Queries/User/UserMutations.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 
 export const ChangePasswordScreen = () => {
   const {data: profilePublicData} = useUserProfileQuery();

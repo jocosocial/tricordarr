@@ -1,17 +1,17 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {BoardgameRecommendationForm} from '../../Forms/BoardgameRecommendationForm.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {BoardgameRecommendationForm} from '#src/Forms/BoardgameRecommendationForm.tsx';
 import {BoardgameData, BoardgameRecommendationData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {useBoardgameRecommendMutation} from '../../Queries/Boardgames/BoardgameMutations.ts';
-import {BoardgameFlatList} from '../../Lists/BoardgameFlatList.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations.ts';
+import {BoardgameFlatList} from '#src/Lists/BoardgameFlatList.tsx';
 import {Divider} from 'react-native-paper';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const defaultValues: BoardgameRecommendationData = {

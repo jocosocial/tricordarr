@@ -1,21 +1,21 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
 import {View} from 'react-native';
-import {useFilter} from '../../Context/Contexts/FilterContext.ts';
-import {BooleanField} from '../../Forms/Fields/BooleanField.tsx';
+import {useFilter} from '#src/Context/Contexts/FilterContext.ts';
+import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
 import {HelperText, SegmentedButtons, Text} from 'react-native-paper';
 import {SegmentedButtonType} from '../../../Libraries/Types/index.ts';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {ListSubheader} from '../../Lists/ListSubheader.tsx';
-import {ListSection} from '../../Lists/ListSection.tsx';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
+import {ListSection} from '#src/Lists/ListSection.tsx';
 import {PushNotificationConfig} from '../../../Libraries/AppConfig.ts';
 import {contentNotificationCategories} from '../../../Libraries/Notifications/Content.ts';
-import {LfgStackComponents} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
+import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator.tsx';
 
 export const LfgSettingsScreen = () => {
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();

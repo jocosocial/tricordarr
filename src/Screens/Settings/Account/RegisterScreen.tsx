@@ -1,19 +1,19 @@
 import React, {useCallback, useState} from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {LoginFormValues, UserRegistrationFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
-import {useLoginMutation} from '../../../Queries/Auth/LoginMutations.ts';
-import {useAuth} from '../../../Context/Contexts/AuthContext.ts';
-import {UserCreateForm} from '../../../Forms/User/UserCreateForm.tsx';
-import {useModal} from '../../../Context/Contexts/ModalContext.ts';
-import {UserRecoveryKeyModalView} from '../../../Views/Modals/UserRecoveryKeyModalView.tsx';
+import {useLoginMutation} from '#src/Queries/Auth/LoginMutations.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
+import {UserCreateForm} from '#src/Forms/User/UserCreateForm.tsx';
+import {useModal} from '#src/Context/Contexts/ModalContext.ts';
+import {UserRecoveryKeyModalView} from '#src/Views/Modals/UserRecoveryKeyModalView.tsx';
 import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
-import {useUserCreateQuery} from '../../../Queries/User/UserMutations.ts';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {useUserCreateQuery} from '#src/Queries/User/UserMutations.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 
 const RegisterScreenBase = () => {
   const createMutation = useUserCreateQuery();

@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {DataTable} from 'react-native-paper';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 interface SettingDataTableRowProps {

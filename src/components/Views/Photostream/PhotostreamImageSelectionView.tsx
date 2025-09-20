@@ -1,17 +1,17 @@
 import React from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import {useFormikContext} from 'formik';
-import {PhotostreamUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ImageButtons} from '../../Buttons/ImageButtons.tsx';
-import {AppImage} from '../../Images/AppImage.tsx';
-import {ImageQueryData} from '../../../Libraries/Types/index.ts';
+import {PhotostreamUploadData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ImageButtons} from '#src/Components/Buttons/ImageButtons.tsx';
+import {AppImage} from '#src/Components/Images/AppImage.tsx';
+import {ImageQueryData} from '#src/Libraries/Types/index.ts';
 import {View} from 'react-native';
 import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
 import {ActivityIndicator} from 'react-native-paper';
-import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
+import {useSnackbar} from '#src/Components/Context/Contexts/SnackbarContext.ts';
 
 const {ImageTextBlurModule} = NativeModules;
 

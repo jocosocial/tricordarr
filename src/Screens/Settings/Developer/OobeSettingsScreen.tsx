@@ -1,13 +1,13 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {DataTable, Text} from 'react-native-paper';
-import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
-import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
-import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator.tsx';
+import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
+import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator.tsx';
 import {useAppTheme} from '../../../../Styles/Theme.ts';
 
 export const OobeSettingsScreen = () => {

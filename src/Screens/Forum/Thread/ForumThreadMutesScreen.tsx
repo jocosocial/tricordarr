@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator.tsx';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator.tsx';
 import {View} from 'react-native';
-import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu.tsx';
-import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView.tsx';
-import {ForumRelationQueryType} from '../../../Queries/Forum/ForumThreadRelationQueries.ts';
-import {AppView} from '../../../Views/AppView.tsx';
+import {ForumThreadScreenSortMenu} from '#src/Menus/Forum/ForumThreadScreenSortMenu.tsx';
+import {ForumThreadsRelationsView} from '#src/Views/Forum/ForumThreadsRelationsView.tsx';
+import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries.ts';
+import {AppView} from '#src/Views/AppView.tsx';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumMutesScreen>;
 

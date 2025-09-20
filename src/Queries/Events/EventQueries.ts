@@ -1,5 +1,5 @@
 import {EventData} from '../../../Libraries/Structs/ControllerStructs';
-import {useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 interface EventsQueryOptions {
   cruiseDay?: number;

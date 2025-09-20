@@ -1,11 +1,11 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 import {useFormikContext} from 'formik';
-import {PostContentData} from '../../../Libraries/Structs/ControllerStructs';
-import {AppImageViewer} from '../../Images/AppImageViewer';
-import {ImageQueryData} from '../../../Libraries/Types';
-import {ContentPostAttachedImage} from '../../Images/ContentPostAttachedImage';
+import {PostContentData} from '#src/Libraries/Structs/ControllerStructs';
+import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {ImageQueryData} from '#src/Libraries/Types';
+import {ContentPostAttachedImage} from '#src/Components/Images/ContentPostAttachedImage';
 
 // Some day it might be good to break the viewer out of this into a generic "PendingAttachmentImage" thing.
 // Basically APIImage but LocalImage or BlobImage

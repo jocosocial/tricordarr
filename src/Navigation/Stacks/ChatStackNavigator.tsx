@@ -1,19 +1,19 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SeamailListScreen} from '../../Screens/Seamail/SeamailListScreen.tsx';
+import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen.tsx';
 import {useNavigation} from '@react-navigation/native';
-import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen.tsx';
+import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen.tsx';
 import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useDrawer} from '../../Context/Contexts/DrawerContext.ts';
-import {SeamailSearchScreen} from '../../Screens/Seamail/SeamailSearchScreen.tsx';
-import {DisabledView} from '../../Views/Static/DisabledView.tsx';
-import {useFeature} from '../../Context/Contexts/FeatureContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext.ts';
+import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen.tsx';
+import {DisabledView} from '#src/Views/Static/DisabledView.tsx';
+import {useFeature} from '#src/Context/Contexts/FeatureContext.ts';
 import {SwiftarrFeature} from '../../../Libraries/Enums/AppFeatures.ts';
-import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen.tsx';
+import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen.tsx';
 import {MainStack} from './MainStackNavigator.tsx';
-import {CommonScreens, CommonStackParamList} from '../CommonScreens.tsx';
-import {SeamailSettingsScreen} from '../../Screens/Seamail/SeamailSettingsScreen.tsx';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen.tsx';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {

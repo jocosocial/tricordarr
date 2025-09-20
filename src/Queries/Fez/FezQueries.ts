@@ -1,7 +1,7 @@
 import {FezData, FezListData} from '../../../Libraries/Structs/ControllerStructs';
 import {PrivilegedUserAccounts} from '../../../Libraries/Enums/UserAccessLevel';
 import {FezType} from '../../../Libraries/Enums/FezType';
-import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
 import {FezListEndpoints} from '../../../Libraries/Types';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a

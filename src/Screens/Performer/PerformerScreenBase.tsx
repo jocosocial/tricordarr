@@ -1,20 +1,20 @@
 import {Card, Text} from 'react-native-paper';
-import {AppView} from '../../Views/AppView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
 import React from 'react';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {RefreshControl, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {APIImage} from '../../Images/APIImage.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {APIImage} from '#src/Images/APIImage.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {LinkIconButton} from '../../Buttons/IconButtons/LinkIconButton.tsx';
-import {PerformerYearsCard} from '../../Cards/Performer/PerformerYearsCard.tsx';
-import {PerformerBioCard} from '../../Cards/Performer/PerformerBioCard.tsx';
-import {EventCard} from '../../Cards/Schedule/EventCard.tsx';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {LinkIconButton} from '#src/Buttons/IconButtons/LinkIconButton.tsx';
+import {PerformerYearsCard} from '#src/Cards/Performer/PerformerYearsCard.tsx';
+import {PerformerBioCard} from '#src/Cards/Performer/PerformerBioCard.tsx';
+import {EventCard} from '#src/Cards/Schedule/EventCard.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
 import {PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {AppIcon} from '../../Icons/AppIcon.tsx';
+import {AppIcon} from '#src/Icons/AppIcon.tsx';
 
 interface PerformerScreenBaseProps {
   performerData: PerformerData;

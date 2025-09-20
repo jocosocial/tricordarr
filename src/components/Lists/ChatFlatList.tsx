@@ -1,6 +1,6 @@
 import {FlatList, ListRenderItemInfo, RefreshControlProps} from 'react-native';
-import {FezData, FezPostData} from '../../Libraries/Structs/ControllerStructs.tsx';
-import {PaddedContentView} from '../Views/Content/PaddedContentView.tsx';
+import {FezData, FezPostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
 import {LabelDivider} from './Dividers/LabelDivider.tsx';
 import {FezPostListItem} from './Items/FezPostListItem.tsx';
 import React, {useCallback} from 'react';
@@ -8,7 +8,7 @@ import {AppFlatList} from './AppFlatList.tsx';
 import {LoadingPreviousHeader} from './Headers/LoadingPreviousHeader.tsx';
 import {FezPostListHeader} from './Headers/FezPostListHeader.tsx';
 import {SpaceDivider} from './Dividers/SpaceDivider.tsx';
-import {FloatingScrollButtonPosition} from '../../Libraries/Types/index.ts';
+import {FloatingScrollButtonPosition} from '#src/Libraries/Types/index.ts';
 
 interface ChatFlatListProps {
   fez: FezData;

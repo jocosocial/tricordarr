@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {FabGroupAction} from './FABGroupAction.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useScheduleStackNavigation} from '#src/Components/Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {BaseFABGroup} from './BaseFABGroup.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
 
 interface ScheduleFABProps {
   selectedDay?: number;

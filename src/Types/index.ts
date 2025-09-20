@@ -1,6 +1,6 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
-import {EventType} from '../Enums/EventType';
-import {FezType} from '../Enums/FezType';
+import {EventType} from '#src/Enums/EventType';
+import {FezType} from '#src/Enums/FezType';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {
   Animated,

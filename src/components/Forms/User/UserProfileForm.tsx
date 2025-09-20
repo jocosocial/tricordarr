@@ -1,15 +1,15 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {UserProfileFormValues} from '../../../Libraries/Types/FormValues.ts';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {UserProfileFormValues} from '#src/Libraries/Types/FormValues.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
-import {TextField} from '../Fields/TextField.tsx';
-import {EmailValidation, RoomNumberValidation} from '../../../Libraries/ValidationSchema.ts';
-import {PickerField} from '../Fields/PickerField.tsx';
-import {DinnerTeam} from '../../../Libraries/Enums/DinnerTeam.ts';
-import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
+import {TextField} from '#src/Components/Forms/Fields/TextField.tsx';
+import {EmailValidation, RoomNumberValidation} from '#src/Libraries/ValidationSchema.ts';
+import {PickerField} from '#src/Components/Forms/Fields/PickerField.tsx';
+import {DinnerTeam} from '#src/Enums/DinnerTeam.ts';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField.tsx';
 
 interface UserProfileFormProps {
   onSubmit: (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => void;

@@ -1,14 +1,14 @@
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
 import {View} from 'react-native';
-import {ModalCard} from '../../Cards/ModalCard.tsx';
+import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
 import React from 'react';
-import {EventData, PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {EventData, PerformerData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {usePerformerDeleteMutation} from '../../Queries/Performer/PerformerMutations.ts';
+import {usePerformerDeleteMutation} from '#src/Components/Queries/Performer/PerformerMutations.ts';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

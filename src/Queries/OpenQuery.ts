@@ -2,7 +2,7 @@ import {AxiosError} from 'axios';
 import {ErrorResponse} from '../../Libraries/Structs/ControllerStructs';
 import {useQuery} from '@tanstack/react-query';
 import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
-import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 /**
  * Clone of useQuery but dedicated for queries that can be performed without the user needing

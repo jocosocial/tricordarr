@@ -1,18 +1,18 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgForm} from '../../Forms/LfgForm.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {LfgForm} from '#src/Forms/LfgForm.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {LfgCanceledView} from '../../Views/Static/LfgCanceledView.tsx';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {LfgCanceledView} from '#src/Views/Static/LfgCanceledView.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 import {useQueryClient} from '@tanstack/react-query';
-import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations.ts';
 import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;

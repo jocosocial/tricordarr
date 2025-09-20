@@ -1,7 +1,7 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {LfgCreateScreenBase} from '../LFG/LfgCreateScreenBase.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase.tsx';
 import pluralize from 'pluralize';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
 

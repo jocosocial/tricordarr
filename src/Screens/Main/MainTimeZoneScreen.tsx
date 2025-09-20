@@ -1,23 +1,23 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {ListTitleView} from '../../Views/ListTitleView.tsx';
-import {useTimeZoneChangesQuery} from '../../Queries/Admin/TimeZoneQueries.ts';
-import {LoadingView} from '../../Views/Static/LoadingView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
+import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries.ts';
+import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
 import {RefreshControl, Linking, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
 import {TimeZoneChangeRecord} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {DataTable, Text} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
 import moment from 'moment-timezone';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
-import {DataTableCell} from '../../Tables/DataTableCell.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries.ts';
+import {DataTableCell} from '#src/Tables/DataTableCell.tsx';
 
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';

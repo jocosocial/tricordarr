@@ -2,9 +2,9 @@ import React from 'react';
 import {StyleProp, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 import {Field, useField, useFormikContext} from 'formik';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../../Styles/Theme';
-import {AppIcon} from '../../Icons/AppIcon';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 
 interface BooleanFieldProps {
   onPress?: () => void;

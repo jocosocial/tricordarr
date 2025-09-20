@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
-import {ForumData, PostData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ForumData, PostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem.tsx';
 import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem.tsx';
@@ -10,8 +10,8 @@ import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem
 import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem.tsx';
 import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem.tsx';
 import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem.tsx';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;

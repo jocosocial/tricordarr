@@ -1,17 +1,17 @@
 import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
-import {ForumData, PostData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ContentText} from '../../Text/ContentText.tsx';
-import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu.tsx';
-import {AppIcon} from '../../Icons/AppIcon.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {UserBylineTag} from '../../Text/Tags/UserBylineTag.tsx';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag.tsx';
+import {ForumData, PostData, UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ContentText} from '#src/Components/Text/ContentText.tsx';
+import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu.tsx';
+import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
+import {useUserFavoritesQuery} from '#src/Components/Queries/Users/UserFavoriteQueries.ts';
 
 interface ForumPostMessageViewProps {
   postData: PostData;

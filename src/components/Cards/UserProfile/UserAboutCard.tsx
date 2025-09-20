@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card, Text} from 'react-native-paper';
-import {ProfilePublicData} from '../../../Libraries/Structs/ControllerStructs';
+import {ProfilePublicData} from '#src/Libraries/Structs/ControllerStructs';
 
 interface UserAboutCardProps {
   user: ProfilePublicData;

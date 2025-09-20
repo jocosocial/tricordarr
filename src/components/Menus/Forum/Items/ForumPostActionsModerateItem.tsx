@@ -1,10 +1,10 @@
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../../Libraries/Enums/Icons';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
 import React from 'react';
-import {usePrivilege} from '../../../Context/Contexts/PrivilegeContext';
-import {PostData} from '../../../../Libraries/Structs/ControllerStructs';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext';
+import {PostData} from '#src/Libraries/Structs/ControllerStructs';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '#src/Components/Navigation/CommonScreens';
 
 interface ForumPostActionsModerateItemProps {
   closeMenu: () => void;

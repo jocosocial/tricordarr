@@ -1,13 +1,13 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {useAppTheme} from '../../../Styles/Theme.ts';
-import {ScheduleItemCardBase} from '../../Cards/Schedule/ScheduleItemCardBase.tsx';
+import {ScheduleItemCardBase} from '#src/Cards/Schedule/ScheduleItemCardBase.tsx';
 import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
-import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
-import {ScheduleHeaderDayButton} from '../../Buttons/ScheduleHeaderDayButton.tsx';
+import {HelpTopicView} from '#src/Views/Help/HelpTopicView.tsx';
+import {HelpChapterTitleView} from '#src/Views/Help/HelpChapterTitleView.tsx';
+import {ScheduleHeaderDayButton} from '#src/Buttons/ScheduleHeaderDayButton.tsx';
 
 export const ScheduleHelpScreen = () => {
   const theme = useAppTheme();

@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {ReportData} from '../../Libraries/Structs/ControllerStructs';
-import {useAppTheme} from '../../Styles/Theme';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {ReportData} from '#src/Libraries/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
 import {Text} from 'react-native-paper';
 import {TextField} from './Fields/TextField';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
-import {ModalCard} from '../Cards/ModalCard';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 
 interface ReportContentFormProps {
   onSubmit: (values: ReportData, formikBag: FormikHelpers<ReportData>) => void;

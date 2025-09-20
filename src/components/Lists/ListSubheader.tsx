@@ -1,7 +1,7 @@
 import React from 'react';
 import {PropsWithChildren} from 'react';
 import {List} from 'react-native-paper';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 
 interface ListSubheaderProps extends PropsWithChildren {

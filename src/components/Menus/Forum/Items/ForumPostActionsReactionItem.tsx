@@ -1,15 +1,15 @@
-import {useForumPostReactionMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations.ts';
-import {PostData, PostDetailData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {LikeType} from '../../../../Libraries/Enums/LikeType.ts';
+import {useForumPostReactionMutation} from '#src/Components/Queries/Forum/ForumPostBookmarkMutations.ts';
+import {PostData, PostDetailData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {LikeType} from '#src/Libraries/Enums/LikeType.ts';
 import {ActivityIndicator, Text} from 'react-native-paper';
-import {LaughReaction, LoveReaction, LikeReaction} from '../../../Text/Reactions.tsx';
+import {LaughReaction, LoveReaction, LikeReaction} from '#src/Components/Text/Reactions.tsx';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
-import {useForumPostQuery} from '../../../Queries/Forum/ForumPostQueries.ts';
-import {SubmitIconButton} from '../../../Buttons/IconButtons/SubmitIconButton.tsx';
-import {useAppTheme} from '../../../../Styles/Theme.ts';
-import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useForumPostQuery} from '#src/Components/Queries/Forum/ForumPostQueries.ts';
+import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton.tsx';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface ForumPostActionsReactionItemProps {
   forumPost: PostData;

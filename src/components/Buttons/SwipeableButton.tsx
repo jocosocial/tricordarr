@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleProp, TextStyle, ViewStyle, StyleSheet} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
-import {AppIcon} from '../Icons/AppIcon.tsx';
+import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
 import {RectButton} from 'react-native-gesture-handler';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {useAppTheme} from '../../Styles/Theme.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useAppTheme} from '#src/Styles/Theme.ts';
 
 interface SwipeableButtonProps {
   onPress?: () => void;

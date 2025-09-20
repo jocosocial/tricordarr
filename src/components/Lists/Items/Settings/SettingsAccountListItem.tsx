@@ -1,6 +1,6 @@
 import React from 'react';
 import {List} from 'react-native-paper';
-import {SettingsStackScreenComponents, useSettingsStack} from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
+import {SettingsStackScreenComponents, useSettingsStack} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
 
 /**
  * Used in the Settings list for the users current account.

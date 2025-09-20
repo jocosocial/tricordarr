@@ -1,9 +1,9 @@
 import React, {PropsWithChildren} from 'react';
-import {CruiseContext} from '../Contexts/CruiseContext.ts';
-import {useConfig} from '../Contexts/ConfigContext.ts';
+import {CruiseContext} from '#src/Context/Contexts/CruiseContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import useDateTime, {getCruiseDay, getCruiseDays} from '../../../Libraries/DateTime.ts';
 import {differenceInCalendarDays, differenceInDays} from 'date-fns';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries.ts';
 
 export const CruiseProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted} = useConfig();

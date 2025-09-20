@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {ListSection} from '../../Lists/ListSection.tsx';
-import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {ListSection} from '#src/Lists/ListSection.tsx';
+import {DataFieldListItem} from '#src/Lists/Items/DataFieldListItem.tsx';
 import {RefreshControl, StyleSheet, View} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useDailyThemeQuery} from '../../Queries/Alert/DailyThemeQueries.ts';
-import {APIImage} from '../../Images/APIImage.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries.ts';
+import {APIImage} from '#src/Images/APIImage.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;
 

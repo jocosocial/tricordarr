@@ -1,4 +1,4 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {CategoryData} from '../../../Libraries/Structs/ControllerStructs';
 import {ForumSort, ForumSortDirection} from '../../../Libraries/Enums/ForumSortFilter';
 

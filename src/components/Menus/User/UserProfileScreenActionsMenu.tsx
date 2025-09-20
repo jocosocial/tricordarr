@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';
-import {BlockUserModalView} from '../../Views/Modals/BlockUserModalView.tsx';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {ProfilePublicData, UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
+import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView.tsx';
+import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView.tsx';
+import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useUserBlockMutation} from '../../Queries/Users/UserBlockMutations.ts';
-import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
-import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useUserBlockMutation} from '#src/Components/Queries/Users/UserBlockMutations.ts';
+import {useUserMuteMutation} from '#src/Components/Queries/Users/UserMuteMutations.ts';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface UserProfileActionsMenuProps {

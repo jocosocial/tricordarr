@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
 import {StyleProp, View, ViewStyle} from 'react-native';
-import {PerformerChip} from '../../../Chips/PerformerChip.tsx';
-import {CommonStackComponents, useCommonStack} from '../../../Navigation/CommonScreens.tsx';
-import {DataFieldListItem} from '../DataFieldListItem.tsx';
-import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
-import {PerformerHeaderData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {PerformerChip} from '#src/Components/Chips/PerformerChip.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PerformerHeaderData} from '#src/Libraries/Structs/ControllerStructs.tsx';
 
 interface EventPerformerListItemProps {
   iconStyle?: StyleProp<ViewStyle>;

@@ -1,6 +1,6 @@
 import {RefreshControl, View} from 'react-native';
-import {ScrollingContentView} from '../Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../Content/PaddedContentView.tsx';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
 import {Text} from 'react-native-paper';
 import React from 'react';
 

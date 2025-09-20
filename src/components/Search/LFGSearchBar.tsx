@@ -1,13 +1,13 @@
 import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {FezData} from '../../Libraries/Structs/ControllerStructs.tsx';
-import {TimeDivider} from '../Lists/Dividers/TimeDivider.tsx';
-import {ScheduleFlatList} from '../Lists/Schedule/ScheduleFlatList.tsx';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider.tsx';
+import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList.tsx';
 import {FlashList} from '@shopify/flash-list';
-import {useLfgListQuery} from '../Queries/Fez/FezQueries.ts';
+import {useLfgListQuery} from '#src/Components/Queries/Fez/FezQueries.ts';
 import {SearchBarBase} from './SearchBarBase.tsx';
-import {FezListEndpoints} from '../../Libraries/Types/index.ts';
-import {useFilter} from '../Context/Contexts/FilterContext.ts';
+import {FezListEndpoints} from '#src/Libraries/Types/index.ts';
+import {useFilter} from '#src/Components/Context/Contexts/FilterContext.ts';
 
 interface LFGSearchBarProps {
   endpoint: FezListEndpoints;

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {PropsWithChildren} from 'react';
-import {ConfigContext} from '../Contexts/ConfigContext';
+import {ConfigContext} from '#src/Context/Contexts/ConfigContext';
 import {AppConfig, getAppConfig} from '../../../Libraries/AppConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '../../../Libraries/Storage';

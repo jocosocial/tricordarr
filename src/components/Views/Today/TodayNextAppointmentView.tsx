@@ -1,8 +1,8 @@
-import {PaddedContentView} from '../Content/PaddedContentView.tsx';
-import {NextEventCard} from '../../Cards/MainScreen/NextEventCard.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
+import {NextEventCard} from '#src/Components/Cards/MainScreen/NextEventCard.tsx';
 import React from 'react';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
-import {NextLFGCard} from '../../Cards/MainScreen/NextLFGCard.tsx';
+import {useUserNotificationDataQuery} from '#src/Components/Queries/Alert/NotificationQueries.ts';
+import {NextLFGCard} from '#src/Components/Cards/MainScreen/NextLFGCard.tsx';
 
 export const TodayNextAppointmentView = () => {
   const {data} = useUserNotificationDataQuery();

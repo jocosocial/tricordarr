@@ -1,4 +1,4 @@
-import {AppIcons} from '../../../Libraries/Enums/Icons';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
 

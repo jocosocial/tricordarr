@@ -1,4 +1,4 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
+import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {ForumData, PostData} from '../../../Libraries/Structs/ControllerStructs';
 
 export const useForumThreadQuery = (forumID?: string, postID?: string, options = {}) => {

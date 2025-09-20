@@ -1,13 +1,13 @@
 import React, {useCallback, useState} from 'react';
 import {ScheduleItemCardBase} from './ScheduleItemCardBase.tsx';
-import {EventData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {EventType} from '../../../Libraries/Enums/EventType.ts';
-import {AppIcon} from '../../Icons/AppIcon.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {ScheduleCardMarkerType} from '../../../Libraries/Types/index.ts';
+import {EventData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useAppTheme} from '#src/Styles/Theme.ts';
+import {EventType} from '#src/Libraries/Enums/EventType.ts';
+import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {ScheduleCardMarkerType} from '#src/Libraries/Types/index.ts';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.ts';
+import {useEventFavoriteMutation} from '#src/Components/Queries/Events/EventFavoriteMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {ActivityIndicator} from 'react-native-paper';
 

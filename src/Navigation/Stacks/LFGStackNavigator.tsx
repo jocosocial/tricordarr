@@ -1,20 +1,20 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {LfgJoinedScreen} from '../../Screens/LFG/LfgJoinedScreen.tsx';
-import {LfgFindScreen} from '../../Screens/LFG/LfgFindScreen.tsx';
-import {LfgSettingsScreen} from '../../Screens/LFG/LfgSettingsScreen.tsx';
-import {LfgCreateScreen} from '../../Screens/LFG/LfgCreateScreen.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen.tsx';
+import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen.tsx';
+import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen.tsx';
+import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen.tsx';
 import {SwiftarrFeature} from '../../../Libraries/Enums/AppFeatures.ts';
-import {useFeature} from '../../Context/Contexts/FeatureContext.ts';
-import {DisabledView} from '../../Views/Static/DisabledView.tsx';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {CommonScreens, CommonStackParamList} from '../CommonScreens.tsx';
+import {useFeature} from '#src/Context/Contexts/FeatureContext.ts';
+import {DisabledView} from '#src/Views/Static/DisabledView.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 import {MainStack} from './MainStackNavigator.tsx';
-import {LfgOwnedScreen} from '../../Screens/LFG/LfgOwnedScreen.tsx';
-import {LfgFormerScreen} from '../../Screens/LFG/LfgFormerScreen.tsx';
-import {LfgSearchScreen} from '../../Screens/LFG/LfgSearchScreen.tsx';
+import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen.tsx';
+import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen.tsx';
+import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen.tsx';
 import {FezListEndpoints} from '../../../Libraries/Types/index.ts';
 
 export type LfgStackParamList = CommonStackParamList & {

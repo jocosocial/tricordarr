@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
-import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {PersonalEventForm} from '#src/Forms/PersonalEventForm.tsx';
 import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {FezType} from '../../../Libraries/Enums/FezType.ts';
 import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
+import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {

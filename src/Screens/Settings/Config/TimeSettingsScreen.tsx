@@ -1,9 +1,9 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
-import {TimeSettingsForm} from '../../../Forms/Settings/TimeSettingsForm.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {TimeSettingsForm} from '#src/Forms/Settings/TimeSettingsForm.tsx';
 import {TimeSettingsFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 

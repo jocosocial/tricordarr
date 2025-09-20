@@ -1,5 +1,5 @@
 import React, {useState, PropsWithChildren, useCallback} from 'react';
-import {ErrorHandlerContext} from '../Contexts/ErrorHandlerContext';
+import {ErrorHandlerContext} from '#src/Context/Contexts/ErrorHandlerContext';
 import {StringOrError} from '../../../Libraries/Types';
 
 // https://stackoverflow.com/questions/30469261/checking-for-typeof-error-in-js

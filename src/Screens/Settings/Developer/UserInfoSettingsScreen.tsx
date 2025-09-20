@@ -1,9 +1,9 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
-import {AppView} from '../../../Views/AppView.tsx';
-import {useAuth} from '../../../Context/Contexts/AuthContext.ts';
-import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
+import {AppView} from '#src/Views/AppView.tsx';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
 
 const toSecureString = (originalText?: string) => {
   if (!originalText) {

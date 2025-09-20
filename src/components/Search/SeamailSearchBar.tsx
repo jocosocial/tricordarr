@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {FezData} from '../../Libraries/Structs/ControllerStructs.tsx';
-import {useSeamailListQuery} from '../Queries/Fez/FezQueries.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useSeamailListQuery} from '#src/Components/Queries/Fez/FezQueries.ts';
 import {Keyboard, RefreshControl} from 'react-native';
-import {SeamailFlatList} from '../Lists/Seamail/SeamailFlatList.tsx';
+import {SeamailFlatList} from '#src/Components/Lists/Seamail/SeamailFlatList.tsx';
 import {SearchBarBase} from './SearchBarBase.tsx';
 
 export const SeamailSearchBar = () => {

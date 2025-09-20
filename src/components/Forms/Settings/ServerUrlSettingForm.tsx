@@ -1,15 +1,15 @@
-import {ServerUrlFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {ServerUrlFormValues} from '#src/Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {ServerURLValidation} from '../../../Libraries/ValidationSchema.ts';
-import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {ServerURLValidation} from '#src/Libraries/ValidationSchema.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 import React from 'react';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
 import {View} from 'react-native';
-import {PickerField} from '../Fields/PickerField.tsx';
-import {TextField} from '../Fields/TextField.tsx';
-import {ServerChoices, ServerUrlChoice} from '../../../Libraries/Network/ServerChoices.ts';
-import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
+import {PickerField} from '#src/Components/Forms/Fields/PickerField.tsx';
+import {TextField} from '#src/Components/Forms/Fields/TextField.tsx';
+import {ServerChoices, ServerUrlChoice} from '#src/Libraries/Network/ServerChoices.ts';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField.tsx';
 
 interface ServerUrlFormProps {
   initialValues: ServerUrlFormValues;

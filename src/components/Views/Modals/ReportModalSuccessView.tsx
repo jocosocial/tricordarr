@@ -1,8 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {ModalCard} from '../../Cards/ModalCard';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 
 export const ReportModalSuccessView = () => {
   const {commonStyles} = useStyles();

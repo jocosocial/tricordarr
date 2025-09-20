@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
-import {AppView} from '../../Views/AppView';
+import {AppView} from '#src/Views/AppView';
 
 export const AboutSettingsScreen = () => {
   const [apiLevel, setApiLevel] = useState<number>();

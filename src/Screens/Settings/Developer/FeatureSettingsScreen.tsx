@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
-import {AppView} from '../../../Views/AppView';
-import {useFeature} from '../../../Context/Contexts/FeatureContext';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {useUserNotificationDataQuery} from '../../../Queries/Alert/NotificationQueries';
+import {AppView} from '#src/Views/AppView';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const FeatureSettingsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);

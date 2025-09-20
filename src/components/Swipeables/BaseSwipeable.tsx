@@ -1,6 +1,6 @@
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import React, {PropsWithChildren} from 'react';
-import {useConfig} from '../Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
 import {SharedValue} from 'react-native-reanimated';
 import {SwipeableMethods} from 'react-native-gesture-handler/src/components/ReanimatedSwipeable.tsx';
 

@@ -1,13 +1,13 @@
-import {AppView} from '../../../Views/AppView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {ForumPostFlatList} from '../../../Lists/Forums/ForumPostFlatList.tsx';
+import {ForumPostFlatList} from '#src/Lists/Forums/ForumPostFlatList.tsx';
 import React, {useEffect, useRef, useState} from 'react';
-import {useForumPostSearchQuery} from '../../../Queries/Forum/ForumPostSearchQueries.ts';
-import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
+import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator.tsx';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator.tsx';
 import {PostData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {ListTitleView} from '../../../Views/ListTitleView.tsx';
+import {ListTitleView} from '#src/Views/ListTitleView.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;

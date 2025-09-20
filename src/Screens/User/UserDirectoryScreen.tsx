@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {UserSearchBar} from '../../Search/UserSearchBar.tsx';
-import {UserDirectoryText} from '../../Text/UserRelationsText.tsx';
-import {useAuth} from '../../Context/Contexts/AuthContext.ts';
-import {NotLoggedInView} from '../../Views/Static/NotLoggedInView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {UserSearchBar} from '#src/Search/UserSearchBar.tsx';
+import {UserDirectoryText} from '#src/Text/UserRelationsText.tsx';
+import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
+import {NotLoggedInView} from '#src/Views/Static/NotLoggedInView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
 import {View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {UserDirectoryScreenActionsMenu} from '../../Menus/User/UserDirectoryScreenActionsMenu.tsx';
+import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
+import {UserDirectoryScreenActionsMenu} from '#src/Menus/User/UserDirectoryScreenActionsMenu.tsx';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 export const UserDirectoryScreen = ({navigation}: Props) => {

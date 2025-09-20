@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
-import {commonStyles} from '../../../Styles';
+import {commonStyles} from '#src/Styles';
 
 interface PaddedContentViewProps {
   padSides?: boolean;

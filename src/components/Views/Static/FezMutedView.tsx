@@ -1,7 +1,7 @@
 import {Text} from 'react-native-paper';
 import {View} from 'react-native';
 import React from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 export const FezMutedView = () => {
   const {commonStyles} = useStyles();

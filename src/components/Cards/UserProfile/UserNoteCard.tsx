@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, Text} from 'react-native-paper';
-import {ProfilePublicData} from '../../../Libraries/Structs/ControllerStructs';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {ProfilePublicData} from '#src/Libraries/Structs/ControllerStructs';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
 
 interface UserNoteCardProps {
   user: ProfilePublicData;

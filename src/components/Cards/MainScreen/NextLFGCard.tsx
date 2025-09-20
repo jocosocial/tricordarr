@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
-import {FezCard} from '../Schedule/FezCard.tsx';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {useFezQuery} from '#src/Components/Queries/Fez/FezQueries.ts';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard.tsx';
+import {FezType} from '#src/Libraries/Enums/FezType.ts';
 
 export const NextLFGCard = ({lfgID}: {lfgID: string}) => {
   const {data} = useFezQuery({fezID: lfgID});

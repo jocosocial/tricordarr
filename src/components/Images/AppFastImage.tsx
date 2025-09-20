@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, ImageURISource, StyleProp, StyleSheet} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
 
 interface ImageDimensionProps {
   width?: number;

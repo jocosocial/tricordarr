@@ -1,24 +1,24 @@
-import {FezFormValues} from '../../Libraries/Types/FormValues.ts';
+import {FezFormValues} from '#src/Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {DateValidation, InfoStringValidation} from '../../Libraries/ValidationSchema.ts';
+import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema.ts';
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 import {TextField} from './Fields/TextField.tsx';
 import React from 'react';
 import {Keyboard, View} from 'react-native';
-import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
 import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
 import {TextInput} from 'react-native-paper';
-import {AppIcons} from '../../Libraries/Enums/Icons.ts';
-import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
-import {useModal} from '../Context/Contexts/ModalContext.ts';
+import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView.tsx';
+import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
-import {getUserSuggestedLocations} from '../../Libraries/Ship.ts';
-import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
+import {getUserSuggestedLocations} from '#src/Libraries/Ship.ts';
+import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
 
 interface PersonalEventFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

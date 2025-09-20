@@ -1,6 +1,6 @@
 import {SecretHeaderTitle} from './SecretHeaderTitle';
 import React from 'react';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 export const TodayHeaderTitle = () => {
   const {appConfig, updateAppConfig} = useConfig();

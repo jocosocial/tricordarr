@@ -1,13 +1,13 @@
-import {AppView} from '../../Views/AppView.tsx';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Views/AppView.tsx';
+import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
 import {Card, Text} from 'react-native-paper';
 import React from 'react';
-import {useRegCodeForUserQuery} from '../../Queries/Admin/RegCodeQueries.ts';
-import {useModal} from '../../Context/Contexts/ModalContext.ts';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {UserListItem} from '../../Lists/Items/UserListItem.tsx';
+import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries.ts';
+import {useModal} from '#src/Context/Contexts/ModalContext.ts';
+import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {UserListItem} from '#src/Lists/Items/UserListItem.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 

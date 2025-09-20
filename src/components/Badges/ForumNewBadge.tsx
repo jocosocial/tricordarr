@@ -2,7 +2,7 @@ import {Badge} from 'react-native-paper';
 import pluralize from 'pluralize';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
-import {commonStyles} from '../../Styles';
+import {commonStyles} from '#src/Styles';
 
 interface ForumNewBadgeProps {
   unreadCount?: number;

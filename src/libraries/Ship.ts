@@ -1,28 +1,28 @@
 import {ImageURISource} from 'react-native';
 // @ts-ignore
-import deck1 from '../../assets/map/deck1.png';
+import deck1 from '#assets/map/deck1.png';
 // @ts-ignore
-import deck2 from '../../assets/map/deck2.png';
+import deck2 from '#assets/map/deck2.png';
 // @ts-ignore
-import deck3 from '../../assets/map/deck3.png';
+import deck3 from '#assets/map/deck3.png';
 // @ts-ignore
-import deck4 from '../../assets/map/deck4.png';
+import deck4 from '#assets/map/deck4.png';
 // @ts-ignore
-import deck5 from '../../assets/map/deck5.png';
+import deck5 from '#assets/map/deck5.png';
 // @ts-ignore
-import deck6 from '../../assets/map/deck6.png';
+import deck6 from '#assets/map/deck6.png';
 // @ts-ignore
-import deck7 from '../../assets/map/deck7.png';
+import deck7 from '#assets/map/deck7.png';
 // @ts-ignore
-import deck8 from '../../assets/map/deck8.png';
+import deck8 from '#assets/map/deck8.png';
 // @ts-ignore
-import deck9 from '../../assets/map/deck9.png';
+import deck9 from '#assets/map/deck9.png';
 // @ts-ignore
-import deck10 from '../../assets/map/deck10.png';
+import deck10 from '#assets/map/deck10.png';
 // @ts-ignore
-import deck11 from '../../assets/map/deck11.png';
+import deck11 from '#assets/map/deck11.png';
 // @ts-ignore
-import deck12 from '../../assets/map/deck12.png';
+import deck12 from '#assets/map/deck12.png';
 import {ProfilePublicData} from './Structs/ControllerStructs.tsx';
 
 export interface DeckData {

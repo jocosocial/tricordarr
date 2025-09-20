@@ -2,13 +2,13 @@ import ImageView from 'react-native-image-viewing';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {AppIcons} from '../../Libraries/Enums/Icons';
-import {ImageViewerSnackbar} from '../Snackbars/ImageViewerSnackbar';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {ImageQueryData} from '../../Libraries/Types';
-import {saveImageToLocal} from '../../Libraries/Storage/ImageStorage';
-import {ImageViewerFooterView} from '../Views/ImageViewerFooterView';
-import {useAppTheme} from '../../Styles/Theme';
+import {AppIcons} from '#src/Libraries/Enums/Icons';
+import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
+import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {ImageQueryData} from '#src/Libraries/Types';
+import {saveImageToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {ImageViewerFooterView} from '#src/Components/Views/ImageViewerFooterView';
+import {useAppTheme} from '#src/Styles/Theme';
 import {StyleSheet} from 'react-native';
 
 interface AppImageViewerProps {
