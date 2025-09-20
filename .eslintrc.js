@@ -8,7 +8,11 @@ module.exports = {
         alwaysTryTypes: true,
         project: './tsconfig.json',
       },
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
     },
+    'import/internal-regex': '^#(src|assets)/',
   },
   rules: {
     'linebreak-style': 0,
@@ -23,6 +27,19 @@ module.exports = {
       {
         groups: ['builtin', 'external', 'internal', ['sibling', 'parent'], 'index', 'unknown'],
         'newlines-between': 'always',
+        pathGroups: [
+          {
+            pattern: '#src/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '#assets/**',
+            group: 'internal',
+            position: 'after',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: {
           order: 'asc',
           caseInsensitive: true,
