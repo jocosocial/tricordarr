@@ -1,5 +1,6 @@
-import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import React from 'react';
+
+import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 
 const getTitle = (value: number | undefined) => {
   switch (value) {

@@ -1,6 +1,7 @@
-import {AppIcons} from '#src/Enums/Icons';
-import {Menu} from 'react-native-paper';
 import React from 'react';
+import {Menu} from 'react-native-paper';
+
+import {AppIcons} from '#src/Enums/Icons';
 
 interface ReloadMenuItemProps {
   closeMenu?: () => void;

@@ -1,15 +1,16 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {AppIcons} from '#src/Enums/Icons';
-import {CategoryData, ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
+import {CategoryData, ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostSearchBarProps {
   category?: CategoryData;

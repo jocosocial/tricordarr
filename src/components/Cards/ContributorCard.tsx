@@ -1,9 +1,10 @@
-import {Card, Text} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Card, Text} from 'react-native-paper';
+
+import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageQueryData} from '#src/Types';
-import {AppImage} from '#src/Components/Images/AppImage';
 
 interface ContributorCardProps {
   bodyText: string;

@@ -1,10 +1,11 @@
-import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from '#src/Libraries/Storage';
-import {NotificationTypeData} from '#src/Structs/SocketStructs';
-import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
+import Config from 'react-native-config';
+
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {defaultCacheTime, defaultImageStaleTime, defaultStaleTime} from '#src/Libraries/Network/APIClient';
+import {StorageKeys} from '#src/Libraries/Storage';
 import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 export type PushNotificationConfig = {
   [key in keyof typeof NotificationTypeData]: boolean;

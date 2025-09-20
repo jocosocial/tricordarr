@@ -1,6 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';

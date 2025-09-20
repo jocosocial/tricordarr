@@ -1,6 +1,6 @@
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {TokenStringData, UserRecoveryData} from '#src/Structs/ControllerStructs';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 export const useUserRecoveryMutation = () => {
   const {apiPost} = useSwiftarrQueryClient();

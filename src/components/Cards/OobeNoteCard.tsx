@@ -1,11 +1,12 @@
+import {encode as base64_encode} from 'base-64';
+import React from 'react';
+import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
+
 // @ts-ignore
 import twitarrteam from '#assets/contributors/twitarrteam.jpg';
-import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppImage} from '#src/Components/Images/AppImage';
-import {Image} from 'react-native';
-import {encode as base64_encode} from 'base-64';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const OobeNoteCard = () => {
   const {commonStyles} = useStyles();

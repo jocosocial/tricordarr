@@ -1,27 +1,29 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Text} from 'react-native-paper';
+import {CacheManager} from '@georstat/react-native-image-cache';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {useQueryClient} from '@tanstack/react-query';
+import {HttpStatusCode} from 'axios';
+import {FormikHelpers} from 'formik';
+import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
+import {OobeServerHeaderTitle} from '#src/Components/Navigation/OobeServerHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
-import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
-import {HttpStatusCode} from 'axios';
+
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {OobeServerHeaderTitle} from '#src/Components/Navigation/OobeServerHeaderTitle';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
-import {RefreshControl} from 'react-native';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {CacheManager} from '@georstat/react-native-image-cache';
-import {useQueryClient} from '@tanstack/react-query';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 

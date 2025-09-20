@@ -1,14 +1,15 @@
-import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
-import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
-import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '#src/Libraries/Network/APIClient';
-import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {Query, QueryKey} from '@tanstack/react-query';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
-import {ErrorResponse} from '#src/Structs/ControllerStructs';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
+
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {SwiftarrQueryClientContext} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '#src/Libraries/Network/APIClient';
+import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
   const {appConfig, oobeCompleted, preRegistrationMode} = useConfig();

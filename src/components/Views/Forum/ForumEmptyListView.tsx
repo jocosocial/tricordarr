@@ -1,8 +1,9 @@
-import {RefreshControl, View} from 'react-native';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {Text} from 'react-native-paper';
 import React from 'react';
+import {RefreshControl, View} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 
 interface ForumEmptyListViewProps {
   refreshing: boolean;

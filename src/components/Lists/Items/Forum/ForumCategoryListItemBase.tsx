@@ -1,5 +1,6 @@
 import React, {ReactNode} from 'react';
 import {List} from 'react-native-paper';
+
 import {ContentText} from '#src/Components/Text/ContentText';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 

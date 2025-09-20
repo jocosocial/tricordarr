@@ -1,19 +1,20 @@
+import notifee from '@notifee/react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import notifee from '@notifee/react-native';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {FezType} from '#src/Enums/FezType';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 

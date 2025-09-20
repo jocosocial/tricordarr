@@ -1,8 +1,9 @@
-import {AppIcons} from '#src/Enums/Icons';
-import {Menu} from 'react-native-paper';
 import * as React from 'react';
+import {Menu} from 'react-native-paper';
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 
 export const PostAsModeratorMenuItem = ({closeMenu}: {closeMenu: () => void}) => {
   const {asModerator, setAsTwitarrTeam, setAsModerator, hasModerator} = usePrivilege();

@@ -1,9 +1,9 @@
 // REST API client for interacting with the Swiftarr API.
-import {encode as base64_encode} from 'base-64';
-import {AxiosResponse} from 'axios';
-import {QueryClient} from '@tanstack/react-query';
-import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
+import {QueryClient} from '@tanstack/react-query';
+import {AxiosResponse} from 'axios';
+import {encode as base64_encode} from 'base-64';
 import superjson from 'superjson';
 
 // https://stackoverflow.com/questions/75784817/enforce-that-json-response-is-returned-with-axios

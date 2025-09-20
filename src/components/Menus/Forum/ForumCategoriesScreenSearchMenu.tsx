@@ -1,10 +1,11 @@
 import React from 'react';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '#src/Enums/Icons';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 
 export const ForumCategoriesScreenSearchMenu = () => {
   const [visible, setVisible] = React.useState(false);

@@ -1,10 +1,11 @@
+import {useFormikContext} from 'formik';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {IconButton} from 'react-native-paper';
+
+import {Emoji} from '#src/Components/Icons/Emoji';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CustomEmoji} from '#src/Enums/Emoji';
-import {Emoji} from '#src/Components/Icons/Emoji';
-import {IconButton} from 'react-native-paper';
-import {useFormikContext} from 'formik';
 import {PostContentData} from '#src/Structs/ControllerStructs';
 
 export const EmojiPickerField = () => {

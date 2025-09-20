@@ -1,5 +1,5 @@
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 
 interface EventFavoriteMutationProps {
   eventID: string;

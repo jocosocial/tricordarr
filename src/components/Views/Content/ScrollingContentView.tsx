@@ -4,10 +4,11 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   StyleProp,
+  StyleSheet,
   View,
   ViewStyle,
-  StyleSheet,
 } from 'react-native';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface ScrollingContentViewProps {

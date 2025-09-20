@@ -1,20 +1,23 @@
+import {useIsFocused} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {AppIcons} from '#src/Enums/Icons';
-import {FezData} from '#src/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {LfgScreenActionsMenu} from '#src/Components/Menus/LFG/LfgScreenActionsMenu';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {useIsFocused} from '@react-navigation/native';
+import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {FezData} from '#src/Structs/ControllerStructs';
+
+
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
-import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
-import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;

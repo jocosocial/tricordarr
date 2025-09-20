@@ -1,28 +1,29 @@
+import {useIsFocused} from '@react-navigation/native';
+import {FlashList} from '@shopify/flash-list';
+import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
-import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
+
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
-import {useIsFocused} from '@react-navigation/native';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
+import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
+import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
+import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {FlashList} from '@shopify/flash-list';
+import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {AppView} from '#src/Components/Views/AppView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {FezListEndpoints} from '#src/Types';
-import {useQueryClient} from '@tanstack/react-query';
-import {AppIcons} from '#src/Enums/Icons';
 
 interface LfgJoinedScreenProps {
   endpoint: FezListEndpoints;

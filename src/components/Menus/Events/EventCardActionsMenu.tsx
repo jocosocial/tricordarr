@@ -1,10 +1,11 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {EventData} from '#src/Structs/ControllerStructs';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {EventType} from '#src/Enums/EventType';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {EventData} from '#src/Structs/ControllerStructs';
 
 interface EventCardActionsMenuProps {
   anchor: React.JSX.Element;

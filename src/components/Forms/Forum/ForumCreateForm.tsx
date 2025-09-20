@@ -1,14 +1,15 @@
-import React, {useEffect} from 'react';
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import React, {useEffect} from 'react';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
-import {ForumThreadValues} from '#src/Types/FormValues';
+
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
+import {ForumThreadValues} from '#src/Types/FormValues';
 
 interface ForumCreateFormProps {
   onSubmit: (values: ForumThreadValues, formikBag: FormikHelpers<ForumThreadValues>) => void;

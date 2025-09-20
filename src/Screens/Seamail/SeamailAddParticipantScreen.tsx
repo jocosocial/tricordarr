@@ -1,13 +1,14 @@
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
-import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
+import React from 'react';
+
+import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
+import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
 

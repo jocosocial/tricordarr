@@ -2,10 +2,11 @@ import React from 'react';
 import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {useAppTheme} from '#src/Styles/Theme';
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface BaseFABProps {
   icon?: IconSource;

@@ -1,20 +1,21 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
-import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
-import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
-import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
-import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
-import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
-import {OobeRegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
-import {OobePermissionsScreen} from '#src/Screens/OOBE/OobePermissionsScreen';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
+import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
+import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
+import {OobePermissionsScreen} from '#src/Screens/OOBE/OobePermissionsScreen';
 import {OobePreregistrationScreen} from '#src/Screens/OOBE/OobePreregistrationScreen';
+import {OobeServerScreen} from '#src/Screens/OOBE/OobeServerScreen';
 import {OobeUserDataScreen} from '#src/Screens/OOBE/OobeUserDataScreen';
+import {OobeWelcomeScreen} from '#src/Screens/OOBE/OobeWelcomeScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
+import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
+import {OobeRegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 
 export type OobeStackParamList = CommonStackParamList & {
   OobeWelcomeScreen: undefined;

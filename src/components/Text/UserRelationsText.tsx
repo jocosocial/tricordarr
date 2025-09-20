@@ -1,8 +1,9 @@
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Enums/Icons';
-import {Text} from 'react-native-paper';
 import React from 'react';
+import {Text} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 
 export const ModeratorBlockText = () => {
   const {commonStyles, styleDefaults} = useStyles();

@@ -1,8 +1,9 @@
 import React, {PropsWithChildren, ReactNode} from 'react';
-import {Button, Card} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useModal} from '#src/Context/Contexts/ModalContext';
 import {StyleSheet} from 'react-native';
+import {Button, Card} from 'react-native-paper';
+
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface ModalCardProps {
   title: string;

@@ -1,9 +1,10 @@
+import {CacheManager} from '@georstat/react-native-image-cache';
+
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
 import {ImageQueryData} from '#src/Types';
-import {CacheManager} from '@georstat/react-native-image-cache';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 /**
  * Handler for retrieving images.

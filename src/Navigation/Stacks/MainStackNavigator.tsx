@@ -1,22 +1,13 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {TodayScreen} from '#src/Screens/Main/TodayScreen';
-import {SettingsStackNavigator, SettingsStackParamList} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
-import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
-import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
-import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
-import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
-import {MainConductScreen} from '#src/Screens/Main/MainConductScreen';
-import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
-import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
+import {SettingsStackNavigator, SettingsStackParamList} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {PhotostreamHelpScreen} from '#src/Screens/Photostream/PhotostreamHelpScreen';
 import {MicroKaraokeListScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeListScreen';
 import {MicroKaraokeSongScreen} from '#src/Screens/MicroKaraoke/MicroKaraokeSongScreen';
@@ -29,8 +20,18 @@ import {BoardgameRecommendScreen} from '#src/Screens/Boardgames/BoardgameRecomme
 import {BoardgameSearchScreen} from '#src/Screens/Boardgames/BoardgameSearchScreen';
 import {BoardgameExpansionsScreen} from '#src/Screens/Boardgames/BoardgameExpansionsScreen';
 import {BoardgameCreateLfgScreen} from '#src/Screens/Boardgames/BoardgameCreateLfgScreen';
+import {AboutTricordarrScreen} from '#src/Screens/Main/AboutTricordarrScreen';
 import {AboutTwitarrScreen} from '#src/Screens/Main/AboutTwitarrScreen';
+import {DailyThemeScreen} from '#src/Screens/Main/DailyThemeScreen';
+import {DailyThemesScreen} from '#src/Screens/Main/DailyThemesScreen';
 import {FaqScreen} from '#src/Screens/Main/FaqScreen';
+import {MainConductScreen} from '#src/Screens/Main/MainConductScreen';
+import {MainHelpScreen} from '#src/Screens/Main/MainHelpScreen';
+import {TodayScreen} from '#src/Screens/Main/TodayScreen';
+import {PhotostreamImageCreateScreen} from '#src/Screens/Photostream/PhotostreamImageCreateScreen';
+import {PhotostreamScreen} from '#src/Screens/Photostream/PhotostreamScreen';
+import {UserDirectoryScreen} from '#src/Screens/User/UserDirectoryScreen';
+import {BoardgameData, DailyThemeData} from '#src/Structs/ControllerStructs';
 
 export type MainStackParamList = CommonStackParamList & {
   MainScreen: undefined;

@@ -1,10 +1,11 @@
 import React from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {AppView} from '#src/Components/Views/AppView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 
 interface ErrorViewProps {

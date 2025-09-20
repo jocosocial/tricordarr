@@ -1,19 +1,20 @@
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {Text} from 'react-native-paper';
-import {AppView} from '#src/Components/Views/AppView';
-import React from 'react';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useNavigation} from '@react-navigation/native';
-import {ChangeUsernameFormValues} from '#src/Types/FormValues';
+import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
+import React from 'react';
+import {Text} from 'react-native-paper';
+
 import {ChangeUsernameForm} from '#src/Components/Forms/User/ChangeUsernameForm';
-import {useUserUsernameMutation} from '#src/Queries/User/UserMutations';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useUserUsernameMutation} from '#src/Queries/User/UserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {useQueryClient} from '@tanstack/react-query';
+import {ChangeUsernameFormValues} from '#src/Types/FormValues';
 
 export const ChangeUsernameScreen = () => {
   const {data: profilePublicData} = useUserProfileQuery();

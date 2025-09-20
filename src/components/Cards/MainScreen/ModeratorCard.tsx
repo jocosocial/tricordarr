@@ -1,10 +1,11 @@
-import React from 'react';
-import {Card, Text, TouchableRipple} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Enums/Icons';
 import pluralize from 'pluralize';
+import React from 'react';
 import {View} from 'react-native';
+import {Card, Text, TouchableRipple} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 

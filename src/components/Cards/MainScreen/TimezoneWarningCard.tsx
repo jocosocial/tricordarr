@@ -1,7 +1,8 @@
 import React from 'react';
-import {Card, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {Linking} from 'react-native';
+import {Card, Text} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const TimezoneWarningCard = () => {
   const {commonStyles} = useStyles();

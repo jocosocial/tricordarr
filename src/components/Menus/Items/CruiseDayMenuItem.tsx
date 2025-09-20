@@ -1,6 +1,6 @@
+import React from 'react';
 import {TextStyle} from 'react-native';
 import {Menu} from 'react-native-paper';
-import React from 'react';
 
 interface CruiseDayMenuItemProps {
   handleSelection: (i: number) => void;

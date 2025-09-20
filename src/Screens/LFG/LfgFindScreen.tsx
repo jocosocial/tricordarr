@@ -1,9 +1,10 @@
-import React, {useEffect} from 'react';
-import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
-import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useEffect} from 'react';
+
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 
 export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgFindScreen>;
 

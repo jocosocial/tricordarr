@@ -1,11 +1,12 @@
+import {FormikHelpers} from 'formik';
 import React from 'react';
+
+import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm';
 import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {TimeSettingsForm} from '#src/Components/Forms/Settings/TimeSettingsForm';
 import {TimeSettingsFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
 
 export const TimeSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

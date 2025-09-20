@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
-import {AnnouncementData} from '#src/Structs/ControllerStructs';
+
 import {AnnouncementCard} from '#src/Components/Cards/MainScreen/AnnouncementCard';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useAnnouncementsQuery} from '#src/Queries/Alert/AnnouncementQueries';
+import {AnnouncementData} from '#src/Structs/ControllerStructs';
 
 /**
  * A card to display an announcement from the API.

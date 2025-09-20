@@ -1,36 +1,38 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {AppView} from '#src/Components/Views/AppView';
-import {ProfilePublicData} from '#src/Structs/ControllerStructs';
-import {RefreshControl, View} from 'react-native';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
+
 import {AppIcons} from '#src/Enums/Icons';
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserProfileCard} from '#src/Components/Cards/UserProfile/UserProfileCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
+
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {UserProfileAvatar} from '#src/Components/Views/UserProfileAvatar';
 import {ErrorView} from '#src/Components/Views/Static/ErrorView';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {HeaderProfileSeamailButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileSeamailButton';
+import {UserProfileScreenActionsMenu} from '#src/Components/Menus/User/UserProfileScreenActionsMenu';
 import {UserProfileSelfActionsMenu} from '#src/Components/Menus/User/UserProfileSelfActionsMenu';
-import {StyleSheet} from 'react-native';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
-import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 interface UserProfileScreenBaseProps {
   data?: ProfilePublicData;

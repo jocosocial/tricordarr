@@ -1,20 +1,21 @@
+import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
+import {DataTable} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
+import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {useAppTheme} from '#src/Styles/Theme';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
-import {DataTable} from 'react-native-paper';
-import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
+import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
+import {useAppTheme} from '#src/Styles/Theme';
+import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

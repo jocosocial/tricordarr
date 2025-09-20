@@ -1,10 +1,11 @@
-import {Menu} from 'react-native-paper';
+import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {ForumData, PostData} from '#src/Structs/ControllerStructs';
-import {useForumPostBookmarkMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
+import {Menu} from 'react-native-paper';
+
 import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
-import {useQueryClient} from '@tanstack/react-query';
+import {useForumPostBookmarkMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostActionsFavoriteItemProps {
   forumPost: PostData;

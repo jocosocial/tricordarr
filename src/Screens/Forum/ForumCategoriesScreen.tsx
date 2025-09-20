@@ -1,28 +1,33 @@
+import {useIsFocused} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {RefreshControl, View} from 'react-native';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {Divider} from 'react-native-paper';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
-import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
-import {ForumMentionsCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumMentionsCategoryListItem';
+
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {useIsFocused} from '@react-navigation/native';
+
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {ForumCategoriesScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+
 import {HeaderButtons} from 'react-navigation-header-buttons';
+
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
+import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
+import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
+import {ForumMentionsCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumMentionsCategoryListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {ForumCategoriesScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCategoriesScreenSearchMenu';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {

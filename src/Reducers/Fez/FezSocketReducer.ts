@@ -1,5 +1,5 @@
-import ReconnectingWebSocket from 'reconnecting-websocket';
 import {useReducer} from 'react';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export interface WebSocketStorage {
   [key: string]: ReconnectingWebSocket;

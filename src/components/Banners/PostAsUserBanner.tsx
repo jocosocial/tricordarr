@@ -1,8 +1,9 @@
 import React from 'react';
+import {StyleSheet} from 'react-native';
 import {Banner, Text} from 'react-native-paper';
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {StyleSheet} from 'react-native';
 
 export const PostAsUserBanner = () => {
   const {asPrivilegedUser} = usePrivilege();

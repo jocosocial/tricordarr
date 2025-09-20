@@ -1,7 +1,8 @@
-import {FlexCenteredContentView} from '#src/Components/Views/Content/FlexCenteredContentView';
-import {Text} from 'react-native-paper';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import React from 'react';
+import {Text} from 'react-native-paper';
+
+import {FlexCenteredContentView} from '#src/Components/Views/Content/FlexCenteredContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 
 export const FezPostListHeader = () => {
   return (

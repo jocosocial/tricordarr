@@ -1,15 +1,16 @@
-import React, {useEffect} from 'react';
 import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
-import {FezContentData} from '#src/Structs/ControllerStructs';
-import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
-import {AppIcons} from '#src/Enums/Icons';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {FezType} from '#src/Enums/FezType';
-import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import React, {useEffect} from 'react';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
+import {FezContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
 interface SeamailCreateFormProps {

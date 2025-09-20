@@ -1,14 +1,5 @@
-import {AppView} from '#src/Components/Views/AppView';
-import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
-import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
-import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
+
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
@@ -20,9 +11,20 @@ import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
 import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {FlashList} from '@shopify/flash-list';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {RefreshControl, View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
 import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
+import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
+import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 

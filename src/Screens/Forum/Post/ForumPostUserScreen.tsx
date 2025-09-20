@@ -1,7 +1,8 @@
-import React from 'react';
-import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostUserScreen>;
 

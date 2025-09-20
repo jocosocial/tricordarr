@@ -20,7 +20,7 @@ module.exports = api => {
     ],
   ];
   if (babelEnv !== 'development') {
-    plugins.push(['transform-remove-console', { exclude: ['error', 'warn'] }]);
+    plugins.push(['transform-remove-console', {exclude: ['error', 'warn']}]);
   }
   return {
     presets: ['module:@react-native/babel-preset'],

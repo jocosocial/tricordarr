@@ -1,11 +1,12 @@
 import React, {memo, useCallback} from 'react';
-import {BoardgameData} from '#src/Structs/ControllerStructs';
+import {StyleSheet, Text, View} from 'react-native';
 import {List} from 'react-native-paper';
-import {StyleSheet, View, Text} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 interface BoardgameListItemProps {
   boardgame: BoardgameData;

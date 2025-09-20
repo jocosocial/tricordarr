@@ -1,9 +1,10 @@
 import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ForumCategoriesScreenActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);

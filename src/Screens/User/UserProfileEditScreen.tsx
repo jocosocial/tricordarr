@@ -1,16 +1,17 @@
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '#src/Components/Views/AppView';
-import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserProfileForm} from '#src/Components/Forms/User/UserProfileForm';
-import {UserProfileFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
-import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
 import {useQueryClient} from '@tanstack/react-query';
+import {FormikHelpers} from 'formik';
+import React from 'react';
+
+import {UserProfileForm} from '#src/Components/Forms/User/UserProfileForm';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
+import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
+import {UserProfileFormValues} from '#src/Types/FormValues';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
 

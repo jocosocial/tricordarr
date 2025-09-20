@@ -1,18 +1,20 @@
-import React, {useCallback, useEffect} from 'react';
-import {useEventQuery} from '#src/Queries/Events/EventQueries';
-import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {AppIcons} from '#src/Enums/Icons';
-import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
-import {useAppTheme} from '#src/Styles/Theme';
-import {EventData} from '#src/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
+import {useEventQuery} from '#src/Queries/Events/EventQueries';
+
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {EventData} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 

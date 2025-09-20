@@ -1,11 +1,12 @@
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
-import {View, StyleSheet} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
+import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 

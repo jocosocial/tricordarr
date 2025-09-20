@@ -1,7 +1,7 @@
-import {ReportData} from '#src/Structs/ControllerStructs';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ReportContentType} from '#src/Enums/ReportContentType';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {ReportData} from '#src/Structs/ControllerStructs';
 
 interface ModReportMutationProps {
   contentType: ReportContentType;

@@ -1,9 +1,10 @@
-import {ImageQueryData} from '#src/Types';
-import RNFS from 'react-native-fs';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import * as mime from 'react-native-mime-types';
 import {CacheManager} from '@georstat/react-native-image-cache';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {Dirs, FileSystem} from 'react-native-file-access';
+import RNFS from 'react-native-fs';
+import * as mime from 'react-native-mime-types';
+
+import {ImageQueryData} from '#src/Types';
 
 const extensionRegExp = new RegExp('\\.', 'i');
 

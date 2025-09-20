@@ -1,9 +1,10 @@
-import {HelperText, Menu, TextInput} from 'react-native-paper';
-import React from 'react';
-import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
 import {useField, useFormikContext} from 'formik';
-import {useModal} from '#src/Context/Contexts/ModalContext';
+import React from 'react';
 import {Keyboard, View} from 'react-native';
+import {HelperText, Menu, TextInput} from 'react-native-paper';
+
+import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];

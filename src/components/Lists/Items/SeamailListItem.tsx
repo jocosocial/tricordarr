@@ -1,15 +1,16 @@
 import React, {memo} from 'react';
+import {StyleSheet} from 'react-native';
 import {List} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
 import {SeamailTimeBadge} from '#src/Components/Text/SeamailTimeBadge';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {StyleSheet} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 interface SeamailListItemProps {
   fez: FezData;

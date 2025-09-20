@@ -1,24 +1,25 @@
-import {FezFormValues} from '#src/Types/FormValues';
 import {Formik, FormikHelpers} from 'formik';
-import * as Yup from 'yup';
-import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
 import React from 'react';
 import {Keyboard, View} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+
+import {TextInput} from 'react-native-paper';
+import * as Yup from 'yup';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
-import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
-import {TextInput} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
+import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
+import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
-import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {getUserSuggestedLocations} from '#src/Libraries/Ship';
+import {DateValidation, InfoStringValidation} from '#src/Libraries/ValidationSchema';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezFormValues} from '#src/Types/FormValues';
 
 interface PersonalEventFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

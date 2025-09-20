@@ -1,3 +1,4 @@
+import {Field, useField, useFormikContext} from 'formik';
 import React, {ReactNode} from 'react';
 import {
   KeyboardTypeOptions,
@@ -8,9 +9,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {HelperText, TextInput} from 'react-native-paper';
-import {Field, useField, useFormikContext} from 'formik';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
+import {HelperText, TextInput} from 'react-native-paper';
+
 import {useAppTheme} from '#src/Styles/Theme';
 
 export interface TextFieldProps {

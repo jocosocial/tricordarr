@@ -1,8 +1,9 @@
 import React from 'react';
-import {IconButton} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {IconButton} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface ImageButtonsProps {
   style?: StyleProp<ViewStyle>;

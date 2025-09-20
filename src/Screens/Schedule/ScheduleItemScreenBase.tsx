@@ -1,25 +1,26 @@
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {RefreshControl, StyleSheet, View} from 'react-native';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
-import {AppIcons} from '#src/Enums/Icons';
-import {getDurationString} from '#src/Libraries/DateTime';
-import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
-import {AppView} from '#src/Components/Views/AppView';
+import pluralize from 'pluralize';
 import React from 'react';
-import {EventData, FezData} from '#src/Structs/ControllerStructs';
-import {guessDeckNumber} from '#src/Libraries/Ship';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {RefreshControl, StyleSheet, View} from 'react-native';
+import {Badge, Text} from 'react-native-paper';
+
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
+import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
+import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {FezType} from '#src/Enums/FezType';
-import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
-import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {AppIcons} from '#src/Enums/Icons';
+import {getDurationString} from '#src/Libraries/DateTime';
+import {guessDeckNumber} from '#src/Libraries/Ship';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
-import {Badge, Text} from 'react-native-paper';
-import pluralize from 'pluralize';
-import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
 import {ContentText} from '#src/Components/Text/ContentText';
 
 interface ScheduleItemScreenBaseProps {

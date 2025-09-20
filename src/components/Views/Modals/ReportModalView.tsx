@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
 import {FormikHelpers} from 'formik';
+import React, {useState} from 'react';
+
+import {ReportContentForm} from '#src/Components/Forms/ReportContentForm';
+import {ReportModalErrorView} from '#src/Components/Views/Modals/ReportModalErrorView';
+import {ReportModalSuccessView} from '#src/Components/Views/Modals/ReportModalSuccessView';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useReportMutation} from '#src/Queries/Moderation/ModerationMutations';
 import {
   FezData,
   FezPostData,
@@ -9,11 +15,6 @@ import {
   ProfilePublicData,
   ReportData,
 } from '#src/Structs/ControllerStructs';
-import {ReportContentForm} from '#src/Components/Forms/ReportContentForm';
-import {useReportMutation} from '#src/Queries/Moderation/ModerationMutations';
-import {ReportContentType} from '#src/Enums/ReportContentType';
-import {ReportModalSuccessView} from '#src/Components/Views/Modals/ReportModalSuccessView';
-import {ReportModalErrorView} from '#src/Components/Views/Modals/ReportModalErrorView';
 
 interface ReportModalViewProps {
   profile?: ProfilePublicData;

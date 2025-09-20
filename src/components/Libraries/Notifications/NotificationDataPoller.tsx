@@ -1,9 +1,10 @@
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useEffect} from 'react';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useAppState} from '@react-native-community/hooks';
 import {useQueryClient} from '@tanstack/react-query';
+import {useEffect} from 'react';
+
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();

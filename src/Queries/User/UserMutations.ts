@@ -1,4 +1,5 @@
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {
   CreatedUserData,
   KeywordData,
@@ -6,7 +7,6 @@ import {
   UserPasswordData,
   UserUsernameData,
 } from '#src/Structs/ControllerStructs';
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {KeywordAction, KeywordType} from '#src/Types';
 
 interface KeywordMutationProps {

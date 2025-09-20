@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
 import VideoPlayer from 'react-native-video-controls';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
 

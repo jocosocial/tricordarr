@@ -1,7 +1,4 @@
 // https://www.reddit.com/r/typescript/comments/vdk8we/is_there_a_type_for_objects_with_arbitrary_keys/
-import {EventType} from '#src/Enums/EventType';
-import {FezType} from '#src/Enums/FezType';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {
   Animated,
   ColorValue,
@@ -12,8 +9,12 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
 import Button from 'react-native-paper/lib/typescript/components/Button/Button';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
+
+import {EventType} from '#src/Enums/EventType';
+import {FezType} from '#src/Enums/FezType';
 
 export type StringOrError = string | Error | undefined;
 

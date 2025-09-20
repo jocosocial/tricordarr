@@ -1,6 +1,6 @@
-import React from 'react';
-import {PropsWithChildren} from 'react';
+import React, {PropsWithChildren} from 'react';
 import {List} from 'react-native-paper';
+
 import {commonStyles} from '#src/Styles';
 
 /**

@@ -1,9 +1,10 @@
-import {Menu} from 'react-native-paper';
+import {QueryKey, useQueryClient} from '@tanstack/react-query';
 import React, {Dispatch, SetStateAction} from 'react';
+import {Menu} from 'react-native-paper';
+
 import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
-import {QueryKey, useQueryClient} from '@tanstack/react-query';
 
 interface ForumThreadPinItemProps {
   isPinned?: boolean;

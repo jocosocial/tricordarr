@@ -1,7 +1,8 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, {PropsWithChildren} from 'react';
 import {DataTable} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 interface SettingDataTableRowProps {
   title: string;

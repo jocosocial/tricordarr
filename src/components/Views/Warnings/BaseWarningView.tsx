@@ -1,6 +1,7 @@
-import {Text} from 'react-native-paper';
-import {StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
 import React from 'react';
+import {StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import {Text} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface Props {

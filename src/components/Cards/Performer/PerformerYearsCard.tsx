@@ -1,7 +1,8 @@
-import {Card, Chip} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleSheet} from 'react-native';
+import {Card, Chip} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface PerformerYearsCardProps {
   years: number[];

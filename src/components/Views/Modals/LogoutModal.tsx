@@ -1,21 +1,22 @@
+import {useQueryClient} from '@tanstack/react-query';
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ModalCard} from '#src/Components/Cards/ModalCard';
-import {useModal} from '#src/Context/Contexts/ModalContext';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {useAppTheme} from '#src/Styles/Theme';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useQueryClient} from '@tanstack/react-query';
-import {stopForegroundServiceWorker} from '#src/Libraries/Service';
 import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {stopForegroundServiceWorker} from '#src/Libraries/Service';
+import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface LogoutModalContentProps {
   allDevices: boolean;

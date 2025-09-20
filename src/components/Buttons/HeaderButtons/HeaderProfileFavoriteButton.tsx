@@ -1,8 +1,9 @@
-import React from 'react';
-import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
+import React from 'react';
+
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
+import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
+import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 
 interface HeaderProfileFavoriteButtonProps {
   profile: ProfilePublicData;

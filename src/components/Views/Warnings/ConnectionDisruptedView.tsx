@@ -1,6 +1,7 @@
-import {Text} from 'react-native-paper';
-import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {Text} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonStackComponents, useCommonRoute, useCommonStack} from '#src/Navigation/CommonScreens';
 

@@ -1,4 +1,4 @@
-import {useContext, createContext} from 'react';
+import {createContext, useContext} from 'react';
 
 interface TwitarrContextType {
   openWebUrl: (url: string) => void;

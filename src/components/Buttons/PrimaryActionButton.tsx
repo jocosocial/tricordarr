@@ -1,9 +1,10 @@
-import {ActivityIndicator, Button} from 'react-native-paper';
-import React from 'react';
-import {useAppTheme} from '#src/Styles/Theme';
-import {StyleProp, View, ViewStyle} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
+import React from 'react';
+import {StyleProp, View, ViewStyle} from 'react-native';
+import {ActivityIndicator, Button} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface PrimaryActionButtonProps {
   buttonText: string;

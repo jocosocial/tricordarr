@@ -1,11 +1,12 @@
-import React from 'react';
-import {TimePickerModal} from 'react-native-paper-dates';
-import {Button} from 'react-native-paper';
+import {format} from 'date-fns';
 import {useField, useFormikContext} from 'formik';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Button} from 'react-native-paper';
+import {TimePickerModal} from 'react-native-paper-dates';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
-import {format} from 'date-fns';
 
 interface TimePickerFieldProps {
   name: string;

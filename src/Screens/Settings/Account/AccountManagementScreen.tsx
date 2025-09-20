@@ -1,20 +1,21 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+
+import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ListSection} from '#src/Components/Lists/ListSection';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
   useSettingsStack,
 } from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;

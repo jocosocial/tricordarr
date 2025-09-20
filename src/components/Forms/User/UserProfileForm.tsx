@@ -1,15 +1,16 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {UserProfileFormValues} from '#src/Types/FormValues';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {EmailValidation, RoomNumberValidation} from '#src/Libraries/ValidationSchema';
-import {PickerField} from '#src/Components/Forms/Fields/PickerField';
-import {DinnerTeam} from '#src/Enums/DinnerTeam';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {PickerField} from '#src/Components/Forms/Fields/PickerField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {DinnerTeam} from '#src/Enums/DinnerTeam';
+import {EmailValidation, RoomNumberValidation} from '#src/Libraries/ValidationSchema';
+import {UserProfileFormValues} from '#src/Types/FormValues';
 
 interface UserProfileFormProps {
   onSubmit: (values: UserProfileFormValues, helpers: FormikHelpers<UserProfileFormValues>) => void;

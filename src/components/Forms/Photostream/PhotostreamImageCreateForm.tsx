@@ -1,15 +1,15 @@
 import {Formik, FormikHelpers} from 'formik';
-import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import React from 'react';
-import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
-import * as Yup from 'yup';
-import {EventData} from '#src/Structs/ControllerStructs';
-import {View} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {PhotostreamImageSelectionView} from '#src/Components/Views/Photostream/PhotostreamImageSelectionView';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+import * as Yup from 'yup';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {PickerField} from '#src/Components/Forms/Fields/PickerField';
+import {PhotostreamImageSelectionView} from '#src/Components/Views/Photostream/PhotostreamImageSelectionView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {EventData} from '#src/Structs/ControllerStructs';
+import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
 interface PhotostreamImageCreateFormProps {
   onSubmit: (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => void;

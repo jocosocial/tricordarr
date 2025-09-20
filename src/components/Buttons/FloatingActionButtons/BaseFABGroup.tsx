@@ -1,14 +1,15 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {FAB} from 'react-native-paper';
-import {useAppTheme} from '#src/Styles/Theme';
-import {AppIcons} from '#src/Enums/Icons';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {StyleSheet} from 'react-native';
-import {FabGroupActionType} from '#src/Types';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {FAB} from 'react-native-paper';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
+import {FabGroupActionType} from '#src/Types';
 
 interface BaseFABProps {
   actions: FabGroupActionType[];

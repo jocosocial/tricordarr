@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+
 import {FezType} from '#src/Enums/FezType';
 
 export const UsernameValidation = Yup.string()

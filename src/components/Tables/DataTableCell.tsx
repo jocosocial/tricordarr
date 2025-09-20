@@ -1,7 +1,7 @@
-import {DataTable} from 'react-native-paper';
-import React, {PropsWithChildren} from 'react';
 import Clipboard from '@react-native-clipboard/clipboard';
+import React, {PropsWithChildren} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
+import {DataTable} from 'react-native-paper';
 
 interface Props extends PropsWithChildren {
   value?: string | number;

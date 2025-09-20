@@ -1,19 +1,20 @@
-import React, {useEffect} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
-import {FezFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
-import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useQueryClient} from '@tanstack/react-query';
+import {addMinutes, differenceInMinutes} from 'date-fns';
+import {FormikHelpers} from 'formik';
+import React, {useEffect} from 'react';
+
+import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {FezType} from '#src/Enums/FezType';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {FezFormValues} from '#src/Types/FormValues';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {

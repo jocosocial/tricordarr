@@ -1,28 +1,30 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import pluralize from 'pluralize';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+
+import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
+import {ForumSelectionHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ForumSelectionHeaderButtons';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {ForumCategoryScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenActionsMenu';
+import {ForumCategoryScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenSearchMenu';
 import {ForumThreadScreenFilterMenu} from '#src/Components/Menus/Forum/ForumThreadScreenFilterMenu';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
-import {useIsFocused} from '@react-navigation/native';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppView} from '#src/Components/Views/AppView';
+import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
-import {ForumCategoryScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenActionsMenu';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
 import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
-import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
-import {ForumSelectionHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ForumSelectionHeaderButtons';
-import {ForumCategoryScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenSearchMenu';
-import pluralize from 'pluralize';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 

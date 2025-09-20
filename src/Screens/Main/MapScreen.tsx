@@ -1,23 +1,26 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {encode as base64_encode} from 'base-64';
 import React, {useCallback, useEffect, useState} from 'react';
+import {Image, StyleSheet, View} from 'react-native';
+import {Menu} from 'react-native-paper';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppImage} from '#src/Components/Images/AppImage';
+import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {Image, StyleSheet, View} from 'react-native';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
+
+import {AppIcons} from '#src/Enums/Icons';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {encode as base64_encode} from 'base-64';
-import {AppImage} from '#src/Components/Images/AppImage';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {AppIcons} from '#src/Enums/Icons';
-import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
-import {Menu} from 'react-native-paper';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 

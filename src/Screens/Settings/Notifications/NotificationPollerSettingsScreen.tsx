@@ -1,10 +1,11 @@
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {FormikHelpers} from 'formik';
 import React from 'react';
+
+import {NotificationPollingSettingsForm} from '#src/Components/Forms/Settings/NotificationPollingSettingsForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {FormikHelpers} from 'formik';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {NotificationPollingSettingsForm} from '#src/Components/Forms/Settings/NotificationPollingSettingsForm';
 import {NotificationPollingSettingsFormValues} from '#src/Types/FormValues';
 
 export const NotificationPollerSettingsScreen = () => {

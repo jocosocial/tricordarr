@@ -1,13 +1,14 @@
+import {FlashList} from '@shopify/flash-list';
 import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {FezData} from '#src/Structs/ControllerStructs';
+
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
-import {FlashList} from '@shopify/flash-list';
-import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
-import {FezListEndpoints} from '#src/Types';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {FezListEndpoints} from '#src/Types';
 
 interface LFGSearchBarProps {
   endpoint: FezListEndpoints;

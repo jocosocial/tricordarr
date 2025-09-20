@@ -1,25 +1,14 @@
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
-import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
-import React from 'react';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {
-  CategoryData,
-  FezData,
-  ForumData,
-  ForumListData,
-  PerformerData,
-  PostData,
-  ProfilePublicData,
-  UserHeader,
-} from '#src/Structs/ControllerStructs';
-import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
-import {UserPrivateNoteScreen} from '#src/Screens/User/UserPrivateNoteScreen';
-import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
-import {UsernameProfileScreen} from '#src/Screens/User/UsernameProfileScreen';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
+import {DisabledView} from '#src/Components/Views/Static/DisabledView';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {UserProfileEditScreen} from '#src/Screens/User/UserProfileEditScreen';
+import {UserPrivateNoteScreen} from '#src/Screens/User/UserPrivateNoteScreen';
+import {UsernameProfileScreen} from '#src/Screens/User/UsernameProfileScreen';
 import {SiteUIScreen} from '#src/Screens/SiteUI/SiteUIScreen';
 import {MapScreen} from '#src/Screens/Main/MapScreen';
 import {AccountRecoveryScreen} from '#src/Screens/Settings/Account/AccountRecoveryScreen';
@@ -66,16 +55,28 @@ import {MainTimeZoneScreen} from '#src/Screens/Main/MainTimeZoneScreen';
 import {TimeZoneHelpScreen} from '#src/Screens/Main/TimeZoneHelpScreen';
 import {FezChatScreen} from '#src/Screens/Fez/FezChatScreen';
 import {FezType} from '#src/Enums/FezType';
+import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
-import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {PerformerCreateScreen} from '#src/Screens/Performer/PerformerCreateScreen';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
 import {PerformerEditScreen} from '#src/Screens/Performer/PerformerEditScreen';
 import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {SchedulePrivateEventsScreen} from '#src/Screens/Schedule/SchedulePrivateEventsScreen';
-import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {UserProfileScreen} from '#src/Screens/User/UserProfileScreen';
+import {UserRegCodeScreen} from '#src/Screens/User/UserRegCodeScreen';
+import {
+  CategoryData,
+  FezData,
+  ForumData,
+  ForumListData,
+  PerformerData,
+  PostData,
+  ProfilePublicData,
+  UserHeader,
+} from '#src/Structs/ControllerStructs';
 import {ParamsWithOobe} from '#src/Types';
 
 /**

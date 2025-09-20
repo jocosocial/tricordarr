@@ -1,11 +1,12 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
+import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingFormValues} from '#src/Types/FormValues';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
+import {SettingFormValues} from '#src/Types/FormValues';
 
 interface SettingFormProps {
   value: string;

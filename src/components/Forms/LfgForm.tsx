@@ -1,28 +1,29 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {Keyboard, View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {AppIcons} from '#src/Enums/Icons';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {
-  DateValidation,
-  LFGTypeValidation,
-  InfoStringValidation,
-  NumberValidation,
-} from '#src/Libraries/ValidationSchema';
-import {FezFormValues} from '#src/Types/FormValues';
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
 import {FezTypePickerField} from '#src/Components/Forms/Fields/FezTypePickerField';
 import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
-import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
-import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {publicLocationSuggestions} from '#src/Libraries/Ship';
+import {
+  DateValidation,
+  InfoStringValidation,
+  LFGTypeValidation,
+  NumberValidation,
+} from '#src/Libraries/ValidationSchema';
+import {FezFormValues} from '#src/Types/FormValues';
+import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

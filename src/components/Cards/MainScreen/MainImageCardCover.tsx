@@ -1,22 +1,23 @@
-import {Card} from 'react-native-paper';
+import {encode as base64_encode} from 'base-64';
 import React, {useState} from 'react';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {Card} from 'react-native-paper';
+
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';
 // @ts-ignore
+import HappyHourImage from '#assets/mainview_happy.jpg';
+import LateShowImage from '#assets/mainview_lateshow.jpg';
+import MainShowImage from '#assets/mainview_mainshow.jpg';
 import NightImage from '#assets/mainview_night.jpg';
 // @ts-ignore
 import SunsetImage from '#assets/mainview_sunset.jpg';
 // @ts-ignore
-import MainShowImage from '#assets/mainview_mainshow.jpg';
 // @ts-ignore
-import LateShowImage from '#assets/mainview_lateshow.jpg';
 // @ts-ignore
-import HappyHourImage from '#assets/mainview_happy.jpg';
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {Image, TouchableOpacity, View} from 'react-native';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {ImageQueryData} from '#src/Types';
-import {encode as base64_encode} from 'base-64';
 
 /**
  * Display a pretty image in the app based on the time of day.

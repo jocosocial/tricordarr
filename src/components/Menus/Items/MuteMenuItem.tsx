@@ -1,7 +1,8 @@
-import {AppIcons} from '#src/Enums/Icons';
-import {ActivityIndicator, Menu} from 'react-native-paper';
 import React from 'react';
+import {ActivityIndicator, Menu} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+
+import {AppIcons} from '#src/Enums/Icons';
 
 interface FavoriteMenuItemProps {
   isMuted?: boolean;

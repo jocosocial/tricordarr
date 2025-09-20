@@ -1,16 +1,20 @@
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {useAppTheme} from '#src/Styles/Theme';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {View} from 'react-native';
-import {ModalCard} from '#src/Components/Cards/ModalCard';
-import React from 'react';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useQueryClient} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
-import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
+import {useQueryClient} from '@tanstack/react-query';
+import React from 'react';
+import {View} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
+
+
+
+import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

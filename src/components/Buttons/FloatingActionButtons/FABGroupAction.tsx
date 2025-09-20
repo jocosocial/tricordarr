@@ -1,8 +1,9 @@
-import {useAppTheme} from '#src/Styles/Theme';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {GestureResponderEvent} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
+import {GestureResponderEvent} from 'react-native';
+import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useAppTheme} from '#src/Styles/Theme';
 import {FabGroupActionType} from '#src/Types';
 
 interface Props {
@@ -21,8 +22,8 @@ export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: P
   const actionBackgroundColor = asPrivilegedUser
     ? theme.colors.twitarrNegativeButton
     : backgroundColor
-    ? backgroundColor
-    : theme.colors.inverseSurface;
+      ? backgroundColor
+      : theme.colors.inverseSurface;
 
   return {
     icon: icon,

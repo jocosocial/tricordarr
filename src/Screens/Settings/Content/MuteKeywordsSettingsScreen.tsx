@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
-import {RefreshControl, View} from 'react-native';
-import {KeywordChip} from '#src/Components/Chips/KeywordChip';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {Text} from 'react-native-paper';
-import {KeywordForm} from '#src/Components/Forms/KeywordForm';
-import {KeywordFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
+import React, {useEffect, useState} from 'react';
+import {RefreshControl, View} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {KeywordChip} from '#src/Components/Chips/KeywordChip';
+import {KeywordForm} from '#src/Components/Forms/KeywordForm';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
+import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {KeywordFormValues} from '#src/Types/FormValues';
 
 export const MuteKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();

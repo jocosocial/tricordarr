@@ -1,17 +1,18 @@
 import notifee from '@notifee/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
+import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
+import {getAppConfig} from '#src/Libraries/AppConfig';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
 } from '#src/Libraries/Notifications/ForegroundService';
-import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
-import {getAppConfig} from '#src/Libraries/AppConfig';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
-import ReconnectingWebSocket from 'reconnecting-websocket';
-import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: NodeJS.Timeout;

@@ -1,7 +1,8 @@
-import {TextInput} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
 import React from 'react';
+import {TextInput} from 'react-native-paper';
+
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface SecureTextFieldProps {
   name: string;

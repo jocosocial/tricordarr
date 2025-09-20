@@ -1,16 +1,17 @@
 import React, {memo} from 'react';
-import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
+
+import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
 import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
+import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
+import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
 import {MessageView} from '#src/Components/Views/MessageView';
 import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
-import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
-import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
-import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
-import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {

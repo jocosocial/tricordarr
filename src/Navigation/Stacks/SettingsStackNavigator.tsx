@@ -1,30 +1,33 @@
-import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
+import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
+import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
+import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
+import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
+import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
 import {NetworkInfoSettings} from '#src/Screens/Settings/Developer/NetworkInfoSettings';
+import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
 import {ServerConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/ServerConnectionSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
-import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
-import {useNavigation} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+
+
 import {SocketSettingsScreen} from '#src/Screens/Settings/SocketSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {OobeSettingsScreen} from '#src/Screens/Settings/Developer/OobeSettingsScreen';
-import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
-import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
-import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
 import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
-import {EventSettingsScreen} from '#src/Screens/Event/EventSettingsScreen';
-import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
 import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
 import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
 import {UserInfoSettingsScreen} from '#src/Screens/Settings/Developer/UserInfoSettingsScreen';
-import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
 import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
-import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeysSettingsScreen';
 import {QueryDataSettingsScreen} from '#src/Screens/Settings/Developer/QueryDataSettingsScreen';
 import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';

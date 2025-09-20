@@ -1,6 +1,7 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';

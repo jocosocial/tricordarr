@@ -1,6 +1,7 @@
 import React, {PropsWithChildren} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {Text} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const BoldText = ({children}: PropsWithChildren) => {
   const {commonStyles} = useStyles();

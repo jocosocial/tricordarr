@@ -1,9 +1,10 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {EventSearchBar} from '#src/Components/Search/EventSearchBar';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {EventSearchBar} from '#src/Components/Search/EventSearchBar';
+import {AppView} from '#src/Components/Views/AppView';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';

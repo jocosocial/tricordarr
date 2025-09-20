@@ -1,4 +1,5 @@
 import {useReducer} from 'react';
+
 import {FezPostData} from '#src/Structs/ControllerStructs';
 
 export enum FezPostsActions {

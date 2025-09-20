@@ -1,16 +1,17 @@
-import {AppView} from '#src/Components/Views/AppView';
-import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import React from 'react';
 import {Text} from 'react-native-paper';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {useAppTheme} from '#src/Styles/Theme';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 

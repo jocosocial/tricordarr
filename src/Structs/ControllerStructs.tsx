@@ -1,13 +1,14 @@
-import {FezType} from '#src/Enums/FezType';
-import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
-import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {StorageKeys} from '#src/Libraries/Storage';
-import {HttpStatusCode} from 'axios';
-import {LikeType} from '#src/Enums/LikeType';
-import pluralize from 'pluralize';
-import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {QueryKey} from '@tanstack/react-query';
+import {HttpStatusCode} from 'axios';
+import pluralize from 'pluralize';
+import EncryptedStorage from 'react-native-encrypted-storage';
+
+import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {DinnerTeam} from '#src/Enums/DinnerTeam';
+import {FezType} from '#src/Enums/FezType';
+import {LikeType} from '#src/Enums/LikeType';
+import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
+import {StorageKeys} from '#src/Libraries/Storage';
 
 /**
  * All of these interfaces come from Swiftarr.

@@ -1,17 +1,17 @@
-import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import ImagePicker, {Image} from 'react-native-image-crop-picker';
-import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 import {useFormikContext} from 'formik';
-import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
+import React from 'react';
+import {NativeModules, View} from 'react-native';
+import RNFS from 'react-native-fs';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
+import {ActivityIndicator} from 'react-native-paper';
+import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
+
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {AppImage} from '#src/Components/Images/AppImage';
-import {ImageQueryData} from '#src/Types';
-import {View} from 'react-native';
-import {NativeModules} from 'react-native';
-import RNFS from 'react-native-fs';
-import {ActivityIndicator} from 'react-native-paper';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
+import {ImageQueryData} from '#src/Types';
 
 const {ImageTextBlurModule} = NativeModules;
 

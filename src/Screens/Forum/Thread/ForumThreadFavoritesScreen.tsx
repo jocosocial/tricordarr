@@ -1,13 +1,14 @@
-import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
-import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
-import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
 import {AppView} from '#src/Components/Views/AppView';
+import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumFavoritesScreen>;
 

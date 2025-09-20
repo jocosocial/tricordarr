@@ -1,8 +1,9 @@
 import React from 'react';
+import {ColorValue, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
-import {useAppTheme} from '#src/Styles/Theme';
-import {ColorValue, StyleProp, View, ViewStyle, StyleSheet} from 'react-native';
+
 import {commonStyles} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface LabelDividerProps {
   label?: string;

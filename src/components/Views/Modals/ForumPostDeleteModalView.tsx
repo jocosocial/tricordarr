@@ -1,14 +1,15 @@
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {useAppTheme} from '#src/Styles/Theme';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {View} from 'react-native';
-import {ModalCard} from '#src/Components/Cards/ModalCard';
+import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
-import {ForumData, PostData} from '#src/Structs/ControllerStructs';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useForumPostDeleteMutation} from '#src/Queries/Forum/ForumPostMutations';
-import {useQueryClient} from '@tanstack/react-query';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

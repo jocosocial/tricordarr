@@ -1,16 +1,16 @@
 import * as React from 'react';
+import {PropsWithChildren} from 'react';
+import {Linking, ScrollView, StyleSheet} from 'react-native';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
-import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {PropsWithChildren} from 'react';
-import {Linking, ScrollView} from 'react-native';
-import {AppIcons} from '#src/Enums/Icons';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {StyleSheet} from 'react-native';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {

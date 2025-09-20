@@ -1,7 +1,8 @@
 import React from 'react';
+
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {AppIcons} from '#src/Enums/Icons';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 
 interface BoardgameGuideFABProps {
   showLabel?: boolean;

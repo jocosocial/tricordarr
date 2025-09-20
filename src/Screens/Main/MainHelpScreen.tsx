@@ -1,13 +1,14 @@
 import React from 'react';
+import {View} from 'react-native';
+import {FAB} from 'react-native-paper';
+
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {FAB} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {View} from 'react-native';
-import {useAppTheme} from '#src/Styles/Theme';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const MainHelpScreen = () => {
   const {commonStyles} = useStyles();

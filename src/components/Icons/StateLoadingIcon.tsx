@@ -1,6 +1,7 @@
 import React from 'react';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ActivityIndicator} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 
 interface BooleanLoadingIconProps {
   isLoading?: boolean;

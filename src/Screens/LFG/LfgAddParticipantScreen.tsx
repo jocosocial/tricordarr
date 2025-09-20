@@ -1,16 +1,17 @@
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {UserHeader} from '#src/Structs/ControllerStructs';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
-import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useQueryClient} from '@tanstack/react-query';
+import React from 'react';
 import {RefreshControl} from 'react-native';
+
+import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {useQueryClient} from '@tanstack/react-query';
+import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
 

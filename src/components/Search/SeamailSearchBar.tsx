@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {Keyboard, RefreshControl} from 'react-native';
+
 import {SeamailFlatList} from '#src/Components/Lists/Seamail/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');

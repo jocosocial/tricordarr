@@ -1,14 +1,15 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
-import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
+
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {PhotostreamImageActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamImageActionsMenu';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamAuthorViewProps {
   image: PhotostreamImageData;

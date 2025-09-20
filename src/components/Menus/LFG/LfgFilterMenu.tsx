@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Divider} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {FezType} from '#src/Enums/FezType';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface LfgFilterMenuProps {
   showTypes?: boolean;

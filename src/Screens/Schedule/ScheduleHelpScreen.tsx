@@ -1,13 +1,14 @@
 import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useAppTheme} from '#src/Styles/Theme';
-import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
-import {AppIcons} from '#src/Enums/Icons';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
+
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
+import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const ScheduleHelpScreen = () => {
   const theme = useAppTheme();

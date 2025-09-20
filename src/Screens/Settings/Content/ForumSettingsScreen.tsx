@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {View} from 'react-native';
-import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {Formik} from 'formik';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import React, {useState} from 'react';
+import {View} from 'react-native';
+
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
-import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {ListSection} from '#src/Components/Lists/ListSection';
-import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();

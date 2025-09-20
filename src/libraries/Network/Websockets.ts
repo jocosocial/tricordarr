@@ -1,9 +1,10 @@
-import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+
+import {getAppConfig} from '#src/Libraries/AppConfig';
+import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
+import {StorageKeys} from '#src/Libraries/Storage';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {WebSocketOptions} from '#src/Types';
-import {getAppConfig} from '#src/Libraries/AppConfig';
-import {StorageKeys} from '#src/Libraries/Storage';
 
 /**
  * This function returns a normalized URL of a WebSocket API endpoint to connect to.

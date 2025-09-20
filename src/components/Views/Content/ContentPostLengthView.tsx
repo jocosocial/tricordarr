@@ -1,6 +1,7 @@
-import {Text} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Text} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 

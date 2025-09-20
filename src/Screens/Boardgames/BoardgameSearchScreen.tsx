@@ -1,10 +1,11 @@
-import {AppView} from '#src/Components/Views/AppView';
 import React, {useEffect} from 'react';
-import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
-import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
-import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
 import {RefreshControl} from 'react-native';
+
+import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
+import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 
 export const BoardgameSearchScreen = () => {
   const {commonStyles} = useStyles();

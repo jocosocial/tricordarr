@@ -1,18 +1,19 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobePermissionsScreen>;
 

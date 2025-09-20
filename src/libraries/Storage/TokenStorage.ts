@@ -1,6 +1,7 @@
-import {TokenStringData} from '#src/Structs/ControllerStructs';
 import EncryptedStorage from 'react-native-encrypted-storage';
+
 import {StorageKeys} from '#src/Libraries/Storage';
+import {TokenStringData} from '#src/Structs/ControllerStructs';
 
 export type TokenStorageData = TokenStringData[];
 

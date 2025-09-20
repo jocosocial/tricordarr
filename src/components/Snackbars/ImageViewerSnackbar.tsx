@@ -1,6 +1,7 @@
 import React from 'react';
-import {SnackBarBase, SnackBarBaseProps} from '#src/Components/Snackbars/SnackBarBase';
 import {StyleSheet} from 'react-native';
+
+import {SnackBarBase, SnackBarBaseProps} from '#src/Components/Snackbars/SnackBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const ImageViewerSnackbar = ({

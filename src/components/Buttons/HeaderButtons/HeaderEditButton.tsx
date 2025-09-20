@@ -1,5 +1,5 @@
-import {Item} from 'react-navigation-header-buttons';
 import React from 'react';
+import {Item} from 'react-navigation-header-buttons';
 
 interface HeaderButtonProps {
   onPress: () => void;

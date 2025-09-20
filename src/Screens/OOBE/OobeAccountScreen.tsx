@@ -1,20 +1,21 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {useAppTheme} from '#src/Styles/Theme';
+import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
-import {AppIcons} from '#src/Enums/Icons';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
+import {AppIcons} from '#src/Enums/Icons';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 

@@ -1,21 +1,22 @@
-import {AppView} from '#src/Components/Views/AppView';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
-import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
-import {FlatList, RefreshControl, View, StyleSheet} from 'react-native';
-import {AppFlatList} from '#src/Components/Lists/AppFlatList';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+
 import {HeaderButtons} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
+import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
+import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 

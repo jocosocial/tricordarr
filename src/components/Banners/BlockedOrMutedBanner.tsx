@@ -1,5 +1,6 @@
 import React from 'react';
 import {Banner, Text} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface Props {

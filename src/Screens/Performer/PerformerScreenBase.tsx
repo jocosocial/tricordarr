@@ -1,20 +1,21 @@
-import {Card, Text} from 'react-native-paper';
-import {AppView} from '#src/Components/Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {RefreshControl, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {Card, Text} from 'react-native-paper';
+
+import {LinkIconButton} from '#src/Components/Buttons/IconButtons/LinkIconButton';
+import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard';
+import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
+import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {APIImage} from '#src/Components/Images/APIImage';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImage} from '#src/Components/Images/APIImage';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {AppIcons} from '#src/Enums/Icons';
-import {LinkIconButton} from '#src/Components/Buttons/IconButtons/LinkIconButton';
-import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
-import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard';
-import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {PerformerData} from '#src/Structs/ControllerStructs';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
 
 interface PerformerScreenBaseProps {
   performerData: PerformerData;

@@ -1,11 +1,12 @@
-import React from 'react';
-import {useFormikContext} from 'formik';
 import Slider from '@react-native-community/slider';
-import {HelperText, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {StyleProp, View, ViewStyle} from 'react-native';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useFormikContext} from 'formik';
 import pluralize from 'pluralize';
+import React from 'react';
+import {StyleProp, View, ViewStyle} from 'react-native';
+import {HelperText, Text} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface SliderFieldProps {
   name: string;

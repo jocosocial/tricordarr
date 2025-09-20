@@ -1,18 +1,19 @@
-import React, {useCallback, useEffect} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
-import {UserDirectoryText} from '#src/Components/Text/UserRelationsText';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
+
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {UserDirectoryScreenActionsMenu} from '#src/Components/Menus/User/UserDirectoryScreenActionsMenu';
+import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {UserDirectoryText} from '#src/Components/Text/UserRelationsText';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 export const UserDirectoryScreen = ({navigation}: Props) => {

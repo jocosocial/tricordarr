@@ -1,13 +1,14 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {WebView, WebViewNavigation} from 'react-native-webview';
-import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {AppIcons} from '#src/Enums/Icons';
 import {useBackHandler} from '@react-native-community/hooks';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View} from 'react-native';
+import {WebView, WebViewNavigation} from 'react-native-webview';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {AppView} from '#src/Components/Views/AppView';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface SiteUIScreenBaseProps {
   initialUrl: string;

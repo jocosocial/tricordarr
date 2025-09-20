@@ -1,12 +1,13 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {UserNoteFormValues} from '#src/Types/FormValues';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {UserNoteFormValues} from '#src/Types/FormValues';
 
 interface UserNoteFormProps {
   onSubmit: (values: UserNoteFormValues, helpers: FormikHelpers<UserNoteFormValues>) => void;

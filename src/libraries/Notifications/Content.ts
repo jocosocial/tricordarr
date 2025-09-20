@@ -1,4 +1,5 @@
 import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native';
+
 import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';

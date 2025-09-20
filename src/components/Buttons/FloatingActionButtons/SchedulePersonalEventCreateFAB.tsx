@@ -1,7 +1,7 @@
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
-import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 
 export const SchedulePersonalEventCreateFAB = () => {
   const navigation = useScheduleStackNavigation();

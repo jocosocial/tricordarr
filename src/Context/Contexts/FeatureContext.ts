@@ -1,4 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 
 export interface FeatureContextType {

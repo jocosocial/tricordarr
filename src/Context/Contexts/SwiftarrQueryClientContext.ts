@@ -1,6 +1,6 @@
-import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import {QueryKey} from '@tanstack/react-query';
+import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import {createContext, Dispatch, SetStateAction, useContext} from 'react';
 
 interface SwiftarrQueryClientContextType {
   errorCount: number;

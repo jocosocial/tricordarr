@@ -1,12 +1,13 @@
 import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {DataTable, Text} from 'react-native-paper';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 import {useAppTheme} from '#src/Styles/Theme';
 

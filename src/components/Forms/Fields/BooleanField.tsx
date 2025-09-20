@@ -1,10 +1,11 @@
+import {Field, useField, useFormikContext} from 'formik';
 import React from 'react';
 import {StyleProp, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
-import {Field, useField, useFormikContext} from 'formik';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
 
 interface BooleanFieldProps {
   onPress?: () => void;

@@ -1,9 +1,10 @@
 import React, {FC} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {MentionSuggestionsProps} from 'react-native-controlled-mentions';
-import {Pressable, View, StyleSheet} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
 export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({keyword, onSuggestionPress}) => {

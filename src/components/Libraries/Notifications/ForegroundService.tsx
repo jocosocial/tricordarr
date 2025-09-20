@@ -1,7 +1,8 @@
-import {startForegroundServiceWorker, stopForegroundServiceWorker} from '#src/Libraries/Service';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {useEffect} from 'react';
+
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {startForegroundServiceWorker, stopForegroundServiceWorker} from '#src/Libraries/Service';
 
 /**
  * Functional component to control the actions of the Foreground Service Worker, the background

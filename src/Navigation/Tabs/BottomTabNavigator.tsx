@@ -1,14 +1,15 @@
-import React from 'react';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
+import React from 'react';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppIcons} from '#src/Enums/Icons';
+import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {LfgStackNavigator, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {MainStackNavigator, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ScheduleStackNavigator, ScheduleStackParamList} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {LfgStackNavigator, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 function getBadgeDisplayValue(input: number | undefined) {

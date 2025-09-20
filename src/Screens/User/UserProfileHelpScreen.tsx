@@ -1,11 +1,12 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
+
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileHelpScreen>;
 

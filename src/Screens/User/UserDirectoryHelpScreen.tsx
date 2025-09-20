@@ -1,8 +1,9 @@
 import React from 'react';
+
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 
 export const UserDirectoryHelpScreen = () => {
   return (

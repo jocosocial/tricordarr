@@ -1,28 +1,32 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {Text} from 'react-native-paper';
+import {useQueryClient} from '@tanstack/react-query';
+import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
+import {Text} from 'react-native-paper';
+
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
+import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
-import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {AppIcons} from '#src/Enums/Icons';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
-import Clipboard from '@react-native-clipboard/clipboard';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {useQueryClient} from '@tanstack/react-query';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
+
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 

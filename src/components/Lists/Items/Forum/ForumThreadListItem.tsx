@@ -1,21 +1,22 @@
-import React, {Dispatch, memo, SetStateAction} from 'react';
-import {Checkbox, List, Text} from 'react-native-paper';
-import {commonStyles} from '#src/Styles';
-import {ForumListData} from '#src/Structs/ControllerStructs';
-import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
-import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
-import {AppIcons} from '#src/Enums/Icons';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {useAppTheme} from '#src/Styles/Theme';
+import React, {Dispatch, memo, SetStateAction} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Checkbox, List, Text} from 'react-native-paper';
+
 import {ForumNewBadge} from '#src/Components/Badges/ForumNewBadge';
-import {getEventTimeString} from '#src/Libraries/DateTime';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {getEventTimeString} from '#src/Libraries/DateTime';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
+import {ForumListData} from '#src/Structs/ControllerStructs';
+import {commonStyles} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;

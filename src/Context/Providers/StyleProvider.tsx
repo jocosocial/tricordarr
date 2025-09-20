@@ -1,10 +1,11 @@
-import React, {PropsWithChildren} from 'react';
-import {StyleContext} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
-import {commonStyles, styleDefaults} from '#src/Styles';
-import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
+import React, {PropsWithChildren} from 'react';
+import {StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import {StyleContext} from '#src/Context/Contexts/StyleContext';
+import {commonStyles, styleDefaults} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
   const theme = useAppTheme();

@@ -1,17 +1,18 @@
 import React, {PropsWithChildren} from 'react';
 import {KeyboardAvoidingView, StyleSheet, View} from 'react-native';
 import {Portal} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
 import {AppModal} from '#src/Components/Modals/AppModal';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
-import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
+import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
 import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegistrationWarningView';
+import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 interface AppViewProps extends PropsWithChildren {
   safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];

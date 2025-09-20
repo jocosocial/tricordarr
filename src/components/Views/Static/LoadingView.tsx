@@ -1,9 +1,10 @@
 import React from 'react';
 import {RefreshControl, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
+
+import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppView} from '#src/Components/Views/AppView';
 
 interface LoadingViewProps {
   refreshing?: boolean;

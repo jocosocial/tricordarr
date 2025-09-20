@@ -1,15 +1,16 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
-import {OobeStackNavigator} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {LighterScreen} from '#src/Screens/Main/LighterScreen';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
-import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {OobeStackNavigator} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
+import {LighterScreen} from '#src/Screens/Main/LighterScreen';
 
 export type RootStackParamList = {
   OobeStackNavigator: undefined;

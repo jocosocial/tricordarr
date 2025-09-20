@@ -1,17 +1,14 @@
-import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {FlashList} from '@shopify/flash-list';
-import {Query, useQueryClient} from '@tanstack/react-query';
-import {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Divider, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  SettingsStackParamList,
-  SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {FlashList} from '@shopify/flash-list';
+import {Query, useQueryClient} from '@tanstack/react-query';
+import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Divider, Text} from 'react-native-paper';
+
+import {AppView} from '#src/Components/Views/AppView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 export type Props = NativeStackScreenProps<
   SettingsStackParamList,

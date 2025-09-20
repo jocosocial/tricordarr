@@ -1,10 +1,10 @@
-import {Modal} from 'react-native-paper';
 import React from 'react';
+import {Dimensions, KeyboardAvoidingView} from 'react-native';
+import {Modal} from 'react-native-paper';
+
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {useAppTheme} from '#src/Styles/Theme';
 import {commonStyles} from '#src/Styles';
-import {KeyboardAvoidingView} from 'react-native';
-import {Dimensions} from 'react-native';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const AppModal = () => {
   const {modalVisible, modalContent, setModalVisible, modalOnDismiss, setModalOnDismiss} = useModal();

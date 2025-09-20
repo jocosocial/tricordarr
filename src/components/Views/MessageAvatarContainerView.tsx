@@ -1,6 +1,7 @@
 import React, {PropsWithChildren} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {TouchableOpacity} from 'react-native';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface MessageAvatarContainerViewProps {
   onPress?: () => void;

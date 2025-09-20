@@ -1,11 +1,12 @@
-import {UserHeader} from '#src/Structs/ControllerStructs';
 import React from 'react';
+import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
-import {StyleProp, TextStyle, StyleSheet} from 'react-native';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
+
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useAppTheme} from '#src/Styles/Theme';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {UserHeader} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface UserBylineTagProps {
   user: UserHeader;

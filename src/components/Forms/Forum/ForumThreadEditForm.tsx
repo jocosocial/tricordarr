@@ -1,14 +1,15 @@
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import React from 'react';
 import {Formik, FormikHelpers} from 'formik';
-import {ForumData} from '#src/Structs/ControllerStructs';
-import * as Yup from 'yup';
-import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
+import React from 'react';
 import {View} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import * as Yup from 'yup';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ForumThreadValues} from '#src/Types/FormValues';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {InfoStringValidation} from '#src/Libraries/ValidationSchema';
+import {ForumData} from '#src/Structs/ControllerStructs';
+import {ForumThreadValues} from '#src/Types/FormValues';
 
 interface ForumThreadEditFormProps {
   forumData: ForumData;

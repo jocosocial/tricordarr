@@ -1,22 +1,23 @@
-import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
-import {UserHeader} from '#src/Structs/ControllerStructs';
-import {Text} from 'react-native-paper';
-import {RefreshControl} from 'react-native';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {AppIcons} from '#src/Enums/Icons';
-import {ModeratorMuteText, UserMuteText} from '#src/Components/Text/UserRelationsText';
-import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
-import {ItalicText} from '#src/Components/Text/ItalicText';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useQueryClient} from '@tanstack/react-query';
+import React from 'react';
+import {RefreshControl} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {ItalicText} from '#src/Components/Text/ItalicText';
+import {ModeratorMuteText, UserMuteText} from '#src/Components/Text/UserRelationsText';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
-import {useQueryClient} from '@tanstack/react-query';
+import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
 export const MuteUsersScreen = ({navigation}: Props) => {

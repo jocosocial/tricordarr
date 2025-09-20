@@ -1,6 +1,6 @@
+import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 
 export const useForumCategoriesQuery = () => {
   return useTokenAuthQuery<CategoryData[]>('/forum/categories');

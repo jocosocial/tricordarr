@@ -1,4 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 
 export interface PrivilegeContextType {

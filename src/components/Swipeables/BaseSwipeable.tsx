@@ -1,8 +1,9 @@
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import React, {PropsWithChildren} from 'react';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {SharedValue} from 'react-native-reanimated';
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {SwipeableMethods} from 'react-native-gesture-handler/src/components/ReanimatedSwipeable';
+import {SharedValue} from 'react-native-reanimated';
+
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 export type RenderPanelFunction = (
   progress: SharedValue<number>,

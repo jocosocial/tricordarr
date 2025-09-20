@@ -1,18 +1,20 @@
+import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
-import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
-import {useQueryClient} from '@tanstack/react-query';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppIcons} from '#src/Enums/Icons';
+import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
+import {FezData} from '#src/Structs/ControllerStructs';
+
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface FezChatActionsMenuProps {
   fez: FezData;

@@ -1,6 +1,6 @@
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {NoteCreateData, NoteData} from '#src/Structs/ControllerStructs';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 interface UserNoteCreateMutationProps {
   userID: string;

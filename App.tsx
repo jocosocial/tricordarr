@@ -6,29 +6,31 @@
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
 import {Portal} from 'react-native-paper';
-import {setupChannels} from '#src/Libraries/Notifications/Channels';
-import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
-import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
-import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
+import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
+
 import {ForegroundService} from '#src/Components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
+import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
+import {AppEventHandler} from '#src/Components/Navigation/AppEventHandler';
+import {AuthProvider} from '#src/Context/Providers/AuthProvider';
+import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
+import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
+import {setupChannels} from '#src/Libraries/Notifications/Channels';
+import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
 import {StyleProvider} from '#src/Context/Providers/StyleProvider';
 import {ModalProvider} from '#src/Context/Providers/ModalProvider';
 import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {SocketProvider} from '#src/Context/Providers/SocketProvider';
-import {AppEventHandler} from '#src/Components/Navigation/AppEventHandler';
-import {AuthProvider} from '#src/Context/Providers/AuthProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {registerFgsWorker} from '#src/Libraries/Service';
 import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
-import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
 import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
-import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
-import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 
@@ -40,14 +42,16 @@ import 'react-native-gesture-handler';
 // JS runtime check, which we disable here.
 // @ts-ignore
 import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+
 import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {AppNavigationThemeProvider} from '#src/Context/Providers/AppNavigationThemeProvider.tsx';
+
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider.tsx';
 import {configureImageCache} from '#src/Libraries/Storage/ImageStorage.ts';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 

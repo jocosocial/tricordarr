@@ -1,8 +1,8 @@
 import React from 'react';
-import {List} from 'react-native-paper';
+import {Avatar, List} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {Avatar} from 'react-native-paper';
 
 interface FezParticipantAddItemProps {
   onPress?: () => void;

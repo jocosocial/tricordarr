@@ -1,14 +1,15 @@
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import React, {useState} from 'react';
 import {Formik} from 'formik';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import React, {useState} from 'react';
 import {View} from 'react-native';
+
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 

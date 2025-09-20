@@ -1,5 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
+
 import {commonStyles} from '#src/Styles';
 
 // @TODO deprecate this

@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleProp, TextStyle, ViewStyle, StyleSheet} from 'react-native';
-import {ActivityIndicator, Text} from 'react-native-paper';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {StyleProp, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
+import {ActivityIndicator, Text} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 

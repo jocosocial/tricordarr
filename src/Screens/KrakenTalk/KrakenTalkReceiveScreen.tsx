@@ -1,14 +1,15 @@
-import React, {useCallback} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useCallback} from 'react';
+import {Text} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useAppTheme} from '#src/Styles/Theme';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {

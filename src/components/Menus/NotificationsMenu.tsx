@@ -1,13 +1,14 @@
+import pluralize from 'pluralize';
 import * as React from 'react';
-import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
 import {useState} from 'react';
+import {Linking} from 'react-native';
+import {Divider, Menu} from 'react-native-paper';
+import {Item} from 'react-navigation-header-buttons';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppIcons} from '#src/Enums/Icons';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
-import pluralize from 'pluralize';
-import {Linking} from 'react-native';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 export const NotificationsMenu = () => {
   const [visible, setVisible] = useState(false);

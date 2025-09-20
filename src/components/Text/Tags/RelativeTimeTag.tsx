@@ -1,9 +1,10 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, {PropsWithChildren} from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
-import ReactTimeAgo from 'react-time-ago';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
-import Clipboard from '@react-native-clipboard/clipboard';
+import ReactTimeAgo from 'react-time-ago';
+
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 interface RelativeTimeTagProps {

@@ -1,8 +1,8 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
+import {Linking} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {Linking} from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 interface LinkIconButtonProps {
   icon: IconSource;

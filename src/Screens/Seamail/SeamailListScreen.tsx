@@ -1,28 +1,33 @@
+import {useIsFocused} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {AppView} from '#src/Components/Views/AppView';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
-import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
+
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
-import {useIsFocused} from '@react-navigation/native';
+
+
 import {SeamailFlatList} from '#src/Components/Lists/Seamail/SeamailFlatList';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
+
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {AppView} from '#src/Components/Views/AppView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useQueryClient} from '@tanstack/react-query';
-import {FezData} from '#src/Structs/ControllerStructs';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 

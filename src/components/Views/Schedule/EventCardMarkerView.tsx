@@ -1,7 +1,8 @@
 import React from 'react';
-import {Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ColorValue, StyleSheet, View} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface EventBannerViewProps {
   label: string;

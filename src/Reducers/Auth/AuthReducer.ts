@@ -1,5 +1,6 @@
-import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {useReducer} from 'react';
+
+import {TokenStringData} from '#src/Structs/ControllerStructs';
 
 export enum AuthActions {
   signIn = 'SIGN_IN',

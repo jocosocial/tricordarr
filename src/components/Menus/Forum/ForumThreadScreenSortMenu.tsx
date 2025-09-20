@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Enums/Icons';
-import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {AppIcons} from '#src/Enums/Icons';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 interface ForumThreadScreenSortMenuProps {
   category?: CategoryData;

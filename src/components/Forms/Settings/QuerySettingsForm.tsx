@@ -1,11 +1,12 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {QuerySettingsFormValues} from '#src/Types/FormValues';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
 interface QuerySettingsFormProps {
   initialValues: QuerySettingsFormValues;

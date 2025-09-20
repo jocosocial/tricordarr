@@ -1,11 +1,12 @@
+import moment from 'moment-timezone';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Card} from 'react-native-paper';
-import {AnnouncementData} from '#src/Structs/ControllerStructs';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+
 import {ContentText} from '#src/Components/Text/ContentText';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
-import moment from 'moment-timezone';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AnnouncementData} from '#src/Structs/ControllerStructs';
 
 export const AnnouncementCard = ({announcement}: {announcement: AnnouncementData}) => {
   const {commonStyles} = useStyles();

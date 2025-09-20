@@ -1,23 +1,25 @@
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {RefreshControl, Linking, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
-import {DataTable, Text} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
+import moment from 'moment-timezone';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Linking, RefreshControl, View} from 'react-native';
+import {DataTable, Text} from 'react-native-paper';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {DataTableCell} from '#src/Components/Tables/DataTableCell';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
+
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import moment from 'moment-timezone';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {DataTableCell} from '#src/Components/Tables/DataTableCell';
 
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';

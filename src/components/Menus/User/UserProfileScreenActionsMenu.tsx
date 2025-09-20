@@ -1,19 +1,20 @@
+import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
-import {AppIcons} from '#src/Enums/Icons';
+import {Item} from 'react-navigation-header-buttons';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
+import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
-import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {Item} from 'react-navigation-header-buttons';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
-import {useQueryClient} from '@tanstack/react-query';
+import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 
 interface UserProfileActionsMenuProps {
   profile: ProfilePublicData;

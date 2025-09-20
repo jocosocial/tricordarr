@@ -1,16 +1,17 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {UserRegistrationFormValues} from '#src/Types/FormValues';
-import {AppIcons} from '#src/Enums/Icons';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
-import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
+import {UserRegistrationFormValues} from '#src/Types/FormValues';
 
 interface UserCreateFormProps {
   onSubmit: (values: UserRegistrationFormValues, helpers: FormikHelpers<UserRegistrationFormValues>) => void;

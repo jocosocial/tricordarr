@@ -1,3 +1,4 @@
+import React, {useCallback, useState} from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -10,11 +11,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
-import {AppIcons} from '#src/Enums/Icons';
-import React, {useCallback, useState} from 'react';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
 
 export interface ConversationFlatListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;

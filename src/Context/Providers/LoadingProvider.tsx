@@ -1,5 +1,6 @@
-import React, {createContext, PropsWithChildren} from 'react';
 import {useIsRestoring} from '@tanstack/react-query';
+import React, {createContext, PropsWithChildren} from 'react';
+
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 
 export const LoadingProvider = ({children}: PropsWithChildren) => {

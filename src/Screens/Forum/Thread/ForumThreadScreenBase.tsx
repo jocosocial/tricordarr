@@ -1,26 +1,28 @@
+import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
+import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
-import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {AppIcons} from '#src/Enums/Icons';
+
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {FormikHelpers, FormikProps} from 'formik';
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
-import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
+import {AppView} from '#src/Components/Views/AppView';
+import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadScreenBaseProps {
   data?: InfiniteData<ForumData>;

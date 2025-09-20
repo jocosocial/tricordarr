@@ -1,7 +1,8 @@
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
-import React from 'react';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface NavHeaderTitleProps {
   title: string;

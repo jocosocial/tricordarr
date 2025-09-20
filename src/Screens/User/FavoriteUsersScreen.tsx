@@ -1,21 +1,22 @@
-import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
-import {UserHeader} from '#src/Structs/ControllerStructs';
-import {Text} from 'react-native-paper';
-import {RefreshControl} from 'react-native';
-import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
-import {AppIcons} from '#src/Enums/Icons';
-import {UserFavoriteText} from '#src/Components/Text/UserRelationsText';
-import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {ItalicText} from '#src/Components/Text/ItalicText';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useQueryClient} from '@tanstack/react-query';
+import React from 'react';
+import {RefreshControl} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
+import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
+import {ItalicText} from '#src/Components/Text/ItalicText';
+import {UserFavoriteText} from '#src/Components/Text/UserRelationsText';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
-import {useQueryClient} from '@tanstack/react-query';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 export const FavoriteUsersScreen = ({navigation}: Props) => {

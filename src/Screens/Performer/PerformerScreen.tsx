@@ -1,16 +1,17 @@
-import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
-import {View} from 'react-native';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {AppIcons} from '#src/Enums/Icons';
+import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 

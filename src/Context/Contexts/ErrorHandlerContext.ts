@@ -1,4 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
+
 import {StringOrError} from '#src/Types';
 
 export interface ErrorHandlerContextType {

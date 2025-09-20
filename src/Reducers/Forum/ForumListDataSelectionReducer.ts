@@ -1,5 +1,6 @@
-import {ForumListData} from '#src/Structs/ControllerStructs';
 import {useReducer} from 'react';
+
+import {ForumListData} from '#src/Structs/ControllerStructs';
 
 export enum ForumListDataSelectionActions {
   select = 'SELECT',

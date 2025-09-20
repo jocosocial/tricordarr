@@ -1,23 +1,21 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/SettingsNavigationListItem';
+
 import {SettingsAccountListItem} from '#src/Components/Lists/Items/Settings/SettingsAccountListItem';
+import {SettingsLoginListItem} from '#src/Components/Lists/Items/Settings/SettingsLoginListItem';
+import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/SettingsNavigationListItem';
+import {SettingsRegistrationListItem} from '#src/Components/Lists/Items/Settings/SettingsRegistrationListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {SettingsHeaderTitle} from '#src/Components/Navigation/SettingsHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  SettingsStackParamList,
-  SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {SettingsHeaderTitle} from '#src/Components/Navigation/SettingsHeaderTitle';
-import {SettingsLoginListItem} from '#src/Components/Lists/Items/Settings/SettingsLoginListItem';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {SettingsRegistrationListItem} from '#src/Components/Lists/Items/Settings/SettingsRegistrationListItem';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.settings>;
 

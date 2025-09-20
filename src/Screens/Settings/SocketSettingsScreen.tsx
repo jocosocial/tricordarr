@@ -1,17 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {SettingSwitch} from '#src/Components/Switches/SettingSwitch';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {DataTable, Text} from 'react-native-paper';
-import {SocketControlView} from '#src/Components/Views/SocketControlView';
 import {RefreshControl} from 'react-native';
-import {useSocket} from '#src/Context/Contexts/SocketContext';
-import {WebSocketState} from '#src/Libraries/Network/Websockets';
+import {DataTable, Text} from 'react-native-paper';
+
 import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {SettingSwitch} from '#src/Components/Switches/SettingSwitch';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SocketControlView} from '#src/Components/Views/SocketControlView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {WebSocketState} from '#src/Libraries/Network/Websockets';
 
 export const SocketSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

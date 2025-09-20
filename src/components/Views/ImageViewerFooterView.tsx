@@ -1,9 +1,9 @@
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {View} from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
-import {ImageQueryData} from '#src/Types';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ImageQueryData} from '#src/Types';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;

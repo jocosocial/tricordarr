@@ -1,7 +1,8 @@
-import React, {useState, useCallback} from 'react';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import React, {useCallback, useState} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+
 import {AppView} from '#src/Components/Views/AppView';
 
 export const NetworkInfoSettings = () => {

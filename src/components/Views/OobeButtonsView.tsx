@@ -1,7 +1,8 @@
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 
 interface OobeButtonsViewProps {

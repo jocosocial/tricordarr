@@ -1,18 +1,19 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
-import {PostData} from '#src/Structs/ControllerStructs';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {AppIcons} from '#src/Enums/Icons';
 import pluralize from 'pluralize';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {FlatList, RefreshControl, View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {AppView} from '#src/Components/Views/AppView';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {ForumPostSearchQueryParams, useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumPostScreenBaseProps {
   queryParams: ForumPostSearchQueryParams;

@@ -1,17 +1,18 @@
-import {FezData} from '#src/Structs/ControllerStructs';
 import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '#src/Enums/Icons';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
+import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
-import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
-import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezType} from '#src/Enums/FezType';
-import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventScreenActionsMenuProps {
   event: FezData;

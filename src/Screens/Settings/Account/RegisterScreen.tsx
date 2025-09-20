@@ -1,19 +1,20 @@
-import React, {useCallback, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
-import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
-import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {FormikHelpers} from 'formik';
+import React, {useCallback, useState} from 'react';
 import {RefreshControl} from 'react-native';
+import {Text} from 'react-native-paper';
+
+import {UserCreateForm} from '#src/Components/Forms/User/UserCreateForm';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
 
 const RegisterScreenBase = () => {
   const createMutation = useUserCreateQuery();

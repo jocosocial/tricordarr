@@ -1,8 +1,8 @@
+import {useQuery, UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
-import {ErrorResponse} from '#src/Structs/ControllerStructs';
-import {useQuery} from '@tanstack/react-query';
-import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
+
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 /**
  * Clone of useQuery but dedicated for queries that can be performed without the user needing

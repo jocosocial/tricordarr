@@ -1,17 +1,18 @@
-import {TouchableOpacity, View, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
-import {ForumData, PostData, UserHeader} from '#src/Structs/ControllerStructs';
-import {ContentText} from '#src/Components/Text/ContentText';
-import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import Clipboard from '@react-native-clipboard/clipboard';
+import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ForumPostActionsMenu} from '#src/Components/Menus/Forum/ForumPostActionsMenu';
+import {ContentText} from '#src/Components/Text/ContentText';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {ForumData, PostData, UserHeader} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface ForumPostMessageViewProps {
   postData: PostData;

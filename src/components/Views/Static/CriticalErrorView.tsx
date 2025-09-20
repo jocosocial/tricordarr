@@ -1,22 +1,24 @@
-import {AppView} from '#src/Components/Views/AppView';
-import {View} from 'react-native';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Enums/Icons';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {BoldText} from '#src/Components/Text/BoldText';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {CacheManager} from '@georstat/react-native-image-cache';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {useQueryClient} from '@tanstack/react-query';
-import {useAppTheme} from '#src/Styles/Theme';
+import React from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {BoldText} from '#src/Components/Text/BoldText';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+
+import {getInitialAppConfig} from '#src/Libraries/AppConfig';
+import {useAppTheme} from '#src/Styles/Theme';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {getInitialAppConfig} from '#src/Libraries/AppConfig';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
-import {CacheManager} from '@georstat/react-native-image-cache';
 
 interface CriticalErrorViewProps {
   error: Error;

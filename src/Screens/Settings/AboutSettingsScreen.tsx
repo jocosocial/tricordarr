@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
-import {DataTable} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
+import {DataTable} from 'react-native-paper';
+
 import {AppView} from '#src/Components/Views/AppView';
 
 export const AboutSettingsScreen = () => {

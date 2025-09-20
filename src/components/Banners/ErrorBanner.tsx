@@ -1,9 +1,10 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Banner, Text} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useAppTheme} from '#src/Styles/Theme';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export const ErrorBanner = () => {
   const {errorBanner, setErrorBanner} = useErrorHandler();

@@ -1,9 +1,10 @@
 import React from 'react';
+
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {AppIcons} from '#src/Enums/Icons';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {AppIcons} from '#src/Enums/Icons';
 
 export const ForumHelpScreen = () => {
   return (

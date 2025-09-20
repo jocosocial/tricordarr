@@ -1,10 +1,11 @@
-import {Card, TouchableRipple, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {Linking, StyleSheet, View} from 'react-native';
-import React from 'react';
-import {AppIcons} from '#src/Enums/Icons';
-import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AndroidColor} from '@notifee/react-native';
+import React from 'react';
+import {Linking, StyleSheet, View} from 'react-native';
+import {Card, Text, TouchableRipple} from 'react-native-paper';
+
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface AppUpdateCardProps {
   currentVersion: string;

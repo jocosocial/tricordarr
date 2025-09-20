@@ -1,9 +1,10 @@
-import {AppUpdateCard} from '#src/Components/Cards/MainScreen/AppUpdateCard';
+import {compareVersions} from 'compare-versions';
 import React from 'react';
+import DeviceInfo from 'react-native-device-info';
+
+import {AppUpdateCard} from '#src/Components/Cards/MainScreen/AppUpdateCard';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
-import DeviceInfo from 'react-native-device-info';
-import {compareVersions} from 'compare-versions';
 
 export const TodayAppUpdateView = () => {
   const {data} = useClientConfigQuery();

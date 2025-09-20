@@ -1,14 +1,15 @@
-import {StyleSheet, View, Image as NativeImage} from 'react-native';
-import {APIImage} from '#src/Components/Images/APIImage';
-import React from 'react';
-import {ImageUploadData} from '#src/Structs/ControllerStructs';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
-import ImagePicker, {Image} from 'react-native-image-crop-picker';
-import {styleDefaults} from '#src/Styles';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useField} from 'formik';
+import React from 'react';
+import {Image as NativeImage, StyleSheet, View} from 'react-native';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
+
+import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
+import {APIImage} from '#src/Components/Images/APIImage';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ImageUploadData} from '#src/Structs/ControllerStructs';
+import {styleDefaults} from '#src/Styles';
 
 interface AvatarImageFieldProps<TFormData> {
   name: keyof TFormData;

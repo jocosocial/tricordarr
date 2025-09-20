@@ -1,13 +1,14 @@
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
-import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {AppIcons} from '#src/Enums/Icons';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
-import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {Divider, Menu} from 'react-native-paper';
+
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const MainAccountMenu = () => {

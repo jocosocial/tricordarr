@@ -1,23 +1,24 @@
+import {encode as base64_encode} from 'base-64';
 import React from 'react';
-import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {Image, View} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import {Card, DataTable, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-// @ts-ignore
+
+import cfry from '#assets/contributors/cfry.jpg';
 import grant from '#assets/contributors/grant.jpg';
+// @ts-ignore
 // @ts-ignore
 import hendu from '#assets/contributors/hendu.jpg';
 // @ts-ignore
-import cfry from '#assets/contributors/cfry.jpg';
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 import {ContributorCard} from '#src/Components/Cards/ContributorCard';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
-import {Image, View} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
-import {encode as base64_encode} from 'base-64';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const AboutTricordarrScreen = () => {
   const {commonStyles} = useStyles();

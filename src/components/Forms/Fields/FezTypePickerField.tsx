@@ -1,5 +1,6 @@
-import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import React from 'react';
+
+import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {FezType} from '#src/Enums/FezType';
 
 interface FezTypePickerFieldProps {

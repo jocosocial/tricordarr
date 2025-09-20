@@ -1,31 +1,36 @@
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {DataTable} from 'react-native-paper';
-import {RefreshControl} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
+import {CacheManager} from '@georstat/react-native-image-cache';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {filesize} from 'filesize';
+import {FormikHelpers} from 'formik';
+import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl} from 'react-native';
+import {DataTable} from 'react-native-paper';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {useAppTheme} from '#src/Styles/Theme';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+
+
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {getDirSize} from '#src/Libraries/Storage/ImageStorage';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
+import {commonStyles} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
-import {FormikHelpers} from 'formik';
+
+
 import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
-import {commonStyles} from '#src/Styles';
-import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {CacheManager} from '@georstat/react-native-image-cache';
-import {getDirSize} from '#src/Libraries/Storage/ImageStorage';
-import {filesize} from 'filesize';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  SettingsStackParamList,
-  SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator';
+
+
+
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 

@@ -1,9 +1,10 @@
+import {FlashList} from '@shopify/flash-list';
 import React, {Dispatch, SetStateAction, useRef} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {StyleSheet, View} from 'react-native';
+
 import {ScheduleHeaderDayButton} from '#src/Components/Buttons/ScheduleHeaderDayButton';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {FlashList} from '@shopify/flash-list';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CruiseDayData} from '#src/Types';
 
 interface ScheduleHeaderViewProps {

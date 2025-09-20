@@ -1,7 +1,8 @@
 import * as React from 'react';
+
+import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
 import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
 
 interface ForumFABProps {
   category: CategoryData;

@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
-import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
-import {AppIcons} from '#src/Enums/Icons';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useAppTheme} from '#src/Styles/Theme';
+
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {SegmentedButtonType} from '#src/Types';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {useAppTheme} from '#src/Styles/Theme';
+import {SegmentedButtonType} from '#src/Types';
 
 export const SeamailAccountButtons = () => {
   const {data: profilePublicData} = useUserProfileQuery();

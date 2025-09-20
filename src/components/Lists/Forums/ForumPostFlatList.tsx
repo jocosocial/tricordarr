@@ -1,19 +1,20 @@
-import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
-import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
 import React, {useCallback} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
-import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
-import {timeAgo} from '#src/Libraries/DateTime';
-import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
+
 import {AppFlatList} from '#src/Components/Lists/AppFlatList';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
+import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
+import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
+import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
-import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
+import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {timeAgo} from '#src/Libraries/DateTime';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
 
 interface ForumPostFlatListProps {
   postList: PostData[];

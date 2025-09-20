@@ -1,24 +1,25 @@
 import {
-  differenceInMilliseconds,
-  startOfSecond,
-  startOfMinute,
-  startOfHour,
-  startOfDay,
-  addSeconds,
-  addMinutes,
-  addHours,
   addDays,
+  addHours,
+  addMinutes,
+  addSeconds,
+  differenceInMilliseconds,
+  startOfDay,
+  startOfHour,
+  startOfMinute,
+  startOfSecond,
 } from 'date-fns';
-import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData, CruiseDayTime, StartEndTime} from '#src/Types';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
+import {useEffect, useRef, useState} from 'react';
+
+import {CruiseDayData, CruiseDayTime, StartEndTime} from '#src/Types';
 import {StartTime} from '#src/Types/FormValues';
 
 // https://github.com/catamphetamine/javascript-time-ago/issues/9
 // Used to be in App.tsx then I moved here so that tests would work.
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
 TimeAgo.addDefaultLocale(en);
 
 const thresholdMap = {

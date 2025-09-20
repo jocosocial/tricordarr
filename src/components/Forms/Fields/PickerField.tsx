@@ -1,9 +1,10 @@
-import {Button, Divider, HelperText, Menu} from 'react-native-paper';
+import {useField, useFormikContext} from 'formik';
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import {Button, Divider, HelperText, Menu} from 'react-native-paper';
+
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
-import {useField, useFormikContext} from 'formik';
 
 interface PickerFieldProps<TData> {
   name: string;

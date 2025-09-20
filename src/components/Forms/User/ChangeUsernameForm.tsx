@@ -1,15 +1,16 @@
+import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
-import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ChangeUsernameFormValues} from '#src/Types/FormValues';
-import {AppIcons} from '#src/Enums/Icons';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {UsernameValidation} from '#src/Libraries/ValidationSchema';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {UsernameValidation} from '#src/Libraries/ValidationSchema';
+import {ChangeUsernameFormValues} from '#src/Types/FormValues';
 
 interface ChangeUsernameFormProps {
   onSubmit: (values: ChangeUsernameFormValues, helpers: FormikHelpers<ChangeUsernameFormValues>) => void;

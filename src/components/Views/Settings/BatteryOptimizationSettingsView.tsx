@@ -1,15 +1,18 @@
-import {HelperText, Text} from 'react-native-paper';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useAppTheme} from '#src/Styles/Theme';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useAppState} from '@react-native-community/hooks';
-// @ts-ignore
+import React, {useCallback, useEffect, useState} from 'react';
+import {View} from 'react-native';
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
+import {HelperText, Text} from 'react-native-paper';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+
+// @ts-ignore
+
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {View} from 'react-native';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const BatteryOptimizationSettingsView = () => {
   const theme = useAppTheme();

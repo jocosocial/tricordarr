@@ -1,9 +1,10 @@
 import React, {memo} from 'react';
-import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
-import {APIImage} from '#src/Components/Images/APIImage';
 import {View} from 'react-native';
-import {PhotostreamImageHeaderView} from '#src/Components/Views/Photostream/PhotostreamImageHeaderView';
+
+import {APIImage} from '#src/Components/Images/APIImage';
 import {PhotostreamImageBodyView} from '#src/Components/Views/Photostream/PhotostreamImageBodyView';
+import {PhotostreamImageHeaderView} from '#src/Components/Views/Photostream/PhotostreamImageHeaderView';
+import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 interface PhotostreamListItemProps {
   item: PhotostreamImageData;

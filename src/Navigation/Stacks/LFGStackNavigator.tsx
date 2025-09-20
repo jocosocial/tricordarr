@@ -1,20 +1,21 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen';
-import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
-import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
-import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
-import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen';
+import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
+import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
 import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen';
+import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen';
+import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen';
 import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
+import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
 import {FezListEndpoints} from '#src/Types';
 
 export type LfgStackParamList = CommonStackParamList & {

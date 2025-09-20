@@ -1,6 +1,7 @@
 import React, {PropsWithChildren} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View} from 'react-native';
+
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const FlexCenteredContentView = (props: PropsWithChildren) => {
   const {commonStyles} = useStyles();

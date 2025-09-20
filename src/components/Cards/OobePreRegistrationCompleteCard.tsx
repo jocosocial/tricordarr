@@ -1,13 +1,15 @@
-import {Card, Text} from 'react-native-paper';
-import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {getDayMarker} from '#src/Libraries/DateTime';
-import {Image} from 'react-native';
-// @ts-ignore
-import preregistration from '#assets/preregistration.jpg';
 import {encode as base64_encode} from 'base-64';
+import React from 'react';
+import {Image} from 'react-native';
+import {Card, Text} from 'react-native-paper';
+
+import preregistration from '#assets/preregistration.jpg';
 import {AppImage} from '#src/Components/Images/AppImage';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {getDayMarker} from '#src/Libraries/DateTime';
+
+// @ts-ignore
 
 export const OobePreRegistrationCompleteCard = () => {
   const {commonStyles} = useStyles();

@@ -1,7 +1,8 @@
-import {Card} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {Card} from 'react-native-paper';
+
 import {MainImageCardCover} from '#src/Components/Cards/MainScreen/MainImageCardCover';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 /**
  * Card for the main screen.

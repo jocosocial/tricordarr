@@ -1,4 +1,7 @@
-import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
+
+import {PressAction} from '#src/Enums/Notifications';
+import {getAppConfig} from '#src/Libraries/AppConfig';
 import {
   announcementsChannel,
   callMgmtChannel,
@@ -9,10 +12,8 @@ import {
   seamailChannel,
   serviceChannel,
 } from '#src/Libraries/Notifications/Channels';
-import {PressAction} from '#src/Enums/Notifications';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
-import {getAppConfig} from '#src/Libraries/AppConfig';
-import notifee, {EventType, Notification, NotificationPressAction} from '@notifee/react-native';
+import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 /**
  * Generate a Notifee notification from a WebSocket event. This usually means that something

@@ -1,7 +1,8 @@
-import {Card} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {Card} from 'react-native-paper';
+
 import {EasterEggImageCardCover} from '#src/Components/Cards/MainScreen/EasterEggImageCardCover';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const EasterEggHeaderCard = () => {
   const {commonStyles} = useStyles();

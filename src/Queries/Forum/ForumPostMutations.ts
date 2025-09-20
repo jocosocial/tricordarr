@@ -1,6 +1,6 @@
-import {PostContentData, PostData} from '#src/Structs/ControllerStructs';
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
+import {PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 export const useForumPostDeleteMutation = () => {
   const {apiDelete} = useSwiftarrQueryClient();

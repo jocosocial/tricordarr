@@ -1,5 +1,5 @@
-import {BoardgameData, BoardgameResponseData} from '#src/Structs/ControllerStructs';
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {BoardgameData, BoardgameResponseData} from '#src/Structs/ControllerStructs';
 
 interface BoardgamesQueryOptions {
   search?: string;

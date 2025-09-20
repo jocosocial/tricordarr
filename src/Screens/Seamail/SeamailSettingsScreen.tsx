@@ -1,16 +1,17 @@
-import {AppView} from '#src/Components/Views/AppView';
-import React from 'react';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Formik} from 'formik';
+import React from 'react';
 import {View} from 'react-native';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 
 export const SeamailSettingsScreen = () => {
   const {appConfig, hasNotificationPermission, updateAppConfig} = useConfig();

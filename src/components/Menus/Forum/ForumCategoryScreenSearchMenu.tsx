@@ -1,11 +1,12 @@
 import React from 'react';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
+
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {CategoryData} from '#src/Structs/ControllerStructs';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 interface ForumCategoryScreenSearchMenuProps {
   category: CategoryData;

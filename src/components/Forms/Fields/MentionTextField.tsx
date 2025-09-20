@@ -1,8 +1,9 @@
 import {Field, useField, useFormikContext} from 'formik';
-import {ContentPostMentionSuggestionsView} from '#src/Components/Views/Content/ContentPostMentionSuggestionsView';
-import {MentionInput} from 'react-native-controlled-mentions';
 import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
+import {MentionInput} from 'react-native-controlled-mentions';
+
+import {ContentPostMentionSuggestionsView} from '#src/Components/Views/Content/ContentPostMentionSuggestionsView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface MentionTextFieldProps {

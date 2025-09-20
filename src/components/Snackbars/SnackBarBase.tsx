@@ -1,7 +1,8 @@
-import {Snackbar, Text} from 'react-native-paper';
 import React from 'react';
-import {useAppTheme} from '#src/Styles/Theme';
 import {Animated, StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import {Snackbar, Text} from 'react-native-paper';
+
+import {useAppTheme} from '#src/Styles/Theme';
 import {StringOrError} from '#src/Types';
 
 export interface SnackBarBaseProps {

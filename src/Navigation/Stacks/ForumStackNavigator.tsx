@@ -1,25 +1,26 @@
-import React from 'react';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import React from 'react';
+
+import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ForumCategoriesScreen} from '#src/Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
+import {ForumPostAlertwordScreen} from '#src/Screens/Forum/Post/ForumPostAlertwordScreen';
+import {ForumPostFavoriteScreen} from '#src/Screens/Forum/Post/ForumPostFavoriteScreen';
 import {ForumPostMentionScreen} from '#src/Screens/Forum/Post/ForumPostMentionScreen';
 import {ForumPostSelfScreen} from '#src/Screens/Forum/Post/ForumPostSelfScreen';
-import {ForumPostFavoriteScreen} from '#src/Screens/Forum/Post/ForumPostFavoriteScreen';
+import {ForumThreadCreateScreen} from '#src/Screens/Forum/Thread/ForumThreadCreateScreen';
 import {ForumThreadFavoritesScreen} from '#src/Screens/Forum/Thread/ForumThreadFavoritesScreen';
 import {ForumThreadMutesScreen} from '#src/Screens/Forum/Thread/ForumThreadMutesScreen';
 import {ForumThreadOwnedScreen} from '#src/Screens/Forum/Thread/ForumThreadOwnedScreen';
 import {ForumThreadRecentScreen} from '#src/Screens/Forum/Thread/ForumThreadRecentScreen';
 import {ForumThreadSearchScreen} from '#src/Screens/Forum/Thread/ForumThreadSearchScreen';
-import {ForumThreadCreateScreen} from '#src/Screens/Forum/Thread/ForumThreadCreateScreen';
-import {ForumPostAlertwordScreen} from '#src/Screens/Forum/Post/ForumPostAlertwordScreen';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 export type ForumStackParamList = CommonStackParamList & {

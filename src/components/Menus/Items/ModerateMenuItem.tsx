@@ -1,8 +1,9 @@
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import * as React from 'react';
+import {Menu} from 'react-native-paper';
+
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {Menu} from 'react-native-paper';
-import * as React from 'react';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface ModerateMenuItemProps {
   closeMenu: () => void;

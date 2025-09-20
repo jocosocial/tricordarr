@@ -1,16 +1,17 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Components/Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
+
 import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
-import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;

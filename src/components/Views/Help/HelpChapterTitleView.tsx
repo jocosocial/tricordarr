@@ -1,6 +1,7 @@
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface HelpChapterTitleView {

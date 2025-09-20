@@ -1,4 +1,5 @@
 import {createContext, useContext} from 'react';
+
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 
 interface AuthContextType {

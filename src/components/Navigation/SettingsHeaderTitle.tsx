@@ -1,6 +1,7 @@
 import React from 'react';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+
 import {SecretHeaderTitle} from '#src/Components/Navigation/SecretHeaderTitle';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 
 /**

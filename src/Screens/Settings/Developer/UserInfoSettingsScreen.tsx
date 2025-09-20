@@ -1,6 +1,7 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
+
 import {AppView} from '#src/Components/Views/AppView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';

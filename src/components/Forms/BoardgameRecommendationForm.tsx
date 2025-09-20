@@ -1,15 +1,16 @@
 import {Formik, FormikHelpers} from 'formik';
-import * as Yup from 'yup';
-import {NumberValidation} from '#src/Libraries/ValidationSchema';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import * as Yup from 'yup';
+
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
-import {BoardgameNumPlayersPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameNumPlayersPickerField';
 import {BoardgameAgePickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameAgePickerField';
-import {BoardgameDurationPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameDurationPickerField';
 import {BoardgameComplexityPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameComplexityPickerField';
+import {BoardgameDurationPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameDurationPickerField';
+import {BoardgameNumPlayersPickerField} from '#src/Components/Forms/Fields/Boardgames/BoardgameNumPlayersPickerField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {NumberValidation} from '#src/Libraries/ValidationSchema';
+import {BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
 
 interface PersonalEventFormProps {
   onSubmit: (values: BoardgameRecommendationData, helpers: FormikHelpers<BoardgameRecommendationData>) => void;

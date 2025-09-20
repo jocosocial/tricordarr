@@ -1,7 +1,8 @@
-import {AppIcons} from '#src/Enums/Icons';
-import {Item} from 'react-navigation-header-buttons';
 import React from 'react';
+import {Item} from 'react-navigation-header-buttons';
+
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
 
 export const HeaderScheduleYourDayButton = () => {

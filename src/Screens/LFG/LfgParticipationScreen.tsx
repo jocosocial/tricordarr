@@ -1,28 +1,33 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useQueryClient} from '@tanstack/react-query';
+import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl, View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
+import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
-import {RefreshControl, View} from 'react-native';
+
+
+
+import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {AppIcons} from '#src/Enums/Icons';
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
-import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '#src/Enums/FezType';
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 

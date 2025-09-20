@@ -1,18 +1,19 @@
-import {PerformerUploadData} from '#src/Structs/ControllerStructs';
 import {Formik, FormikHelpers} from 'formik';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
+
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AvatarImageField} from '#src/Components/Forms/Fields/AvatarImageField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {
   InfoStringValidation,
   OptionalBioStringValidation,
   OptionalURLValidation,
 } from '#src/Libraries/ValidationSchema';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {StyleSheet, View} from 'react-native';
-import React from 'react';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
-import {AvatarImageField} from '#src/Components/Forms/Fields/AvatarImageField';
+import {PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 interface ShadowPerformerFormProps<TData = PerformerUploadData> {
   onSubmit: (values: TData, helpers: FormikHelpers<TData>) => void;

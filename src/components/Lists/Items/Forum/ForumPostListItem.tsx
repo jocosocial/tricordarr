@@ -1,13 +1,14 @@
 import React, {memo} from 'react';
-import {ForumData, PostData} from '#src/Structs/ControllerStructs';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
-import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
-import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
-import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
+
 import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
 import {ForumPostMessageView} from '#src/Components/Views/Forum/ForumPostMessageView';
-import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
+import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface ForumPostListItemProps {

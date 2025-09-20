@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {Snackbar, Text} from 'react-native-paper';
+
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useAppTheme} from '#src/Styles/Theme';
 // import {useStyles} from '#src/Context/Contexts/StyleContext';
 

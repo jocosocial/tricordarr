@@ -1,19 +1,20 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
-import {PostContentData} from '#src/Structs/ControllerStructs';
-import {AppIcons} from '#src/Enums/Icons';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import React, {useEffect} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
-import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsertMenuView';
 import * as Yup from 'yup';
+
+import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {EmojiPickerField} from '#src/Components/Forms/Fields/EmojiPickerField';
+import {MentionTextField} from '#src/Components/Forms/Fields/MentionTextField';
+import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsertMenuView';
 import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
-import {MentionTextField} from '#src/Components/Forms/Fields/MentionTextField';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {PostContentData} from '#src/Structs/ControllerStructs';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
