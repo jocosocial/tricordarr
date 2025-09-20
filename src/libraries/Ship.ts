@@ -1,11 +1,16 @@
 import {ImageURISource} from 'react-native';
 
+import {ProfilePublicData} from '#src/Structs/ControllerStructs';
+
 // @ts-ignore
 import deck1 from '#assets/map/deck1.png';
 // @ts-ignore
 import deck10 from '#assets/map/deck10.png';
+// @ts-ignore
 import deck11 from '#assets/map/deck11.png';
+// @ts-ignore
 import deck12 from '#assets/map/deck12.png';
+// @ts-ignore
 import deck2 from '#assets/map/deck2.png';
 // @ts-ignore
 import deck3 from '#assets/map/deck3.png';
@@ -21,10 +26,6 @@ import deck7 from '#assets/map/deck7.png';
 import deck8 from '#assets/map/deck8.png';
 // @ts-ignore
 import deck9 from '#assets/map/deck9.png';
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
-import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 export interface DeckData {
   number: number;

@@ -3,10 +3,11 @@ import React, {useState} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
-// @ts-ignore
-import AllImage from '#assets/easteregg_all.jpg';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {ImageQueryData} from '#src/Types';
+
+// @ts-ignore
+import AllImage from '#assets/easteregg_all.jpg';
 
 /**
  * Display a pretty image in the app based on the time of day.

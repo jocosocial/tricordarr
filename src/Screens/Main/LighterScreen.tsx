@@ -1,11 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+// @ts-ignore
 import VideoPlayer from 'react-native-video-controls';
 
-import LighterVideo from '#assets/RockBalladMode.mp4';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+
 // @ts-ignore
+import LighterVideo from '#assets/RockBalladMode.mp4';
 
 export const LighterScreen = () => {
   const {commonStyles} = useStyles();

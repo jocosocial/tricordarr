@@ -3,10 +3,11 @@ import React from 'react';
 import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
-// @ts-ignore
-import twitarrteam from '#assets/contributors/twitarrteam.jpg';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+
+// @ts-ignore
+import twitarrteam from '#assets/contributors/twitarrteam.jpg';
 
 export const OobeNoteCard = () => {
   const {commonStyles} = useStyles();

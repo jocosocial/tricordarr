@@ -4,14 +4,6 @@ import {Image, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Card, DataTable, Text} from 'react-native-paper';
 
-import cfry from '#assets/contributors/cfry.jpg';
-import grant from '#assets/contributors/grant.jpg';
-// @ts-ignore
-// @ts-ignore
-import hendu from '#assets/contributors/hendu.jpg';
-// @ts-ignore
-// @ts-ignore
-import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 import {ContributorCard} from '#src/Components/Cards/ContributorCard';
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
@@ -19,6 +11,15 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+
+// @ts-ignore
+import cfry from '#assets/contributors/cfry.jpg';
+// @ts-ignore
+import grant from '#assets/contributors/grant.jpg';
+// @ts-ignore
+import hendu from '#assets/contributors/hendu.jpg';
+// @ts-ignore
+import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 export const AboutTricordarrScreen = () => {
   const {commonStyles} = useStyles();

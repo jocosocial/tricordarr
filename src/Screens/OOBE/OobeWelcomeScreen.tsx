@@ -6,7 +6,6 @@ import {Image, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
 
-import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -16,6 +15,9 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useAppTheme} from '#src/Styles/Theme';
+
+// @ts-ignore
+import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
