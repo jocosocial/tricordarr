@@ -3,8 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@tricordarr/*": [
+      "#src/*": [
         "src/*"
+      ],
+      "#assets/*": [
+        "assets/*"
       ]
     }
   }
