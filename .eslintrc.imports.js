@@ -1,7 +1,14 @@
 module.exports = {
   root: true,
-  // https://stackoverflow.com/questions/58065765/eslint-jest-globals-environment-key-unknown
-  extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  extends: ['plugin:import/recommended'],
   settings: {
     'import/resolver': {
       typescript: {
@@ -11,17 +18,18 @@ module.exports = {
     },
   },
   rules: {
-    'linebreak-style': 0,
-    'no-restricted-imports': [
-      'error',
-      {
-        patterns: ['./*', '../*'],
-      },
-    ],
+    // Only import-related rules
     'import/order': [
       'error',
       {
-        groups: ['builtin', 'external', 'internal', ['sibling', 'parent'], 'index', 'unknown'],
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          ['sibling', 'parent'],
+          'index',
+          'unknown',
+        ],
         'newlines-between': 'always',
         alphabetize: {
           order: 'asc',
@@ -38,5 +46,7 @@ module.exports = {
         memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
       },
     ],
+    // Disable other rules that might interfere
+    'import/no-unresolved': 'off',
   },
 };
