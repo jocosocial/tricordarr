@@ -16,7 +16,7 @@ import {parseISO} from 'date-fns';
 const calcDayMinutes = (dateValue: Date) => {
   const numMinutes = dateValue.getHours() * 60 + dateValue.getMinutes();
   return numMinutes;
-}
+};
 
 describe('calcDayMinutes', () => {
   it('Midnight Day Of', () => {

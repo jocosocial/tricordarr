@@ -5,32 +5,43 @@
 
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
-import {Portal} from 'react-native-paper';
-import {setupChannels} from './src/libraries/Notifications/Channels';
-import {UserNotificationDataProvider} from './src/components/Context/Providers/UserNotificationDataProvider';
-import {setupInitialNotification} from './src/libraries/Notifications/InitialNotification';
-import {ErrorHandlerProvider} from './src/components/Context/Providers/ErrorHandlerProvider';
-import {ForegroundService} from './src/components/Libraries/Notifications/ForegroundService';
-import {NotificationDataListener} from './src/components/Libraries/Notifications/NotificationDataListener';
-import {StyleProvider} from './src/components/Context/Providers/StyleProvider';
-import {ModalProvider} from './src/components/Context/Providers/ModalProvider';
-import {TwitarrProvider} from './src/components/Context/Providers/TwitarrProvider';
-import {PrivilegeProvider} from './src/components/Context/Providers/PrivilegeProvider';
-import {SocketProvider} from './src/components/Context/Providers/SocketProvider';
-import {AppEventHandler} from './src/components/Navigation/AppEventHandler';
-import {AuthProvider} from './src/components/Context/Providers/AuthProvider';
-import {ConfigProvider} from './src/components/Context/Providers/ConfigProvider';
-import {registerFgsWorker} from './src/libraries/Service';
-import {RootStackNavigator} from './src/components/Navigation/Stacks/RootStackNavigator';
-import {DrawerProvider} from './src/components/Context/Providers/DrawerProvider';
-import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
-import {CruiseProvider} from './src/components/Context/Providers/CruiseProvider';
-import {FilterProvider} from './src/components/Context/Providers/FilterProvider';
-import {registerTranslation, en as paperEn} from 'react-native-paper-dates';
-import {FeatureProvider} from './src/components/Context/Providers/FeatureProvider';
-import {NotificationDataPoller} from './src/components/Libraries/Notifications/NotificationDataPoller';
+import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Portal} from 'react-native-paper';
+import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
+
+import {ForegroundService} from '#src/Components/Libraries/Notifications/ForegroundService';
+import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
+import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
+import {AppEventHandler} from '#src/Components/Navigation/AppEventHandler';
+import {AppNavigationThemeProvider} from '#src/Context/Providers/AppNavigationThemeProvider.tsx';
+import {AuthProvider} from '#src/Context/Providers/AuthProvider';
+import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
+import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
+import {CruiseProvider} from '#src/Context/Providers/CruiseProvider';
+import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
+import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
+import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
+import {FilterProvider} from '#src/Context/Providers/FilterProvider';
+import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
+import {ModalProvider} from '#src/Context/Providers/ModalProvider';
+import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
+import {SelectionProvider} from '#src/Context/Providers/SelectionProvider.tsx';
+import {SnackbarProvider} from '#src/Context/Providers/SnackbarProvider.tsx';
+import {SocketProvider} from '#src/Context/Providers/SocketProvider';
+import {StyleProvider} from '#src/Context/Providers/StyleProvider';
+import {SwiftarrQueryClientProvider} from '#src/Context/Providers/SwiftarrQueryClientProvider';
+import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
+import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
+import {setupChannels} from '#src/Libraries/Notifications/Channels';
+import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
+import {registerFgsWorker} from '#src/Libraries/Service';
+import {configureImageCache} from '#src/Libraries/Storage/ImageStorage.ts';
+import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 
 // https://github.com/facebook/react-native/issues/30034
 // https://phab.comm.dev/D6193
@@ -39,16 +50,6 @@ import 'react-native-gesture-handler';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 // @ts-ignore
-import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-import {SwiftarrQueryClientProvider} from './src/components/Context/Providers/SwiftarrQueryClientProvider';
-import {LoadingProvider} from './src/components/Context/Providers/LoadingProvider';
-import {AppNavigationThemeProvider} from './src/components/Context/Providers/AppNavigationThemeProvider.tsx';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {CriticalErrorProvider} from './src/components/Context/Providers/CriticalErrorProvider.tsx';
-import {SelectionProvider} from './src/components/Context/Providers/SelectionProvider.tsx';
-import {configureImageCache} from './src/libraries/Storage/ImageStorage.ts';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {SnackbarProvider} from './src/components/Context/Providers/SnackbarProvider.tsx';
 ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.

@@ -1,4 +1,4 @@
-import {calcCruiseDayTime} from '../../src/libraries/DateTime.ts';
+import {calcCruiseDayTime} from '#src/Libraries/DateTime';
 
 describe('calcCruiseDayTime', () => {
   const cruiseStartDate = new Date('2025-03-02T05:00:00.000Z');
