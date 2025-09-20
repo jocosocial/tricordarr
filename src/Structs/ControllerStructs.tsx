@@ -2,7 +2,7 @@ import {FezType} from '#src/Enums/FezType';
 import {UserAccessLevel} from '#src/Enums/UserAccessLevel';
 import {SwiftarrClientApp, SwiftarrFeature} from '#src/Enums/AppFeatures';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {StorageKeys} from '#src/Storage';
+import {StorageKeys} from '#src/Libraries/Storage';
 import {HttpStatusCode} from 'axios';
 import {LikeType} from '#src/Enums/LikeType';
 import pluralize from 'pluralize';

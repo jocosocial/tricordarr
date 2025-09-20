@@ -4,11 +4,11 @@ import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
 } from '#src/Libraries/Notifications/ForegroundService';
-import {fgsWorkerNotificationIDs} from '#src/Libraries/Enums/Notifications';
+import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {SocketHealthcheckData} from '#src/Libraries/Structs/SocketStructs';
+import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import {FezType} from '#src/Libraries/Enums/FezType';
+import {FezType} from '#src/Enums/FezType';
 
 export const UsernameValidation = Yup.string()
   .matches(/^[a-zA-Z0-9-.+_]+$/, 'Username can only contain alphanumeric characters plus "-.+_"')

@@ -23,7 +23,7 @@ import deck10 from '#assets/map/deck10.png';
 import deck11 from '#assets/map/deck11.png';
 // @ts-ignore
 import deck12 from '#assets/map/deck12.png';
-import {ProfilePublicData} from '#src/Libraries/Structs/ControllerStructs';
+import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
 export interface DeckData {
   number: number;

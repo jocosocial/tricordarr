@@ -13,7 +13,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
  */
 export function useTokenAuthMutation<
   TData = unknown,
-  TError extends Error = AxiosError<ErrorResponse>,
+  TError extends AxiosError<ErrorResponse> = AxiosError<ErrorResponse>,
   TVariables = void,
   TContext = unknown,
 >(

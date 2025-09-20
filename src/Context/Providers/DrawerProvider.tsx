@@ -2,7 +2,7 @@ import React, {PropsWithChildren, useCallback} from 'react';
 import {DrawerContext} from '#src/Context/Contexts/DrawerContext';
 import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
 import {View} from 'react-native';
-import {commonStyles} from '../../../Styles';
+import {commonStyles} from '#src/Styles';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {AppIcons} from '#src/Enums/Icons';
