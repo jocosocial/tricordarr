@@ -11,15 +11,13 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
-import {useAppTheme} from '#src/Styles/Theme';
-
-
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {useAppTheme} from '#src/Styles/Theme';
 import {SegmentedButtonType} from '#src/Types';
 
 export const PushNotificationSettingsScreen = () => {

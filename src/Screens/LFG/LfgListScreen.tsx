@@ -11,18 +11,18 @@ import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {LfgListActionsMenu} from '#src/Components/Menus/LFG/LfgListActionsMenu';
+import {AppView} from '#src/Components/Views/AppView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {LfgStackComponents, useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useLfgListQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {AppView} from '#src/Components/Views/AppView';
-import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
 import {FezListEndpoints} from '#src/Types';
 
 interface LfgJoinedScreenProps {

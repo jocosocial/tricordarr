@@ -8,11 +8,14 @@ import {RefreshControl} from 'react-native';
 import {DataTable} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-
-
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {getDirSize} from '#src/Libraries/Storage/ImageStorage';
@@ -20,17 +23,7 @@ import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Naviga
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
 import {useAppTheme} from '#src/Styles/Theme';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
-import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
-
-
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
-import {ListSection} from '#src/Components/Lists/ListSection';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader';
-
-
-
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 

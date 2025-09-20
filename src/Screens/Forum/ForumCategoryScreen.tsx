@@ -13,18 +13,17 @@ import {ForumCategoryScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCa
 import {ForumThreadScreenFilterMenu} from '#src/Components/Menus/Forum/ForumThreadScreenFilterMenu';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {AppView} from '#src/Components/Views/AppView';
+import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
+import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
-
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {ForumListData} from '#src/Structs/ControllerStructs';
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {ForumThreadListView} from '#src/Components/Views/Forum/ForumThreadListView';
-import {ForumEmptyListView} from '#src/Components/Views/Forum/ForumEmptyListView';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 

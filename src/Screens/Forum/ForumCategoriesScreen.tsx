@@ -3,31 +3,27 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
-
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
-
-
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {ForumCategoriesScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoriesScreenActionsMenu';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
-import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
 import {ForumMentionsCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumMentionsCategoryListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {ForumCategoriesScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoriesScreenActionsMenu';
 import {ForumCategoriesScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCategoriesScreenSearchMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
+import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {

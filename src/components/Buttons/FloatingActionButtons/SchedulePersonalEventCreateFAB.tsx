@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';

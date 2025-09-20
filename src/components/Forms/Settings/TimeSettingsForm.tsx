@@ -8,7 +8,7 @@ import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionFi
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {NumberValidation} from '#src/Libraries/ValidationSchema';
-import {CruiseSettingsFormValues, TimeSettingsFormValues} from '#src/Types/FormValues';
+import {TimeSettingsFormValues} from '#src/Types/FormValues';
 
 interface TimeSettingsFormProps {
   initialValues: TimeSettingsFormValues;

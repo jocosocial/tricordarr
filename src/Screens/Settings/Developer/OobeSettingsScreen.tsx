@@ -1,5 +1,5 @@
 import React from 'react';
-import {DataTable, Text} from 'react-native-paper';
+import {DataTable} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';

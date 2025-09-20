@@ -1,15 +1,4 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-
-import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
-import {useEventsQuery} from '#src/Queries/Events/EventQueries';
-import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {EventData, FezData} from '#src/Structs/ControllerStructs';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFilter} from '#src/Context/Contexts/FilterContext';
-import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
-import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
 import {FlashList} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -23,10 +12,20 @@ import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/Sched
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {TimezoneWarningView} from '#src/Components/Views/Warnings/TimezoneWarningView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import useDateTime, {calcCruiseDayTime} from '#src/Libraries/DateTime';
+import {buildScheduleList, getScheduleScrollIndex} from '#src/Libraries/Schedule';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation, route}: Props) => {

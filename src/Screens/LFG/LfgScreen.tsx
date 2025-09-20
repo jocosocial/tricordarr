@@ -11,14 +11,12 @@ import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
-
-
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 

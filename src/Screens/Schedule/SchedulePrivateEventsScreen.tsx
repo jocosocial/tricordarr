@@ -3,10 +3,9 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
-import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
-import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
@@ -15,6 +14,7 @@ import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {

@@ -3,14 +3,8 @@ import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
 import React, {useEffect, useState} from 'react';
-
-import {Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
-
 import {RefreshControl} from 'react-native';
+import {Text} from 'react-native-paper';
 
 import {ServerUrlSettingForm} from '#src/Components/Forms/Settings/ServerUrlSettingForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -20,8 +14,12 @@ import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/Server
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
+import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {

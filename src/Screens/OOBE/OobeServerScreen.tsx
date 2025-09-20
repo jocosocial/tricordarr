@@ -12,18 +12,17 @@ import {OobeServerHeaderTitle} from '#src/Components/Navigation/OobeServerHeader
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {ServerUrlFormValues} from '#src/Types/FormValues';
-
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {ServerHealthcheckResultView} from '#src/Components/Views/Settings/ServerHealthcheckResultView';
-import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {ServerChoices} from '#src/Libraries/Network/ServerChoices';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
+import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 

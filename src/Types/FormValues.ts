@@ -1,7 +1,6 @@
 import {FezType} from '#src/Enums/FezType';
+import {ServerUrlChoice} from '#src/Libraries/Network/ServerChoices';
 import {EventData, UserHeader} from '#src/Structs/ControllerStructs';
-
-import {ServerUrlChoice} from '#src/Network/ServerChoices';
 
 export interface SettingFormValues {
   settingValue: string;

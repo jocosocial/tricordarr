@@ -13,13 +13,12 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
-
-import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
-import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
 
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';

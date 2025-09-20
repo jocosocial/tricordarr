@@ -13,8 +13,8 @@ import hendu from '#assets/contributors/hendu.jpg';
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 import {ContributorCard} from '#src/Components/Cards/ContributorCard';
-import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';

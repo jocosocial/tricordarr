@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {RefreshControl} from 'react-native';
 
 import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';

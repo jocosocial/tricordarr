@@ -9,7 +9,10 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PerformerProfileDeleteModalView} from '#src/Components/Views/Modals/PerformerProfileDeleteModalView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
+import {useModal} from '#src/Context/Contexts/ModalContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
 import {
@@ -17,12 +20,8 @@ import {
   usePerformerUpsertMutation,
 } from '#src/Queries/Performer/PerformerMutations';
 import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries';
-
-import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
 import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
 import {useAppTheme} from '#src/Styles/Theme';
-import {useModal} from '#src/Context/Contexts/ModalContext';
-import {PerformerProfileDeleteModalView} from '#src/Components/Views/Modals/PerformerProfileDeleteModalView';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 
@@ -50,26 +49,26 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
     await Promise.all([refetchEvent(), refetchPerformer()]);
   };
 
-  const onRemove = () => {
-    if (!performerData) {
-      return;
-    }
-    performerRemoveMutation.mutate(
-      {
-        eventID: route.params.eventID,
-      },
-      {
-        onSuccess: async () => {
-          const invalidations = EventData.getCacheKeys(route.params.eventID)
-            .concat(PerformerData.getCacheKeys())
-            .map(key => {
-              return queryClient.invalidateQueries(key);
-            });
-          await Promise.all(invalidations);
-        },
-      },
-    );
-  };
+  // const onRemove = () => {
+  //   if (!performerData) {
+  //     return;
+  //   }
+  //   performerRemoveMutation.mutate(
+  //     {
+  //       eventID: route.params.eventID,
+  //     },
+  //     {
+  //       onSuccess: async () => {
+  //         const invalidations = EventData.getCacheKeys(route.params.eventID)
+  //           .concat(PerformerData.getCacheKeys())
+  //           .map(key => {
+  //             return queryClient.invalidateQueries(key);
+  //           });
+  //         await Promise.all(invalidations);
+  //       },
+  //     },
+  //   );
+  // };
 
   const onAttach = () => {
     if (!performerData) {

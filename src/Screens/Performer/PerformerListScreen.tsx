@@ -1,8 +1,8 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
-
 import {HeaderButtons} from 'react-navigation-header-buttons';
+
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';

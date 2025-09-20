@@ -11,14 +11,13 @@ import {BoldText} from '#src/Components/Text/BoldText';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcons} from '#src/Enums/Icons';
-
-import {getInitialAppConfig} from '#src/Libraries/AppConfig';
-import {useAppTheme} from '#src/Styles/Theme';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {getInitialAppConfig} from '#src/Libraries/AppConfig';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface CriticalErrorViewProps {
   error: Error;

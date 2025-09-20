@@ -42,7 +42,7 @@ const downloadFile = async (url: string) => {
 export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps) => {
   const {commonStyles} = useStyles();
   const mainStack = useMainStack();
-  const {data, refetch, isFetching} = useMicroKaraokeSongQuery(mkSong.songID, false);
+  const {data, refetch} = useMicroKaraokeSongQuery(mkSong.songID, false);
   const [downloadedSnippets, setDownloadedSnippets] = useState(0);
   const [downloading, setDownloading] = useState(false);
   const [availableSnippets, setAvailableSnippets] = useState(0);

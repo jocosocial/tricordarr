@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Divider, Menu} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';

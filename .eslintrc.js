@@ -38,5 +38,13 @@ module.exports = {
         memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
       },
     ],
+    // Disable import/no-duplicates because some packages (like react-native-gesture-handler)
+    // require separate side-effect imports that cannot be consolidated
+    'import/no-duplicates': 'off',
+    // Disable import resolution errors for React Native internal modules
+    'import/namespace': 'off',
+    'import/default': 'off',
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
   },
 };

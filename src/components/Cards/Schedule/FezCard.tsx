@@ -9,15 +9,11 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {FezData} from '#src/Structs/ControllerStructs';
-import {ScheduleCardMarkerType} from '#src/Types';
-import {useAppTheme} from '#src/Styles/Theme';
-
-
-import {AppIcons} from '#src/Enums/Icons';
-
-
 import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useAppTheme} from '#src/Styles/Theme';
+import {ScheduleCardMarkerType} from '#src/Types';
 
 interface FezCardProps {
   fez: FezData;

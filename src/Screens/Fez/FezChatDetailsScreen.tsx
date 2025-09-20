@@ -4,8 +4,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
-
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -13,7 +14,6 @@ import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
@@ -22,9 +22,6 @@ import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 

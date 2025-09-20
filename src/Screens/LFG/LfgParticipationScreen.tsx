@@ -5,16 +5,14 @@ import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
 import {AppView} from '#src/Components/Views/AppView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-
-
-
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
@@ -24,10 +22,8 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
-
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 

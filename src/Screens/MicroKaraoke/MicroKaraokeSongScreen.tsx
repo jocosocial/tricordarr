@@ -1,15 +1,16 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
-import {RefreshControl} from 'react-native';
+// import {RefreshControl} from 'react-native';
 import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
-import VideoPlayer from 'react-native-video-controls';
+// import VideoPlayer from 'react-native-video-controls';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppView} from '#src/Components/Views/AppView';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+// import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+// import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 
@@ -17,8 +18,9 @@ type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.micr
 
 export const MicroKaraokeSongScreen = ({route}: Props) => {
   console.log(route.params.songID);
-  const {data, refetch, isFetching} = useMicroKaraokeSongQuery(route.params.songID);
+  const {data} = useMicroKaraokeSongQuery(route.params.songID);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const {commonStyles} = useStyles();
 
   if (!data) {
     return <LoadingView />;
@@ -55,7 +57,7 @@ export const MicroKaraokeSongScreen = ({route}: Props) => {
       {/*  isStack={true}*/}
       {/*  refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>*/}
       <Video
-        style={{flex: 1}}
+        style={commonStyles.flex}
         source={{uri: filePaths[currentIndex]}}
         onEnd={handleEnd}
         controls={true}

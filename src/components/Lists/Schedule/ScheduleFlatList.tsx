@@ -7,14 +7,13 @@ import {EventCardListItem} from '#src/Components/Lists/Items/Event/EventCardList
 import {PersonalEventCardListItem} from '#src/Components/Lists/Items/PersonalEvent/PersonalEventCardListItem';
 import {ScheduleFlatListBase} from '#src/Components/Lists/Schedule/ScheduleFlatListBase';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {FezType} from '#src/Enums/FezType';
+import useDateTime from '#src/Libraries/DateTime';
 import {getScheduleItemMarker} from '#src/Libraries/Schedule';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
-
-import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import useDateTime from '#src/Libraries/DateTime';
 import {ScheduleFlatListSeparator} from '#src/Types';
-import {FezType} from '#src/Enums/FezType';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
@@ -84,7 +83,7 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       }
       return <></>;
     },
-    [appConfig.portTimeZoneID, minutelyUpdatingDate, startDate, endDate, setRefreshing, commonNavigation],
+    [appConfig.manualTimeOffset, minutelyUpdatingDate, startDate, endDate, commonNavigation, setRefreshing],
   );
 
   const keyExtractor = (item: TItem) => {

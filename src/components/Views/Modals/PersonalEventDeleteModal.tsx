@@ -9,12 +9,9 @@ import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {useAppTheme} from '#src/Styles/Theme';
-
-
-
-import {useFezDeleteMutation} from '#src/Queries/Fez/FezMutations';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();

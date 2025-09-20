@@ -3,7 +3,7 @@ import {encode as base64_encode} from 'base-64';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -11,16 +11,14 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-
-
-import {AppIcons} from '#src/Enums/Icons';
-import {ShipDecks} from '#src/Libraries/Ship';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 

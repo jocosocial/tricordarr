@@ -10,10 +10,10 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {UserRecoveryKeyModalView} from '#src/Components/Views/Modals/UserRecoveryKeyModalView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useUserCreateQuery} from '#src/Queries/User/UserMutations';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {LoginFormValues, UserRegistrationFormValues} from '#src/Types/FormValues';
 
 const RegisterScreenBase = () => {

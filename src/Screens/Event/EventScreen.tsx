@@ -11,10 +11,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
-
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {EventData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventScreen>;
 
@@ -27,7 +25,6 @@ export const EventScreen = ({navigation, route}: Props) => {
     eventID: route.params.eventID,
   });
   const eventFavoriteMutation = useEventFavoriteMutation();
-  const theme = useAppTheme();
   const queryClient = useQueryClient();
 
   const handleFavorite = useCallback(

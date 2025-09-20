@@ -7,30 +7,30 @@ import {RefreshControl, View} from 'react-native';
 import {DataTable, HelperText, Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-
-
-import {useAppTheme} from '#src/Styles/Theme';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
-import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-
-import {StorageKeys} from '#src/Libraries/Storage';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
-
-
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
-import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
-import {fgsFailedCounter,getSharedWebSocket, startForegroundServiceWorker, stopForegroundServiceWorker} from '#src/Libraries/Service';
+import {WebSocketState} from '#src/Libraries/Network/Websockets';
+import {
+  fgsFailedCounter,
+  getSharedWebSocket,
+  startForegroundServiceWorker,
+  stopForegroundServiceWorker,
+} from '#src/Libraries/Service';
+import {StorageKeys} from '#src/Libraries/Storage';
+import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import {commonStyles} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
 

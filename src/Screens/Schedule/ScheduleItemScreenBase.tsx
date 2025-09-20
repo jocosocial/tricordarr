@@ -7,21 +7,21 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {EventPerformerListItem} from '#src/Components/Lists/Items/Event/EventPerformerListItem';
 import {UserChipsListItem} from '#src/Components/Lists/Items/UserChipsListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {ContentText} from '#src/Components/Text/ContentText';
+import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LFGMembershipView} from '#src/Components/Views/Schedule/LFGMembershipView';
 import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getDurationString} from '#src/Libraries/DateTime';
 import {guessDeckNumber} from '#src/Libraries/Ship';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
-import {ContentText} from '#src/Components/Text/ContentText';
 
 interface ScheduleItemScreenBaseProps {
   refreshing?: boolean;

@@ -6,7 +6,6 @@ import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -16,6 +15,7 @@ import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDat
 import {stopForegroundServiceWorker} from '#src/Libraries/Service';
 import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
+import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 import {useAppTheme} from '#src/Styles/Theme';
 
 interface LogoutModalContentProps {

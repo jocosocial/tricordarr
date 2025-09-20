@@ -1,20 +1,17 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
-import {useBoardgameExpansionsQuery, useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 

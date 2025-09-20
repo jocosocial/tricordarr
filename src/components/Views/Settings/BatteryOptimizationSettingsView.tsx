@@ -1,13 +1,11 @@
 import {useAppState} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+// @ts-ignore
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
 import {HelperText, Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-
-// @ts-ignore
-
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';

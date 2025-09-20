@@ -2,26 +2,25 @@ import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
-
-import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
-import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
-import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
-
 import {replaceMentionValues} from 'react-native-controlled-mentions';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
+import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
 import {AppView} from '#src/Components/Views/AppView';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {ForumLockedView} from '#src/Components/Views/Static/ForumLockedView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumPostCreateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, ForumListData, PostContentData, PostData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadScreenBaseProps {

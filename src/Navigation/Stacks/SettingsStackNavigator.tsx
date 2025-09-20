@@ -10,27 +10,25 @@ import {AboutSettingsScreen} from '#src/Screens/Settings/AboutSettingsScreen';
 import {AccountManagementScreen} from '#src/Screens/Settings/Account/AccountManagementScreen';
 import {ChangePasswordScreen} from '#src/Screens/Settings/Account/ChangePasswordScreen';
 import {ChangeUsernameScreen} from '#src/Screens/Settings/Account/ChangeUsernameScreen';
+import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
+import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
+import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
+import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
+import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
+import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
 import {NetworkInfoSettings} from '#src/Screens/Settings/Developer/NetworkInfoSettings';
+import {OobeSettingsScreen} from '#src/Screens/Settings/Developer/OobeSettingsScreen';
+import {QueryDataSettingsScreen} from '#src/Screens/Settings/Developer/QueryDataSettingsScreen';
+import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeysSettingsScreen';
+import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
+import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
 import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
+import {UserInfoSettingsScreen} from '#src/Screens/Settings/Developer/UserInfoSettingsScreen';
+import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
+import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
 import {ServerConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/ServerConnectionSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
-import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
-
-
 import {SocketSettingsScreen} from '#src/Screens/Settings/SocketSettingsScreen';
-import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
-import {OobeSettingsScreen} from '#src/Screens/Settings/Developer/OobeSettingsScreen';
-import {LoginScreen} from '#src/Screens/Settings/Account/LoginScreen';
-import {FeatureSettingsScreen} from '#src/Screens/Settings/Developer/FeatureSettingsScreen';
-import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
-import {LoadingSettingScreen} from '#src/Screens/Settings/Developer/LoadingSettingScreen';
-import {RegisterScreen} from '#src/Screens/Settings/Account/RegisterScreen';
-import {CruiseSettingsScreen} from '#src/Screens/Settings/Developer/CruiseSettingsScreen';
-import {UserInfoSettingsScreen} from '#src/Screens/Settings/Developer/UserInfoSettingsScreen';
-import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettingsScreen';
-import {QueryKeysSettingsScreen} from '#src/Screens/Settings/Developer/QueryKeysSettingsScreen';
-import {QueryDataSettingsScreen} from '#src/Screens/Settings/Developer/QueryDataSettingsScreen';
-import {TimeSettingsScreen} from '#src/Screens/Settings/Config/TimeSettingsScreen';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;

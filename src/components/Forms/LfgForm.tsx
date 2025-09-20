@@ -11,6 +11,7 @@ import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerFi
 import {FezTypePickerField} from '#src/Components/Forms/Fields/FezTypePickerField';
 import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -23,7 +24,6 @@ import {
   NumberValidation,
 } from '#src/Libraries/ValidationSchema';
 import {FezFormValues} from '#src/Types/FormValues';
-import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;
