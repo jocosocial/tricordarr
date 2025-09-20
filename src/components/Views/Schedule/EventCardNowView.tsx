@@ -1,5 +1,5 @@
 import React from 'react';
-import {EventCardMarkerView} from './EventCardMarkerView';
+import {EventCardMarkerView} from '#src/Components/Views/Schedule/EventCardMarkerView';
 import {useAppTheme} from '#src/Styles/Theme';
 
 export const EventCardNowView = () => {

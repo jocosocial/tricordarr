@@ -1,16 +1,16 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {ForumPostFlatList} from '#src/Lists/Forums/ForumPostFlatList.tsx';
+import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
 import React, {useRef} from 'react';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {PostData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {TimeDivider} from '#src/Lists/Dividers/TimeDivider.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries.ts';
+import {PostData} from '#src/Structs/ControllerStructs';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
 

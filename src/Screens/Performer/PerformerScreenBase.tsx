@@ -1,20 +1,20 @@
 import {Card, Text} from 'react-native-paper';
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {RefreshControl, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {APIImage} from '#src/Images/APIImage.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {LinkIconButton} from '#src/Buttons/IconButtons/LinkIconButton.tsx';
-import {PerformerYearsCard} from '#src/Cards/Performer/PerformerYearsCard.tsx';
-import {PerformerBioCard} from '#src/Cards/Performer/PerformerBioCard.tsx';
-import {EventCard} from '#src/Cards/Schedule/EventCard.tsx';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
-import {PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {AppIcon} from '#src/Icons/AppIcon.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {APIImage} from '#src/Components/Images/APIImage';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {AppIcons} from '#src/Enums/Icons';
+import {LinkIconButton} from '#src/Components/Buttons/IconButtons/LinkIconButton';
+import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
+import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard';
+import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {PerformerData} from '#src/Structs/ControllerStructs';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 
 interface PerformerScreenBaseProps {
   performerData: PerformerData;

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Hyperlink} from 'react-native-hyperlink';
-import {useTwitarr} from '#src/Components/Context/Contexts/TwitarrContext.ts';
+import {useTwitarr} from '#src/Context/Contexts/TwitarrContext';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import URLParse from 'url-parse';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useSwiftarrQueryClient} from '#src/Components/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 // https://github.com/jocosocial/swiftarr/blob/master/Sources/App/Site/Utilities/CustomLeafTags.swift
 const urlPathLabelMappings = [

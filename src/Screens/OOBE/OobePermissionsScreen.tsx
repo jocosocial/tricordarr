@@ -1,18 +1,18 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {OobeButtonsView} from '#src/Views/OobeButtonsView.tsx';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {BatteryOptimizationSettingsView} from '#src/Views/Settings/BatteryOptimizationSettingsView.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobePermissionsScreen>;
 

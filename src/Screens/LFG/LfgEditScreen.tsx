@@ -1,19 +1,19 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LfgForm} from '#src/Forms/LfgForm.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {LfgForm} from '#src/Components/Forms/LfgForm';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {FezFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {LfgCanceledView} from '#src/Views/Static/LfgCanceledView.tsx';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
-import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {

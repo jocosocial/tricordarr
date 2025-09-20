@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {StringOrError} from '../../../Libraries/Types';
+import {StringOrError} from '#src/Types';
 
 export interface ErrorHandlerContextType {
   errorBanner?: string;

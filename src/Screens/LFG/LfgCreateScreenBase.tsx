@@ -1,15 +1,15 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {LfgForm} from '#src/Forms/LfgForm.tsx';
-import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {LfgForm} from '#src/Components/Forms/LfgForm';
+import {FezFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {useCruise} from '#src/Context/Contexts/CruiseContext.ts';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens.tsx';
-import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations.ts';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {FezType} from '#src/Enums/FezType';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface LfgCreateScreenBaseProps {

@@ -1,7 +1,7 @@
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View} from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
-import {ImageQueryData} from '#src/Libraries/Types';
+import {ImageQueryData} from '#src/Types';
 import {Text} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 

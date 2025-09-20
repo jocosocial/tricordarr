@@ -1,11 +1,11 @@
-import {SchedImportFormValues} from '#src/Libraries/Types/FormValues.ts';
+import {SchedImportFormValues} from '#src/Types/FormValues';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View} from 'react-native';
-import {TextField} from './Fields/TextField.tsx';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
 import React from 'react';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 
 interface SchedImportFormProps {
   initialValues: SchedImportFormValues;

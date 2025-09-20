@@ -1,5 +1,5 @@
 import {useReducer} from 'react';
-import {FezPostData} from '../../../Libraries/Structs/ControllerStructs';
+import {FezPostData} from '#src/Structs/ControllerStructs';
 
 export enum FezPostsActions {
   appendPost = 'APPEND_POST',

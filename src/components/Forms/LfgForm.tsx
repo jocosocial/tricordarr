@@ -2,27 +2,27 @@ import React from 'react';
 import {Keyboard, View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppIcons} from '#src/Enums/Icons';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField.tsx';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {
   DateValidation,
   LFGTypeValidation,
   InfoStringValidation,
   NumberValidation,
-} from '#src/Libraries/ValidationSchema.ts';
-import {FezFormValues} from '#src/Libraries/Types/FormValues.ts';
-import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView.tsx';
-import {DurationPickerField} from './Fields/DurationPickerField.tsx';
-import {FezTypePickerField} from './Fields/FezTypePickerField.tsx';
-import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
-import {DatePickerField} from './Fields/DatePickerField.tsx';
-import {TimePickerField} from './Fields/TimePickerField.tsx';
-import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
-import {publicLocationSuggestions} from '#src/Libraries/Ship.ts';
+} from '#src/Libraries/ValidationSchema';
+import {FezFormValues} from '#src/Types/FormValues';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
+import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
+import {FezTypePickerField} from '#src/Components/Forms/Fields/FezTypePickerField';
+import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextField';
+import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
+import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {publicLocationSuggestions} from '#src/Libraries/Ship';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

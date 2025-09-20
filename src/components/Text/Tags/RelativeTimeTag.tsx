@@ -4,7 +4,7 @@ import {Text} from 'react-native-paper';
 import ReactTimeAgo from 'react-time-ago';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 interface RelativeTimeTagProps {
   date?: Date;

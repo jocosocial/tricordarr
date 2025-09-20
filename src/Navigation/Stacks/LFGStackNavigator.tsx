@@ -1,21 +1,21 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen.tsx';
-import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen.tsx';
-import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen.tsx';
-import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen.tsx';
-import {SwiftarrFeature} from '../../../Libraries/Enums/AppFeatures.ts';
-import {useFeature} from '#src/Context/Contexts/FeatureContext.ts';
-import {DisabledView} from '#src/Views/Static/DisabledView.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {MainStack} from './MainStackNavigator.tsx';
-import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen.tsx';
-import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen.tsx';
-import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen.tsx';
-import {FezListEndpoints} from '../../../Libraries/Types/index.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {LfgJoinedScreen} from '#src/Screens/LFG/LfgJoinedScreen';
+import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
+import {LfgSettingsScreen} from '#src/Screens/LFG/LfgSettingsScreen';
+import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {DisabledView} from '#src/Components/Views/Static/DisabledView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {LfgOwnedScreen} from '#src/Screens/LFG/LfgOwnedScreen';
+import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen';
+import {LfgSearchScreen} from '#src/Screens/LFG/LfgSearchScreen';
+import {FezListEndpoints} from '#src/Types';
 
 export type LfgStackParamList = CommonStackParamList & {
   LfgJoinedScreen: undefined;

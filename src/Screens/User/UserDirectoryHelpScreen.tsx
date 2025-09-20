@@ -1,8 +1,8 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {HelpTopicView} from '#src/Views/Help/HelpTopicView.tsx';
-import {HelpChapterTitleView} from '#src/Views/Help/HelpChapterTitleView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 
 export const UserDirectoryHelpScreen = () => {
   return (

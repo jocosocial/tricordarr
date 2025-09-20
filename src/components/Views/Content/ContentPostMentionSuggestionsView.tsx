@@ -2,9 +2,9 @@ import React, {FC} from 'react';
 import {MentionSuggestionsProps} from 'react-native-controlled-mentions';
 import {Pressable, View, StyleSheet} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag.tsx';
-import {useUserMatchQuery} from '#src/Components/Queries/Users/UsersQueries.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
 export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({keyword, onSuggestionPress}) => {
   const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || ''});

@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import AllImage from '#assets/easteregg_all.jpg';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
-import {ImageQueryData} from '#src/Libraries/Types';
+import {ImageQueryData} from '#src/Types';
 import {encode as base64_encode} from 'base-64';
 
 /**

@@ -1,9 +1,9 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Card, DataTable, Text} from 'react-native-paper';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 // @ts-ignore
 import grant from '#assets/contributors/grant.jpg';
 // @ts-ignore
@@ -12,11 +12,11 @@ import hendu from '#assets/contributors/hendu.jpg';
 import cfry from '#assets/contributors/cfry.jpg';
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
-import {ContributorCard} from '#src/Cards/ContributorCard.tsx';
-import {HyperlinkText} from '#src/Text/HyperlinkText.tsx';
+import {ContributorCard} from '#src/Components/Cards/ContributorCard';
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {Image, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {OobeNoteCard} from '#src/Cards/OobeNoteCard.tsx';
+import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
 import {encode as base64_encode} from 'base-64';
 
 export const AboutTricordarrScreen = () => {

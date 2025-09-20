@@ -1,6 +1,6 @@
-import {FezPostData, PostContentData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation.ts';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {FezPostData, PostContentData} from '#src/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 // https://medium.com/@deshan.m/reusable-react-query-hooks-with-typescript-simplifying-api-calls-f2583b24c82a
 

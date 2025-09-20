@@ -1,18 +1,18 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {PersonalEventForm} from '#src/Forms/PersonalEventForm.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import React from 'react';
-import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {FezFormValues} from '#src/Types/FormValues';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {useCruise} from '#src/Context/Contexts/CruiseContext.ts';
-import {getApparentCruiseDate, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations.ts';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {FezType} from '#src/Enums/FezType';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation, route}: Props) => {

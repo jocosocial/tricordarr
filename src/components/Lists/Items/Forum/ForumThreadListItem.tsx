@@ -1,21 +1,21 @@
 import React, {Dispatch, memo, SetStateAction} from 'react';
 import {Checkbox, List, Text} from 'react-native-paper';
-import {commonStyles} from '#src/Styles/index.ts';
-import {ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {commonStyles} from '#src/Styles';
+import {ForumListData} from '#src/Structs/ControllerStructs';
 import {StyleSheet, View} from 'react-native';
 import pluralize from 'pluralize';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag.tsx';
-import {useForumStackNavigation} from '#src/Components/Navigation/Stacks/ForumStackNavigator.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-import {ForumNewBadge} from '#src/Components/Badges/ForumNewBadge.tsx';
-import {getEventTimeString} from '#src/Libraries/DateTime.ts';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable.tsx';
-import {useSelection} from '#src/Components/Context/Contexts/SelectionContext.ts';
-import {ForumListDataSelectionActions} from '#src/Components/Reducers/Forum/ForumListDataSelectionReducer.ts';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {AppIcons} from '#src/Enums/Icons';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useAppTheme} from '#src/Styles/Theme';
+import {ForumNewBadge} from '#src/Components/Badges/ForumNewBadge';
+import {getEventTimeString} from '#src/Libraries/DateTime';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;

@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {PropsWithChildren} from 'react';
-import {AuthContext} from '#src/Context/Contexts/AuthContext.ts';
-import {AuthActions, useAuthReducer} from '#src/Reducers/Auth/AuthReducer.ts';
-import {TokenStringData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {StorageKeys} from '../../../Libraries/Storage/index.ts';
+import {AuthContext} from '#src/Context/Contexts/AuthContext';
+import {AuthActions, useAuthReducer} from '#src/Reducers/Auth/AuthReducer';
+import {TokenStringData} from '#src/Structs/ControllerStructs';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {StorageKeys} from '#src/Libraries/Storage';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const {preRegistrationMode} = useConfig();

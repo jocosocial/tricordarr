@@ -1,19 +1,19 @@
 import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
-import {LoginForm} from '#src/Forms/User/LoginForm.tsx';
+import {LoginForm} from '#src/Components/Forms/User/LoginForm';
 import {useNavigation} from '@react-navigation/native';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {LoginFormValues} from '../../../../Libraries/Types/FormValues.ts';
-import {commonStyles} from '../../../../Styles/index.ts';
-import {useLoginMutation} from '#src/Queries/Auth/LoginMutations.ts';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {LoginFormValues} from '#src/Types/FormValues';
+import {commonStyles} from '#src/Styles';
+import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {FormikHelpers} from 'formik';
-import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {startForegroundServiceWorker} from '../../../../Libraries/Service.ts';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries.ts';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 export const LoginScreen = () => {
   const navigation = useNavigation();

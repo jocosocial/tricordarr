@@ -1,9 +1,9 @@
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {CommonStackComponents, CommonStackParamList} from '#src/Components/Navigation/CommonScreens.tsx';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import React from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Item} from 'react-navigation-header-buttons';
-import {ForumData, ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ForumData, ForumListData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadSearchPostsItemProps {
   navigation: NativeStackNavigationProp<CommonStackParamList>;

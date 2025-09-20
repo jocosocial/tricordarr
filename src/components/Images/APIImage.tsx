@@ -1,21 +1,21 @@
-import {AppImageViewer} from './AppImageViewer.tsx';
+import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import React, {useEffect, useState} from 'react';
-import {useImageQuery} from '#src/Components/Queries/ImageQuery.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {ImageQueryData} from '#src/Libraries/Types/index.ts';
-import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {useFeature} from '#src/Components/Context/Contexts/FeatureContext.ts';
-import {SwiftarrFeature} from '#src/Libraries/Enums/AppFeatures.ts';
-import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView.tsx';
-import {AppFastImage} from './AppFastImage.tsx';
+import {useImageQuery} from '#src/Queries/ImageQuery';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ImageQueryData} from '#src/Types';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppIcons} from '#src/Enums/Icons';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
+import {AppFastImage} from '#src/Components/Images/AppFastImage';
 import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
-// import {saveImageToLocal} from '#src/libraries/Storage/ImageStorage.ts';
-// import {useErrorHandler} from '#src/Components/Context/Contexts/ErrorHandlerContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+// import {saveImageToLocal} from '#src/libraries/Storage/ImageStorage';
+// import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 
 interface APIImageProps {
   thumbPath: string;

@@ -1,5 +1,5 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery.ts';
-import {PerformerData, PerformerResponseData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {PerformerData, PerformerResponseData} from '#src/Structs/ControllerStructs';
 
 export type PerformerType = 'official' | 'shadow';
 

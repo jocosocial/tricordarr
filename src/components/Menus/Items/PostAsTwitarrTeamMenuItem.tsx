@@ -1,8 +1,8 @@
-import {AppIcons} from '#src/Libraries/Enums/Icons';
+import {AppIcons} from '#src/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import * as React from 'react';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const PostAsTwitarrTeamMenuItem = ({closeMenu}: {closeMenu: () => void}) => {
   const {asTwitarrTeam, setAsTwitarrTeam, setAsModerator, hasTwitarrTeam} = usePrivilege();

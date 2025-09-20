@@ -1,6 +1,6 @@
-import {FezData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation.ts';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 interface ParticipantMutationProps {
   fezID: string;

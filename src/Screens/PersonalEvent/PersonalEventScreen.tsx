@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {AppIcons} from '#src/Enums/Icons';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {HeaderEditButton} from '#src/Buttons/HeaderButtons/HeaderEditButton.tsx';
-import {PersonalEventScreenActionsMenu} from '#src/Menus/PersonalEvents/PersonalEventScreenActionsMenu.tsx';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries.ts';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase.tsx';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
+import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import notifee from '@notifee/react-native';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {FezType} from '#src/Enums/FezType';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 

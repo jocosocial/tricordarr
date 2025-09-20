@@ -1,9 +1,9 @@
 import {AxiosError} from 'axios';
-import {ErrorResponse} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {ErrorResponse} from '#src/Structs/ControllerStructs';
 import {MutationFunction} from '@tanstack/query-core';
 import {UseMutationResult} from '@tanstack/react-query';
 import {useMutation, UseMutationOptions} from '@tanstack/react-query';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 
 /**
  * Common mutation wrapper. Somewhat of a misnomer being called "Token Auth Mutation" because

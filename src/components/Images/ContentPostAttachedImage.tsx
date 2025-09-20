@@ -1,10 +1,10 @@
 import React from 'react';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
-import {ImageUploadData} from '#src/Libraries/Structs/ControllerStructs';
-import {APIImage} from './APIImage';
+import {ImageUploadData} from '#src/Structs/ControllerStructs';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {Image, StyleSheet} from 'react-native';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Libraries/Enums/Icons';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;

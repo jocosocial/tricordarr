@@ -1,4 +1,4 @@
-import {DailyThemeData} from '../../../Libraries/Structs/ControllerStructs';
+import {DailyThemeData} from '#src/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 export const useDailyThemeQuery = (options = {}) => {

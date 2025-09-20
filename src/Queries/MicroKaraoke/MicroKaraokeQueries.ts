@@ -1,5 +1,5 @@
-import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery.ts';
-import {MicroKaraokeCompletedSong, MicroKaraokeSongManifest} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {MicroKaraokeCompletedSong, MicroKaraokeSongManifest} from '#src/Structs/ControllerStructs';
 
 export const useMicroKaraokeSonglistQuery = () => {
   return useTokenAuthQuery<MicroKaraokeCompletedSong[]>('/microkaraoke/songlist');

@@ -3,7 +3,7 @@ import {Linking, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {AppView} from '#src/Components/Views/AppView';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const NotLoggedInView = () => {
   const {commonStyles} = useStyles();

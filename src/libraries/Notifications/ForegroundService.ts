@@ -1,7 +1,7 @@
 import notifee from '@notifee/react-native';
-import {serviceChannel} from './Channels';
+import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Styles/Theme';
-import {fgsWorkerNotificationIDs, PressAction} from '#src/Libraries/Enums/Notifications';
+import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 
 export async function generateForegroundServiceNotification(
   body: string | undefined = 'A background worker has been started to maintain a connection to the Twitarr server.',

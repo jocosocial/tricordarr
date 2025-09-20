@@ -1,16 +1,16 @@
 import React, {memo} from 'react';
-import {FezData, FezPostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage.tsx';
-import {MessageView} from '#src/Components/Views/MessageView.tsx';
-import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer.tsx';
-import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView.tsx';
-import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView.tsx';
-import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent.tsx';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
-import {ContentPostImage} from '#src/Components/Images/ContentPostImage.tsx';
-import {useChatStack} from '#src/Components/Navigation/Stacks/ChatStackNavigator.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
+import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {MessageView} from '#src/Components/Views/MessageView';
+import {MessageViewContainer} from '#src/Components/Views/MessageViewContainer';
+import {MessageSpacerView} from '#src/Components/Views/MessageSpacerView';
+import {MessageAvatarContainerView} from '#src/Components/Views/MessageAvatarContainerView';
+import {FlatListItemContent} from '#src/Components/Views/Content/FlatListItemContent';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {ContentPostImage} from '#src/Components/Images/ContentPostImage';
+import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167
 interface FezPostListItemProps {

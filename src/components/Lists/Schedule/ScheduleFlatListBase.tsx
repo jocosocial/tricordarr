@@ -1,14 +1,14 @@
 import {FlashList} from '@shopify/flash-list';
 import React, {ReactElement, useCallback} from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider.tsx';
-import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider.tsx';
-import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime.ts';
-import {EventData, FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
+import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
+import {getDayMarker, getTimeMarker} from '#src/Libraries/DateTime';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
-import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule.ts';
-import {styleDefaults} from '#src/Styles/index.ts';
-import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter.tsx';
+import {getScheduleListTimeSeparatorID} from '#src/Libraries/Schedule';
+import {styleDefaults} from '#src/Styles';
+import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 
 interface ScheduleFlatListBaseProps<TItem> {
   items: TItem[];

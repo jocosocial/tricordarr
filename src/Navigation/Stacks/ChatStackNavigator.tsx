@@ -1,19 +1,19 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen.tsx';
+import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
 import {useNavigation} from '@react-navigation/native';
-import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen.tsx';
-import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {useDrawer} from '#src/Context/Contexts/DrawerContext.ts';
-import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen.tsx';
-import {DisabledView} from '#src/Views/Static/DisabledView.tsx';
-import {useFeature} from '#src/Context/Contexts/FeatureContext.ts';
-import {SwiftarrFeature} from '../../../Libraries/Enums/AppFeatures.ts';
-import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen.tsx';
-import {MainStack} from './MainStackNavigator.tsx';
-import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen.tsx';
+import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
+import {UserHeader} from '#src/Structs/ControllerStructs';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {SeamailSearchScreen} from '#src/Screens/Seamail/SeamailSearchScreen';
+import {DisabledView} from '#src/Components/Views/Static/DisabledView';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
+import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {SeamailSettingsScreen} from '#src/Screens/Seamail/SeamailSettingsScreen';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802
 export type ChatStackParamList = CommonStackParamList & {

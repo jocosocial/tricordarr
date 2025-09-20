@@ -1,14 +1,14 @@
 import {FlatList, ListRenderItemInfo, RefreshControlProps} from 'react-native';
-import {FezData, FezPostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
-import {LabelDivider} from './Dividers/LabelDivider.tsx';
-import {FezPostListItem} from './Items/FezPostListItem.tsx';
+import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
+import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
 import React, {useCallback} from 'react';
-import {AppFlatList} from './AppFlatList.tsx';
-import {LoadingPreviousHeader} from './Headers/LoadingPreviousHeader.tsx';
-import {FezPostListHeader} from './Headers/FezPostListHeader.tsx';
-import {SpaceDivider} from './Dividers/SpaceDivider.tsx';
-import {FloatingScrollButtonPosition} from '#src/Libraries/Types/index.ts';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
+import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
+import {FezPostListHeader} from '#src/Components/Lists/Headers/FezPostListHeader';
+import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
+import {FloatingScrollButtonPosition} from '#src/Types';
 
 interface ChatFlatListProps {
   fez: FezData;

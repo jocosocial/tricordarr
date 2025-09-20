@@ -5,34 +5,34 @@ import {
   getSharedWebSocket,
   startForegroundServiceWorker,
   stopForegroundServiceWorker,
-} from '../../../../Libraries/Service.ts';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext.ts';
-import {commonStyles} from '../../../../Styles/index.ts';
+} from '#src/Libraries/Service';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {AppView} from '#src/Components/Views/AppView';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {commonStyles} from '#src/Styles';
 import {useBackHandler} from '@react-native-community/hooks';
-import {fgsFailedCounter} from '../../../../Libraries/Service.ts';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {fgsFailedCounter} from '#src/Libraries/Service';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useAppTheme} from '../../../../Styles/Theme.ts';
+import {useAppTheme} from '#src/Styles/Theme';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {WebSocketState} from '../../../../Libraries/Network/Websockets.ts';
-import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
-import {SocketHealthcheckData} from '../../../../Libraries/Structs/SocketStructs.ts';
+} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {WebSocketState} from '#src/Libraries/Network/Websockets';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from '../../../../Libraries/Storage/index.ts';
-import {RelativeTimeTag} from '#src/Text/Tags/RelativeTimeTag.tsx';
+import {StorageKeys} from '#src/Libraries/Storage';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {Formik} from 'formik';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
-import {SliderField} from '#src/Forms/Fields/SliderField.tsx';
-import {BatteryOptimizationSettingsView} from '#src/Views/Settings/BatteryOptimizationSettingsView.tsx';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {SliderField} from '#src/Components/Forms/Fields/SliderField';
+import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
 

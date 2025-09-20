@@ -1,11 +1,11 @@
 import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {useEventsQuery} from '#src/Components/Queries/Events/EventQueries.ts';
-import {EventData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider.tsx';
-import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList.tsx';
+import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {EventData} from '#src/Structs/ControllerStructs';
+import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
+import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {FlashList} from '@shopify/flash-list';
-import {SearchBarBase} from './SearchBarBase.tsx';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 
 export const EventSearchBar = () => {
   const [queryEnable, setQueryEnable] = useState(false);

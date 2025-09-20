@@ -1,16 +1,16 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import React, {useState} from 'react';
-import {UserRecoveryForm} from '#src/Forms/User/UserRecoveryForm.tsx';
-import {UserRegistrationFormValues} from '../../../../Libraries/Types/FormValues.ts';
+import {UserRecoveryForm} from '#src/Components/Forms/User/UserRecoveryForm';
+import {UserRegistrationFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {useUserRecoveryMutation} from '#src/Queries/Auth/RecoveryMutations.ts';
-import {TokenStringData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useUserRecoveryMutation} from '#src/Queries/Auth/RecoveryMutations';
+import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.accountRecoveryScreen>;
 

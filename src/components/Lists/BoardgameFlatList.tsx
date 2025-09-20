@@ -1,13 +1,13 @@
 import {RefreshControlProps} from 'react-native';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
-import {EndResultsFooter} from './Footers/EndResultsFooter.tsx';
-import {NoResultsFooter} from './Footers/NoResultsFooter.tsx';
-import {BoardgameListItem} from './Items/BoardgameListItem.tsx';
-import {BoardgameData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {LoadingNextFooter} from './Footers/LoadingNextFooter.tsx';
+import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
+import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
+import {BoardgameListItem} from '#src/Components/Lists/Items/BoardgameListItem';
+import {BoardgameData} from '#src/Structs/ControllerStructs';
+import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {FlashList} from '@shopify/flash-list';
-import {AppFlashList} from './AppFlashList.tsx';
+import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 
 interface BoardgameFlatListProps {
   items: BoardgameData[];

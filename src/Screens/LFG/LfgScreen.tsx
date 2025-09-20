@@ -1,21 +1,21 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFezQuery} from '#src/Queries/Fez/FezQueries.ts';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useFezQuery} from '#src/Queries/Fez/FezQueries';
+import {AppIcons} from '#src/Enums/Icons';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {LfgScreenActionsMenu} from '#src/Menus/LFG/LfgScreenActionsMenu.tsx';
-import {useSocket} from '#src/Context/Contexts/SocketContext.ts';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {LfgScreenActionsMenu} from '#src/Components/Menus/LFG/LfgScreenActionsMenu';
+import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useIsFocused} from '@react-navigation/native';
-import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext.ts';
-import {NotificationTypeData, SocketNotificationData} from '../../../Libraries/Structs/SocketStructs.ts';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase.tsx';
-import {HeaderEditButton} from '#src/Buttons/HeaderButtons/HeaderEditButton.tsx';
-import {NavHeaderTitle} from '#src/Text/NavHeaderTitle.tsx';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
+import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
+import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 

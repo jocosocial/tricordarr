@@ -1,7 +1,7 @@
 import {Button, Divider, HelperText, Menu} from 'react-native-paper';
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 import {useField, useFormikContext} from 'formik';
 

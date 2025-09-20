@@ -1,7 +1,7 @@
 import {Text} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const PreRegistrationWarningView = () => {
   const {commonStyles} = useStyles();

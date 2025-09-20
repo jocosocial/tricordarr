@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
-import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries.ts';
+import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {View} from 'react-native';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {PerformerActionsMenu} from '#src/Menus/Performer/PerformerActionsMenu.tsx';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
-import {PerformerScreenBase} from './PerformerScreenBase.tsx';
-import {useUserProfileQuery} from '#src/Queries/User/UserQueries.ts';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {AppIcons} from '#src/Enums/Icons';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 

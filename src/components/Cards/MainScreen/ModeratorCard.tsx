@@ -1,12 +1,12 @@
 import React from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppIcons} from '#src/Libraries/Enums/Icons';
+import {AppIcons} from '#src/Enums/Icons';
 import pluralize from 'pluralize';
 import {View} from 'react-native';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens';
-import {useUserNotificationDataQuery} from '#src/Components/Queries/Alert/NotificationQueries';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 export const ModeratorCard = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();

@@ -1,6 +1,6 @@
-import {KeywordData, ProfilePublicData} from '../../../Libraries/Structs/ControllerStructs';
+import {KeywordData, ProfilePublicData} from '#src/Structs/ControllerStructs';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
-import {KeywordType} from '../../../Libraries/Types';
+import {KeywordType} from '#src/Types';
 
 // The Keyword queries are a good example of the most recent pattern of designing queries and mutations.
 

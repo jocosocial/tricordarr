@@ -1,17 +1,17 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator.tsx';
-import {OobeButtonsView} from '#src/Views/OobeButtonsView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {startForegroundServiceWorker} from '../../../Libraries/Service.ts';
-import {OobeNoteCard} from '#src/Cards/OobeNoteCard.tsx';
-import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
-import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator.tsx';
-import {OobePreRegistrationCompleteCard} from '#src/Cards/OobePreRegistrationCompleteCard.tsx';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
+import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
+import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {OobePreRegistrationCompleteCard} from '#src/Components/Cards/OobePreRegistrationCompleteCard';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 

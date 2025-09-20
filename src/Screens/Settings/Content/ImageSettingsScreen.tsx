@@ -1,12 +1,12 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Formik} from 'formik';
 import {View} from 'react-native';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const ImageSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

@@ -1,16 +1,16 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View} from 'react-native';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {PushNotificationConfig} from '../../../Libraries/AppConfig.ts';
-import {contentNotificationCategories} from '../../../Libraries/Notifications/Content.ts';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 
 export const EventSettingsScreen = () => {
   const {appConfig, updateAppConfig, hasNotificationPermission} = useConfig();

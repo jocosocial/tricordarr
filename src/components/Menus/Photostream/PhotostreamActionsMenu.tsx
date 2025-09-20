@@ -1,10 +1,10 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import React from 'react';
 import {Menu} from 'react-native-paper';
-import {MainStackComponents, useMainStack} from '#src/Components/Navigation/Stacks/MainStackNavigator.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 export const PhotostreamActionsMenu = () => {
   const [visible, setVisible] = React.useState(false);

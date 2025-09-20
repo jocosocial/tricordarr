@@ -10,11 +10,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {AppIcons} from '#src/Enums/Icons';
 import React, {useCallback, useState} from 'react';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Libraries/Types/index.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export interface ConversationFlatListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;

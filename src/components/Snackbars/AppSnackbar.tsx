@@ -1,9 +1,9 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {useSnackbar} from '#src/Components/Context/Contexts/SnackbarContext.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {Snackbar, Text} from 'react-native-paper';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-// import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useAppTheme} from '#src/Styles/Theme';
+// import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 export const AppSnackbar = () => {
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();

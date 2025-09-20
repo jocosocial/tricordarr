@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
-import {UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
-import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
-import {ModeratorBlockText, UserBlockText} from '#src/Components/Text/UserRelationsText.tsx';
-import {useUserBlockMutation} from '#src/Components/Queries/Users/UserBlockMutations.ts';
+import {UserHeader} from '#src/Structs/ControllerStructs';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useAppTheme} from '#src/Styles/Theme';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {ModeratorBlockText, UserBlockText} from '#src/Components/Text/UserRelationsText';
+import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface BlockUserModalViewProps {

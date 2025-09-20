@@ -1,23 +1,23 @@
 import React, {useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {PushNotificationConfig} from '../../../../Libraries/AppConfig.ts';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../../Styles/Theme.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {PushNotificationConfig} from '#src/Libraries/AppConfig';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useAppTheme} from '#src/Styles/Theme';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
 import {Formik} from 'formik';
 import {View} from 'react-native';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
-import {contentNotificationCategories} from '../../../../Libraries/Notifications/Content.ts';
-import {startForegroundServiceWorker} from '../../../../Libraries/Service.ts';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {SegmentedButtonType} from '../../../../Libraries/Types/index.ts';
-import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
-import {RelativeTimeTag} from '#src/Text/Tags/RelativeTimeTag.tsx';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {SegmentedButtonType} from '#src/Types';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 
 export const PushNotificationSettingsScreen = () => {
   const {

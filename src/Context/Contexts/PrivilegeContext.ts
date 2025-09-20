@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {PrivilegedUserAccounts} from '../../../Libraries/Enums/UserAccessLevel';
+import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 
 export interface PrivilegeContextType {
   asModerator: boolean;

@@ -1,9 +1,9 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useQueryClient} from '@tanstack/react-query';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 const ModalContent = () => {
   const queryClient = useQueryClient();

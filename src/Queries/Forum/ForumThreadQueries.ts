@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
-import {ForumData, PostData} from '../../../Libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
 export const useForumThreadQuery = (forumID?: string, postID?: string, options = {}) => {
   if (!forumID && !postID) {

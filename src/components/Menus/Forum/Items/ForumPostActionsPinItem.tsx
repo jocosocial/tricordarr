@@ -1,9 +1,9 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {ForumData, PostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {useForumPostPinMutation} from '#src/Components/Queries/Forum/ForumPostPinMutations.ts';
-import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
+import {useForumPostPinMutation} from '#src/Queries/Forum/ForumPostPinMutations';
+import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {AppIcons} from '#src/Enums/Icons';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface ForumPostActionsPinItemProps {

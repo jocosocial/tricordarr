@@ -1,8 +1,8 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {CategoryData} from '#src/Libraries/Structs/ControllerStructs';
-import {ForumStackComponents, useForumStackNavigation} from '#src/Components/Navigation/Stacks/ForumStackNavigator';
-import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
+import {CategoryData} from '#src/Structs/ControllerStructs';
+import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
 
 interface ForumCategoryListItemProps {
   category: CategoryData;

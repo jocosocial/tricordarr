@@ -1,14 +1,14 @@
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import React, {useEffect} from 'react';
-import {SegmentedButtonType} from '#src/Libraries/Types/index.ts';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {SegmentedButtonType} from '#src/Types';
+import {AppIcons} from '#src/Enums/Icons';
 import {useIsFocused} from '@react-navigation/native';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-import {ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {ForumListDataSelectionActions} from '#src/Components/Reducers/Forum/ForumListDataSelectionReducer.ts';
-import {useSelection} from '#src/Components/Context/Contexts/SelectionContext.ts';
+import {useAppTheme} from '#src/Styles/Theme';
+import {ForumListData} from '#src/Structs/ControllerStructs';
+import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 
 interface SelectionButtonsProps {
   items?: ForumListData[];

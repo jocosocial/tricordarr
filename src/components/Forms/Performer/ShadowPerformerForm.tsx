@@ -1,18 +1,18 @@
-import {PerformerUploadData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {PerformerUploadData} from '#src/Structs/ControllerStructs';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {
   InfoStringValidation,
   OptionalBioStringValidation,
   OptionalURLValidation,
-} from '#src/Libraries/ValidationSchema.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+} from '#src/Libraries/ValidationSchema';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField.tsx';
-import {TextField} from '#src/Components/Forms/Fields/TextField.tsx';
-import {AvatarImageField} from '#src/Components/Forms/Fields/AvatarImageField.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {AvatarImageField} from '#src/Components/Forms/Fields/AvatarImageField';
 
 interface ShadowPerformerFormProps<TData = PerformerUploadData> {
   onSubmit: (values: TData, helpers: FormikHelpers<TData>) => void;

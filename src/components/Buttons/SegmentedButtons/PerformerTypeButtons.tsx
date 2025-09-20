@@ -1,9 +1,9 @@
 import React from 'react';
 import {SegmentedButtons} from 'react-native-paper';
-import {PerformerType} from '#src/Components/Queries/Performer/PerformerQueries.ts';
+import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {Dispatch, SetStateAction} from 'react';
-import {SegmentedButtonType} from '#src/Libraries/Types/index.ts';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {SegmentedButtonType} from '#src/Types';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface PerformerTypeButtonsProps {
   performerType: PerformerType;

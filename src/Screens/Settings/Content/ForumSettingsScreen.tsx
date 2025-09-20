@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {View} from 'react-native';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {Formik} from 'formik';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {PickerField} from '#src/Forms/Fields/PickerField.tsx';
-import {ForumSort, ForumSortDirection} from '../../../../Libraries/Enums/ForumSortFilter.ts';
-import {useFilter} from '#src/Context/Contexts/FilterContext.ts';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {contentNotificationCategories} from '../../../../Libraries/Notifications/Content.ts';
-import {PushNotificationConfig} from '../../../../Libraries/AppConfig.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {PickerField} from '#src/Components/Forms/Fields/PickerField';
+import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();

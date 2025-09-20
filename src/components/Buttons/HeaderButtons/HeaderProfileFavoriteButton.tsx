@@ -1,8 +1,8 @@
 import React from 'react';
-import {ProfilePublicData, UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 import {useQueryClient} from '@tanstack/react-query';
-import {useUserFavoriteMutation} from '#src/Components/Queries/Users/UserFavoriteMutations.ts';
-import {HeaderFavoriteButton} from './HeaderFavoriteButton.tsx';
+import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
+import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 
 interface HeaderProfileFavoriteButtonProps {
   profile: ProfilePublicData;

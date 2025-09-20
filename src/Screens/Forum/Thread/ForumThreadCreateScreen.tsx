@@ -1,17 +1,17 @@
 import React, {useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {ForumCreateForm} from '#src/Forms/Forum/ForumCreateForm.tsx';
+import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {FormikHelpers, FormikProps} from 'formik';
-import {ForumCreateData, PostContentData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
-import {ForumThreadValues} from '../../../../Libraries/Types/FormValues.ts';
-import {ContentPostForm} from '#src/Forms/ContentPostForm.tsx';
-import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries.ts';
-import {PostAsUserBanner} from '#src/Banners/PostAsUserBanner.tsx';
+import {ForumCreateData, PostContentData} from '#src/Structs/ControllerStructs';
+import {ForumThreadValues} from '#src/Types/FormValues';
+import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
+import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {CommonStackComponents} from '#src/Navigation/CommonScreens.tsx';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;

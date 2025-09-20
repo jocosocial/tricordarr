@@ -1,7 +1,7 @@
-import {getAuthHeaders} from './APIClient';
+import {getAuthHeaders} from '#src/Libraries/Network/APIClient';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {TokenStringData} from '#src/Libraries/Structs/ControllerStructs';
-import {WebSocketOptions} from '#src/Libraries/Types';
+import {TokenStringData} from '#src/Structs/ControllerStructs';
+import {WebSocketOptions} from '#src/Types';
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {StorageKeys} from '#src/Libraries/Storage';
 

@@ -1,10 +1,10 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import React from 'react';
 import {RefreshControl} from 'react-native';
-import {useMicroKaraokeSonglistQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries.ts';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {MicroKaraokeSongListItem} from '#src/Lists/Items/MicroKaraokeSongListItem.tsx';
+import {useMicroKaraokeSonglistQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {MicroKaraokeSongListItem} from '#src/Components/Lists/Items/MicroKaraokeSongListItem';
 
 export const MicroKaraokeListScreen = () => {
   const {data, refetch, isFetching} = useMicroKaraokeSonglistQuery();

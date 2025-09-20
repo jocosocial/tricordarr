@@ -1,8 +1,8 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import React from 'react';
-import {ProfilePublicData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {ProfilePublicData} from '#src/Structs/ControllerStructs';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface HeaderProfileSeamailButtonProps {
   profile: ProfilePublicData;

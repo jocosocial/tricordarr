@@ -1,16 +1,16 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons.tsx';
+import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
 import {
   CategoryData,
   ErrorResponse,
   ForumListData,
   ForumSearchData,
-} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {ListTitleView} from '#src/Components/Views/ListTitleView.tsx';
-import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList.tsx';
-import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';
-import {useSelection} from '#src/Components/Context/Contexts/SelectionContext.ts';
+} from '#src/Structs/ControllerStructs';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
+import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 

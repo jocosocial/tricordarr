@@ -1,8 +1,8 @@
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {IconSource} from 'react-native-paper/src/components/Icon.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {IconSource} from 'react-native-paper/src/components/Icon';
 
 interface SelectableMenuItemProps {
   selected?: boolean;

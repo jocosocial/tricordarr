@@ -1,22 +1,22 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries.ts';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {RefreshControl, View} from 'react-native';
-import {PhotostreamImageCreateForm} from '#src/Forms/Photostream/PhotostreamImageCreateForm.tsx';
-import {PhotostreamCreateFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {PhotostreamImageCreateForm} from '#src/Components/Forms/Photostream/PhotostreamImageCreateForm';
+import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {PhotostreamUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useQueryClient} from '@tanstack/react-query';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations.ts';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {PhotostreamActionsMenu} from '#src/Menus/Photostream/PhotostreamActionsMenu.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PhotostreamActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamActionsMenu';
+import {AppIcons} from '#src/Enums/Icons';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 

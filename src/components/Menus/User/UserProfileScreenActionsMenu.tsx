@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData, UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView.tsx';
-import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
-import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView.tsx';
-import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView.tsx';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
+import {AppIcons} from '#src/Enums/Icons';
+import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
+import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
-import {useUserBlockMutation} from '#src/Components/Queries/Users/UserBlockMutations.ts';
-import {useUserMuteMutation} from '#src/Components/Queries/Users/UserMuteMutations.ts';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
+import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface UserProfileActionsMenuProps {

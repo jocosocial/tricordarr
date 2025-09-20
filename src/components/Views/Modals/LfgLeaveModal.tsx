@@ -1,15 +1,15 @@
-import {useModal} from '#src/Components/Context/Contexts/ModalContext.ts';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useAppTheme} from '#src/Styles/Theme';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {View} from 'react-native';
-import {ModalCard} from '#src/Components/Cards/ModalCard.tsx';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 import React from 'react';
-import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {Text} from 'react-native-paper';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {useFezMembershipMutation} from '#src/Components/Queries/Fez/FezMembershipQueries.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '#src/Libraries/Enums/FezType.ts';
+import {FezType} from '#src/Enums/FezType';
 
 const ModalContent = ({fezData}: {fezData: FezData}) => {
   const {commonStyles} = useStyles();

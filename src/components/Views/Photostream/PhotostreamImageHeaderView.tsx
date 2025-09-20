@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage.tsx';
-import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag.tsx';
-import {PhotostreamImageData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
+import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
+import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {IconButton} from 'react-native-paper';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {PhotostreamImageActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamImageActionsMenu.tsx';
-import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag.tsx';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
+import {AppIcons} from '#src/Enums/Icons';
+import {PhotostreamImageActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamImageActionsMenu';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface PhotostreamAuthorViewProps {
   image: PhotostreamImageData;

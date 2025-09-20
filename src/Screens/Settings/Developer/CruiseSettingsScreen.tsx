@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {AppView} from '#src/Views/AppView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {CruiseSettingsForm} from '#src/Forms/Settings/CruiseSettingsForm.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '../../../../Libraries/Types/FormValues.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../../Styles/Theme.ts';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries.ts';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {useCruise} from '#src/Context/Contexts/CruiseContext.ts';
-import {SettingDataTableRow} from '#src/DataTables/SettingDataTableRow.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useAppTheme} from '#src/Styles/Theme';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {DataTable} from 'react-native-paper';
-import {PreRegistrationSettingsForm} from '#src/Forms/Settings/PreRegistrationSettingsForm.tsx';
+import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

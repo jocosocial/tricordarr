@@ -1,14 +1,14 @@
 import React from 'react';
 import {DatePickerModal} from 'react-native-paper-dates';
-import {useCruise} from '#src/Components/Context/Contexts/CruiseContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useField, useFormikContext} from 'formik';
 import {StyleSheet, View} from 'react-native';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 import {Button} from 'react-native-paper';
 import {format} from 'date-fns';
 import {CalendarDate} from 'react-native-paper-dates/src/Date/Calendar';
-import {ValidRangeType} from 'react-native-paper-dates/src/Date/Calendar.tsx';
+import {ValidRangeType} from 'react-native-paper-dates/src/Date/Calendar';
 
 interface DatePickerFieldProps {
   name: string;

@@ -1,4 +1,4 @@
-import {AnnouncementData} from '../../../Libraries/Structs/ControllerStructs';
+import {AnnouncementData} from '#src/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 
 export const useAnnouncementsQuery = (options = {}) => {

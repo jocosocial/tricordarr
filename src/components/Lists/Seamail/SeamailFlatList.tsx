@@ -1,11 +1,11 @@
-import {FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '#src/Structs/ControllerStructs';
 import {FlatList, RefreshControlProps} from 'react-native';
-import {SeamailListItem} from '#src/Components/Lists/Items/SeamailListItem.tsx';
+import {SeamailListItem} from '#src/Components/Lists/Items/SeamailListItem';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter.tsx';
-import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter.tsx';
-import {AppFlatList} from '#src/Components/Lists/AppFlatList.tsx';
+import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
+import {NoResultsFooter} from '#src/Components/Lists/Footers/NoResultsFooter';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 
 interface SeamailFlatListProps {
   fezList: FezData[];

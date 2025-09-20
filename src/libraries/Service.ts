@@ -1,16 +1,16 @@
 import notifee from '@notifee/react-native';
-import {buildWebSocket, wsHealthcheck} from './Network/Websockets';
+import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
-} from './Notifications/ForegroundService';
-import {fgsWorkerNotificationIDs} from './Enums/Notifications';
-import {getAppConfig} from './AppConfig';
-import {generatePushNotificationFromEvent} from './Notifications/SocketNotification';
+} from '#src/Libraries/Notifications/ForegroundService';
+import {fgsWorkerNotificationIDs} from '#src/Libraries/Enums/Notifications';
+import {getAppConfig} from '#src/Libraries/AppConfig';
+import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {SocketHealthcheckData} from './Structs/SocketStructs';
+import {SocketHealthcheckData} from '#src/Libraries/Structs/SocketStructs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from './Storage';
+import {StorageKeys} from '#src/Libraries/Storage';
 import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;

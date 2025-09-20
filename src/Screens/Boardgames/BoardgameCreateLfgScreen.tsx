@@ -1,9 +1,9 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
-import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase';
 import pluralize from 'pluralize';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {FezType} from '#src/Enums/FezType';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameCreateLfgScreen>;
 

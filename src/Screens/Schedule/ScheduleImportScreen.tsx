@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
-import {SchedImportForm} from '#src/Forms/SchedImportForm.tsx';
-import {SchedImportFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {SchedImportForm} from '#src/Components/Forms/SchedImportForm';
+import {SchedImportFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {useEventsQuery} from '#src/Queries/Events/EventQueries.ts';
-import {getCalFeedFromUrl, getEventUid} from '../../../Libraries/Schedule.ts';
-import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useEventsQuery} from '#src/Queries/Events/EventQueries';
+import {getCalFeedFromUrl, getEventUid} from '#src/Libraries/Schedule';
+import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import pluralize from 'pluralize';
 import {VEvent} from 'node-ical';
-import {HelpTopicView} from '#src/Views/Help/HelpTopicView.tsx';
+import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useQueryClient} from '@tanstack/react-query';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 
 export const ScheduleImportScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

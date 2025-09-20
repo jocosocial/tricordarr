@@ -1,11 +1,11 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
 import {styleDefaults} from '#src/Styles';
-import {AppIcons} from '#src/Libraries/Enums/Icons';
-import {useImageQuery} from '#src/Components/Queries/ImageQuery';
-import {useFeature} from '#src/Components/Context/Contexts/FeatureContext';
-import {SwiftarrFeature} from '#src/Libraries/Enums/AppFeatures';
-import {UserHeader} from '#src/Libraries/Structs/ControllerStructs';
+import {AppIcons} from '#src/Enums/Icons';
+import {useImageQuery} from '#src/Queries/ImageQuery';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type UserAvatarImageProps = {
   userHeader?: UserHeader;

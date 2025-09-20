@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import {RefreshControl, ScrollView} from 'react-native';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
-} from '#src/Navigation/Stacks/SettingsStackNavigator.tsx';
+} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {Query, useQueryClient} from '@tanstack/react-query';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import JSONTree from 'react-native-json-tree';
 
 export type Props = NativeStackScreenProps<

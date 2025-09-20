@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {KeywordFormValues} from '#src/Libraries/Types/FormValues.ts';
-import {TextField} from './Fields/TextField.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {KeywordFormValues} from '#src/Types/FormValues';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {KeywordValidation} from '#src/Libraries/ValidationSchema.ts';
-import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
+import {KeywordValidation} from '#src/Libraries/ValidationSchema';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 
 const validationSchema = Yup.object().shape({
   keyword: KeywordValidation,

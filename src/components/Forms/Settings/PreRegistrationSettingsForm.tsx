@@ -1,14 +1,14 @@
 import {View} from 'react-native';
-import {TextField} from '#src/Components/Forms/Fields/TextField.tsx';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {PreRegistrationSettingsFormValues} from '#src/Libraries/Types/FormValues.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 import * as Yup from 'yup';
-import {ServerURLValidation} from '#src/Libraries/ValidationSchema.ts';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField.tsx';
-import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField.tsx';
+import {ServerURLValidation} from '#src/Libraries/ValidationSchema';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
+import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 
 interface CruiseSettingsFormProps {
   initialValues: PreRegistrationSettingsFormValues;

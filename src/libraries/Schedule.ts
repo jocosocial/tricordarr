@@ -1,8 +1,8 @@
-import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from './Types/index.ts';
+import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from '#src/Types';
 import {InfiniteData} from '@tanstack/react-query';
-import {EventData, FezData, FezListData} from './Structs/ControllerStructs.tsx';
-import {EventType} from './Enums/EventType.ts';
-import {calcCruiseDayTime, getTimeZoneOffset} from './DateTime.ts';
+import {EventData, FezData, FezListData} from '#src/Structs/ControllerStructs';
+import {EventType} from '#src/Enums/EventType';
+import {calcCruiseDayTime, getTimeZoneOffset} from '#src/Libraries/DateTime';
 import {parseISO} from 'date-fns';
 import ical, {VEvent} from 'node-ical';
 

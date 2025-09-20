@@ -1,7 +1,7 @@
 import React, {PropsWithChildren} from 'react';
 import {Text} from 'react-native-paper';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleProp, TextStyle} from 'react-native';
 
 interface TitleTagProps {

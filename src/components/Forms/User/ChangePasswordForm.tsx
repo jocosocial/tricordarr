@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {ChangePasswordFormValues} from '#src/Libraries/Types/FormValues.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ChangePasswordFormValues} from '#src/Types/FormValues';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import * as Yup from 'yup';
-import {PasswordValidation} from '#src/Libraries/ValidationSchema.ts';
-import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField.tsx';
-import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField.tsx';
+import {PasswordValidation} from '#src/Libraries/ValidationSchema';
+import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
+import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 
 interface ChangePasswordFormProps {
   onSubmit: (values: ChangePasswordFormValues, helpers: FormikHelpers<ChangePasswordFormValues>) => void;

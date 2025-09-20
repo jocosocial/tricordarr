@@ -1,5 +1,5 @@
 import React from 'react';
-import {ForumPostScreenBase} from './ForumPostScreenBase';
+import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 
 export const ForumPostSelfScreen = () => {
   return <ForumPostScreenBase refreshOnUserNotification={true} queryParams={{byself: true}} />;

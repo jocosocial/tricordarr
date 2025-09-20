@@ -1,4 +1,4 @@
-import {ImageQueryData} from '#src/Libraries/Types';
+import {ImageQueryData} from '#src/Types';
 import RNFS from 'react-native-fs';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import * as mime from 'react-native-mime-types';

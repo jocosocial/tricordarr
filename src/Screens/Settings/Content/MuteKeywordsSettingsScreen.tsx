@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {useUserKeywordQuery} from '#src/Queries/User/UserQueries.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {RefreshControl, View} from 'react-native';
-import {KeywordChip} from '#src/Chips/KeywordChip.tsx';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {KeywordChip} from '#src/Components/Chips/KeywordChip';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {Text} from 'react-native-paper';
-import {KeywordForm} from '#src/Forms/KeywordForm.tsx';
-import {KeywordFormValues} from '../../../../Libraries/Types/FormValues.ts';
+import {KeywordForm} from '#src/Components/Forms/KeywordForm';
+import {KeywordFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {NotLoggedInView} from '#src/Views/Static/NotLoggedInView.tsx';
-import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
-import {useUserKeywordMutation} from '#src/Queries/User/UserMutations.ts';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useUserKeywordMutation} from '#src/Queries/User/UserMutations';
 
 export const MuteKeywordsSettingsScreen = () => {
   const {isLoggedIn} = useAuth();

@@ -1,18 +1,18 @@
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
-import {ProfilePublicData, UserHeader} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleSheet, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
-import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Components/Queries/User/UserAvatarMutations.ts';
+import {useUserAvatarMutation, useUserImageDeleteMutation} from '#src/Queries/User/UserAvatarMutations';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
-import {APIImage} from '#src/Components/Images/APIImage.tsx';
-import {useFeature} from '#src/Components/Context/Contexts/FeatureContext.ts';
-import {SwiftarrFeature} from '#src/Libraries/Enums/AppFeatures.ts';
-import {ImageButtons} from '#src/Components/Buttons/ImageButtons.tsx';
-import {styleDefaults} from '#src/Styles/index.ts';
-import {useSnackbar} from '#src/Components/Context/Contexts/SnackbarContext.ts';
-import {useUsersProfileQuery} from '#src/Components/Queries/Users/UsersQueries.ts';
-import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
+import {APIImage} from '#src/Components/Images/APIImage';
+import {useFeature} from '#src/Context/Contexts/FeatureContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
+import {styleDefaults} from '#src/Styles';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface UserProfileAvatarProps {

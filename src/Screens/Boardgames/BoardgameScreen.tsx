@@ -1,22 +1,22 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
-import {DataFieldListItem} from '#src/Lists/Items/DataFieldListItem.tsx';
-import {BoardgameData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {BoardgameData} from '#src/Structs/ControllerStructs';
 import {decode} from 'html-entities';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries.ts';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations.ts';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {AppIcons} from '#src/Enums/Icons';
+import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useQueryClient} from '@tanstack/react-query';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {HeaderFavoriteButton} from '#src/Buttons/HeaderButtons/HeaderFavoriteButton.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 

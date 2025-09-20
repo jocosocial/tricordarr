@@ -1,19 +1,19 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {BoardgameFlatList} from '#src/Lists/BoardgameFlatList.tsx';
-import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries.ts';
-import {NotLoggedInView} from '#src/Views/Static/NotLoggedInView.tsx';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
+import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {RefreshControl, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
-import {MenuAnchor} from '#src/Menus/MenuAnchor.tsx';
-import {ListTitleView} from '#src/Views/ListTitleView.tsx';
-import {BoardgameGuideFAB} from '#src/Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {AppIcons} from '#src/Enums/Icons';
+import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
 

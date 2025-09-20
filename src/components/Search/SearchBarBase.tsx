@@ -1,6 +1,6 @@
 import {HelperText, Searchbar} from 'react-native-paper';
 import React, {useEffect} from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleSheet, ViewStyle} from 'react-native';
 
 interface SearchBarBaseProps {

@@ -12,10 +12,10 @@ import MainShowImage from '#assets/mainview_mainshow.jpg';
 import LateShowImage from '#assets/mainview_lateshow.jpg';
 // @ts-ignore
 import HappyHourImage from '#assets/mainview_happy.jpg';
-import {useCruise} from '#src/Components/Context/Contexts/CruiseContext';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
-import {ImageQueryData} from '#src/Libraries/Types';
+import {ImageQueryData} from '#src/Types';
 import {encode as base64_encode} from 'base-64';
 
 /**

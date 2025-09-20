@@ -1,6 +1,6 @@
 import notifee, {AndroidChannel} from '@notifee/react-native';
-import {setupChannelGroups} from './ChannelGroups';
-import {systemChannelGroup, contentChannelGroup} from './ChannelGroups';
+import {setupChannelGroups} from '#src/Libraries/Notifications/ChannelGroups';
+import {systemChannelGroup, contentChannelGroup} from '#src/Libraries/Notifications/ChannelGroups';
 
 /**
  * Notification channel for server connection events.

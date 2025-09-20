@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '../../../Styles/Theme';
+import {useAppTheme} from '#src/Styles/Theme';
 import {commonStyles, styleDefaults} from '../../../Styles';
 import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';

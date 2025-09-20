@@ -1,14 +1,14 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations.ts';
-import {EventData, PerformerData, PerformerUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
+import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
 import {useQueryClient} from '@tanstack/react-query';
-import {ShadowPerformerForm} from '#src/Forms/Performer/ShadowPerformerForm.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ShadowPerformerForm} from '#src/Components/Forms/Performer/ShadowPerformerForm';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.performerEditScreen>;
 

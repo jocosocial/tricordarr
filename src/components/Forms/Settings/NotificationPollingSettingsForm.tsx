@@ -1,12 +1,12 @@
-import {NotificationPollingSettingsFormValues} from '#src/Libraries/Types/FormValues.ts';
+import {NotificationPollingSettingsFormValues} from '#src/Types/FormValues';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {SliderField} from '#src/Components/Forms/Fields/SliderField.tsx';
+import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import React from 'react';
 import {View} from 'react-native';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {BooleanField} from '#src/Components/Forms/Fields/BooleanField.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 
 interface NotificationPollingSettingsFormProps {
   initialValues: NotificationPollingSettingsFormValues;

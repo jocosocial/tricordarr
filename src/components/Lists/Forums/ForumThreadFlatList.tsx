@@ -1,14 +1,14 @@
 import {RefreshControlProps} from 'react-native';
-import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem.tsx';
+import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem';
 import React, {useCallback, useRef} from 'react';
-import {ForumListData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ForumListData} from '#src/Structs/ControllerStructs';
 import {Divider} from 'react-native-paper';
-import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider.tsx';
-import {useSelection} from '#src/Components/Context/Contexts/SelectionContext.ts';
-import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader.tsx';
-import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter.tsx';
-import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter.tsx';
-import {AppFlashList} from '#src/Components/Lists/AppFlashList.tsx';
+import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
+import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
+import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
+import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
+import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {FlashList} from '@shopify/flash-list';
 
 interface ForumThreadFlatListProps {

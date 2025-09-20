@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {View} from 'react-native';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 /**
  * A top level container for FlatList renderItem output. Similar in concept to a <List.Item>

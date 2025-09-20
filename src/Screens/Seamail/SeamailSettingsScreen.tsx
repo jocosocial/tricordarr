@@ -1,16 +1,16 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Formik} from 'formik';
 import {View} from 'react-native';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {contentNotificationCategories} from '../../../Libraries/Notifications/Content.ts';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {PushNotificationConfig} from '../../../Libraries/AppConfig.ts';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 
 export const SeamailSettingsScreen = () => {
   const {appConfig, hasNotificationPermission, updateAppConfig} = useConfig();

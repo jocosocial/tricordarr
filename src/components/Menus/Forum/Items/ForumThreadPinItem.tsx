@@ -1,8 +1,8 @@
 import {Menu} from 'react-native-paper';
 import React, {Dispatch, SetStateAction} from 'react';
-import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {useForumPinMutation} from '#src/Components/Queries/Forum/ForumThreadPinMutations.ts';
+import {StateLoadingIcon} from '#src/Components/Icons/StateLoadingIcon';
+import {AppIcons} from '#src/Enums/Icons';
+import {useForumPinMutation} from '#src/Queries/Forum/ForumThreadPinMutations';
 import {QueryKey, useQueryClient} from '@tanstack/react-query';
 
 interface ForumThreadPinItemProps {

@@ -1,19 +1,19 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {UserNoteForm} from '#src/Forms/User/UserNoteForm.tsx';
-import {UserNoteFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {UserNoteForm} from '#src/Components/Forms/User/UserNoteForm';
+import {UserNoteFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '#src/Queries/Users/UserNoteMutations.ts';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '#src/Queries/Users/UserNoteMutations';
 import {useQueryClient} from '@tanstack/react-query';
-import {PrimaryActionButton} from '#src/Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {useAppTheme} from '#src/Styles/Theme';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userPrivateNoteScreen>;
 

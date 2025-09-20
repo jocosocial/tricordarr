@@ -1,7 +1,7 @@
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useEffect} from 'react';
-import {useAuth} from '#src/Components/Context/Contexts/AuthContext';
-import {useUserNotificationDataQuery} from '#src/Components/Queries/Alert/NotificationQueries';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useAppState} from '@react-native-community/hooks';
 import {useQueryClient} from '@tanstack/react-query';
 

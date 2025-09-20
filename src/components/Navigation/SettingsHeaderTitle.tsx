@@ -1,7 +1,7 @@
 import React from 'react';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {SecretHeaderTitle} from './SecretHeaderTitle.tsx';
-import {useSnackbar} from '#src/Context/Contexts/SnackbarContext.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {SecretHeaderTitle} from '#src/Components/Navigation/SecretHeaderTitle';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 
 /**
  * Header title for the SettingsScreen. This has a secret feature to enable/disable the menu of developer

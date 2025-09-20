@@ -1,8 +1,8 @@
 import {Card} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {StyleSheet} from 'react-native';
-import {ContentText} from '#src/Components/Text/ContentText.tsx';
+import {ContentText} from '#src/Components/Text/ContentText';
 
 interface PerformerBioCardProps {
   bio?: string;

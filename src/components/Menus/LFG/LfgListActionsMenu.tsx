@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
-import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '#src/Components/Navigation/Stacks/LFGStackNavigator.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
+import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 export const LfgListActionsMenu = () => {
   const [visible, setVisible] = useState(false);

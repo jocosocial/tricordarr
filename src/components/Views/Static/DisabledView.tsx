@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {AppView} from '#src/Components/Views/AppView.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
-import {useSwiftarrQueryClient} from '#src/Components/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 export const DisabledView = () => {
   const {commonStyles} = useStyles();

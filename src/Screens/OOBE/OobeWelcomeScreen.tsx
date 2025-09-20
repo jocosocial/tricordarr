@@ -1,20 +1,20 @@
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator.tsx';
-import {OobeButtonsView} from '#src/Views/OobeButtonsView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Image, StyleSheet} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
-import {AppImage} from '#src/Images/AppImage.tsx';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {encode as base64_encode} from 'base-64';
 import DeviceInfo from 'react-native-device-info';
-import {useAppTheme} from '../../../Styles/Theme.ts';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {useAppTheme} from '#src/Styles/Theme';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFocusEffect} from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;

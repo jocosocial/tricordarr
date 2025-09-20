@@ -1,7 +1,7 @@
 import React from 'react';
-import {TimezoneWarningCard} from '#src/Components/Cards/MainScreen/TimezoneWarningCard.tsx';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
-import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
+import {TimezoneWarningCard} from '#src/Components/Cards/MainScreen/TimezoneWarningCard';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
 
 export const TodayTimezoneWarningView = () => {
   const {showTimeZoneWarning} = useCruise();

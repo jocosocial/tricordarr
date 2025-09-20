@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ForumPostSearchBar} from '#src/Search/ForumPostSearchBar.tsx';
-import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries.ts';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ForumPostSearchBar} from '#src/Components/Search/ForumPostSearchBar';
+import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ListTitleView} from '#src/Views/ListTitleView.tsx';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
 export type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostSearchScreen>;
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleProp, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 import {Field, useField, useFormikContext} from 'formik';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 

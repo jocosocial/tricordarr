@@ -1,14 +1,14 @@
 import {HelperText, Text} from 'react-native-paper';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useAppTheme} from '#src/Styles/Theme.ts';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton.tsx';
+import {useAppTheme} from '#src/Styles/Theme';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useAppState} from '@react-native-community/hooks';
 // @ts-ignore
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
-import {ListSection} from '#src/Components/Lists/ListSection.tsx';
-import {ListSubheader} from '#src/Components/Lists/ListSubheader.tsx';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {View} from 'react-native';
 
 export const BatteryOptimizationSettingsView = () => {

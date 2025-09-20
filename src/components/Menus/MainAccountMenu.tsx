@@ -1,14 +1,14 @@
-import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage.tsx';
+import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {useAuth} from '#src/Components/Context/Contexts/AuthContext.ts';
-import {MainStackComponents, useMainStack} from '#src/Components/Navigation/Stacks/MainStackNavigator.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {SettingsStackScreenComponents} from '#src/Components/Navigation/Stacks/SettingsStackNavigator.tsx';
-import {AppHeaderMenu} from './AppHeaderMenu.tsx';
-import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
+import {AppIcons} from '#src/Enums/Icons';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const MainAccountMenu = () => {
   const {data: profilePublicData} = useUserProfileQuery();

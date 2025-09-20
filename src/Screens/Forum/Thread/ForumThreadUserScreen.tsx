@@ -1,17 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {RefreshControl} from 'react-native';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {Text} from 'react-native-paper';
-import {ForumThreadFlatList} from '#src/Lists/Forums/ForumThreadFlatList.tsx';
-import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries.ts';
-import {ListTitleView} from '#src/Views/ListTitleView.tsx';
-import {getUserBylineString} from '#src/Text/Tags/UserBylineTag.tsx';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {ForumListData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
+import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
+import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
 

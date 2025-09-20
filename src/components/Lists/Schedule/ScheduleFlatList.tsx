@@ -1,18 +1,18 @@
-import {EventData, FezData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {EventData, FezData} from '#src/Structs/ControllerStructs';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
-import {getScheduleItemMarker} from '#src/Libraries/Schedule.ts';
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
-import {EventCardListItem} from '#src/Components/Lists/Items/Event/EventCardListItem.tsx';
-import {PersonalEventCardListItem} from '#src/Components/Lists/Items/PersonalEvent/PersonalEventCardListItem.tsx';
-import {useCruise} from '#src/Components/Context/Contexts/CruiseContext.ts';
-import useDateTime from '#src/Libraries/DateTime.ts';
-import {ScheduleFlatListBase} from './ScheduleFlatListBase.tsx';
-import {ScheduleFlatListSeparator} from '#src/Libraries/Types/index.ts';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {getScheduleItemMarker} from '#src/Libraries/Schedule';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {EventCardListItem} from '#src/Components/Lists/Items/Event/EventCardListItem';
+import {PersonalEventCardListItem} from '#src/Components/Lists/Items/PersonalEvent/PersonalEventCardListItem';
+import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import useDateTime from '#src/Libraries/DateTime';
+import {ScheduleFlatListBase} from '#src/Components/Lists/Schedule/ScheduleFlatListBase';
+import {ScheduleFlatListSeparator} from '#src/Types';
 import {FlashList} from '@shopify/flash-list';
-import {FezType} from '#src/Libraries/Enums/FezType.ts';
-import {FezCard} from '#src/Components/Cards/Schedule/FezCard.tsx';
+import {FezType} from '#src/Enums/FezType';
+import {FezCard} from '#src/Components/Cards/Schedule/FezCard';
 
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];

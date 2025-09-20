@@ -1,11 +1,11 @@
-import {PerformerHeaderData} from '#src/Libraries/Structs/ControllerStructs.tsx';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {Chip} from 'react-native-paper';
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {AvatarImage} from '#src/Components/Images/AvatarImage.tsx';
-import {AppIcon} from '#src/Components/Icons/AppIcon.tsx';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AvatarImage} from '#src/Components/Images/AvatarImage';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppIcons} from '#src/Enums/Icons';
 
 interface PerformerChipProps {
   performerHeader: PerformerHeaderData;

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {UserProfileScreenBase} from './UserProfileScreenBase.tsx';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {useUserFindQuery, useUsersProfileQuery} from '#src/Queries/Users/UsersQueries.ts';
+import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useUserFindQuery, useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.usernameProfileScreen>;
 

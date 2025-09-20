@@ -1,4 +1,4 @@
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 import React from 'react';

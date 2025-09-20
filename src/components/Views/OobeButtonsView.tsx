@@ -1,4 +1,4 @@
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';

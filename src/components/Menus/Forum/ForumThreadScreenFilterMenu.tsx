@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
-import {ForumFilter} from '#src/Libraries/Enums/ForumSortFilter.ts';
-import {useFilter} from '#src/Components/Context/Contexts/FilterContext.ts';
-import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem.tsx';
-import {MenuAnchor} from '#src/Components/Menus/MenuAnchor.tsx';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu.tsx';
+import {AppIcons} from '#src/Enums/Icons';
+import {ForumFilter} from '#src/Enums/ForumSortFilter';
+import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
+import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 export const ForumThreadScreenFilterMenu = () => {
   const [visible, setVisible] = useState(false);

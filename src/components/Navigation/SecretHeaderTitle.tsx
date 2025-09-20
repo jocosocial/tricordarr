@@ -1,4 +1,4 @@
-import {NavHeaderTitle} from '#src/Text/NavHeaderTitle';
+import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import React, {useState} from 'react';
 
 interface SecretHeaderTitleProps {

@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {PersonalEventForm} from '#src/Forms/PersonalEventForm.tsx';
-import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
+import {FezFormValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '../../../Libraries/Enums/FezType.ts';
-import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations.ts';
+import {FezType} from '#src/Enums/FezType';
+import {FezData} from '#src/Structs/ControllerStructs';
+import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;
 export const PersonalEventEditScreen = ({navigation, route}: Props) => {

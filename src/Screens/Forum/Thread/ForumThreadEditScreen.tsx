@@ -1,13 +1,13 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumThreadEditForm} from '#src/Forms/Forum/ForumThreadEditForm.tsx';
-import {ForumThreadValues} from '../../../../Libraries/Types/FormValues.ts';
+import {ForumThreadEditForm} from '#src/Components/Forms/Forum/ForumThreadEditForm';
+import {ForumThreadValues} from '#src/Types/FormValues';
 import {FormikHelpers} from 'formik';
-import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries.ts';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
+import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;

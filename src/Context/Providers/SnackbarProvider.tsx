@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useState} from 'react';
-import {SnackbarContext} from '#src/Context/Contexts/SnackbarContext.ts';
-import {SnackbarPayload} from '../../../Libraries/Types/index.ts';
+import {SnackbarContext} from '#src/Context/Contexts/SnackbarContext';
+import {SnackbarPayload} from '#src/Types';
 
 export const SnackbarProvider = ({children}: PropsWithChildren) => {
   const [snackbarPayload, setSnackbarPayload] = useState<SnackbarPayload>();

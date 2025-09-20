@@ -1,7 +1,7 @@
 import React from 'react';
 import {Chip} from 'react-native-paper';
 import {StyleProp, ViewStyle} from 'react-native';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface KeywordChipProps {
   onPress?: () => void;

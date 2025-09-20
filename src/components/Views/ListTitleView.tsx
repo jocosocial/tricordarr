@@ -1,9 +1,9 @@
 import {Text} from 'react-native-paper';
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {BoldText} from '#src/Components/Text/BoldText.tsx';
-import {MD3TypescaleKey} from 'react-native-paper/src/types.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {BoldText} from '#src/Components/Text/BoldText';
+import {MD3TypescaleKey} from 'react-native-paper/src/types';
 
 interface ListTitleViewProps {
   title?: string;

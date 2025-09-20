@@ -1,21 +1,21 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries.ts';
-import {PerformerHeaderData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
+import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 import {FlatList, RefreshControl, View, StyleSheet} from 'react-native';
-import {AppFlatList} from '#src/Lists/AppFlatList.tsx';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {PerformerTypeButtons} from '#src/Buttons/SegmentedButtons/PerformerTypeButtons.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {AppFlatList} from '#src/Components/Lists/AppFlatList';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator.tsx';
-import {PerformerHeaderCard} from '#src/Cards/Performer/PerformerHeaderCard.tsx';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '#src/Buttons/MaterialHeaderButton.tsx';
-import {PerformerListActionsMenu} from '#src/Menus/Performer/PerformerListActionsMenu.tsx';
-import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
-import {NotLoggedInView} from '#src/Views/Static/NotLoggedInView.tsx';
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 
 type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 

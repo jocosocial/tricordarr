@@ -2,8 +2,8 @@ import {Card, Text} from 'react-native-paper';
 // @ts-ignore
 import twitarrteam from '#assets/contributors/twitarrteam.jpg';
 import React from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {AppImage} from '#src/Components/Images/AppImage.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {Image} from 'react-native';
 import {encode as base64_encode} from 'base-64';
 

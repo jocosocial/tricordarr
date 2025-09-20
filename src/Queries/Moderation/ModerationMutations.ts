@@ -1,7 +1,7 @@
-import {ReportData} from '../../../Libraries/Structs/ControllerStructs.tsx';
-import {ReportContentType} from '../../../Libraries/Enums/ReportContentType.ts';
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation.ts';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {ReportData} from '#src/Structs/ControllerStructs';
+import {ReportContentType} from '#src/Enums/ReportContentType';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 interface ModReportMutationProps {
   contentType: ReportContentType;

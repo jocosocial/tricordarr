@@ -1,15 +1,15 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator.tsx';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {OobeButtonsView} from '#src/Views/OobeButtonsView.tsx';
-import {useConductQuery} from '#src/Queries/PublicQueries.ts';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
+import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
+import {useConductQuery} from '#src/Queries/PublicQueries';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {RefreshControl} from 'react-native';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
-import {ContentText} from '#src/Text/ContentText.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ContentText} from '#src/Components/Text/ContentText';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;
 

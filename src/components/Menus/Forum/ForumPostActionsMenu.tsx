@@ -1,17 +1,17 @@
 import React, {ReactNode} from 'react';
-import {ForumData, PostData} from '#src/Libraries/Structs/ControllerStructs.tsx';
+import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem.tsx';
-import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem.tsx';
-import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem.tsx';
-import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem.tsx';
-import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem.tsx';
-import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem.tsx';
-import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem.tsx';
-import {CommonStackComponents, useCommonStack} from '#src/Components/Navigation/CommonScreens.tsx';
-import {useUserProfileQuery} from '#src/Components/Queries/User/UserQueries.ts';
+import {ForumPostActionsFavoriteItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsFavoriteItem';
+import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReactionItem';
+import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
+import {ForumPostActionsModerateItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsModerateItem';
+import {ForumPostActionsDeleteItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsDeleteItem';
+import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
+import {ForumPostActionsPinItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsPinItem';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;

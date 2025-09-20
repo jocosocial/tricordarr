@@ -1,14 +1,14 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React, {useState} from 'react';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
-import {useStyles} from '#src/Context/Contexts/StyleContext.ts';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {View} from 'react-native';
-import {BooleanField} from '#src/Forms/Fields/BooleanField.tsx';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {Formik} from 'formik';
-import {ListSubheader} from '#src/Lists/ListSubheader.tsx';
-import {ListSection} from '#src/Lists/ListSection.tsx';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 export const AccessibilitySettingsScreen = () => {
   const {commonStyles} = useStyles();

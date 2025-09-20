@@ -1,10 +1,10 @@
 import React from 'react';
 import {IconButton} from 'react-native-paper';
 import {useAppTheme} from '#src/Styles/Theme';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ActivityIndicator} from 'react-native-paper';
-import {AppIcons} from '#src/Libraries/Enums/Icons';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext';
+import {AppIcons} from '#src/Enums/Icons';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 interface SubmitIconButtonProps {

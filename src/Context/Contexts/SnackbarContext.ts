@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {SnackbarPayload} from '../../../Libraries/Types';
+import {SnackbarPayload} from '#src/Types';
 
 interface SnackbarContextType {
   snackbarPayload?: SnackbarPayload;

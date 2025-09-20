@@ -1,10 +1,10 @@
-import {AppImageViewer} from './AppImageViewer.tsx';
+import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {Image, StyleProp, TouchableOpacity, ImageStyle as RNImageStyle, View, ImageURISource} from 'react-native';
 import {Card} from 'react-native-paper';
 import React, {useState} from 'react';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {ImageQueryData} from '#src/Libraries/Types/index.ts';
-import {AppFastImage} from './AppFastImage.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ImageQueryData} from '#src/Types';
+import {AppFastImage} from '#src/Components/Images/AppFastImage';
 import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
 
 interface AppImageProps {

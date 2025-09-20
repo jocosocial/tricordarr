@@ -1,16 +1,16 @@
 // import React, {PropsWithChildren} from 'react';
-// import {BaseSwipeable} from './BaseSwipeable.tsx';
-// import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton.tsx';
-// import {AppIcons} from '#src/libraries/Enums/Icons.ts';
-// import {FezData} from '#src/libraries/Structs/ControllerStructs.tsx';
-// import {useFezArchiveMutation} from '#src/Components/Queries/Fez/FezArchiveMutations.ts';
+// import {BaseSwipeable} from '#src/Components/Swipeables/BaseSwipeable';
+// import {SwipeableButton} from '#src/Components/Buttons/SwipeableButton';
+// import {AppIcons} from '#src/libraries/Enums/Icons';
+// import {FezData} from '#src/libraries/Structs/ControllerStructs';
+// import {useFezArchiveMutation} from '#src/Queries/Fez/FezArchiveMutations';
 // import {useQueryClient} from '@tanstack/react-query';
 // import {View} from 'react-native';
-// import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+// import {useStyles} from '#src/Context/Contexts/StyleContext';
 // import {StyleSheet} from 'react-native';
-// import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
-// import {useAppTheme} from '#src/styles/Theme.ts';
-// import {useSnackbar} from '#src/Components/Context/Contexts/SnackbarContext.ts';
+// import {useConfig} from '#src/Context/Contexts/ConfigContext';
+// import {useAppTheme} from '#src/styles/Theme';
+// import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 // import {SnackbarPayload} from '#src/libraries/Types';
 //
 // interface SeamailListItemSwipeableProps extends PropsWithChildren {

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {useChatStack} from '#src/Components/Navigation/Stacks/ChatStackNavigator.tsx';
-import {CommonStackComponents} from '#src/Components/Navigation/CommonScreens.tsx';
-import {BaseFAB} from './BaseFAB.tsx';
-import {usePrivilege} from '#src/Components/Context/Contexts/PrivilegeContext.ts';
+import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {BaseFAB} from '#src/Components/Buttons/FloatingActionButtons/BaseFAB';
+import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 
 interface SeamailFABProps {
   showLabel?: boolean;

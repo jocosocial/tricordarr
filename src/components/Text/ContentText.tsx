@@ -1,14 +1,14 @@
 import React, {useCallback, useMemo} from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
-import {CustomEmoji} from '#src/Libraries/Enums/Emoji.ts';
-import {Emoji} from '#src/Components/Icons/Emoji.tsx';
+import {CustomEmoji} from '#src/Enums/Emoji';
+import {Emoji} from '#src/Components/Icons/Emoji';
 import Markdown from '@ronradtke/react-native-markdown-display';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
-import {HyperlinkText} from './HyperlinkText.tsx';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
-import {useUserKeywordQuery} from '#src/Components/Queries/User/UserQueries.ts';
-import {useConfig} from '#src/Components/Context/Contexts/ConfigContext.ts';
+import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 
 interface ContentTextProps {
   textStyle?: StyleProp<TextStyle>;

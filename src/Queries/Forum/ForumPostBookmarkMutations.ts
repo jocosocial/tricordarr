@@ -1,6 +1,6 @@
-import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation.ts';
-import {LikeType} from '../../../Libraries/Enums/LikeType.ts';
-import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext.ts';
+import {useTokenAuthMutation} from '#src/Queries/TokenAuthMutation';
+import {LikeType} from '#src/Enums/LikeType';
+import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
 interface ForumPostBookmarkProps {
   postID: string;

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {AppIcons} from '#src/Libraries/Enums/Icons.ts';
+import {AppIcons} from '#src/Enums/Icons';
 import {Item} from 'react-navigation-header-buttons';
 import {Dispatch, SetStateAction, useState} from 'react';
-import {DeckData, ShipDecks} from '#src/Libraries/Ship.ts';
-import {SelectableMenuItem} from './Items/SelectableMenuItem.tsx';
-import {AppHeaderMenu} from './AppHeaderMenu.tsx';
+import {DeckData, ShipDecks} from '#src/Libraries/Ship';
+import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
+import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 
 interface DeckMapMenuProps {
   shipDeck: DeckData;

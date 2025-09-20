@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppView} from '#src/Views/AppView.tsx';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
-import {useConductQuery} from '#src/Queries/PublicQueries.ts';
+import {AppView} from '#src/Components/Views/AppView';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConductQuery} from '#src/Queries/PublicQueries';
 import {RefreshControl} from 'react-native';
-import {LoadingView} from '#src/Views/Static/LoadingView.tsx';
-import {ContentText} from '#src/Text/ContentText.tsx';
-import {PaddedContentView} from '#src/Views/Content/PaddedContentView.tsx';
+import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {ContentText} from '#src/Components/Text/ContentText';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 
 export const MainConductScreen = () => {
   const {data, refetch, isFetching} = useConductQuery();

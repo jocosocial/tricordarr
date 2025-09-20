@@ -1,10 +1,10 @@
 import React, {useState, PropsWithChildren, useCallback, useEffect} from 'react';
-import {SocketContext} from '#src/Context/Contexts/SocketContext.ts';
-import {buildWebSocket, OpenFezSocket} from '../../../Libraries/Network/Websockets.ts';
+import {SocketContext} from '#src/Context/Contexts/SocketContext';
+import {buildWebSocket, OpenFezSocket} from '#src/Libraries/Network/Websockets';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {useConfig} from '#src/Context/Contexts/ConfigContext.ts';
-import {useAuth} from '#src/Context/Contexts/AuthContext.ts';
-import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer.ts';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useWebSocketStorageReducer, WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 
 export const SocketProvider = ({children}: PropsWithChildren) => {
   const {isLoggedIn} = useAuth();

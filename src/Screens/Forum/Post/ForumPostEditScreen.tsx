@@ -1,13 +1,13 @@
-import {AppView} from '#src/Views/AppView.tsx';
+import {AppView} from '#src/Components/Views/AppView';
 import React from 'react';
-import {ScrollingContentView} from '#src/Views/Content/ScrollingContentView.tsx';
+import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ImageUploadData, PostContentData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {ImageUploadData, PostContentData} from '#src/Structs/ControllerStructs';
 import {FormikHelpers} from 'formik';
-import {ContentPostForm} from '#src/Forms/ContentPostForm.tsx';
+import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {replaceMentionValues} from 'react-native-controlled-mentions';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens.tsx';
-import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations.ts';
+import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {useQueryClient} from '@tanstack/react-query';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;

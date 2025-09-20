@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
-import {useStyles} from '#src/Components/Context/Contexts/StyleContext.ts';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface HeaderMenuProps extends PropsWithChildren {
   visible: boolean;

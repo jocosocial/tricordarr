@@ -1,4 +1,4 @@
-import {ForumSearchData} from '../../../Libraries/Structs/ControllerStructs';
+import {ForumSearchData} from '#src/Structs/ControllerStructs';
 import {useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
 
 export interface ForumSearchQueryParams {
