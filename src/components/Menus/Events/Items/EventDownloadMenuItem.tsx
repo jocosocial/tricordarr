@@ -1,8 +1,8 @@
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
 import React from 'react';
 import {Linking} from 'react-native';
-import {EventData} from '../../../../libraries/Structs/ControllerStructs';
+import {EventData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface EventDownloadMenuItemProps {

@@ -1,7 +1,7 @@
-import {FezFormValues} from '../../libraries/Types/FormValues.ts';
+import {FezFormValues} from '../../Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {DateValidation, InfoStringValidation} from '../../libraries/ValidationSchema.ts';
+import {DateValidation, InfoStringValidation} from '../../Libraries/ValidationSchema.ts';
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
 import {TextField} from './Fields/TextField.tsx';
 import React from 'react';
@@ -12,12 +12,12 @@ import {DatePickerField} from './Fields/DatePickerField.tsx';
 import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DurationPickerField} from './Fields/DurationPickerField.tsx';
 import {TextInput} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
 import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
 import {useModal} from '../Context/Contexts/ModalContext.ts';
 import {UserChipsField} from './Fields/UserChipsField.tsx';
 import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
-import {getUserSuggestedLocations} from '../../libraries/Ship.ts';
+import {getUserSuggestedLocations} from '../../Libraries/Ship.ts';
 import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';
 
 interface PersonalEventFormProps {

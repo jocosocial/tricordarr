@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {Dispatch, SetStateAction, useState} from 'react';
-import {DeckData, ShipDecks} from '../../libraries/Ship';
+import {DeckData, ShipDecks} from '../../Libraries/Ship.ts';
 import {SelectableMenuItem} from './Items/SelectableMenuItem.tsx';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 

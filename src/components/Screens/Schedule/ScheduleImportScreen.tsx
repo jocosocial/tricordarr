@@ -4,11 +4,11 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {Text} from 'react-native-paper';
 import {SchedImportForm} from '../../Forms/SchedImportForm.tsx';
-import {SchedImportFormValues} from '../../../libraries/Types/FormValues.ts';
+import {SchedImportFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useEventsQuery} from '../../Queries/Events/EventQueries.ts';
-import {getCalFeedFromUrl, getEventUid} from '../../../libraries/Schedule.ts';
+import {getCalFeedFromUrl, getEventUid} from '../../../Libraries/Schedule.ts';
 import {useEventFavoriteMutation} from '../../Queries/Events/EventFavoriteMutations.ts';
 import pluralize from 'pluralize';
 import {VEvent} from 'node-ical';

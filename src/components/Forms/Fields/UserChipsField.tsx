@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
 import {FastField, useField} from 'formik';
-import {UserSearchBar} from '../../Search/UserSearchBar';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {UserChip} from '../../Chips/UserChip';
+import {UserSearchBar} from '../../Search/UserSearchBar.tsx';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {UserChip} from '../../Chips/UserChip.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface UserChipsFieldProps {

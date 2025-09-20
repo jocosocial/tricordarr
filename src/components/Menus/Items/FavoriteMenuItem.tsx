@@ -1,4 +1,4 @@
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {StateLoadingIcon} from '../../Icons/StateLoadingIcon';

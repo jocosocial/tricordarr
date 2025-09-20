@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Divider} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {EventType} from '../../../Libraries/Enums/EventType.ts';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';

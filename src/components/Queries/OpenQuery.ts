@@ -1,5 +1,5 @@
 import {AxiosError} from 'axios';
-import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
+import {ErrorResponse} from '../../Libraries/Structs/ControllerStructs';
 import {useQuery} from '@tanstack/react-query';
 import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';

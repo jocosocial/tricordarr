@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useCallback} from 'react';
-import {navigationLinking} from '../../../libraries/Linking.ts';
-import {twitarrTheme, twitarrThemeDark} from '../../../styles/Theme.ts';
+import {navigationLinking} from '../../../Libraries/Linking.ts';
+import {twitarrTheme, twitarrThemeDark} from '../../../Styles/Theme.ts';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {adaptNavigationTheme, PaperProvider} from 'react-native-paper';
 import {useColorScheme} from 'react-native';

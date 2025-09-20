@@ -1,5 +1,5 @@
 import {createContext, useContext} from 'react';
-import {CruiseDayData} from '../../../libraries/Types';
+import {CruiseDayData} from '../../../Libraries/Types';
 
 export interface CruiseContextType {
   startDate: Date;

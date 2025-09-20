@@ -1,9 +1,9 @@
-import {DisabledView} from '../Views/Static/DisabledView';
-import {UserProfileScreen} from '../Screens/User/UserProfileScreen';
+import {DisabledView} from '../Views/Static/DisabledView.tsx';
+import {UserProfileScreen} from '../Screens/User/UserProfileScreen.tsx';
 import React from 'react';
-import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
-import {useFeature} from '../Context/Contexts/FeatureContext';
-import {MainStack} from './Stacks/MainStackNavigator';
+import {SwiftarrFeature} from '../../Libraries/Enums/AppFeatures.ts';
+import {useFeature} from '../Context/Contexts/FeatureContext.ts';
+import {MainStack} from './Stacks/MainStackNavigator.tsx';
 import {
   CategoryData,
   FezData,
@@ -13,35 +13,35 @@ import {
   PostData,
   ProfilePublicData,
   UserHeader,
-} from '../../libraries/Structs/ControllerStructs';
+} from '../../Libraries/Structs/ControllerStructs.tsx';
 import {UserProfileEditScreen} from '../Screens/User/UserProfileEditScreen.tsx';
-import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen';
-import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen';
-import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen';
+import {UserPrivateNoteScreen} from '../Screens/User/UserPrivateNoteScreen.tsx';
+import {UserRegCodeScreen} from '../Screens/User/UserRegCodeScreen.tsx';
+import {UsernameProfileScreen} from '../Screens/User/UsernameProfileScreen.tsx';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {SiteUIScreen} from '../Screens/SiteUI/SiteUIScreen.tsx';
-import {MapScreen} from '../Screens/Main/MapScreen';
-import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen';
-import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen';
-import {ForumThreadUserScreen} from '../Screens/Forum/Thread/ForumThreadUserScreen';
-import {EventScreen} from '../Screens/Event/EventScreen';
-import {ForumThreadScreen} from '../Screens/Forum/Thread/ForumThreadScreen';
-import {AlertKeywordsSettingsScreen} from '../Screens/Settings/Content/AlertKeywordsSettingsScreen';
-import {MuteKeywordsSettingsScreen} from '../Screens/Settings/Content/MuteKeywordsSettingsScreen';
-import {ForumThreadPostScreen} from '../Screens/Forum/Thread/ForumThreadPostScreen';
-import {ForumPostEditScreen} from '../Screens/Forum/Post/ForumPostEditScreen';
-import {SeamailCreateScreen} from '../Screens/Seamail/SeamailCreateScreen';
-import {ForumPostPinnedScreen} from '../Screens/Forum/Post/ForumPostPinnedScreen';
-import {ConfigServerUrlScreen} from '../Screens/Settings/Config/ConfigServerUrlScreen';
-import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScreen';
-import {SeamailAddParticipantScreen} from '../Screens/Seamail/SeamailAddParticipantScreen';
+import {MapScreen} from '../Screens/Main/MapScreen.tsx';
+import {AccountRecoveryScreen} from '../Screens/Settings/Account/AccountRecoveryScreen.tsx';
+import {ForumPostUserScreen} from '../Screens/Forum/Post/ForumPostUserScreen.tsx';
+import {ForumThreadUserScreen} from '../Screens/Forum/Thread/ForumThreadUserScreen.tsx';
+import {EventScreen} from '../Screens/Event/EventScreen.tsx';
+import {ForumThreadScreen} from '../Screens/Forum/Thread/ForumThreadScreen.tsx';
+import {AlertKeywordsSettingsScreen} from '../Screens/Settings/Content/AlertKeywordsSettingsScreen.tsx';
+import {MuteKeywordsSettingsScreen} from '../Screens/Settings/Content/MuteKeywordsSettingsScreen.tsx';
+import {ForumThreadPostScreen} from '../Screens/Forum/Thread/ForumThreadPostScreen.tsx';
+import {ForumPostEditScreen} from '../Screens/Forum/Post/ForumPostEditScreen.tsx';
+import {SeamailCreateScreen} from '../Screens/Seamail/SeamailCreateScreen.tsx';
+import {ForumPostPinnedScreen} from '../Screens/Forum/Post/ForumPostPinnedScreen.tsx';
+import {ConfigServerUrlScreen} from '../Screens/Settings/Config/ConfigServerUrlScreen.tsx';
+import {ForumPostHashtagScreen} from '../Screens/Forum/Post/ForumPostHashtagScreen.tsx';
+import {SeamailAddParticipantScreen} from '../Screens/Seamail/SeamailAddParticipantScreen.tsx';
 import {FezChatDetailsScreen} from '../Screens/Fez/FezChatDetailsScreen.tsx';
-import {LfgScreen} from '../Screens/LFG/LfgScreen';
-import {LfgParticipationScreen} from '../Screens/LFG/LfgParticipationScreen';
-import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen';
-import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen';
-import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen';
+import {LfgScreen} from '../Screens/LFG/LfgScreen.tsx';
+import {LfgParticipationScreen} from '../Screens/LFG/LfgParticipationScreen.tsx';
+import {LfgAddParticipantScreen} from '../Screens/LFG/LfgAddParticipantScreen.tsx';
+import {LfgEditScreen} from '../Screens/LFG/LfgEditScreen.tsx';
+import {ForumThreadEditScreen} from '../Screens/Forum/Thread/ForumThreadEditScreen.tsx';
 import {AccessibilitySettingsScreen} from '../Screens/Settings/AccessibilitySettingsScreen.tsx';
 import {ImageSettingsScreen} from '../Screens/Settings/Content/ImageSettingsScreen.tsx';
 import {PersonalEventScreen} from '../Screens/PersonalEvent/PersonalEventScreen.tsx';
@@ -65,7 +65,7 @@ import {LfgHelpScreen} from '../Screens/LFG/LfgHelpScreen.tsx';
 import {MainTimeZoneScreen} from '../Screens/Main/MainTimeZoneScreen.tsx';
 import {TimeZoneHelpScreen} from '../Screens/Main/TimeZoneHelpScreen.tsx';
 import {FezChatScreen} from '../Screens/Fez/FezChatScreen.tsx';
-import {FezType} from '../../libraries/Enums/FezType.ts';
+import {FezType} from '../../Libraries/Enums/FezType.ts';
 import {ScheduleImportScreen} from '../Screens/Schedule/ScheduleImportScreen.tsx';
 import {EventSearchScreen} from '../Screens/Event/EventSearchScreen.tsx';
 import {EventAddPerformerScreen} from '../Screens/Event/EventAddPerformerScreen.tsx';
@@ -76,7 +76,7 @@ import {EventSettingsScreen} from '../Screens/Event/EventSettingsScreen.tsx';
 import {ScheduleDayScreen} from '../Screens/Schedule/ScheduleDayScreen.tsx';
 import {SchedulePrivateEventsScreen} from '../Screens/Schedule/SchedulePrivateEventsScreen.tsx';
 import {useDrawer} from '../Context/Contexts/DrawerContext.ts';
-import {ParamsWithOobe} from '../../libraries/Types';
+import {ParamsWithOobe} from '../../Libraries/Types/index.ts';
 
 /**
  * The "Common Screens" pattern was adopted from

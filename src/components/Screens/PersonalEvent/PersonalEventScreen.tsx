@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderEditButton} from '../../Buttons/HeaderButtons/HeaderEditButton.tsx';
@@ -11,8 +11,8 @@ import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {ScheduleItemScreenBase} from '../Schedule/ScheduleItemScreenBase.tsx';
 import notifee from '@notifee/react-native';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
-import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;

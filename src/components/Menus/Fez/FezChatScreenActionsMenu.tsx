@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
-import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {PostAsModeratorMenuItem} from '../Items/PostAsModeratorMenuItem.tsx';
@@ -11,7 +11,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';
 import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface FezChatActionsMenuProps {

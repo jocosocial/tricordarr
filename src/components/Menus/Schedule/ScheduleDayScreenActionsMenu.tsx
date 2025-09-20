@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
 import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 import {ReloadMenuItem} from '../Items/ReloadMenuItem.tsx';

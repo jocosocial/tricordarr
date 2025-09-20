@@ -1,6 +1,6 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 

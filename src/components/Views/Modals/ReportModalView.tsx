@@ -8,12 +8,12 @@ import {
   PostData,
   ProfilePublicData,
   ReportData,
-} from '../../../libraries/Structs/ControllerStructs';
-import {ReportContentForm} from '../../Forms/ReportContentForm';
+} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ReportContentForm} from '../../Forms/ReportContentForm.tsx';
 import {useReportMutation} from '../../Queries/Moderation/ModerationMutations.ts';
-import {ReportContentType} from '../../../libraries/Enums/ReportContentType';
-import {ReportModalSuccessView} from './ReportModalSuccessView';
-import {ReportModalErrorView} from './ReportModalErrorView';
+import {ReportContentType} from '../../../Libraries/Enums/ReportContentType.ts';
+import {ReportModalSuccessView} from './ReportModalSuccessView.tsx';
+import {ReportModalErrorView} from './ReportModalErrorView.tsx';
 
 interface ReportModalViewProps {
   profile?: ProfilePublicData;

@@ -1,9 +1,9 @@
 import {Formik, FormikHelpers} from 'formik';
 import {PickerField} from '../Fields/PickerField.tsx';
 import React from 'react';
-import {PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
+import {PhotostreamCreateFormValues} from '../../../Libraries/Types/FormValues.ts';
 import * as Yup from 'yup';
-import {EventData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';

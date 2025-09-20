@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 

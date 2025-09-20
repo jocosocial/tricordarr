@@ -1,14 +1,14 @@
-import {ServerUrlFormValues} from '../../../libraries/Types/FormValues.ts';
+import {ServerUrlFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
-import {ServerURLValidation} from '../../../libraries/ValidationSchema.ts';
+import {ServerURLValidation} from '../../../Libraries/ValidationSchema.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import React from 'react';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {View} from 'react-native';
 import {PickerField} from '../Fields/PickerField.tsx';
 import {TextField} from '../Fields/TextField.tsx';
-import {ServerChoices, ServerUrlChoice} from '../../../libraries/Network/ServerChoices.ts';
+import {ServerChoices, ServerUrlChoice} from '../../../Libraries/Network/ServerChoices.ts';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface ServerUrlFormProps {

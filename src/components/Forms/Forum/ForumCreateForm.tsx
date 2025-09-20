@@ -3,11 +3,11 @@ import {Formik, FormikHelpers, FormikProps, useFormikContext} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import * as Yup from 'yup';
 import {TextField} from '../Fields/TextField.tsx';
-import {InfoStringValidation} from '../../../libraries/ValidationSchema.ts';
-import {ForumThreadValues} from '../../../libraries/Types/FormValues.ts';
+import {InfoStringValidation} from '../../../Libraries/ValidationSchema.ts';
+import {ForumThreadValues} from '../../../Libraries/Types/FormValues.ts';
 import {BooleanField} from '../Fields/BooleanField.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface ForumCreateFormProps {

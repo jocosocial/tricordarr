@@ -1,11 +1,11 @@
-import {PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PerformerUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {
   InfoStringValidation,
   OptionalBioStringValidation,
   OptionalURLValidation,
-} from '../../../libraries/ValidationSchema.ts';
+} from '../../../Libraries/ValidationSchema.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {StyleSheet, View} from 'react-native';
 import React from 'react';

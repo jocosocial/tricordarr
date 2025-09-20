@@ -7,13 +7,13 @@ import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {APIImage} from '../../Images/APIImage.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {LinkIconButton} from '../../Buttons/IconButtons/LinkIconButton.tsx';
 import {PerformerYearsCard} from '../../Cards/Performer/PerformerYearsCard.tsx';
 import {PerformerBioCard} from '../../Cards/Performer/PerformerBioCard.tsx';
 import {EventCard} from '../../Cards/Schedule/EventCard.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {PerformerData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 
 interface PerformerScreenBaseProps {

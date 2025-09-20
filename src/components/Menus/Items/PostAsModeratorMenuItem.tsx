@@ -1,4 +1,4 @@
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import * as React from 'react';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';

@@ -1,5 +1,5 @@
 import React from 'react';
-import {SnackBarBase, SnackBarBaseProps} from './SnackBarBase';
+import {SnackBarBase, SnackBarBaseProps} from './SnackBarBase.tsx';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 

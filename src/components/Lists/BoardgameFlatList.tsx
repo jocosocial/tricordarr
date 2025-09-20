@@ -4,7 +4,7 @@ import {Divider} from 'react-native-paper';
 import {EndResultsFooter} from './Footers/EndResultsFooter.tsx';
 import {NoResultsFooter} from './Footers/NoResultsFooter.tsx';
 import {BoardgameListItem} from './Items/BoardgameListItem.tsx';
-import {BoardgameData} from '../../libraries/Structs/ControllerStructs.tsx';
+import {BoardgameData} from '../../Libraries/Structs/ControllerStructs.tsx';
 import {LoadingNextFooter} from './Footers/LoadingNextFooter.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {AppFlashList} from './AppFlashList.tsx';

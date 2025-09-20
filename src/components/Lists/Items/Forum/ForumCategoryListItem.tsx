@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {CategoryData} from '../../../../libraries/Structs/ControllerStructs';
+import {CategoryData} from '../../../../Libraries/Structs/ControllerStructs';
 import {ForumStackComponents, useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';
 import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
 

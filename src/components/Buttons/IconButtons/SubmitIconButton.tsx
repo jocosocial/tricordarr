@@ -1,9 +1,9 @@
 import React from 'react';
 import {IconButton} from 'react-native-paper';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ActivityIndicator} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 

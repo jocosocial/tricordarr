@@ -1,5 +1,5 @@
 import {useTokenAuthPaginationQuery} from '../TokenAuthQuery';
-import {ForumSearchData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumSearchData} from '../../../Libraries/Structs/ControllerStructs';
 
 export interface ForumRelationQueryParams {
   start?: number;

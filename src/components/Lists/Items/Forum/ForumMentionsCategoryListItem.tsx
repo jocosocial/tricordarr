@@ -2,7 +2,7 @@ import {ForumNewBadge} from '../../../Badges/ForumNewBadge';
 import {ForumCategoryListItemBase} from './ForumCategoryListItemBase';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {commonStyles} from '../../../../styles';
+import {commonStyles} from '../../../../Styles';
 import {Text} from 'react-native-paper';
 import pluralize from 'pluralize';
 import {ForumStackComponents, useForumStackNavigation} from '../../../Navigation/Stacks/ForumStackNavigator';

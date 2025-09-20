@@ -4,12 +4,12 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {DataFieldListItem} from '../../Lists/Items/DataFieldListItem.tsx';
-import {BoardgameData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {BoardgameData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {decode} from 'html-entities';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useBoardgameQuery} from '../../Queries/Boardgames/BoardgameQueries.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {useBoardgameFavoriteMutation} from '../../Queries/Boardgames/BoardgameMutations.ts';

@@ -2,8 +2,8 @@ import {useEffect} from 'react';
 import {Linking} from 'react-native';
 import notifee, {Event, EventType} from '@notifee/react-native';
 import {useLinkTo} from '@react-navigation/native';
-import {getUrlForNotificationEvent} from '../../libraries/Notifications/SocketNotification';
-import {PressAction} from '../../libraries/Enums/Notifications.ts';
+import {getUrlForNotificationEvent} from '../../Libraries/Notifications/SocketNotification.ts';
+import {PressAction} from '../../Libraries/Enums/Notifications.ts';
 import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
 

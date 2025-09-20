@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
-import {useDrawer} from '../Context/Contexts/DrawerContext';
+import {useDrawer} from '../Context/Contexts/DrawerContext.ts';
 import {PropsWithChildren} from 'react';
 import {Linking, ScrollView} from 'react-native';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
-import {useAuth} from '../Context/Contexts/AuthContext';
-import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
+import {useAuth} from '../Context/Contexts/AuthContext.ts';
+import {useUserNotificationDataQuery} from '../Queries/Alert/NotificationQueries.ts';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {StyleSheet} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';

@@ -2,11 +2,11 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import React, {useEffect} from 'react';
-import {SegmentedButtonType} from '../../../libraries/Types';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {SegmentedButtonType} from '../../../Libraries/Types/index.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useIsFocused} from '@react-navigation/native';
-import {useAppTheme} from '../../../styles/Theme.ts';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {ForumListDataSelectionActions} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 

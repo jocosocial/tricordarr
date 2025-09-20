@@ -4,9 +4,9 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {CruiseSettingsFormValues} from '../../../libraries/Types/FormValues.ts';
+import {CruiseSettingsFormValues} from '../../../Libraries/Types/FormValues.ts';
 import * as Yup from 'yup';
-import {DateValidation, NumberValidation} from '../../../libraries/ValidationSchema.ts';
+import {DateValidation, NumberValidation} from '../../../Libraries/ValidationSchema.ts';
 import {DatePickerField} from '../Fields/DatePickerField.tsx';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 

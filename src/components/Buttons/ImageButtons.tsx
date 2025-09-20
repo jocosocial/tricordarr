@@ -1,6 +1,6 @@
 import React from 'react';
 import {IconButton} from 'react-native-paper';
-import {AppIcons} from '../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 

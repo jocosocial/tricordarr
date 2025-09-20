@@ -1,9 +1,9 @@
 import {HelperText, Text} from 'react-native-paper';
-import {PaddedContentView} from '../Content/PaddedContentView';
+import {PaddedContentView} from '../Content/PaddedContentView.tsx';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useAppTheme} from '../../../styles/Theme';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {useAppState} from '@react-native-community/hooks';
 // @ts-ignore
 import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';

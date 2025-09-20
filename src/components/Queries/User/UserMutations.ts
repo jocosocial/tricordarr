@@ -5,9 +5,9 @@ import {
   UserCreateData,
   UserPasswordData,
   UserUsernameData,
-} from '../../../libraries/Structs/ControllerStructs.tsx';
+} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
-import {KeywordAction, KeywordType} from '../../../libraries/Types';
+import {KeywordAction, KeywordType} from '../../../Libraries/Types/index.ts';
 
 interface KeywordMutationProps {
   action: KeywordAction;

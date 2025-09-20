@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {SettingFormValues} from '../../../libraries/Types/FormValues.ts';
+import {SettingFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {TextField} from '../Fields/TextField.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ProfilePublicData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {useUserFavoriteMutation} from '../../Queries/Users/UserFavoriteMutations.ts';
 import {HeaderFavoriteButton} from './HeaderFavoriteButton.tsx';

@@ -4,7 +4,7 @@ import {Button} from 'react-native-paper';
 import {useField, useFormikContext} from 'formik';
 import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import {format} from 'date-fns';
 
 interface TimePickerFieldProps {

@@ -3,11 +3,11 @@ import React, {ReactElement, useCallback} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {TimeDivider} from '../Dividers/TimeDivider.tsx';
 import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
-import {getDayMarker, getTimeMarker} from '../../../libraries/DateTime.ts';
-import {EventData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {getDayMarker, getTimeMarker} from '../../../Libraries/DateTime.ts';
+import {EventData, FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
-import {getScheduleListTimeSeparatorID} from '../../../libraries/Schedule.ts';
-import {styleDefaults} from '../../../styles';
+import {getScheduleListTimeSeparatorID} from '../../../Libraries/Schedule.ts';
+import {styleDefaults} from '../../../Styles/index.ts';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';
 
 interface ScheduleFlatListBaseProps<TItem> {

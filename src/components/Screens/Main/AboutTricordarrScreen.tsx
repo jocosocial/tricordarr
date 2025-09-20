@@ -1,9 +1,9 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {Card, DataTable, Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 // @ts-ignore
 import grant from '../../../../assets/contributors/grant.jpg';
 // @ts-ignore
@@ -12,8 +12,8 @@ import hendu from '../../../../assets/contributors/hendu.jpg';
 import cfry from '../../../../assets/contributors/cfry.jpg';
 // @ts-ignore
 import tricordarr from '../../../../assets/PlayStore/tricordarr.jpg';
-import {ContributorCard} from '../../Cards/ContributorCard';
-import {HyperlinkText} from '../../Text/HyperlinkText';
+import {ContributorCard} from '../../Cards/ContributorCard.tsx';
+import {HyperlinkText} from '../../Text/HyperlinkText.tsx';
 import {Image, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {OobeNoteCard} from '../../Cards/OobeNoteCard.tsx';

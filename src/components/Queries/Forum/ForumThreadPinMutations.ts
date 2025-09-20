@@ -1,4 +1,4 @@
-import {useTokenAuthMutation} from '../TokenAuthMutation';
+import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ForumPinHandlerProps {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {ReactNode, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {ProfilePublicData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {MuteUserModalView} from '../../Views/Modals/MuteUserModalView.tsx';

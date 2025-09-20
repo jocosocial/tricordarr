@@ -1,15 +1,15 @@
 import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag';
-import {ForumData, PostData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {ContentText} from '../../Text/ContentText';
-import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu';
-import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useAppTheme} from '../../../styles/Theme';
-import {UserBylineTag} from '../../Text/Tags/UserBylineTag';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
+import {ForumData, PostData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ContentText} from '../../Text/ContentText.tsx';
+import {ForumPostActionsMenu} from '../../Menus/Forum/ForumPostActionsMenu.tsx';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {UserBylineTag} from '../../Text/Tags/UserBylineTag.tsx';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useUserFavoritesQuery} from '../../Queries/Users/UserFavoriteQueries.ts';
 

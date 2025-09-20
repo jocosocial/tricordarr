@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {ForumFilter} from '../../../libraries/Enums/ForumSortFilter';
-import {useFilter} from '../../Context/Contexts/FilterContext';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {ForumFilter} from '../../../Libraries/Enums/ForumSortFilter.ts';
+import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';

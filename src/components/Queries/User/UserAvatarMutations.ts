@@ -1,5 +1,5 @@
-import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {ImageUploadData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
+import {ImageUploadData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 export const useUserAvatarMutation = () => {

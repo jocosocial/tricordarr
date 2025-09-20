@@ -5,7 +5,7 @@ import {AppView} from '../AppView';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {ScrollingContentView} from '../Content/ScrollingContentView';
 import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 
 interface ErrorViewProps {
   refreshing: boolean;

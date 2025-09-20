@@ -1,4 +1,4 @@
-import {TimeZoneChangeData} from '../../../libraries/Structs/ControllerStructs';
+import {TimeZoneChangeData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useOpenQuery} from '../OpenQuery.ts';
 
 export const useTimeZoneChangesQuery = () => {

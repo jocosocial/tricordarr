@@ -1,7 +1,7 @@
 import React from 'react';
 import {List} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {Avatar} from 'react-native-paper';
 
 interface FezParticipantAddItemProps {

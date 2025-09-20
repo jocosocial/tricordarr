@@ -1,5 +1,5 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Divider, Menu} from 'react-native-paper';
 import React from 'react';
 import {useState} from 'react';

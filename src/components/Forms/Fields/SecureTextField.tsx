@@ -1,5 +1,5 @@
 import {TextInput} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {TextField} from './TextField.tsx';
 import React from 'react';
 

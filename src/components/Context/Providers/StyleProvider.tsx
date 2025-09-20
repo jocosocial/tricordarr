@@ -1,7 +1,7 @@
 import React, {PropsWithChildren} from 'react';
 import {StyleContext} from '../Contexts/StyleContext';
-import {useAppTheme} from '../../../styles/Theme';
-import {commonStyles, styleDefaults} from '../../../styles';
+import {useAppTheme} from '../../../Styles/Theme';
+import {commonStyles, styleDefaults} from '../../../Styles';
 import {StyleSheet} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';

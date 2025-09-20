@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Keyboard, RefreshControl, View} from 'react-native';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {CategoryData, ForumListData} from '../../libraries/Structs/ControllerStructs';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {CategoryData, ForumListData} from '../../Libraries/Structs/ControllerStructs.tsx';
 import {useForumSearchQuery} from '../Queries/Forum/ForumThreadSearchQueries.ts';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList';
-import {useFilter} from '../Context/Contexts/FilterContext';
-import {ForumSort} from '../../libraries/Enums/ForumSortFilter';
-import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu';
+import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton.tsx';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {ForumThreadFlatList} from '../Lists/Forums/ForumThreadFlatList.tsx';
+import {useFilter} from '../Context/Contexts/FilterContext.ts';
+import {ForumSort} from '../../Libraries/Enums/ForumSortFilter.ts';
+import {ForumThreadScreenSortMenu} from '../Menus/Forum/ForumThreadScreenSortMenu.tsx';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 import {SearchBarBase} from './SearchBarBase.tsx';
 

@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {PrivilegeContext} from '../Contexts/PrivilegeContext';
-import {PrivilegedUserAccounts, UserAccessLevel} from '../../../libraries/Enums/UserAccessLevel';
+import {PrivilegedUserAccounts, UserAccessLevel} from '../../../Libraries/Enums/UserAccessLevel';
 import {useAuth} from '../Contexts/AuthContext';
 
 /**

@@ -1,4 +1,4 @@
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useReducer} from 'react';
 
 export enum ForumListDataSelectionActions {

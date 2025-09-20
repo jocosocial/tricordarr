@@ -5,14 +5,14 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {PersonalEventForm} from '../../Forms/PersonalEventForm.tsx';
-import {FezFormValues} from '../../../libraries/Types/FormValues.ts';
+import {FezFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {addMinutes, differenceInMinutes} from 'date-fns';
-import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../libraries/DateTime.ts';
+import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '../../../Libraries/DateTime.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
-import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useFezUpdateMutation} from '../../Queries/Fez/FezMutations.ts';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventEditScreen>;

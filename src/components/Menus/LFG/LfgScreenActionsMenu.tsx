@@ -1,14 +1,14 @@
 import React, {ReactNode, useState} from 'react';
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
-import {ReportModalView} from '../../Views/Modals/ReportModalView';
-import {useModal} from '../../Context/Contexts/ModalContext';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {FezCancelModal} from '../../Views/Modals/FezCancelModal.tsx';
-import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {useLFGStackNavigation} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 

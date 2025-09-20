@@ -1,12 +1,12 @@
-import {EventData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import React from 'react';
-import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem';
+import {EventDownloadMenuItem} from './Items/EventDownloadMenuItem.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
-import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {EventType} from '../../../Libraries/Enums/EventType.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 

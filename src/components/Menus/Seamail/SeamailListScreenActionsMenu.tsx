@@ -1,5 +1,5 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Menu} from 'react-native-paper';
 import * as React from 'react';
 import {ChatStackScreenComponents, useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';

@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../../Libraries/Structs/ControllerStructs';
 import {UserAvatarImage} from '../../../Images/UserAvatarImage';
 import {MessageViewContainer} from '../../../Views/MessageViewContainer';
 import {MessageAvatarContainerView} from '../../../Views/MessageAvatarContainerView';

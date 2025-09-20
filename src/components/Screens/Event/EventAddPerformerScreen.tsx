@@ -10,7 +10,7 @@ import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx
 import {RefreshControl} from 'react-native';
 import {PerformerProfileWarningView} from '../../Views/Warnings/PerformerProfileWarningView.tsx';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';
 import {PerformerProfileDeleteModalView} from '../../Views/Modals/PerformerProfileDeleteModalView.tsx';
 import {useEventQuery} from '../../Queries/Events/EventQueries.ts';
@@ -18,7 +18,7 @@ import {
   usePerformerUpsertMutation,
   usePerformerDeleteForEventMutation,
 } from '../../Queries/Performer/PerformerMutations.ts';
-import {EventData, PerformerData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useQueryClient} from '@tanstack/react-query';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 

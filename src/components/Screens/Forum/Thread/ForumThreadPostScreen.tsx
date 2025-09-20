@@ -1,9 +1,9 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
-import {ForumThreadScreenBase} from './ForumThreadScreenBase';
+import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens.tsx';
+import {ForumThreadScreenBase} from './ForumThreadScreenBase.tsx';
 import {View, StyleSheet} from 'react-native';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
 import {Button, Text} from 'react-native-paper';
 import {useForumThreadQuery} from '../../../Queries/Forum/ForumThreadQueries.ts';
 

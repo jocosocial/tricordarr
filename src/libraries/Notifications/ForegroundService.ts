@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import {serviceChannel} from './Channels';
-import {twitarrErrorColor, twitarrPrimaryColor} from '../../styles/Theme';
+import {twitarrErrorColor, twitarrPrimaryColor} from '../../Styles/Theme';
 import {fgsWorkerNotificationIDs, PressAction} from '../Enums/Notifications';
 
 export async function generateForegroundServiceNotification(

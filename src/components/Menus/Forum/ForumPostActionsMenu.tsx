@@ -1,16 +1,16 @@
 import React, {ReactNode} from 'react';
-import {ForumData, PostData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem';
-import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem';
-import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem';
-import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem';
-import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem';
-import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem';
-import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {ForumPostActionsFavoriteItem} from './Items/ForumPostActionsFavoriteItem.tsx';
+import {ForumPostActionsReactionItem} from './Items/ForumPostActionsReactionItem.tsx';
+import {ForumPostActionsReportItem} from './Items/ForumPostActionsReportItem.tsx';
+import {ForumPostActionsModerateItem} from './Items/ForumPostActionsModerateItem.tsx';
+import {ForumPostActionsDeleteItem} from './Items/ForumPostActionsDeleteItem.tsx';
+import {ForumPostActionsShowThreadItem} from './Items/ForumPostActionsShowThreadItem.tsx';
+import {ForumPostActionsPinItem} from './Items/ForumPostActionsPinItem.tsx';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface ForumPostActionsMenuProps {

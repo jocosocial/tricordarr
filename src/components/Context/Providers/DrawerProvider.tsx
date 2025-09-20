@@ -2,10 +2,10 @@ import React, {PropsWithChildren, useCallback} from 'react';
 import {DrawerContext} from '../Contexts/DrawerContext';
 import {AppDrawer} from '../../Drawers/AppDrawer';
 import {View} from 'react-native';
-import {commonStyles} from '../../../styles';
+import {commonStyles} from '../../../Styles';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 
 export const DrawerProvider = ({children}: PropsWithChildren) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);

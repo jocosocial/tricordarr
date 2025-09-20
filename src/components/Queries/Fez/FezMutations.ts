@@ -1,7 +1,7 @@
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
-import {FezContentData, FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezContentData, FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
-import {WithFezID} from '../../../libraries/Types';
+import {WithFezID} from '../../../Libraries/Types/index.ts';
 
 interface FezCreateMutationProps {
   fezContentData: FezContentData;

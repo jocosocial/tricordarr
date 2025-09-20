@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {useEventsQuery} from '../Queries/Events/EventQueries.ts';
-import {EventData} from '../../libraries/Structs/ControllerStructs';
-import {TimeDivider} from '../Lists/Dividers/TimeDivider';
+import {EventData} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {TimeDivider} from '../Lists/Dividers/TimeDivider.tsx';
 import {ScheduleFlatList} from '../Lists/Schedule/ScheduleFlatList.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {SearchBarBase} from './SearchBarBase.tsx';

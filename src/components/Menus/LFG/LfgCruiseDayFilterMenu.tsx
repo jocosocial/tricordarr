@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useCruise} from '../../Context/Contexts/CruiseContext';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {format} from 'date-fns';
-import {useFilter} from '../../Context/Contexts/FilterContext';
+import {useFilter} from '../../Context/Contexts/FilterContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';

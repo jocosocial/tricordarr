@@ -1,14 +1,14 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
-import {UserSearchBar} from '../../Search/UserSearchBar';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
+import {UserSearchBar} from '../../Search/UserSearchBar.tsx';
 import {useFezParticipantMutation} from '../../Queries/Fez/Management/FezManagementUserMutations.ts';
-import {LoadingView} from '../../Views/Static/LoadingView';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {RefreshControl} from 'react-native';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {useFezQuery} from '../../Queries/Fez/FezQueries.ts';
 import {useQueryClient} from '@tanstack/react-query';
 

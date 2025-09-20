@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {PerformerHeaderData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PerformerHeaderData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {Card, Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';

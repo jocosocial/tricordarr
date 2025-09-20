@@ -1,7 +1,7 @@
 import {Text} from 'react-native-paper';
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {BoldText} from '../Text/BoldText.tsx';
 import {MD3TypescaleKey} from 'react-native-paper/src/types.tsx';
 

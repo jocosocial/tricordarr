@@ -2,13 +2,13 @@ import React from 'react';
 import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {UserProfileFormValues} from '../../../libraries/Types/FormValues.ts';
+import {UserProfileFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
 import {TextField} from '../Fields/TextField.tsx';
-import {EmailValidation, RoomNumberValidation} from '../../../libraries/ValidationSchema.ts';
+import {EmailValidation, RoomNumberValidation} from '../../../Libraries/ValidationSchema.ts';
 import {PickerField} from '../Fields/PickerField.tsx';
-import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam.ts';
+import {DinnerTeam} from '../../../Libraries/Enums/DinnerTeam.ts';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface UserProfileFormProps {

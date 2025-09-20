@@ -1,8 +1,8 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView';
-import {ForumPostSearchBar} from '../../../Search/ForumPostSearchBar';
+import {AppView} from '../../../Views/AppView.tsx';
+import {ForumPostSearchBar} from '../../../Search/ForumPostSearchBar.tsx';
 import {useUserFavoritesQuery} from '../../../Queries/Users/UserFavoriteQueries.ts';
-import {LoadingView} from '../../../Views/Static/LoadingView';
+import {LoadingView} from '../../../Views/Static/LoadingView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ListTitleView} from '../../../Views/ListTitleView.tsx';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens.tsx';

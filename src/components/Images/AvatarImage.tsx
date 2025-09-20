@@ -1,10 +1,10 @@
 import React from 'react';
 import {Avatar} from 'react-native-paper';
-import {styleDefaults} from '../../styles';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {styleDefaults} from '../../Styles';
+import {AppIcons} from '../../Libraries/Enums/Icons';
 import {useImageQuery} from '../Queries/ImageQuery';
 import {useFeature} from '../Context/Contexts/FeatureContext';
-import {SwiftarrFeature} from '../../libraries/Enums/AppFeatures';
+import {SwiftarrFeature} from '../../Libraries/Enums/AppFeatures';
 
 type AvatarImageProps = {
   imageName: string;

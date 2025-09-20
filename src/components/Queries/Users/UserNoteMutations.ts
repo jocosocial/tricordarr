@@ -1,5 +1,5 @@
-import {useTokenAuthMutation} from '../TokenAuthMutation';
-import {NoteCreateData, NoteData} from '../../../libraries/Structs/ControllerStructs';
+import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
+import {NoteCreateData, NoteData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface UserNoteCreateMutationProps {

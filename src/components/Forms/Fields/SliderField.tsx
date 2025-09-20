@@ -4,7 +4,7 @@ import Slider from '@react-native-community/slider';
 import {HelperText, Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {StyleProp, View, ViewStyle} from 'react-native';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import pluralize from 'pluralize';
 
 interface SliderFieldProps {

@@ -2,9 +2,9 @@ import React from 'react';
 import {Card, List} from 'react-native-paper';
 import {ListSection} from '../../Lists/ListSection';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {ProfilePublicData} from '../../../libraries/Structs/ControllerStructs';
+import {ProfilePublicData} from '../../../Libraries/Structs/ControllerStructs';
 import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
 

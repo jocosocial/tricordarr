@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator';
+import {LfgStackComponents, useLFGStackNavigation, useLFGStackRoute} from '../../Navigation/Stacks/LFGStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 

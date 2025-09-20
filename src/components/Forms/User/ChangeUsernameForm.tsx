@@ -3,12 +3,12 @@ import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {ChangeUsernameFormValues} from '../../../libraries/Types/FormValues.ts';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {ChangeUsernameFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
 import {TextField} from '../Fields/TextField.tsx';
-import {UsernameValidation} from '../../../libraries/ValidationSchema.ts';
+import {UsernameValidation} from '../../../Libraries/ValidationSchema.ts';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 
 interface ChangeUsernameFormProps {

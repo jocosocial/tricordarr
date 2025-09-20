@@ -1,11 +1,11 @@
-import {UserAvatarImage} from '../Images/UserAvatarImage';
+import {UserAvatarImage} from '../Images/UserAvatarImage.tsx';
 import {Divider, Menu} from 'react-native-paper';
 import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useAuth} from '../Context/Contexts/AuthContext';
-import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator';
-import {CommonStackComponents} from '../Navigation/CommonScreens';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {useAuth} from '../Context/Contexts/AuthContext.ts';
+import {MainStackComponents, useMainStack} from '../Navigation/Stacks/MainStackNavigator.tsx';
+import {CommonStackComponents} from '../Navigation/CommonScreens.tsx';
 import {SettingsStackScreenComponents} from '../Navigation/Stacks/SettingsStackNavigator.tsx';
 import {AppHeaderMenu} from './AppHeaderMenu.tsx';
 import {useUserProfileQuery} from '../Queries/User/UserQueries.ts';

@@ -1,10 +1,10 @@
-import {CruiseDayData} from '../../libraries/Types';
+import {CruiseDayData} from '../../Libraries/Types/index.ts';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {format} from 'date-fns';
 import {Text} from 'react-native-paper';
-import {useAppTheme} from '../../styles/Theme.ts';
+import {useAppTheme} from '../../Styles/Theme.ts';
 import {useCruise} from '../Context/Contexts/CruiseContext.ts';
 
 interface ScheduleHeaderDayViewProps {

@@ -15,7 +15,7 @@ import HappyHourImage from '../../../../assets/mainview_happy.jpg';
 import {useCruise} from '../../Context/Contexts/CruiseContext';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {AppImageViewer} from '../../Images/AppImageViewer';
-import {ImageQueryData} from '../../../libraries/Types';
+import {ImageQueryData} from '../../../Libraries/Types';
 import {encode as base64_encode} from 'base-64';
 
 /**

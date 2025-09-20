@@ -1,9 +1,9 @@
 import {MaterialHeaderButton} from '../MaterialHeaderButton.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import React, {Dispatch, SetStateAction} from 'react';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useForumRelationMutation} from '../../Queries/Forum/ForumThreadRelationMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';

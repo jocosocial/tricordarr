@@ -10,7 +10,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {PerformerScreenBase} from './PerformerScreenBase.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 
 type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 

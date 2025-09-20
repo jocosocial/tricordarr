@@ -1,6 +1,6 @@
 import React from 'react';
 import {EventCardMarkerView} from './EventCardMarkerView';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 
 export const EventCardNowView = () => {
   const theme = useAppTheme();

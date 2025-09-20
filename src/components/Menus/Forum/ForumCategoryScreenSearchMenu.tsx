@@ -2,9 +2,9 @@ import React from 'react';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {ForumStackComponents, useForumStackNavigation} from '../../Navigation/Stacks/ForumStackNavigator.tsx';
-import {CategoryData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {CategoryData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 interface ForumCategoryScreenSearchMenuProps {

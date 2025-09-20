@@ -1,8 +1,8 @@
 import {Card, Text} from 'react-native-paper';
 import React from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
-import {getDayMarker} from '../../libraries/DateTime.ts';
+import {getDayMarker} from '../../Libraries/DateTime.ts';
 import {Image} from 'react-native';
 // @ts-ignore
 import preregistration from '../../../assets/preregistration.jpg';

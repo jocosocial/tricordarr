@@ -3,7 +3,7 @@ import {ContentPostMentionSuggestionsView} from '../../Views/Content/ContentPost
 import {MentionInput} from 'react-native-controlled-mentions';
 import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 interface MentionTextFieldProps {
   name: string;

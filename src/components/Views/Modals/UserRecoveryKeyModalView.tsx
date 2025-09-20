@@ -2,7 +2,7 @@ import React from 'react';
 import {TextStyle, View} from 'react-native';
 import {ModalCard} from '../../Cards/ModalCard';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import {Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import Clipboard from '@react-native-clipboard/clipboard';

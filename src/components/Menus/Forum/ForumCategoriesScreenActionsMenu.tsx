@@ -1,8 +1,8 @@
 import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Item} from 'react-navigation-header-buttons';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 
 export const ForumCategoriesScreenActionsMenu = () => {

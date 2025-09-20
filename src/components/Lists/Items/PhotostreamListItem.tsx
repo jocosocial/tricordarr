@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {PhotostreamImageData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PhotostreamImageData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {APIImage} from '../../Images/APIImage.tsx';
 import {View} from 'react-native';
 import {PhotostreamImageHeaderView} from '../../Views/Photostream/PhotostreamImageHeaderView.tsx';

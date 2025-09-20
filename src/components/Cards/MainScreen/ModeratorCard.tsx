@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import pluralize from 'pluralize';
 import {View} from 'react-native';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';

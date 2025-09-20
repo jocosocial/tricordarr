@@ -1,10 +1,10 @@
 import React from 'react';
 import {Hyperlink} from 'react-native-hyperlink';
-import {useTwitarr} from '../Context/Contexts/TwitarrContext';
+import {useTwitarr} from '../Context/Contexts/TwitarrContext.ts';
 import {ReactElementWithType} from 'react-native-hyperlink/dist/typescript/src/types';
-import {useConfig} from '../Context/Contexts/ConfigContext';
+import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import URLParse from 'url-parse';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
 

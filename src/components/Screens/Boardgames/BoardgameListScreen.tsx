@@ -10,7 +10,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {MenuAnchor} from '../../Menus/MenuAnchor.tsx';
 import {ListTitleView} from '../../Views/ListTitleView.tsx';
 import {BoardgameGuideFAB} from '../../Buttons/FloatingActionButtons/BoardgameGuideFAB.tsx';

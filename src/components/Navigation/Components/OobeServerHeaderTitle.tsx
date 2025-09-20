@@ -1,7 +1,7 @@
 import React from 'react';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {SecretHeaderTitle} from './SecretHeaderTitle';
-import {RootStackComponents, useRootStack} from '../Stacks/RootStackNavigator';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {SecretHeaderTitle} from './SecretHeaderTitle.tsx';
+import {RootStackComponents, useRootStack} from '../Stacks/RootStackNavigator.tsx';
 import {MainStackComponents} from '../Stacks/MainStackNavigator.tsx';
 import {BottomTabComponents} from '../Tabs/BottomTabNavigator.tsx';
 

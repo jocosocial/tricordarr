@@ -1,4 +1,4 @@
-import {CustomEmoji} from '../../libraries/Enums/Emoji';
+import {CustomEmoji} from '../../Libraries/Enums/Emoji';
 import {Image, ImageStyle, StyleProp} from 'react-native';
 import React from 'react';
 import {useStyles} from '../Context/Contexts/StyleContext';

@@ -1,7 +1,7 @@
 import React from 'react';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {FezData, UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {UserListItem} from './UserListItem';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {FezData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {UserListItem} from './UserListItem.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 interface FezParticipantListItemProps {

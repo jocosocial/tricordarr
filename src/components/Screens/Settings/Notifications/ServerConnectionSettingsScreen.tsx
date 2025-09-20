@@ -5,32 +5,32 @@ import {
   getSharedWebSocket,
   startForegroundServiceWorker,
   stopForegroundServiceWorker,
-} from '../../../../libraries/Service';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
-import {AppView} from '../../../Views/AppView';
-import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext';
-import {commonStyles} from '../../../../styles';
+} from '../../../../Libraries/Service.ts';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
+import {AppView} from '../../../Views/AppView.tsx';
+import {useUserNotificationData} from '../../../Context/Contexts/UserNotificationDataContext.ts';
+import {commonStyles} from '../../../../Styles/index.ts';
 import {useBackHandler} from '@react-native-community/hooks';
-import {fgsFailedCounter} from '../../../../libraries/Service';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {fgsFailedCounter} from '../../../../Libraries/Service.ts';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useAppTheme} from '../../../../styles/Theme';
+import {useAppTheme} from '../../../../Styles/Theme.ts';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
 } from '../../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {WebSocketState} from '../../../../libraries/Network/Websockets';
-import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
-import {SocketHealthcheckData} from '../../../../libraries/Structs/SocketStructs';
+import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {WebSocketState} from '../../../../Libraries/Network/Websockets.ts';
+import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
+import {SocketHealthcheckData} from '../../../../Libraries/Structs/SocketStructs.ts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StorageKeys} from '../../../../libraries/Storage';
-import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag';
+import {StorageKeys} from '../../../../Libraries/Storage/index.ts';
+import {RelativeTimeTag} from '../../../Text/Tags/RelativeTimeTag.tsx';
 import {Formik} from 'formik';
-import {BooleanField} from '../../../Forms/Fields/BooleanField';
-import {SliderField} from '../../../Forms/Fields/SliderField';
-import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView';
+import {BooleanField} from '../../../Forms/Fields/BooleanField.tsx';
+import {SliderField} from '../../../Forms/Fields/SliderField.tsx';
+import {BatteryOptimizationSettingsView} from '../../../Views/Settings/BatteryOptimizationSettingsView.tsx';
 import {ListSection} from '../../../Lists/ListSection.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 

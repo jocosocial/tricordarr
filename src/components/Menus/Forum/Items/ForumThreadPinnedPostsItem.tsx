@@ -1,4 +1,4 @@
-import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../../Libraries/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 import React from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

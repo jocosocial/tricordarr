@@ -2,7 +2,7 @@ import {Card, TouchableRipple, Text} from 'react-native-paper';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {Linking, StyleSheet, View} from 'react-native';
 import React from 'react';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {AndroidColor} from '@notifee/react-native';
 

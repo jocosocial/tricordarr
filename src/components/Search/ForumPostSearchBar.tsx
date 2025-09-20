@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
-import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {useErrorHandler} from '../Context/Contexts/ErrorHandlerContext.ts';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {useForumPostSearchQuery} from '../Queries/Forum/ForumPostSearchQueries.ts';
-import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList';
+import {ForumPostFlatList} from '../Lists/Forums/ForumPostFlatList.tsx';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {CategoryData, ForumData, ForumListData, PostData} from '../../libraries/Structs/ControllerStructs';
+import {MaterialHeaderButton} from '../Buttons/MaterialHeaderButton.tsx';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {CategoryData, ForumData, ForumListData, PostData} from '../../Libraries/Structs/ControllerStructs.tsx';
 import {CommonStackComponents, useCommonStack} from '../Navigation/CommonScreens.tsx';
 import {SearchBarBase} from './SearchBarBase.tsx';
 

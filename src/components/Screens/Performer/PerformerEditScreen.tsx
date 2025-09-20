@@ -3,7 +3,7 @@ import {AppView} from '../../Views/AppView.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 import {usePerformerUpsertMutation} from '../../Queries/Performer/PerformerMutations.ts';
-import {EventData, PerformerData, PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, PerformerData, PerformerUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import {useQueryClient} from '@tanstack/react-query';
 import {ShadowPerformerForm} from '../../Forms/Performer/ShadowPerformerForm.tsx';

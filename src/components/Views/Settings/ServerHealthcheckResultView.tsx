@@ -2,9 +2,9 @@ import {Text} from 'react-native-paper';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {useHealthQuery} from '../../Queries/Client/ClientQueries.ts';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 

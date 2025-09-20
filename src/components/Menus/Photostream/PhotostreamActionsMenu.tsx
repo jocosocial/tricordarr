@@ -1,5 +1,5 @@
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';

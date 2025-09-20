@@ -1,4 +1,4 @@
-import {FezType} from '../Enums/FezType';
+import {FezType} from '../Enums/FezType.ts';
 import {EventData, UserHeader} from '../Structs/ControllerStructs.tsx';
 import {ServerUrlChoice} from '../Network/ServerChoices.ts';
 

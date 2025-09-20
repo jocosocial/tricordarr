@@ -1,15 +1,15 @@
 import React from 'react';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
-import {cancelTestNotification, displayTestNotification} from '../../../../libraries/Notifications/TestNotification';
-import {useAppTheme} from '../../../../styles/Theme';
+import {cancelTestNotification, displayTestNotification} from '../../../../Libraries/Notifications/TestNotification';
+import {useAppTheme} from '../../../../Styles/Theme';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
 import {AppView} from '../../../Views/AppView';
 import {useStyles} from '../../../Context/Contexts/StyleContext';
-import {generateContentNotification} from '../../../../libraries/Notifications/Content';
-import {eventChannel} from '../../../../libraries/Notifications/Channels';
-import {NotificationTypeData} from '../../../../libraries/Structs/SocketStructs';
-import {PressAction} from '../../../../libraries/Enums/Notifications';
+import {generateContentNotification} from '../../../../Libraries/Notifications/Content';
+import {eventChannel} from '../../../../Libraries/Notifications/Channels';
+import {NotificationTypeData} from '../../../../Libraries/Structs/SocketStructs';
+import {PressAction} from '../../../../Libraries/Enums/Notifications';
 
 export const TestNotificationScreen = () => {
   const theme = useAppTheme();

@@ -1,4 +1,4 @@
-import {NotificationPollingSettingsFormValues} from '../../../libraries/Types/FormValues.ts';
+import {NotificationPollingSettingsFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {SliderField} from '../Fields/SliderField.tsx';

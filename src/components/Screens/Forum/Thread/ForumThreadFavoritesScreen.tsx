@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator';
+import {ForumStackComponents, ForumStackParamList} from '../../../Navigation/Stacks/ForumStackNavigator.tsx';
 import {View} from 'react-native';
-import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton';
+import {MaterialHeaderButton} from '../../../Buttons/MaterialHeaderButton.tsx';
 import {HeaderButtons} from 'react-navigation-header-buttons';
-import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu';
-import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView';
+import {ForumThreadScreenSortMenu} from '../../../Menus/Forum/ForumThreadScreenSortMenu.tsx';
+import {ForumThreadsRelationsView} from '../../../Views/Forum/ForumThreadsRelationsView.tsx';
 import {ForumRelationQueryType} from '../../../Queries/Forum/ForumThreadRelationQueries.ts';
 import {AppView} from '../../../Views/AppView.tsx';
 

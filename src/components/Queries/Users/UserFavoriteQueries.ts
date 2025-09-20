@@ -1,4 +1,4 @@
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 export const useUserFavoritesQuery = (options = {}) => {

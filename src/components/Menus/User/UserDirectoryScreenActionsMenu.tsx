@@ -1,7 +1,7 @@
 import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';
 

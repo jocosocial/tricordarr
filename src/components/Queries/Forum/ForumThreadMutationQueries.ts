@@ -1,5 +1,5 @@
-import {ForumCreateData, ForumData} from '../../../libraries/Structs/ControllerStructs';
-import {useTokenAuthMutation} from '../TokenAuthMutation';
+import {ForumCreateData, ForumData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ForumCreateMutationProps {

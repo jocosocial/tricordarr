@@ -10,7 +10,7 @@ import {
   addDays,
 } from 'date-fns';
 import {useEffect, useState, useRef} from 'react';
-import {CruiseDayData, CruiseDayTime, StartEndTime} from './Types';
+import {CruiseDayData, CruiseDayTime, StartEndTime} from './Types/index.ts';
 import moment from 'moment-timezone';
 import pluralize from 'pluralize';
 import {StartTime} from './Types/FormValues.ts';

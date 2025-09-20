@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {FAB} from 'react-native-paper';
-import {useAppTheme} from '../../../styles/Theme';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {StyleSheet} from 'react-native';
-import {FabGroupActionType} from '../../../libraries/Types';
+import {FabGroupActionType} from '../../../Libraries/Types/index.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';

@@ -1,6 +1,6 @@
-import {getAuthHeaders} from '../../../libraries/Network/APIClient';
-import {TokenStringData} from '../../../libraries/Structs/ControllerStructs';
-import {useTokenAuthMutation} from '../TokenAuthMutation';
+import {getAuthHeaders} from '../../../Libraries/Network/APIClient.ts';
+import {TokenStringData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthMutation} from '../TokenAuthMutation.ts';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface LoginMutationProps {

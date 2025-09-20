@@ -1,7 +1,7 @@
 import {AppView} from '../../Views/AppView.tsx';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {PerformerType, usePerformersQuery} from '../../Queries/Performer/PerformerQueries.ts';
-import {PerformerHeaderData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PerformerHeaderData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControl, View, StyleSheet} from 'react-native';
 import {AppFlatList} from '../../Lists/AppFlatList.tsx';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';

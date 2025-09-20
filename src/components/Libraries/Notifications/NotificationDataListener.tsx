@@ -1,13 +1,13 @@
-import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext';
+import {useUserNotificationData} from '../../Context/Contexts/UserNotificationDataContext.ts';
 import {useCallback, useEffect} from 'react';
 import {useAppState} from '@react-native-community/hooks';
-import {useSocket} from '../../Context/Contexts/SocketContext';
-import {NotificationTypeData, SocketNotificationData} from '../../../libraries/Structs/SocketStructs';
+import {useSocket} from '../../Context/Contexts/SocketContext.ts';
+import {NotificationTypeData, SocketNotificationData} from '../../../Libraries/Structs/SocketStructs.ts';
 import {useAnnouncementsQuery} from '../../Queries/Alert/AnnouncementQueries.ts';
-import {useAuth} from '../../Context/Contexts/AuthContext';
+import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
-import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 /**

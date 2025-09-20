@@ -1,6 +1,6 @@
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FlatList, RefreshControlProps} from 'react-native';
-import {SeamailListItem} from '../Items/SeamailListItem';
+import {SeamailListItem} from '../Items/SeamailListItem.tsx';
 import React, {useCallback, useRef} from 'react';
 import {Divider} from 'react-native-paper';
 import {EndResultsFooter} from '../Footers/EndResultsFooter.tsx';

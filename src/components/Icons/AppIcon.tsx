@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useAppTheme} from '../../styles/Theme';
+import {useAppTheme} from '../../Styles/Theme';
 import {useStyles} from '../Context/Contexts/StyleContext';
 
 interface AppIconProps {

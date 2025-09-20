@@ -1,15 +1,15 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {AppIcon} from '../../Icons/AppIcon';
+import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {ChatStackNavigator, ChatStackParamList} from '../Stacks/ChatStackNavigator.tsx';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigator';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {MainStackNavigator, MainStackParamList} from '../Stacks/MainStackNavigator.tsx';
 import {ScheduleStackNavigator, ScheduleStackParamList} from '../Stacks/ScheduleStackNavigator.tsx';
-import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator';
-import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator';
-import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries';
+import {LfgStackNavigator, LfgStackParamList} from '../Stacks/LFGStackNavigator.tsx';
+import {ForumStackNavigator, ForumStackParamList} from '../Stacks/ForumStackNavigator.tsx';
+import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 
 function getBadgeDisplayValue(input: number | undefined) {
   if (input === 0) {

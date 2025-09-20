@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {useSnackbar} from '../Context/Contexts/SnackbarContext.ts';
 import {Snackbar, Text} from 'react-native-paper';
-import {useAppTheme} from '../../styles/Theme.ts';
+import {useAppTheme} from '../../Styles/Theme.ts';
 // import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export const AppSnackbar = () => {

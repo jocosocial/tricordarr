@@ -1,4 +1,4 @@
-import {SchedImportFormValues} from '../../libraries/Types/FormValues.ts';
+import {SchedImportFormValues} from '../../Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';

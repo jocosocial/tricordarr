@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {AppView} from '../../../Views/AppView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import {useUserKeywordQuery} from '../../../Queries/User/UserQueries.ts';
 import {RefreshControl, View} from 'react-native';
-import {KeywordChip} from '../../../Chips/KeywordChip';
-import {useStyles} from '../../../Context/Contexts/StyleContext';
+import {KeywordChip} from '../../../Chips/KeywordChip.tsx';
+import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
 import {Text} from 'react-native-paper';
-import {KeywordForm} from '../../../Forms/KeywordForm';
-import {KeywordFormValues} from '../../../../libraries/Types/FormValues';
+import {KeywordForm} from '../../../Forms/KeywordForm.tsx';
+import {KeywordFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
-import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView';
-import {useAuth} from '../../../Context/Contexts/AuthContext';
+import {NotLoggedInView} from '../../../Views/Static/NotLoggedInView.tsx';
+import {useAuth} from '../../../Context/Contexts/AuthContext.ts';
 import {useUserKeywordMutation} from '../../../Queries/User/UserMutations.ts';
 
 export const MuteKeywordsSettingsScreen = () => {

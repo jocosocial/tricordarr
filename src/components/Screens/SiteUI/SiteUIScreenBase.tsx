@@ -4,7 +4,7 @@ import {WebView, WebViewNavigation} from 'react-native-webview';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useBackHandler} from '@react-native-community/hooks';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {useSwiftarrQueryClient} from '../../Context/Contexts/SwiftarrQueryClientContext.ts';

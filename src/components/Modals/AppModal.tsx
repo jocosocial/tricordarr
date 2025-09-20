@@ -1,8 +1,8 @@
 import {Modal} from 'react-native-paper';
 import React from 'react';
 import {useModal} from '../Context/Contexts/ModalContext';
-import {useAppTheme} from '../../styles/Theme';
-import {commonStyles} from '../../styles';
+import {useAppTheme} from '../../Styles/Theme';
+import {commonStyles} from '../../Styles';
 import {KeyboardAvoidingView} from 'react-native';
 import {Dimensions} from 'react-native';
 

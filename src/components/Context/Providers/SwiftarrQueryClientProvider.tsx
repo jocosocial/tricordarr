@@ -1,11 +1,11 @@
 import React, {PropsWithChildren, useCallback, useEffect, useMemo, useState} from 'react';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
-import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../libraries/Network/APIClient';
-import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext';
+import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from '../../../Libraries/Network/APIClient.ts';
+import {SwiftarrQueryClientContext} from '../Contexts/SwiftarrQueryClientContext.ts';
 import {Query, QueryKey} from '@tanstack/react-query';
-import {useConfig} from '../Contexts/ConfigContext';
+import {useConfig} from '../Contexts/ConfigContext.ts';
 import axios, {AxiosRequestConfig, AxiosResponse, isAxiosError} from 'axios';
-import {ErrorResponse} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ErrorResponse} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {useAuth} from '../Contexts/AuthContext.ts';
 import DeviceInfo from 'react-native-device-info';
 import {useSnackbar} from '../Contexts/SnackbarContext.ts';

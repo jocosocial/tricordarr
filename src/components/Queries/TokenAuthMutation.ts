@@ -1,5 +1,5 @@
 import {AxiosError} from 'axios';
-import {ErrorResponse} from '../../libraries/Structs/ControllerStructs';
+import {ErrorResponse} from '../../Libraries/Structs/ControllerStructs.tsx';
 import {MutationFunction} from '@tanstack/query-core';
 import {UseMutationResult} from '@tanstack/react-query';
 import {useMutation, UseMutationOptions} from '@tanstack/react-query';

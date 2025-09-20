@@ -1,10 +1,10 @@
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, TextStyle, StyleSheet} from 'react-native';
 import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 
 interface UserBylineTagProps {

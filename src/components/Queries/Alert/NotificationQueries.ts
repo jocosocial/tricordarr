@@ -1,4 +1,4 @@
-import {UserNotificationData} from '../../../libraries/Structs/ControllerStructs';
+import {UserNotificationData} from '../../../Libraries/Structs/ControllerStructs';
 import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '../TokenAuthQuery';
 
 /**

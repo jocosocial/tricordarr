@@ -1,7 +1,7 @@
-import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../../Libraries/Enums/Icons';
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {PostData} from '../../../../Libraries/Structs/ControllerStructs';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {CommonStackComponents, CommonStackParamList} from '../../../Navigation/CommonScreens';
 

@@ -1,9 +1,9 @@
 import {RefreshControlProps} from 'react-native';
-import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem';
+import {ForumThreadListItem} from '../Items/Forum/ForumThreadListItem.tsx';
 import React, {useCallback, useRef} from 'react';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs';
+import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {Divider} from 'react-native-paper';
-import {SpaceDivider} from '../Dividers/SpaceDivider';
+import {SpaceDivider} from '../Dividers/SpaceDivider.tsx';
 import {useSelection} from '../../Context/Contexts/SelectionContext.ts';
 import {LoadingPreviousHeader} from '../Headers/LoadingPreviousHeader.tsx';
 import {LoadingNextFooter} from '../Footers/LoadingNextFooter.tsx';

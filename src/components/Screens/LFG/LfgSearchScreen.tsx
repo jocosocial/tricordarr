@@ -6,7 +6,7 @@ import {ListTitleView} from '../../Views/ListTitleView.tsx';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {LFGSearchBar} from '../../Search/LFGSearchBar.tsx';
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {FabGroupAction} from './FABGroupAction';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {FabGroupAction} from './FABGroupAction.tsx';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
-import {BaseFABGroup} from './BaseFABGroup';
+import {BaseFABGroup} from './BaseFABGroup.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 interface ScheduleFABProps {

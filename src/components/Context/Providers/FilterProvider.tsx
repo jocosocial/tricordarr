@@ -1,10 +1,10 @@
 import React, {PropsWithChildren, useState} from 'react';
-import {FilterContext} from '../Contexts/FilterContext';
-import {FezType} from '../../../libraries/Enums/FezType';
-import {useConfig} from '../Contexts/ConfigContext';
-import {ForumFilter, ForumSortDirection, ForumSort} from '../../../libraries/Enums/ForumSortFilter';
-import {ScheduleFilterSettings} from '../../../libraries/Types';
-import {EventType} from '../../../libraries/Enums/EventType.ts';
+import {FilterContext} from '../Contexts/FilterContext.ts';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {useConfig} from '../Contexts/ConfigContext.ts';
+import {ForumFilter, ForumSortDirection, ForumSort} from '../../../Libraries/Enums/ForumSortFilter.ts';
+import {ScheduleFilterSettings} from '../../../Libraries/Types/index.ts';
+import {EventType} from '../../../Libraries/Enums/EventType.ts';
 
 export const FilterProvider = ({children}: PropsWithChildren) => {
   const {appConfig} = useConfig();

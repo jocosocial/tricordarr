@@ -1,4 +1,4 @@
-import {BoardgameData, BoardgameResponseData} from '../../../libraries/Structs/ControllerStructs';
+import {BoardgameData, BoardgameResponseData} from '../../../Libraries/Structs/ControllerStructs';
 import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface BoardgamesQueryOptions {

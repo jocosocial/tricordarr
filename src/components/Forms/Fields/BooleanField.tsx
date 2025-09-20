@@ -3,7 +3,7 @@ import {StyleProp, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 import {Field, useField, useFormikContext} from 'formik';
 import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import {AppIcon} from '../../Icons/AppIcon';
 
 interface BooleanFieldProps {

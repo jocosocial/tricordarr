@@ -1,9 +1,9 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {useHelpTextQuery} from '../../Queries/PublicQueries';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {useHelpTextQuery} from '../../Queries/PublicQueries.ts';
 import {RefreshControl} from 'react-native';
-import {LoadingView} from '../../Views/Static/LoadingView';
+import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import {ContentText} from '../../Text/ContentText.tsx';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 

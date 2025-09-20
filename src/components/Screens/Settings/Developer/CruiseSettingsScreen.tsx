@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {AppView} from '../../../Views/AppView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
+import {AppView} from '../../../Views/AppView.tsx';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import {CruiseSettingsForm} from '../../../Forms/Settings/CruiseSettingsForm.tsx';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
-import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '../../../../libraries/Types/FormValues';
+import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
+import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
-import {useAppTheme} from '../../../../styles/Theme.ts';
+import {useAppTheme} from '../../../../Styles/Theme.ts';
 import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
 import {useClientConfigQuery} from '../../../Queries/Client/ClientQueries.ts';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';

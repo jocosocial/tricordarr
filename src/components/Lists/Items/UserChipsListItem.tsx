@@ -1,10 +1,10 @@
 import {List} from 'react-native-paper';
 import React from 'react';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {View, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {UserChip} from '../../Chips/UserChip.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 

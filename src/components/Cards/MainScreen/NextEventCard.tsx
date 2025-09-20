@@ -1,8 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
-import {EventCard} from '../Schedule/EventCard';
+import {EventCard} from '../Schedule/EventCard.tsx';
 import {useEventQuery} from '../../Queries/Events/EventQueries.ts';
-import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens';
+import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 
 export const NextEventCard = ({eventID}: {eventID: string}) => {
   const {data} = useEventQuery({eventID: eventID});

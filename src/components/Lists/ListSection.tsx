@@ -1,7 +1,7 @@
 import React from 'react';
 import {PropsWithChildren} from 'react';
 import {List} from 'react-native-paper';
-import {commonStyles} from '../../styles';
+import {commonStyles} from '../../Styles';
 
 /**
  * Wrapper for a <List.Section>. Exists because the default style has margin

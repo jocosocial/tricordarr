@@ -1,6 +1,6 @@
-import {TwitarrContext} from '../Contexts/TwitarrContext';
+import {TwitarrContext} from '../Contexts/TwitarrContext.ts';
 import React, {PropsWithChildren} from 'react';
-import {useConfig} from '../Contexts/ConfigContext';
+import {useConfig} from '../Contexts/ConfigContext.ts';
 import {Linking} from 'react-native';
 import URLParse from 'url-parse';
 import {useSwiftarrQueryClient} from '../Contexts/SwiftarrQueryClientContext.ts';

@@ -1,6 +1,6 @@
 import {AppView} from '../../Views/AppView.tsx';
 import {BoardgameRecommendationForm} from '../../Forms/BoardgameRecommendationForm.tsx';
-import {BoardgameData, BoardgameRecommendationData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {BoardgameData, BoardgameRecommendationData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
@@ -10,7 +10,7 @@ import {Divider} from 'react-native-paper';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 

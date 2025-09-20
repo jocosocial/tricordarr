@@ -4,7 +4,7 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 import {AppIcon} from '../Icons/AppIcon.tsx';
 import {RectButton} from 'react-native-gesture-handler';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
-import {useAppTheme} from '../../styles/Theme.ts';
+import {useAppTheme} from '../../Styles/Theme.ts';
 
 interface SwipeableButtonProps {
   onPress?: () => void;

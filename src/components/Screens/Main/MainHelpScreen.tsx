@@ -1,11 +1,11 @@
 import React from 'react';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {FAB} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {View} from 'react-native';
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 

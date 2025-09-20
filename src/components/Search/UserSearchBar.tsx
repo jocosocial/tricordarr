@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import {HelperText, Searchbar} from 'react-native-paper';
-import {UserHeader} from '../../libraries/Structs/ControllerStructs';
-import {ListSection} from '../Lists/ListSection';
-import {UserListItem} from '../Lists/Items/UserListItem';
+import {UserHeader} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {ListSection} from '../Lists/ListSection.tsx';
+import {UserListItem} from '../Lists/Items/UserListItem.tsx';
 
 import {useUserMatchQuery} from '../Queries/Users/UsersQueries.ts';
 

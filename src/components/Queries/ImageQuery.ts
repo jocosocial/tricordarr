@@ -1,7 +1,7 @@
-import {useAuth} from '../Context/Contexts/AuthContext';
+import {useAuth} from '../Context/Contexts/AuthContext.ts';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';
 import {useOpenQuery} from './OpenQuery.ts';
-import {ImageQueryData} from '../../libraries/Types';
+import {ImageQueryData} from '../../Libraries/Types/index.ts';
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext.ts';
 

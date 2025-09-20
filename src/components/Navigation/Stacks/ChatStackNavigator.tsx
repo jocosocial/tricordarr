@@ -1,18 +1,18 @@
 import React from 'react';
 import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SeamailListScreen} from '../../Screens/Seamail/SeamailListScreen';
+import {SeamailListScreen} from '../../Screens/Seamail/SeamailListScreen.tsx';
 import {useNavigation} from '@react-navigation/native';
-import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {useStyles} from '../../Context/Contexts/StyleContext';
-import {useDrawer} from '../../Context/Contexts/DrawerContext';
-import {SeamailSearchScreen} from '../../Screens/Seamail/SeamailSearchScreen';
-import {DisabledView} from '../../Views/Static/DisabledView';
-import {useFeature} from '../../Context/Contexts/FeatureContext';
-import {SwiftarrFeature} from '../../../libraries/Enums/AppFeatures';
-import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen';
-import {MainStack} from './MainStackNavigator';
-import {CommonScreens, CommonStackParamList} from '../CommonScreens';
+import {KrakenTalkCreateScreen} from '../../Screens/KrakenTalk/KrakenTalkCreateScreen.tsx';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
+import {useDrawer} from '../../Context/Contexts/DrawerContext.ts';
+import {SeamailSearchScreen} from '../../Screens/Seamail/SeamailSearchScreen.tsx';
+import {DisabledView} from '../../Views/Static/DisabledView.tsx';
+import {useFeature} from '../../Context/Contexts/FeatureContext.ts';
+import {SwiftarrFeature} from '../../../Libraries/Enums/AppFeatures.ts';
+import {KrakenTalkReceiveScreen} from '../../Screens/KrakenTalk/KrakenTalkReceiveScreen.tsx';
+import {MainStack} from './MainStackNavigator.tsx';
+import {CommonScreens, CommonStackParamList} from '../CommonScreens.tsx';
 import {SeamailSettingsScreen} from '../../Screens/Seamail/SeamailSettingsScreen.tsx';
 
 // Beware: https://github.com/react-navigation/react-navigation/issues/10802

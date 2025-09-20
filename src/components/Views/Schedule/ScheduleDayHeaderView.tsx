@@ -1,5 +1,5 @@
 import {IconButton, Text} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import {StyleSheet, View} from 'react-native';
 import {format} from 'date-fns';
 import React from 'react';

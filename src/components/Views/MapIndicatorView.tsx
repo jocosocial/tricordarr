@@ -1,7 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 import {useStyles} from '../Context/Contexts/StyleContext';
 import React from 'react';
-import {AppIcons} from '../../libraries/Enums/Icons';
+import {AppIcons} from '../../Libraries/Enums/Icons';
 import {AppIcon} from '../Icons/AppIcon';
 import {BoldText} from '../Text/BoldText';
 

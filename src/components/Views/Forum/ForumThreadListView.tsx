@@ -6,7 +6,7 @@ import {
   ErrorResponse,
   ForumListData,
   ForumSearchData,
-} from '../../../libraries/Structs/ControllerStructs.tsx';
+} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {ListTitleView} from '../ListTitleView.tsx';
 import {ForumThreadFlatList} from '../../Lists/Forums/ForumThreadFlatList.tsx';
 import {ForumCategoryFAB} from '../../Buttons/FloatingActionButtons/ForumCategoryFAB.tsx';

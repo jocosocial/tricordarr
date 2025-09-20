@@ -1,16 +1,16 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppView} from '../../Views/AppView';
-import {UserHeader, UserProfileUploadData} from '../../../libraries/Structs/ControllerStructs';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../Views/Content/PaddedContentView';
+import {AppView} from '../../Views/AppView.tsx';
+import {UserHeader, UserProfileUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {UserProfileForm} from '../../Forms/User/UserProfileForm.tsx';
-import {UserProfileFormValues} from '../../../libraries/Types/FormValues';
+import {UserProfileFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {useUserProfileMutation} from '../../Queries/User/UserProfileMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
-import {DinnerTeam} from '../../../libraries/Enums/DinnerTeam';
-import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens';
+import {DinnerTeam} from '../../../Libraries/Enums/DinnerTeam.ts';
+import {CommonStackComponents, CommonStackParamList} from '../../Navigation/CommonScreens.tsx';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
 

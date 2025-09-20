@@ -4,7 +4,7 @@ import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {ScheduleHeaderDayButton} from '../../Buttons/ScheduleHeaderDayButton.tsx';
 import {useCruise} from '../../Context/Contexts/CruiseContext.ts';
 import {FlashList} from '@shopify/flash-list';
-import {CruiseDayData} from '../../../libraries/Types';
+import {CruiseDayData} from '../../../Libraries/Types/index.ts';
 
 interface ScheduleHeaderViewProps {
   selectedCruiseDay: number;

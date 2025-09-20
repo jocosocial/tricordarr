@@ -1,15 +1,15 @@
 import React, {memo} from 'react';
-import {FezData, FezPostData} from '../../../libraries/Structs/ControllerStructs';
-import {UserAvatarImage} from '../../Images/UserAvatarImage';
-import {MessageView} from '../../Views/MessageView';
-import {MessageViewContainer} from '../../Views/MessageViewContainer';
-import {MessageSpacerView} from '../../Views/MessageSpacerView';
-import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView';
-import {FlatListItemContent} from '../../Views/Content/FlatListItemContent';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {ContentPostImage} from '../../Images/ContentPostImage';
+import {FezData, FezPostData} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {UserAvatarImage} from '../../Images/UserAvatarImage.tsx';
+import {MessageView} from '../../Views/MessageView.tsx';
+import {MessageViewContainer} from '../../Views/MessageViewContainer.tsx';
+import {MessageSpacerView} from '../../Views/MessageSpacerView.tsx';
+import {MessageAvatarContainerView} from '../../Views/MessageAvatarContainerView.tsx';
+import {FlatListItemContent} from '../../Views/Content/FlatListItemContent.tsx';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {ContentPostImage} from '../../Images/ContentPostImage.tsx';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 
 // https://github.com/akveo/react-native-ui-kitten/issues/1167

@@ -1,13 +1,13 @@
 import {AppView} from '../../Views/AppView.tsx';
-import {FezType} from '../../../libraries/Enums/FezType.ts';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
 import React, {useCallback, useEffect, useRef} from 'react';
-import {FezData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FlashList} from '@shopify/flash-list';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';
 import {LfgCruiseDayFilterMenu} from '../../Menus/LFG/LfgCruiseDayFilterMenu.tsx';
 import {useFilter} from '../../Context/Contexts/FilterContext.ts';

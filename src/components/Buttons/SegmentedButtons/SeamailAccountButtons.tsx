@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {SegmentedButtons} from 'react-native-paper';
-import {PrivilegedUserAccounts} from '../../../libraries/Enums/UserAccessLevel.ts';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {PrivilegedUserAccounts} from '../../../Libraries/Enums/UserAccessLevel.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {AppIcon} from '../../Icons/AppIcon.tsx';
-import {SegmentedButtonType} from '../../../libraries/Types';
+import {SegmentedButtonType} from '../../../Libraries/Types/index.ts';
 import {useUserNotificationDataQuery} from '../../Queries/Alert/NotificationQueries.ts';
 import {useUserProfileQuery} from '../../Queries/User/UserQueries.ts';
 

@@ -4,7 +4,7 @@ import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.
 import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
 import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
 import {TimeSettingsForm} from '../../../Forms/Settings/TimeSettingsForm.tsx';
-import {TimeSettingsFormValues} from '../../../../libraries/Types/FormValues.ts';
+import {TimeSettingsFormValues} from '../../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 
 export const TimeSettingsScreen = () => {

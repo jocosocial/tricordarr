@@ -1,7 +1,7 @@
 import React from 'react';
 import {AppView} from '../../Views/AppView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {HelpTopicView} from '../../Views/Help/HelpTopicView.tsx';
 import {HelpChapterTitleView} from '../../Views/Help/HelpChapterTitleView.tsx';
 

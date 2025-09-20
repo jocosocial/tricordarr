@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect} from 'react';
-import {AppView} from '../../Views/AppView';
-import {EventSearchBar} from '../../Search/EventSearchBar';
+import {AppView} from '../../Views/AppView.tsx';
+import {EventSearchBar} from '../../Search/EventSearchBar.tsx';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {useScheduleStackNavigation} from '../../Navigation/Stacks/ScheduleStackNavigator.tsx';
 

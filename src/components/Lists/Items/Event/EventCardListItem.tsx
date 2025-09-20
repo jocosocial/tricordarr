@@ -1,7 +1,7 @@
 import {EventCard} from '../../../Cards/Schedule/EventCard';
 import React, {Dispatch, memo, SetStateAction, useState} from 'react';
-import {EventData} from '../../../../libraries/Structs/ControllerStructs';
-import {ScheduleCardMarkerType} from '../../../../libraries/Types';
+import {EventData} from '../../../../Libraries/Structs/ControllerStructs';
+import {ScheduleCardMarkerType} from '../../../../Libraries/Types';
 import {EventCardActionsMenu} from '../../../Menus/Events/EventCardActionsMenu';
 
 interface EventCardListItemProps {

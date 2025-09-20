@@ -1,14 +1,14 @@
 import React from 'react';
-import {AppView} from '../../../Views/AppView';
-import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView';
-import {PaddedContentView} from '../../../Views/Content/PaddedContentView';
-import {useConfig} from '../../../Context/Contexts/ConfigContext';
+import {AppView} from '../../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../../Views/Content/ScrollingContentView.tsx';
+import {PaddedContentView} from '../../../Views/Content/PaddedContentView.tsx';
+import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
 import {DataTable, Text} from 'react-native-paper';
-import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow';
-import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton';
+import {SettingDataTableRow} from '../../../DataTables/SettingDataTableRow.tsx';
+import {PrimaryActionButton} from '../../../Buttons/PrimaryActionButton.tsx';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {RootStackComponents, useRootStack} from '../../../Navigation/Stacks/RootStackNavigator.tsx';
-import {useAppTheme} from '../../../../styles/Theme.ts';
+import {useAppTheme} from '../../../../Styles/Theme.ts';
 
 export const OobeSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {commonStyles} from '../../../styles';
+import {commonStyles} from '../../../Styles';
 
 // @TODO deprecate this
 export const SpaceDivider = () => {

@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction, useContext} from 'react';
-import {ForumListData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ForumListData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {ForumListDataSelectionActionsType} from '../../Reducers/Forum/ForumListDataSelectionReducer.ts';
 
 export interface SelectionContextType {

@@ -1,9 +1,9 @@
-import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
-import {useModal} from '../../../Context/Contexts/ModalContext';
-import {ForumPostDeleteModalView} from '../../../Views/Modals/ForumPostDeleteModalView';
+import {ForumData, PostData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {useModal} from '../../../Context/Contexts/ModalContext.ts';
+import {ForumPostDeleteModalView} from '../../../Views/Modals/ForumPostDeleteModalView.tsx';
 import {useUserProfileQuery} from '../../../Queries/User/UserQueries.ts';
 
 interface ForumPostActionsDeleteItemProps {

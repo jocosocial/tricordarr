@@ -1,5 +1,5 @@
 import {Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import React, {useState} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 import {CommonStackComponents, useCommonStack} from '../../Navigation/CommonScreens.tsx';

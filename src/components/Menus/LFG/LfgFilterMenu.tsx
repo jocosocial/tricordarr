@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Divider} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {useFilter} from '../../Context/Contexts/FilterContext';
-import {FezType} from '../../../libraries/Enums/FezType';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {useFilter} from '../../Context/Contexts/FilterContext.ts';
+import {FezType} from '../../../Libraries/Enums/FezType.ts';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {SelectableMenuItem} from '../Items/SelectableMenuItem.tsx';
 import {MenuAnchor} from '../MenuAnchor.tsx';
 import {AppHeaderMenu} from '../AppHeaderMenu.tsx';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useChatStack} from '../../Navigation/Stacks/ChatStackNavigator.tsx';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {BaseFAB} from './BaseFAB.tsx';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 

@@ -11,9 +11,9 @@ import {
   ViewStyle,
 } from 'react-native';
 import {FloatingScrollButton} from '../Buttons/FloatingScrollButton.tsx';
-import {AppIcons} from '../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
 import React, {useCallback, useState} from 'react';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../libraries/Types';
+import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '../../Libraries/Types/index.ts';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 
 export interface ConversationFlatListProps<TItem> {

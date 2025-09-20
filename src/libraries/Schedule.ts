@@ -1,4 +1,4 @@
-import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from './Types';
+import {CruiseDayTime, ScheduleCardMarkerType, ScheduleFilterSettings} from './Types/index.ts';
 import {InfiniteData} from '@tanstack/react-query';
 import {EventData, FezData, FezListData} from './Structs/ControllerStructs.tsx';
 import {EventType} from './Enums/EventType.ts';

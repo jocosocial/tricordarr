@@ -1,23 +1,23 @@
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNavigationListItem';
-import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem';
-import {AppView} from '../../Views/AppView';
-import {ScrollingContentView} from '../../Views/Content/ScrollingContentView';
-import {ListSection} from '../../Lists/ListSection';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
+import {SettingsNavigationListItem} from '../../Lists/Items/Settings/SettingsNavigationListItem.tsx';
+import {SettingsAccountListItem} from '../../Lists/Items/Settings/SettingsAccountListItem.tsx';
+import {AppView} from '../../Views/AppView.tsx';
+import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
+import {ListSection} from '../../Lists/ListSection.tsx';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   SettingsStackParamList,
   SettingsStackScreenComponents,
 } from '../../Navigation/Stacks/SettingsStackNavigator.tsx';
-import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle';
-import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem';
-import {useAuth} from '../../Context/Contexts/AuthContext';
-import {SettingsRegistrationListItem} from '../../Lists/Items/Settings/SettingsRegistrationListItem';
-import {ListSubheader} from '../../Lists/ListSubheader';
-import {CommonStackComponents} from '../../Navigation/CommonScreens';
+import {SettingsHeaderTitle} from '../../Navigation/Components/SettingsHeaderTitle.tsx';
+import {SettingsLoginListItem} from '../../Lists/Items/Settings/SettingsLoginListItem.tsx';
+import {useAuth} from '../../Context/Contexts/AuthContext.ts';
+import {SettingsRegistrationListItem} from '../../Lists/Items/Settings/SettingsRegistrationListItem.tsx';
+import {ListSubheader} from '../../Lists/ListSubheader.tsx';
+import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 
 export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.settings>;
 

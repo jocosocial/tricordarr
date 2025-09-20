@@ -1,9 +1,9 @@
-import {useAppTheme} from '../../../styles/Theme';
+import {useAppTheme} from '../../../Styles/Theme';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {GestureResponderEvent} from 'react-native';
 import {AndroidColor} from '@notifee/react-native';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {FabGroupActionType} from '../../../libraries/Types';
+import {FabGroupActionType} from '../../../Libraries/Types';
 
 interface Props {
   icon: IconSource;

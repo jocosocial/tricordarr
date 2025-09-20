@@ -8,12 +8,12 @@ import {Formik} from 'formik';
 import {useStyles} from '../../../Context/Contexts/StyleContext.ts';
 import {useConfig} from '../../../Context/Contexts/ConfigContext.ts';
 import {PickerField} from '../../../Forms/Fields/PickerField.tsx';
-import {ForumSort, ForumSortDirection} from '../../../../libraries/Enums/ForumSortFilter.ts';
+import {ForumSort, ForumSortDirection} from '../../../../Libraries/Enums/ForumSortFilter.ts';
 import {useFilter} from '../../../Context/Contexts/FilterContext.ts';
 import {ListSubheader} from '../../../Lists/ListSubheader.tsx';
 import {ListSection} from '../../../Lists/ListSection.tsx';
-import {contentNotificationCategories} from '../../../../libraries/Notifications/Content.ts';
-import {PushNotificationConfig} from '../../../../libraries/AppConfig.ts';
+import {contentNotificationCategories} from '../../../../Libraries/Notifications/Content.ts';
+import {PushNotificationConfig} from '../../../../Libraries/AppConfig.ts';
 
 export const ForumSettingsScreen = () => {
   const {commonStyles} = useStyles();

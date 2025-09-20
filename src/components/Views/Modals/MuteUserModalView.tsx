@@ -1,12 +1,12 @@
 import React from 'react';
 import {View} from 'react-native';
-import {UserHeader} from '../../../libraries/Structs/ControllerStructs';
-import {ModalCard} from '../../Cards/ModalCard';
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
-import {useAppTheme} from '../../../styles/Theme';
-import {usePrivilege} from '../../Context/Contexts/PrivilegeContext';
-import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText';
+import {UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
+import {ModalCard} from '../../Cards/ModalCard.tsx';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
+import {ModeratorMuteText, UserMuteText} from '../../Text/UserRelationsText.tsx';
 import {useUserMuteMutation} from '../../Queries/Users/UserMuteMutations.ts';
 import {useQueryClient} from '@tanstack/react-query';
 

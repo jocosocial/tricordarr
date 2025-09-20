@@ -7,10 +7,10 @@ import {
 } from '@tanstack/react-query';
 import {useAuth} from '../Context/Contexts/AuthContext';
 import {AxiosError} from 'axios';
-import {ErrorResponse, FezData} from '../../libraries/Structs/ControllerStructs';
+import {ErrorResponse, FezData} from '../../Libraries/Structs/ControllerStructs';
 import {getNextPageParam, getPreviousPageParam, PageParam, PaginationQueryParams, WithPaginator} from './Pagination';
 import {useSwiftarrQueryClient} from '../Context/Contexts/SwiftarrQueryClientContext';
-import {shouldQueryEnable} from '../../libraries/Network/APIClient';
+import {shouldQueryEnable} from '../../Libraries/Network/APIClient';
 import {useConfig} from '../Context/Contexts/ConfigContext';
 
 export type TokenAuthQueryOptionsType<TData, TError extends Error = AxiosError<ErrorResponse>> = Omit<

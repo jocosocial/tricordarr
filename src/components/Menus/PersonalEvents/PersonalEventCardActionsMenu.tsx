@@ -1,7 +1,7 @@
 import React, {Dispatch, ReactNode, SetStateAction} from 'react';
 import {Divider, Menu} from 'react-native-paper';
-import {AppIcons} from '../../../libraries/Enums/Icons';
-import {FezData} from '../../../libraries/Structs/ControllerStructs';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
+import {FezData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {PersonalEventDeleteModal} from '../../Views/Modals/PersonalEventDeleteModal.tsx';
 import {ReportModalView} from '../../Views/Modals/ReportModalView.tsx';
 import {useModal} from '../../Context/Contexts/ModalContext.ts';

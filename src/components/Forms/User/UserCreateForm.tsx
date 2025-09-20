@@ -3,12 +3,12 @@ import {View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
-import {UserRegistrationFormValues} from '../../../libraries/Types/FormValues.ts';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {UserRegistrationFormValues} from '../../../Libraries/Types/FormValues.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
 import {TextField} from '../Fields/TextField.tsx';
-import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '../../../libraries/ValidationSchema.ts';
+import {PasswordValidation, RecoveryKeyValidation, UsernameValidation} from '../../../Libraries/ValidationSchema.ts';
 import {SecureTextField} from '../Fields/SecureTextField.tsx';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 

@@ -1,11 +1,11 @@
 import {IconButton, List, ProgressBar, Text} from 'react-native-paper';
 import React, {useState} from 'react';
-import {MicroKaraokeCompletedSong} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {MicroKaraokeCompletedSong} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {View, StyleSheet} from 'react-native';
 import {RelativeTimeTag} from '../../Text/Tags/RelativeTimeTag.tsx';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {MainStackComponents, useMainStack} from '../../Navigation/Stacks/MainStackNavigator.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {useMicroKaraokeSongQuery} from '../../Queries/MicroKaraoke/MicroKaraokeQueries.ts';
 import RNFS from 'react-native-fs';
 

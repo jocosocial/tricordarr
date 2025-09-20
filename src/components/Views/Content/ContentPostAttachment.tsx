@@ -1,6 +1,6 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {AppIcon} from '../../Icons/AppIcon';
-import {AppIcons} from '../../../libraries/Enums/Icons';
+import {AppIcons} from '../../../Libraries/Enums/Icons';
 import React, {PropsWithChildren} from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext';
 

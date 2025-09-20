@@ -4,7 +4,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
 import {ShadowPerformerForm} from '../../Forms/Performer/ShadowPerformerForm.tsx';
-import {EventData, PerformerData, PerformerUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {EventData, PerformerData, PerformerUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {FormikHelpers} from 'formik';
 import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';

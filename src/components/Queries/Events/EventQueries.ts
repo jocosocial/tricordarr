@@ -1,4 +1,4 @@
-import {EventData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData} from '../../../Libraries/Structs/ControllerStructs';
 import {useTokenAuthQuery} from '../TokenAuthQuery';
 
 interface EventsQueryOptions {

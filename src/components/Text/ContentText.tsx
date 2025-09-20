@@ -1,11 +1,11 @@
 import React, {useCallback, useMemo} from 'react';
 import {Text} from 'react-native-paper';
 import {StyleProp, StyleSheet, TextStyle} from 'react-native';
-import {CustomEmoji} from '../../libraries/Enums/Emoji';
-import {Emoji} from '../Icons/Emoji';
+import {CustomEmoji} from '../../Libraries/Enums/Emoji.ts';
+import {Emoji} from '../Icons/Emoji.tsx';
 import Markdown from '@ronradtke/react-native-markdown-display';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {HyperlinkText} from './HyperlinkText';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {HyperlinkText} from './HyperlinkText.tsx';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 import {useUserKeywordQuery} from '../Queries/User/UserQueries.ts';
 import {useConfig} from '../Context/Contexts/ConfigContext.ts';

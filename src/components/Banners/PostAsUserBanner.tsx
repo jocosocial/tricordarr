@@ -1,6 +1,6 @@
 import React from 'react';
 import {Banner, Text} from 'react-native-paper';
-import {usePrivilege} from '../Context/Contexts/PrivilegeContext';
+import {usePrivilege} from '../Context/Contexts/PrivilegeContext.ts';
 import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import {StyleSheet} from 'react-native';
 

@@ -1,5 +1,5 @@
-import {FezData} from '../../../../libraries/Structs/ControllerStructs';
-import {useTokenAuthMutation} from '../../TokenAuthMutation';
+import {FezData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
+import {useTokenAuthMutation} from '../../TokenAuthMutation.ts';
 import {useSwiftarrQueryClient} from '../../../Context/Contexts/SwiftarrQueryClientContext.ts';
 
 interface ParticipantMutationProps {

@@ -6,11 +6,11 @@ import {Formik} from 'formik';
 import {View} from 'react-native';
 import {ListSubheader} from '../../Lists/ListSubheader.tsx';
 import {ListSection} from '../../Lists/ListSection.tsx';
-import {contentNotificationCategories} from '../../../libraries/Notifications/Content.ts';
+import {contentNotificationCategories} from '../../../Libraries/Notifications/Content.ts';
 import {BooleanField} from '../../Forms/Fields/BooleanField.tsx';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {PushNotificationConfig} from '../../../libraries/AppConfig.ts';
+import {PushNotificationConfig} from '../../../Libraries/AppConfig.ts';
 
 export const SeamailSettingsScreen = () => {
   const {appConfig, hasNotificationPermission, updateAppConfig} = useConfig();

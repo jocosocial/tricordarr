@@ -2,27 +2,27 @@ import React from 'react';
 import {Keyboard, View} from 'react-native';
 import {Formik, FormikHelpers} from 'formik';
 import {TextInput} from 'react-native-paper';
-import {PrimaryActionButton} from '../Buttons/PrimaryActionButton';
-import {AppIcons} from '../../libraries/Enums/Icons';
-import {useStyles} from '../Context/Contexts/StyleContext';
+import {PrimaryActionButton} from '../Buttons/PrimaryActionButton.tsx';
+import {AppIcons} from '../../Libraries/Enums/Icons.ts';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
 import * as Yup from 'yup';
-import {TextField} from './Fields/TextField';
+import {TextField} from './Fields/TextField.tsx';
 import {
   DateValidation,
   LFGTypeValidation,
   InfoStringValidation,
   NumberValidation,
-} from '../../libraries/ValidationSchema';
-import {FezFormValues} from '../../libraries/Types/FormValues';
-import {useModal} from '../Context/Contexts/ModalContext';
-import {HelpModalView} from '../Views/Modals/HelpModalView';
-import {DurationPickerField} from './Fields/DurationPickerField';
-import {FezTypePickerField} from './Fields/FezTypePickerField';
-import {SuggestedTextField} from './Fields/SuggestedTextField';
-import {DatePickerField} from './Fields/DatePickerField';
-import {TimePickerField} from './Fields/TimePickerField';
+} from '../../Libraries/ValidationSchema.ts';
+import {FezFormValues} from '../../Libraries/Types/FormValues.ts';
+import {useModal} from '../Context/Contexts/ModalContext.ts';
+import {HelpModalView} from '../Views/Modals/HelpModalView.tsx';
+import {DurationPickerField} from './Fields/DurationPickerField.tsx';
+import {FezTypePickerField} from './Fields/FezTypePickerField.tsx';
+import {SuggestedTextField} from './Fields/SuggestedTextField.tsx';
+import {DatePickerField} from './Fields/DatePickerField.tsx';
+import {TimePickerField} from './Fields/TimePickerField.tsx';
 import {DirtyDetectionField} from './Fields/DirtyDetectionField.tsx';
-import {publicLocationSuggestions} from '../../libraries/Ship.ts';
+import {publicLocationSuggestions} from '../../Libraries/Ship.ts';
 
 interface LfgFormProps {
   onSubmit: (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => void;

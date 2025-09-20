@@ -1,11 +1,11 @@
 import {Text} from 'react-native-paper';
 import {TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {useStyles} from '../Context/Contexts/StyleContext';
-import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag';
+import {useStyles} from '../Context/Contexts/StyleContext.ts';
+import {RelativeTimeTag} from '../Text/Tags/RelativeTimeTag.tsx';
 import {FezPostActionsMenu} from '../Menus/Fez/FezPostActionsMenu.tsx';
-import {FezData, FezPostData} from '../../libraries/Structs/ControllerStructs';
-import {ContentText} from '../Text/ContentText';
+import {FezData, FezPostData} from '../../Libraries/Structs/ControllerStructs.tsx';
+import {ContentText} from '../Text/ContentText.tsx';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 interface MessageViewProps {

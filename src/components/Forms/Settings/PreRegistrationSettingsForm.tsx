@@ -4,9 +4,9 @@ import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
-import {PreRegistrationSettingsFormValues} from '../../../libraries/Types/FormValues.ts';
+import {PreRegistrationSettingsFormValues} from '../../../Libraries/Types/FormValues.ts';
 import * as Yup from 'yup';
-import {ServerURLValidation} from '../../../libraries/ValidationSchema.ts';
+import {ServerURLValidation} from '../../../Libraries/ValidationSchema.ts';
 import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 import {DatePickerField} from '../Fields/DatePickerField.tsx';
 

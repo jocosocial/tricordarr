@@ -9,7 +9,7 @@ import {PaddedContentView} from '../../Views/Content/PaddedContentView.tsx';
 import {useAuth} from '../../Context/Contexts/AuthContext.ts';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {CommonStackComponents} from '../../Navigation/CommonScreens.tsx';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;

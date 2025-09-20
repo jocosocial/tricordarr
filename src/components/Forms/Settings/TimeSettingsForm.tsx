@@ -1,4 +1,4 @@
-import {CruiseSettingsFormValues, TimeSettingsFormValues} from '../../../libraries/Types/FormValues.ts';
+import {CruiseSettingsFormValues, TimeSettingsFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
@@ -7,7 +7,7 @@ import {DirtyDetectionField} from '../Fields/DirtyDetectionField.tsx';
 import {TextField} from '../Fields/TextField.tsx';
 import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import React from 'react';
-import {NumberValidation} from '../../../libraries/ValidationSchema.ts';
+import {NumberValidation} from '../../../Libraries/ValidationSchema.ts';
 
 interface TimeSettingsFormProps {
   initialValues: TimeSettingsFormValues;

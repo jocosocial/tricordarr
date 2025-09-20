@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
-import {useAppTheme} from '../../../styles/Theme.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
 import {usePrivilege} from '../../Context/Contexts/PrivilegeContext.ts';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';

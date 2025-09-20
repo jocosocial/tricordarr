@@ -4,10 +4,10 @@ import {usePhotostreamLocationDataQuery} from '../../Queries/Photostream/Photost
 import {ScrollingContentView} from '../../Views/Content/ScrollingContentView.tsx';
 import {RefreshControl, View} from 'react-native';
 import {PhotostreamImageCreateForm} from '../../Forms/Photostream/PhotostreamImageCreateForm.tsx';
-import {PhotostreamCreateFormValues} from '../../../libraries/Types/FormValues.ts';
+import {PhotostreamCreateFormValues} from '../../../Libraries/Types/FormValues.ts';
 import {FormikHelpers} from 'formik';
 import {LoadingView} from '../../Views/Static/LoadingView.tsx';
-import {PhotostreamUploadData} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {PhotostreamUploadData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainStackComponents, MainStackParamList} from '../../Navigation/Stacks/MainStackNavigator.tsx';
 import {useQueryClient} from '@tanstack/react-query';
@@ -16,7 +16,7 @@ import {usePhotostreamImageUploadMutation} from '../../Queries/Photostream/Photo
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButton} from '../../Buttons/MaterialHeaderButton.tsx';
 import {PhotostreamActionsMenu} from '../../Menus/Photostream/PhotostreamActionsMenu.tsx';
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 

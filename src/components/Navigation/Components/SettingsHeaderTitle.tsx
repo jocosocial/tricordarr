@@ -1,6 +1,6 @@
 import React from 'react';
-import {useConfig} from '../../Context/Contexts/ConfigContext';
-import {SecretHeaderTitle} from './SecretHeaderTitle';
+import {useConfig} from '../../Context/Contexts/ConfigContext.ts';
+import {SecretHeaderTitle} from './SecretHeaderTitle.tsx';
 import {useSnackbar} from '../../Context/Contexts/SnackbarContext.ts';
 
 /**

@@ -1,12 +1,12 @@
-import {useModal} from '../../Context/Contexts/ModalContext';
-import {useAppTheme} from '../../../styles/Theme';
-import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton';
+import {useModal} from '../../Context/Contexts/ModalContext.ts';
+import {useAppTheme} from '../../../Styles/Theme.ts';
+import {PrimaryActionButton} from '../../Buttons/PrimaryActionButton.tsx';
 import {View} from 'react-native';
-import {ModalCard} from '../../Cards/ModalCard';
+import {ModalCard} from '../../Cards/ModalCard.tsx';
 import React from 'react';
-import {EventData, PerformerData} from '../../../libraries/Structs/ControllerStructs';
+import {EventData, PerformerData} from '../../../Libraries/Structs/ControllerStructs.tsx';
 import {Text} from 'react-native-paper';
-import {useStyles} from '../../Context/Contexts/StyleContext';
+import {useStyles} from '../../Context/Contexts/StyleContext.ts';
 import {useQueryClient} from '@tanstack/react-query';
 import {usePerformerDeleteMutation} from '../../Queries/Performer/PerformerMutations.ts';
 

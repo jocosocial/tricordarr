@@ -1,5 +1,5 @@
 import {useTokenAuthQuery} from '../TokenAuthQuery.ts';
-import {ProfilePublicData, UserHeader} from '../../../libraries/Structs/ControllerStructs.tsx';
+import {ProfilePublicData, UserHeader} from '../../../Libraries/Structs/ControllerStructs.tsx';
 
 export const useUsersProfileQuery = (userID: string, options = {}) => {
   return useTokenAuthQuery<ProfilePublicData>(`/users/${userID}/profile`, options);

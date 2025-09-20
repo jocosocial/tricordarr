@@ -1,9 +1,9 @@
 import {Menu} from 'react-native-paper';
 import React from 'react';
-import {ForumData, PostData} from '../../../../libraries/Structs/ControllerStructs';
+import {ForumData, PostData} from '../../../../Libraries/Structs/ControllerStructs.tsx';
 import {useForumPostBookmarkMutation} from '../../../Queries/Forum/ForumPostBookmarkMutations.ts';
-import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon';
-import {AppIcons} from '../../../../libraries/Enums/Icons';
+import {StateLoadingIcon} from '../../../Icons/StateLoadingIcon.tsx';
+import {AppIcons} from '../../../../Libraries/Enums/Icons.ts';
 import {useQueryClient} from '@tanstack/react-query';
 
 interface ForumPostActionsFavoriteItemProps {

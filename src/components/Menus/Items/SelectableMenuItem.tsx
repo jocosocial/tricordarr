@@ -1,4 +1,4 @@
-import {AppIcons} from '../../../libraries/Enums/Icons.ts';
+import {AppIcons} from '../../../Libraries/Enums/Icons.ts';
 import {Menu} from 'react-native-paper';
 import React from 'react';
 import {useStyles} from '../../Context/Contexts/StyleContext.ts';
