@@ -1,6 +1,9 @@
 import {
+  InfiniteData,
+  QueryKey,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   useQuery,
   UseQueryOptions,
   UseQueryResult,
@@ -8,13 +11,13 @@ import {
 import {AxiosError} from 'axios';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
+// import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {shouldQueryEnable} from '#src/Libraries/Network/APIClient';
 import {
   getNextPageParam,
   getPreviousPageParam,
-  PageParam,
+  // PageParam,
   PaginationQueryParams,
   WithPaginator,
 } from '#src/Queries/Pagination';
@@ -22,8 +25,12 @@ import {ErrorResponse, FezData} from '#src/Structs/ControllerStructs';
 
 export type TokenAuthQueryOptionsType<TData, TError extends Error = AxiosError<ErrorResponse>> = Omit<
   UseQueryOptions<TData, TError, TData>,
-  'initialData' | 'queryKey' | 'onError'
->;
+  'initialData' | 'queryKey' | 'onError' | 'enabled'
+> & {
+  // React Query v5 allows for enabled to be a function. We are disabling that
+  // for now to maintain simplicity in the query wrappers.
+  enabled?: boolean;
+};
 
 /**
  * Clone of useQuery but coded to require the user be logged in.
@@ -59,36 +66,147 @@ export function useTokenAuthQuery<TData, TQueryParams = Object, TError extends E
  * @param options
  * @param queryParams
  */
-export function useTokenAuthPaginationQuery<
-  TData extends WithPaginator | FezData,
-  TQueryParams extends PaginationQueryParams = PageParam,
+// export function useTokenAuthPaginationQuery<
+//   TQueryFnData extends WithPaginator | FezData,
+//   TData = TQueryFnData,
+//   TError extends Error = AxiosError<ErrorResponse>,
+//   TQueryParams extends PaginationQueryParams = PaginationQueryParams,
+// >(
+//   endpoint: string,
+//   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
+//   queryParams?: TQueryParams,
+// ) {
+//   const {isLoggedIn} = useAuth();
+//   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+//   const {appConfig} = useConfig();
+
+//   const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
+//     const {data: responseData} = await apiGet<TData, PaginationQueryParams>(endpoint, {
+//       ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+//       ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
+//       ...queryParams,
+//     });
+//     return responseData;
+//   };
+
+//   return useInfiniteQuery({
+//     queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+//     // queryFn: options?.queryFn || defaultQueryFn,
+//     // queryFn: defaultQueryFn,
+//     // queryFn: testFunction,
+//     queryFn: defaultQueryFn,
+//     initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize},
+//     getNextPageParam: (lastPage: TData) => getNextPageParam(lastPage),
+//     getPreviousPageParam: (firstPage: TData) => getPreviousPageParam(firstPage),
+//     ...options,
+//     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+//   });
+// }
+
+// export function useTokenAuthPaginationQueryV2<
+//   TData extends WithPaginator | FezData,
+//   TError extends Error = AxiosError<ErrorResponse>,
+//   TQueryParams extends PaginationQueryParams = PaginationQueryParams,
+// >(
+//   endpoint: string,
+//   options?: TokenAuthPaginationQueryOptionsType<TData, PaginationQueryParams, TError>,
+//   queryParams?: TQueryParams,
+// ) {
+//   const {isLoggedIn} = useAuth();
+//   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+
+//   // const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
+//   //   const {data: responseData} = await apiGet<TData, PaginationQueryParams>(endpoint, {
+//   //     ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
+//   //     ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
+//   //     ...queryParams,
+//   //   });
+//   //   return responseData;
+//   // };
+
+//   // const queryFn = async ({pageParam}: {pageParam: object}) => {
+//   //   return {} as TData;
+//   // };
+
+//   return useInfiniteQuery<TData, TError, InfiniteData<TData>>({
+//     queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+//     queryFn: queryFn,
+//     // initialPageParam: {start: undefined, limit: 50},
+//     // getNextPageParam: (lastPage: TData) => getNextPageParam(lastPage),
+//     // getPreviousPageParam: (firstPage: TData) => getPreviousPageParam(firstPage),
+//     // ...options,
+//     // enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+//   });
+// }
+
+export type TokenAuthPaginationQueryOptionsType<
+  TData,
+  TPageParam = PaginationQueryParams,
   TError extends Error = AxiosError<ErrorResponse>,
+> = Omit<
+  UseInfiniteQueryOptions<TData, TError, InfiniteData<TData, TPageParam>>,
+  'initialData' | 'queryKey' | 'onError' | 'enabled'
+> & {
+  // React Query v5 allows for enabled to be a function. We are disabling that
+  // for now to maintain simplicity in the query wrappers.
+  enabled?: boolean;
+};
+
+export type TokenAuthPaginationQueryOptionsTypeV2<
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryKey extends QueryKey = QueryKey,
+> = Omit<
+  UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, PaginationQueryParams>,
+  'initialData' | 'queryKey' | 'onError' | 'enabled'
+> & {
+  /**
+   * Your query function gets a `pageParam` object containing { start?, limit? }.
+   */
+  // queryFn?: (ctx: {
+  //   pageParam: PaginationQueryParams;
+  //   queryKey: TQueryKey;
+  //   signal?: AbortSignal;
+  //   meta?: any;
+  // }) => Promise<TQueryFnData>;
+  // React Query v5 allows for enabled to be a function. We are disabling that
+  // for now to maintain simplicity in the query wrappers.
+  enabled?: boolean;
+};
+
+/**
+ * Wrapper around useInfiniteQuery with a default query function signature.
+ */
+export function useTokenAuthPaginationQuery<
+  TQueryFnData extends WithPaginator | FezData, // The raw API data
+  TError = unknown,
+  TData = InfiniteData<TQueryFnData>, // Optional transformed data
+  TQueryParams extends PaginationQueryParams = PaginationQueryParams,
 >(
   endpoint: string,
-  options?: Omit<UseInfiniteQueryOptions<TData, TError, TData, TData>, 'queryKey'>,
+  options: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,
   queryParams?: TQueryParams,
-) {
+): UseInfiniteQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
-  const {appConfig} = useConfig();
 
-  return useInfiniteQuery<TData, TError, TData>(
-    [endpoint, queryParams, ...queryKeyExtraData],
-    options?.queryFn
-      ? options.queryFn
-      : async ({pageParam = {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize}}) => {
-          const {data: responseData} = await apiGet<TData, PageParam>(endpoint, {
-            ...(pageParam.limit !== undefined ? {limit: pageParam.limit} : undefined),
-            ...(pageParam.start !== undefined ? {start: pageParam.start} : undefined),
-            ...queryParams,
-          });
-          return responseData;
-        },
-    {
-      getNextPageParam: lastPage => getNextPageParam(lastPage),
-      getPreviousPageParam: firstPage => getPreviousPageParam(firstPage),
-      ...options,
-      enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
-    },
-  );
+  const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
+    const {data: responseData} = await apiGet<TQueryFnData, TQueryParams>(endpoint, {
+      ...(pageParam?.limit !== undefined ? {limit: pageParam.limit} : undefined),
+      ...(pageParam?.start !== undefined ? {start: pageParam.start} : undefined),
+      ...queryParams,
+    } as TQueryParams);
+    return responseData;
+  };
+
+  return useInfiniteQuery({
+    ...options,
+    queryKey: [endpoint, queryParams, ...queryKeyExtraData],
+    queryFn: options?.queryFn || defaultQueryFn,
+    initialPageParam: {start: undefined, limit: 50},
+    getNextPageParam: (lastPage: TQueryFnData) => getNextPageParam(lastPage),
+    getPreviousPageParam: (firstPage: TQueryFnData) => getPreviousPageParam(firstPage),
+    enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
+  });
 }
