@@ -185,7 +185,7 @@ export function useTokenAuthPaginationQuery<
   TQueryParams extends PaginationQueryParams = PaginationQueryParams,
 >(
   endpoint: string,
-  options: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,
+  options?: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,
   queryParams?: TQueryParams,
 ): UseInfiniteQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
