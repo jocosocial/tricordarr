@@ -41,7 +41,7 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = FezData.getCacheKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           navigation.goBack();

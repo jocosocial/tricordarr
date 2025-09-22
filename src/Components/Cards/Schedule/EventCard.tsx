@@ -47,11 +47,11 @@ export const EventCard = ({
         onSuccess: async () => {
           // If this is too slow to reload, a setQueryData here may be in order.
           await Promise.all([
-            queryClient.invalidateQueries(['/events']),
-            queryClient.invalidateQueries([`/events/${eventData.eventID}`]),
-            queryClient.invalidateQueries(['/events/favorites']),
+            queryClient.invalidateQueries({queryKey: ['/events']}),
+            queryClient.invalidateQueries({queryKey: [`/events/${eventData.eventID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/events/favorites']}),
             // Update the user notification data in case this was/is a favorite.
-            queryClient.invalidateQueries(['/notification/global']),
+            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
           ]);
         },
         onSettled: () => setRefreshing(false),

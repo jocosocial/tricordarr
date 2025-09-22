@@ -42,7 +42,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
         {
           onSuccess: async () => {
             const invalidations = BoardgameData.getCacheKeys(data.gameID).map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },

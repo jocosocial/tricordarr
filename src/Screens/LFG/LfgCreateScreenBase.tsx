@@ -59,7 +59,7 @@ export const LfgCreateScreenBase = ({
           navigation.replace(CommonStackComponents.lfgScreen, {
             fezID: response.data.fezID,
           });
-          await queryClient.invalidateQueries(['/notification/global']);
+          await queryClient.invalidateQueries({queryKey: ['/notification/global']});
         },
         onSettled: () => {
           helpers.setSubmitting(false);

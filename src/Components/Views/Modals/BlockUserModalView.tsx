@@ -40,7 +40,7 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
       {
         onSuccess: () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           Promise.all(invalidations);
           setModalVisible(false);

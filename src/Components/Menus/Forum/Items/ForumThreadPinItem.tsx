@@ -29,7 +29,7 @@ export const ForumThreadPinItem = (props: ForumThreadPinItemProps) => {
       {
         onSuccess: async () => {
           const invalidations = props.invalidationQueryKeys.map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all([invalidations].flat());
         },

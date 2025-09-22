@@ -45,7 +45,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async response => {
           const invalidations = FezData.getCacheKeys(fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           setFez(response.data);

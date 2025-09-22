@@ -66,7 +66,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.seamailUnreadMsg) {
         const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries(key);
+          return queryClient.invalidateQueries({queryKey: key});
         });
         Promise.all(invalidations);
       } else {

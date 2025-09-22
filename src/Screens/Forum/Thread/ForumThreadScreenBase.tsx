@@ -145,7 +145,7 @@ export const ForumThreadScreenBase = ({
         `[ForumThreadScreenBase.tsx] Marking forum ${forumData.forumID} in category ${forumData.categoryID} as read.`,
       );
       markReadInvalidationKeys.map(key => {
-        queryClient.invalidateQueries(key);
+        queryClient.invalidateQueries({queryKey: key});
       });
     }
   }, [forumData, queryClient, forumListData, markReadInvalidationKeys]);
@@ -174,7 +174,7 @@ export const ForumThreadScreenBase = ({
             // This used to not include the forum itself. idk if that's a problem.
             // If it is, use otherInvalidationKeys.
             const invalidations = markReadInvalidationKeys.map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           }

@@ -25,14 +25,14 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData}: ForumPostAc
       {
         onSuccess: async () => {
           await Promise.all([
-            queryClient.invalidateQueries([`/forum/post/${forumPost.postID}`]),
-            queryClient.invalidateQueries(['/forum/post/search']),
-            queryClient.invalidateQueries([`/forum/post/${forumPost.postID}/forum`]),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${forumPost.postID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${forumPost.postID}/forum`]}),
           ]);
           if (forumData) {
             await Promise.all([
-              queryClient.invalidateQueries([`/forum/${forumData.forumID}`]),
-              queryClient.invalidateQueries([`/forum/${forumData.forumID}/pinnedposts`]),
+              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}`]}),
+              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}/pinnedposts`]}),
             ]);
           }
         },

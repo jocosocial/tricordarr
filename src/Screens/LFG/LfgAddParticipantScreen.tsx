@@ -32,7 +32,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries([`/fez/${route.params.fezID}`]);
+          await queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
           navigation.goBack();
         },
       },

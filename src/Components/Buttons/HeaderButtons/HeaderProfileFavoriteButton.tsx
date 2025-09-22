@@ -22,7 +22,7 @@ export const HeaderProfileFavoriteButton = (props: HeaderProfileFavoriteButtonPr
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys(props.profile.header).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },

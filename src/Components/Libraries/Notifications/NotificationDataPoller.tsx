@@ -28,7 +28,7 @@ export const NotificationDataPoller = () => {
   useEffect(() => {
     if (appState === 'active') {
       console.log('[NotificationDataPoller.tsx] Refreshing notification data');
-      queryClient.invalidateQueries(['/notification/global']);
+      queryClient.invalidateQueries({queryKey: ['/notification/global']});
     }
   }, [appState, queryClient]);
 

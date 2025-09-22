@@ -48,10 +48,10 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async response => {
           await Promise.all([
-            queryClient.invalidateQueries([`/forum/${response.data.forumID}`]),
-            queryClient.invalidateQueries([`/forum/categories/${response.data.categoryID}`]),
-            queryClient.invalidateQueries(['/forum/search']),
-            queryClient.invalidateQueries(['/forum/categories']),
+            queryClient.invalidateQueries({queryKey: [`/forum/${response.data.forumID}`]}),
+            queryClient.invalidateQueries({queryKey: [`/forum/categories/${response.data.categoryID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/forum/search']}),
+            queryClient.invalidateQueries({queryKey: ['/forum/categories']}),
           ]);
           navigation.replace(CommonStackComponents.forumThreadScreen, {
             forumID: response.data.forumID,

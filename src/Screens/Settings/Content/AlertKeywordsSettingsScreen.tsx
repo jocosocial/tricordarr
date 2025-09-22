@@ -39,8 +39,8 @@ export const AlertKeywordsSettingsScreen = () => {
         onSuccess: async () => {
           setKeywords(keywords.filter(kw => kw !== keyword));
           await Promise.all([
-            queryClient.invalidateQueries(['/user/alertwords']),
-            queryClient.invalidateQueries(['/notification/global']),
+            queryClient.invalidateQueries({queryKey: ['/user/alertwords']}),
+            queryClient.invalidateQueries({queryKey: ['/notification/global']}),
           ]);
         },
       },
@@ -58,7 +58,7 @@ export const AlertKeywordsSettingsScreen = () => {
         onSuccess: async () => {
           setKeywords([keywords, values.keyword].flat());
           helpers.resetForm();
-          await queryClient.invalidateQueries(['/user/alertwords']);
+          await queryClient.invalidateQueries({queryKey: ['/user/alertwords']});
         },
         onSettled: () => helpers.setSubmitting(false),
       },

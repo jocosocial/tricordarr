@@ -37,11 +37,11 @@ export const EventScreen = ({navigation, route}: Props) => {
         {
           onSuccess: async () => {
             await Promise.all([
-              queryClient.invalidateQueries(['/events']),
-              queryClient.invalidateQueries([`/events/${event.eventID}`]),
-              queryClient.invalidateQueries(['/events/favorites']),
+              queryClient.invalidateQueries({queryKey: ['/events']}),
+              queryClient.invalidateQueries({queryKey: [`/events/${event.eventID}`]}),
+              queryClient.invalidateQueries({queryKey: ['/events/favorites']}),
               // Update the user notification data in case this was/is a favorite.
-              queryClient.invalidateQueries(['/notification/global']),
+              queryClient.invalidateQueries({queryKey: ['/notification/global']}),
             ]);
           },
         },

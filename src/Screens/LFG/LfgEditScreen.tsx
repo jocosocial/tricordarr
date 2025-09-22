@@ -49,9 +49,9 @@ export const LfgEditScreen = ({route, navigation}: Props) => {
         onSuccess: async () => {
           navigation.goBack();
           const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
-          await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
+          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
         },
         onSettled: () => helpers.setSubmitting(false),
       },

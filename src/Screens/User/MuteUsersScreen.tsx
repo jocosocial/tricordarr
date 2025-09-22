@@ -35,7 +35,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -52,7 +52,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },

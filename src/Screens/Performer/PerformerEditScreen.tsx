@@ -27,11 +27,11 @@ export const PerformerEditScreen = ({navigation, route}: Props) => {
         onSuccess: async () => {
           const invalidations = PerformerData.getCacheKeys(route.params.performerData.header.id)
             .map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             })
             .concat(
               EventData.getCacheKeys(route.params.eventID).map(key => {
-                return queryClient.invalidateQueries(key);
+                return queryClient.invalidateQueries({queryKey: key});
               }),
             );
           await Promise.all(invalidations);

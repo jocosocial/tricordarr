@@ -62,7 +62,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries([`/fez/${fezData.fezID}`]);
+          await queryClient.invalidateQueries({queryKey: [`/fez/${fezData.fezID}`]});
         },
         onSettled: () => setRefreshing(false),
       },
@@ -100,7 +100,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         },
         {
           onSuccess: async () => {
-            await queryClient.invalidateQueries([`/fez/${lfg.fezID}`]);
+            await queryClient.invalidateQueries({queryKey: [`/fez/${lfg.fezID}`]});
           },
           onSettled: () => setRefreshing(false),
         },

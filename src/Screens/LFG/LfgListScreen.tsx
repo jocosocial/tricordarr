@@ -92,7 +92,7 @@ export const LfgListScreen = ({
       const socketMessage = JSON.parse(event.data) as SocketNotificationData;
       if (SocketNotificationData.getType(socketMessage) === NotificationTypeData.fezUnreadMsg) {
         const invalidations = FezData.getCacheKeys().map(key => {
-          return queryClient.invalidateQueries(key);
+          return queryClient.invalidateQueries({queryKey: key});
         });
         Promise.all(invalidations);
       } else {

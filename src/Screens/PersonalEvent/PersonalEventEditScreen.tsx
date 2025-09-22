@@ -43,9 +43,9 @@ export const PersonalEventEditScreen = ({navigation, route}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = FezData.getCacheKeys(route.params.personalEvent.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
-          await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
+          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
           navigation.goBack();
         },
         onSettled: () => helpers.setSubmitting(false),

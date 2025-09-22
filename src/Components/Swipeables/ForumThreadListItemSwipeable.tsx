@@ -41,7 +41,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       // Reset first. Improves response time.
       swipeable.reset();
       setReadRefreshing(true);
-      await Promise.all([refetch(), queryClient.invalidateQueries([`/forum/categories/${props.categoryID}`])]);
+      await Promise.all([refetch(), queryClient.invalidateQueries({queryKey: [`/forum/categories/${props.categoryID}`]})]);
       setReadRefreshing(false);
     },
     [props.categoryID, queryClient, refetch],
@@ -59,7 +59,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         {
           onSuccess: async () => {
             const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },
@@ -85,7 +85,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
         {
           onSuccess: async () => {
             const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },
@@ -109,7 +109,7 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       {
         onSuccess: async () => {
           const invalidations = invalidationQueryKeys.map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all([invalidations].flat());
         },

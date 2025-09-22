@@ -33,7 +33,7 @@ export const ScheduleImportScreen = () => {
       ...appConfig,
       schedBaseUrl: values.schedUrl,
     });
-    await queryClient.invalidateQueries(['/events']);
+    await queryClient.invalidateQueries({queryKey: ['/events']});
     let successCount = 0,
       skipCount = 0;
     await refetch();
@@ -81,7 +81,7 @@ export const ScheduleImportScreen = () => {
       writeLog(`Successfully processed ${successCount} ${pluralize('event', successCount)}.`);
       writeLog(`Skipped ${skipCount} ${pluralize('event', skipCount)} already favorited.`);
     }
-    await queryClient.invalidateQueries(['/events']);
+    await queryClient.invalidateQueries({queryKey: ['/events']});
     helpers.setSubmitting(false);
   };
 

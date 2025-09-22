@@ -29,7 +29,7 @@ export const PerformerCreateScreen = ({route, navigation}: Props) => {
           const invalidations = EventData.getCacheKeys(route.params.eventID)
             .concat(PerformerData.getCacheKeys())
             .map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
           await Promise.all(invalidations);
           navigation.goBack();

@@ -37,7 +37,7 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
       {
         onSuccess: () => {
           const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           Promise.all(invalidations);
           navigation.goBack();
@@ -54,7 +54,7 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           navigation.goBack();

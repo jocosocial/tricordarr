@@ -35,11 +35,11 @@ export const PerformerProfileDeleteModalView = () => {
         onSuccess: async () => {
           const invalidations = PerformerData.getCacheKeys()
             .map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             })
             .concat(
               EventData.getCacheKeys().map(key => {
-                return queryClient.invalidateQueries(key);
+                return queryClient.invalidateQueries({queryKey: key});
               }),
             );
           await Promise.all(invalidations);
