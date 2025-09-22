@@ -73,8 +73,8 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
           {route.params.user.note && (
             <PrimaryActionButton
               buttonColor={theme.colors.twitarrNegativeButton}
-              disabled={deleteMutation.isLoading}
-              isLoading={deleteMutation.isLoading}
+              disabled={deleteMutation.isPending}
+              isLoading={deleteMutation.isPending}
               viewStyle={[commonStyles.marginTop]}
               onPress={handleDelete}
               buttonText={'Delete'}

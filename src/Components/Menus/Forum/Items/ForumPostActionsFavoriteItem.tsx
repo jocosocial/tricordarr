@@ -42,7 +42,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData}: ForumPostAc
 
   const getIcon = () => (
     <StateLoadingIcon
-      isLoading={favoriteMutation.isLoading}
+      isLoading={favoriteMutation.isPending}
       state={forumPost.isBookmarked}
       iconTrue={AppIcons.unfavorite}
       iconFalse={AppIcons.favorite}

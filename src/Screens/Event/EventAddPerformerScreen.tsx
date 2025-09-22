@@ -106,7 +106,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
 
   const alreadyAttached = eventData?.performers.find(p => p.id)?.id === performerData?.header.id;
 
-  const isMutating = performerCreateMutation.isLoading || performerRemoveMutation.isLoading;
+  const isMutating = performerCreateMutation.isPending || performerRemoveMutation.isPending;
   const isRefreshing = isFetchingSelf || isFetchingEvent || isMutating;
 
   // Makes JSX+TypeScript happy

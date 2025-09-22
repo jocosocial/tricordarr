@@ -59,8 +59,8 @@ export const PersonalEventDeleteModal = ({personalEvent, handleNavigation = true
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Delete'}
       onPress={onSubmit}
-      isLoading={deleteMutation.isLoading}
-      disabled={deleteMutation.isLoading}
+      isLoading={deleteMutation.isPending}
+      disabled={deleteMutation.isPending}
     />
   );
 

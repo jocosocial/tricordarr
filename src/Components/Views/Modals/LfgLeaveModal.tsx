@@ -56,8 +56,8 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Leave'}
       onPress={onSubmit}
-      isLoading={membershipMutation.isLoading}
-      disabled={membershipMutation.isLoading}
+      isLoading={membershipMutation.isPending}
+      disabled={membershipMutation.isPending}
     />
   );
 

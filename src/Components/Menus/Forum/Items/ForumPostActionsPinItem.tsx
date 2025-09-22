@@ -40,7 +40,7 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
 
   const getIcon = () => (
     <StateLoadingIcon
-      isLoading={pinMutation.isLoading}
+      isLoading={pinMutation.isPending}
       state={props.forumPost.isPinned}
       iconTrue={AppIcons.unpin}
       iconFalse={AppIcons.pin}

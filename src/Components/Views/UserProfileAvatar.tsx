@@ -104,8 +104,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   useEffect(() => {
-    setRefreshing(avatarMutation.isLoading || usersProfileQuery.isRefetching);
-  }, [avatarMutation.isLoading, setRefreshing, usersProfileQuery.isRefetching]);
+    setRefreshing(avatarMutation.isPending || usersProfileQuery.isRefetching);
+  }, [avatarMutation.isPending, setRefreshing, usersProfileQuery.isRefetching]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 

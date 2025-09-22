@@ -54,8 +54,8 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Block'}
       onPress={onSubmit}
-      isLoading={blockMutation.isLoading}
-      disabled={blockMutation.isLoading}
+      isLoading={blockMutation.isPending}
+      disabled={blockMutation.isPending}
     />
   );
 

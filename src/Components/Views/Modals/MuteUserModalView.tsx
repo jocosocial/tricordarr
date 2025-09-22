@@ -54,8 +54,8 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Mute'}
       onPress={onSubmit}
-      isLoading={muteMutation.isLoading}
-      disabled={muteMutation.isLoading}
+      isLoading={muteMutation.isPending}
+      disabled={muteMutation.isPending}
     />
   );
 

@@ -59,8 +59,8 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Cancel'}
       onPress={onSubmit}
-      isLoading={cancelMutation.isLoading}
-      disabled={cancelMutation.isLoading}
+      isLoading={cancelMutation.isPending}
+      disabled={cancelMutation.isPending}
     />
   );
 
