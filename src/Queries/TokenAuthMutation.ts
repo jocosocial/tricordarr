@@ -21,7 +21,8 @@ export function useTokenAuthMutation<
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'>,
 ): UseMutationResult<TData, TError, TVariables, TContext> {
   const {setSnackbarPayload} = useSnackbar();
-  return useMutation<TData, TError, TVariables, TContext>(mutationFn, {
+  return useMutation<TData, TError, TVariables, TContext>({
+    mutationFn: mutationFn,
     onError: error => {
       setSnackbarPayload({message: error.response?.data.reason || String(error), messageType: 'error'});
       console.error('[TokenAuthMutation.ts]', error);
