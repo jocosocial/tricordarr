@@ -1,4 +1,5 @@
 import {
+  type GetNextPageParamFunction,
   InfiniteData,
   QueryKey,
   useInfiniteQuery,
@@ -11,7 +12,7 @@ import {
 import {AxiosError} from 'axios';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
-// import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {shouldQueryEnable} from '#src/Libraries/Network/APIClient';
 import {
@@ -154,12 +155,12 @@ export type TokenAuthPaginationQueryOptionsType<
 
 export type TokenAuthPaginationQueryOptionsTypeV2<
   TQueryFnData,
-  TError,
-  TData,
+  TError extends Error = AxiosError<ErrorResponse>,
+  TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
   TQueryKey extends QueryKey = QueryKey,
 > = Omit<
   UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, PaginationQueryParams>,
-  'initialData' | 'queryKey' | 'onError' | 'enabled'
+  'initialData' | 'queryKey' | 'onError' | 'enabled' | 'getNextPageParam' | 'initialPageParam'
 > & {
   /**
    * Your query function gets a `pageParam` object containing { start?, limit? }.
@@ -173,16 +174,22 @@ export type TokenAuthPaginationQueryOptionsTypeV2<
   // React Query v5 allows for enabled to be a function. We are disabling that
   // for now to maintain simplicity in the query wrappers.
   enabled?: boolean;
+  getNextPageParam?: GetNextPageParamFunction<PaginationQueryParams, TQueryFnData>;
+  initialPageParam?: PaginationQueryParams;
 };
 
 /**
  * Wrapper around useInfiniteQuery with a default query function signature.
  */
 export function useTokenAuthPaginationQuery<
-  TQueryFnData extends WithPaginator | FezData, // The raw API data
+  // The raw API data.
+  TQueryFnData extends WithPaginator | FezData,
+  // Error
   TError extends Error = AxiosError<ErrorResponse>,
-  TData = InfiniteData<TQueryFnData, PaginationQueryParams>, // Optional transformed data
-  TQueryParams extends PaginationQueryParams = PaginationQueryParams,
+  // Data that this function returns, optionally transformed data.
+  TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
+  // Query and pagination parameters.
+  TQueryParams = PaginationQueryParams & Record<string, unknown>,
 >(
   endpoint: string,
   options?: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,
@@ -190,6 +197,7 @@ export function useTokenAuthPaginationQuery<
 ): UseInfiniteQueryResult<TData, TError> {
   const {isLoggedIn} = useAuth();
   const {disruptionDetected, apiGet, queryKeyExtraData} = useSwiftarrQueryClient();
+  const {appConfig} = useConfig();
 
   const defaultQueryFn = async ({pageParam}: {pageParam: PaginationQueryParams}) => {
     const {data: responseData} = await apiGet<TQueryFnData, TQueryParams>(endpoint, {
@@ -204,7 +212,7 @@ export function useTokenAuthPaginationQuery<
     ...options,
     queryKey: [endpoint, queryParams, ...queryKeyExtraData],
     queryFn: options?.queryFn || defaultQueryFn,
-    initialPageParam: {start: undefined, limit: 50},
+    initialPageParam: {start: undefined, limit: appConfig.apiClientConfig.defaultPageSize},
     getNextPageParam: (lastPage: TQueryFnData) => getNextPageParam(lastPage),
     getPreviousPageParam: (firstPage: TQueryFnData) => getPreviousPageParam(firstPage),
     enabled: shouldQueryEnable(isLoggedIn, disruptionDetected, options?.enabled),
