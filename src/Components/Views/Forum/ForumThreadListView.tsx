@@ -1,5 +1,3 @@
-import {FetchNextPageOptions, InfiniteQueryObserverResult} from '@tanstack/react-query';
-import {AxiosError} from 'axios';
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {RefreshControl} from 'react-native';
 
@@ -8,7 +6,7 @@ import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/Selecti
 import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
-import {CategoryData, ErrorResponse, ForumListData, ForumSearchData} from '#src/Structs/ControllerStructs';
+import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadListViewProps {
   hasNextPage?: boolean;
@@ -16,12 +14,8 @@ interface ForumThreadListViewProps {
   enableFAB?: boolean;
   category?: CategoryData;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
-  fetchNextPage: (
-    options?: FetchNextPageOptions | undefined,
-  ) => Promise<InfiniteQueryObserverResult<CategoryData | ForumSearchData, AxiosError<ErrorResponse, any>>>;
-  fetchPreviousPage: (
-    options?: FetchNextPageOptions | undefined,
-  ) => Promise<InfiniteQueryObserverResult<CategoryData | ForumSearchData, AxiosError<ErrorResponse, any>>>;
+  fetchNextPage: () => Promise<unknown>;
+  fetchPreviousPage: () => Promise<unknown>;
   isFetchingNextPage: boolean;
   isFetchingPreviousPage: boolean;
   title?: string;

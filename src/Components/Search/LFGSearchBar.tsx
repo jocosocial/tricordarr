@@ -18,7 +18,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const {lfgHidePastFilter} = useFilter();
-  const {data, refetch, isFetching, remove} = useLfgListQuery({
+  const {data, refetch, isFetching} = useLfgListQuery({
     search: searchQuery,
     hidePast: lfgHidePastFilter,
     options: {
@@ -31,11 +31,9 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
       setQueryEnable(false);
-      remove();
     }
     setSearchQuery(query);
   };
-  const onClear = () => remove();
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
@@ -51,13 +49,7 @@ export const LFGSearchBar = ({endpoint}: LFGSearchBarProps) => {
 
   return (
     <>
-      <SearchBarBase
-        searchQuery={searchQuery}
-        onSearch={onSearch}
-        onChangeSearch={onChangeSearch}
-        onClear={onClear}
-        remove={remove}
-      />
+      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}

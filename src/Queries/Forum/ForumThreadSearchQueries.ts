@@ -18,5 +18,5 @@ export interface ForumSearchQueryParams {
 }
 
 export const useForumSearchQuery = (queryParams?: ForumSearchQueryParams, options = {}) => {
-  return useTokenAuthPaginationQuery<ForumSearchData>('/forum/search', options, queryParams);
+  return useTokenAuthPaginationQuery<ForumSearchData, ForumSearchQueryParams>('/forum/search', options, queryParams);
 };

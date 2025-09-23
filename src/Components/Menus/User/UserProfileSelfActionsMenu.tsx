@@ -19,7 +19,7 @@ export const UserProfileSelfActionsMenu = () => {
 
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.userProfileHelpScreen);
+    commonNavigation.push(CommonStackComponents.userProfileHelpScreen, {});
   };
 
   return (

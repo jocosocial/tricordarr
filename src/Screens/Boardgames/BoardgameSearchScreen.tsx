@@ -10,7 +10,7 @@ import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 export const BoardgameSearchScreen = () => {
   const {commonStyles} = useStyles();
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {data, hasNextPage, fetchNextPage, isFetching, refetch, remove} = useBoardgamesQuery({
+  const {data, hasNextPage, fetchNextPage, isFetching, refetch} = useBoardgamesQuery({
     search: searchQuery,
     options: {
       enabled: false,
@@ -23,7 +23,7 @@ export const BoardgameSearchScreen = () => {
 
   const onClear = () => {
     setSearchQuery('');
-    remove();
+    // remove() was deprecated in react-query v5. Do we still need to do that?
   };
 
   const items = searchQuery ? data?.pages.flatMap(p => p.gameArray) || [] : [];
@@ -36,7 +36,6 @@ export const BoardgameSearchScreen = () => {
         onSearch={onSearch}
         onChangeSearch={query => setSearchQuery(query)}
         style={commonStyles.marginBottom}
-        remove={remove}
       />
       <BoardgameFlatList
         items={items}

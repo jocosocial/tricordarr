@@ -29,7 +29,6 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
     isFetchingPreviousPage,
     isFetchingNextPage,
     isFetching,
-    remove,
   } = useForumPostSearchQuery(
     {
       search: searchQuery,
@@ -53,7 +52,6 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   const onClear = () => {
     setForumPosts([]);
-    remove();
     setQueryEnable(false);
   };
 
@@ -115,13 +113,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
 
   return (
     <>
-      <SearchBarBase
-        searchQuery={searchQuery}
-        onSearch={onSearch}
-        onChangeSearch={onChangeSearch}
-        onClear={onClear}
-        remove={remove}
-      />
+      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
         <ForumPostFlatList
           flatListRef={flatListRef}

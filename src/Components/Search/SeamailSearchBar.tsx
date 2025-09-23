@@ -10,7 +10,7 @@ import {FezData} from '#src/Structs/ControllerStructs';
 export const SeamailSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [queryEnable, setQueryEnable] = useState(false);
-  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, remove} = useSeamailListQuery({
+  const {data, refetch, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage} = useSeamailListQuery({
     search: searchQuery,
     options: {
       enabled: queryEnable,
@@ -26,7 +26,6 @@ export const SeamailSearchBar = () => {
   };
   const onClear = () => {
     setFezList([]);
-    remove();
     setQueryEnable(false);
   };
   const onSearch = () => {

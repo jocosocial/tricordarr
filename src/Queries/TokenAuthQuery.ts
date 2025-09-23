@@ -184,12 +184,12 @@ export type TokenAuthPaginationQueryOptionsTypeV2<
 export function useTokenAuthPaginationQuery<
   // The raw API data.
   TQueryFnData extends WithPaginator | FezData,
-  // Error
-  TError extends Error = AxiosError<ErrorResponse>,
-  // Data that this function returns, optionally transformed data.
-  TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
   // Query and pagination parameters.
   TQueryParams = PaginationQueryParams & Record<string, unknown>,
+  // Data that this function returns, optionally transformed data.
+  TData = InfiniteData<TQueryFnData, PaginationQueryParams>,
+  // Error
+  TError extends Error = AxiosError<ErrorResponse>,
 >(
   endpoint: string,
   options?: TokenAuthPaginationQueryOptionsTypeV2<TQueryFnData, TError, TData>,

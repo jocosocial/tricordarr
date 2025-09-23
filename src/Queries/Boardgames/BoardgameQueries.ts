@@ -1,4 +1,8 @@
-import {TokenAuthPaginationQueryOptionsTypeV2, useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {
+  TokenAuthPaginationQueryOptionsTypeV2,
+  useTokenAuthPaginationQuery,
+  useTokenAuthQuery,
+} from '#src/Queries/TokenAuthQuery';
 import {BoardgameData, BoardgameResponseData} from '#src/Structs/ControllerStructs';
 
 interface BoardgamesQueryOptions {
