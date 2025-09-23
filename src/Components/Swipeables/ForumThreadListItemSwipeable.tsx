@@ -41,7 +41,10 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       // Reset first. Improves response time.
       swipeable.reset();
       setReadRefreshing(true);
-      await Promise.all([refetch(), queryClient.invalidateQueries({queryKey: [`/forum/categories/${props.categoryID}`]})]);
+      await Promise.all([
+        refetch(),
+        queryClient.invalidateQueries({queryKey: [`/forum/categories/${props.categoryID}`]}),
+      ]);
       setReadRefreshing(false);
     },
     [props.categoryID, queryClient, refetch],
