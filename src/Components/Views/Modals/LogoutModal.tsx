@@ -82,8 +82,8 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Log Out'}
       onPress={allDevices ? logoutAll : logoutDevice}
-      isLoading={logoutMutation.isLoading || loading}
-      disabled={logoutMutation.isLoading || loading}
+      isLoading={logoutMutation.isPending || loading}
+      disabled={logoutMutation.isPending || loading}
     />
   );
 

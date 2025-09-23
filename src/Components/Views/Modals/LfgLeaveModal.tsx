@@ -43,7 +43,7 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: async () => {
           setModalVisible(false);
           const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -56,8 +56,8 @@ export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Leave'}
       onPress={onSubmit}
-      isLoading={membershipMutation.isLoading}
-      disabled={membershipMutation.isLoading}
+      isLoading={membershipMutation.isPending}
+      disabled={membershipMutation.isPending}
     />
   );
 

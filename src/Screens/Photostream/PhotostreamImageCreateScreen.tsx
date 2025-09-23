@@ -49,7 +49,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(['/photostream']);
+          queryClient.invalidateQueries({queryKey: ['/photostream']});
           navigation.goBack();
         },
         onSettled: () => {

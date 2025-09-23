@@ -26,12 +26,12 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
         onSuccess: async () => {
           if (props.forumData) {
             await Promise.all([
-              queryClient.invalidateQueries([`/forum/${props.forumData.forumID}`]),
-              queryClient.invalidateQueries([`/forum/${props.forumData.forumID}/pinnedposts`]),
-              queryClient.invalidateQueries([`/forum/post/${props.forumPost.postID}/forum`]),
+              queryClient.invalidateQueries({queryKey: [`/forum/${props.forumData.forumID}`]}),
+              queryClient.invalidateQueries({queryKey: [`/forum/${props.forumData.forumID}/pinnedposts`]}),
+              queryClient.invalidateQueries({queryKey: [`/forum/post/${props.forumPost.postID}/forum`]}),
             ]);
           } else {
-            await queryClient.invalidateQueries([`/forum/post/${props.forumPost.postID}/forum`]);
+            await queryClient.invalidateQueries({queryKey: [`/forum/post/${props.forumPost.postID}/forum`]});
           }
         },
       },
@@ -40,7 +40,7 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
 
   const getIcon = () => (
     <StateLoadingIcon
-      isLoading={pinMutation.isLoading}
+      isLoading={pinMutation.isPending}
       state={props.forumPost.isPinned}
       iconTrue={AppIcons.unpin}
       iconFalse={AppIcons.pin}

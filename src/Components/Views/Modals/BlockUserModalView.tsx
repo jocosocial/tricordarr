@@ -40,7 +40,7 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
       {
         onSuccess: () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           Promise.all(invalidations);
           setModalVisible(false);
@@ -54,8 +54,8 @@ export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Block'}
       onPress={onSubmit}
-      isLoading={blockMutation.isLoading}
-      disabled={blockMutation.isLoading}
+      isLoading={blockMutation.isPending}
+      disabled={blockMutation.isPending}
     />
   );
 

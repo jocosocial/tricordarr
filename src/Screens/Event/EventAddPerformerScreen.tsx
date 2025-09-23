@@ -92,7 +92,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
           const invalidations = EventData.getCacheKeys(route.params.eventID)
             .concat(PerformerData.getCacheKeys())
             .map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
           await Promise.all(invalidations);
         },
@@ -106,7 +106,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
 
   const alreadyAttached = eventData?.performers.find(p => p.id)?.id === performerData?.header.id;
 
-  const isMutating = performerCreateMutation.isLoading || performerRemoveMutation.isLoading;
+  const isMutating = performerCreateMutation.isPending || performerRemoveMutation.isPending;
   const isRefreshing = isFetchingSelf || isFetchingEvent || isMutating;
 
   // Makes JSX+TypeScript happy

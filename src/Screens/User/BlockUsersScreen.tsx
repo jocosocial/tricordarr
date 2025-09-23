@@ -35,7 +35,7 @@ export const BlockUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -52,7 +52,7 @@ export const BlockUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -67,7 +67,7 @@ export const BlockUsersScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching || userBlockMutation.isLoading} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching || userBlockMutation.isPending} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}

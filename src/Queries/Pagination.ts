@@ -50,6 +50,9 @@ export interface PaginationQueryParams {
   limit?: number;
 }
 
+/**
+ * @deprecated this should no longer be needed since Swiftarr paginates all the things now.
+ */
 export interface PageParam extends PaginationQueryParams {
   [key: string]: unknown;
 }

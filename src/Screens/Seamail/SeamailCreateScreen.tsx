@@ -52,7 +52,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           onSuccess: async response => {
             setNewSeamail(response.data);
             const invalidations = FezData.getCacheKeys().map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
             // Whatever we picked in the SeamailCreate is what should be set in the Post.

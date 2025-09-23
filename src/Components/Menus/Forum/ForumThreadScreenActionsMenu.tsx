@@ -61,7 +61,7 @@ export const ForumThreadScreenActionsMenu = ({
         {
           onSuccess: async () => {
             const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },
@@ -86,7 +86,7 @@ export const ForumThreadScreenActionsMenu = ({
         {
           onSuccess: async () => {
             const invalidations = invalidationQueryKeys.map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },

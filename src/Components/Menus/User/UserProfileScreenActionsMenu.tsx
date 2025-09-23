@@ -84,7 +84,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
               {
                 onSuccess: () => {
                   const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries(key);
+                    return queryClient.invalidateQueries({queryKey: key});
                   });
                   Promise.all(invalidations);
                   closeMenu();
@@ -106,7 +106,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
               {
                 onSuccess: () => {
                   const invalidations = UserHeader.getRelationKeys().map(key => {
-                    return queryClient.invalidateQueries(key);
+                    return queryClient.invalidateQueries({queryKey: key});
                   });
                   Promise.all(invalidations);
                   closeMenu();

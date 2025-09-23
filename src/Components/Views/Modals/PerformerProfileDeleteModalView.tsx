@@ -35,11 +35,11 @@ export const PerformerProfileDeleteModalView = () => {
         onSuccess: async () => {
           const invalidations = PerformerData.getCacheKeys()
             .map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             })
             .concat(
               EventData.getCacheKeys().map(key => {
-                return queryClient.invalidateQueries(key);
+                return queryClient.invalidateQueries({queryKey: key});
               }),
             );
           await Promise.all(invalidations);
@@ -54,8 +54,8 @@ export const PerformerProfileDeleteModalView = () => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Delete'}
       onPress={onSubmit}
-      isLoading={deleteMutation.isLoading}
-      disabled={deleteMutation.isLoading}
+      isLoading={deleteMutation.isPending}
+      disabled={deleteMutation.isPending}
     />
   );
 

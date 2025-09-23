@@ -45,9 +45,9 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
         onSuccess: async () => {
           setSnackbarPayload({message: 'Successfully canceled this event.', messageType: 'info'});
           const invalidations = FezData.getCacheKeys(fezData.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
-          await Promise.all([...invalidations, queryClient.invalidateQueries(['/notification/global'])]);
+          await Promise.all([...invalidations, queryClient.invalidateQueries({queryKey: ['/notification/global']})]);
           setModalVisible(false);
         },
       },
@@ -59,8 +59,8 @@ export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Cancel'}
       onPress={onSubmit}
-      isLoading={cancelMutation.isLoading}
-      disabled={cancelMutation.isLoading}
+      isLoading={cancelMutation.isPending}
+      disabled={cancelMutation.isPending}
     />
   );
 

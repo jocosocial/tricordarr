@@ -45,7 +45,8 @@ export const SearchBarBase = ({
     }
   };
 
-  // Clear search results when you go back or otherwise unmount this screen.
+  // Clear search results when you go back or otherwise unmount this screen
+  // @TODO react query v5 removed remove(). Is this still relevant? Should we do something else?
   useEffect(() => {
     return () => (remove ? remove() : undefined);
   }, [remove]);

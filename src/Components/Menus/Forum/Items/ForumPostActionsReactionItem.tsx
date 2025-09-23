@@ -76,7 +76,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       <SubmitIconButton
         icon={LikeReaction}
         onPress={() => handleReaction(LikeType.like)}
-        submitting={reactionMutation.isLoading}
+        submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
           PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.like)
@@ -88,7 +88,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       <SubmitIconButton
         icon={LaughReaction}
         onPress={() => handleReaction(LikeType.laugh)}
-        submitting={reactionMutation.isLoading}
+        submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
           PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.laugh)
@@ -100,7 +100,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
       <SubmitIconButton
         icon={LoveReaction}
         onPress={() => handleReaction(LikeType.love)}
-        submitting={reactionMutation.isLoading}
+        submitting={reactionMutation.isPending}
         disabled={bySelf}
         containerColor={
           PostDetailData.hasUserReacted(data, profilePublicData.header, LikeType.love)

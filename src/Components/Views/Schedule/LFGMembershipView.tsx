@@ -43,7 +43,7 @@ export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
         {
           onSuccess: async () => {
             const invalidations = FezData.getCacheKeys(lfg.fezID).map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },

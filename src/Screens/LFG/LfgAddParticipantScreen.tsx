@@ -32,7 +32,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
       },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries([`/fez/${route.params.fezID}`]);
+          await queryClient.invalidateQueries({queryKey: [`/fez/${route.params.fezID}`]});
           navigation.goBack();
         },
       },
@@ -45,7 +45,7 @@ export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isLoading} />}>
+      <ScrollingContentView refreshControl={<RefreshControl refreshing={participantMutation.isPending} />}>
         <PaddedContentView>
           <UserSearchBar excludeHeaders={lfg.members.participants || []} onPress={onPress} />
         </PaddedContentView>

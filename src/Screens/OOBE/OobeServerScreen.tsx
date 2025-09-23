@@ -39,7 +39,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
 
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = serverUrl;
-    await queryClient.cancelQueries(['/client/health']);
+    await queryClient.cancelQueries({queryKey: ['/client/health']});
     if (preRegistrationMode) {
       updateAppConfig({
         ...appConfig,

@@ -26,7 +26,7 @@ export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = FezData.getCacheKeys(route.params.fez.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           navigation.goBack();

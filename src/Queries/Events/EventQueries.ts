@@ -1,4 +1,4 @@
-import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {EventData} from '#src/Structs/ControllerStructs';
 
 interface EventsQueryOptions {
@@ -8,10 +8,10 @@ interface EventsQueryOptions {
   time?: Date;
   eventType?: 'official' | 'shadow';
   search?: string;
-  options?: {};
+  options?: TokenAuthQueryOptionsType<EventData[]>;
 }
 
-export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options = {}}: EventsQueryOptions) => {
+export const useEventsQuery = ({cruiseDay, day, date, time, eventType, search, options}: EventsQueryOptions) => {
   return useTokenAuthQuery<EventData[]>('/events', options, {
     ...(cruiseDay !== undefined && {cruiseday: cruiseDay}),
     ...(day && {day: day}),

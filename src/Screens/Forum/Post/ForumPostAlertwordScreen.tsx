@@ -49,7 +49,7 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
   useEffect(() => {
     if (data && data.pages) {
       setForumPosts(data.pages.flatMap(p => p.posts));
-      queryClient.invalidateQueries(['/notification/global']);
+      queryClient.invalidateQueries({queryKey: ['/notification/global']});
     }
   }, [data, setForumPosts, queryClient, route.params.alertWord]);
 

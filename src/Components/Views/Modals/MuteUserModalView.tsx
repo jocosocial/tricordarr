@@ -40,7 +40,7 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
       {
         onSuccess: () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           Promise.all(invalidations);
           setModalVisible(false);
@@ -54,8 +54,8 @@ export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Mute'}
       onPress={onSubmit}
-      isLoading={muteMutation.isLoading}
-      disabled={muteMutation.isLoading}
+      isLoading={muteMutation.isPending}
+      disabled={muteMutation.isPending}
     />
   );
 

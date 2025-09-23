@@ -35,7 +35,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries([`/forum/${i.forumID}`]);
+            queryClient.invalidateQueries({queryKey: [`/forum/${i.forumID}`]});
           },
         },
       );
@@ -52,7 +52,7 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
       });
     });
     const invalidationQueryKeys = ForumListData.getCacheKeys(props.categoryID);
-    invalidationQueryKeys.forEach(key => queryClient.invalidateQueries(key));
+    invalidationQueryKeys.forEach(key => queryClient.invalidateQueries({queryKey: key}));
     props.setRefreshing(false);
   };
 

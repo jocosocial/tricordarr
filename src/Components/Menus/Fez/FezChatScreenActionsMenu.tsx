@@ -51,7 +51,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
       {
         onSuccess: async () => {
           const invalidations = FezData.getCacheKeys(fez.fezID).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },

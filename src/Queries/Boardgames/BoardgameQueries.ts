@@ -1,19 +1,23 @@
-import {useTokenAuthPaginationQuery, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {
+  TokenAuthPaginationQueryOptionsTypeV2,
+  useTokenAuthPaginationQuery,
+  useTokenAuthQuery,
+} from '#src/Queries/TokenAuthQuery';
 import {BoardgameData, BoardgameResponseData} from '#src/Structs/ControllerStructs';
 
 interface BoardgamesQueryOptions {
   search?: string;
   favorite?: boolean;
-  options?: {};
+  options?: TokenAuthPaginationQueryOptionsTypeV2<BoardgameResponseData>;
 }
 
 interface BoardgameQueryOptions {
   boardgameID: string;
-  options?: {};
+  options?: TokenAuthPaginationQueryOptionsTypeV2<BoardgameResponseData>;
 }
 
 interface BoardgameRecommendQueryOptions {
-  options?: {};
+  options?: TokenAuthPaginationQueryOptionsTypeV2<BoardgameResponseData>;
 }
 
 export const useBoardgamesQuery = ({search, favorite, options}: BoardgamesQueryOptions) => {

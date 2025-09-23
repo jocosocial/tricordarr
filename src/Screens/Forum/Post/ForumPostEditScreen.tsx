@@ -27,12 +27,14 @@ export const ForumPostEditScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           await Promise.all([
-            queryClient.invalidateQueries([`/forum/post/${route.params.postData.postID}`]),
-            queryClient.invalidateQueries(['/forum/post/search']),
-            queryClient.invalidateQueries([`/forum/post/${route.params.postData.postID}/forum`]),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${route.params.postData.postID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${route.params.postData.postID}/forum`]}),
           ]);
           if (route.params.forumData) {
-            await Promise.all([queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`])]);
+            await Promise.all([
+              queryClient.invalidateQueries({queryKey: [`/forum/${route.params.forumData.forumID}`]}),
+            ]);
           }
           navigation.goBack();
         },

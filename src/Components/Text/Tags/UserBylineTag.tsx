@@ -20,7 +20,12 @@ interface UserBylineTagProps {
   prefix?: string;
 }
 
-export const getUserBylineString = (user: UserHeader, includePronoun: boolean, includeDisplayName: boolean) => {
+export const getUserBylineString = (
+  user: UserHeader,
+  includePronoun: boolean,
+  includeDisplayName: boolean,
+  prefix?: string,
+) => {
   let displayComponents: string[] = [];
   if (includeDisplayName && user.displayName) {
     displayComponents.push(user.displayName);
@@ -31,7 +36,7 @@ export const getUserBylineString = (user: UserHeader, includePronoun: boolean, i
   if (includePronoun && user.preferredPronoun) {
     displayComponents.push(user.preferredPronoun);
   }
-  return displayComponents.join(' ');
+  return `${prefix ? `${prefix} ` : ''}${displayComponents.join(' ')}`;
 };
 
 export const UserBylineTag = ({

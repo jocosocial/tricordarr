@@ -52,7 +52,7 @@ export const UserProfileEditScreen = ({route, navigation}: Props) => {
         onSettled: () => helpers.setSubmitting(false),
         onSuccess: async () => {
           const invalidations = UserHeader.getCacheKeys(route.params.user.header).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           navigation.goBack();

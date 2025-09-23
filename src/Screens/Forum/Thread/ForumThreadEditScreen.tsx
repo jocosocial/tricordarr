@@ -26,9 +26,9 @@ export const ForumThreadEditScreen = ({route, navigation}: Props) => {
       {
         onSuccess: async () => {
           await Promise.all([
-            queryClient.invalidateQueries([`/forum/${route.params.forumData.forumID}`]),
-            queryClient.invalidateQueries([`/forum/categories/${route.params.forumData.categoryID}`]),
-            queryClient.invalidateQueries(['/forum/search']),
+            queryClient.invalidateQueries({queryKey: [`/forum/${route.params.forumData.forumID}`]}),
+            queryClient.invalidateQueries({queryKey: [`/forum/categories/${route.params.forumData.categoryID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/forum/search']}),
           ]);
           navigation.goBack();
         },

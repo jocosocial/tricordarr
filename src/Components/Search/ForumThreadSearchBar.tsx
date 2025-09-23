@@ -32,7 +32,6 @@ export const ForumThreadSearchBar = (props: Props) => {
     isFetchingPreviousPage,
     isFetchingNextPage,
     isFetching,
-    remove,
   } = useForumSearchQuery(
     {
       search: searchQuery,
@@ -55,7 +54,6 @@ export const ForumThreadSearchBar = (props: Props) => {
   const onClear = () => {
     setEnable(false);
     setForumList([]);
-    remove();
   };
   const onRefresh = () => {
     setRefreshing(true);
@@ -116,13 +114,7 @@ export const ForumThreadSearchBar = (props: Props) => {
 
   return (
     <>
-      <SearchBarBase
-        searchQuery={searchQuery}
-        onSearch={onSearch}
-        onChangeSearch={onChangeSearch}
-        onClear={onClear}
-        remove={remove}
-      />
+      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
         <ForumThreadFlatList
           refreshControl={

@@ -1,14 +1,14 @@
-import {useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
+import {TokenAuthQueryOptionsType, useTokenAuthQuery} from '#src/Queries/TokenAuthQuery';
 import {ProfilePublicData, UserHeader} from '#src/Structs/ControllerStructs';
 
-export const useUsersProfileQuery = (userID: string, options = {}) => {
+export const useUsersProfileQuery = (userID: string, options?: TokenAuthQueryOptionsType<ProfilePublicData>) => {
   return useTokenAuthQuery<ProfilePublicData>(`/users/${userID}/profile`, options);
 };
 
 interface UserMatchQueryProps {
   searchQuery: string;
   favorers?: boolean;
-  options?: {};
+  options?: TokenAuthQueryOptionsType<UserHeader[]>;
 }
 
 export const useUserMatchQuery = ({searchQuery, favorers, options}: UserMatchQueryProps) => {

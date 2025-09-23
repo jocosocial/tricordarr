@@ -167,7 +167,7 @@ export const FezChatScreen = ({route}: Props) => {
             // Mark stale so that it refetches with your new posts
             // Some day this should just update the query data.
             const invalidations = FezData.getCacheKeys(route.params.fezID).map(key => {
-              return queryClient.invalidateQueries(key);
+              return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
           },
@@ -242,7 +242,7 @@ export const FezChatScreen = ({route}: Props) => {
       // This does not invalidate the current key because that's how we determine
       // where the NEW marker goes.
       const invalidations = FezData.getCacheKeys().map(key => {
-        return queryClient.invalidateQueries(key);
+        return queryClient.invalidateQueries({queryKey: key});
       });
       Promise.all(invalidations);
       if (appConfig.markReadCancelPush) {

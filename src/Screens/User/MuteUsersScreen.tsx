@@ -35,7 +35,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -52,7 +52,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getRelationKeys().map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
         },
@@ -67,7 +67,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching || userMuteMutation.isLoading} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching || userMuteMutation.isPending} onRefresh={refetch} />}>
         <PaddedContentView>
           <UserMuteText />
           {hasModerator && <ModeratorMuteText />}

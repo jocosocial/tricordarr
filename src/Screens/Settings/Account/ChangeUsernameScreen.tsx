@@ -33,7 +33,7 @@ export const ChangeUsernameScreen = () => {
       {
         onSuccess: async () => {
           const invalidations = UserHeader.getCacheKeys(profilePublicData?.header).map(key => {
-            return queryClient.invalidateQueries(key);
+            return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
           setSnackbarPayload({message: 'Successfully changed username!'});

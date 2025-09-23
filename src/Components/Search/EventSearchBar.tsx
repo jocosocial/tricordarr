@@ -11,7 +11,7 @@ import {EventData} from '#src/Structs/ControllerStructs';
 export const EventSearchBar = () => {
   const [queryEnable, setQueryEnable] = useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const {data, refetch, isFetching, remove} = useEventsQuery({
+  const {data, refetch, isFetching} = useEventsQuery({
     search: searchQuery,
     options: {
       enabled: queryEnable,
@@ -22,11 +22,9 @@ export const EventSearchBar = () => {
   const onChangeSearch = (query: string) => {
     if (query !== searchQuery) {
       setQueryEnable(false);
-      remove();
     }
     setSearchQuery(query);
   };
-  const onClear = () => remove();
 
   const onSearch = () => {
     if (!searchQuery || searchQuery.length < 3) {
@@ -41,13 +39,7 @@ export const EventSearchBar = () => {
 
   return (
     <>
-      <SearchBarBase
-        searchQuery={searchQuery}
-        onSearch={onSearch}
-        onChangeSearch={onChangeSearch}
-        onClear={onClear}
-        remove={remove}
-      />
+      <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} />
       <ScheduleFlatList
         listRef={listRef}
         listFooter={<TimeDivider label={'End of Results'} />}

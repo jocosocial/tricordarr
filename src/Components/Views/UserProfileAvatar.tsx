@@ -76,7 +76,7 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
 
   const onSuccess = async () => {
     const invalidations = UserHeader.getCacheKeys(user.header).map(key => {
-      return queryClient.invalidateQueries(key);
+      return queryClient.invalidateQueries({queryKey: key});
     });
     await Promise.all(invalidations);
   };
@@ -104,8 +104,8 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   };
 
   useEffect(() => {
-    setRefreshing(avatarMutation.isLoading || usersProfileQuery.isRefetching);
-  }, [avatarMutation.isLoading, setRefreshing, usersProfileQuery.isRefetching]);
+    setRefreshing(avatarMutation.isPending || usersProfileQuery.isRefetching);
+  }, [avatarMutation.isPending, setRefreshing, usersProfileQuery.isRefetching]);
 
   const isSelf = profilePublicData?.header.userID === user.header.userID;
 

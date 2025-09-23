@@ -39,14 +39,14 @@ export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
       {
         onSuccess: async () => {
           await Promise.all([
-            queryClient.invalidateQueries([`/forum/post/${postData.postID}`]),
-            queryClient.invalidateQueries(['/forum/post/search']),
-            queryClient.invalidateQueries([`/forum/post/${postData.postID}/forum`]),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${postData.postID}`]}),
+            queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),
+            queryClient.invalidateQueries({queryKey: [`/forum/post/${postData.postID}/forum`]}),
           ]);
           if (forumData) {
             await Promise.all([
-              queryClient.invalidateQueries([`/forum/${forumData.forumID}`]),
-              queryClient.invalidateQueries([`/forum/${forumData.forumID}/pinnedposts`]),
+              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}`]}),
+              queryClient.invalidateQueries({queryKey: [`/forum/${forumData.forumID}/pinnedposts`]}),
             ]);
           }
           setModalVisible(false);
@@ -60,8 +60,8 @@ export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
       buttonColor={theme.colors.twitarrNegativeButton}
       buttonText={'Delete'}
       onPress={onSubmit}
-      isLoading={deleteMutation.isLoading}
-      disabled={deleteMutation.isLoading}
+      isLoading={deleteMutation.isPending}
+      disabled={deleteMutation.isPending}
     />
   );
 

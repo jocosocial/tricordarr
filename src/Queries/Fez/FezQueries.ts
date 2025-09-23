@@ -1,6 +1,6 @@
 import {FezType} from '#src/Enums/FezType';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
-import {useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
+import {TokenAuthPaginationQueryOptionsTypeV2, useTokenAuthPaginationQuery} from '#src/Queries/TokenAuthQuery';
 import {FezData, FezListData} from '#src/Structs/ControllerStructs';
 import {FezListEndpoints} from '#src/Types';
 
@@ -24,7 +24,7 @@ interface FezListQueryOptions {
   hidePast?: boolean;
   endpoint?: FezListEndpoints;
   excludeFezType?: FezType | FezType[];
-  options?: {};
+  options?: TokenAuthPaginationQueryOptionsTypeV2<FezListData>;
   lfgTypesOnly?: boolean;
   onlyNew?: boolean;
   search?: string;
@@ -116,7 +116,7 @@ export const usePersonalEventsQuery = ({
   search,
   hidePast,
   matchID,
-  options = {},
+  options,
   fezType = [FezType.privateEvent, FezType.personalEvent],
 }: FezListQueryOptions) => {
   return useFezListQuery({
