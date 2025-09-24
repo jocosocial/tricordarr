@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -7,7 +7,6 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
