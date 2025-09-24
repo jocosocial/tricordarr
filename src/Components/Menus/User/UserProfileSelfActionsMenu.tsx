@@ -1,21 +1,18 @@
 import * as React from 'react';
-import {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 /**
  * Actions menu for when you're viewing your own profile.
  */
 export const UserProfileSelfActionsMenu = () => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleHelp = () => {
     closeMenu();

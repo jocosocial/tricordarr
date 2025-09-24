@@ -12,7 +12,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Portal} from 'react-native-paper';
 import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {HeaderButtonsProvider} from 'react-navigation-header-buttons';
+import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
 import {ForegroundService} from '#src/Components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';

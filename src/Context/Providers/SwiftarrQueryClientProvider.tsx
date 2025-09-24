@@ -195,7 +195,7 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
       ...currentOptions,
       queries: {
         ...currentOptions.queries,
-        cacheTime: appConfig.apiClientConfig.cacheTime,
+        gcTime: appConfig.apiClientConfig.cacheTime,
         staleTime: appConfig.apiClientConfig.staleTime,
         retry: appConfig.apiClientConfig.retry,
       },

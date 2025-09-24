@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
@@ -8,18 +8,16 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 
 interface LfgFilterMenuProps {
   showTypes?: boolean;
 }
 
 export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {lfgTypeFilter, setLfgTypeFilter, lfgHidePastFilter, setLfgHidePastFilter} = useFilter();
   const {appConfig} = useConfig();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleHidePast = () => {
     setLfgHidePastFilter(!lfgHidePastFilter);

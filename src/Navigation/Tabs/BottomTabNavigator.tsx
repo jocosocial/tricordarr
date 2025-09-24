@@ -1,7 +1,7 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppIcons} from '#src/Enums/Icons';

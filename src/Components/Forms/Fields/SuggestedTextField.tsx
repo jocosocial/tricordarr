@@ -5,6 +5,7 @@ import {HelperText, Menu, TextInput} from 'react-native-paper';
 
 import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useMenu} from '#src/Hooks/MenuHook';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -33,9 +34,7 @@ export const SuggestedTextField = ({
   suggestions = [],
   disabled,
 }: SuggestedTextFieldProps) => {
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {isSubmitting} = useFormikContext();
   const [field, meta, helpers] = useField<string>(name);
   const {modalVisible} = useModal();

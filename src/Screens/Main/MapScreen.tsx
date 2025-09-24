@@ -17,6 +17,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
@@ -27,9 +28,7 @@ export const MapScreen = ({navigation, route}: Props) => {
   const [shipDeck, setShipDeck] = useState(
     ShipDecks.find(dd => dd.number === Number(route.params?.deckNumber)) || ShipDecks[0],
   );
-  const [visible, setVisible] = useState<boolean>(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+  const {visible, openMenu, closeMenu} = useMenu();
 
   const getNavButtons = useCallback(() => {
     return (

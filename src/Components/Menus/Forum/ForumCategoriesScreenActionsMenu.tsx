@@ -4,14 +4,12 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const ForumCategoriesScreenActionsMenu = () => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   return (
     <AppHeaderMenu

@@ -4,7 +4,6 @@ import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 
 export type ScheduleStackParamList = CommonStackParamList & {};
 
@@ -16,7 +15,7 @@ export const ScheduleStackNavigator = () => {
     <Stack.Navigator
       initialRouteName={CommonStackComponents.scheduleDayScreen}
       screenOptions={{...screenOptions, headerShown: true}}>
-      {CommonScreens(Stack as typeof MainStack)}
+      {CommonScreens(Stack)}
     </Stack.Navigator>
   );
 };

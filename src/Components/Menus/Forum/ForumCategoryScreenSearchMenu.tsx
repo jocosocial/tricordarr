@@ -4,6 +4,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {CategoryData} from '#src/Structs/ControllerStructs';
@@ -13,11 +14,8 @@ interface ForumCategoryScreenSearchMenuProps {
 }
 
 export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMenuProps) => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const forumNavigation = useForumStackNavigation();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   return (
     <AppHeaderMenu

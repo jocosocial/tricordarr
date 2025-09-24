@@ -15,6 +15,7 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
@@ -31,7 +32,7 @@ export const ForumThreadScreenActionsMenu = ({
   invalidationQueryKeys,
   onRefresh,
 }: ForumThreadActionsMenuProps) => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {setModalContent, setModalVisible} = useModal();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const {data: profilePublicData} = useUserProfileQuery();
@@ -39,9 +40,6 @@ export const ForumThreadScreenActionsMenu = ({
   const relationMutation = useForumRelationMutation();
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleModal = (content: ReactNode) => {
     closeMenu();
@@ -72,7 +70,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, invalidationQueryKeys, queryClient, relationMutation]);
+  }, [forumData, invalidationQueryKeys, queryClient, relationMutation, closeMenu]);
 
   const handleMute = useCallback(() => {
     if (forumData) {
@@ -97,7 +95,7 @@ export const ForumThreadScreenActionsMenu = ({
         },
       );
     }
-  }, [forumData, invalidationQueryKeys, queryClient, relationMutation]);
+  }, [forumData, invalidationQueryKeys, queryClient, relationMutation, closeMenu]);
 
   const handleHelp = () => {
     closeMenu();

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
@@ -6,13 +6,11 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 
 export const ForumThreadScreenFilterMenu = () => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {forumFilter, setForumFilter} = useFilter();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const menuAnchor = (
     <MenuAnchor

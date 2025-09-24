@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
@@ -7,6 +7,7 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {ForumSort, ForumSortDirection} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CategoryData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadScreenSortMenuProps {
@@ -14,11 +15,8 @@ interface ForumThreadScreenSortMenuProps {
 }
 
 export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps) => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {forumSortOrder, setForumSortOrder, forumSortDirection, setForumSortDirection} = useFilter();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const menuAnchor = (
     <MenuAnchor

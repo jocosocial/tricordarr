@@ -7,7 +7,6 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
@@ -304,7 +303,7 @@ export enum CommonStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
 }
 
-export const CommonScreens = (Stack: typeof MainStack) => {
+export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
