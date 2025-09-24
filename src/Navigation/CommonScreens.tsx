@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -304,7 +304,7 @@ export enum CommonStackComponents {
   scheduleDayScreen = 'ScheduleDayScreen',
 }
 
-export const CommonScreens = (Stack: typeof MainStack) => {
+export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   const {getIsDisabled} = useFeature();
   const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
   const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);

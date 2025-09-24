@@ -8,7 +8,6 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
 import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
 import {LfgFormerScreen} from '#src/Screens/LFG/LfgFormerScreen';
@@ -86,7 +85,7 @@ export const LfgStackNavigator = () => {
         component={isDisabled ? DisabledView : LfgSearchScreen}
         options={{title: 'Search LFGs'}}
       />
-      {CommonScreens(Stack as typeof MainStack)}
+      {CommonScreens(Stack)}
     </Stack.Navigator>
   );
 };

@@ -8,7 +8,6 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {ForumCategoriesScreen} from '#src/Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
 import {ForumPostAlertwordScreen} from '#src/Screens/Forum/Post/ForumPostAlertwordScreen';
@@ -137,7 +136,7 @@ export const ForumStackNavigator = () => {
         component={ForumPostAlertwordScreen}
         options={{title: 'Alert Keyword'}}
       />
-      {CommonScreens(Stack as typeof MainStack)}
+      {CommonScreens(Stack)}
     </Stack.Navigator>
   );
 };

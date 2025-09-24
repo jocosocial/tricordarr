@@ -4,7 +4,6 @@ import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeAccountScreen} from '#src/Screens/OOBE/OobeAccountScreen';
 import {OobeConductScreen} from '#src/Screens/OOBE/OobeConductScreen';
 import {OobeFinishScreen} from '#src/Screens/OOBE/OobeFinishScreen';
@@ -106,7 +105,7 @@ export const OobeStackNavigator = () => {
         component={ScheduleDayScreen}
         options={{title: 'Schedule'}}
       />
-      {CommonScreens(Stack as typeof MainStack)}
+      {CommonScreens(Stack)}
     </Stack.Navigator>
   );
 };

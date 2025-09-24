@@ -8,7 +8,6 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {MainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
 import {SeamailListScreen} from '#src/Screens/Seamail/SeamailListScreen';
@@ -79,7 +78,7 @@ export const ChatStackNavigator = () => {
         component={SeamailSettingsScreen}
         options={{title: 'Seamail Settings'}}
       />
-      {CommonScreens(ChatStack as typeof MainStack)}
+      {CommonScreens(ChatStack)}
     </ChatStack.Navigator>
   );
 };
