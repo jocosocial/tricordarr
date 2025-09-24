@@ -1,6 +1,6 @@
 import {useQueryClient} from '@tanstack/react-query';
 import * as React from 'react';
-import {ReactNode, useState} from 'react';
+import {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -11,6 +11,7 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
@@ -24,16 +25,13 @@ interface UserProfileActionsMenuProps {
 }
 
 export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}: UserProfileActionsMenuProps) => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {setModalContent, setModalVisible} = useModal();
   const muteMutation = useUserMuteMutation();
   const blockMutation = useUserBlockMutation();
   const {hasTwitarrTeam, hasModerator} = usePrivilege();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleModerate = () => {
     closeMenu();

@@ -1,5 +1,5 @@
 import {format} from 'date-fns';
-import React, {useState} from 'react';
+import React from 'react';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
@@ -7,14 +7,12 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 
 export const LfgCruiseDayFilterMenu = () => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {cruiseDays, adjustedCruiseDayToday} = useCruise();
   const {lfgCruiseDayFilter, setLfgCruiseDayFilter} = useFilter();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleCruiseDaySelection = (newCruiseDay: number) => {
     if (newCruiseDay === lfgCruiseDayFilter) {

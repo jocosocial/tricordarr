@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {DeckData, ShipDecks} from '#src/Libraries/Ship';
 
 interface DeckMapMenuProps {
@@ -13,10 +14,7 @@ interface DeckMapMenuProps {
 }
 
 export const DeckMapMenu = (props: DeckMapMenuProps) => {
-  const [visible, setVisible] = useState(false);
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+  const {visible, openMenu, closeMenu} = useMenu();
 
   const onPress = (value: DeckData) => {
     closeMenu();

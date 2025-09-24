@@ -4,15 +4,13 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackScreenComponents, useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 
 export const SeamailListScreenActionsMenu = () => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useChatStack();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   return (
     <AppHeaderMenu

@@ -11,6 +11,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
@@ -22,16 +23,13 @@ interface FezChatActionsMenuProps {
 }
 
 export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}: FezChatActionsMenuProps) => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const navigation = useCommonStack();
   const {hasModerator, hasTwitarrTeam} = usePrivilege();
   const muteMutation = useFezMuteMutation();
   const {commonStyles} = useStyles();
   const commonNavigation = useCommonStack();
   const queryClient = useQueryClient();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const detailsAction = () => {
     navigation.push(CommonStackComponents.fezChatDetailsScreen, {fezID: fez.fezID});

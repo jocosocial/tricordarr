@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Divider} from 'react-native-paper';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
@@ -8,9 +8,10 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 
 export const ScheduleEventFilterMenu = () => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {
     eventTypeFilter,
     setEventTypeFilter,
@@ -22,9 +23,6 @@ export const ScheduleEventFilterMenu = () => {
     setEventLfgFilter,
   } = useFilter();
   const {oobeCompleted} = useConfig();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   // This also shows joined LFGs, hopefully that's not too surprising
   const handleFavoriteSelection = () => {

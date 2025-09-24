@@ -4,18 +4,12 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const UserDirectoryScreenActionsMenu = () => {
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
-
+  const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const handleNavigation = (screen: CommonStackComponents) => {
-    closeMenu();
-    commonNavigation.push(screen);
-  };
 
   return (
     <AppHeaderMenu
@@ -25,23 +19,23 @@ export const UserDirectoryScreenActionsMenu = () => {
       <Menu.Item
         title={'Favorites'}
         leadingIcon={AppIcons.favorite}
-        onPress={() => handleNavigation(CommonStackComponents.favoriteUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.favoriteUsers)}
       />
       <Menu.Item
         title={'Mutes'}
         leadingIcon={AppIcons.mute}
-        onPress={() => handleNavigation(CommonStackComponents.muteUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.muteUsers)}
       />
       <Menu.Item
         title={'Blocks'}
         leadingIcon={AppIcons.block}
-        onPress={() => handleNavigation(CommonStackComponents.blockUsers)}
+        onPress={() => commonNavigation.push(CommonStackComponents.blockUsers)}
       />
       <Divider bold={true} />
       <Menu.Item
         title={'Help'}
         leadingIcon={AppIcons.help}
-        onPress={() => handleNavigation(CommonStackComponents.userDirectoryHelpScreen)}
+        onPress={() => commonNavigation.push(CommonStackComponents.userDirectoryHelpScreen)}
       />
     </AppHeaderMenu>
   );

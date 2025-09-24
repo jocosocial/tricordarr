@@ -1,21 +1,18 @@
 import pluralize from 'pluralize';
 import * as React from 'react';
-import {useState} from 'react';
 import {Linking} from 'react-native';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const NotificationsMenu = () => {
-  const [visible, setVisible] = useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {data} = useUserNotificationDataQuery();
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const anyNew = UserNotificationData.totalNewCount(data) !== 0;
 

@@ -4,6 +4,7 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Button, Divider, HelperText, Menu} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {useAppTheme} from '#src/Styles/Theme';
 
 interface PickerFieldProps<TData> {
@@ -34,14 +35,11 @@ export const PickerField = <TData,>({
   helperText,
   disabled,
 }: PickerFieldProps<TData>) => {
-  const [visible, setVisible] = React.useState(false);
+  const {visible, openMenu, closeMenu} = useMenu();
   const {commonStyles, styleDefaults} = useStyles();
   const theme = useAppTheme();
   const {setFieldValue, isSubmitting} = useFormikContext();
   const [_, meta] = useField<TData>(name);
-
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   const handleSelect = (newValue: TData | undefined) => {
     console.log(`[PickerField.tsx] selecting ${newValue}`);
