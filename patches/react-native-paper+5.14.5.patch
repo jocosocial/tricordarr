@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.tsx b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
-index db5e9a1..123377c 100644
+index 55922c1..0921f18 100644
 --- a/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 @@ -89,6 +89,10 @@ export type Props = {
@@ -13,15 +13,15 @@ index db5e9a1..123377c 100644
    /**
     * testID to be used on tests.
     */
-@@ -195,6 +199,7 @@ const Menu = ({
+@@ -194,6 +198,7 @@ const Menu = ({
    children,
    theme: themeOverrides,
    keyboardShouldPersistTaps,
 +  onScroll,
  }: Props) => {
    const theme = useInternalTheme(themeOverrides);
-   const [rendered, setRendered] = React.useState(visible);
-@@ -671,6 +676,7 @@ const Menu = ({
+   const insets = useSafeAreaInsets();
+@@ -680,6 +685,7 @@ const Menu = ({
                  {(scrollableMenuHeight && (
                    <ScrollView
                      keyboardShouldPersistTaps={keyboardShouldPersistTaps}

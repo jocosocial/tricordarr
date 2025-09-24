@@ -2,6 +2,9 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    // https://github.com/vonovak/react-navigation-header-buttons/blob/master/INSTALL.md
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "#src/*": [
         "src/*"

@@ -1,5 +1,5 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import React from 'react';
 

@@ -14,6 +14,8 @@ const config = {
       '#src': path.resolve(__dirname, 'src'),
       '#assets': path.resolve(__dirname, 'assets'),
     },
+    // https://github.com/vonovak/react-navigation-header-buttons/blob/master/INSTALL.md
+    unstable_enablePackageExports: true,
   },
 };
 
