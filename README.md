@@ -25,16 +25,6 @@ Notes
 * All dates from the API come in as ISO8601 strings
 * `adb logcat [| grep ReactNativeJS]` can get logs on the device
 
-Upgrading
----------
-The React Native upgrade process is miserable. Don't do it. Or if you do, at least
-do it on a clean dedicated branch. `npm install` doesn't honor `package-lock.json`,
-you need `npm clean-install` for that.
-
-```shell
-npx @rnx-kit/align-deps --requirements react-native@0.72
-```
-
 Releasing
 ---------
 https://reactnative.dev/docs/signed-apk-android
