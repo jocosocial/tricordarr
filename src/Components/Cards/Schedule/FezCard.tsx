@@ -1,4 +1,3 @@
-import {AndroidColor} from '@notifee/react-native';
 import pluralize from 'pluralize';
 import React, {memo, ReactNode, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
@@ -73,7 +72,7 @@ const FezCardInternal = ({
     }
     if (showIcon) {
       const outputIcon = icon ? icon : FezType.isLFGType(fez.fezType) ? AppIcons.lfg : AppIcons.personalEvent;
-      return <AppIcon color={AndroidColor.WHITE} icon={outputIcon} />;
+      return <AppIcon color={theme.colors.constantWhite} icon={outputIcon} />;
     }
   };
 

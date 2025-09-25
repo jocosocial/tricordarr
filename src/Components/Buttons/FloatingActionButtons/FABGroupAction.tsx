@@ -1,4 +1,3 @@
-import {AndroidColor} from '@notifee/react-native';
 import {GestureResponderEvent} from 'react-native';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
@@ -18,7 +17,7 @@ export const FabGroupAction = ({icon, label, onPress, backgroundColor, color}: P
   const theme = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
 
-  const actionColor = asPrivilegedUser ? AndroidColor.WHITE : color ? color : theme.colors.inverseOnSurface;
+  const actionColor = asPrivilegedUser ? theme.colors.constantWhite : color ? color : theme.colors.inverseOnSurface;
   const actionBackgroundColor = asPrivilegedUser
     ? theme.colors.twitarrNegativeButton
     : backgroundColor

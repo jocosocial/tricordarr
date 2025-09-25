@@ -50,7 +50,7 @@
     "react-native": "^0.76.5",
     "react-native-battery-optimization-check": "^1.0.8",
     "react-native-bidirectional-infinite-scroll": "^0.3.3",
-    "react-native-config": "^1.5.3",
+    "react-native-config": "^1.5.5",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-device-info": "^10.14.0",
     "react-native-drawer-layout": "^3.3.2",

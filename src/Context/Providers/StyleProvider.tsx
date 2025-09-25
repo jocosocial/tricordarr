@@ -1,4 +1,3 @@
-import {AndroidColor} from '@notifee/react-native';
 import React, {PropsWithChildren} from 'react';
 import {StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -81,7 +80,7 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       color: theme.colors.onTwitarrYellow,
     },
     onTwitarrBanner: {
-      color: AndroidColor.BLACK,
+      color: theme.colors.onTwitarrYellow,
     },
     errorContainer: {
       backgroundColor: theme.colors.errorContainer,
@@ -115,8 +114,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       ...commonStyles.paddingTopSmall,
     },
     imageViewerBackground: {
-      backgroundColor: AndroidColor.BLACK,
-      color: AndroidColor.WHITE,
+      backgroundColor: theme.colors.constantBlack,
+      color: theme.colors.constantWhite,
       opacity: 0.7,
     },
     safeMarginTop: {

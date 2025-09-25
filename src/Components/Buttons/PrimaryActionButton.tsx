@@ -1,4 +1,3 @@
-import {AndroidColor} from '@notifee/react-native';
 import React from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {ActivityIndicator, Button} from 'react-native-paper';
@@ -46,7 +45,7 @@ export const PrimaryActionButton = ({
     <View style={viewStyle}>
       <Button
         buttonColor={mode === 'contained' ? buttonColor || theme.colors.twitarrPositiveButton : buttonColor}
-        textColor={textColor || AndroidColor.WHITE}
+        textColor={textColor || theme.colors.constantWhite}
         style={[buttonStyle, style]}
         mode={mode}
         onPress={onPress}
