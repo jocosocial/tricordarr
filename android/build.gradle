@@ -11,6 +11,7 @@ buildscript {
         ndkVersion = "27.2.12479018"
         // https://kotlinlang.org/docs/releases.html
         kotlinVersion = "1.9.25"
+        newArchEnabled = true
     }
     repositories {
         google()
