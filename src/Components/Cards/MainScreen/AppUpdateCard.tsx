@@ -1,4 +1,3 @@
-import {AndroidColor} from '@notifee/react-native';
 import React from 'react';
 import {Linking, StyleSheet, View} from 'react-native';
 import {Card, Text, TouchableRipple} from 'react-native-paper';
@@ -6,6 +5,7 @@ import {Card, Text, TouchableRipple} from 'react-native-paper';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface AppUpdateCardProps {
   currentVersion: string;
@@ -14,6 +14,7 @@ interface AppUpdateCardProps {
 
 export const AppUpdateCard = (props: AppUpdateCardProps) => {
   const {commonStyles} = useStyles();
+  const theme = useAppTheme();
 
   const styles = StyleSheet.create({
     card: {
@@ -45,7 +46,7 @@ export const AppUpdateCard = (props: AppUpdateCardProps) => {
         <View>
           <Card.Content style={styles.content}>
             <View style={styles.textWrapper}>
-              <AppIcon icon={AppIcons.twitarr} color={AndroidColor.WHITE} />
+              <AppIcon icon={AppIcons.twitarr} color={theme.colors.onTwitarrNegativeButton} />
               <Text style={styles.headerText}>Tricordarr is out of date.</Text>
             </View>
             <View>

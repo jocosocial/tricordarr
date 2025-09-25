@@ -83,6 +83,8 @@ export const twitarrTheme = {
     onTwitarrNegativeButton: 'rgb(255, 255, 255)',
     onTwitarrYellow: 'rgb(0, 0, 0)',
     onImageViewer: 'rgb(255, 255, 255)',
+    constantBlack: 'rgb(0, 0, 0)',
+    constantWhite: 'rgb(255, 255, 255)',
   },
 };
 
@@ -150,6 +152,8 @@ export const twitarrThemeDark = {
     onTwitarrNegativeButton: 'rgb(255, 255, 255)',
     onTwitarrYellow: 'rgb(0, 0, 0)',
     onImageViewer: 'rgb(255, 255, 255)',
+    constantBlack: 'rgb(0, 0, 0)',
+    constantWhite: 'rgb(255, 255, 255)',
   },
 };
 
