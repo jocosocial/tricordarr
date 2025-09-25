@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -23,7 +23,7 @@ interface BoardgameFlatListProps {
 }
 
 export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
-  const flatListRef = useRef<FlashList<BoardgameData>>(null);
+  const flatListRef = useRef<FlashListRef<BoardgameData>>(null);
 
   const getListSeparator = useCallback(() => {
     return <Divider bold={true} />;
@@ -65,7 +65,6 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
       renderItemSeparator={getListSeparator}
       onScrollThreshold={props.onScrollThreshold}
       handleLoadNext={props.handleLoadNext}
-      estimatedItemSize={70}
     />
   );
 };

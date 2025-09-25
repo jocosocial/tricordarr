@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -33,7 +33,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
   const {commonStyles} = useStyles();
-  const listRef = useRef<FlashList<EventData | FezData>>(null);
+  const listRef = useRef<FlashListRef<EventData | FezData>>(null);
   const [scheduleList, setScheduleList] = useState<(EventData | FezData)[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const {appConfig, oobeCompleted} = useConfig();

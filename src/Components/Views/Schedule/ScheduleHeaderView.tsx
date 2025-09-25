@@ -57,7 +57,6 @@ export const ScheduleHeaderView = (props: ScheduleHeaderViewProps) => {
         renderItem={renderItem}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        estimatedItemSize={75}
         data={cruiseDays}
         // selectedCruiseDay is event-style 1-indexed.
         // The Math.min() is needed because the initialScrollIndex will overscroll

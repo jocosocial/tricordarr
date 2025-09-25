@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -25,7 +25,7 @@ export const SchedulePrivateEventsScreen = () => {
     cruiseDay: lfgCruiseDayFilter ? lfgCruiseDayFilter - 1 : undefined,
     hidePast: lfgHidePastFilter,
   });
-  const listRef = useRef<FlashList<FezData>>(null);
+  const listRef = useRef<FlashListRef<FezData>>(null);
   const navigation = useCommonStack();
 
   const getNavButtons = useCallback(() => {

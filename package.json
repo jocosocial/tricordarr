@@ -28,7 +28,7 @@
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/native-stack": "^7.3.26",
     "@ronradtke/react-native-markdown-display": "^8.0.0",
-    "@shopify/flash-list": "^1.7.2",
+    "@shopify/flash-list": "^2.0.3",
     "@stream-io/flat-list-mvcp": "^0.10.3",
     "@tanstack/query-async-storage-persister": "^5.89.0",
     "@tanstack/react-query": "^5.89.0",

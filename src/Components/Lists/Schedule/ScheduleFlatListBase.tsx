@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {FlashList, type FlashListRef} from '@shopify/flash-list';
 import React, {ReactElement, useCallback} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
 
@@ -18,8 +18,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   listFooter?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   initialScrollIndex?: number;
-  estimatedItemSize?: number;
-  listRef?: React.RefObject<FlashList<TItem>> | null;
+  listRef?: React.RefObject<FlashListRef<TItem>> | null;
   renderItem: ({item}: {item: TItem}) => ReactElement;
   keyExtractor: (item: TItem) => string;
   onScrollThreshold?: (condition: boolean) => void;
@@ -36,7 +35,6 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   listHeader,
   listFooter,
   initialScrollIndex,
-  estimatedItemSize,
   listRef = null,
   renderItem,
   keyExtractor,
@@ -145,7 +143,6 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       ref={listRef}
       keyExtractor={keyExtractor}
       initialScrollIndex={initialScrollIndex}
-      estimatedItemSize={estimatedItemSize}
       contentContainerStyle={{
         ...commonStyles.paddingHorizontal,
       }}

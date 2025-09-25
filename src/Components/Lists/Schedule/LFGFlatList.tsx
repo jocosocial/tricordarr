@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {ReactElement, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
@@ -13,7 +13,7 @@ import {ScheduleFlatListSeparator} from '#src/Types';
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlashList<FezData>>;
+  listRef: React.RefObject<FlashListRef<FezData>>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
@@ -75,7 +75,6 @@ export const LFGFlatList = ({
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
       hasNextPage={hasNextPage}
-      estimatedItemSize={161}
       listHeader={listHeader}
     />
   );

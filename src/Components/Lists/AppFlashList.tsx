@@ -1,4 +1,4 @@
-import {FlashList, ListRenderItem} from '@shopify/flash-list';
+import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list';
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
@@ -10,7 +10,7 @@ import {FloatingScrollButtonPosition} from '#src/Types';
 interface AppFlashListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;
   invertList?: boolean;
-  flatListRef: React.RefObject<FlashList<TItem>>;
+  flatListRef: React.RefObject<FlashListRef<TItem>>;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;
@@ -29,7 +29,6 @@ interface AppFlashListProps<TItem> {
   numColumns?: number;
   contentContainerStyle?: StyleProp<ViewStyle>;
   columnWrapperStyle?: StyleProp<ViewStyle>;
-  estimatedItemSize?: number;
   extraData?: any;
 }
 
@@ -49,7 +48,6 @@ export const AppFlashList = <TItem,>({
   onScrollThreshold,
   enableScrollButton = true,
   numColumns,
-  estimatedItemSize,
   handleLoadNext,
   extraData,
 }: AppFlashListProps<TItem>) => {
@@ -98,7 +96,6 @@ export const AppFlashList = <TItem,>({
         ItemSeparatorComponent={renderItemSeparator}
         refreshControl={refreshControl}
         numColumns={numColumns}
-        estimatedItemSize={estimatedItemSize}
         onEndReached={handleLoadNext}
         extraData={extraData}
       />

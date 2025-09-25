@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {Dispatch, ReactElement, SetStateAction, useCallback} from 'react';
 import {RefreshControlProps} from 'react-native';
 
@@ -18,7 +18,7 @@ import {ScheduleFlatListSeparator} from '#src/Types';
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlashList<TItem>>;
+  listRef: React.RefObject<FlashListRef<TItem>>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;
@@ -103,7 +103,6 @@ export const ScheduleFlatList = <TItem extends EventData | FezData>({
       separator={separator}
       refreshControl={refreshControl}
       onScrollThreshold={onScrollThreshold}
-      estimatedItemSize={120}
       extraData={[minutelyUpdatingDate, appConfig.manualTimeOffset]}
     />
   );
