@@ -74,6 +74,11 @@ export const AppFlatList = <TItem,>({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [itemHeights, setItemHeights] = useState<number[]>([]);
 
+  // @TODO fix this by moving to FlashList.
+  if (!maintainViewPosition) {
+    console.warn('maintainViewPosition is no longer supported in RN 0.82.');
+  }
+
   const styles = StyleSheet.create({
     flatList: {
       ...(invertList ? commonStyles.verticallyInverted : undefined),
@@ -237,7 +242,10 @@ export const AppFlatList = <TItem,>({
         }
         ItemSeparatorComponent={renderComponentInternal(renderItemSeparator)}
         refreshControl={refreshControl}
-        maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
+        // This hack from @stream-io/flat-list-mvcp is no longer available.
+        // The module hasn't been touched in years and RN 0.82 killed the bridge.
+        // Plus it used a deprecated Maven repository.
+        // maintainVisibleContentPosition={maintainViewPosition ? {minIndexForVisible: 0} : undefined}
         numColumns={numColumns}
         contentContainerStyle={contentContainerStyle}
         columnWrapperStyle={columnWrapperStyle}
