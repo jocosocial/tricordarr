@@ -63,7 +63,6 @@ export const QueryKeysSettingsScreen = ({navigation}: Props) => {
         refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
         extraData={styles}
         ItemSeparatorComponent={itemSeparator}
-        estimatedItemSize={46}
       />
     </AppView>
   );

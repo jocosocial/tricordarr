@@ -1,6 +1,6 @@
+import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons';
 import React from 'react';
 import {StyleProp, TextStyle} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';

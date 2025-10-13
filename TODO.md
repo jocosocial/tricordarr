@@ -1,5 +1,0 @@
-Tricordarr
-----------
-
-Swiftarr
---------

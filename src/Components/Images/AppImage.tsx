@@ -1,6 +1,6 @@
+import {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
 import React, {useState} from 'react';
 import {Image, ImageURISource, ImageStyle as RNImageStyle, StyleProp, TouchableOpacity, View} from 'react-native';
-import {ImageStyle as FastImageStyle} from 'react-native-fast-image';
 import {Card} from 'react-native-paper';
 
 import {AppFastImage} from '#src/Components/Images/AppFastImage';

@@ -1,4 +1,4 @@
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useRef} from 'react';
 import {RefreshControlProps} from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -36,7 +36,7 @@ export const ForumThreadFlatList = ({
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
 }: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlashList<ForumListData>>(null);
+  const flatListRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
@@ -90,7 +90,6 @@ export const ForumThreadFlatList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={renderItemSeparator}
-      estimatedItemSize={106}
     />
   );
 };

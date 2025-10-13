@@ -6,13 +6,9 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: './tsconfig.json',
-      },
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        paths: ['./tsconfig.json'],
       },
     },
-    'import/internal-regex': '^#(src|assets)/',
   },
   rules: {
     'linebreak-style': 0,

@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {check as checkPermission, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
@@ -158,7 +158,7 @@ export async function stopForegroundServiceWorker() {
  * and terminate it. I believe the notification is the only way to ensure that it starts correctly.
  */
 export async function startForegroundServiceWorker() {
-  const notificationPermission = await checkPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+  const {status: notificationPermission} = await checkNotifications();
   // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
   // We can safely assume that notifications are allowed and available if that is the case.
   if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {

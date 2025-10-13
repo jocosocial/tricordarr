@@ -10,6 +10,8 @@ class MainActivity : ReactActivity() {
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
+   *
+   * This has to case-match with what we put as the "name" value in `app.json`.
    */
   override fun getMainComponentName(): String = "Tricordarr"
 
@@ -18,5 +20,5 @@ class MainActivity : ReactActivity() {
    * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate =
-    DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
 }

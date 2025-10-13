@@ -33,6 +33,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+.kotlin/
 
 # node.js
 #
@@ -56,7 +57,7 @@ yarn-error.log
 *.jsbundle
 
 # Ruby / CocoaPods
-/**/Pods/
+**/Pods/
 /vendor/bundle/
 
 # Temporary files created by Metro to check the health of the file watcher

@@ -1,7 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
+import {requestNotifications, RESULTS} from 'react-native-permissions';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ListSection} from '#src/Components/Lists/ListSection';
@@ -22,7 +22,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
   const {setHasNotificationPermission, notificationPermissionStatus, setNotificationPermissionStatus} = useConfig();
 
   const enablePermissions = async () => {
-    const status = await requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    const {status} = await requestNotifications([]);
     setHasNotificationPermission(status === RESULTS.GRANTED);
     setNotificationPermissionStatus(status);
   };

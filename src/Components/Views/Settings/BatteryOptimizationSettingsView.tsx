@@ -22,6 +22,7 @@ export const BatteryOptimizationSettingsView = () => {
     BatteryOptEnabled().then((result: boolean) => {
       setOptEnabled(result);
     });
+    setOptEnabled(false);
   }, []);
 
   useEffect(() => {
@@ -44,7 +45,10 @@ export const BatteryOptimizationSettingsView = () => {
         <PrimaryActionButton
           buttonText={optEnabled ? 'Disable Optimization' : 'Already disabled'}
           buttonColor={theme.colors.twitarrNeutralButton}
-          onPress={() => RequestDisableOptimization()}
+          onPress={() => {
+            RequestDisableOptimization();
+            console.log('Battery optimization disabled - feature temporarily unavailable');
+          }}
           style={[commonStyles.marginTopSmall]}
           disabled={!optEnabled}
         />

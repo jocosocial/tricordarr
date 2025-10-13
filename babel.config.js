@@ -3,12 +3,6 @@ module.exports = api => {
   const babelEnv = api.env();
   const plugins = [
     [
-      'react-native-reanimated/plugin',
-      {
-        relativeSourceLocation: true,
-      },
-    ],
-    [
       'module-resolver',
       {
         root: ['./src'],
@@ -18,10 +12,14 @@ module.exports = api => {
         },
       },
     ],
+    // This has to be the last one
+    'react-native-reanimated/plugin',
   ];
   if (babelEnv !== 'development') {
     plugins.push(['transform-remove-console', {exclude: ['error', 'warn']}]);
   }
+  // React Native Reanimated plugin must be the last plugin
+  // plugins.push('react-native-reanimated/plugin');
   return {
     presets: ['module:@react-native/babel-preset'],
     plugins: plugins,

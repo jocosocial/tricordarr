@@ -5,7 +5,7 @@
 
 import React, {useEffect} from 'react';
 import {LogBox} from 'react-native';
-import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+// import ViewReactNativeStyleAttributes from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // https://reactnavigation.org/docs/drawer-layout/
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -50,7 +50,9 @@ import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 // got deprecated in React Native 0.70. For now the deprecation is limited to a
 // JS runtime check, which we disable here.
 // @ts-ignore
-ViewReactNativeStyleAttributes.scaleY = true;
+//
+// 20251013 RN 0.81 apparently this is no longer needed sooooo yolo!
+// ViewReactNativeStyleAttributes.scaleY = true;
 
 // For development, disable warning popups because I already respond to them.
 if (__DEV__) {
