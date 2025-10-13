@@ -13,7 +13,7 @@ class MainActivity : ReactActivity() {
    *
    * This has to case-match with what we put as the "name" value in `app.json`.
    */
-  override fun getMainComponentName(): String = "tricordarr"
+  override fun getMainComponentName(): String = "Tricordarr"
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]

@@ -73,3 +73,7 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Custom Things They Forgot or I added.
+.watchman-cookie*
+!.env
