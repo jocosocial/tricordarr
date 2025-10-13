@@ -74,6 +74,11 @@ export const AppFlatList = <TItem,>({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [itemHeights, setItemHeights] = useState<number[]>([]);
 
+  // @TODO fix this by moving to FlashList.
+  if (!maintainViewPosition) {
+    console.warn('maintainViewPosition is no longer supported in RN 0.82.');
+  }
+
   const styles = StyleSheet.create({
     flatList: {
       ...(invertList ? commonStyles.verticallyInverted : undefined),
