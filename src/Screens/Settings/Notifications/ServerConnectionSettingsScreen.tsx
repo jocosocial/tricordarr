@@ -16,7 +16,7 @@ import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+// import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
@@ -203,7 +203,8 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
             Note: It may take up to 10 seconds for the worker notification to appear on start.
           </HelperText>
         </PaddedContentView>
-        <BatteryOptimizationSettingsView />
+        {/* <BatteryOptimizationSettingsView /> */}
+        {/* Temporarily disabled - battery optimization check not compatible with new architecture */}
       </ScrollingContentView>
     </AppView>
   );

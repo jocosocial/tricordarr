@@ -1,5 +1,5 @@
-import * as React from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons';
+import React from 'react';
 import {defaultRenderVisibleButton, HeaderButton, HeaderButtonsComponentType} from 'react-navigation-header-buttons';
 
 /**

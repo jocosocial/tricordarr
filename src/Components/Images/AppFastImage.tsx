@@ -1,6 +1,6 @@
+import FastImage, {ImageStyle} from '@d11/react-native-fast-image';
 import React, {useEffect, useState} from 'react';
 import {Image, ImageURISource, StyleProp, StyleSheet} from 'react-native';
-import FastImage, {ImageStyle} from 'react-native-fast-image';
 import {ActivityIndicator, Card} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
