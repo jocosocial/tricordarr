@@ -10,7 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
-// import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
+import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
@@ -78,8 +78,7 @@ export const OobePermissionsScreen = ({navigation}: Props) => {
             </Text>
           )}
         </PaddedContentView>
-        {/* {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />} */}
-        {/* Temporarily disabled - battery optimization check not compatible with new architecture */}
+        {notificationPermissionStatus === RESULTS.GRANTED && <BatteryOptimizationSettingsView />}
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}

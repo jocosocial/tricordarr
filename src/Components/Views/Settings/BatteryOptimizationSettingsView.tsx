@@ -2,7 +2,7 @@ import {useAppState} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 // @ts-ignore
-// import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
+import {BatteryOptEnabled, RequestDisableOptimization} from 'react-native-battery-optimization-check';
 import {HelperText, Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -19,10 +19,9 @@ export const BatteryOptimizationSettingsView = () => {
   const appStateVisible = useAppState();
 
   const checkOptimization = useCallback(() => {
-    // BatteryOptEnabled().then((result: boolean) => {
-    //   setOptEnabled(result);
-    // });
-    // Temporarily disabled - battery optimization check not compatible with new architecture
+    BatteryOptEnabled().then((result: boolean) => {
+      setOptEnabled(result);
+    });
     setOptEnabled(false);
   }, []);
 
@@ -47,8 +46,7 @@ export const BatteryOptimizationSettingsView = () => {
           buttonText={optEnabled ? 'Disable Optimization' : 'Already disabled'}
           buttonColor={theme.colors.twitarrNeutralButton}
           onPress={() => {
-            // RequestDisableOptimization();
-            // Temporarily disabled - battery optimization check not compatible with new architecture
+            RequestDisableOptimization();
             console.log('Battery optimization disabled - feature temporarily unavailable');
           }}
           style={[commonStyles.marginTopSmall]}
