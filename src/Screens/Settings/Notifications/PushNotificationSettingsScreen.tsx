@@ -2,7 +2,7 @@ import {Formik} from 'formik';
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
-import {PERMISSIONS, request as requestPermission, RESULTS} from 'react-native-permissions';
+import {requestNotifications, RESULTS} from 'react-native-permissions';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
@@ -83,7 +83,7 @@ export const PushNotificationSettingsScreen = () => {
   };
 
   const handleEnable = () => {
-    requestPermission(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(status => {
+    requestNotifications([]).then(({status}) => {
       setNotificationPermissionStatus(status);
       setHasNotificationPermission(status === RESULTS.GRANTED);
       if (status === RESULTS.GRANTED) {
