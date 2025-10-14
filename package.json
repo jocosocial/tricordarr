@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --scheme Development",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "patch-package",
-    "pod-install": "cd ios && pod install"
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.0",
