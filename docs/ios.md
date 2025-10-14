@@ -15,3 +15,5 @@ solutions to build the project.
 =============================================================
 ```
 That's great except I don't seem to be using Yarn.
+
+To do version revs, use Xcode or edit `project.pbxproj`.
