@@ -1,7 +1,7 @@
-import UIKit
 import React
-import React_RCTAppDelegate
 import ReactAppDependencyProvider
+import React_RCTAppDelegate
+import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,6 +31,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     return true
   }
+
+  // https://reactnavigation.org/docs/deep-linking/#set-up-with-bare-react-native-projects
+  func application(
+    _ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+  ) -> Bool {
+    return RCTLinkingManager.application(app, open: url, options: options)
+  }
 }
 
 class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
@@ -39,10 +46,10 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
   }
 
   override func bundleURL() -> URL? {
-#if DEBUG
-    RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
-#else
-    Bundle.main.url(forResource: "main", withExtension: "jsbundle")
-#endif
+    #if DEBUG
+      RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+    #else
+      Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+    #endif
   }
 }
