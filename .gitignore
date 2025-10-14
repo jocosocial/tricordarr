@@ -76,4 +76,4 @@ yarn-error.log
 
 # Custom Things They Forgot or I added.
 .watchman-cookie*
-!.env
+!.env.*

@@ -6,8 +6,12 @@ import VideoPlayer from 'react-native-video-controls';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
+// iOS Simulator cannot play h265 content, only h264 and other formats.
+// So I re-encoded Chall's file to function in both. It's significantly larger,
+// not sure that's a great idea. H265=465K, H264=2.3M.
+// It should work just fine on real devices.
 // @ts-ignore
-import LighterVideo from '#assets/RockBalladMode.mp4';
+import LighterVideo from '#assets/RockBalladMode_h264.mp4';
 
 export const LighterScreen = () => {
   const {commonStyles} = useStyles();
