@@ -196,7 +196,6 @@ export const getInitialAppConfig = () => {
 export const getAppConfig = async () => {
   let rawConfig = await AsyncStorage.getItem(StorageKeys.APP_CONFIG);
   if (!rawConfig) {
-    console.log('[AppConfig.ts] No config found in storage, generating default config.');
     const defaultConfig = getInitialAppConfig();
     await AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(defaultConfig));
     return defaultConfig;
@@ -223,7 +222,5 @@ export const getAppConfig = async () => {
   }
 
   // Ok now we're done
-  console.log('WEEEE', appConfig);
-  console.log('FUCK', Config.SERVER_URL)
   return appConfig;
 };
