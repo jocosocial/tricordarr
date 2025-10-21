@@ -9,10 +9,10 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {InputModeOptions} from 'react-native/Libraries/Components/TextInput/TextInput';
 import {HelperText, TextInput} from 'react-native-paper';
 
 import {useAppTheme} from '#src/Styles/Theme';
+import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
   name: string;
@@ -24,7 +24,7 @@ export interface TextFieldProps {
   right?: ReactNode;
   secureTextEntry?: boolean;
   viewStyle?: StyleProp<ViewStyle>;
-  inputMode?: InputModeOptions;
+  inputMode?: RNInputModeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   maxLength?: number;
   onFocus?: () => void;
