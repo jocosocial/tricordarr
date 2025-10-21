@@ -2,7 +2,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useRef, useState} from 'react';
-import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {replaceTriggerValues} from 'react-native-controlled-mentions';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
@@ -35,7 +35,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
     // Forum doesn't take these params and keys off of the first post.
     postFormRef.current.setFieldValue('postAsModerator', values.postAsModerator);
     postFormRef.current.setFieldValue('postAsTwitarrTeam', values.postAsTwitarrTeam);
-    postFormRef.current.values.text = replaceMentionValues(postFormRef.current.values.text, ({name}) => `@${name}`);
+    postFormRef.current.values.text = replaceTriggerValues(postFormRef.current.values.text, ({name}) => `@${name}`);
     const forumData: ForumCreateData = {
       title: values.title,
       firstPost: postFormRef.current.values,

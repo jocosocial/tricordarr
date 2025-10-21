@@ -43,6 +43,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       // colors to higher contrast it shouldn't be a problem.
       // color: theme.colors.onSecondaryContainer,
     },
+    onSecondaryContainer: {
+      color: theme.colors.onSecondaryContainer,
+    },
     primary: {
       backgroundColor: theme.colors.primary,
       color: theme.colors.onPrimary,

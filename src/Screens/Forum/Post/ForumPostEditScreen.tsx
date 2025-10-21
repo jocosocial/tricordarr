@@ -2,7 +2,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
-import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {replaceTriggerValues} from 'react-native-controlled-mentions';
 
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
@@ -18,7 +18,7 @@ export const ForumPostEditScreen = ({route, navigation}: Props) => {
   const queryClient = useQueryClient();
 
   const onSubmit = (values: PostContentData, helpers: FormikHelpers<PostContentData>) => {
-    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
+    values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
     postUpdateMutation.mutate(
       {
         postID: route.params.postData.postID.toString(),

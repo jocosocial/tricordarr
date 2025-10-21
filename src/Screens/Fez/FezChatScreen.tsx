@@ -5,7 +5,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
@@ -144,7 +144,7 @@ export const FezChatScreen = ({route}: Props) => {
 
   const onSubmit = useCallback(
     (values: PostContentData, formikHelpers: FormikHelpers<PostContentData>) => {
-      values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
+      values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
       // Mark as read if applicable.
       if (fez && fez.members) {
         setFez({
