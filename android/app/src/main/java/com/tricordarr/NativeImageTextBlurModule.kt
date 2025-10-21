@@ -1,9 +1,13 @@
-package com.tricordarr
+package com.tricordarr.NativeImageTextBlur
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
+// import com.facebook.react.bridge.ReactApplicationContext
+// import com.facebook.react.bridge.ReactContextBaseJavaModule
+// import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
+import android.content.Context
+import android.content.SharedPreferences
+import com.tricordarr.NativeImageTextBlur.NativeImageTextBlurSpec
+import com.facebook.react.bridge.ReactApplicationContext
 import java.io.File
 import java.io.FileOutputStream
 import android.util.Log
@@ -14,15 +18,18 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.*
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-  val context = reactContext
-  override fun getName() = "ImageTextBlurModule"
+class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeImageTextBlurSpec(reactContext) {
+
+  override fun getName() = NAME
+// class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+  // val context = reactContext
+  // override fun getName() = "ImageTextBlurModule"
 
   // Loads the image file specified by `name` from the local fs, crops the image to a square,
   // uses OCR to scan the image for text, blurs any discovered text areas, saves the image to
   // the temp directory. Calls the callback with the path of the processed image, or if an error occurs,
   // calls the callback with the original file path.
-  @ReactMethod fun blurTextInImage(name: String, callback: Callback) {
+  override fun blurTextInImage(name: String, callback: Callback) {
     try {
       Log.d(getName(), "Start of blurTextInImage function, called with $name.")
       val opts = BitmapFactory.Options()
@@ -90,5 +97,9 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
       Log.d(getName(), "Error loading image file: $e.")
       callback.invoke(name)
     }
+  }
+
+  companion object {
+    const val NAME = "NativeImageTextBlur"
   }
 }

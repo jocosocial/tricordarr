@@ -121,5 +121,13 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "codegenConfig": {
+    "name": "NativeImageTextBlurSpec",
+    "type": "modules",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.tricordarr.NativeImageTextBlur"
+    }
   }
 }
