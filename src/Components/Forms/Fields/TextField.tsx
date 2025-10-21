@@ -1,10 +1,10 @@
 import {Field, useField, useFormikContext} from 'formik';
 import React, {ReactNode} from 'react';
 import {
+  FocusEvent,
   KeyboardTypeOptions,
-  NativeSyntheticEvent,
   StyleProp,
-  TextInputFocusEventData,
+  TextInputSelectionChangeEvent,
   TextStyle,
   View,
   ViewStyle,
@@ -32,8 +32,9 @@ export interface TextFieldProps {
   onChangeText?: (value: string) => void;
   innerTextStyle?: StyleProp<TextStyle>;
   infoText?: string;
-  onBlur?: (e?: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onBlur?: (e?: FocusEvent) => void;
   disabled?: boolean;
+  onSelectionChange?: (event: TextInputSelectionChangeEvent) => void;
 }
 
 // @TODO make this type-generic
@@ -57,6 +58,7 @@ export const TextField = ({
   infoText,
   onBlur,
   disabled,
+  onSelectionChange,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
@@ -66,7 +68,7 @@ export const TextField = ({
     handleChange(name)(value);
   };
 
-  const handleBlurEvent = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+  const handleBlurEvent = (event: FocusEvent) => {
     if (onBlur) {
       onBlur(event);
     }
@@ -99,6 +101,7 @@ export const TextField = ({
             maxLength={maxLength}
             onFocus={onFocus}
             style={innerTextStyle}
+            onSelectionChange={onSelectionChange}
           />
           {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
