@@ -1,8 +1,5 @@
 package com.nativeimagetextblur
 
-// import com.facebook.react.bridge.ReactApplicationContext
-// import com.facebook.react.bridge.ReactContextBaseJavaModule
-// import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,15 +13,13 @@ import android.net.Uri
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.*
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+
 // This get codegen'd from specs/NativeImageTextBlur.ts.
 import com.nativeimagetextblur.NativeImageTextBlurSpec
 
 class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeImageTextBlurSpec(reactContext) {
 
   override fun getName() = NAME
-// class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-  // val context = reactContext
-  // override fun getName() = "ImageTextBlurModule"
 
   // Loads the image file specified by `name` from the local fs, crops the image to a square,
   // uses OCR to scan the image for text, blurs any discovered text areas, saves the image to
@@ -100,6 +95,8 @@ class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeI
     }
   }
 
+  // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
+  // The name needs to match what gets registered in the JavaScript spec side.
   companion object {
     const val NAME = "NativeImageTextBlur"
   }
