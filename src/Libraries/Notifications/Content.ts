@@ -12,6 +12,7 @@ export interface ContentNotificationCategory {
 }
 
 export type ContentNotificationCategories = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [key in keyof PushNotificationConfig]: ContentNotificationCategory;
 };
 
