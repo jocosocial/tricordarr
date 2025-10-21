@@ -145,3 +145,15 @@ export interface SnackbarPayload {
 export interface ParamsWithOobe {
   oobe?: boolean;
 }
+
+// This comes from 'react-native/Libraries/Components/TextInput/TextInput'.
+// React Native deep imports are deprecated.
+export type RNInputModeOptions =
+  | 'none'
+  | 'text'
+  | 'decimal'
+  | 'numeric'
+  | 'tel'
+  | 'search'
+  | 'email'
+  | 'url';
