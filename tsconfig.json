@@ -19,6 +19,9 @@
       ],
       "#assets/*": [
         "./assets/*"
+      ],
+      "#specs/*": [
+        "./specs/*"
       ]
     }
   }

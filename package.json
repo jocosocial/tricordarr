@@ -121,5 +121,13 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "codegenConfig": {
+    "name": "NativeTricordarrModuleSpec",
+    "type": "modules",
+    "jsSrcsDir": "./specs",
+    "android": {
+      "javaPackageName": "com.tricordarr.nativemodule"
+    }
   }
 }

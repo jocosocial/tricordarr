@@ -1,9 +1,9 @@
-package com.tricordarr
+package com.tricordarr.nativemodule
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
+import android.content.Context
+import android.content.SharedPreferences
+import com.facebook.react.bridge.ReactApplicationContext
 import java.io.File
 import java.io.FileOutputStream
 import android.util.Log
@@ -14,15 +14,30 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.*
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-  val context = reactContext
-  override fun getName() = "ImageTextBlurModule"
+// This get codegen'd from specs/NativeTricordarrModule.ts.
+import com.tricordarr.nativemodule.NativeTricordarrModuleSpec
+
+/*
+ * This is a monolithic module for any native code that is needed in the app. Since patterns of multiple
+ * native modules in a single repo are not super well documented yet we're gonna do this until that sorts
+ * itself out.
+ *
+ * The big features we are likely to need here are:
+ * - Photostream image text blurring
+ * - Audio calling???
+ *
+ * "In general" modules are created the first time they are accessed and stick around.
+ * https://reactnative.dev/docs/next/the-new-architecture/native-modules-lifecycle
+ */
+class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTricordarrModuleSpec(reactContext) {
+
+  override fun getName() = NAME
 
   // Loads the image file specified by `name` from the local fs, crops the image to a square,
   // uses OCR to scan the image for text, blurs any discovered text areas, saves the image to
   // the temp directory. Calls the callback with the path of the processed image, or if an error occurs,
   // calls the callback with the original file path.
-  @ReactMethod fun blurTextInImage(name: String, callback: Callback) {
+  override fun blurTextInImage(name: String, callback: Callback) {
     try {
       Log.d(getName(), "Start of blurTextInImage function, called with $name.")
       val opts = BitmapFactory.Options()
@@ -90,5 +105,11 @@ class ImageTextBlurModule(reactContext: ReactApplicationContext) : ReactContextB
       Log.d(getName(), "Error loading image file: $e.")
       callback.invoke(name)
     }
+  }
+
+  // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
+  // The name needs to match what gets registered in the JavaScript spec side.
+  companion object {
+    const val NAME = "NativeTricordarrModule"
   }
 }

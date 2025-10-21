@@ -1,6 +1,6 @@
 import {useFormikContext} from 'formik';
 import React from 'react';
-import {NativeModules, View} from 'react-native';
+import {View} from 'react-native';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {ActivityIndicator} from 'react-native-paper';
@@ -13,7 +13,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 
-const {ImageTextBlurModule} = NativeModules;
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
 
 export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
@@ -36,7 +37,7 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const processImage = (image: Image) => {
-    ImageTextBlurModule.blurTextInImage(image.path, onBlur);
+    NativeTricordarrModule.blurTextInImage(image.path, onBlur);
   };
 
   const clearImage = async () => {
