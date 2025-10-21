@@ -1,4 +1,4 @@
-package com.tricordarr.NativeImageTextBlur
+package com.nativeimagetextblur
 
 import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule

@@ -125,9 +125,9 @@
   "codegenConfig": {
     "name": "NativeImageTextBlurSpec",
     "type": "modules",
-    "jsSrcsDir": "specs",
+    "jsSrcsDir": "./specs",
     "android": {
-      "javaPackageName": "com.tricordarr.NativeImageTextBlur"
+      "javaPackageName": "com.nativeimagetextblur"
     }
   }
 }

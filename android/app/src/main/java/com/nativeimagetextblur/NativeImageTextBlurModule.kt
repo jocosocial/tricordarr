@@ -1,4 +1,4 @@
-package com.tricordarr.NativeImageTextBlur
+package com.nativeimagetextblur
 
 // import com.facebook.react.bridge.ReactApplicationContext
 // import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -6,7 +6,6 @@ package com.tricordarr.NativeImageTextBlur
 import com.facebook.react.bridge.Callback
 import android.content.Context
 import android.content.SharedPreferences
-import com.tricordarr.NativeImageTextBlur.NativeImageTextBlurSpec
 import com.facebook.react.bridge.ReactApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -17,6 +16,8 @@ import android.net.Uri
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.*
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+// This get codegen'd from specs/NativeImageTextBlur.ts.
+import com.nativeimagetextblur.NativeImageTextBlurSpec
 
 class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeImageTextBlurSpec(reactContext) {
 
