@@ -123,11 +123,11 @@
     "node": ">=20"
   },
   "codegenConfig": {
-    "name": "NativeImageTextBlurSpec",
+    "name": "NativeTricordarrModuleSpec",
     "type": "modules",
     "jsSrcsDir": "./specs",
     "android": {
-      "javaPackageName": "com.nativeimagetextblur"
+      "javaPackageName": "com.tricordarr.nativemodule"
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.nativeimagetextblur
+package com.tricordarr.nativemodule
 
 import com.facebook.react.bridge.Callback
 import android.content.Context
@@ -14,10 +14,22 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.*
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-// This get codegen'd from specs/NativeImageTextBlur.ts.
-import com.nativeimagetextblur.NativeImageTextBlurSpec
+// This get codegen'd from specs/NativeTricordarrModule.ts.
+import com.tricordarr.nativemodule.NativeTricordarrModuleSpec
 
-class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeImageTextBlurSpec(reactContext) {
+/*
+ * This is a monolithic module for any native code that is needed in the app. Since patterns of multiple
+ * native modules in a single repo are not super well documented yet we're gonna do this until that sorts
+ * itself out.
+ *
+ * The big features we are likely to need here are:
+ * - Photostream image text blurring
+ * - Audio calling???
+ *
+ * "In general" modules are created the first time they are accessed and stick around.
+ * https://reactnative.dev/docs/next/the-new-architecture/native-modules-lifecycle
+ */
+class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTricordarrModuleSpec(reactContext) {
 
   override fun getName() = NAME
 
@@ -98,6 +110,6 @@ class NativeImageTextBlurModule(reactContext: ReactApplicationContext) : NativeI
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
   // The name needs to match what gets registered in the JavaScript spec side.
   companion object {
-    const val NAME = "NativeImageTextBlur"
+    const val NAME = "NativeTricordarrModule"
   }
 }

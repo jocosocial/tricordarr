@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
-import com.nativeimagetextblur.NativeImageTextBlurPackage
+import com.tricordarr.nativemodule.NativeTricordarrPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -17,9 +17,7 @@ class MainApplication : Application(), ReactApplication {
         PackageList(this).packages.apply {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // add(MyReactNativePackage())
-          // @TODO None of the community examples have good patterns for multiple native modules.
-          // We are gonna need those some day.
-          add(NativeImageTextBlurPackage())
+          add(NativeTricordarrPackage())
         },
     )
   }

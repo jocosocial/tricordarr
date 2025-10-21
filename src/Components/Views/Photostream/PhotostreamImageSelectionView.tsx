@@ -13,7 +13,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 
-import NativeImageTextBlur from '#specs/NativeImageTextBlur';
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 
 export const PhotostreamImageSelectionView = () => {
@@ -37,7 +37,7 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const processImage = (image: Image) => {
-    NativeImageTextBlur.blurTextInImage(image.path, onBlur);
+    NativeTricordarrModule.blurTextInImage(image.path, onBlur);
   };
 
   const clearImage = async () => {
