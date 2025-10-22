@@ -1,13 +1,13 @@
 import React, {FC} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {MentionSuggestionsProps} from 'react-native-controlled-mentions';
+import {SuggestionsProvidedProps} from 'react-native-controlled-mentions';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 
-export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({keyword, onSuggestionPress}) => {
+export const ContentPostMentionSuggestionsView: FC<SuggestionsProvidedProps> = ({keyword, onSelect}) => {
   const {data, isFetching} = useUserMatchQuery({searchQuery: keyword || ''});
   const {commonStyles} = useStyles();
 
@@ -36,7 +36,7 @@ export const ContentPostMentionSuggestionsView: FC<MentionSuggestionsProps> = ({
         .map(one => (
           <Pressable
             key={one.userID}
-            onPress={() => onSuggestionPress({id: one.userID, name: one.username})}
+            onPress={() => onSelect({id: one.userID, name: one.username})}
             style={styles.pressable}>
             <UserBylineTag user={one} />
           </Pressable>

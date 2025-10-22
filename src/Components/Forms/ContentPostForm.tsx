@@ -80,6 +80,7 @@ export const ContentPostForm = ({
       ...commonStyles.roundedBorderLarge,
       ...commonStyles.paddingHorizontal,
       ...commonStyles.secondaryContainer,
+      ...commonStyles.onSecondaryContainer,
     },
     lengthHintContainer: {
       ...commonStyles.flexRow,

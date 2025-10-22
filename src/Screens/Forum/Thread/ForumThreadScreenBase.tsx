@@ -2,7 +2,7 @@ import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
-import {replaceMentionValues} from 'react-native-controlled-mentions';
+import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
@@ -156,7 +156,7 @@ export const ForumThreadScreenBase = ({
       formikHelpers.setSubmitting(false);
       return;
     }
-    values.text = replaceMentionValues(values.text, ({name}) => `@${name}`);
+    values.text = replaceTriggerValues(values.text, ({name}) => `@${name}`);
     postCreateMutation.mutate(
       {
         forumID: data.pages[0].forumID,
