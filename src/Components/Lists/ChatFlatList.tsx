@@ -4,7 +4,7 @@ import {FlatList, ListRenderItemInfo, RefreshControlProps} from 'react-native';
 import {AppFlatList} from '#src/Components/Lists/AppFlatList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
-import {FezPostListHeader} from '#src/Components/Lists/Headers/FezPostListHeader';
+import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -37,7 +37,7 @@ export const ChatFlatList = ({
   scrollButtonPosition,
 }: ChatFlatListProps) => {
   const renderHeader = () => {
-    return hasPreviousPage ? <LoadingPreviousHeader /> : <FezPostListHeader />;
+    return hasPreviousPage ? <LoadingPreviousHeader /> : <ChatFlatListHeader />;
   };
 
   const showNewDivider = useCallback(
