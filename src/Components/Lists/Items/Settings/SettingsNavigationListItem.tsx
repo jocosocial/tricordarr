@@ -14,11 +14,13 @@ export const SettingsNavigationListItem = ({title, description, navComponent}: N
   const navigation = useSettingsStack();
   const {commonStyles} = useStyles();
 
-  return <List.Item
-    contentStyle={commonStyles.paddingLeftSmall}
-    style={commonStyles.paddingRightSmall}
-    title={title}
-    description={description}
-    onPress={() => navigation.push(navComponent)}
-         />;
+  return (
+    <List.Item
+      contentStyle={commonStyles.paddingLeftSmall}
+      style={commonStyles.paddingRightSmall}
+      title={title}
+      description={description}
+      onPress={() => navigation.push(navComponent)}
+    />
+  );
 };

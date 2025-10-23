@@ -36,12 +36,15 @@ const ForumThreadListInternal = ({
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
-  // const [selected, setSelected] = useState(false);
   const {dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     item: {
       backgroundColor: theme.colors.background,
+      ...commonStyles.paddingRightSmall,
+    },
+    content: {
+      ...commonStyles.paddingLeftSmall,
     },
     title: commonStyles.bold,
     rightContainer: {
@@ -120,7 +123,6 @@ const ForumThreadListInternal = ({
       type: ForumListDataSelectionActions.select,
       forumListData: forumListData,
     });
-    // setSelected(!selected);
   };
 
   const getLeft = () => {
@@ -148,6 +150,7 @@ const ForumThreadListInternal = ({
         right={getRight}
         left={enableSelection ? getLeft : undefined}
         onLongPress={onLongPress}
+        contentStyle={styles.content}
       />
     </ForumThreadListItemSwipeable>
   );
