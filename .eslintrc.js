@@ -36,10 +36,9 @@ module.exports = {
         ignoreRegExpLiterals: true,
       },
     ],
-    // JSX formatting rules
-    'react/jsx-indent': ['error', 2],
-    'react/jsx-indent-props': ['error', 2],
-    // Let prettier handle bracket location (bracketSameLine: true)
+    // JSX formatting rules - let prettier handle these
+    'react/jsx-indent': 'off',
+    'react/jsx-indent-props': 'off',
     'react/jsx-closing-bracket-location': 'off',
     'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
     'react/jsx-max-props-per-line': ['error', {maximum: 1, when: 'multiline'}],

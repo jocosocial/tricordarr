@@ -48,7 +48,7 @@ export const HelpTopicView = (props: HelpTopicViewProps) => {
         {props.right
           ? props.right
           : props.icon && (
-          <View>
+              <View>
                 <IconButton icon={props.icon} />
               </View>
             )}
