@@ -3,7 +3,7 @@ import {Keyboard, RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
+import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
@@ -116,7 +116,7 @@ export const ForumThreadSearchBar = (props: Props) => {
     <>
       <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
-        <ForumThreadFlatList
+        <ForumThreadList
           refreshControl={
             <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }

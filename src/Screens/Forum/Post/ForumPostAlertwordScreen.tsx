@@ -3,7 +3,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
 
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -57,8 +57,8 @@ export const ForumPostAlertwordScreen = ({route}: Props) => {
     <AppView>
       <ListTitleView title={route.params.alertWord} />
       <View style={[commonStyles.flex]}>
-        <ForumPostFlatList
-          flatListRef={flatListRef}
+        <ForumPostList
+          listRef={flatListRef}
           refreshControl={<RefreshControl refreshing={isFetching || refreshing} onRefresh={refetch} />}
           postList={forumPosts}
           handleLoadNext={handleLoadNext}

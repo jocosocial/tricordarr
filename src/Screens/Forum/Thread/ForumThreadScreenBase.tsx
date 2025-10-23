@@ -9,7 +9,7 @@ import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
@@ -234,7 +234,7 @@ export const ForumThreadScreenBase = ({
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlatList
+      <ForumConversationList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
@@ -244,7 +244,7 @@ export const ForumThreadScreenBase = ({
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}
         getListHeader={getListHeader}
-        flatListRef={flatListRef}
+        listRef={flatListRef}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
         // initialScrollIndex={getInitialScrollIndex()}

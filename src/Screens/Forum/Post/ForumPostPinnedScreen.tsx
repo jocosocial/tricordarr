@@ -3,7 +3,7 @@ import React, {useRef} from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
 
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -42,8 +42,8 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
   return (
     <AppView>
       <View style={[commonStyles.flex]}>
-        <ForumPostFlatList
-          flatListRef={flatListRef}
+        <ForumPostList
+          listRef={flatListRef}
           refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
           postList={data}
           enableShowInThread={true}

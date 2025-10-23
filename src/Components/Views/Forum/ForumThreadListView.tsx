@@ -3,7 +3,7 @@ import {RefreshControl} from 'react-native';
 
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {SelectionButtons} from '#src/Components/Buttons/SegmentedButtons/SelectionButtons';
-import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
+import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {CategoryData, ForumListData} from '#src/Structs/ControllerStructs';
@@ -65,7 +65,7 @@ export const ForumThreadListView = ({
       ) : (
         <ListTitleView title={title} subtitle={subtitle} />
       )}
-      <ForumThreadFlatList
+      <ForumThreadList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}

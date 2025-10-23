@@ -18,7 +18,7 @@ import {PostContentData} from '#src/Structs/ControllerStructs';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
-  formRef?: React.RefObject<FormikProps<PostContentData>>;
+  formRef?: React.RefObject<FormikProps<PostContentData> | null>;
   onPress?: () => void;
   overrideSubmitting?: boolean;
   enablePhotos?: boolean;

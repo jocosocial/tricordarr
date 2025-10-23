@@ -4,7 +4,7 @@ import {FlatList, RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -113,8 +113,8 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
           subtitle={`${data.pages[0].paginator.total} ${pluralize('result', data.pages[0].paginator.total)}`}
         />
       )}
-      <ForumPostFlatList
-        flatListRef={flatListRef}
+      <ForumPostList
+        listRef={flatListRef}
         postList={forumPosts}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadPrevious={handleLoadPrevious}

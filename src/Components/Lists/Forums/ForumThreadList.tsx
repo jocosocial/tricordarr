@@ -12,7 +12,7 @@ import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThread
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
-interface ForumThreadFlatListProps {
+interface ForumThreadListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   forumListData: ForumListData[];
   handleLoadNext: () => void;
@@ -25,7 +25,10 @@ interface ForumThreadFlatListProps {
   onScrollThreshold?: (value: boolean) => void;
 }
 
-export const ForumThreadFlatList = ({
+/**
+ * A list of forum threads.
+ */
+export const ForumThreadList = ({
   forumListData,
   refreshControl,
   handleLoadNext,
@@ -35,8 +38,8 @@ export const ForumThreadFlatList = ({
   categoryID,
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
-}: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlashListRef<ForumListData>>(null);
+}: ForumThreadListProps) => {
+  const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedForums} = useSelection();
 
   const renderListHeader = () => {
@@ -79,7 +82,7 @@ export const ForumThreadFlatList = ({
 
   return (
     <AppFlashList
-      flatListRef={flatListRef}
+      flatListRef={listRef}
       renderListHeader={renderListHeader}
       renderListFooter={renderListFooter}
       renderItem={renderItem}

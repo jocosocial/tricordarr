@@ -17,7 +17,7 @@ import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs
 import {FloatingScrollButtonPosition} from '#src/Types';
 
 
-interface ForumPostFlatListProps {
+interface ForumConversationListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
@@ -29,7 +29,7 @@ interface ForumPostFlatListProps {
   hasNextPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
-  flatListRef: TConversationListRefObject;
+  listRef: TConversationListRefObject;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
@@ -37,7 +37,7 @@ interface ForumPostFlatListProps {
 }
 
 // @TODO kill inverted stuff or at least figure out a new name for the toggle.
-export const ForumPostFlatList = ({
+export const ForumConversationList = ({
   postList,
   refreshControl,
   handleLoadNext,
@@ -47,13 +47,13 @@ export const ForumPostFlatList = ({
   forumData,
   hasPreviousPage,
   enableShowInThread,
-  flatListRef,
+  listRef,
   getListHeader,
   forumListData,
   hasNextPage,
   initialScrollIndex,
   scrollButtonPosition,
-}: ForumPostFlatListProps) => {
+}: ForumConversationListProps) => {
   const {commonStyles} = useStyles();
   const {data: profilePublicData} = useUserProfileQuery();
   const {hasModerator} = usePrivilege();
@@ -158,7 +158,7 @@ export const ForumPostFlatList = ({
 
   return (
     <ConversationList<PostData>
-      listRef={flatListRef}
+      listRef={listRef}
       data={postList}
       renderItem={renderItem}
       keyExtractor={keyExtractor}

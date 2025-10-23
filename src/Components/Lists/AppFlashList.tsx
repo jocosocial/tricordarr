@@ -10,7 +10,7 @@ import {FloatingScrollButtonPosition} from '#src/Types';
 interface AppFlashListProps<TItem> {
   scrollButtonPosition?: FloatingScrollButtonPosition;
   invertList?: boolean;
-  flatListRef: React.RefObject<FlashListRef<TItem>>;
+  flatListRef: React.RefObject<FlashListRef<TItem> | null>;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;

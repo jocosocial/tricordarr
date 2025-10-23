@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {ForumThreadFlatList} from '#src/Components/Lists/Forums/ForumThreadFlatList';
+import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {getUserBylineString} from '#src/Components/Text/Tags/UserBylineTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -79,7 +79,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
   return (
     <AppView>
       <ListTitleView title={getUserBylineString(route.params.user, false, true, 'Forums by')} />
-      <ForumThreadFlatList
+      <ForumThreadList
         forumListData={forumListData}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
