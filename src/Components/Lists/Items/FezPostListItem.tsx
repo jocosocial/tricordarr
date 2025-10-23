@@ -18,11 +18,6 @@ interface FezPostListItemProps {
   fez: FezData;
   fezPost: FezPostData;
   index: number;
-  separators: {
-    highlight: () => void;
-    unhighlight: () => void;
-    updateProps: (select: 'leading' | 'trailing', newProps: any) => void;
-  };
 }
 
 const FezPostListItemInternal = ({fezPost, fez}: FezPostListItemProps) => {

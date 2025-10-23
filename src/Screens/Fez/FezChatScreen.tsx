@@ -183,7 +183,7 @@ export const FezChatScreen = ({route}: Props) => {
     if (data) {
       dispatchFezPostsData({
         type: FezPostsActions.set,
-        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])].reverse(),
+        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])],
       });
       setFez(data?.pages[0]);
     }

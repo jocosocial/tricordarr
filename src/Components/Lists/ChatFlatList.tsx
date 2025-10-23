@@ -1,4 +1,5 @@
-import React, {useCallback} from 'react';
+import { LegendList, LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
+import React, {useCallback, useRef} from 'react';
 import {FlatList, ListRenderItemInfo, RefreshControlProps} from 'react-native';
 
 import {AppFlatList} from '#src/Components/Lists/AppFlatList';
@@ -15,11 +16,10 @@ interface ChatFlatListProps {
   fez: FezData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  flatListRef: React.RefObject<FlatList<FezPostData>>;
+  flatListRef: React.RefObject<LegendListRef>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
-  maintainViewPosition?: boolean;
   fezPostData: FezPostData[];
   scrollButtonPosition: FloatingScrollButtonPosition;
 }
@@ -32,7 +32,6 @@ export const ChatFlatList = ({
   handleLoadPrevious,
   handleLoadNext,
   hasNextPage,
-  maintainViewPosition,
   fezPostData,
   scrollButtonPosition,
 }: ChatFlatListProps) => {
@@ -54,28 +53,46 @@ export const ChatFlatList = ({
     [fez],
   );
 
-  const renderItem = ({item, index, separators}: ListRenderItemInfo<FezPostData>) => (
+  const renderItem = ({item, index}: LegendListRenderItemProps<FezPostData>) => (
     <PaddedContentView padBottom={false}>
       {showNewDivider(index) && <LabelDivider label={'New'} />}
-      <FezPostListItem fezPost={item} index={index} separators={separators} fez={fez} />
+      <FezPostListItem fezPost={item} index={index} fez={fez} />
     </PaddedContentView>
   );
 
+  const keyExtractor = useCallback((item: FezPostData) => item.postID.toString(), []);
+
+  // Putting this in a useCallback caused some weird list jumping behavior that I also
+  // saw when shoving the component in the `ItemSeparatorComponent` prop below.
+  const renderDivider = () => <SpaceDivider />;
+
+  React.useEffect(() => {
+    flatListRef.current?.scrollToEnd({ animated: false });
+  }, [flatListRef]);
+
   return (
-    <AppFlatList
-      invertList={true}
-      flatListRef={flatListRef}
-      renderItem={renderItem}
+    <LegendList
+      ref={flatListRef}
+      // Required Props
       data={fezPostData}
-      renderListHeader={renderHeader}
+      renderItem={renderItem}
+
+      // Recommended props (Improves performance)
+      keyExtractor={keyExtractor}
+      recycleItems={true}      
+
+      // chat interface props
+      alignItemsAtEnd
+      maintainScrollAtEnd
+      maintainVisibleContentPosition={true}
+      maintainScrollAtEndThreshold={0.1}
+
+      ListHeaderComponent={renderHeader}
+      ItemSeparatorComponent={renderDivider}
       refreshControl={refreshControl}
-      hasPreviousPage={hasPreviousPage}
-      hasNextPage={hasNextPage}
-      handleLoadNext={handleLoadNext}
-      handleLoadPrevious={handleLoadPrevious}
-      maintainViewPosition={maintainViewPosition}
-      renderItemSeparator={SpaceDivider}
-      scrollButtonPosition={scrollButtonPosition}
+
+      onStartReached={handleLoadPrevious}
+      onEndReached={handleLoadNext}
     />
   );
 };
