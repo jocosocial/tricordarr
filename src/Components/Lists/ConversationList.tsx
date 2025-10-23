@@ -1,9 +1,9 @@
-import { LegendList, LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
+import {LegendList, LegendListRef, LegendListRenderItemProps} from "@legendapp/list"
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
-import { FloatingScrollButton } from "#src/Components/Buttons/FloatingScrollButton";
-import { useStyles } from "#src/Context/Contexts/StyleContext";
+import {FloatingScrollButton} from "#src/Components/Buttons/FloatingScrollButton";
+import {useStyles} from "#src/Context/Contexts/StyleContext";
 import {FloatingScrollButtonPosition, RNFlatListSeparatorComponent} from '#src/Types';
 
 
@@ -51,6 +51,8 @@ export const ConversationList = <TItem,>({
 }: ConversationListProps<TItem>) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [init, setInit] = useState(true);
+  const [hasLayout, setHasLayout] = useState(false);
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -62,7 +64,7 @@ export const ConversationList = <TItem,>({
    * in real life.
    */
   const handleScrollButtonPress = useCallback(() => {
-    listRef.current?.scrollToEnd({ animated: true });
+    listRef.current?.scrollToEnd({animated: true});
   }, [listRef]);
 
    /**
@@ -90,18 +92,33 @@ export const ConversationList = <TItem,>({
     [onScrollThreshold, styleDefaults.listScrollThreshold],
   );
 
+  const onLayout = useCallback(() => {
+    if (!hasLayout) setHasLayout(true);
+  }, [hasLayout]);
+
   /**
    * Scroll to the end of the list when the component mounts.
+   * Run initial scroll only once after layout and data are ready
    * 
-   * In the reference example at https://github.com/Shopify/flash-list/issues/1844#issuecomment-3221732641
-   * there is mention of using an "init" skeleton view to hide things before this completes. idk if we
-   * need that here.
-   * 
-   * @TODO ok yeah I think that is needed because it gets weird with loading next pages.
+   * Lifted from a reference implementation https://github.com/Shopify/flash-list/issues/1844#issuecomment-3221732641
    */
   React.useEffect(() => {
-    listRef.current?.scrollToEnd({ animated: false });
-  }, [listRef]);
+    if (!init) return;
+    if (!hasLayout) return;
+    if (!data || data.length === 0) return;
+
+    if (initialScrollIndex) {
+      console.log('[ConversationList.tsx] useEffect scrollToIndex', initialScrollIndex);
+      listRef.current?.scrollToIndex({index: initialScrollIndex, animated: false});
+    } else {
+      console.log('[ConversationList.tsx] useEffect scrollToEnd');
+      listRef.current?.scrollToEnd({animated: false});
+    }
+
+    requestAnimationFrame(() => {
+      setInit(false);
+    });
+  }, [init, hasLayout, data, listRef, initialScrollIndex]);
 
   return (
     <>
@@ -129,6 +146,7 @@ export const ConversationList = <TItem,>({
         onStartReached={handleLoadPrevious}
         onEndReached={handleLoadNext}
         onScroll={onScroll}
+        onLayout={onLayout}
         initialScrollIndex={initialScrollIndex}
         style={style}
       />

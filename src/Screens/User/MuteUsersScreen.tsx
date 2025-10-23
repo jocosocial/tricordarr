@@ -67,7 +67,8 @@ export const MuteUsersScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching || userMuteMutation.isPending} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching || userMuteMutation.isPending} onRefresh={refetch} />}
+      >
         <PaddedContentView>
           <UserMuteText />
           {hasModerator && <ModeratorMuteText />}

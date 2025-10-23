@@ -35,7 +35,8 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       {props.event.owner.userID === profilePublicData?.header.userID && (
         <>
           {props.event.fezType === FezType.personalEvent ? (

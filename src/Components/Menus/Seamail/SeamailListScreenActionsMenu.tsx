@@ -16,7 +16,8 @@ export const SeamailListScreenActionsMenu = () => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       <Menu.Item
         leadingIcon={AppIcons.settings}
         title={'Settings'}

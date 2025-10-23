@@ -31,7 +31,8 @@ export const NotificationsMenu = () => {
           iconName={anyNew ? AppIcons.notificationShow : AppIcons.notificationNone}
           onPress={openMenu}
         />
-      }>
+      }
+    >
       {!anyNew && <Menu.Item leadingIcon={AppIcons.notificationNone} title={'No new notifications'} />}
       {!!data?.newForumMentionCount && (
         <>

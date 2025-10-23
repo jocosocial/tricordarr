@@ -25,7 +25,8 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}
+    >
       {ShipDecks.map(deck => {
         return (
           <SelectableMenuItem

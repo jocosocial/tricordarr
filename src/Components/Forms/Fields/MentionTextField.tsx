@@ -1,7 +1,7 @@
 import {Field, useField, useFormikContext} from 'formik';
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
-import { TextInput } from 'react-native';
+import {TextInput} from 'react-native';
 import {
   PatternsConfig,
   TriggersConfig,
@@ -38,11 +38,11 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
     url: {
       pattern:
         /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi,
-      textStyle: { color: 'blue' },
+      textStyle: {color: 'blue'},
     },
   }), []);
 
-  const { textInputProps, triggers } = useMentions({
+  const {textInputProps, triggers} = useMentions({
     value: field.value,
     onChange: helpers.setValue,
     triggersConfig,
@@ -53,18 +53,15 @@ export const MentionTextField = (props: MentionTextFieldProps) => {
     <Field name={props.name}>
       {() => (
         <>
-        <ContentPostMentionSuggestionsView {...triggers.mention} />
-        <TextInput
+          <ContentPostMentionSuggestionsView {...triggers.mention} />
+          <TextInput
           // The textInputProps provides onChangeText and onSelectionChange.
-          {...textInputProps}
-          style={props.style}
-          onBlur={handleBlur(props.name)}
-          multiline={true}
-          underlineColorAndroid={'transparent'}
-          // editable=false makes the keyboard disappear which from a UX is significantly
-          // worse than the race condition of rapidly editing text. Eww.
-          // editable={!isSubmitting}
-        />
+            {...textInputProps}
+            style={props.style}
+            onBlur={handleBlur(props.name)}
+            multiline={true}
+            underlineColorAndroid={'transparent'}
+          />
         </>
       )}
     </Field>

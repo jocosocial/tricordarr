@@ -46,7 +46,8 @@ export const ForumThreadPostScreen = ({route, navigation}: Props) => {
               style={styles.button}
               onPress={() =>
                 navigation.push(CommonStackComponents.forumThreadScreen, {forumID: data.pages[0].forumID})
-              }>
+              }
+            >
               View Full Forum
             </Button>
           )}

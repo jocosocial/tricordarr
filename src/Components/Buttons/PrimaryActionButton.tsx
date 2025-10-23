@@ -50,7 +50,8 @@ export const PrimaryActionButton = ({
         mode={mode}
         onPress={onPress}
         icon={isLoading ? getLoadingIcon : icon}
-        disabled={disabled}>
+        disabled={disabled}
+      >
         {buttonText}
       </Button>
     </View>

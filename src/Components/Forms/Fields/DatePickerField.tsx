@@ -79,7 +79,8 @@ export const DatePickerField = ({
         contentStyle={styles.content}
         style={styles.button}
         onPress={() => setVisible(true)}
-        mode={'outlined'}>
+        mode={'outlined'}
+      >
         {label} ({getDateFormat()})
       </Button>
       <DatePickerModal

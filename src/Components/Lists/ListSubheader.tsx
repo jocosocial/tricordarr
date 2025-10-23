@@ -13,6 +13,7 @@ export const ListSubheader = ({children, style}: ListSubheaderProps) => {
   const styles = StyleSheet.create({
     subheader: {
       ...commonStyles.surfaceVariant,
+      ...commonStyles.paddingHorizontalSmall,
       ...(style as TextStyle),
     },
   });

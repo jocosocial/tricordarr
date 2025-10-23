@@ -92,7 +92,8 @@ export const PickerField = <TData,>({
             style={styles.button}
             onPress={openMenu}
             disabled={disabled || isSubmitting}
-            mode={anchorButtonMode}>
+            mode={anchorButtonMode}
+          >
             {label} ({getTitle(value)})
           </Button>
           {helperText && (
@@ -104,7 +105,8 @@ export const PickerField = <TData,>({
           )}
           {meta.error && <HelperText type={'error'}>{meta.error}</HelperText>}
         </View>
-      }>
+      }
+    >
       {choices.map((item, index) => {
         return (
           <React.Fragment key={index}>

@@ -67,7 +67,8 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
       <ScrollingContentView
         refreshControl={
           <RefreshControl refreshing={isFetching || userFavoriteMutation.isPending} onRefresh={refetch} />
-        }>
+        }
+      >
         <PaddedContentView>
           <UserFavoriteText />
         </PaddedContentView>

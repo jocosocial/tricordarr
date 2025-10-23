@@ -60,7 +60,8 @@ export const MainAccountMenu = () => {
     <AppHeaderMenu
       visible={visible}
       anchor={<TouchableOpacity onPress={openMenu}>{getAvatarImage()}</TouchableOpacity>}
-      onDismiss={closeMenu}>
+      onDismiss={closeMenu}
+    >
       {isLoggedIn && profilePublicData ? (
         <>
           <Menu.Item leadingIcon={getAvatarImage} title={`Current User: ${profilePublicData.header.username}`} />

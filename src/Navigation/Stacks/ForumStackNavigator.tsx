@@ -70,7 +70,8 @@ export const ForumStackNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={ForumStackComponents.forumCategoriesScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+      screenOptions={{...screenOptions, headerShown: true}}
+    >
       <Stack.Screen
         name={ForumStackComponents.forumCategoriesScreen}
         component={isDisabled ? DisabledView : ForumCategoriesScreen}

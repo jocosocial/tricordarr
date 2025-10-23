@@ -21,13 +21,15 @@ export const SocketControlView = ({title, onReset, disabled}: SocketControlViewP
       style={{
         ...commonStyles.booleanSettingRowView,
         ...commonStyles.marginVerticalSmall,
-      }}>
+      }}
+    >
       <Text>{title}</Text>
       <View
         style={{
           ...commonStyles.flexRow,
           ...commonStyles.gapSmall,
-        }}>
+        }}
+      >
         <PrimaryActionButton
           disabled={disabled}
           buttonColor={theme.colors.twitarrNegativeButton}

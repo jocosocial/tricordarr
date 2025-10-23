@@ -48,7 +48,8 @@ export const TestErrorScreen = () => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}>
+        refreshControl={<RefreshControl refreshing={isFetchingError || isFetchingSuccess} enabled={false} />}
+      >
         <PaddedContentView>
           <Text>Banner: {errorBanner}</Text>
           <PrimaryActionButton

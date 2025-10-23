@@ -127,7 +127,8 @@ export const ContentPostForm = ({
       innerRef={formRef}
       initialValues={initialValues || defaultInitialValues}
       onSubmit={onSubmit}
-      validationSchema={validationSchema}>
+      validationSchema={validationSchema}
+    >
       {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
         <View style={styles.formOuterContainer}>
           <ScrollView keyboardShouldPersistTaps={'always'}>

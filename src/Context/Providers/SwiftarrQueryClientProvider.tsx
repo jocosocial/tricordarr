@@ -216,7 +216,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
         PublicQueryClient,
         publicGet,
         serverUrl,
-      }}>
+      }}
+    >
       <PersistQueryClientProvider
         client={SwiftarrQueryClient}
         persistOptions={{
@@ -226,7 +227,8 @@ export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
           },
           buster: appConfig.apiClientConfig.cacheBuster,
         }}
-        onSuccess={onSuccess}>
+        onSuccess={onSuccess}
+      >
         {children}
       </PersistQueryClientProvider>
     </SwiftarrQueryClientContext.Provider>

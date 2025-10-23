@@ -15,7 +15,8 @@ export const ForumCategoriesScreenActionsMenu = () => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       <Menu.Item
         dense={false}
         title={'Alert Keywords'}

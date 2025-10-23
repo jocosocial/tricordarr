@@ -16,7 +16,8 @@ export const LoadingView = (props: LoadingViewProps) => {
   return (
     <AppView safeEdges={['bottom', 'top']}>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}
+      >
         <ActivityIndicator />
         <View
           style={[
@@ -24,7 +25,8 @@ export const LoadingView = (props: LoadingViewProps) => {
             commonStyles.justifyCenter,
             commonStyles.alignItemsCenter,
             commonStyles.marginTop,
-          ]}>
+          ]}
+        >
           <Text>Loading...</Text>
         </View>
       </ScrollingContentView>

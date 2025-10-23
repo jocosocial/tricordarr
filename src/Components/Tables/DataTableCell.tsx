@@ -18,7 +18,8 @@ export const DataTableCell = (props: Props) => {
     <DataTable.Cell
       onPress={props.onPress}
       onLongPress={props.value ? () => Clipboard.setString(String(props.value)) : undefined}
-      style={props.style}>
+      style={props.style}
+    >
       {props.value}
       {props.children}
     </DataTable.Cell>

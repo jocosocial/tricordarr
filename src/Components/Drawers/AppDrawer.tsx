@@ -190,7 +190,8 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
             </PaperDrawer.Section>
           </ScrollView>
         );
-      }}>
+      }}
+    >
       {children}
     </Drawer>
   );

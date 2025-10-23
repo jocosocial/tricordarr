@@ -174,7 +174,8 @@ export const AppFlatList = <TItem,>({
             setItemHeights(prevData => {
               return [...prevData, layout.height];
             });
-          }}>
+          }}
+        >
           {renderItem(renderItemProps)}
         </View>
       );

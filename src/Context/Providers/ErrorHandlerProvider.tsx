@@ -32,7 +32,8 @@ export const ErrorHandlerProvider = ({children}: PropsWithChildren) => {
         setErrorBanner,
         hasUnsavedWork,
         setHasUnsavedWork,
-      }}>
+      }}
+    >
       {children}
     </ErrorHandlerContext.Provider>
   );

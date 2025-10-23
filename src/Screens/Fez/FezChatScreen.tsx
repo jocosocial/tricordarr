@@ -1,4 +1,4 @@
-import { LegendListRef } from '@legendapp/list';
+import {LegendListRef} from '@legendapp/list';
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

@@ -31,7 +31,8 @@ export const PreRegistrationSettingsForm = (props: CruiseSettingsFormProps) => {
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={validationSchema}
-      enableReinitialize={true}>
+      enableReinitialize={true}
+    >
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />

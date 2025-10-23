@@ -53,7 +53,8 @@ export const OobeStackNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={OobeStackComponents.oobeWelcomeScreen}
-      screenOptions={{...screenOptions, headerShown: true}}>
+      screenOptions={{...screenOptions, headerShown: true}}
+    >
       <Stack.Screen
         name={OobeStackComponents.oobeWelcomeScreen}
         component={OobeWelcomeScreen}

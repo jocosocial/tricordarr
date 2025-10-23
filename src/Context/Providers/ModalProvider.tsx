@@ -9,7 +9,8 @@ export const ModalProvider = ({children}: PropsWithChildren) => {
 
   return (
     <ModalContext.Provider
-      value={{modalContent, setModalContent, modalVisible, setModalVisible, modalOnDismiss, setModalOnDismiss}}>
+      value={{modalContent, setModalContent, modalVisible, setModalVisible, modalOnDismiss, setModalOnDismiss}}
+    >
       {children}
     </ModalContext.Provider>
   );

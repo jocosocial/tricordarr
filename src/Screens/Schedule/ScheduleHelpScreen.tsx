@@ -73,7 +73,8 @@ export const ScheduleHelpScreen = () => {
               onPress={() => {}}
               disabled={true}
             />
-          }>
+          }
+        >
           Pressing on day button will take you to the schedule for that day. Pressing it again will jump you to around
           the current time.
         </HelpTopicView>

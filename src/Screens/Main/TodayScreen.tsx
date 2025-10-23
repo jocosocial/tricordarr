@@ -85,7 +85,8 @@ export const TodayScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         <TodayHeaderView />
         <TodayTimezoneWarningView />
         <TodayAnnouncementView />

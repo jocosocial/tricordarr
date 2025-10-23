@@ -52,7 +52,8 @@ export const RootStackNavigator = () => {
           });
           setSnackbarPayload(undefined);
         },
-      }}>
+      }}
+    >
       <Stack.Screen name={RootStackComponents.oobeNavigator} component={OobeStackNavigator} />
       <Stack.Screen name={RootStackComponents.rootContentScreen} component={BottomTabNavigator} />
       <Stack.Screen name={RootStackComponents.lighterScreen} component={LighterScreen} />

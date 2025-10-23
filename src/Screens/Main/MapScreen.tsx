@@ -90,7 +90,8 @@ export const MapScreen = ({navigation, route}: Props) => {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={<PrimaryActionButton buttonText={'Change Deck'} onPress={openMenu} icon={AppIcons.decks} />}>
+            anchor={<PrimaryActionButton buttonText={'Change Deck'} onPress={openMenu} icon={AppIcons.decks} />}
+          >
             {ShipDecks.map(deck => {
               return (
                 <SelectableMenuItem

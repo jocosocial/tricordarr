@@ -33,7 +33,8 @@ const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
       <DataTable.Cell
         onPress={() => setShowID(!showID)}
         onLongPress={() => Clipboard.setString(record.timeZoneID)}
-        style={commonStyles.paddingVerticalTiny}>
+        style={commonStyles.paddingVerticalTiny}
+      >
         <Text>
           {record.timeZoneID}
           {'\n'}
@@ -82,7 +83,8 @@ export const MainTimeZoneScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}
+      >
         <ListTitleView title={'Check Device Time'} />
         <PaddedContentView padTop={true}>
           <Text>

@@ -2,11 +2,11 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import { AppIcon } from '#src/Components/Icons/AppIcon';
+import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import { AppIcons } from '#src/Enums/Icons';
-import { useAppTheme } from '#src/Styles/Theme';
+import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
 
 export const ForumLockedView = () => {
   const {commonStyles} = useStyles();

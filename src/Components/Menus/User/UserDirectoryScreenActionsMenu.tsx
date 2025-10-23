@@ -15,7 +15,8 @@ export const UserDirectoryScreenActionsMenu = () => {
     <AppHeaderMenu
       visible={visible}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
-      onDismiss={closeMenu}>
+      onDismiss={closeMenu}
+    >
       <Menu.Item
         title={'Favorites'}
         leadingIcon={AppIcons.favorite}

@@ -69,7 +69,8 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
       <Divider bold={true} />
       <Menu.Item

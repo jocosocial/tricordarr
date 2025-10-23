@@ -26,7 +26,8 @@ export const OobeConductScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         style={commonStyles.marginBottomZero}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+      >
         <PaddedContentView>
           <ContentText text={data} forceMarkdown={true} />
         </PaddedContentView>

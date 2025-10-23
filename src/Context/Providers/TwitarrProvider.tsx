@@ -61,7 +61,8 @@ export const TwitarrProvider = ({children}: PropsWithChildren) => {
     <TwitarrContext.Provider
       value={{
         openWebUrl,
-      }}>
+      }}
+    >
       {children}
     </TwitarrContext.Provider>
   );

@@ -62,7 +62,8 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <Divider bold={true} />
       {enableDetails && <Menu.Item leadingIcon={AppIcons.details} onPress={detailsAction} title={'Details'} />}

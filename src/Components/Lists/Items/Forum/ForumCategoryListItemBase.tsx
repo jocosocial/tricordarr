@@ -18,6 +18,8 @@ export const ForumCategoryListItemBase = ({title, description, onPress, right}: 
 
   return (
     <List.Item
+      contentStyle={commonStyles.paddingLeftSmall}
+      style={commonStyles.paddingRightSmall}
       title={title}
       titleStyle={commonStyles.bold}
       description={getDescription}

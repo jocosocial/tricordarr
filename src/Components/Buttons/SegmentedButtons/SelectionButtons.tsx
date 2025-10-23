@@ -113,7 +113,8 @@ export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
           mode={'text'}
           style={button.style}
           textColor={theme.colors.onBackground}
-          onPress={() => onValueChange(button.value)}>
+          onPress={() => onValueChange(button.value)}
+        >
           {button.label}
         </Button>
       ))}

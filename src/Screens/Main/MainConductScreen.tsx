@@ -17,7 +17,8 @@ export const MainConductScreen = () => {
     <AppView>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-        isStack={true}>
+        isStack={true}
+      >
         <PaddedContentView>
           <ContentText text={data} forceMarkdown={true} />
         </PaddedContentView>

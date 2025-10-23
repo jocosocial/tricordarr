@@ -83,7 +83,8 @@ export const SuggestedTextField = ({
             {meta.error}
           </HelperText>
         </View>
-      }>
+      }
+    >
       {suggestions.map((suggestion, index) => {
         return <Menu.Item key={index} title={suggestion} onPress={() => helpers.setValue(suggestion)} />;
       })}

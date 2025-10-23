@@ -11,6 +11,7 @@ module.exports = {
     },
   },
   rules: {
+    'object-curly-spacing': ['error', 'never'],
     'linebreak-style': 0,
     'no-restricted-imports': [
       'error',
@@ -18,6 +19,12 @@ module.exports = {
         patterns: ['./*', '../*'],
       },
     ],
+    // JSX formatting rules
+    'react/jsx-indent': ['error', 2],
+    'react/jsx-indent-props': ['error', 2],
+    'react/jsx-closing-bracket-location': ['error', 'tag-aligned'],
+    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
+    'react/jsx-max-props-per-line': ['error', {maximum: 1, when: 'multiline'}],
     'import/order': [
       'error',
       {

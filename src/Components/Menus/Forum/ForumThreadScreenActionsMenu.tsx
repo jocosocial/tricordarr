@@ -106,7 +106,8 @@ export const ForumThreadScreenActionsMenu = ({
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
+    >
       <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />
       <FavoriteMenuItem
         onPress={handleFavorite}

@@ -26,11 +26,13 @@ export const SettingDataTableRow = ({
         ...commonStyles.borderBottomZero,
       }}
       key={title}
-      onPress={onPress}>
+      onPress={onPress}
+    >
       <DataTable.Cell style={reverseSplit ? commonStyles.flex2 : undefined}>{title}</DataTable.Cell>
       <DataTable.Cell
         style={reverseSplit ? undefined : commonStyles.flex2}
-        onLongPress={value ? () => Clipboard.setString(value) : undefined}>
+        onLongPress={value ? () => Clipboard.setString(value) : undefined}
+      >
         {value}
         {children}
       </DataTable.Cell>

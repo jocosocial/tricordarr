@@ -55,7 +55,8 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
         enableUserNotifications,
         setEnableUserNotifications,
         // refetchUserNotificationData,
-      }}>
+      }}
+    >
       {children}
     </UserNotificationDataContext.Provider>
   );

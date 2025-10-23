@@ -80,7 +80,8 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
       <ScrollingContentView
         isStack={true}
         overScroll={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}>
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh || isLoading} />}
+      >
         <View>
           {data && (
             <ListSection>

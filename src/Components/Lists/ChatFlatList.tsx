@@ -1,14 +1,14 @@
-import {LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
+import {LegendListRef, LegendListRenderItemProps} from "@legendapp/list"
 import React, {useCallback} from 'react';
 import {RefreshControlProps, StyleSheet, View} from 'react-native';
 
-import { ConversationList } from "#src/Components/Lists/ConversationList";
+import {ConversationList} from "#src/Components/Lists/ConversationList";
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
-import { useStyles } from "#src/Context/Contexts/StyleContext";
+import {useStyles} from "#src/Context/Contexts/StyleContext";
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 import {FloatingScrollButtonPosition} from '#src/Types';
 

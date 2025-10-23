@@ -50,7 +50,8 @@ export const SocketSettingsScreen = () => {
     <AppView>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        isStack={true}>
+        isStack={true}
+      >
         <ListSection>
           <ListSubheader>Notification Socket</ListSubheader>
           <PaddedContentView padBottom={false}>

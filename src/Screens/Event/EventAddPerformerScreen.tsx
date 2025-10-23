@@ -117,7 +117,8 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
       <PerformerProfileWarningView />
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+      >
         <PaddedContentView padTop={true}>
           <Text>
             This self-service form allows you, the organizer of a Shadow Event, to create a Bio page for yourself,

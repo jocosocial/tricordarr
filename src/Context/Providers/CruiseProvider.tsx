@@ -57,7 +57,8 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
         adjustedCruiseDayIndex,
         adjustedCruiseDayToday,
         showTimeZoneWarning,
-      }}>
+      }}
+    >
       {children}
     </CruiseContext.Provider>
   );

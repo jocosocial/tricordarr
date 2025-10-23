@@ -23,7 +23,8 @@ export const ErrorView = (props: ErrorViewProps) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={props.refreshing} onRefresh={props.onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={props.refreshing} onRefresh={props.onRefresh} />}
+      >
         <View style={styles.outerContainer}>
           <View style={styles.innerContainer}>
             <View style={styles.contentContainer}>

@@ -146,7 +146,8 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
         setNotificationSocket,
         openNotificationSocket,
         closeNotificationSocket,
-      }}>
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );

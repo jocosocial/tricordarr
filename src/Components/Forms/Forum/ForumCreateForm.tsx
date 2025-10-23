@@ -69,7 +69,8 @@ export const ForumCreateForm = ({onSubmit, formRef}: ForumCreateFormProps) => {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validationSchema={validationSchema}>
+      validationSchema={validationSchema}
+    >
       <InnerForm />
     </Formik>
   );

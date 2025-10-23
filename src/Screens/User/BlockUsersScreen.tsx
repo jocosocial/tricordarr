@@ -67,7 +67,8 @@ export const BlockUsersScreen = ({navigation}: Props) => {
   return (
     <AppView>
       <ScrollingContentView
-        refreshControl={<RefreshControl refreshing={isFetching || userBlockMutation.isPending} onRefresh={refetch} />}>
+        refreshControl={<RefreshControl refreshing={isFetching || userBlockMutation.isPending} onRefresh={refetch} />}
+      >
         <PaddedContentView>
           <UserBlockText />
           {hasModerator && <ModeratorBlockText />}

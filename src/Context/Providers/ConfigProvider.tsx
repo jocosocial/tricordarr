@@ -50,7 +50,8 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         preRegistrationAvailable,
         preRegistrationMode,
         setPreRegistrationMode,
-      }}>
+      }}
+    >
       {children}
     </ConfigContext.Provider>
   );
