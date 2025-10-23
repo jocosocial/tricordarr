@@ -3,8 +3,9 @@ import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from "#src/Components/Buttons/FloatingScrollButton";
+import {useConfig} from "#src/Context/Contexts/ConfigContext";
 import {useStyles} from "#src/Context/Contexts/StyleContext";
-import {FloatingScrollButtonPosition, RNFlatListSeparatorComponent} from '#src/Types';
+import {RNFlatListSeparatorComponent} from '#src/Types';
 
 export type TConversationListRef = LegendListRef | null;
 export type TConversationListRefObject = React.RefObject<TConversationListRef>;
@@ -18,7 +19,6 @@ interface ConversationListProps<TItem> {
   handleLoadPrevious?: () => void;
   renderItem: ({item}: LegendListRenderItemProps<TItem>) => React.ReactNode;
   data: TItem[];
-  scrollButtonPosition?: FloatingScrollButtonPosition;
   onScrollThreshold?: (condition: boolean) => void;
   enableScrollButton?: boolean;
   keyExtractor: (item: TItem) => string;
@@ -40,7 +40,6 @@ export const ConversationList = <TItem,>({
   handleLoadPrevious,
   handleLoadNext,
   // hasNextPage,
-  scrollButtonPosition = 'raised',
   onScrollThreshold,
   enableScrollButton = true,
   keyExtractor,
@@ -55,6 +54,7 @@ export const ConversationList = <TItem,>({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [init, setInit] = useState(true);
   const [hasLayout, setHasLayout] = useState(false);
+  const {appConfig} = useConfig();
 
   /**
    * Callback handler for when the scroll button is pressed.
@@ -155,7 +155,8 @@ export const ConversationList = <TItem,>({
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           onPress={handleScrollButtonPress}
-          displayPosition={scrollButtonPosition}
+          verticalPosition={'raised'}
+          horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
         />
       )}
     </>

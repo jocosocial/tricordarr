@@ -5,10 +5,11 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonPosition} from '#src/Types';
+import {FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 interface AppFlashListProps<TItem> {
-  scrollButtonPosition?: FloatingScrollButtonPosition;
+  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
+  scrollButtonHorizontalPosition?: FloatingScrollButtonHorizontalPosition;
   invertList?: boolean;
   flatListRef: React.RefObject<FlashListRef<TItem> | null>;
   handleLoadNext?: () => void;
@@ -30,10 +31,14 @@ interface AppFlashListProps<TItem> {
   contentContainerStyle?: StyleProp<ViewStyle>;
   columnWrapperStyle?: StyleProp<ViewStyle>;
   extraData?: any;
+  style?: ViewStyle;
+  scrollButtonSmall?: boolean;
 }
 
 export const AppFlashList = <TItem,>({
-  scrollButtonPosition,
+  scrollButtonVerticalPosition,
+  scrollButtonHorizontalPosition,
+  scrollButtonSmall,
   invertList,
   flatListRef,
   onEndReachedThreshold = 1,
@@ -50,6 +55,7 @@ export const AppFlashList = <TItem,>({
   numColumns,
   handleLoadNext,
   extraData,
+  style,
 }: AppFlashListProps<TItem>) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -98,12 +104,15 @@ export const AppFlashList = <TItem,>({
         numColumns={numColumns}
         onEndReached={handleLoadNext}
         extraData={extraData}
+        style={style}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          displayPosition={scrollButtonPosition}
+          verticalPosition={scrollButtonVerticalPosition}
+          horizontalPosition={scrollButtonHorizontalPosition}
+          small={scrollButtonSmall}
         />
       )}
     </>

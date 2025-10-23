@@ -4,17 +4,14 @@ import {RefreshControlProps, View} from 'react-native';
 import {ConversationList, type TConversationListRefObject} from '#src/Components/Lists/ConversationList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
-import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {ForumPostListHeader} from '#src/Components/Lists/Headers/ForumPostListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumPostListItem} from '#src/Components/Lists/Items/Forum/ForumPostListItem';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {timeAgo} from '#src/Libraries/DateTime';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
-import {FloatingScrollButtonPosition} from '#src/Types';
 
 
 interface ForumConversationListProps {
@@ -22,8 +19,6 @@ interface ForumConversationListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
-  itemSeparator?: 'time';
-  invertList?: boolean;
   forumData?: ForumData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
@@ -33,17 +28,19 @@ interface ForumConversationListProps {
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
-  scrollButtonPosition?: FloatingScrollButtonPosition;
 }
 
-// @TODO kill inverted stuff or at least figure out a new name for the toggle.
+/**
+ * A forum conversation. Not to be confused with a list of posts or a list of threads.
+ * Starts at the bottom or where you have not yet read.
+ * 
+ * @TODO the latter part of that has not been tested with the new LegendList backend.
+ */
 export const ForumConversationList = ({
   postList,
   refreshControl,
   handleLoadNext,
   handleLoadPrevious,
-  itemSeparator,
-  invertList,
   forumData,
   hasPreviousPage,
   enableShowInThread,
@@ -52,7 +49,6 @@ export const ForumConversationList = ({
   forumListData,
   hasNextPage,
   initialScrollIndex,
-  scrollButtonPosition,
 }: ForumConversationListProps) => {
   const {commonStyles} = useStyles();
   const {data: profilePublicData} = useUserProfileQuery();
@@ -95,32 +91,7 @@ export const ForumConversationList = ({
     [hasModerator, forumData, profilePublicData?.header.userID, showNewDivider, enableShowInThread],
   );
 
-  const renderSeparator = useCallback(
-    ({leadingItem}: {leadingItem: PostData}) => {
-      if (!itemSeparator) {
-        return <SpaceDivider />;
-      }
-      const leadingIndex = postList.indexOf(leadingItem);
-      if (leadingIndex === undefined) {
-        return <TimeDivider label={'Leading Unknown?'} />;
-      }
-      const trailingIndex = leadingIndex + 1;
-      const trailingItem = postList[trailingIndex];
-      if (!leadingItem.createdAt || !trailingItem.createdAt) {
-        return <SpaceDivider />;
-      }
-      const leadingDate = new Date(leadingItem.createdAt);
-      const trailingDate = new Date(trailingItem.createdAt);
-      const leadingTimeMarker = timeAgo.format(leadingDate, 'round');
-      const trailingTimeMarker = timeAgo.format(trailingDate, 'round');
-      if (leadingTimeMarker === trailingTimeMarker) {
-        return <SpaceDivider />;
-      }
-
-      return <TimeDivider label={timeAgo.format(invertList ? leadingDate : trailingDate, 'round')} />;
-    },
-    [invertList, itemSeparator, postList],
-  );
+  const renderSeparator = useCallback(() => <SpaceDivider />, []);
 
   const renderListHeader = useCallback(() => {
     if (forumData && !hasPreviousPage) {
@@ -131,21 +102,8 @@ export const ForumConversationList = ({
     } else if (hasPreviousPage) {
       return <LoadingPreviousHeader />;
     }
-    if (!itemSeparator) {
-      return <SpaceDivider />;
-    }
-    if (postList.length === 0) {
-      return <TimeDivider label={'No posts to display'} />;
-    }
-    const firstDisplayItemIndex = invertList ? postList.length - 1 : 0;
-    const firstDisplayItem = postList[firstDisplayItemIndex];
-    if (!firstDisplayItem.createdAt) {
-      return <SpaceDivider />;
-    }
-
-    let label = timeAgo.format(new Date(firstDisplayItem.createdAt), 'round');
-    return <TimeDivider label={label} />;
-  }, [forumData, hasPreviousPage, itemSeparator, postList, invertList, getListHeader]);
+    return <SpaceDivider />;
+  }, [forumData, hasPreviousPage, getListHeader]);
 
   const renderListFooter = useCallback(() => {
     if (hasNextPage) {
@@ -168,7 +126,6 @@ export const ForumConversationList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      scrollButtonPosition={scrollButtonPosition}
       enableScrollButton={true}
       initialScrollIndex={initialScrollIndex}
       // Style is here rather than in the renderItem because the padding we use is

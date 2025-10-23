@@ -40,7 +40,10 @@ interface ForumThreadScreenBaseProps {
 }
 
 /**
- * Used for a regular forum thread display.
+ * Used for a regular forum thread display. This is shared between viewing a thread
+ * from the forum list or from a particular post.
+ * 
+ * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
 export const ForumThreadScreenBase = ({
   data,
@@ -239,7 +242,6 @@ export const ForumThreadScreenBase = ({
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-        invertList={invertList}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
         // maintainViewPosition={maintainViewPosition}

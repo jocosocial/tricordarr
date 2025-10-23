@@ -5,13 +5,14 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonPosition} from '#src/Types';
+import {FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 interface FloatingScrollButtonProps {
   onPress: () => void;
   icon?: IconSource;
   // Raised means there is a ContentPostView or something like that.
-  displayPosition?: FloatingScrollButtonPosition;
+  verticalPosition?: FloatingScrollButtonVerticalPosition;
+  horizontalPosition?: FloatingScrollButtonHorizontalPosition;
   small?: boolean;
 }
 
@@ -21,7 +22,8 @@ interface FloatingScrollButtonProps {
 export const FloatingScrollButton = ({
   onPress,
   icon = AppIcons.scrollDown,
-  displayPosition = 'bottom',
+  verticalPosition = 'bottom',
+  horizontalPosition = 'left',
   small = false,
 }: FloatingScrollButtonProps) => {
   const {commonStyles, styleDefaults} = useStyles();
@@ -35,11 +37,11 @@ export const FloatingScrollButton = ({
       ...commonStyles.backgroundTransparent,
       ...commonStyles.positionAbsolute,
       // Vertical positioning.
-      ...(displayPosition === 'bottom' ? {bottom: styleDefaults.marginSize * 1} : undefined),
-      ...(displayPosition === 'raised' ? {bottom: styleDefaults.marginSize * 4} : undefined),
+      ...(verticalPosition === 'bottom' ? {bottom: styleDefaults.marginSize * 1} : undefined),
+      ...(verticalPosition === 'raised' ? {bottom: styleDefaults.marginSize * 4} : undefined),
       // Horizontal positioning.
-      ...(displayPosition === 'bottom' ? {left: styleDefaults.marginSize / 2} : undefined),
-      ...(displayPosition === 'raised' ? {right: styleDefaults.marginSize / 2} : undefined),
+      ...(horizontalPosition === 'left' ? {left: styleDefaults.marginSize / 2} : undefined),
+      ...(horizontalPosition === 'right' ? {right: styleDefaults.marginSize / 2} : undefined),
 
     },
   });

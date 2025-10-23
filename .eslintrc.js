@@ -3,6 +3,10 @@ module.exports = {
   // https://stackoverflow.com/questions/58065765/eslint-jest-globals-environment-key-unknown
   extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended'],
   plugins: ['unused-imports'],
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+  },
   settings: {
     'import/resolver': {
       typescript: {
@@ -38,6 +42,9 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+    // React prop validation
+    'react/jsx-no-undef': 'error',
+    'react/no-typos': 'error',
     'import/order': [
       'error',
       {

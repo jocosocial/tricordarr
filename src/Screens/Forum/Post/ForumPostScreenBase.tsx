@@ -1,6 +1,7 @@
+import {FlashListRef} from '@shopify/flash-list';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
@@ -41,7 +42,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  const flatListRef = useRef<FlashListRef<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();

@@ -10,7 +10,6 @@ import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPrevio
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
 import {useStyles} from "#src/Context/Contexts/StyleContext";
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
-import {FloatingScrollButtonPosition} from '#src/Types';
 
 
 interface ChatFlatListProps {
@@ -22,7 +21,6 @@ interface ChatFlatListProps {
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
   fezPostData: FezPostData[];
-  scrollButtonPosition: FloatingScrollButtonPosition;
   onScrollThreshold?: (condition: boolean) => void;
   enableScrollButton?: boolean;
 }
@@ -41,7 +39,6 @@ export const ChatFlatList = ({
   handleLoadNext,
   // hasNextPage,
   fezPostData,
-  scrollButtonPosition,
   onScrollThreshold,
   enableScrollButton = true,
 }: ChatFlatListProps) => {
@@ -109,7 +106,6 @@ export const ChatFlatList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       handleLoadPrevious={handleLoadPrevious}
-      scrollButtonPosition={scrollButtonPosition}
       enableScrollButton={enableScrollButton}
       onScrollThreshold={onScrollThreshold}
     />
