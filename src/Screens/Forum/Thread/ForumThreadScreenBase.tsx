@@ -131,7 +131,7 @@ export const ForumThreadScreenBase = ({
   useEffect(() => {
     if (data && data.pages) {
       const postListData = data.pages.flatMap(fd => fd.posts);
-      setForumPosts(invertList ? postListData.reverse() : postListData);
+      setForumPosts(postListData);
     }
   }, [data, setForumPosts, invertList]);
 
@@ -243,12 +243,12 @@ export const ForumThreadScreenBase = ({
         invertList={invertList}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
-        maintainViewPosition={maintainViewPosition}
+        // maintainViewPosition={maintainViewPosition}
         getListHeader={getListHeader}
         flatListRef={flatListRef}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
-        initialScrollIndex={getInitialScrollIndex()}
+        // initialScrollIndex={getInitialScrollIndex()}
         scrollButtonPosition={showForm ? 'raised' : 'bottom'}
       />
       {showForm && (
