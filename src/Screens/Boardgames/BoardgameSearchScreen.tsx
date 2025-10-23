@@ -1,7 +1,7 @@
 import React from 'react';
 import {RefreshControl} from 'react-native';
 
-import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
+import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';

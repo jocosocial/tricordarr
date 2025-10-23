@@ -5,7 +5,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
+import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';

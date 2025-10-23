@@ -7,7 +7,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {BoardgameRecommendationForm} from '#src/Components/Forms/BoardgameRecommendationForm';
-import {BoardgameFlatList} from '#src/Components/Lists/BoardgameFlatList';
+import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {AppIcons} from '#src/Enums/Icons';

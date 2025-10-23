@@ -8,7 +8,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
-import {SeamailFlatList} from '#src/Components/Lists/Seamail/SeamailFlatList';
+import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
