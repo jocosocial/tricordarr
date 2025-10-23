@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 /**
  * Hook to manage the visibility of a menu. Attaches to the global navigation state
@@ -20,16 +20,24 @@ export const useMenu = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => {
+  const openMenu = useCallback(() => {
+    console.log('[MenuHook.ts] openMenu');
+    setVisible(true);
+  }, []);
+
+  const closeMenu = useCallback(() => {
     console.log('[MenuHook.ts] closeMenu');
     setVisible(false);
-  };
+  }, []);
 
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    console.log('[MenuHook.ts] adding closeMenu listener in useEffect');
     const unsubscribe = navigation.addListener('state', closeMenu);
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, closeMenu, visible]);
 
   return {visible, openMenu, closeMenu};
 };
