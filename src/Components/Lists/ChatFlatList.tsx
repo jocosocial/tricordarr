@@ -1,6 +1,6 @@
 import {LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
 import React, {useCallback} from 'react';
-import {RefreshControlProps} from 'react-native';
+import {RefreshControlProps, StyleSheet, View} from 'react-native';
 
 import { ConversationList } from "#src/Components/Lists/ConversationList";
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
@@ -8,7 +8,7 @@ import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
-import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import { useStyles } from "#src/Context/Contexts/StyleContext";
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 import {FloatingScrollButtonPosition} from '#src/Types';
 
@@ -17,7 +17,7 @@ interface ChatFlatListProps {
   fez: FezData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  flatListRef: React.RefObject<LegendListRef>;
+  flatListRef: React.RefObject<LegendListRef | null>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;
@@ -45,6 +45,13 @@ export const ChatFlatList = ({
   onScrollThreshold,
   enableScrollButton = true,
 }: ChatFlatListProps) => {
+  const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    itemContainer: {
+      ...commonStyles.paddingHorizontalSmall,
+    },
+  });
 
   const renderHeader = () => {
     return hasPreviousPage ? <LoadingPreviousHeader /> : <ChatFlatListHeader />;
@@ -70,10 +77,10 @@ export const ChatFlatList = ({
    * @returns The rendered item.
    */
   const renderItem = ({item, index}: LegendListRenderItemProps<FezPostData>) => (
-    <PaddedContentView padBottom={false}>
+    <View style={styles.itemContainer}>
       {showNewDivider(index) && <LabelDivider label={'New'} />}
       <FezPostListItem fezPost={item} index={index} fez={fez} />
-    </PaddedContentView>
+    </View>
   );
 
   /**

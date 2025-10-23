@@ -1,10 +1,11 @@
+import { LegendListRef } from '@legendapp/list';
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
@@ -62,7 +63,7 @@ export const FezChatScreen = ({route}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<LegendListRef>(null);
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
 
