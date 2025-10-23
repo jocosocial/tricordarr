@@ -11,7 +11,7 @@ export interface ContentNotificationCategory {
   configKey: keyof typeof NotificationTypeData;
 }
 
-export type ContentNotificationCategories = {  
+export type ContentNotificationCategories = {
   [_key in keyof PushNotificationConfig]: ContentNotificationCategory;
 };
 

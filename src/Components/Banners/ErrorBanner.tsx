@@ -34,8 +34,7 @@ export const ErrorBanner = () => {
           onPress: () => setErrorBanner(''),
           labelStyle: styles.button,
         },
-      ]}
-    >
+      ]}>
       <Text style={styles.innerText}>{errorBanner}</Text>
     </Banner>
   );

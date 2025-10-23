@@ -29,6 +29,7 @@ module.exports = {
       'error',
       {
         code: 120,
+        ignoreComments: true,
         ignoreUrls: true,
         ignoreStrings: true,
         ignoreTemplateLiterals: true,
@@ -38,7 +39,8 @@ module.exports = {
     // JSX formatting rules
     'react/jsx-indent': ['error', 2],
     'react/jsx-indent-props': ['error', 2],
-    'react/jsx-closing-bracket-location': ['error', 'tag-aligned'],
+    // Let prettier handle bracket location (bracketSameLine: true)
+    'react/jsx-closing-bracket-location': 'off',
     'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
     'react/jsx-max-props-per-line': ['error', {maximum: 1, when: 'multiline'}],
     // Unused imports - auto-fixable

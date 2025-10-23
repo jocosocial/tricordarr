@@ -23,8 +23,7 @@ export const UserProfileSelfActionsMenu = () => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
-    >
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
     </AppHeaderMenu>
   );

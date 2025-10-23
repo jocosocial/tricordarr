@@ -33,7 +33,12 @@ export const ForumLockedView = () => {
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
         <Text style={styles.text}>This forum has been locked.</Text>
-        {hasModerator && <Text style={styles.text}><AppIcon color={theme.colors.onError} icon={AppIcons.moderator} small={true} />&nbsp;Moderators can continue to post.</Text>}
+        {hasModerator && (
+          <Text style={styles.text}>
+            <AppIcon color={theme.colors.onError} icon={AppIcons.moderator} small={true} />
+            &nbsp;Moderators can continue to post.
+          </Text>
+        )}
       </View>
     </View>
   );

@@ -77,8 +77,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
         tokenData: authState.tokenData,
         isLoggedIn: isLoggedIn,
         isLoading: authState.isLoading,
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   );

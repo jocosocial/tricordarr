@@ -128,8 +128,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}
-      >
+        refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} />}>
         <DataFieldListItem title={'Title'} description={lfg.title} />
         <DataFieldListItem title={'Hosted By'} />
         <FezParticipantListItem

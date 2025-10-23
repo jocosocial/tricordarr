@@ -57,8 +57,7 @@ export const FilterProvider = ({children}: PropsWithChildren) => {
         scheduleFilterSettings,
         forumSortDirection,
         setForumSortDirection,
-      }}
-    >
+      }}>
       {children}
     </FilterContext.Provider>
   );

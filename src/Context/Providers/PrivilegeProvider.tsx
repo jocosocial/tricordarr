@@ -117,8 +117,7 @@ export const PrivilegeProvider = ({children}: PropsWithChildren) => {
         hasVerified,
         hasAdmin,
         privilegedUsernames,
-      }}
-    >
+      }}>
       {children}
     </PrivilegeContext.Provider>
   );

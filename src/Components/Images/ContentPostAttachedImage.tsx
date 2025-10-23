@@ -25,8 +25,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
       <ContentPostAttachment
         onIconPress={props.onIconPress}
         onImagePress={props.onImagePress}
-        disabled={props.disabled}
-      >
+        disabled={props.disabled}>
         <Image resizeMode={'cover'} style={styles.image} source={{uri: `data:image;base64,${props.imageData.image}`}} />
       </ContentPostAttachment>
     );

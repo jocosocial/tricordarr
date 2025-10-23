@@ -30,8 +30,7 @@ export const DisabledView = () => {
             <Text
               onPress={() =>
                 commonNavigation.push(CommonStackComponents.siteUIScreen, {timestamp: new Date().toISOString()})
-              }
-            >
+              }>
               You could also check {serverUrl} to see if there is more information available.
             </Text>
           </View>

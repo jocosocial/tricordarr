@@ -49,8 +49,7 @@ export const LfgStackNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={appConfig.schedule.defaultLfgScreen}
-      screenOptions={{...screenOptions, headerShown: true}}
-    >
+      screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={LfgStackComponents.lfgJoinedScreen}
         component={LfgJoinedScreen}

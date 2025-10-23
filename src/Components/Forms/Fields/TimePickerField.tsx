@@ -72,8 +72,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
         contentStyle={styles.content}
         style={styles.button}
         onPress={() => setVisible(true)}
-        mode={'outlined'}
-      >
+        mode={'outlined'}>
         Time ({getTimeLabel()})
       </Button>
       <TimePickerModal

@@ -16,8 +16,7 @@ export const PhotostreamActionsMenu = () => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
-    >
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item
         title={'Image Settings'}
         onPress={() => {

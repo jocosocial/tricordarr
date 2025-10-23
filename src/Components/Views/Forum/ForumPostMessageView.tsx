@@ -100,8 +100,7 @@ export const ForumPostMessageView = ({
         style={styles.opacity}
         onLongPress={enableShowInThread ? openMenu : onLongPress}
         activeOpacity={1}
-        onPress={enableShowInThread ? onPress : openMenu}
-      >
+        onPress={enableShowInThread ? onPress : openMenu}>
         <View style={styles.authorContainer}>
           {showAuthor && (
             <>

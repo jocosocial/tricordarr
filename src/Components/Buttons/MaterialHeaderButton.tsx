@@ -10,7 +10,7 @@ import {useAppTheme} from '#src/Styles/Theme';
  */
 export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
   const theme = useAppTheme();
-  
+
   // the `props` here come from <Item ... />
   // you may access them and pass something else to `HeaderButton` if you like
   return (

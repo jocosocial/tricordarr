@@ -161,8 +161,7 @@ export const UserProfileScreenBase = ({
     <AppView safeEdges={oobe ? ['bottom'] : []}>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <BlockedOrMutedBanner muted={isMuted} blocked={isBlocked} />
         {data.message && (
           <PaddedContentView padTop={true} padBottom={false} style={styles.listContentCenter}>

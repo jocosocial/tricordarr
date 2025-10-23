@@ -80,8 +80,7 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
     <AppView>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
-        isStack={true}
-      >
+        isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
           {performerData.header.photo && (
             <APIImage

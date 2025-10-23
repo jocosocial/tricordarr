@@ -52,8 +52,7 @@ export const BaseSwipeable = ({
       onSwipeableWillOpen={onSwipeableWillOpen}
       friction={friction}
       overshootRight={overshootRight}
-      overshootLeft={overshootLeft}
-    >
+      overshootLeft={overshootLeft}>
       {children}
     </Swipeable>
   );

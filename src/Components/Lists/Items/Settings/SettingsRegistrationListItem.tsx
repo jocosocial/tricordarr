@@ -4,7 +4,6 @@ import {SettingsNavigationListItem} from '#src/Components/Lists/Items/Settings/S
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 export const SettingsRegistrationListItem = () => {
-
   return (
     <SettingsNavigationListItem
       title={'Register'}

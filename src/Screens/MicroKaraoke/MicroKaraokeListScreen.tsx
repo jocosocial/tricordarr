@@ -19,8 +19,7 @@ export const MicroKaraokeListScreen = () => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-      >
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         {data.map(mkSong => {
           return <MicroKaraokeSongListItem mkSong={mkSong} key={mkSong.songID} />;
         })}

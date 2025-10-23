@@ -42,7 +42,7 @@ interface ForumThreadScreenBaseProps {
 /**
  * Used for a regular forum thread display. This is shared between viewing a thread
  * from the forum list or from a particular post.
- * 
+ *
  * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
 export const ForumThreadScreenBase = ({

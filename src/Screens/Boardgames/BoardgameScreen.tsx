@@ -97,8 +97,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-      >
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <DataFieldListItem title={'Name'} description={data.gameName} />
         {!!players && <DataFieldListItem title={'Players'} description={players} />}
         {!!playingTime && <DataFieldListItem title={'Playing Time'} description={playingTime} />}

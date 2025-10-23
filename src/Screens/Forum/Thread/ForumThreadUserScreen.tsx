@@ -66,8 +66,7 @@ export const ForumThreadUserScreen = ({route}: Props) => {
       <AppView>
         <ScrollingContentView
           isStack={true}
-          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-        >
+          refreshControl={<RefreshControl refreshing={refreshing || isLoading} onRefresh={onRefresh} />}>
           <PaddedContentView padTop={true}>
             <Text>There aren't any forums created by this user.</Text>
           </PaddedContentView>

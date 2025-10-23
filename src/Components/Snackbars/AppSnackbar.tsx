@@ -36,8 +36,7 @@ export const AppSnackbar = () => {
       visible={!!snackbarPayload}
       action={snackbarPayload.action || {label: 'Close'}}
       elevation={snackbarPayload.elevation}
-      onDismiss={() => setSnackbarPayload(undefined)}
-    >
+      onDismiss={() => setSnackbarPayload(undefined)}>
       <Text style={styles.text}>
         {snackbarPayload.messageType === 'info' && 'ℹ️ '}
         {snackbarPayload.messageType === 'error' && '🚨️ '}

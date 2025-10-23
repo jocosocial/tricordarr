@@ -14,8 +14,7 @@ export const ScheduleStackNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={CommonStackComponents.scheduleDayScreen}
-      screenOptions={{...screenOptions, headerShown: true}}
-    >
+      screenOptions={{...screenOptions, headerShown: true}}>
       {CommonScreens(Stack)}
     </Stack.Navigator>
   );

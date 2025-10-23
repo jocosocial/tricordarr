@@ -16,8 +16,7 @@ export const ForumCategoriesScreenSearchMenu = () => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Search'} iconName={AppIcons.search} onPress={openMenu} />}
-    >
+      anchor={<Item title={'Search'} iconName={AppIcons.search} onPress={openMenu} />}>
       <Menu.Item
         dense={false}
         title={'Search Posts'}

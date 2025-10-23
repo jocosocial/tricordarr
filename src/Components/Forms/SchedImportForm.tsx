@@ -24,8 +24,7 @@ export const SchedImportForm = (props: SchedImportFormProps) => {
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={validationSchema}
-      enableReinitialize={true}
-    >
+      enableReinitialize={true}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <TextField name={'schedUrl'} label={'Sched URL'} autoCapitalize={'none'} keyboardType={'url'} />

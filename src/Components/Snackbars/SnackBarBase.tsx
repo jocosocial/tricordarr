@@ -42,8 +42,7 @@ export const SnackBarBase = ({
       visible={!!message}
       action={{label: actionLabel}}
       elevation={elevation}
-      onDismiss={() => setMessage(undefined)}
-    >
+      onDismiss={() => setMessage(undefined)}>
       <Text style={styles.text}>
         {messagePrefix}
         {message}

@@ -54,8 +54,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={'padding'}
-        keyboardVerticalOffset={insets.top + insets.bottom}
-      >
+        keyboardVerticalOffset={insets.top + insets.bottom}>
         <Portal>
           <ErrorBanner />
           <AppModal />

@@ -49,8 +49,8 @@ export const HelpTopicView = (props: HelpTopicViewProps) => {
           ? props.right
           : props.icon && (
           <View>
-            <IconButton icon={props.icon} />
-          </View>
+                <IconButton icon={props.icon} />
+              </View>
             )}
         <View style={styles.bodyTextContainer}>
           <Text selectable={true}>{props.children}</Text>

@@ -14,7 +14,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {timeAgo} from '#src/Libraries/DateTime';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 
-
 interface ForumPostListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;

@@ -15,8 +15,7 @@ export const ForumEmptyListView = ({refreshing, onRefresh}: ForumEmptyListViewPr
     <View>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <PaddedContentView padTop={true}>
           <Text>No threads to display.</Text>
         </PaddedContentView>

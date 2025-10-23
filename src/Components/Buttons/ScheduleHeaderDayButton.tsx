@@ -48,8 +48,7 @@ export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
       style={styles.buttonContainer}
       onPress={props.onPress}
       disabled={props.disabled}
-      activeOpacity={1}
-    >
+      activeOpacity={1}>
       <View style={styles.view}>
         <Text style={styles.dayText} variant={'titleLarge'}>
           {format(props.cruiseDay.date, 'EEE')}

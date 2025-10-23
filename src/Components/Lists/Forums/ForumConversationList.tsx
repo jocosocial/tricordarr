@@ -13,7 +13,6 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
 
-
 interface ForumConversationListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
@@ -33,7 +32,7 @@ interface ForumConversationListProps {
 /**
  * A forum conversation. Not to be confused with a list of posts or a list of threads.
  * Starts at the bottom or where you have not yet read.
- * 
+ *
  * @TODO the latter part of that has not been tested with the new LegendList backend.
  */
 export const ForumConversationList = ({

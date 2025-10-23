@@ -41,8 +41,7 @@ export const FeatureProvider = ({children}: PropsWithChildren) => {
         disabledFeatures,
         setDisabledFeatures,
         getIsDisabled,
-      }}
-    >
+      }}>
       {children}
     </FeatureContext.Provider>
   );

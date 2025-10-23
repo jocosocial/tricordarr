@@ -29,8 +29,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
     <AppHeaderMenu
       visible={visible}
       onDismiss={closeMenu}
-      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}
-    >
+      anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       {props.event.eventType === EventType.shadow && (
         <Menu.Item

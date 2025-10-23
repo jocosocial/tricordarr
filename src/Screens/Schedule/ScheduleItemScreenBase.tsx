@@ -115,8 +115,7 @@ export const ScheduleItemScreenBase = ({
       )}
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {eventData && (
           <PaddedContentView padSides={false}>
             <ListSection>

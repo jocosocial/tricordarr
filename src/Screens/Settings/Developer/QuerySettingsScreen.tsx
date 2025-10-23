@@ -132,8 +132,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView
         isStack={true}
-        refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}
-      >
+        refreshControl={<RefreshControl refreshing={isFetchingHealth} enabled={false} />}>
         <ListSection>
           <ListSubheader>General</ListSubheader>
           <PaddedContentView padTop={true}>

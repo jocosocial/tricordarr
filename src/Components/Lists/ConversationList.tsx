@@ -1,10 +1,10 @@
-import {LegendList, LegendListRef, LegendListRenderItemProps} from "@legendapp/list"
+import {LegendList, LegendListRef, LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
-import {FloatingScrollButton} from "#src/Components/Buttons/FloatingScrollButton";
-import {useConfig} from "#src/Context/Contexts/ConfigContext";
-import {useStyles} from "#src/Context/Contexts/StyleContext";
+import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {RNFlatListSeparatorComponent} from '#src/Types';
 
 export type TConversationListRef = LegendListRef | null;
@@ -61,7 +61,7 @@ export const ConversationList = <TItem,>({
    * Used to track some state for the list contentHeight and would do
    * flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
    * Not anymore.
-   * 
+   *
    * animated: true seems to improve some performance in the simulator, idk if it matters
    * in real life.
    */
@@ -69,7 +69,7 @@ export const ConversationList = <TItem,>({
     listRef.current?.scrollToEnd({animated: true});
   }, [listRef]);
 
-   /**
+  /**
    * There are basically two types of list:
    * - Inverted: Things like read Forums and Seamail that start at the bottom.
    * - Uninverted: Things like unread Forums and LFG Lists that start at the top.
@@ -81,9 +81,9 @@ export const ConversationList = <TItem,>({
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       // Calculate distance from bottom: when at bottom, this is ~0; when scrolled up, this increases
-      const distanceFromBottom = 
-        event.nativeEvent.contentSize.height - 
-        event.nativeEvent.layoutMeasurement.height - 
+      const distanceFromBottom =
+        event.nativeEvent.contentSize.height -
+        event.nativeEvent.layoutMeasurement.height -
         event.nativeEvent.contentOffset.y;
       const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
       setShowScrollButton(scrollThresholdCondition);
@@ -101,7 +101,7 @@ export const ConversationList = <TItem,>({
   /**
    * Scroll to the end of the list when the component mounts.
    * Run initial scroll only once after layout and data are ready
-   * 
+   *
    * Lifted from a reference implementation https://github.com/Shopify/flash-list/issues/1844#issuecomment-3221732641
    */
   React.useEffect(() => {
@@ -129,22 +129,18 @@ export const ConversationList = <TItem,>({
         // Required Props
         data={data}
         renderItem={renderItem}
-
         // Recommended props (Improves performance)
         keyExtractor={keyExtractor}
-        recycleItems={true}      
-
+        recycleItems={true}
         // chat interface props
         alignItemsAtEnd
         maintainScrollAtEnd
         maintainVisibleContentPosition={true}
         maintainScrollAtEndThreshold={0.1}
-
         ListHeaderComponent={ListHeaderComponent}
         ItemSeparatorComponent={ItemSeparatorComponent}
         ListFooterComponent={ListFooterComponent}
         refreshControl={refreshControl}
-
         onStartReached={handleLoadPrevious}
         onEndReached={handleLoadNext}
         onScroll={onScroll}

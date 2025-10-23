@@ -15,7 +15,11 @@ import {
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FlatListSeparatorProps, FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
+import {
+  FlatListSeparatorProps,
+  FloatingScrollButtonHorizontalPosition,
+  FloatingScrollButtonVerticalPosition,
+} from '#src/Types';
 
 export interface ConversationFlatListProps<TItem> {
   scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
@@ -176,8 +180,7 @@ export const AppFlatList = <TItem,>({
             setItemHeights(prevData => {
               return [...prevData, layout.height];
             });
-          }}
-        >
+          }}>
           {renderItem(renderItemProps)}
         </View>
       );

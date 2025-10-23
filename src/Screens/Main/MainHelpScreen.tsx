@@ -49,8 +49,7 @@ export const MainHelpScreen = () => {
                 style={{backgroundColor: theme.colors.inverseSurface}}
               />
             </View>
-          }
-        >
+          }>
           Some screens have a floating action button in the lower right corner. This is often used to create new objects
           or access other views.
         </HelpTopicView>

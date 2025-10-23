@@ -1,16 +1,15 @@
-import {LegendListRenderItemProps} from "@legendapp/list"
+import {LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback} from 'react';
 import {RefreshControlProps, StyleSheet, View} from 'react-native';
 
-import {ConversationList, type TConversationListRefObject} from "#src/Components/Lists/ConversationList";
+import {ConversationList, type TConversationListRefObject} from '#src/Components/Lists/ConversationList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
-import {useStyles} from "#src/Context/Contexts/StyleContext";
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
-
 
 interface ChatFlatListProps {
   fez: FezData;
@@ -27,7 +26,7 @@ interface ChatFlatListProps {
 
 /**
  * A list of Fez posts. Means a chat conversation.
- * 
+ *
  * @TODO test loading a seamail with tons of unread messages.
  */
 export const ChatFlatList = ({
@@ -70,7 +69,7 @@ export const ChatFlatList = ({
 
   /**
    * Render function for each ite in the list.
-   * 
+   *
    * @returns The rendered item.
    */
   const renderItem = ({item, index}: LegendListRenderItemProps<FezPostData>) => (
@@ -82,12 +81,11 @@ export const ChatFlatList = ({
 
   /**
    * A key extractor for the list.
-   * 
+   *
    * @param item - The item to extract a key from.
    * @returns The key for the item.
    */
   const keyExtractor = useCallback((item: FezPostData) => item.postID.toString(), []);
-
 
   /**
    * Putting this in a useCallback caused some weird list jumping behavior that I also

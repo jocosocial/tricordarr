@@ -42,7 +42,6 @@ export const FloatingScrollButton = ({
       // Horizontal positioning.
       ...(horizontalPosition === 'left' ? {left: styleDefaults.marginSize / 2} : undefined),
       ...(horizontalPosition === 'right' ? {right: styleDefaults.marginSize / 2} : undefined),
-
     },
   });
 

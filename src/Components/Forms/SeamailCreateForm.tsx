@@ -76,8 +76,7 @@ export const SeamailCreateForm = ({onSubmit, formRef, initialValues}: SeamailCre
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validationSchema={validationSchema}
-    >
+      validationSchema={validationSchema}>
       <InnerSeamailCreateForm />
     </Formik>
   );
