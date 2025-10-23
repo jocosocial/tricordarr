@@ -2,11 +2,15 @@ import MaterialCommunityIcons from '@react-native-vector-icons/material-design-i
 import React from 'react';
 import {defaultRenderVisibleButton, HeaderButton, HeaderButtonsComponentType} from 'react-navigation-header-buttons';
 
+import {useAppTheme} from '#src/Styles/Theme';
+
 /**
  * Button for navigation headers. Based on
  * https://github.com/vonovak/react-navigation-header-buttons/blob/master/example/src/components/MaterialHeaderButton.tsx
  */
 export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
+  const theme = useAppTheme();
+  
   // the `props` here come from <Item ... />
   // you may access them and pass something else to `HeaderButton` if you like
   return (
@@ -17,6 +21,7 @@ export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
       // you can customize the colors, by default colors from React navigation theme will be used
       // pressColor="blue"
       {...props}
+      color={props.color || theme.colors.onBackground}
       // alternative way to customize what is rendered:
       renderButton={itemProps => {
         // access anything that was defined on <Item ... />

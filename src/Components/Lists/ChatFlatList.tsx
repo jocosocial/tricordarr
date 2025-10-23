@@ -118,7 +118,6 @@ export const ChatFlatList = ({
    */
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      console.log(event.nativeEvent.contentOffset.y)
       // Calculate distance from bottom: when at bottom, this is ~0; when scrolled up, this increases
       const distanceFromBottom = 
         event.nativeEvent.contentSize.height - 
@@ -139,6 +138,8 @@ export const ChatFlatList = ({
    * In the reference example at https://github.com/Shopify/flash-list/issues/1844#issuecomment-3221732641
    * there is mention of using an "init" skeleton view to hide things before this completes. idk if we
    * need that here.
+   * 
+   * @TODO ok yeah I think that is needed because it gets weird with loading next pages.
    */
   React.useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: false });

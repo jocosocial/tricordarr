@@ -81,6 +81,8 @@ export const ContentPostForm = ({
       ...commonStyles.paddingHorizontal,
       ...commonStyles.secondaryContainer,
       ...commonStyles.onSecondaryContainer,
+      // Needed for iOS
+      ...commonStyles.paddingVerticalSmall,
     },
     lengthHintContainer: {
       ...commonStyles.flexRow,
