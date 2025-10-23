@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   // https://stackoverflow.com/questions/58065765/eslint-jest-globals-environment-key-unknown
-  extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended'],
+  extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended', 'plugin:prettier/recommended'],
   plugins: ['unused-imports'],
   parserOptions: {
     project: './tsconfig.json',
@@ -22,6 +22,17 @@ module.exports = {
       'error',
       {
         patterns: ['./*', '../*'],
+      },
+    ],
+    // Maximum line length
+    'max-len': [
+      'error',
+      {
+        code: 120,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreRegExpLiterals: true,
       },
     ],
     // JSX formatting rules

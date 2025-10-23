@@ -1,9 +1,9 @@
 import React, {memo} from 'react';
-import {StyleSheet} from 'react-native';
-import {List} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {SeamailTimeBadge} from '#src/Components/Text/SeamailTimeBadge';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -26,26 +26,31 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   }
 
   const styles = StyleSheet.create({
-    item: {
-      ...commonStyles.paddingHorizontal,
-      ...commonStyles.background,
-    },
     title: {
       ...(badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined),
     },
     description: {
       ...(badgeCount && !fez.members?.isMuted ? commonStyles.bold : undefined),
     },
+    leftContainer: {
+      ...commonStyles.paddingLeftSmall,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
   const description = otherParticipants.map(p => p.username).join(', ');
 
-  const getAvatar = () => <FezAvatarImage fez={fez} />;
+  const getAvatar = () => (
+    <View style={styles.leftContainer}>
+      <FezAvatarImage fez={fez} />
+    </View>
+  );
+
   const onPress = () =>
     navigation.push(CommonStackComponents.seamailChatScreen, {
       fezID: fez.fezID,
     });
+
   const getRight = () => {
     if (fez.members?.isMuted) {
       return <AppIcon icon={AppIcons.mute} />;
@@ -54,8 +59,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   };
 
   return (
-    <List.Item
-      style={styles.item}
+    <ListItem
       title={fez.title}
       titleStyle={styles.title}
       titleNumberOfLines={0}

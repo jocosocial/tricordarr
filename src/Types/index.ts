@@ -150,14 +150,6 @@ export interface ParamsWithOobe {
 
 // This comes from 'react-native/Libraries/Components/TextInput/TextInput'.
 // React Native deep imports are deprecated.
-export type RNInputModeOptions =
-  | 'none'
-  | 'text'
-  | 'decimal'
-  | 'numeric'
-  | 'tel'
-  | 'search'
-  | 'email'
-  | 'url';
+export type RNInputModeOptions = 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
 
 export type RNFlatListSeparatorComponent<TItem> = React.ComponentType<{leadingItem: TItem}> | undefined;
