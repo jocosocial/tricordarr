@@ -11,9 +11,8 @@ export interface ContentNotificationCategory {
   configKey: keyof typeof NotificationTypeData;
 }
 
-export type ContentNotificationCategories = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [key in keyof PushNotificationConfig]: ContentNotificationCategory;
+export type ContentNotificationCategories = {  
+  [_key in keyof PushNotificationConfig]: ContentNotificationCategory;
 };
 
 export const contentNotificationCategories: ContentNotificationCategories = {

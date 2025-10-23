@@ -1,8 +1,8 @@
-import {LegendListRef, LegendListRenderItemProps} from "@legendapp/list"
+import {LegendListRenderItemProps} from "@legendapp/list"
 import React, {useCallback} from 'react';
 import {RefreshControlProps, StyleSheet, View} from 'react-native';
 
-import {ConversationList} from "#src/Components/Lists/ConversationList";
+import {ConversationList, type TConversationListRefObject} from "#src/Components/Lists/ConversationList";
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
@@ -17,7 +17,7 @@ interface ChatFlatListProps {
   fez: FezData;
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  flatListRef: React.RefObject<LegendListRef | null>;
+  flatListRef: TConversationListRefObject;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;

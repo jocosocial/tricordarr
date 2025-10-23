@@ -1,4 +1,3 @@
-import {LegendListRef} from '@legendapp/list';
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -13,6 +12,7 @@ import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ChatFlatList} from '#src/Components/Lists/ChatFlatList';
+import {TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {FezChatScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
@@ -63,7 +63,7 @@ export const FezChatScreen = ({route}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
-  const flatListRef = useRef<LegendListRef>(null);
+  const flatListRef = useRef<TConversationListRef>(null);
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
 

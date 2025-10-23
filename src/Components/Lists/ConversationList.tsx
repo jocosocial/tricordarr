@@ -6,11 +6,13 @@ import {FloatingScrollButton} from "#src/Components/Buttons/FloatingScrollButton
 import {useStyles} from "#src/Context/Contexts/StyleContext";
 import {FloatingScrollButtonPosition, RNFlatListSeparatorComponent} from '#src/Types';
 
+export type TConversationListRef = LegendListRef | null;
+export type TConversationListRefObject = React.RefObject<TConversationListRef>;
 
 interface ConversationListProps<TItem> {
   hasPreviousPage?: boolean;
   hasNextPage?: boolean;
-  listRef: React.RefObject<LegendListRef | null>;
+  listRef: TConversationListRefObject;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
   handleLoadPrevious?: () => void;

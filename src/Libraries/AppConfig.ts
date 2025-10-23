@@ -8,8 +8,7 @@ import {LfgStackComponents} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
 
 export type PushNotificationConfig = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  [key in keyof typeof NotificationTypeData]: boolean;
+  [_key in keyof typeof NotificationTypeData]: boolean;
 };
 
 export interface APIClientConfig {

@@ -1,8 +1,7 @@
-import {LegendListRef} from '@legendapp/list';
 import React, {useCallback} from 'react';
 import {RefreshControlProps, View} from 'react-native';
 
-import {ConversationList} from '#src/Components/Lists/ConversationList';
+import {ConversationList, type TConversationListRefObject} from '#src/Components/Lists/ConversationList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
@@ -30,7 +29,7 @@ interface ForumPostFlatListProps {
   hasNextPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
-  flatListRef: React.RefObject<LegendListRef>;
+  flatListRef: TConversationListRefObject;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;

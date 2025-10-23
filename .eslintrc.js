@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   // https://stackoverflow.com/questions/58065765/eslint-jest-globals-environment-key-unknown
   extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended'],
+  plugins: ['unused-imports'],
   settings: {
     'import/resolver': {
       typescript: {
@@ -25,6 +26,18 @@ module.exports = {
     'react/jsx-closing-bracket-location': ['error', 'tag-aligned'],
     'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
     'react/jsx-max-props-per-line': ['error', {maximum: 1, when: 'multiline'}],
+    // Unused imports - auto-fixable
+    '@typescript-eslint/no-unused-vars': 'off', // Disable base rule to avoid conflicts
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
     'import/order': [
       'error',
       {
