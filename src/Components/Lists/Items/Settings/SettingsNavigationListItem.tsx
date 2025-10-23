@@ -1,7 +1,6 @@
 import React from 'react';
-import {List} from 'react-native-paper';
 
-import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {SettingsStackParamList, useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
 interface NavigationListItemProps {
@@ -12,15 +11,6 @@ interface NavigationListItemProps {
 
 export const SettingsNavigationListItem = ({title, description, navComponent}: NavigationListItemProps) => {
   const navigation = useSettingsStack();
-  const {commonStyles} = useStyles();
 
-  return (
-    <List.Item
-      contentStyle={commonStyles.paddingLeftSmall}
-      style={commonStyles.paddingRightSmall}
-      title={title}
-      description={description}
-      onPress={() => navigation.push(navComponent)}
-    />
-  );
+  return <ListItem title={title} description={description} onPress={() => navigation.push(navComponent)} />;
 };
