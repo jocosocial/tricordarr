@@ -157,3 +157,5 @@ export type RNInputModeOptions =
   | 'search'
   | 'email'
   | 'url';
+
+export type RNFlatListSeparatorComponent<TItem> = React.ComponentType<{leadingItem: TItem}> | undefined;

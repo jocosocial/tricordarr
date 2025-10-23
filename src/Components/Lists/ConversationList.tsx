@@ -1,10 +1,10 @@
 import { LegendList, LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
 import React, {useCallback, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
+import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
 import { FloatingScrollButton } from "#src/Components/Buttons/FloatingScrollButton";
 import { useStyles } from "#src/Context/Contexts/StyleContext";
-import {FloatingScrollButtonPosition} from '#src/Types';
+import {FloatingScrollButtonPosition, RNFlatListSeparatorComponent} from '#src/Types';
 
 
 interface ConversationListProps<TItem> {
@@ -22,7 +22,9 @@ interface ConversationListProps<TItem> {
   keyExtractor: (item: TItem) => string;
   ListHeaderComponent?: React.ComponentType<any> | React.ReactElement | null | undefined;
   ListFooterComponent?: React.ComponentType<any> | React.ReactElement | null | undefined;
-  ItemSeparatorComponent?: React.ComponentType<{leadingItem: TItem}>;
+  ItemSeparatorComponent?: RNFlatListSeparatorComponent<TItem>;
+  initialScrollIndex?: number;
+  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -44,6 +46,8 @@ export const ConversationList = <TItem,>({
   ListHeaderComponent,
   ListFooterComponent,
   ItemSeparatorComponent,
+  initialScrollIndex,
+  style,
 }: ConversationListProps<TItem>) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -125,6 +129,8 @@ export const ConversationList = <TItem,>({
         onStartReached={handleLoadPrevious}
         onEndReached={handleLoadNext}
         onScroll={onScroll}
+        initialScrollIndex={initialScrollIndex}
+        style={style}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton

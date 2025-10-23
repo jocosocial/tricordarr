@@ -1,15 +1,14 @@
-import { LegendList, LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
-import React, {useCallback, useState} from 'react';
-import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps} from 'react-native';
+import {LegendListRef, LegendListRenderItemProps } from "@legendapp/list"
+import React, {useCallback} from 'react';
+import {RefreshControlProps} from 'react-native';
 
-import { FloatingScrollButton } from "#src/Components/Buttons/FloatingScrollButton";
+import { ConversationList } from "#src/Components/Lists/ConversationList";
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {FezPostListItem} from '#src/Components/Lists/Items/FezPostListItem';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
-import { useStyles } from "#src/Context/Contexts/StyleContext";
 import {FezData, FezPostData} from '#src/Structs/ControllerStructs';
 import {FloatingScrollButtonPosition} from '#src/Types';
 
@@ -46,8 +45,6 @@ export const ChatFlatList = ({
   onScrollThreshold,
   enableScrollButton = true,
 }: ChatFlatListProps) => {
-  const {styleDefaults} = useStyles();
-  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const renderHeader = () => {
     return hasPreviousPage ? <LoadingPreviousHeader /> : <ChatFlatListHeader />;
@@ -94,89 +91,20 @@ export const ChatFlatList = ({
    */
   const renderDivider = () => <SpaceDivider />;
 
-  /**
-   * Callback handler for when the scroll button is pressed.
-   * Used to track some state for the list contentHeight and would do
-   * flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
-   * Not anymore.
-   * 
-   * animated: true seems to improve some performance in the simulator, idk if it matters
-   * in real life.
-   */
-  const handleScrollButtonPress = useCallback(() => {
-    flatListRef.current?.scrollToEnd({ animated: true });
-  }, [flatListRef]);
-
-   /**
-   * There are basically two types of list:
-   * - Inverted: Things like read Forums and Seamail that start at the bottom.
-   * - Uninverted: Things like unread Forums and LFG Lists that start at the top.
-   *
-   * At one point I had this, but it's not relevant anymore. Saving for later.
-   *   event.nativeEvent.contentSize.height - event.nativeEvent.contentOffset.y >
-   *     styleDefaults.listScrollThreshold * 2,
-   */
-  const onScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      // Calculate distance from bottom: when at bottom, this is ~0; when scrolled up, this increases
-      const distanceFromBottom = 
-        event.nativeEvent.contentSize.height - 
-        event.nativeEvent.layoutMeasurement.height - 
-        event.nativeEvent.contentOffset.y;
-      const scrollThresholdCondition = distanceFromBottom > styleDefaults.listScrollThreshold;
-      setShowScrollButton(scrollThresholdCondition);
-      if (onScrollThreshold) {
-        onScrollThreshold(scrollThresholdCondition);
-      }
-    },
-    [onScrollThreshold, styleDefaults.listScrollThreshold],
-  );
-
-  /**
-   * Scroll to the end of the list when the component mounts.
-   * 
-   * In the reference example at https://github.com/Shopify/flash-list/issues/1844#issuecomment-3221732641
-   * there is mention of using an "init" skeleton view to hide things before this completes. idk if we
-   * need that here.
-   * 
-   * @TODO ok yeah I think that is needed because it gets weird with loading next pages.
-   */
-  React.useEffect(() => {
-    flatListRef.current?.scrollToEnd({ animated: false });
-  }, [flatListRef]);
-
   return (
-    <>
-      <LegendList
-        ref={flatListRef}
-        // Required Props
-        data={fezPostData}
-        renderItem={renderItem}
-
-        // Recommended props (Improves performance)
-        keyExtractor={keyExtractor}
-        recycleItems={true}      
-
-        // chat interface props
-        alignItemsAtEnd
-        maintainScrollAtEnd
-        maintainVisibleContentPosition={true}
-        maintainScrollAtEndThreshold={0.1}
-
-        ListHeaderComponent={renderHeader}
-        ItemSeparatorComponent={renderDivider}
-        refreshControl={refreshControl}
-
-        onStartReached={handleLoadPrevious}
-        onEndReached={handleLoadNext}
-        onScroll={onScroll}
-      />
-      {enableScrollButton && showScrollButton && (
-        <FloatingScrollButton
-          onPress={handleScrollButtonPress}
-          displayPosition={scrollButtonPosition}
-        />
-      )}
-    </>
+    <ConversationList<FezPostData>
+      listRef={flatListRef}
+      data={fezPostData}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      ListHeaderComponent={renderHeader}
+      ItemSeparatorComponent={renderDivider}
+      refreshControl={refreshControl}
+      handleLoadNext={handleLoadNext}
+      handleLoadPrevious={handleLoadPrevious}
+      scrollButtonPosition={scrollButtonPosition}
+      enableScrollButton={enableScrollButton}
+      onScrollThreshold={onScrollThreshold}
+    />
   );
 };

@@ -1,7 +1,8 @@
+import { LegendListRef } from '@legendapp/list';
 import React, {useCallback} from 'react';
-import {FlatList, RefreshControlProps, StyleSheet, View} from 'react-native';
+import {RefreshControlProps, View} from 'react-native';
 
-import {AppFlatList} from '#src/Components/Lists/AppFlatList';
+import { ConversationList } from '#src/Components/Lists/ConversationList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
@@ -14,7 +15,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {timeAgo} from '#src/Libraries/DateTime';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, ForumListData, PostData} from '#src/Structs/ControllerStructs';
-import {FlatListSeparatorProps, FloatingScrollButtonPosition} from '#src/Types';
+import {FloatingScrollButtonPosition} from '#src/Types';
+
 
 interface ForumPostFlatListProps {
   postList: PostData[];
@@ -28,13 +30,14 @@ interface ForumPostFlatListProps {
   hasNextPage?: boolean;
   maintainViewPosition?: boolean;
   enableShowInThread?: boolean;
-  flatListRef: React.RefObject<FlatList<PostData>>;
+  flatListRef: React.RefObject<LegendListRef>;
   getListHeader?: () => React.JSX.Element;
   forumListData?: ForumListData;
   initialScrollIndex?: number;
   scrollButtonPosition?: FloatingScrollButtonPosition;
 }
 
+// @TODO kill inverted stuff or at least figure out a new name for the toggle.
 export const ForumPostFlatList = ({
   postList,
   refreshControl,
@@ -44,24 +47,17 @@ export const ForumPostFlatList = ({
   invertList,
   forumData,
   hasPreviousPage,
-  maintainViewPosition,
   enableShowInThread,
   flatListRef,
   getListHeader,
   forumListData,
   hasNextPage,
-  initialScrollIndex = 0,
+  initialScrollIndex,
   scrollButtonPosition,
 }: ForumPostFlatListProps) => {
   const {commonStyles} = useStyles();
   const {data: profilePublicData} = useUserProfileQuery();
   const {hasModerator} = usePrivilege();
-
-  const styles = StyleSheet.create({
-    flatList: {
-      ...commonStyles.paddingHorizontal,
-    },
-  });
 
   const showNewDivider = useCallback(
     (index: number) => {
@@ -101,7 +97,7 @@ export const ForumPostFlatList = ({
   );
 
   const renderSeparator = useCallback(
-    ({leadingItem}: FlatListSeparatorProps<PostData>) => {
+    ({leadingItem}: {leadingItem: PostData}) => {
       if (!itemSeparator) {
         return <SpaceDivider />;
       }
@@ -159,24 +155,27 @@ export const ForumPostFlatList = ({
     return <SpaceDivider />;
   }, [hasNextPage]);
 
+  const keyExtractor = useCallback((item: PostData) => item.postID.toString(), []);
+
   return (
-    <AppFlatList
-      flatListRef={flatListRef}
-      handleLoadPrevious={handleLoadPrevious}
-      handleLoadNext={handleLoadNext}
-      renderListHeader={renderListHeader}
-      renderListFooter={renderListFooter}
-      renderItem={renderItem}
+    <ConversationList<PostData>
+      listRef={flatListRef}
       data={postList}
-      renderItemSeparator={renderSeparator}
-      maintainViewPosition={maintainViewPosition}
-      initialScrollIndex={initialScrollIndex}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      ListHeaderComponent={renderListHeader}
+      ListFooterComponent={renderListFooter}
+      ItemSeparatorComponent={renderSeparator}
       refreshControl={refreshControl}
+      handleLoadNext={handleLoadNext}
+      handleLoadPrevious={handleLoadPrevious}
       scrollButtonPosition={scrollButtonPosition}
-      invertList={invertList}
-      hasNextPage={hasNextPage}
-      hasPreviousPage={hasPreviousPage}
-      listStyle={styles.flatList}
+      enableScrollButton={true}
+      initialScrollIndex={initialScrollIndex}
+      // Style is here rather than in the renderItem because the padding we use is
+      // also needed for the dividers. It could be added to the divider function as
+      // well but this is slightly simpler and covers cases I am not remembering.
+      style={commonStyles.paddingHorizontal}
     />
   );
 };
