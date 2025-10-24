@@ -667,6 +667,9 @@ export interface ImageUploadData {
   /// The image in `Data` format.
   /// Which in client land means a Base64-encoded string.
   image?: string;
+  /// Client-side only flag to track if this image should be saved to camera roll.
+  /// Set to true for images taken with the camera (not picked from gallery).
+  _shouldSaveToRoll?: boolean;
 }
 
 export interface ForumListData {
