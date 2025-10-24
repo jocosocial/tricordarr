@@ -33,7 +33,7 @@ export const ImageSettingsScreen = () => {
                 name={'skipThumbnails'}
                 label={'Load Full-Size Images First'}
                 onPress={handleLoadFullFirst}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
                 helperText={'Skip loading image thumbnails first and instead load the full-size image.'}
                 value={loadFullFirst}
               />

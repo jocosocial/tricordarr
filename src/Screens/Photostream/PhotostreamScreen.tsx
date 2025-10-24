@@ -1,12 +1,13 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {AppFlatList} from '#src/Components/Lists/AppFlatList';
+import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
 import {PhotostreamActionsMenu} from '#src/Components/Menus/Photostream/PhotostreamActionsMenu';
@@ -23,7 +24,7 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
   const [expandFab, setExpandFab] = useState(true);
-  const flatListRef = useRef<FlatList<PhotostreamImageData>>(null);
+  const flashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -77,16 +78,14 @@ export const PhotostreamScreen = ({navigation}: Props) => {
 
   return (
     <AppView>
-      <AppFlatList
-        flatListRef={flatListRef}
+      <AppFlashList
+        ref={flashListRef}
         renderItem={renderItem}
         data={streamList}
         onScrollThreshold={onScrollThreshold}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        hasNextPage={hasNextPage}
         handleLoadNext={handleLoadNext}
         keyExtractor={keyExtractor}
-        maintainViewPosition={false}
         renderListFooter={EndResultsFooter}
       />
       <PhotostreamFAB showLabel={expandFab} />
