@@ -104,8 +104,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
     return <LoadingView />;
   }
 
-  const alreadyAttached = eventData?.performers.find(p => p.id)?.id === performerData?.header.id;
-
+  const alreadyAttached = eventData?.performers.some(p => p.id === performerData?.header.id);
   const isMutating = performerCreateMutation.isPending || performerRemoveMutation.isPending;
   const isRefreshing = isFetchingSelf || isFetchingEvent || isMutating;
 
@@ -155,7 +154,8 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
             <PaddedContentView padTop={true}>
               {alreadyAttached ? (
                 <Text>
-                  Your profile is already attached to this event. To detach it you must delete your performer profile.
+                  Your profile is already attached to this event. To detach it you must delete your performer profile
+                  and recreate it.
                 </Text>
               ) : (
                 <Text>Your profile is not associated with the event.</Text>
