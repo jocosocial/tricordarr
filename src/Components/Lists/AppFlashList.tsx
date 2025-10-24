@@ -28,10 +28,10 @@ interface AppFlashListProps<TItem> {
   enableScrollButton?: boolean;
   numColumns?: number;
   contentContainerStyle?: StyleProp<ViewStyle>;
-  columnWrapperStyle?: StyleProp<ViewStyle>;
   extraData?: any;
   style?: ViewStyle;
   scrollButtonSmall?: boolean;
+  masonry?: boolean;
 }
 
 const AppFlashListInner = <TItem,>(
@@ -55,6 +55,7 @@ const AppFlashListInner = <TItem,>(
     handleLoadNext,
     extraData,
     style,
+    masonry = false,
   }: AppFlashListProps<TItem>,
   ref: React.ForwardedRef<FlashListRef<TItem>>,
 ) => {
@@ -87,8 +88,6 @@ const AppFlashListInner = <TItem,>(
     [onScrollThreshold, styleDefaults.listScrollThreshold],
   );
 
-  console.log('[AppFlashList.tsx] Rendering AppFlashList at', new Date());
-
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
@@ -108,6 +107,8 @@ const AppFlashListInner = <TItem,>(
         onEndReached={handleLoadNext}
         extraData={extraData}
         style={style}
+        // columnWrapperStyle is not supported in FlashList v2.
+        masonry={masonry}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
