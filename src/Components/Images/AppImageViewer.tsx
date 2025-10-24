@@ -7,7 +7,7 @@ import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar
 import {ImageViewerFooterView} from '#src/Components/Views/ImageViewerFooterView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {saveImageToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
 import {ImageQueryData} from '#src/Types';
 
@@ -48,7 +48,7 @@ export const AppImageViewer = ({
     async (index: number) => {
       try {
         const image = viewerImages[index];
-        await saveImageToLocal(image);
+        await saveImageQueryToLocal(image);
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
         console.error(error);

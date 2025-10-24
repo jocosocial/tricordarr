@@ -5,6 +5,7 @@ import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {PickerField} from '#src/Components/Forms/Fields/PickerField';
 import {PhotostreamImageSelectionView} from '#src/Components/Views/Photostream/PhotostreamImageSelectionView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -16,6 +17,7 @@ interface PhotostreamImageCreateFormProps {
   initialValues?: PhotostreamCreateFormValues;
   locations: string[];
   events: EventData[];
+  savePhoto?: boolean;
 }
 
 const validationSchema = Yup.object()
@@ -30,9 +32,10 @@ const validationSchema = Yup.object()
 
 export const PhotostreamImageCreateForm = ({
   onSubmit,
-  initialValues = {locationName: undefined, eventData: undefined},
   locations,
   events,
+  savePhoto,
+  initialValues = {locationName: undefined, eventData: undefined, savePhoto: savePhoto},
 }: PhotostreamImageCreateFormProps) => {
   const {commonStyles} = useStyles();
 
@@ -88,6 +91,12 @@ export const PhotostreamImageCreateForm = ({
               be automatically blurred. Choose wisely!
             </Text>
           </View>
+          <BooleanField
+            name={'savePhoto'}
+            label={'Save Photo to Device'}
+            style={commonStyles.paddingHorizontalSmall}
+            value={values.savePhoto}
+          />
           <PrimaryActionButton
             disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}

@@ -10,11 +10,14 @@ import {MentionTextField} from '#src/Components/Forms/Fields/MentionTextField';
 import {ContentInsertMenuView} from '#src/Components/Views/Content/ContentInsertMenuView';
 import {ContentInsertPhotosView} from '#src/Components/Views/Content/ContentInsertPhotosView';
 import {ContentPostLengthView} from '#src/Components/Views/Content/ContentPostLengthView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
+import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {PostContentData} from '#src/Structs/ControllerStructs';
+import {ImageQueryData} from '#src/Types';
 
 interface ContentPostFormProps {
   onSubmit: (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => void;
@@ -40,8 +43,25 @@ export const ContentPostForm = ({
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
+  const {appConfig} = useConfig();
   const [insertMenuVisible, setInsertMenuVisible] = React.useState(false);
   const [emojiPickerVisible, setEmojiPickerVisible] = React.useState(false);
+
+  const handleSubmitWithPhotoSave = async (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
+    // Save photos taken with camera to camera roll if enabled
+    if (enablePhotos && appConfig.userPreferences.autosavePhotos) {
+      for (const imageData of values.images) {
+        // Only save images that were taken with the camera (_shouldSaveToRoll flag)
+        // This avoids re-saving images picked from the gallery
+        if (imageData.image && imageData._shouldSaveToRoll) {
+          await saveImageQueryToLocal(ImageQueryData.fromData(imageData.image));
+        }
+      }
+    }
+
+    // Call the original onSubmit handler
+    onSubmit(values, formikBag);
+  };
 
   const validationSchema = Yup.object().shape({
     text: Yup.string()
@@ -126,7 +146,7 @@ export const ContentPostForm = ({
     <Formik
       innerRef={formRef}
       initialValues={initialValues || defaultInitialValues}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmitWithPhotoSave}
       validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, dirty, isValid}) => (
         <View style={styles.formOuterContainer}>

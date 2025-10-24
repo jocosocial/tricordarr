@@ -51,7 +51,7 @@ export const ContentInsertMenuView = ({
         includeBase64: true,
         mediaType: 'photo',
       });
-      processImage(image);
+      processImage(image, true);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
         setSnackbarPayload({message: err.message, messageType: 'error'});
@@ -65,7 +65,7 @@ export const ContentInsertMenuView = ({
         includeBase64: true,
         mediaType: 'photo',
       });
-      processImage(image);
+      processImage(image, false);
     } catch (err: any) {
       if (err instanceof Error && err.message !== 'User cancelled image selection') {
         setSnackbarPayload({message: err.message, messageType: 'error'});
@@ -73,9 +73,9 @@ export const ContentInsertMenuView = ({
     }
   };
 
-  const processImage = (image: Image) => {
+  const processImage = (image: Image, fromCamera: boolean = false) => {
     if (image.data) {
-      setFieldValue(fieldName, values.images.concat([{image: image.data}]));
+      setFieldValue(fieldName, values.images.concat([{image: image.data, _shouldSaveToRoll: fromCamera}]));
       setVisible(false);
     }
   };
