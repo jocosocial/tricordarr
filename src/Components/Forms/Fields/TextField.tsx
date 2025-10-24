@@ -4,6 +4,7 @@ import {
   FocusEvent,
   KeyboardTypeOptions,
   StyleProp,
+  StyleSheet,
   TextInputSelectionChangeEvent,
   TextStyle,
   View,
@@ -64,6 +65,12 @@ export const TextField = ({
   const theme = useAppTheme();
   const [field, meta] = useField<string>(name);
 
+  const styles = StyleSheet.create({
+    outline: {
+      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+    },
+  });
+
   const handleValueChange = (value: string) => {
     handleChange(name)(value);
   };
@@ -102,6 +109,7 @@ export const TextField = ({
             onFocus={onFocus}
             style={innerTextStyle}
             onSelectionChange={onSelectionChange}
+            outlineStyle={styles.outline}
           />
           {infoText && <HelperText type={'info'}>{infoText}</HelperText>}
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
