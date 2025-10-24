@@ -13,6 +13,7 @@ export const ImageSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {commonStyles} = useStyles();
   const [loadFullFirst, setLoadFullFirst] = React.useState(appConfig.skipThumbnails);
+  const [autosavePhotos, setAutosavePhotos] = React.useState(appConfig.userPreferences.autosavePhotos);
 
   const handleLoadFullFirst = () => {
     const newvalue = !appConfig.skipThumbnails;
@@ -21,6 +22,18 @@ export const ImageSettingsScreen = () => {
       skipThumbnails: newvalue,
     });
     setLoadFullFirst(newvalue);
+  };
+
+  const handleAutosavePhotos = () => {
+    const newvalue = !appConfig.userPreferences.autosavePhotos;
+    updateAppConfig({
+      ...appConfig,
+      userPreferences: {
+        ...appConfig.userPreferences,
+        autosavePhotos: newvalue,
+      },
+    });
+    setAutosavePhotos(newvalue);
   };
 
   return (
@@ -36,6 +49,16 @@ export const ImageSettingsScreen = () => {
                 style={commonStyles.paddingHorizontalSmall}
                 helperText={'Skip loading image thumbnails first and instead load the full-size image.'}
                 value={loadFullFirst}
+              />
+              <BooleanField
+                name={'autosavePhotos'}
+                label={'Auto-Save Taken Photos'}
+                onPress={handleAutosavePhotos}
+                style={commonStyles.paddingHorizontalSmall}
+                helperText={
+                  "Automatically save photos taken with the camera in this app to your device's photo library."
+                }
+                value={autosavePhotos}
               />
             </View>
           </Formik>

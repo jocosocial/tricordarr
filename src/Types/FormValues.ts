@@ -117,6 +117,7 @@ export interface PhotostreamCreateFormValues {
   eventData?: EventData;
   locationName?: string;
   image?: string;
+  savePhoto?: boolean;
 }
 
 export interface ServerUrlFormValues {

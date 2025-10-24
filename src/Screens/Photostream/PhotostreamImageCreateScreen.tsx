@@ -11,11 +11,14 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
+import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
 export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
@@ -25,6 +28,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
   const uploadMutation = usePhotostreamImageUploadMutation();
   const queryClient = useQueryClient();
+  const {appConfig} = useConfig();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -32,7 +36,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
     setRefreshing(false);
   };
 
-  const onSubmit = (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
+  const onSubmit = async (values: PhotostreamCreateFormValues, helpers: FormikHelpers<PhotostreamCreateFormValues>) => {
     if (!values.image) {
       helpers.setSubmitting(false);
       return;
@@ -43,6 +47,11 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
       ...(values.eventData ? {eventID: values.eventData.eventID} : undefined),
       image: values.image,
     };
+
+    if (values.savePhoto) {
+      await saveImageQueryToLocal(ImageQueryData.fromData(values.image));
+    }
+
     uploadMutation.mutate(
       {
         imageUploadData: payload,
@@ -91,6 +100,7 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
             locations={locationData.locations}
             events={locationData.events}
             onSubmit={onSubmit}
+            savePhoto={appConfig.userPreferences.autosavePhotos}
           />
         </PaddedContentView>
       </ScrollingContentView>

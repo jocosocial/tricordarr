@@ -16,7 +16,7 @@ const getImageDestinationPath = (fileName: string, mimeType: string) => {
   return destPath;
 };
 
-export const saveImageToLocal = async (imageData: ImageQueryData) => {
+export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
   let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
   if (!imageData.base64) {
     throw Error(`No data to save to file ${destPath}`);

@@ -44,6 +44,7 @@ export interface UserPreferences {
   defaultForumSortOrder: ForumSort | undefined;
   defaultForumSortDirection: ForumSortDirection | undefined;
   highlightForumAlertWords: boolean;
+  autosavePhotos: boolean;
 }
 
 export interface AppConfig {
@@ -146,6 +147,7 @@ const defaultAppConfig: AppConfig = {
     defaultForumSortDirection: undefined,
     defaultForumSortOrder: undefined,
     highlightForumAlertWords: true,
+    autosavePhotos: true,
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: '',

@@ -25,26 +25,6 @@ Notes
 * All dates from the API come in as ISO8601 strings
 * `adb logcat [| grep ReactNativeJS]` can get logs on the device
 
-Releasing
----------
-https://reactnative.dev/docs/signed-apk-android
-
-Edit `android/app/build.gradle` with appropriate version info.
-
-Version number plan:
-* Major = Cruise Year (2023, 2024, etc)
-* Minor = Release number to Play Store. Moves in lockstep with `versionCode`.
-
-```
-cd android
-./gradlew bundleRelease # To build AAB
-./gradlew assembleRelease # For an APK
-```
-
-```
- adb -s device-name-here install ~/Projects/jocosocial/tricordarr/android/app/build/outputs/apk/release/app-release.apk
- ```
-
 Navigation
 ----------
 ```ts
