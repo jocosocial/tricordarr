@@ -2783,7 +2783,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNImageCropPicker (0.51.0):
+  - RNImageCropPicker (0.51.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2810,11 +2810,11 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNImageCropPicker/QBImagePickerController (= 0.51.0)
+    - RNImageCropPicker/QBImagePickerController (= 0.51.1)
     - SocketRocket
-    - TOCropViewController (~> 2.7.4)
+    - TOCropViewController (~> 2.8.0)
     - Yoga
-  - RNImageCropPicker/QBImagePickerController (0.51.0):
+  - RNImageCropPicker/QBImagePickerController (0.51.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2842,7 +2842,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - SocketRocket
-    - TOCropViewController (~> 2.7.4)
+    - TOCropViewController (~> 2.8.0)
     - Yoga
   - RNNotifee (9.1.8):
     - React-Core
@@ -3117,9 +3117,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - SDWebImage (5.21.2):
-    - SDWebImage/Core (= 5.21.2)
-  - SDWebImage/Core (5.21.2)
+  - SDWebImage (5.21.3):
+    - SDWebImage/Core (= 5.21.3)
+  - SDWebImage/Core (5.21.3)
   - SDWebImageAVIFCoder (0.11.1):
     - libavif/core (>= 0.11.0)
     - SDWebImage (~> 5.10)
@@ -3127,9 +3127,9 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
   - SocketRocket (0.7.1)
-  - TOCropViewController (2.7.4)
+  - TOCropViewController (2.8.0)
   - Yoga (0.0.0)
-  - ZIPFoundation (0.9.19)
+  - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -3518,7 +3518,7 @@ SPEC CHECKSUMS:
   React-utils: 96191b0f5e02b57c70a4bbf7b6f6721958e1d369
   React-webperformancenativemodule: 9c76ddf8d1a243e2eecd7ce1aeadb46ceccbdbd2
   ReactAppDependencyProvider: c5c4f5280e4ae0f9f4a739c64c4260fe0b3edaf1
-  ReactCodegen: 374f1c9242fbdd673b460d358b33860c0cc9d926
+  ReactCodegen: 1e282f4d3afe48827dbc68f0a952f22300689593
   ReactCommon: 25c7f94aee74ddd93a8287756a8ac0830a309544
   ReactNativeFileAccess: 2a0fb9ca57b6a5ca139d860757e7c1b1edd367b0
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
@@ -3527,20 +3527,20 @@ SPEC CHECKSUMS:
   RNFastImage: 4b6aa4ec13de8dc57deef25f89f00aa93a2cf139
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: f1dd7f92a0faa2868a919ab53bb9d66eb4ebfcf5
-  RNImageCropPicker: 07691ec35bc874cf46b39d7710d82f63c9ca0817
+  RNImageCropPicker: 5fd4ceaead64d8c53c787e4e559004f97bc76df7
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
-  RNPermissions: b8f41f03d66be9a910cc2ac848cdac5656bfe78f
+  RNPermissions: 6f5a3ab6b7dafc3dfeb69986314500ccc64e0308
   RNReanimated: 732e7d1662f8cc0e533fa32791800de5b5934726
   RNScreens: 0bbf16c074ae6bb1058a7bf2d1ae017f4306797c
   RNWorklets: ab618bf7d1c7fd2cb793b9f0f39c3e29274b3ebf
-  SDWebImage: 9f177d83116802728e122410fb25ad88f5c7608a
+  SDWebImage: 16309af6d214ba3f77a7c6f6fdda888cb313a50a
   SDWebImageAVIFCoder: afe194a084e851f70228e4be35ef651df0fc5c57
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
+  TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
   Yoga: edeb9900b9e5bb5b27b9a6a2d5914e4fe4033c1b
-  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
+  ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 8a418be1e14fe50e905ca6557ea443044cd81a53
+PODFILE CHECKSUM: 9ab7b872fae6943853db56c3c660a4dce006c6c7
 
 COCOAPODS: 1.16.2

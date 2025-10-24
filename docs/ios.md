@@ -22,7 +22,7 @@ To do version revs, use Xcode or edit `project.pbxproj`.
 
 Big TODO
 ========
-* Battery optimization needs to be hidden from iOS views
 * Foreground Service Worker
 * Photostream Blur
 * Permissions for media stuff
+
