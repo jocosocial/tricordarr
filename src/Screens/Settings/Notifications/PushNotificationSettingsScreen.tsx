@@ -110,9 +110,7 @@ export const PushNotificationSettingsScreen = () => {
             <DataTable>
               {notificationPermissionStatus === RESULTS.BLOCKED && (
                 <Text>
-                  Notifications have been blocked by your device. You'll need to enable them for this app manually in
-                  the Android settings. You can access this by long pressing on the app icon on your home screen and
-                  selecting App Info.
+                  Notifications have been blocked by your device. You'll need to enable them for this app manually.
                 </Text>
               )}
               {notificationPermissionStatus !== RESULTS.BLOCKED && (

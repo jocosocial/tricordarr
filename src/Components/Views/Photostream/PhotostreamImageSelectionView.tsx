@@ -1,6 +1,6 @@
 import {useFormikContext} from 'formik';
 import React from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {ActivityIndicator} from 'react-native-paper';
@@ -61,8 +61,9 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const takeImage = async () => {
-    const permissionStatus = await requestPermission(PERMISSIONS.ANDROID.CAMERA);
-    console.log('[UserProfileAvatar.tsx] Camera permission is', permissionStatus);
+    const cameraPermission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const permissionStatus = await requestPermission(cameraPermission);
+    console.log('[PhotostreamImageSelectionView.tsx] Camera permission is', permissionStatus);
     try {
       const image = await ImagePicker.openCamera({
         includeBase64: false,
