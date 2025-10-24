@@ -3,7 +3,9 @@ import {StyleSheet} from 'react-native';
 export const styleDefaults = {
   marginSize: 20,
   iconSize: 25,
-  IconSizeSmall: 20,
+  // iconSizeSmall used to be 20 but I feel that most of the time I use that it's when it's in-line
+  // with text so I'm making this be the same as the fontSize eblow.
+  iconSizeSmall: 16,
   avatarSize: 36,
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,

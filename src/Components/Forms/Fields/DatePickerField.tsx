@@ -28,7 +28,7 @@ export const DatePickerField = ({
   label = 'Date',
 }: DatePickerFieldProps) => {
   const {startDate, endDate} = useCruise();
-  const [field] = useField<Date>(name);
+  const [field, meta] = useField<Date>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -50,6 +50,7 @@ export const DatePickerField = ({
       ...commonStyles.roundedBorder,
       ...commonStyles.flex,
       minHeight: 48,
+      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
     },
     text: {
       // paddingLeft: 8,

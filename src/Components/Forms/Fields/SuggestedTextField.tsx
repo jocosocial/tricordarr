@@ -1,11 +1,12 @@
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
-import {Keyboard, View} from 'react-native';
+import {Keyboard, StyleSheet, View} from 'react-native';
 import {HelperText, Menu, TextInput} from 'react-native-paper';
 
 import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useMenu} from '#src/Hooks/MenuHook';
+import {useAppTheme} from '#src/Styles/Theme';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -38,6 +39,13 @@ export const SuggestedTextField = ({
   const {isSubmitting} = useFormikContext();
   const [field, meta, helpers] = useField<string>(name);
   const {modalVisible} = useModal();
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    outline: {
+      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+    },
+  });
 
   const onValueChange = async (newValue: string) => {
     closeMenu();
@@ -78,6 +86,7 @@ export const SuggestedTextField = ({
             value={field.value}
             disabled={disabled || isSubmitting}
             onPress={handleOpen}
+            outlineStyle={styles.outline}
           />
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
             {meta.error}

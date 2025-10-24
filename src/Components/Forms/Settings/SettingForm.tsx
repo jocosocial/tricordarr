@@ -2,7 +2,6 @@ import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {View} from 'react-native';
 
-
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';

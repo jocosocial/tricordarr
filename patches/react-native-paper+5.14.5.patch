@@ -1,5 +1,53 @@
+diff --git a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
+index 46a45f4..85863c9 100644
+--- a/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
++++ b/node_modules/react-native-paper/lib/module/components/Menu/Menu.js
+@@ -235,13 +235,9 @@ const Menu = ({
+       duration: ANIMATION_DURATION * animation.scale,
+       easing: EASING,
+       useNativeDriver: true
+-    })]).start(({
+-      finished
+-    }) => {
+-      if (finished) {
+-        focusFirstDOMNode(menuRef.current);
+-        prevRendered.current = true;
+-      }
++    })]).start(() => {
++      focusFirstDOMNode(menuRef.current);
++      prevRendered.current = true;
+     });
+   }, [anchor, attachListeners, measureAnchorLayout, theme]);
+   const hide = React.useCallback(() => {
+@@ -254,18 +250,14 @@ const Menu = ({
+       duration: ANIMATION_DURATION * animation.scale,
+       easing: EASING,
+       useNativeDriver: true
+-    }).start(({
+-      finished
+-    }) => {
+-      if (finished) {
+-        setMenuLayout({
+-          width: 0,
+-          height: 0
+-        });
+-        setRendered(false);
+-        prevRendered.current = false;
+-        focusFirstDOMNode(anchorRef.current);
+-      }
++    }).start(() => {
++      setMenuLayout({
++        width: 0,
++        height: 0
++      });
++      setRendered(false);
++      prevRendered.current = false;
++      focusFirstDOMNode(anchorRef.current);
+     });
+   }, [removeListeners, theme]);
+   const updateVisibility = React.useCallback(async display => {
 diff --git a/node_modules/react-native-paper/src/components/Menu/Menu.tsx b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
-index 55922c1..0921f18 100644
+index 55922c1..0dccd61 100644
 --- a/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 +++ b/node_modules/react-native-paper/src/components/Menu/Menu.tsx
 @@ -89,6 +89,10 @@ export type Props = {
@@ -21,7 +69,41 @@ index 55922c1..0921f18 100644
  }: Props) => {
    const theme = useInternalTheme(themeOverrides);
    const insets = useSafeAreaInsets();
-@@ -680,6 +685,7 @@ const Menu = ({
+@@ -359,11 +364,9 @@ const Menu = ({
+         easing: EASING,
+         useNativeDriver: true,
+       }),
+-    ]).start(({ finished }) => {
+-      if (finished) {
+-        focusFirstDOMNode(menuRef.current);
+-        prevRendered.current = true;
+-      }
++    ]).start(() => {
++      focusFirstDOMNode(menuRef.current);
++      prevRendered.current = true;
+     });
+   }, [anchor, attachListeners, measureAnchorLayout, theme]);
+ 
+@@ -377,13 +380,11 @@ const Menu = ({
+       duration: ANIMATION_DURATION * animation.scale,
+       easing: EASING,
+       useNativeDriver: true,
+-    }).start(({ finished }) => {
+-      if (finished) {
+-        setMenuLayout({ width: 0, height: 0 });
+-        setRendered(false);
+-        prevRendered.current = false;
+-        focusFirstDOMNode(anchorRef.current);
+-      }
++    }).start(() => {
++      setMenuLayout({ width: 0, height: 0 });
++      setRendered(false);
++      prevRendered.current = false;
++      focusFirstDOMNode(anchorRef.current);
+     });
+   }, [removeListeners, theme]);
+ 
+@@ -680,6 +681,7 @@ const Menu = ({
                  {(scrollableMenuHeight && (
                    <ScrollView
                      keyboardShouldPersistTaps={keyboardShouldPersistTaps}

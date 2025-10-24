@@ -15,7 +15,6 @@ import {ImageQueryData} from '#src/Types';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
-
 export const PhotostreamImageSelectionView = () => {
   const {commonStyles, styleDefaults} = useStyles();
   const {setSnackbarPayload} = useSnackbar();

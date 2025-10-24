@@ -5,6 +5,4 @@ export interface Spec extends TurboModule {
   blurTextInImage(inputFilePath: string, callback: (newPath: string) => void): void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>(
-  'NativeTricordarrModule',
-);
+export default TurboModuleRegistry.getEnforcing<Spec>('NativeTricordarrModule');

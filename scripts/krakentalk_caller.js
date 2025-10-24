@@ -40,11 +40,11 @@ const socket = new ReconnectingWebSocket(wsUrl, [], {
   reconnectionDelayGrowFactor: 2,
 });
 
-socket.addEventListener('open', event => {
+socket.addEventListener('open', _event => {
   console.log('Socket Open');
 });
 
-socket.addEventListener('close', event => {
+socket.addEventListener('close', _event => {
   console.log('Socket Close');
 });
 

@@ -9,10 +9,11 @@ import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {LoadingNextFooter} from '#src/Components/Lists/Footers/LoadingNextFooter';
 import {LoadingPreviousHeader} from '#src/Components/Lists/Headers/LoadingPreviousHeader';
 import {ForumThreadListItem} from '#src/Components/Lists/Items/Forum/ForumThreadListItem';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
-interface ForumThreadFlatListProps {
+interface ForumThreadListProps {
   refreshControl?: React.ReactElement<RefreshControlProps>;
   forumListData: ForumListData[];
   handleLoadNext: () => void;
@@ -25,7 +26,10 @@ interface ForumThreadFlatListProps {
   onScrollThreshold?: (value: boolean) => void;
 }
 
-export const ForumThreadFlatList = ({
+/**
+ * A list of forum threads.
+ */
+export const ForumThreadList = ({
   forumListData,
   refreshControl,
   handleLoadNext,
@@ -35,9 +39,10 @@ export const ForumThreadFlatList = ({
   categoryID,
   keyExtractor = (item: ForumListData) => item.forumID,
   onScrollThreshold,
-}: ForumThreadFlatListProps) => {
-  const flatListRef = useRef<FlashListRef<ForumListData>>(null);
+}: ForumThreadListProps) => {
+  const listRef = useRef<FlashListRef<ForumListData>>(null);
   const {enableSelection, setEnableSelection, selectedForums} = useSelection();
+  const {appConfig} = useConfig();
 
   const renderListHeader = () => {
     // Turning this off because the list renders too quickly based on the state data.
@@ -78,8 +83,8 @@ export const ForumThreadFlatList = ({
   const renderItemSeparator = () => <Divider bold={true} />;
 
   return (
-    <AppFlashList
-      flatListRef={flatListRef}
+    <AppFlashList<ForumListData>
+      ref={listRef}
       renderListHeader={renderListHeader}
       renderListFooter={renderListFooter}
       renderItem={renderItem}
@@ -90,6 +95,7 @@ export const ForumThreadFlatList = ({
       refreshControl={refreshControl}
       handleLoadNext={handleLoadNext}
       renderItemSeparator={renderItemSeparator}
+      scrollButtonHorizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
     />
   );
 };

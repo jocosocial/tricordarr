@@ -1,16 +1,16 @@
 import {FlashList, type FlashListRef, ListRenderItem} from '@shopify/flash-list';
-import React, {useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useState} from 'react';
 import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp, ViewStyle} from 'react-native';
 
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {FloatingScrollButtonPosition} from '#src/Types';
+import {FloatingScrollButtonHorizontalPosition, FloatingScrollButtonVerticalPosition} from '#src/Types';
 
 interface AppFlashListProps<TItem> {
-  scrollButtonPosition?: FloatingScrollButtonPosition;
+  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
+  scrollButtonHorizontalPosition?: FloatingScrollButtonHorizontalPosition;
   invertList?: boolean;
-  flatListRef: React.RefObject<FlashListRef<TItem>>;
   handleLoadNext?: () => void;
   onEndReachedThreshold?: number;
   onStartReachedThreshold?: number;
@@ -28,40 +28,50 @@ interface AppFlashListProps<TItem> {
   enableScrollButton?: boolean;
   numColumns?: number;
   contentContainerStyle?: StyleProp<ViewStyle>;
-  columnWrapperStyle?: StyleProp<ViewStyle>;
   extraData?: any;
+  style?: ViewStyle;
+  scrollButtonSmall?: boolean;
+  masonry?: boolean;
 }
 
-export const AppFlashList = <TItem,>({
-  scrollButtonPosition,
-  invertList,
-  flatListRef,
-  onEndReachedThreshold = 1,
-  keyExtractor,
-  initialScrollIndex = 0,
-  renderListHeader,
-  renderListFooter,
-  renderItem,
-  renderItemSeparator,
-  data,
-  refreshControl,
-  onScrollThreshold,
-  enableScrollButton = true,
-  numColumns,
-  handleLoadNext,
-  extraData,
-}: AppFlashListProps<TItem>) => {
+const AppFlashListInner = <TItem,>(
+  {
+    scrollButtonVerticalPosition,
+    scrollButtonHorizontalPosition,
+    scrollButtonSmall,
+    invertList,
+    onEndReachedThreshold = 1,
+    keyExtractor,
+    initialScrollIndex = 0,
+    renderListHeader,
+    renderListFooter,
+    renderItem,
+    renderItemSeparator,
+    data,
+    refreshControl,
+    onScrollThreshold,
+    enableScrollButton = true,
+    numColumns,
+    handleLoadNext,
+    extraData,
+    style,
+    masonry = false,
+  }: AppFlashListProps<TItem>,
+  ref: React.ForwardedRef<FlashListRef<TItem>>,
+) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   /**
    * Callback handler for when the scroll button is pressed.
    * Used to track some state for the list contentHeight and would do
-   * flatListRef.current?.scrollToOffset({offset: contentHeight, animated: true});
+   * ref.current?.scrollToOffset({offset: contentHeight, animated: true});
    */
   const handleScrollButtonPress = useCallback(() => {
-    flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-  }, [flatListRef]);
+    if (ref && typeof ref !== 'function' && ref.current) {
+      ref.current.scrollToOffset({offset: 0, animated: true});
+    }
+  }, [ref]);
 
   /**
    * Show the scroll button when a certain scroll threshold has been hit.
@@ -78,13 +88,11 @@ export const AppFlashList = <TItem,>({
     [onScrollThreshold, styleDefaults.listScrollThreshold],
   );
 
-  console.log('[AppFlashList.tsx] Rendering AppFlashList at', new Date());
-
   // https://github.com/facebook/react-native/issues/25239
   return (
     <>
       <FlashList
-        ref={flatListRef}
+        ref={ref}
         data={data}
         renderItem={renderItem}
         onScroll={enableScrollButton ? onScroll : undefined}
@@ -98,14 +106,23 @@ export const AppFlashList = <TItem,>({
         numColumns={numColumns}
         onEndReached={handleLoadNext}
         extraData={extraData}
+        style={style}
+        // columnWrapperStyle is not supported in FlashList v2.
+        masonry={masonry}
       />
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           icon={invertList ? AppIcons.scrollDown : AppIcons.scrollUp}
           onPress={handleScrollButtonPress}
-          displayPosition={scrollButtonPosition}
+          verticalPosition={scrollButtonVerticalPosition}
+          horizontalPosition={scrollButtonHorizontalPosition}
+          small={scrollButtonSmall}
         />
       )}
     </>
   );
 };
+
+export const AppFlashList = forwardRef(AppFlashListInner) as <TItem>(
+  props: AppFlashListProps<TItem> & {ref?: React.ForwardedRef<FlashListRef<TItem>>},
+) => ReturnType<typeof AppFlashListInner>;

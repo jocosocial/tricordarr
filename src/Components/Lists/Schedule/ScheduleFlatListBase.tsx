@@ -144,7 +144,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
       keyExtractor={keyExtractor}
       initialScrollIndex={initialScrollIndex}
       contentContainerStyle={{
-        ...commonStyles.paddingHorizontal,
+        ...commonStyles.paddingHorizontalSmall,
       }}
       onScroll={handleScroll}
       onEndReached={handleLoadNext}

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Keyboard, RefreshControl} from 'react-native';
 
-import {SeamailFlatList} from '#src/Components/Lists/Seamail/SeamailFlatList';
+import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';

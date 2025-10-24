@@ -4,14 +4,15 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {ChatFlatList} from '#src/Components/Lists/ChatFlatList';
+import {TConversationListRef} from '#src/Components/Lists/ConversationList';
+import {ChatFlatList} from '#src/Components/Lists/Fez/ChatFlatList';
 import {FezChatScreenActionsMenu} from '#src/Components/Menus/Fez/FezChatScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {AppView} from '#src/Components/Views/AppView';
@@ -62,7 +63,7 @@ export const FezChatScreen = ({route}: Props) => {
   const queryClient = useQueryClient();
   const {appConfig} = useConfig();
   const appStateVisible = useAppState();
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<TConversationListRef>(null);
   const [fez, setFez] = useState<FezData>();
   const [fezPostsData, dispatchFezPostsData] = useFezPostsReducer([]);
 
@@ -183,7 +184,7 @@ export const FezChatScreen = ({route}: Props) => {
     if (data) {
       dispatchFezPostsData({
         type: FezPostsActions.set,
-        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])].reverse(),
+        fezPosts: [...data.pages.flatMap(page => page.members?.posts || [])],
       });
       setFez(data?.pages[0]);
     }

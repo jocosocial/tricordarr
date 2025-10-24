@@ -1,10 +1,11 @@
 import pluralize from 'pluralize';
 import React, {Dispatch, memo, SetStateAction} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Checkbox, List, Text} from 'react-native-paper';
+import {Checkbox, Text} from 'react-native-paper';
 
 import {ForumNewBadge} from '#src/Components/Badges/ForumNewBadge';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThreadListItemSwipeable';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
@@ -36,12 +37,15 @@ const ForumThreadListInternal = ({
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
   const theme = useAppTheme();
-  // const [selected, setSelected] = useState(false);
   const {dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({
     item: {
       backgroundColor: theme.colors.background,
+      ...commonStyles.paddingRightSmall,
+    },
+    content: {
+      ...commonStyles.paddingLeftSmall,
     },
     title: commonStyles.bold,
     rightContainer: {
@@ -120,7 +124,6 @@ const ForumThreadListInternal = ({
       type: ForumListDataSelectionActions.select,
       forumListData: forumListData,
     });
-    // setSelected(!selected);
   };
 
   const getLeft = () => {
@@ -138,7 +141,7 @@ const ForumThreadListInternal = ({
 
   return (
     <ForumThreadListItemSwipeable forumListData={forumListData} categoryID={categoryID} enabled={!enableSelection}>
-      <List.Item
+      <ListItem
         style={styles.item}
         title={forumListData.title}
         titleStyle={styles.title}
@@ -148,6 +151,7 @@ const ForumThreadListInternal = ({
         right={getRight}
         left={enableSelection ? getLeft : undefined}
         onLongPress={onLongPress}
+        contentStyle={styles.content}
       />
     </ForumThreadListItemSwipeable>
   );

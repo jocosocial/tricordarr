@@ -33,7 +33,7 @@ export const PerformerChip = (props: PerformerChipProps) => {
     <Chip style={styles.chip} icon={getAvatar} disabled={props.disabled} onPress={props.onPress}>
       {props.performerHeader.isOfficialPerformer && (
         <>
-          <AppIcon size={styleDefaults.IconSizeSmall} icon={AppIcons.official} />
+          <AppIcon size={styleDefaults.iconSizeSmall} icon={AppIcons.official} />
           &nbsp;
         </>
       )}

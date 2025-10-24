@@ -34,6 +34,7 @@ export const ScrollingContentView = ({
   style,
 }: PropsWithChildren<ScrollingContentViewProps>) => {
   const {commonStyles} = useStyles();
+
   const styles = StyleSheet.create({
     scrollView: {
       ...commonStyles.flex,

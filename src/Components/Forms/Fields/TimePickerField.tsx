@@ -18,7 +18,7 @@ interface TimePick {
 }
 
 export const TimePickerField = ({name}: TimePickerFieldProps) => {
-  const [field] = useField<TimePick>(name);
+  const [field, meta] = useField<TimePick>(name);
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
@@ -41,6 +41,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
       ...commonStyles.roundedBorder,
       ...commonStyles.flex,
       minHeight: 48,
+      borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
     },
     text: {
       fontSize: styleDefaults.fontSize,

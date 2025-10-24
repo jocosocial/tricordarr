@@ -1,7 +1,8 @@
 import React from 'react';
-import {List} from 'react-native-paper';
+import {View} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface MinorActionListItemProps {
@@ -14,7 +15,11 @@ interface MinorActionListItemProps {
 export const MinorActionListItem = ({title, icon, onPress, description}: MinorActionListItemProps) => {
   const {commonStyles} = useStyles();
 
-  const getIcon = () => <AppIcon style={[commonStyles.marginLeft]} icon={icon} />;
+  const getIcon = () => (
+    <View style={commonStyles.paddingLeftSmall}>
+      <AppIcon icon={icon} />
+    </View>
+  );
 
-  return <List.Item title={title} left={getIcon} onPress={onPress} description={description} />;
+  return <ListItem title={title} left={getIcon} onPress={onPress} description={description} />;
 };

@@ -115,7 +115,9 @@ export interface StartEndTime {
   endTime: Date;
 }
 
-export type FloatingScrollButtonPosition = 'raised' | 'bottom' | undefined;
+export type FloatingScrollButtonVerticalPosition = 'raised' | 'bottom' | undefined;
+
+export type FloatingScrollButtonHorizontalPosition = 'left' | 'right' | undefined;
 
 export interface FlatListSeparatorProps<TItem> {
   highlighted: boolean;
@@ -148,12 +150,6 @@ export interface ParamsWithOobe {
 
 // This comes from 'react-native/Libraries/Components/TextInput/TextInput'.
 // React Native deep imports are deprecated.
-export type RNInputModeOptions =
-  | 'none'
-  | 'text'
-  | 'decimal'
-  | 'numeric'
-  | 'tel'
-  | 'search'
-  | 'email'
-  | 'url';
+export type RNInputModeOptions = 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
+
+export type RNFlatListSeparatorComponent<TItem> = React.ComponentType<{leadingItem: TItem}> | undefined;

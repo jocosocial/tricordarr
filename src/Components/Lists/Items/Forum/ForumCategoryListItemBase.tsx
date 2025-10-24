@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
-import {List} from 'react-native-paper';
 
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ContentText} from '#src/Components/Text/ContentText';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
@@ -17,7 +17,7 @@ export const ForumCategoryListItemBase = ({title, description, onPress, right}: 
   const getDescription = () => description && <ContentText textVariant={'bodyMedium'} text={description} />;
 
   return (
-    <List.Item
+    <ListItem
       title={title}
       titleStyle={commonStyles.bold}
       description={getDescription}

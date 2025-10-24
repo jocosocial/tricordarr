@@ -3,7 +3,7 @@ import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -115,8 +115,8 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
     <>
       <SearchBarBase searchQuery={searchQuery} onSearch={onSearch} onChangeSearch={onChangeSearch} onClear={onClear} />
       <View style={[commonStyles.flex]}>
-        <ForumPostFlatList
-          flatListRef={flatListRef}
+        <ForumPostList
+          listRef={flatListRef}
           refreshControl={
             <RefreshControl refreshing={refreshing || isFetching} onRefresh={onRefresh} enabled={!!searchQuery} />
           }

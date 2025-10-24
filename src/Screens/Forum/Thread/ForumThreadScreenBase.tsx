@@ -1,14 +1,15 @@
 import {InfiniteData, QueryObserverResult, useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
+import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
 import {ForumThreadScreenActionsMenu} from '#src/Components/Menus/Forum/ForumThreadScreenActionsMenu';
 import {ForumThreadPinnedPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinnedPostsItem';
 import {ForumThreadSearchPostsItem} from '#src/Components/Menus/Forum/Items/ForumThreadSearchPostsItem';
@@ -39,7 +40,10 @@ interface ForumThreadScreenBaseProps {
 }
 
 /**
- * Used for a regular forum thread display.
+ * Used for a regular forum thread display. This is shared between viewing a thread
+ * from the forum list or from a particular post.
+ *
+ * @TODO test that this doesn't jump around, especially with the "thread from post".
  */
 export const ForumThreadScreenBase = ({
   data,
@@ -59,7 +63,7 @@ export const ForumThreadScreenBase = ({
   const [refreshing, setRefreshing] = useState(false);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const postCreateMutation = useForumPostCreateMutation();
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  const flatListRef = useRef<TConversationListRef>(null);
   const {hasModerator} = usePrivilege();
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
@@ -68,7 +72,6 @@ export const ForumThreadScreenBase = ({
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   // Needed for useEffect checking.
   const forumData = data?.pages[0];
-  const [maintainViewPosition, setMaintainViewPosition] = useState(true);
   // This should not expire the `/forum/:ID` data on mark-as-read because there is no read data in there
   // to care about. It's all in the category (ForumListData) queries.
   const markReadInvalidationKeys = ForumListData.getCacheKeys(data?.pages[0].categoryID);
@@ -131,7 +134,7 @@ export const ForumThreadScreenBase = ({
   useEffect(() => {
     if (data && data.pages) {
       const postListData = data.pages.flatMap(fd => fd.posts);
-      setForumPosts(invertList ? postListData.reverse() : postListData);
+      setForumPosts(postListData);
     }
   }, [data, setForumPosts, invertList]);
 
@@ -183,7 +186,6 @@ export const ForumThreadScreenBase = ({
           formikHelpers.setSubmitting(false);
           // When you make a post, disable the "scroll lock" so that the screen includes your new post.
           // This will get reset anyway whenever the screen is re-mounted.
-          setMaintainViewPosition(false);
           if (invertList) {
             flatListRef.current?.scrollToOffset({offset: 0, animated: true});
           } else {
@@ -235,20 +237,19 @@ export const ForumThreadScreenBase = ({
       <PostAsUserBanner />
       <ListTitleView title={data.pages[0].title} />
       {data.pages[0].isLocked && <ForumLockedView />}
-      <ForumPostFlatList
+      <ForumConversationList
         postList={forumPosts}
         handleLoadNext={handleLoadNext}
         handleLoadPrevious={handleLoadPrevious}
         refreshControl={<RefreshControl enabled={false} refreshing={refreshing || isLoading} onRefresh={onRefresh} />}
-        invertList={invertList}
         forumData={data.pages[0]}
         hasPreviousPage={hasPreviousPage}
-        maintainViewPosition={maintainViewPosition}
+        // maintainViewPosition={maintainViewPosition}
         getListHeader={getListHeader}
-        flatListRef={flatListRef}
+        listRef={flatListRef}
         hasNextPage={hasNextPage}
         forumListData={forumListData}
-        initialScrollIndex={getInitialScrollIndex()}
+        // initialScrollIndex={getInitialScrollIndex()}
         scrollButtonPosition={showForm ? 'raised' : 'bottom'}
       />
       {showForm && (

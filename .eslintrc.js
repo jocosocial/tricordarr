@@ -1,7 +1,12 @@
 module.exports = {
   root: true,
   // https://stackoverflow.com/questions/58065765/eslint-jest-globals-environment-key-unknown
-  extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended'],
+  extends: ['@react-native', 'plugin:jest/recommended', 'plugin:import/recommended', 'plugin:prettier/recommended'],
+  plugins: ['unused-imports'],
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+  },
   settings: {
     'import/resolver': {
       typescript: {
@@ -11,6 +16,7 @@ module.exports = {
     },
   },
   rules: {
+    'object-curly-spacing': ['error', 'never'],
     'linebreak-style': 0,
     'no-restricted-imports': [
       'error',
@@ -18,6 +24,39 @@ module.exports = {
         patterns: ['./*', '../*'],
       },
     ],
+    // Maximum line length
+    'max-len': [
+      'error',
+      {
+        code: 120,
+        ignoreComments: true,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreRegExpLiterals: true,
+      },
+    ],
+    // JSX formatting rules - let prettier handle these
+    'react/jsx-indent': 'off',
+    'react/jsx-indent-props': 'off',
+    'react/jsx-closing-bracket-location': 'off',
+    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
+    'react/jsx-max-props-per-line': ['error', {maximum: 1, when: 'multiline'}],
+    // Unused imports - auto-fixable
+    '@typescript-eslint/no-unused-vars': 'off', // Disable base rule to avoid conflicts
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
+    // React prop validation
+    'react/jsx-no-undef': 'error',
+    'react/no-typos': 'error',
     'import/order': [
       'error',
       {

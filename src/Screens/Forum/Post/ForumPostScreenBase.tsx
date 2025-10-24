@@ -1,10 +1,11 @@
+import {FlashListRef} from '@shopify/flash-list';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
-import {ForumPostFlatList} from '#src/Components/Lists/Forums/ForumPostFlatList';
+import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
@@ -41,7 +42,7 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
   const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const {data: userNotificationData, refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  const flatListRef = useRef<FlashListRef<PostData>>(null);
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();
@@ -113,8 +114,8 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
           subtitle={`${data.pages[0].paginator.total} ${pluralize('result', data.pages[0].paginator.total)}`}
         />
       )}
-      <ForumPostFlatList
-        flatListRef={flatListRef}
+      <ForumPostList
+        listRef={flatListRef}
         postList={forumPosts}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         handleLoadPrevious={handleLoadPrevious}

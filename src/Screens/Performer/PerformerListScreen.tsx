@@ -1,12 +1,13 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, RefreshControl, StyleSheet, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
-import {AppFlatList} from '#src/Components/Lists/AppFlatList';
+import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {PerformerListActionsMenu} from '#src/Components/Menus/Performer/PerformerListActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -22,17 +23,14 @@ type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.perf
 
 export const PerformerListScreen = ({navigation, route}: Props) => {
   const [performerType, setPerformerType] = useState<PerformerType>(route.params?.performerType || 'official');
-  const {data, refetch, isFetching, hasNextPage, fetchNextPage, isLoading} = usePerformersQuery(performerType);
-  const flatListRef = useRef<FlatList<PerformerHeaderData>>(null);
+  const {data, refetch, isFetching, fetchNextPage, isLoading} = usePerformersQuery(performerType);
   const {commonStyles, styleDefaults} = useStyles();
+  const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
   const {isLoggedIn} = useAuth();
 
   const styles = StyleSheet.create({
     cardContainer: {
-      width: 180,
-    },
-    column: {
-      ...commonStyles.justifySpaceEvenly,
+      ...commonStyles.paddingSmall,
     },
     content: {
       gap: styleDefaults.marginSize,
@@ -91,19 +89,15 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
 
   return (
     <AppView>
-      <AppFlatList
-        flatListRef={flatListRef}
+      <AppFlashList
+        ref={flashListRef}
         renderItem={renderItem}
         data={performers}
-        hasNextPage={hasNextPage}
         handleLoadNext={fetchNextPage}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         renderListHeader={renderListHeader}
         renderListFooter={renderListFooter}
         numColumns={2}
-        contentContainerStyle={styles.content}
-        columnWrapperStyle={styles.column}
-        maintainViewPosition={false}
       />
     </AppView>
   );
