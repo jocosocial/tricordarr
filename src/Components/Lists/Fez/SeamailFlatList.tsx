@@ -15,11 +15,12 @@ interface SeamailFlatListProps {
   onEndReached?: () => void;
   onScrollThreshold?: (condition: boolean) => void;
   hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
   handleLoadNext?: () => void;
-  handleLoadPrevious?: () => void;
 }
 
+/**
+ * A list of Seamail conversations. There are no previous pages.
+ */
 export const SeamailFlatList = (props: SeamailFlatListProps) => {
   const flatListRef = useRef<FlashListRef<FezData>>(null);
 
