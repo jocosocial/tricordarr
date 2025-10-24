@@ -49,6 +49,10 @@ export interface ConversationFlatListProps<TItem> {
   columnWrapperStyle?: StyleProp<ViewStyle>;
 }
 
+/**
+ * FlatList wrapper.
+ * @deprecated Use AppFlashList instead.
+ */
 export const AppFlatList = <TItem,>({
   scrollButtonVerticalPosition,
   scrollButtonHorizontalPosition,
