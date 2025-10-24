@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import ImageView from 'react-native-image-viewing';
 import {IconButton} from 'react-native-paper';
 
@@ -40,6 +40,7 @@ export const AppImageViewer = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
+      ...(Platform.OS === 'ios' && commonStyles.safeMarginTop),
     },
   });
 

@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -18,6 +18,7 @@ interface ImageViewerFooterViewProps {
  */
 export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
+
   const styles = StyleSheet.create({
     footerContainer: {
       ...commonStyles.flexRow,
@@ -27,6 +28,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackground,
+      ...(Platform.OS === 'ios' && commonStyles.safeMarginBottom),
     },
     verticalContainer: {
       ...commonStyles.flexColumn,
@@ -43,12 +45,16 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
   // This is a hack to get around the ImageViewer not updating in time if the underlying images changes and you
   // have already scrolled around in the viewer.
   // https://github.com/jobtoday/react-native-image-viewing/issues/203
+  //
+  // The Text variant is because iOS was too big and defaultly newlined the g in jpg.
   const filename = viewerImages[currentIndex] ? viewerImages[currentIndex].fileName : '';
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={styles.filenameText}>{filename}</Text>
-        <Text style={styles.indexText}>
+        <Text style={styles.filenameText} variant="bodyMedium">
+          {filename}
+        </Text>
+        <Text style={styles.indexText} variant="bodyMedium">
           {currentIndex + 1} of {viewerImages.length}
         </Text>
       </View>
