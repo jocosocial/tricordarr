@@ -119,7 +119,7 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     imageViewerBackground: {
       backgroundColor: theme.colors.constantBlack,
       color: theme.colors.constantWhite,
-      opacity: 0.7,
+      // Opacity of 0.7 was messing with the text color.
     },
     safeMarginTop: {
       marginTop: inset.top,
@@ -127,6 +127,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     safePaddingVertical: {
       paddingTop: inset.top,
       paddingBottom: inset.bottom,
+    },
+    safeMarginBottom: {
+      marginBottom: inset.bottom,
     },
   });
 

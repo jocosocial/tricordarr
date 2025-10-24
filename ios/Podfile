@@ -17,10 +17,9 @@ prepare_react_native_project!
 
 # `pod install` after each change.
 setup_permissions([
-  # 'Camera',
-  # 'MediaLibrary',
+  'Camera',
   'Notifications',
-  # 'PhotoLibrary',
+  'PhotoLibrary',
 ])
 
 linkage = ENV['USE_FRAMEWORKS']
