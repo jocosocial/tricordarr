@@ -79,7 +79,7 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleEnableLateDayFlip}
                   value={enableLateDayFlip}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
               <ListSection>
@@ -92,7 +92,7 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleJoinedLfgs}
                   value={joined}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   name={'eventsShowOpenLfgs'}
@@ -102,7 +102,7 @@ export const EventSettingsScreen = () => {
                   }
                   onPress={handleOpenLfgs}
                   value={open}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
               <ListSection>
@@ -115,7 +115,7 @@ export const EventSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.followedEventStarting.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.followedEventStarting.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.personalEventStarting.configKey}
@@ -125,7 +125,7 @@ export const EventSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.personalEventStarting.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.personalEventStarting.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.addedToPrivateEvent.configKey}
@@ -135,7 +135,7 @@ export const EventSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.addedToPrivateEvent.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.addedToPrivateEvent.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.privateEventCanceled.configKey}
@@ -145,7 +145,7 @@ export const EventSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.privateEventCanceled.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.privateEventCanceled.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.privateEventUnreadMsg.configKey}
@@ -155,7 +155,7 @@ export const EventSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.privateEventUnreadMsg.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.privateEventUnreadMsg.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
             </View>
