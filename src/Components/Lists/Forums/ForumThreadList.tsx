@@ -83,8 +83,8 @@ export const ForumThreadList = ({
   const renderItemSeparator = () => <Divider bold={true} />;
 
   return (
-    <AppFlashList
-      flatListRef={listRef}
+    <AppFlashList<ForumListData>
+      ref={listRef}
       renderListHeader={renderListHeader}
       renderListFooter={renderListFooter}
       renderItem={renderItem}

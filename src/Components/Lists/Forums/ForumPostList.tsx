@@ -126,7 +126,7 @@ export const ForumPostList = ({
 
   return (
     <AppFlashList<PostData>
-      flatListRef={listRef}
+      ref={listRef}
       data={postList}
       renderItem={renderItem}
       keyExtractor={keyExtractor}

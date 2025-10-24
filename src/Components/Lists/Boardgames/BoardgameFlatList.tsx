@@ -55,7 +55,7 @@ export const BoardgameFlatList = (props: BoardgameFlatListProps) => {
 
   return (
     <AppFlashList<BoardgameData>
-      flatListRef={flatListRef}
+      ref={flatListRef}
       refreshControl={props.refreshControl}
       renderItem={renderItem}
       data={props.items}
