@@ -1,6 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useBackHandler} from '@react-native-community/hooks';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -27,14 +25,11 @@ import {
   stopForegroundServiceWorker,
 } from '#src/Libraries/Service';
 import {StorageKeys} from '#src/Libraries/Storage';
-import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import {commonStyles} from '#src/Styles';
 import {useAppTheme} from '#src/Styles/Theme';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.serverConnectionSettings>;
-
-export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
+export const BackgroundConnectionSettingsAndroidView = () => {
   const theme = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
@@ -80,10 +75,10 @@ export const ServerConnectionSettingsScreen = ({navigation}: Props) => {
       .catch(console.error);
   }, [fetchSocketState]);
 
-  useBackHandler(() => {
-    navigation.replace(SettingsStackScreenComponents.settings);
-    return true;
-  });
+  // useBackHandler(() => {
+  //   navigation.replace(SettingsStackScreenComponents.settings);
+  //   return true;
+  // });
 
   const handleEnable = () => {
     const newValue = !appConfig.enableBackgroundWorker;
