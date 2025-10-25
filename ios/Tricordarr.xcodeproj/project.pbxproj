@@ -300,8 +300,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.jocosocial.--PRODUCT-NAME-rfc1034identifier-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.jocosocial.Tricordarr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jocosocial.Tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -336,8 +335,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.jocosocial.--PRODUCT-NAME-rfc1034identifier-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.jocosocial.Tricordarr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jocosocial.Tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
