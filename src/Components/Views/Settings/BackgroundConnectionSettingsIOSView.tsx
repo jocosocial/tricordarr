@@ -1,8 +1,9 @@
-import {Formik, FormikHelpers} from 'formik';
-import {useState} from 'react';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
+import {useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
 import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/BackgroundConnectionSettingsForm';
@@ -12,13 +13,20 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {commonStyles} from '#src/Styles';
+import {useAppTheme} from '#src/Styles/Theme';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
+  const {data} = useUserNotificationDataQuery();
+  const theme = useAppTheme();
+  const {setSnackbarPayload} = useSnackbar();
+  const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
 
   const handleEnable = () => {
     const newValue = !appConfig.enableBackgroundWorker;
@@ -38,6 +46,25 @@ export const BackgroundConnectionSettingsIOSView = () => {
       });
       setFgsHealthTime(seconds);
       // Restart the worker
+    }
+  };
+
+  const reloadSSIDFromServer = () => {
+    if (data && data.shipWifiSSID) {
+      updateAppConfig({
+        ...appConfig,
+        onboardWifiNetworkName: data.shipWifiSSID,
+      });
+      formikRef.current?.resetForm({
+        values: {
+          onboardWifiNetworkName: data.shipWifiSSID,
+        },
+      });
+    } else {
+      setSnackbarPayload({
+        message: 'No SSID found in server payload.',
+        messageType: 'error',
+      });
     }
   };
 
@@ -99,8 +126,15 @@ export const BackgroundConnectionSettingsIOSView = () => {
         </PaddedContentView>
         <PaddedContentView>
           <BackgroundConnectionSettingsForm
+            formikRef={formikRef}
             initialValues={{onboardWifiNetworkName: appConfig.onboardWifiNetworkName}}
             onSubmit={handleSubmit}
+          />
+          <PrimaryActionButton
+            onPress={reloadSSIDFromServer}
+            buttonText={'Reset name from server'}
+            style={commonStyles.marginTopSmall}
+            buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>
       </ScrollingContentView>

@@ -1,4 +1,4 @@
-import {Formik, type FormikHelpers} from 'formik';
+import {Formik, type FormikHelpers, type FormikProps} from 'formik';
 import {View} from 'react-native';
 import * as Yup from 'yup';
 
@@ -17,11 +17,16 @@ interface BackgroundConnectionSettingsFormProps {
     values: BackgroundConnectionSettingsFormValues,
     helpers: FormikHelpers<BackgroundConnectionSettingsFormValues>,
   ) => void;
+  formikRef?: React.Ref<FormikProps<BackgroundConnectionSettingsFormValues>>;
 }
 
-export const BackgroundConnectionSettingsForm = ({initialValues, onSubmit}: BackgroundConnectionSettingsFormProps) => {
+export const BackgroundConnectionSettingsForm = ({
+  initialValues,
+  onSubmit,
+  formikRef,
+}: BackgroundConnectionSettingsFormProps) => {
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <TextField
