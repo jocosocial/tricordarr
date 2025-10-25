@@ -15,7 +15,7 @@ import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
-let fgsWorkerTimer: NodeJS.Timeout;
+let fgsWorkerTimer: ReturnType<typeof setInterval>;
 
 export const getSharedWebSocket = async () => sharedWebSocket;
 const setSharedWebSocket = async (ws: ReconnectingWebSocket) => (sharedWebSocket = ws);

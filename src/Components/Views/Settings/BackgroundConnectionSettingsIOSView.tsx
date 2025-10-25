@@ -1,12 +1,62 @@
+import {Formik, FormikHelpers} from 'formik';
+import {useState} from 'react';
+import {View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
+import {SliderField} from '#src/Components/Forms/Fields/SliderField';
+import {BackgroundConnectionSettingsForm} from '#src/Components/Forms/Settings/BackgroundConnectionSettingsForm';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {commonStyles} from '#src/Styles';
+import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 export const BackgroundConnectionSettingsIOSView = () => {
+  const {appConfig, updateAppConfig} = useConfig();
+  const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
+  const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
+
+  const handleEnable = () => {
+    const newValue = !appConfig.enableBackgroundWorker;
+    updateAppConfig({
+      ...appConfig,
+      enableBackgroundWorker: newValue,
+    });
+    setEnable(newValue);
+  };
+
+  const handleHealthChange = (seconds: number) => {
+    const newValue = 1000 * seconds;
+    if (newValue !== appConfig.fgsWorkerHealthTimer) {
+      updateAppConfig({
+        ...appConfig,
+        fgsWorkerHealthTimer: newValue,
+      });
+      setFgsHealthTime(seconds);
+      // Restart the worker
+    }
+  };
+
+  const handleSubmit = (
+    values: BackgroundConnectionSettingsFormValues,
+    helpers: FormikHelpers<BackgroundConnectionSettingsFormValues>,
+  ) => {
+    updateAppConfig({
+      ...appConfig,
+      onboardWifiNetworkName: values.onboardWifiNetworkName,
+    });
+    helpers.setSubmitting(false);
+    helpers.resetForm({
+      values: {
+        onboardWifiNetworkName: values.onboardWifiNetworkName,
+      },
+    });
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
@@ -15,6 +65,43 @@ export const BackgroundConnectionSettingsIOSView = () => {
         </ListSection>
         <PaddedContentView padTop={true}>
           <Text>In progress...</Text>
+        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Settings</ListSubheader>
+        </ListSection>
+        <PaddedContentView padSides={false} padBottom={false}>
+          <Formik initialValues={{}} onSubmit={() => {}}>
+            <View>
+              <BooleanField
+                name={'enableBackgroundWorker'}
+                label={'Enable Background Worker'}
+                onPress={handleEnable}
+                style={commonStyles.paddingHorizontal}
+                helperText={'Use this to disable the worker if it is causing problems.'}
+                value={enable}
+              />
+              <SliderField
+                name={'fgsWorkerHealthTimer'}
+                label={'Healthcheck Interval'}
+                value={fgsHealthTime}
+                minimumValue={10}
+                maximumValue={60}
+                step={10}
+                unit={'second'}
+                helperText={
+                  "Interval at which the app checks that the socket is open. Don't change this unless instructed to."
+                }
+                style={commonStyles.paddingHorizontal}
+                onSlidingComplete={handleHealthChange}
+              />
+            </View>
+          </Formik>
+        </PaddedContentView>
+        <PaddedContentView>
+          <BackgroundConnectionSettingsForm
+            initialValues={{onboardWifiNetworkName: appConfig.onboardWifiNetworkName}}
+            onSubmit={handleSubmit}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
