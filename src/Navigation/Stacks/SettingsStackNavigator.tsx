@@ -171,7 +171,7 @@ export const SettingsStackNavigator = () => {
       <Stack.Screen
         name={SettingsStackScreenComponents.featureSettingsScreen}
         component={FeatureSettingsScreen}
-        options={{title: 'Disabled Features'}}
+        options={{title: 'Manage Features'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.notificationPollerSettingsScreen}

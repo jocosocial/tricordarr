@@ -13,6 +13,9 @@ interface SettingSwitchProps {
   style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * @deprecated Use the BooleanField component instead.
+ */
 export const SettingSwitch = ({title, value, onPress, description, disabled, style}: SettingSwitchProps) => {
   const {commonStyles} = useStyles();
 

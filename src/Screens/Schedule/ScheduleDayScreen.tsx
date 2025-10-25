@@ -6,6 +6,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
 import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
+import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
@@ -129,8 +130,11 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          {/* <HeaderScheduleYourDayButton /> */}
-          <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
+          {appConfig.enableExperiments ? (
+            <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
+          ) : (
+            <HeaderScheduleYourDayButton />
+          )}
           <ScheduleEventFilterMenu />
           <Item
             title={'Search'}
@@ -141,7 +145,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh, navigation, selectedCruiseDay]);
+  }, [isLoggedIn, onRefresh, navigation, selectedCruiseDay, appConfig.enableExperiments]);
 
   useEffect(() => {
     navigation.setOptions({
