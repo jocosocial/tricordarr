@@ -136,5 +136,5 @@ export interface SchedImportFormValues {
 }
 
 export interface BackgroundConnectionSettingsFormValues {
-  onboardWifiNetworkName: string;
+  wifiNetworkNames: string[];
 }

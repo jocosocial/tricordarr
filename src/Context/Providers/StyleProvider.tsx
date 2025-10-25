@@ -116,6 +116,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
       ...commonStyles.flexWrap,
       ...commonStyles.paddingTopSmall,
     },
+    chip: {
+      ...commonStyles.marginRightSmall,
+      ...commonStyles.marginBottomSmall,
+    },
     imageViewerBackground: {
       backgroundColor: theme.colors.constantBlack,
       color: theme.colors.constantWhite,

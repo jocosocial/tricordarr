@@ -2,13 +2,12 @@ import {Formik, type FormikHelpers, type FormikProps} from 'formik';
 import {View} from 'react-native';
 import * as Yup from 'yup';
 
-import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {TextField} from '#src/Components/Forms/Fields/TextField';
+import {StringChipsField} from '#src/Components/Forms/Fields/StringChipsField';
 import {SSIDValidation} from '#src/Libraries/ValidationSchema';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
 
 const validationSchema = Yup.object().shape({
-  onboardWifiNetworkName: SSIDValidation,
+  wifiNetworkNames: Yup.array().of(SSIDValidation).min(0),
 });
 
 interface BackgroundConnectionSettingsFormProps {
@@ -27,20 +26,17 @@ export const BackgroundConnectionSettingsForm = ({
 }: BackgroundConnectionSettingsFormProps) => {
   return (
     <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({handleSubmit, isSubmitting, isValid, dirty}) => (
+      {({handleSubmit}) => (
         <View>
-          <TextField
-            name={'onboardWifiNetworkName'}
-            label={'Onboard Wifi Network Name'}
-            infoText={'The name of the wifi network that the app should be connected to to start the worker.'}
-            keyboardType={'default'}
-            autoCapitalize={'none'}
-          />
-          <PrimaryActionButton
-            disabled={!isValid || isSubmitting || !dirty}
-            isLoading={isSubmitting}
-            onPress={handleSubmit}
-            buttonText={'Save'}
+          <StringChipsField
+            name={'wifiNetworkNames'}
+            label={'Wifi Networks'}
+            helperText={
+              'Names of the WiFi networks that the app must be connected to in order to enable the background worker.'
+            }
+            onAddValue={handleSubmit}
+            onRemoveValue={handleSubmit}
+            inputLabel={'Add new network'}
           />
         </View>
       )}

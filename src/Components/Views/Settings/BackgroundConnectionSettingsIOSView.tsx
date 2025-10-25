@@ -49,15 +49,15 @@ export const BackgroundConnectionSettingsIOSView = () => {
     }
   };
 
-  const reloadSSIDFromServer = () => {
+  const resetDefaultValues = () => {
     if (data && data.shipWifiSSID) {
       updateAppConfig({
         ...appConfig,
-        onboardWifiNetworkName: data.shipWifiSSID,
+        wifiNetworkNames: [data.shipWifiSSID],
       });
       formikRef.current?.resetForm({
         values: {
-          onboardWifiNetworkName: data.shipWifiSSID,
+          wifiNetworkNames: [data.shipWifiSSID],
         },
       });
     } else {
@@ -74,12 +74,12 @@ export const BackgroundConnectionSettingsIOSView = () => {
   ) => {
     updateAppConfig({
       ...appConfig,
-      onboardWifiNetworkName: values.onboardWifiNetworkName,
+      wifiNetworkNames: values.wifiNetworkNames,
     });
     helpers.setSubmitting(false);
     helpers.resetForm({
       values: {
-        onboardWifiNetworkName: values.onboardWifiNetworkName,
+        wifiNetworkNames: values.wifiNetworkNames,
       },
     });
   };
@@ -103,7 +103,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 name={'enableBackgroundWorker'}
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
               />
@@ -118,7 +118,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
                 helperText={
                   "Interval at which the app checks that the socket is open. Don't change this unless instructed to."
                 }
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
                 onSlidingComplete={handleHealthChange}
               />
             </View>
@@ -127,15 +127,14 @@ export const BackgroundConnectionSettingsIOSView = () => {
         <PaddedContentView>
           <BackgroundConnectionSettingsForm
             formikRef={formikRef}
-            initialValues={{onboardWifiNetworkName: appConfig.onboardWifiNetworkName}}
+            initialValues={{wifiNetworkNames: appConfig.wifiNetworkNames || []}}
             onSubmit={handleSubmit}
           />
           <PrimaryActionButton
-            onPress={reloadSSIDFromServer}
-            buttonText={'Reset name from server'}
+            onPress={resetDefaultValues}
+            buttonText={'Reset'}
             style={commonStyles.marginTopSmall}
             buttonColor={theme.colors.twitarrNeutralButton}
-            disabled={data?.shipWifiSSID === appConfig.onboardWifiNetworkName}
           />
         </PaddedContentView>
       </ScrollingContentView>

@@ -76,7 +76,7 @@ export interface AppConfig {
   preRegistrationServerUrl: string;
   preRegistrationEndDate: Date;
   manualTimeOffset: number;
-  onboardWifiNetworkName: string;
+  wifiNetworkNames: string[];
 }
 
 const defaultAppConfig: AppConfig = {
@@ -155,7 +155,7 @@ const defaultAppConfig: AppConfig = {
   preRegistrationServerUrl: '',
   preRegistrationEndDate: new Date(2023, 3, 5),
   enableExperiments: false,
-  onboardWifiNetworkName: '',
+  wifiNetworkNames: [],
 };
 
 /**
