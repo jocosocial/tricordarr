@@ -135,6 +135,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
             buttonText={'Reset name from server'}
             style={commonStyles.marginTopSmall}
             buttonColor={theme.colors.twitarrNeutralButton}
+            disabled={data?.shipWifiSSID === appConfig.onboardWifiNetworkName}
           />
         </PaddedContentView>
       </ScrollingContentView>
