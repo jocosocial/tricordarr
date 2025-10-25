@@ -5,7 +5,7 @@ import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
-import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
+import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
@@ -129,7 +129,8 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <HeaderScheduleYourDayButton />
+          {/* <HeaderScheduleYourDayButton /> */}
+          <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
           <ScheduleEventFilterMenu />
           <Item
             title={'Search'}
@@ -140,7 +141,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
         </HeaderButtons>
       </View>
     );
-  }, [isLoggedIn, onRefresh, navigation]);
+  }, [isLoggedIn, onRefresh, navigation, selectedCruiseDay]);
 
   useEffect(() => {
     navigation.setOptions({
