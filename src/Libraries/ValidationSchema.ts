@@ -76,3 +76,5 @@ const developmentUrlValidation = Yup.string()
   .strict();
 
 export const ServerURLValidation = __DEV__ ? developmentUrlValidation : productionUrlValidation;
+
+export const SSIDValidation = Yup.string().required('SSID is required.').min(2).max(32);

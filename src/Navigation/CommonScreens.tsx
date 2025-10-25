@@ -39,6 +39,7 @@ import {PerformerScreen} from '#src/Screens/Performer/PerformerScreen';
 import {PersonalEventCreateScreen} from '#src/Screens/PersonalEvent/PersonalEventCreateScreen';
 import {PersonalEventEditScreen} from '#src/Screens/PersonalEvent/PersonalEventEditScreen';
 import {PersonalEventScreen} from '#src/Screens/PersonalEvent/PersonalEventScreen';
+import {ScheduleDayPlannerScreen} from '#src/Screens/Schedule/ScheduleDayPlannerScreen';
 import {ScheduleDayScreen} from '#src/Screens/Schedule/ScheduleDayScreen';
 import {ScheduleHelpScreen} from '#src/Screens/Schedule/ScheduleHelpScreen';
 import {ScheduleImportScreen} from '#src/Screens/Schedule/ScheduleImportScreen';
@@ -238,6 +239,9 @@ export type CommonStackParamList = {
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
   ScheduleDayScreen: ParamsWithOobe;
+  ScheduleDayPlannerScreen: {
+    cruiseDay?: number;
+  };
 };
 
 export enum CommonStackComponents {
@@ -301,6 +305,7 @@ export enum CommonStackComponents {
   eventSettingsScreen = 'EventSettingsScreen',
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
+  scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -618,6 +623,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.schedulePrivateEventsScreen}
         component={isScheduleDisabled ? DisabledView : SchedulePrivateEventsScreen}
         options={{title: 'Personal Events'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.scheduleDayPlannerScreen}
+        component={isScheduleDisabled ? DisabledView : ScheduleDayPlannerScreen}
+        options={{title: 'Day Planner'}}
       />
     </>
   );

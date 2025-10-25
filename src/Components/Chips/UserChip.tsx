@@ -14,12 +14,11 @@ type UserChipProps = {
 
 export const UserChip = ({userHeader, onClose, disabled, onPress}: UserChipProps) => {
   const {commonStyles} = useStyles();
-  const styles = [commonStyles.marginRightSmall, commonStyles.marginBottomSmall];
 
   const getAvatar = () => <UserAvatarImage userHeader={userHeader} />;
 
   return (
-    <Chip style={styles} icon={getAvatar} disabled={disabled} onClose={onClose} onPress={onPress}>
+    <Chip style={commonStyles.chip} icon={getAvatar} disabled={disabled} onClose={onClose} onPress={onPress}>
       {userHeader.username}
     </Chip>
   );

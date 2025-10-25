@@ -1,5 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
+import {Platform} from 'react-native';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
 import {OobePreRegistrationCompleteCard} from '#src/Components/Cards/OobePreRegistrationCompleteCard';
@@ -13,19 +14,25 @@ import {MainStackComponents} from '#src/Navigation/Stacks/MainStackNavigator';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
+import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
 type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
 export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
+  const {data: userNotificationData} = useUserNotificationDataQuery();
   const rootNavigation = useRootStack();
 
   const onFinish = async () => {
     updateAppConfig({
       ...appConfig,
       oobeCompletedVersion: appConfig.oobeExpectedVersion,
+      // Hopefully this is set by the time we get here?
+      onboardWifiNetworkName: userNotificationData?.shipWifiSSID ?? '',
     });
-    startForegroundServiceWorker();
+    if (Platform.OS === 'android') {
+      startForegroundServiceWorker();
+    }
     rootNavigation.replace(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {

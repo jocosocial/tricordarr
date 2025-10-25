@@ -24,16 +24,16 @@ import {QuerySettingsScreen} from '#src/Screens/Settings/Developer/QuerySettings
 import {TestErrorScreen} from '#src/Screens/Settings/Developer/TestErrorScreen';
 import {TestNotificationScreen} from '#src/Screens/Settings/Developer/TestNotificationScreen';
 import {UserInfoSettingsScreen} from '#src/Screens/Settings/Developer/UserInfoSettingsScreen';
+import {BackgroundConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/BackgroundConnectionSettingsScreen';
 import {NotificationPollerSettingsScreen} from '#src/Screens/Settings/Notifications/NotificationPollerSettingsScreen';
 import {PushNotificationSettingsScreen} from '#src/Screens/Settings/Notifications/PushNotificationSettingsScreen';
-import {ServerConnectionSettingsScreen} from '#src/Screens/Settings/Notifications/ServerConnectionSettingsScreen';
 import {SettingsScreen} from '#src/Screens/Settings/SettingsScreen';
 import {SocketSettingsScreen} from '#src/Screens/Settings/SocketSettingsScreen';
 
 export type SettingsStackParamList = CommonStackParamList & {
   SettingsScreen: undefined;
   NetworkInfoSettingsScreen: undefined;
-  ServerConnectionSettingsScreen: undefined;
+  BackgroundConnectionSettingsScreen: undefined;
   TestNotificationScreen: undefined;
   TestErrorScreen: undefined;
   SocketSettingsScreen: undefined;
@@ -63,7 +63,7 @@ export type SettingsStackParamList = CommonStackParamList & {
 export enum SettingsStackScreenComponents {
   settings = 'SettingsScreen',
   networkInfoSettings = 'NetworkInfoSettingsScreen',
-  serverConnectionSettings = 'ServerConnectionSettingsScreen',
+  backgroundConnectionSettings = 'BackgroundConnectionSettingsScreen',
   testNotification = 'TestNotificationScreen',
   testError = 'TestErrorScreen',
   socketSettings = 'SocketSettingsScreen',
@@ -107,8 +107,8 @@ export const SettingsStackNavigator = () => {
         options={{title: 'Network'}}
       />
       <Stack.Screen
-        name={SettingsStackScreenComponents.serverConnectionSettings}
-        component={ServerConnectionSettingsScreen}
+        name={SettingsStackScreenComponents.backgroundConnectionSettings}
+        component={BackgroundConnectionSettingsScreen}
         options={{title: 'Background Connection'}}
       />
       <Stack.Screen
@@ -171,7 +171,7 @@ export const SettingsStackNavigator = () => {
       <Stack.Screen
         name={SettingsStackScreenComponents.featureSettingsScreen}
         component={FeatureSettingsScreen}
-        options={{title: 'Disabled Features'}}
+        options={{title: 'Manage Features'}}
       />
       <Stack.Screen
         name={SettingsStackScreenComponents.notificationPollerSettingsScreen}

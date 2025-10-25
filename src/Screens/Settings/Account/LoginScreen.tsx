@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
 import React, {useCallback} from 'react';
+import {Platform} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {LoginForm} from '#src/Components/Forms/User/LoginForm';
@@ -44,7 +45,7 @@ export const LoginScreen = () => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
           await signIn(response.data, preRegistrationMode);
-          if (oobeCompleted) {
+          if (Platform.OS === 'android' && oobeCompleted) {
             await startForegroundServiceWorker();
           }
           await updateClientConfig();
