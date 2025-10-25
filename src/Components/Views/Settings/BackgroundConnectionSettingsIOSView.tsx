@@ -1,6 +1,6 @@
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useRef, useState} from 'react';
-import {View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
@@ -23,7 +23,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const [enable, setEnable] = useState(appConfig.enableBackgroundWorker);
   const [fgsHealthTime, setFgsHealthTime] = useState(appConfig.fgsWorkerHealthTimer / 1000);
-  const {data} = useUserNotificationDataQuery();
+  const {data, refetch, isFetching} = useUserNotificationDataQuery();
   const theme = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
@@ -86,7 +86,9 @@ export const BackgroundConnectionSettingsIOSView = () => {
 
   return (
     <AppView>
-      <ScrollingContentView isStack={true}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}>
         <ListSection>
           <ListSubheader>About</ListSubheader>
         </ListSection>
@@ -131,6 +133,10 @@ export const BackgroundConnectionSettingsIOSView = () => {
             onSubmit={handleSubmit}
           />
           <PrimaryActionButton
+            disabled={
+              isFetching ||
+              (appConfig.wifiNetworkNames?.length === 1 && appConfig.wifiNetworkNames[0] === data?.shipWifiSSID)
+            }
             onPress={resetDefaultValues}
             buttonText={'Reset'}
             style={commonStyles.marginTopSmall}
