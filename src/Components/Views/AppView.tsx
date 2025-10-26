@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {KeyboardAvoidingView, StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -46,6 +46,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
   });
 
   // The KeyboardAvoiding stuff came from
+  // https://reactnative.dev/docs/keyboardavoidingview
   // https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
   // https://github.com/react-native-community/discussions-and-proposals/discussions/827
 
@@ -53,7 +54,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
     <View style={styles.appView}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
-        behavior={'padding'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={insets.top + insets.bottom}>
         <Portal>
           <ErrorBanner />

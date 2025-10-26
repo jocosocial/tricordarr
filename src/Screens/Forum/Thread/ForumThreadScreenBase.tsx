@@ -184,13 +184,7 @@ export const ForumThreadScreenBase = ({
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
-          // When you make a post, disable the "scroll lock" so that the screen includes your new post.
-          // This will get reset anyway whenever the screen is re-mounted.
-          if (invertList) {
-            flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-          } else {
-            flatListRef.current?.scrollToIndex({index: forumPosts.length - 1});
-          }
+          flatListRef.current?.scrollToEnd({animated: true});
         },
       },
     );
