@@ -135,6 +135,12 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     safeMarginBottom: {
       marginBottom: inset.bottom,
     },
+    safePaddingTop: {
+      paddingTop: inset.top,
+    },
+    safePaddingBottom: {
+      paddingBottom: inset.bottom,
+    },
   });
 
   const screenOptions = {

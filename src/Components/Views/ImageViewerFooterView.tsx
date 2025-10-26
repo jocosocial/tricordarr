@@ -28,7 +28,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safeMarginBottom),
+      ...(Platform.OS === 'ios' && commonStyles.safePaddingBottom),
     },
     verticalContainer: {
       ...commonStyles.flexColumn,

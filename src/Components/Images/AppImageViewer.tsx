@@ -40,7 +40,7 @@ export const AppImageViewer = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safeMarginTop),
+      ...(Platform.OS === 'ios' && commonStyles.safePaddingTop),
     },
   });
 
@@ -116,6 +116,7 @@ export const AppImageViewer = ({
       onRequestClose={onRequestClose}
       HeaderComponent={viewerHeader}
       FooterComponent={viewerFooter}
+      backgroundColor={theme.colors.constantBlack}
     />
   );
 };
