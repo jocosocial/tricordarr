@@ -244,7 +244,7 @@ export const ForumThreadScreenBase = ({
         hasNextPage={hasNextPage}
         forumListData={forumListData}
         // initialScrollIndex={getInitialScrollIndex()}
-        scrollButtonPosition={showForm ? 'raised' : 'bottom'}
+        scrollButtonVerticalPosition={showForm ? 'raised' : 'bottom'}
       />
       {showForm && (
         <ContentPostForm
