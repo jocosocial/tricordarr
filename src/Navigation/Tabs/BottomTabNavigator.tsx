@@ -1,7 +1,7 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppIcons} from '#src/Enums/Icons';
@@ -41,7 +41,7 @@ export enum BottomTabComponents {
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
-  const Tab = createBottomTabNavigator<BottomTabParamList>();
+  const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
   function getIcon(icon: string) {
     return <AppIcon icon={icon} />;
