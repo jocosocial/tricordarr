@@ -143,6 +143,28 @@ export const ContentText = ({
       if (url.startsWith('/')) {
         // Remove leading slash since the deep link config doesn't expect it
         processedUrl = `tricordarr://${url.substring(1)}`;
+      } else {
+        // Check if the URL contains canonical hostnames or starts with the server URL
+        let urlToProcess = url;
+
+        // Check and replace canonical hostnames with http/https prefix
+        appConfig.apiClientConfig.canonicalHostnames.forEach(hostname => {
+          const httpPattern = `http://${hostname}`;
+          const httpsPattern = `https://${hostname}`;
+
+          if (urlToProcess.includes(httpPattern)) {
+            urlToProcess = urlToProcess.replace(httpPattern, 'tricordarr:/');
+          } else if (urlToProcess.includes(httpsPattern)) {
+            urlToProcess = urlToProcess.replace(httpsPattern, 'tricordarr:/');
+          }
+        });
+
+        // Check if the URL starts with the current server URL
+        if (appConfig.serverUrl && urlToProcess.startsWith(appConfig.serverUrl)) {
+          urlToProcess = urlToProcess.replace(appConfig.serverUrl, 'tricordarr:/');
+        }
+
+        processedUrl = urlToProcess;
       }
 
       // Open the URL with the processed link
@@ -154,7 +176,7 @@ export const ContentText = ({
       // Return false to prevent default handling
       return false;
     },
-    [setErrorBanner],
+    [setErrorBanner, appConfig.apiClientConfig.canonicalHostnames, appConfig.serverUrl],
   );
 
   // https://www.npmjs.com/package/@ronradtke/react-native-markdown-display
