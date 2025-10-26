@@ -55,6 +55,7 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
           fullPath={`/image/full/${header.photo}`}
           mode={'image'}
           disableTouch={true}
+          thumb={true}
         />
       </Card.Content>
     </Card>

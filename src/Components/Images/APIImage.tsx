@@ -25,6 +25,7 @@ interface APIImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
   disableTouch?: boolean;
+  thumb?: boolean;
 }
 
 const animatedRegex = new RegExp('\\.(gif)$', 'i');
@@ -43,9 +44,10 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  * @param fullPath URL path the full file of the image (ex: '/image/full/ABC123.jpg').
  * @param style Custom style props for the image display component.
  * @param mode Underlying component to use for the image display.
+ * @param thumb If true, only load thumbnail by default. Full image can still be fetched on press unless disableTouch is also true.
  * @constructor
  */
-export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disableTouch}: APIImageProps) => {
+export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disableTouch, thumb}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
   const {appConfig} = useConfig();
   // The thumbnails Swiftarr generates are not animated.
@@ -53,9 +55,9 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disabl
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const thumbImageQuery = useImageQuery(
     isAnimated ? fullPath : thumbPath,
-    appConfig.skipThumbnails ? false : !isDisabled,
+    thumb ? !isDisabled : appConfig.skipThumbnails ? false : !isDisabled,
   );
-  const fullImageQuery = useImageQuery(fullPath, appConfig.skipThumbnails ? !isDisabled : false);
+  const fullImageQuery = useImageQuery(fullPath, thumb ? false : appConfig.skipThumbnails ? !isDisabled : false);
   const {commonStyles} = useStyles();
   const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
@@ -65,6 +67,10 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disabl
   // const {setInfoMessage} = useErrorHandler();
 
   const handleThumbPress = () => {
+    if (thumb && disableTouch) {
+      // Don't fetch full image when thumb mode is enabled and touch is disabled
+      return;
+    }
     if (fullImageQuery.data) {
       setEnableFullQuery(true);
       return;
@@ -108,6 +114,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disabl
   // }, [imageQueryData, setInfoMessage]);
 
   useEffect(() => {
+    // Always prefer full image if available, otherwise use thumb
     if (fullImageQuery.data) {
       setImageQueryData(fullImageQuery.data);
     } else if (thumbImageQuery.data) {
@@ -124,9 +131,11 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disabl
   }
 
   if (
-    (appConfig.skipThumbnails && (fullImageQuery.isFetching || fullImageQuery.isLoading)) ||
-    (!appConfig.skipThumbnails &&
-      (thumbImageQuery.isLoading || thumbImageQuery.isFetching || fullImageQuery.isFetching))
+    thumb
+      ? thumbImageQuery.isLoading || thumbImageQuery.isFetching
+      : (appConfig.skipThumbnails && (fullImageQuery.isFetching || fullImageQuery.isLoading)) ||
+        (!appConfig.skipThumbnails &&
+          (thumbImageQuery.isLoading || thumbImageQuery.isFetching || fullImageQuery.isFetching))
   ) {
     return (
       <Card.Content style={[commonStyles.marginVerticalSmall]}>
