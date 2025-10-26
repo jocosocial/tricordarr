@@ -180,11 +180,12 @@ export const ForumThreadScreenBase = ({
               return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
+            flatListRef.current?.scrollToEnd({animated: false, viewOffset: -100});
           }
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
-          flatListRef.current?.scrollToEnd({animated: true});
+          // flatListRef.current?.scrollToIndex({index: forumPosts.length - 1, animated: true});
         },
       },
     );

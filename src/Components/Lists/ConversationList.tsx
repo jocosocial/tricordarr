@@ -135,10 +135,10 @@ export const ConversationList = <TItem,>({
         keyExtractor={keyExtractor}
         recycleItems={true}
         // chat interface props
-        alignItemsAtEnd
-        maintainScrollAtEnd
+        alignItemsAtEnd={true}
+        maintainScrollAtEnd={true}
         maintainVisibleContentPosition={true}
-        maintainScrollAtEndThreshold={0.1}
+        maintainScrollAtEndThreshold={0.2}
         ListHeaderComponent={ListHeaderComponent}
         ItemSeparatorComponent={ItemSeparatorComponent}
         ListFooterComponent={ListFooterComponent}
