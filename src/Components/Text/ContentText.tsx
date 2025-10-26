@@ -1,12 +1,13 @@
 import Markdown from '@ronradtke/react-native-markdown-display';
 import React, {useCallback, useMemo} from 'react';
-import {StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
 import {Emoji} from '#src/Components/Icons/Emoji';
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CustomEmoji} from '#src/Enums/Emoji';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
@@ -69,7 +70,7 @@ export const ContentText = ({
   });
   const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
   const {appConfig} = useConfig();
-
+  const {setErrorBanner} = useErrorHandler();
   const renderEmojiText = useCallback(
     (
       line: string,
@@ -132,6 +133,30 @@ export const ContentText = ({
     [hashtagOnPress, mentionOnPress, renderEmojiText],
   );
 
+  // Custom link handler to add app prefix to relative links
+  // https://github.com/jocosocial/tricordarr/issues/252
+  const handleMarkdownLinkPress = useCallback(
+    (url: string) => {
+      let processedUrl = url;
+
+      // If the URL is a relative path (starts with /), add the tricordarr:// prefix
+      if (url.startsWith('/')) {
+        // Remove leading slash since the deep link config doesn't expect it
+        processedUrl = `tricordarr://${url.substring(1)}`;
+      }
+
+      // Open the URL with the processed link
+      Linking.openURL(processedUrl).catch(err => {
+        console.error('[ContentText.tsx] handleMarkdownLinkPress failed to open URL:', processedUrl, err);
+        setErrorBanner('Failed to open URL: ' + processedUrl);
+      });
+
+      // Return false to prevent default handling
+      return false;
+    },
+    [setErrorBanner],
+  );
+
   // https://www.npmjs.com/package/@ronradtke/react-native-markdown-display
   const markdownStyle = StyleSheet.create({
     text: {
@@ -146,7 +171,11 @@ export const ContentText = ({
   const markdownIdentifier = '<Markdown>';
   if (forceMarkdown || text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
-    return <Markdown style={markdownStyle}>{strippedText}</Markdown>;
+    return (
+      <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
+        {strippedText}
+      </Markdown>
+    );
   }
 
   return (
