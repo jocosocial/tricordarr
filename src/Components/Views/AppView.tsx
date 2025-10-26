@@ -56,12 +56,18 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
    * https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
    * https://github.com/react-native-community/discussions-and-proposals/discussions/827
    */
+  var keyboardVerticalOffset = insets.top + insets.bottom;
+  if (Platform.OS === 'ios' && insets.bottom === 0) {
+    keyboardVerticalOffset += 40;
+  }
+
   return (
     <View style={styles.appView}>
       <ModuleKeyboardAvoidingView
         style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={insets.top + insets.bottom}>
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'translate-with-padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
           <ErrorBanner />
           <AppModal />
