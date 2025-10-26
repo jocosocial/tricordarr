@@ -1,5 +1,6 @@
 import React, {PropsWithChildren} from 'react';
-import {KeyboardAvoidingView, StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView as ModuleKeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -45,16 +46,28 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
     },
   });
 
-  // The KeyboardAvoiding stuff came from
-  // https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
-  // https://github.com/react-native-community/discussions-and-proposals/discussions/827
+  /**
+   * Holy fuck what an adventure the KeyboardAvoidingView is.
+   * This issue covers most of it: https://github.com/facebook/react-native/issues/52596
+   * And a comment in this one gave the first workable solution: https://github.com/facebook/react-native/issues/49759
+   *
+   * Some old references and docs:
+   * https://reactnative.dev/docs/keyboardavoidingview
+   * https://stackoverflow.com/questions/43854912/react-native-keyboardavoidingview-covers-last-text-input
+   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
+   */
+  var keyboardVerticalOffset = insets.top + insets.bottom;
+  if (Platform.OS === 'ios' && insets.bottom === 0) {
+    keyboardVerticalOffset += 40;
+  }
 
   return (
     <View style={styles.appView}>
-      <KeyboardAvoidingView
+      <ModuleKeyboardAvoidingView
         style={styles.keyboardView}
-        behavior={'padding'}
-        keyboardVerticalOffset={insets.top + insets.bottom}>
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'translate-with-padding'}
+        keyboardVerticalOffset={keyboardVerticalOffset}>
         <Portal>
           <ErrorBanner />
           <AppModal />
@@ -63,7 +76,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
         {preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
-      </KeyboardAvoidingView>
+      </ModuleKeyboardAvoidingView>
       <UnsavedChangesView isVisible={hasUnsavedWork} />
     </View>
   );

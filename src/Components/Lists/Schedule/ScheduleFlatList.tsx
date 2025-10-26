@@ -18,7 +18,7 @@ import {ScheduleFlatListSeparator} from '#src/Types';
 interface ScheduleFlatListProps<TItem> {
   items: TItem[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlashListRef<TItem>>;
+  listRef: React.RefObject<FlashListRef<TItem> | null>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;

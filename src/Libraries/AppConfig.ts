@@ -60,6 +60,7 @@ export interface AppConfig {
   oobeExpectedVersion: number;
   oobeCompletedVersion: number;
   enableDeveloperOptions: boolean;
+  enableExperiments: boolean;
   cruiseStartDate: Date;
   cruiseLength: number;
   schedule: ScheduleConfig;
@@ -75,6 +76,7 @@ export interface AppConfig {
   preRegistrationServerUrl: string;
   preRegistrationEndDate: Date;
   manualTimeOffset: number;
+  wifiNetworkNames: string[];
 }
 
 const defaultAppConfig: AppConfig = {
@@ -152,6 +154,8 @@ const defaultAppConfig: AppConfig = {
   markReadCancelPush: true,
   preRegistrationServerUrl: '',
   preRegistrationEndDate: new Date(2023, 3, 5),
+  enableExperiments: false,
+  wifiNetworkNames: [],
 };
 
 /**

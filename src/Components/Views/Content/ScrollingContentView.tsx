@@ -45,7 +45,13 @@ export const ScrollingContentView = ({
   });
 
   return (
-    <ScrollView refreshControl={refreshControl} onScroll={onScroll}>
+    <ScrollView
+      refreshControl={refreshControl}
+      onScroll={onScroll}
+      // keyboardShouldPersistTaps="handled"
+      // contentInsetAdjustmentBehavior="automatic"
+      // automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}>
+      automaticallyAdjustKeyboardInsets={true}>
       <View style={styles.scrollView}>{children}</View>
     </ScrollView>
   );

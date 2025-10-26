@@ -95,7 +95,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 />
               )}
               {/*This is Beta!*/}
-              {hasVerified && appConfig.enableDeveloperOptions && (
+              {hasVerified && appConfig.enableExperiments && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}

@@ -180,17 +180,12 @@ export const ForumThreadScreenBase = ({
               return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
+            flatListRef.current?.scrollToEnd({animated: false, viewOffset: -100});
           }
         },
         onSettled: () => {
           formikHelpers.setSubmitting(false);
-          // When you make a post, disable the "scroll lock" so that the screen includes your new post.
-          // This will get reset anyway whenever the screen is re-mounted.
-          if (invertList) {
-            flatListRef.current?.scrollToOffset({offset: 0, animated: true});
-          } else {
-            flatListRef.current?.scrollToIndex({index: forumPosts.length - 1});
-          }
+          // flatListRef.current?.scrollToIndex({index: forumPosts.length - 1, animated: true});
         },
       },
     );
@@ -250,7 +245,7 @@ export const ForumThreadScreenBase = ({
         hasNextPage={hasNextPage}
         forumListData={forumListData}
         // initialScrollIndex={getInitialScrollIndex()}
-        scrollButtonPosition={showForm ? 'raised' : 'bottom'}
+        scrollButtonVerticalPosition={showForm ? 'raised' : 'bottom'}
       />
       {showForm && (
         <ContentPostForm

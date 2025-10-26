@@ -66,7 +66,7 @@ export const SettingsScreen = ({navigation}: Props) => {
             <SettingsNavigationListItem
               title={'Background Worker'}
               description={'Manage the worker that maintains a connection to the server when this app is not running.'}
-              navComponent={SettingsStackScreenComponents.serverConnectionSettings}
+              navComponent={SettingsStackScreenComponents.backgroundConnectionSettings}
             />
             <SettingsNavigationListItem
               title={'Polling'}
@@ -134,8 +134,8 @@ export const SettingsScreen = ({navigation}: Props) => {
                   navComponent={SettingsStackScreenComponents.oobeSettings}
                 />
                 <SettingsNavigationListItem
-                  title={'Disabled Features'}
-                  description={'Show features that have been disabled by the server.'}
+                  title={'Manage Features'}
+                  description={'Show server feature state and manage experiments.'}
                   navComponent={SettingsStackScreenComponents.featureSettingsScreen}
                 />
                 <SettingsNavigationListItem

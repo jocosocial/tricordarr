@@ -18,7 +18,7 @@ interface ScheduleFlatListBaseProps<TItem> {
   listFooter?: ReactElement;
   refreshControl?: React.ReactElement<RefreshControlProps>;
   initialScrollIndex?: number;
-  listRef?: React.RefObject<FlashListRef<TItem>> | null;
+  listRef?: React.RefObject<FlashListRef<TItem> | null>;
   renderItem: ({item}: {item: TItem}) => ReactElement;
   keyExtractor: (item: TItem) => string;
   onScrollThreshold?: (condition: boolean) => void;
@@ -35,7 +35,7 @@ export const ScheduleFlatListBase = <TItem extends FezData | EventData>({
   listHeader,
   listFooter,
   initialScrollIndex,
-  listRef = null,
+  listRef,
   renderItem,
   keyExtractor,
   onScrollThreshold,

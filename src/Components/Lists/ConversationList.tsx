@@ -5,7 +5,7 @@ import {NativeScrollEvent, NativeSyntheticEvent, RefreshControlProps, StyleProp,
 import {FloatingScrollButton} from '#src/Components/Buttons/FloatingScrollButton';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {RNFlatListSeparatorComponent} from '#src/Types';
+import {FloatingScrollButtonVerticalPosition, RNFlatListSeparatorComponent} from '#src/Types';
 
 export type TConversationListRef = LegendListRef | null;
 export type TConversationListRefObject = React.RefObject<TConversationListRef>;
@@ -27,6 +27,7 @@ interface ConversationListProps<TItem> {
   ItemSeparatorComponent?: RNFlatListSeparatorComponent<TItem>;
   initialScrollIndex?: number;
   style?: StyleProp<ViewStyle>;
+  scrollButtonVerticalPosition?: FloatingScrollButtonVerticalPosition;
 }
 
 /**
@@ -49,6 +50,7 @@ export const ConversationList = <TItem,>({
   ItemSeparatorComponent,
   initialScrollIndex,
   style,
+  scrollButtonVerticalPosition = 'raised',
 }: ConversationListProps<TItem>) => {
   const {styleDefaults} = useStyles();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -133,8 +135,8 @@ export const ConversationList = <TItem,>({
         keyExtractor={keyExtractor}
         recycleItems={true}
         // chat interface props
-        alignItemsAtEnd
-        maintainScrollAtEnd
+        alignItemsAtEnd={true}
+        maintainScrollAtEnd={true}
         maintainVisibleContentPosition={true}
         maintainScrollAtEndThreshold={0.1}
         ListHeaderComponent={ListHeaderComponent}
@@ -151,7 +153,7 @@ export const ConversationList = <TItem,>({
       {enableScrollButton && showScrollButton && (
         <FloatingScrollButton
           onPress={handleScrollButtonPress}
-          verticalPosition={'raised'}
+          verticalPosition={scrollButtonVerticalPosition}
           horizontalPosition={appConfig.userPreferences.reverseSwipeOrientation ? 'left' : 'right'}
         />
       )}
