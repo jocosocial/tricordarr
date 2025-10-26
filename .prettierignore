@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+
+# Build directories
+build/
+dist/
+android/build/
+android/app/build/
+ios/build/
+
+# Generated files
+coverage/
+
+# Lock files
+package-lock.json
+yarn.lock
+
