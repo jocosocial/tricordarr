@@ -83,6 +83,7 @@
     "react-navigation-header-buttons": "^13.0.0",
     "react-time-ago": "^7.3.5",
     "reconnecting-websocket": "^4.4.0",
+    "remove-markdown": "^0.6.2",
     "superjson": "^2.2.2",
     "url-parse": "^1.5.10",
     "uuid": "^13.0.0",

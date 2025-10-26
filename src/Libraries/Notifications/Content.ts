@@ -1,4 +1,5 @@
 import notifee, {AndroidAction, AndroidChannelGroup} from '@notifee/react-native';
+import removeMd from 'remove-markdown';
 
 import {markAsReadPressAction, PressAction, settingsPressAction} from '#src/Enums/Notifications';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
@@ -157,7 +158,7 @@ export async function generateContentNotification(
   await notifee.displayNotification({
     id: id,
     title: title,
-    body: body,
+    body: removeMd(body),
     data: data,
     android: {
       ongoing: ongoing,
