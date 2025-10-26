@@ -55,6 +55,9 @@ export const UserChipsField = ({
               excludeHeaders={field.value}
               onPress={addUserHeader}
               favorers={searchFavorersOnly}
+              // Explicitly clear the search bar when a user is added
+              // https://github.com/jocosocial/tricordarr/issues/256
+              clearOnPress={true}
             />
           </View>
           <View style={commonStyles.chipContainer}>
