@@ -2,6 +2,7 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageQueryData} from '#src/Types';
@@ -50,18 +51,28 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
   // https://github.com/jobtoday/react-native-image-viewing/issues/203
   //
   // The Text variant is because iOS was too big and defaultly newlined the g in jpg.
+  // @TODO this sucks.
   const filename = viewerImages[currentIndex] ? viewerImages[currentIndex].fileName : '';
   const mimeType = viewerImages[currentIndex] ? viewerImages[currentIndex].mimeType : '';
+  const dataURI = viewerImages[currentIndex] ? viewerImages[currentIndex].dataURI : '';
+
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={styles.filenameText} variant={'bodyMedium'}>
+        <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
           {filename}
         </Text>
         {appConfig.enableDeveloperOptions && (
-          <Text style={styles.filenameText} variant={'bodyMedium'}>
-            {mimeType}
-          </Text>
+          <>
+            <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
+              {mimeType}
+            </Text>
+            <HyperlinkText disableLinkInterpolation={true}>
+              <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
+                {dataURI}
+              </Text>
+            </HyperlinkText>
+          </>
         )}
         <Text style={styles.indexText} variant={'bodyMedium'}>
           {currentIndex + 1} of {viewerImages.length}
