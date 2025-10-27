@@ -62,6 +62,10 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
 
   const renderListFooter = useCallback(() => <PaddedContentView />, []);
 
+  const keyExtractor = useCallback((item: PerformerHeaderData, index: number) => {
+    return item.id || `performer-${item.name}-${index}`;
+  }, []);
+
   const getHeaderButtons = useCallback(() => {
     return (
       <View>
@@ -101,6 +105,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
         ref={flashListRef}
         renderItem={renderItem}
         data={performers}
+        keyExtractor={keyExtractor}
         handleLoadNext={fetchNextPage}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         renderListHeader={renderListHeader}
