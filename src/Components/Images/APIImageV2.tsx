@@ -13,12 +13,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {ImageQueryData} from '#src/Types';
-
-const APIImageSizePaths = {
-  thumb: 'thumb',
-  full: 'full',
-} as const;
+import {APIImageSizePaths, APIImageV2Data, ImageQueryData} from '#src/Types';
 
 interface APIImageV2Props {
   path: string;
@@ -37,38 +32,26 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
 
-  const appConfigInitialSize = !initialSize && appConfig.skipThumbnails ? 'full' : initialSize;
-  const imageURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${appConfigInitialSize}/${path}`;
-  const imageThumbURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/thumb/${path}`;
-  const imageFullURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/full/${path}`;
+  const imageData = APIImageV2Data.fromFileName(path, appConfig);
 
   const styles = StyleSheet.create({
+    disabledCard: {
+      ...commonStyles.marginVerticalSmall,
+    },
     image: {
       ...commonStyles.headerImage,
       ...style,
     },
   });
 
-  // useEffect(() => {
-  //   if (enableFullQuery && fullImageQuery.data) {
-  //     setViewerImages([fullImageQuery.data]);
-  //     setIsViewerVisible(true);
-  //     setEnableFullQuery(false);
-  //   }
-  // }, [enableFullQuery, fullImageQuery.data]);
   const onLoad = () => {
-    if (initialSize === 'full') {
-      setViewerImages([
-        {
-          dataURI: imageURI,
-          fileName: path,
-          mimeType: 'image/jpeg',
-        },
-      ]);
-    } else {
-      // @TODO what to do about thumbs that we need to get fulls?
-      console.log('initial size is thumb');
-    }
+    setViewerImages([
+      {
+        dataURI: imageData.fullURI,
+        fileName: imageData.fileName,
+        mimeType: imageData.mimeType,
+      },
+    ]);
   };
 
   const onPress = () => {
@@ -91,16 +74,16 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
 
   React.useEffect(() => {
     if (initialSize === 'thumb') {
-      FastImage.preload([{uri: imageURI}]);
+      FastImage.preload([{uri: imageData.fullURI}]);
     }
-  }, [initialSize, imageURI]);
+  }, [initialSize, imageData.fullURI]);
 
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
    */
   if (isDisabled) {
     return (
-      <Card.Content style={[commonStyles.marginVerticalSmall]}>
+      <Card.Content style={styles.disabledCard}>
         <AppIcon icon={AppIcons.imageDisabled} onPress={handleDisableModal} />
       </Card.Content>
     );
@@ -114,7 +97,12 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )} */}
         {mode === 'image' && (
-          <FastImage resizeMode={'cover'} style={styles.image} source={{uri: imageURI}} onLoad={onLoad} />
+          <FastImage
+            resizeMode={'cover'}
+            style={styles.image}
+            source={{uri: initialSize === 'full' ? imageData.fullURI : imageData.thumbURI}}
+            onLoad={onLoad}
+          />
         )}
         {/* {mode === 'scaledimage' && (
           <AppFastImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />

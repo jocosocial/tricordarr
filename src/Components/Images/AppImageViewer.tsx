@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import ImageView from 'react-native-image-viewing';
@@ -51,7 +52,13 @@ export const AppImageViewer = ({
         if (image.base64) {
           await saveImageQueryToLocal(image);
         } else {
-          await saveImageURIToLocal(image.fileName, image.dataURI);
+          // await saveImageURIToLocal(image.fileName, image.dataURI);
+          const cachePath = await FastImage.getCachePath({uri: image.dataURI});
+          if (cachePath) {
+            await saveImageURIToLocal(image.fileName, `file://${cachePath}`);
+          } else {
+            await saveImageURIToLocal(image.fileName, image.dataURI);
+          }
         }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {

@@ -16,19 +16,21 @@ const getImageDestinationPath = (fileName: string, mimeType: string) => {
   return destPath;
 };
 
-export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
-  const localPath = `${RNFS.CachesDirectoryPath}/${fileName}`;
-  const downloadResult = await RNFS.downloadFile({fromUrl: imageURI, toFile: localPath}).promise;
-
-  if (downloadResult.statusCode !== 200) {
-    throw new Error(`Failed to download image (status ${downloadResult.statusCode})`);
-  }
-
-  const response = await CameraRoll.saveAsset(localPath, {
+export const saveImageToCameraRoll = async (localURI: string) => {
+  console.log('[ImageStorage.ts] Saving image to camera roll from', localURI);
+  const response = await CameraRoll.saveAsset(localURI, {
     type: 'photo',
     album: 'Tricordarr',
   });
   return response;
+};
+
+export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
+  console.log(`[ImageStorage.ts] Saving image to ${fileName} from ${imageURI}`);
+  const cachePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+  await RNFS.copyFile(imageURI, cachePath);
+  await saveImageToCameraRoll(cachePath);
+  await RNFS.unlink(cachePath);
 };
 
 /**
