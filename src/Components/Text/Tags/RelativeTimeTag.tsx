@@ -69,7 +69,7 @@ export const RelativeTimeTag = ({date, style, variant}: RelativeTimeTagProps) =>
   return (
     <ReactTimeAgo
       date={Date.parse(date.toString())}
-      locale="en-US"
+      locale={'en-US'}
       component={StylizedText}
       // @ts-ignore
       variant={variant}

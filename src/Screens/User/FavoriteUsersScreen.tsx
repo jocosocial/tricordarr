@@ -72,7 +72,7 @@ export const FavoriteUsersScreen = ({navigation}: Props) => {
           <UserFavoriteText />
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={data} onPress={handleFavoriteUser} />
+          <UserSearchBar excludeHeaders={data} onPress={handleFavoriteUser} clearOnPress={true} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Favorite Users:</Text>

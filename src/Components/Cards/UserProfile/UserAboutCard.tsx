@@ -10,7 +10,7 @@ interface UserAboutCardProps {
 export const UserAboutCard = ({user}: UserAboutCardProps) => {
   return (
     <Card>
-      <Card.Title title="About" />
+      <Card.Title title={'About'} />
       <Card.Content>
         <Text selectable={true}>{user.about}</Text>
       </Card.Content>

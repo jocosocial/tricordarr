@@ -2,6 +2,8 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageQueryData} from '#src/Types';
 
@@ -18,6 +20,7 @@ interface ImageViewerFooterViewProps {
  */
 export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
+  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     footerContainer: {
@@ -28,7 +31,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
       ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safeMarginBottom),
+      ...(Platform.OS === 'ios' && commonStyles.safePaddingBottom),
     },
     verticalContainer: {
       ...commonStyles.flexColumn,
@@ -42,19 +45,36 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.onImageViewer,
     },
   });
+
   // This is a hack to get around the ImageViewer not updating in time if the underlying images changes and you
   // have already scrolled around in the viewer.
   // https://github.com/jobtoday/react-native-image-viewing/issues/203
   //
   // The Text variant is because iOS was too big and defaultly newlined the g in jpg.
+  // @TODO this sucks.
   const filename = viewerImages[currentIndex] ? viewerImages[currentIndex].fileName : '';
+  const mimeType = viewerImages[currentIndex] ? viewerImages[currentIndex].mimeType : '';
+  const dataURI = viewerImages[currentIndex] ? viewerImages[currentIndex].dataURI : '';
+
   return (
     <View style={styles.footerContainer}>
       <View style={styles.verticalContainer}>
-        <Text style={styles.filenameText} variant="bodyMedium">
+        <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
           {filename}
         </Text>
-        <Text style={styles.indexText} variant="bodyMedium">
+        {appConfig.enableDeveloperOptions && (
+          <>
+            <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
+              {mimeType}
+            </Text>
+            <HyperlinkText disableLinkInterpolation={true}>
+              <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
+                {dataURI}
+              </Text>
+            </HyperlinkText>
+          </>
+        )}
+        <Text style={styles.indexText} variant={'bodyMedium'}>
           {currentIndex + 1} of {viewerImages.length}
         </Text>
       </View>

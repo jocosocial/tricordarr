@@ -15,7 +15,7 @@ export const DrawerProvider = ({children}: PropsWithChildren) => {
     return (
       <View style={[commonStyles.marginRightBig]}>
         <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title="Drawer" iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
+          <Item title={'Drawer'} iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
         </HeaderButtons>
       </View>
     );

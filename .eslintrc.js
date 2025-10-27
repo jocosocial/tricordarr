@@ -57,6 +57,8 @@ module.exports = {
     // React prop validation
     'react/jsx-no-undef': 'error',
     'react/no-typos': 'error',
+    // Enforce curly braces for string props to use {'foo'} instead of "foo"
+    'react/jsx-curly-brace-presence': ['error', {props: 'always', children: 'never'}],
     'import/order': [
       'error',
       {

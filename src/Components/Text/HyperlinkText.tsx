@@ -26,7 +26,12 @@ const urlPathLabelMappings = [
   {pattern: /\/karaoke.*/, label: 'Karaoke Link'},
 ];
 
-export const HyperlinkText = ({children}: {children: ReactElementWithType | undefined}) => {
+interface HyperlinkTextProps {
+  children: ReactElementWithType | undefined;
+  disableLinkInterpolation?: boolean;
+}
+
+export const HyperlinkText = ({children, disableLinkInterpolation = false}: HyperlinkTextProps) => {
   const {openWebUrl} = useTwitarr();
   const {appConfig} = useConfig();
   const {serverUrl} = useSwiftarrQueryClient();
@@ -73,7 +78,11 @@ export const HyperlinkText = ({children}: {children: ReactElementWithType | unde
   };
 
   return (
-    <Hyperlink onPress={handleLink} onLongPress={onLongPress} linkStyle={commonStyles.linkText} linkText={handleText}>
+    <Hyperlink
+      onPress={handleLink}
+      onLongPress={onLongPress}
+      linkStyle={commonStyles.linkText}
+      linkText={disableLinkInterpolation ? undefined : handleText}>
       {children}
     </Hyperlink>
   );

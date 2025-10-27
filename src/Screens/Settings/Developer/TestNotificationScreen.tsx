@@ -21,13 +21,13 @@ export const TestNotificationScreen = () => {
       <ScrollingContentView>
         <PaddedContentView>
           <PrimaryActionButton
-            buttonText="Display Notification"
+            buttonText={'Display Notification'}
             buttonColor={theme.colors.twitarrNeutralButton}
             onPress={() => displayTestNotification()}
             style={[commonStyles.marginTopSmall]}
           />
           <PrimaryActionButton
-            buttonText="Cancel"
+            buttonText={'Cancel'}
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => cancelTestNotification()}
             style={[commonStyles.marginTopSmall]}

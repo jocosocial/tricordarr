@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import ImageView from 'react-native-image-viewing';
@@ -7,7 +8,7 @@ import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar
 import {ImageViewerFooterView} from '#src/Components/Views/ImageViewerFooterView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {saveImageQueryToLocal, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
 import {ImageQueryData} from '#src/Types';
 
@@ -40,7 +41,7 @@ export const AppImageViewer = ({
       ...commonStyles.flexRow,
       ...commonStyles.justifyContentEnd,
       ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safeMarginTop),
+      ...(Platform.OS === 'ios' && commonStyles.safePaddingTop),
     },
   });
 
@@ -48,7 +49,17 @@ export const AppImageViewer = ({
     async (index: number) => {
       try {
         const image = viewerImages[index];
-        await saveImageQueryToLocal(image);
+        if (image.base64) {
+          await saveImageQueryToLocal(image);
+        } else {
+          // await saveImageURIToLocal(image.fileName, image.dataURI);
+          const cachePath = await FastImage.getCachePath({uri: image.dataURI});
+          if (cachePath) {
+            await saveImageURIToLocal(image.fileName, `file://${cachePath}`);
+          } else {
+            await saveImageURIToLocal(image.fileName, image.dataURI);
+          }
+        }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
         console.error(error);
@@ -57,6 +68,11 @@ export const AppImageViewer = ({
     },
     [viewerImages],
   );
+
+  const onClose = useCallback(() => {
+    setIsVisible(false);
+    setViewerMessage(undefined);
+  }, [setIsVisible, setViewerMessage]);
 
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
@@ -69,15 +85,11 @@ export const AppImageViewer = ({
               iconColor={theme.colors.onImageViewer}
             />
           )}
-          <IconButton
-            icon={AppIcons.close}
-            onPress={() => setIsVisible(false)}
-            iconColor={theme.colors.onImageViewer}
-          />
+          <IconButton icon={AppIcons.close} onPress={onClose} iconColor={theme.colors.onImageViewer} />
         </View>
       );
     },
-    [enableDownload, saveImage, setIsVisible, styles.header, theme.colors.onImageViewer],
+    [enableDownload, saveImage, onClose, styles.header, theme.colors.onImageViewer],
   );
 
   const viewerFooter = useCallback(
@@ -116,6 +128,7 @@ export const AppImageViewer = ({
       onRequestClose={onRequestClose}
       HeaderComponent={viewerHeader}
       FooterComponent={viewerFooter}
+      backgroundColor={theme.colors.constantBlack}
     />
   );
 };

@@ -129,7 +129,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
                 name={'enableBackgroundWorker'}
                 label={'Enable Background Worker'}
                 onPress={handleEnable}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
                 helperText={'Use this to disable the worker if it is causing problems.'}
                 value={enable}
               />
@@ -144,7 +144,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
                 helperText={
                   "Interval at which the app checks that the socket is open. Don't change this unless instructed to."
                 }
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
                 onSlidingComplete={handleHealthChange}
               />
             </View>

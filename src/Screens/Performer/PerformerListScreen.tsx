@@ -27,6 +27,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
   const {commonStyles, styleDefaults} = useStyles();
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
   const {isLoggedIn} = useAuth();
+  const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
 
   const styles = StyleSheet.create({
     cardContainer: {
@@ -61,6 +62,10 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
 
   const renderListFooter = useCallback(() => <PaddedContentView />, []);
 
+  const keyExtractor = useCallback((item: PerformerHeaderData, index: number) => {
+    return item.id || `performer-${item.name}-${index}`;
+  }, []);
+
   const getHeaderButtons = useCallback(() => {
     return (
       <View>
@@ -77,7 +82,14 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
     });
   }, [navigation, getHeaderButtons]);
 
-  const performers = data?.pages.flatMap(p => p.performers) || [];
+  /**
+   * Effect to set the performers list when the data loads.
+   */
+  useEffect(() => {
+    if (data) {
+      setPerformers(data.pages.flatMap(p => p.performers));
+    }
+  }, [data]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;
@@ -93,6 +105,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
         ref={flashListRef}
         renderItem={renderItem}
         data={performers}
+        keyExtractor={keyExtractor}
         handleLoadNext={fetchNextPage}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         renderListHeader={renderListHeader}

@@ -2,9 +2,11 @@ import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {Keyboard, View} from 'react-native';
 import {TextInput} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
@@ -12,7 +14,6 @@ import {SuggestedTextField} from '#src/Components/Forms/Fields/SuggestedTextFiel
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {TimePickerField} from '#src/Components/Forms/Fields/TimePickerField';
 import {UserChipsField} from '#src/Components/Forms/Fields/UserChipsField';
-import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -35,9 +36,24 @@ const validationSchema = Yup.object().shape({
   location: InfoStringValidation,
 });
 
-const locationHelpContent = [
-  "Personal Events are not a reservation system. You can't claim a room or even a table by scheduling an event there.",
-];
+const LocationHelpModalView = () => {
+  const {commonStyles} = useStyles();
+  return (
+    <ModalCard title={'About Personal Event Locations'}>
+      <Text variant={'titleMedium'}>Guidelines</Text>
+      <Text>
+        Personal Events are not a reservation system. You can't claim a room or even a table by scheduling an event
+        there.
+      </Text>
+      <Text variant={'titleMedium'} style={commonStyles.marginTopSmall}>
+        Tips & Advice
+      </Text>
+      <Text>
+        The locations in the menu are suggestions. You can type in any location you want (subject to the rules above).
+      </Text>
+    </ModalCard>
+  );
+};
 
 export const PersonalEventForm = ({
   onSubmit,
@@ -55,7 +71,7 @@ export const PersonalEventForm = ({
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();
-    setModalContent(<HelpModalView title={'About Locations'} text={locationHelpContent} />);
+    setModalContent(<LocationHelpModalView />);
     setModalVisible(true);
   };
 

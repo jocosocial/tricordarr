@@ -73,7 +73,7 @@ export const MuteUsersScreen = ({navigation}: Props) => {
           {hasModerator && <ModeratorMuteText />}
         </PaddedContentView>
         <PaddedContentView>
-          <UserSearchBar excludeHeaders={data} onPress={handleMuteUser} />
+          <UserSearchBar excludeHeaders={data} onPress={handleMuteUser} clearOnPress={true} />
         </PaddedContentView>
         <PaddedContentView>
           <Text variant={'labelMedium'}>Muted Users:</Text>

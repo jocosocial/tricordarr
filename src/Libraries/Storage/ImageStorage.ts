@@ -16,6 +16,26 @@ const getImageDestinationPath = (fileName: string, mimeType: string) => {
   return destPath;
 };
 
+export const saveImageToCameraRoll = async (localURI: string) => {
+  console.log('[ImageStorage.ts] Saving image to camera roll from', localURI);
+  const response = await CameraRoll.saveAsset(localURI, {
+    type: 'photo',
+    album: 'Tricordarr',
+  });
+  return response;
+};
+
+export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
+  console.log(`[ImageStorage.ts] Saving image to ${fileName} from ${imageURI}`);
+  const cachePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+  await RNFS.copyFile(imageURI, cachePath);
+  await saveImageToCameraRoll(cachePath);
+  await RNFS.unlink(cachePath);
+};
+
+/**
+ * @deprecated use saveImageURIToLocal instead
+ */
 export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
   let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
   if (!imageData.base64) {

@@ -2,9 +2,11 @@ import {Formik, FormikHelpers} from 'formik';
 import React from 'react';
 import {Keyboard, View} from 'react-native';
 import {TextInput} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import * as Yup from 'yup';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
+import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {DatePickerField} from '#src/Components/Forms/Fields/DatePickerField';
 import {DirtyDetectionField} from '#src/Components/Forms/Fields/DirtyDetectionField';
 import {DurationPickerField} from '#src/Components/Forms/Fields/DurationPickerField';
@@ -41,13 +43,33 @@ const validationSchema = Yup.object().shape({
   startDate: DateValidation,
 });
 
-const locationHelpContent = [
-  "1. LFGs are not a reservation system. You can't claim a room or even a table by scheduling an LFG there.",
-  "2. Don't set up an LFG in a room used for Official or Shadow Events.",
-  "3. Don't try to get around Item 2 by scheduling your LFG in an Event room at a time when the Official Schedule doesn't list anything happening there. Event rooms are often used for official things even when not running a listed event.",
-  '4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard, and that bar\'s full at the appointed time, you can message the LFG members to relocate.',
-  '5. The locations in the menu are suggestions. You can enter any location you want (subject to the rules above).',
-];
+const LocationHelpModalView = () => {
+  const {commonStyles} = useStyles();
+  return (
+    <ModalCard title={'About LFG Locations'}>
+      <Text variant={'titleMedium'}>Guidelines</Text>
+      <Text>
+        1. LFGs are not a reservation system. You can't claim a room or even a table by scheduling an LFG there.
+      </Text>
+      <Text>2. Don't set up an LFG in a room used for Official or Shadow Events.</Text>
+      <Text>
+        3. Don't try to get around Item 2 by scheduling your LFG in an Event room at a time when the Official Schedule
+        doesn't list anything happening there. Event rooms are often used for official things even when not running a
+        listed event.
+      </Text>
+      <Text>
+        4. Sometimes places fill up; have backup plans. If you schedule a "Drink Like a Pirate" LFG at a bar onboard,
+        and that bar's full at the appointed time, you can message the LFG members to relocate.
+      </Text>
+      <Text variant={'titleMedium'} style={commonStyles.marginTopSmall}>
+        Tips & Advice
+      </Text>
+      <Text>
+        The locations in the menu are suggestions. You can type in any location you want (subject to the rules above).
+      </Text>
+    </ModalCard>
+  );
+};
 
 const maximumHelpContent = ['Use 0 for unlimited'];
 
@@ -61,7 +83,7 @@ export const LfgForm = ({onSubmit, initialValues, buttonText = 'Create'}: LfgFor
 
   const handleLocationInfo = () => {
     Keyboard.dismiss();
-    setModalContent(<HelpModalView title={'About LFG Locations'} text={locationHelpContent} />);
+    setModalContent(<LocationHelpModalView />);
     setModalVisible(true);
   };
 
