@@ -27,6 +27,7 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
   const {commonStyles, styleDefaults} = useStyles();
   const flashListRef = useRef<FlashListRef<PerformerHeaderData>>(null);
   const {isLoggedIn} = useAuth();
+  const [performers, setPerformers] = useState<PerformerHeaderData[]>([]);
 
   const styles = StyleSheet.create({
     cardContainer: {
@@ -77,7 +78,14 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
     });
   }, [navigation, getHeaderButtons]);
 
-  const performers = data?.pages.flatMap(p => p.performers) || [];
+  /**
+   * Effect to set the performers list when the data loads.
+   */
+  useEffect(() => {
+    if (data) {
+      setPerformers(data.pages.flatMap(p => p.performers));
+    }
+  }, [data]);
 
   if (!isLoggedIn) {
     return <NotLoggedInView />;

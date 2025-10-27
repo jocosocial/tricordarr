@@ -31,8 +31,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
-
-  const imageData = APIImageV2Data.fromFileName(path, appConfig);
+  const [imageData, _setImageData] = useState<APIImageV2Data>(APIImageV2Data.fromFileName(path, appConfig));
 
   const styles = StyleSheet.create({
     disabledCard: {
@@ -54,9 +53,9 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     ]);
   };
 
-  const onPress = () => {
+  const onPress = useCallback(() => {
     setIsViewerVisible(true);
-  };
+  }, [setIsViewerVisible]);
 
   /**
    * Function to show the disabled modal if we need to do that. See below.
