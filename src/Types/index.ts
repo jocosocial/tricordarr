@@ -51,7 +51,7 @@ export type ScheduleFilterSettings = {
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
 
 export interface ImageQueryData {
-  base64: string;
+  base64?: string;
   mimeType: string;
   dataURI: string;
   fileName: string;

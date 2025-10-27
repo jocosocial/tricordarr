@@ -1,4 +1,5 @@
 import FastImage, {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
+import React from 'react';
 import {useCallback, useState} from 'react';
 import {type ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
@@ -38,6 +39,8 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
 
   const appConfigInitialSize = !initialSize && appConfig.skipThumbnails ? 'full' : initialSize;
   const imageURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${appConfigInitialSize}/${path}`;
+  const imageThumbURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/thumb/${path}`;
+  const imageFullURI = `${appConfig.serverUrl}${appConfig.urlPrefix}/image/full/${path}`;
 
   const styles = StyleSheet.create({
     image: {
@@ -45,6 +48,32 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
       ...style,
     },
   });
+
+  // useEffect(() => {
+  //   if (enableFullQuery && fullImageQuery.data) {
+  //     setViewerImages([fullImageQuery.data]);
+  //     setIsViewerVisible(true);
+  //     setEnableFullQuery(false);
+  //   }
+  // }, [enableFullQuery, fullImageQuery.data]);
+  const onLoad = () => {
+    if (initialSize === 'full') {
+      setViewerImages([
+        {
+          dataURI: imageURI,
+          fileName: path,
+          mimeType: 'image/jpeg',
+        },
+      ]);
+    } else {
+      // @TODO what to do about thumbs that we need to get fulls?
+      console.log('initial size is thumb');
+    }
+  };
+
+  const onPress = () => {
+    setIsViewerVisible(true);
+  };
 
   /**
    * Function to show the disabled modal if we need to do that. See below.
@@ -60,6 +89,12 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
+  React.useEffect(() => {
+    if (initialSize === 'thumb') {
+      FastImage.preload([{uri: imageURI}]);
+    }
+  }, [initialSize, imageURI]);
+
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
    */
@@ -74,11 +109,13 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity disabled={disableTouch} activeOpacity={1}>
+      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress}>
         {/* {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )} */}
-        {mode === 'image' && <FastImage resizeMode={'cover'} style={styles.image} source={{uri: imageURI}} />}
+        {mode === 'image' && (
+          <FastImage resizeMode={'cover'} style={styles.image} source={{uri: imageURI}} onLoad={onLoad} />
+        )}
         {/* {mode === 'scaledimage' && (
           <AppFastImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />
         )} */}

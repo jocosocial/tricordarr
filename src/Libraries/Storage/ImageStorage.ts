@@ -16,6 +16,24 @@ const getImageDestinationPath = (fileName: string, mimeType: string) => {
   return destPath;
 };
 
+export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
+  const localPath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+  const downloadResult = await RNFS.downloadFile({fromUrl: imageURI, toFile: localPath}).promise;
+
+  if (downloadResult.statusCode !== 200) {
+    throw new Error(`Failed to download image (status ${downloadResult.statusCode})`);
+  }
+
+  const response = await CameraRoll.saveAsset(localPath, {
+    type: 'photo',
+    album: 'Tricordarr',
+  });
+  return response;
+};
+
+/**
+ * @deprecated use saveImageURIToLocal instead
+ */
 export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
   let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
   if (!imageData.base64) {
