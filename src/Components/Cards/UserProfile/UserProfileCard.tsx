@@ -16,7 +16,7 @@ export const UserProfileCard = ({user}: UserProfileCardProps) => {
   const {commonStyles} = useStyles();
   return (
     <Card>
-      <Card.Title title="User Profile" />
+      <Card.Title title={'User Profile'} />
       <Card.Content style={[commonStyles.paddingHorizontalZero]}>
         <ListSection>
           {user.header.displayName && (

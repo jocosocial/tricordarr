@@ -52,14 +52,14 @@ export const TestErrorScreen = () => {
         <PaddedContentView>
           <Text>Banner: {errorBanner}</Text>
           <PrimaryActionButton
-            buttonText="Banner"
+            buttonText={'Banner'}
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => setErrorBanner('This is a banner error.')}
             style={[commonStyles.marginTopSmall]}
           />
           <Text>Snackbar: {snackbarPayload?.message}</Text>
           <PrimaryActionButton
-            buttonText="Snackbar"
+            buttonText={'Snackbar'}
             buttonColor={theme.colors.twitarrNegativeButton}
             onPress={() => setSnackbarPayload({message: 'This is a snackbar error.'})}
             style={[commonStyles.marginTopSmall]}

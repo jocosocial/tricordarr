@@ -14,7 +14,7 @@ export const UserNoteCard = ({user, onPress, onLongPress}: UserNoteCardProps) =>
   const {commonStyles} = useStyles();
   return (
     <Card style={[commonStyles.noteContainer]} onPress={onPress} onLongPress={onLongPress}>
-      <Card.Title title="Private Note" titleStyle={[commonStyles.onNoteContainer]} />
+      <Card.Title title={'Private Note'} titleStyle={[commonStyles.onNoteContainer]} />
       <Card.Content>
         <Text selectable={true} style={[commonStyles.onNoteContainer, commonStyles.italics]}>
           {user.note}
