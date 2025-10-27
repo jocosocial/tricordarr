@@ -1,3 +1,4 @@
+import FastImage from '@d11/react-native-fast-image';
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
@@ -56,6 +57,8 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
   const bustImageCache = async () => {
     console.log('[QuerySettingsScreen.tsx] Busting image cache.');
     await CacheManager.clearCache();
+    await FastImage.clearDiskCache();
+    await FastImage.clearMemoryCache();
     await refreshImageCacheSize();
   };
 
@@ -140,7 +143,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
           </PaddedContentView>
         </ListSection>
         <ListSection>
-          <ListSubheader>Cache Management</ListSubheader>
+          <ListSubheader>Query Cache</ListSubheader>
           <PaddedContentView padTop={true}>
             <DataTable style={commonStyles.marginBottomSmall}>
               <SettingDataTableRow title={'Last Query Bust'} reverseSplit={true}>
@@ -170,6 +173,9 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
               buttonColor={theme.colors.twitarrNegativeButton}
             />
           </PaddedContentView>
+        </ListSection>
+        <ListSection>
+          <ListSubheader>Image Cache</ListSubheader>
           <PaddedContentView>
             <DataTable>
               <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={filesize(imageCacheSize)} />
