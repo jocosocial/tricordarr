@@ -69,6 +69,11 @@ export const AppImageViewer = ({
     [viewerImages],
   );
 
+  const onClose = useCallback(() => {
+    setIsVisible(false);
+    setViewerMessage(undefined);
+  }, [setIsVisible, setViewerMessage]);
+
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
@@ -80,15 +85,11 @@ export const AppImageViewer = ({
               iconColor={theme.colors.onImageViewer}
             />
           )}
-          <IconButton
-            icon={AppIcons.close}
-            onPress={() => setIsVisible(false)}
-            iconColor={theme.colors.onImageViewer}
-          />
+          <IconButton icon={AppIcons.close} onPress={onClose} iconColor={theme.colors.onImageViewer} />
         </View>
       );
     },
-    [enableDownload, saveImage, setIsVisible, styles.header, theme.colors.onImageViewer],
+    [enableDownload, saveImage, onClose, styles.header, theme.colors.onImageViewer],
   );
 
   const viewerFooter = useCallback(
