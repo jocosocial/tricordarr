@@ -22,6 +22,9 @@ interface ImageViewerComponentProps {
   imageIndex: number;
 }
 
+/**
+ * Standard image viewer component to allow a user to view and download images.
+ */
 export const AppImageViewer = ({
   isVisible,
   setIsVisible,
@@ -34,6 +37,9 @@ export const AppImageViewer = ({
   const [imageViewImages, setImageViewImages] = useState<(ImageURISource | ImageRequireSource)[]>([]);
   const theme = useAppTheme();
 
+  /**
+   * Function to get the FastImage cache URI for an image.
+   */
   const getImageCacheURI = useCallback(async (image: APIImageV2Data) => {
     const cachePath = await FastImage.getCachePath({uri: image.fullURI});
     if (cachePath) {
@@ -42,6 +48,9 @@ export const AppImageViewer = ({
     return undefined;
   }, []);
 
+  /**
+   * Function to save an image to the camera roll.
+   */
   const saveImage = useCallback(
     async (index: number) => {
       try {
@@ -61,11 +70,17 @@ export const AppImageViewer = ({
     [viewerImages, getImageCacheURI],
   );
 
+  /**
+   * Callback to close the image viewer.
+   */
   const onClose = useCallback(() => {
     setIsVisible(false);
     setViewerMessage(undefined);
   }, [setIsVisible, setViewerMessage]);
 
+  /**
+   * Render the header of the image viewer.
+   */
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
@@ -82,6 +97,9 @@ export const AppImageViewer = ({
     [enableDownload, saveImage, onClose, viewerImages, imageViewImages],
   );
 
+  /**
+   * Render the footer of the image viewer.
+   */
   const viewerFooter = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
@@ -94,12 +112,16 @@ export const AppImageViewer = ({
     [viewerImages, viewerMessage],
   );
 
-  const onRequestClose = () => setIsVisible(false);
-
+  /**
+   * Effect to set the current image index.
+   */
   useEffect(() => {
     setCurrentImageIndex(initialIndex);
   }, [viewerImages, initialIndex]);
 
+  /**
+   * Effect to get the underlying image sources for the image viewer.
+   */
   useEffect(() => {
     const getImages = async () => {
       const images = await Promise.all(
@@ -116,6 +138,9 @@ export const AppImageViewer = ({
     getImages();
   }, [viewerImages, getImageCacheURI]);
 
+  /**
+   * If there are no viewer images, then don't render anything.
+   */
   if (!viewerImages) {
     return <></>;
   }
@@ -125,7 +150,7 @@ export const AppImageViewer = ({
       images={imageViewImages}
       imageIndex={currentImageIndex}
       visible={isVisible}
-      onRequestClose={onRequestClose}
+      onRequestClose={onClose}
       HeaderComponent={viewerHeader}
       FooterComponent={viewerFooter}
       backgroundColor={theme.colors.constantBlack}
