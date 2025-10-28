@@ -2,7 +2,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 
-import {APIImage} from '#src/Components/Images/APIImage';
+import {APIImageV2} from '#src/Components/Images/APIImageV2';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {AppView} from '#src/Components/Views/AppView';
@@ -40,10 +40,7 @@ export const DailyThemeScreen = ({route}: Props) => {
           <DataFieldListItem itemStyle={styles.item} description={route.params.dailyTheme.info} title={'Info'} />
           {route.params.dailyTheme.image && (
             <View style={styles.imageView}>
-              <APIImage
-                fullPath={`/image/full/${route.params.dailyTheme.image}`}
-                thumbPath={`/image/thumb/${route.params.dailyTheme.image}`}
-              />
+              <APIImageV2 path={route.params.dailyTheme.image} />
             </View>
           )}
         </ListSection>

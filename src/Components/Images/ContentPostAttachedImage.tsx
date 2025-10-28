@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, StyleSheet} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {APIImage} from '#src/Components/Images/APIImage';
+import {APIImageV2} from '#src/Components/Images/APIImageV2';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
@@ -32,12 +32,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
   } else if (props.imageData.filename) {
     return (
       <ContentPostAttachment onIconPress={props.onIconPress} disabled={props.disabled}>
-        <APIImage
-          thumbPath={`/image/thumb/${props.imageData.filename}`}
-          fullPath={`/image/full/${props.imageData.filename}`}
-          mode={'image'}
-          style={styles.image}
-        />
+        <APIImageV2 path={props.imageData.filename} style={styles.image} mode={'image'} staticSize={'thumb'} />
       </ContentPostAttachment>
     );
   }
