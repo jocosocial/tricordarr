@@ -3,6 +3,7 @@ Known Issues
 
 ```
  WARN  The package /Users/grant/Projects/jocosocial/tricordarr/node_modules/javascript-time-ago/locale/en contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
+Reason: One or more mappings for subpaths defined in "exports" are invalid. All values must begin with "./". Falling back to file-based resolution.
 ```
 
 https://gitlab.com/catamphetamine/javascript-time-ago/-/issues/7

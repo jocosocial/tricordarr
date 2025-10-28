@@ -16,6 +16,7 @@ npm clean-install
 npx react-native run-android
 
 # iOS (Mac)
+cd ios && pod install
 npx react-native run-ios
 ```
 
