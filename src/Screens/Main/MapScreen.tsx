@@ -75,8 +75,9 @@ export const MapScreen = ({navigation, route}: Props) => {
         <MapIndicatorView direction={'Forward'} />
         <View style={styles.imageContainer}>
           <AppImage
+            key={shipDeck.number}
             mode={'scaledimage'}
-            image={APIImageV2Data.fromURI(Image.resolveAssetSource(shipDeck.imageSource).uri)}
+            image={APIImageV2Data.fromAsset(shipDeck.imageSource, `deck${shipDeck.number}.png`)}
             style={styles.image}
           />
         </View>
