@@ -5,6 +5,7 @@ import RNFS from 'react-native-fs';
 import * as mime from 'react-native-mime-types';
 
 import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
@@ -31,6 +32,26 @@ export const saveImageURIToLocal = async (fileName: string, imageURI: string) =>
   await RNFS.copyFile(imageURI, cachePath);
   await saveImageToCameraRoll(cachePath);
   await RNFS.unlink(cachePath);
+};
+
+/**
+ * @deprecated this is brand new but deprecated because these functions are insane
+ */
+export const saveImageDataURIToCameraRoll = async (imageData: APIImageV2Data) => {
+  let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
+  const dataURI = imageData.dataURI;
+  if (!dataURI) {
+    throw Error(`No data to save to file ${destPath}`);
+  }
+  console.log('[ImageStorage.ts] Writing data to', destPath, imageData.mimeType);
+  await RNFS.writeFile(destPath, dataURI, 'base64');
+  const cameraRollSaveResult = await CameraRoll.save(destPath, {
+    type: 'photo',
+    album: 'Tricordarr',
+  });
+  await RNFS.unlink(destPath);
+  console.log('[ImageStorage.ts] Saved to camera roll at', cameraRollSaveResult);
+  return cameraRollSaveResult;
 };
 
 /**

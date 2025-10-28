@@ -6,7 +6,7 @@ import ImageView from 'react-native-image-viewing';
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
 import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFooterView';
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
-import {saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
 import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
@@ -55,11 +55,18 @@ export const AppImageViewer = ({
     async (index: number) => {
       try {
         const image = viewerImages[index];
+        if (image.dataURI) {
+          await saveImageDataURIToCameraRoll(image);
+          return;
+        }
         const cacheURI = await getImageCacheURI(image);
         if (cacheURI) {
           await saveImageURIToLocal(image.fileName, cacheURI);
         } else {
-          await saveImageURIToLocal(image.fileName, image.fullURI);
+          if (image.fullURI) {
+            await saveImageURIToLocal(image.fileName, image.fullURI);
+          }
+          throw Error('No image URI to save');
         }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
@@ -126,6 +133,9 @@ export const AppImageViewer = ({
     const getImages = async () => {
       const images = await Promise.all(
         viewerImages.map(async image => {
+          if (image.dataURI) {
+            return {uri: image.dataURI};
+          }
           const cacheURI = await getImageCacheURI(image);
           if (cacheURI) {
             return {uri: cacheURI};

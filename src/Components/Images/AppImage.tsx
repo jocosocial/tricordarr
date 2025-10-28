@@ -37,7 +37,7 @@ export const AppImage = ({image, style, mode = 'cardcover', disableTouch = false
     setIsViewerVisible(true);
   };
 
-  const imageUriSource = {uri: image.fullURI};
+  const imageUriSource = image.dataURI ? {uri: image.dataURI} : {uri: image.fullURI};
 
   return (
     <View>

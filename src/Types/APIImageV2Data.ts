@@ -4,10 +4,10 @@ import {AppConfig} from '#src/Libraries/AppConfig';
 
 export interface APIImageV2Data {
   fileName: string;
-  thumbURI: string;
-  fullURI: string;
+  thumbURI?: string;
+  fullURI?: string;
   mimeType: string;
-  rawData?: string; // Base64 encoded image data
+  dataURI?: string; // Base64 encoded image data
 }
 export namespace APIImageV2Data {
   export const fromFileName = (fileName: string, appConfig: AppConfig): APIImageV2Data => {
@@ -47,28 +47,17 @@ export namespace APIImageV2Data {
       thumbURI: uri,
       fullURI: uri,
       mimeType: mimeType,
-      rawData: rawData,
+      dataURI: `data:${mimeType};base64,${rawData}`,
     };
   };
 
   export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): APIImageV2Data => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
-    const dataURI = `data:${mimeType};base64,${base64Data}`;
     return {
       fileName: fileName,
-      thumbURI: dataURI,
-      fullURI: dataURI,
       mimeType: mimeType,
-      rawData: base64Data,
+      dataURI: `data:${mimeType};base64,${base64Data}`,
     };
-  };
-
-  export const toDataURI = (imageData: APIImageV2Data): string => {
-    if (imageData.rawData) {
-      return `data:${imageData.mimeType};base64,${imageData.rawData}`;
-    }
-    // Fallback to using the fullURI if rawData is not available
-    return imageData.fullURI;
   };
 }
 export const APIImageSizePaths = {
