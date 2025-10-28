@@ -4,7 +4,7 @@ import {Image, ImageStyle as RNImageStyle, StyleProp, TouchableOpacity, View} fr
 import {ActivityIndicator, Card} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {AppFastImage} from '#src/Components/Images/AppFastImage';
+import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -45,7 +45,8 @@ const animatedRegex = new RegExp('\\.(gif)$', 'i');
  * @param style Custom style props for the image display component.
  * @param mode Underlying component to use for the image display.
  * @param thumb If true, only load thumbnail by default. Full image can still be fetched on press unless disableTouch is also true.
- * @constructor
+ *
+ * @deprecated Use APIImageV2 instead.
  */
 export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disableTouch, thumb}: APIImageProps) => {
   const {getIsDisabled} = useFeature();
@@ -167,7 +168,7 @@ export const APIImage = ({thumbPath, fullPath, style, mode = 'cardcover', disabl
           />
         )}
         {mode === 'scaledimage' && (
-          <AppFastImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />
+          <AppScaledImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />
         )}
       </TouchableOpacity>
     </View>

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Image, ImageURISource, ImageStyle as RNImageStyle, StyleProp, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
-import {AppFastImage} from '#src/Components/Images/AppFastImage';
+import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageQueryData} from '#src/Types';
@@ -47,7 +47,7 @@ export const AppImage = ({image, style, mode = 'cardcover', disableTouch = false
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
         )}
-        {mode === 'scaledimage' && <AppFastImage image={imageUriSource} style={style as FastImageStyle} />}
+        {mode === 'scaledimage' && <AppScaledImage image={imageUriSource} style={style as FastImageStyle} />}
       </TouchableOpacity>
     </View>
   );

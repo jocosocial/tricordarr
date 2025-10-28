@@ -5,6 +5,7 @@ import {type ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity
 import {Card} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -135,6 +136,8 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     );
   }
 
+  const imageSource = {uri: initialSize === 'full' ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI};
+
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
@@ -146,15 +149,21 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
           <FastImage
             resizeMode={'cover'}
             style={styles.image}
-            source={{uri: initialSize === 'full' ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI}}
+            source={imageSource}
             onLoad={onLoad}
             onError={onError}
             onProgress={onProgress}
           />
         )}
-        {/* {mode === 'scaledimage' && (
-          <AppFastImage image={ImageQueryData.toImageURISource(imageQueryData)} style={style as FastImageStyle} />
-        )} */}
+        {mode === 'scaledimage' && (
+          <AppScaledImage
+            image={imageSource}
+            style={style as FastImageStyle}
+            onLoad={onLoad}
+            onError={onError}
+            onProgress={onProgress}
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
