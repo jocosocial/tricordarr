@@ -1,13 +1,10 @@
 import FastImage from '@d11/react-native-fast-image';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
 import ImageView from 'react-native-image-viewing';
-import {IconButton} from 'react-native-paper';
 
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
-import {ImageViewerFooterView} from '#src/Components/Views/ImageViewerFooterView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {AppIcons} from '#src/Enums/Icons';
+import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFooterView';
+import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {saveImageQueryToLocal, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
 import {ImageQueryData} from '#src/Types';
@@ -33,17 +30,7 @@ export const AppImageViewer = ({
 }: AppImageViewerProps) => {
   const [viewerMessage, setViewerMessage] = useState<string>();
   const [currentImageIndex, setCurrentImageIndex] = useState(initialIndex);
-  const {commonStyles} = useStyles();
   const theme = useAppTheme();
-
-  const styles = StyleSheet.create({
-    header: {
-      ...commonStyles.flexRow,
-      ...commonStyles.justifyContentEnd,
-      ...commonStyles.imageViewerBackground,
-      ...(Platform.OS === 'ios' && commonStyles.safePaddingTop),
-    },
-  });
 
   const saveImage = useCallback(
     async (index: number) => {
@@ -77,19 +64,16 @@ export const AppImageViewer = ({
   const viewerHeader = useCallback(
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
-        <View style={styles.header}>
-          {enableDownload && (
-            <IconButton
-              icon={AppIcons.download}
-              onPress={() => saveImage(imageIndex)}
-              iconColor={theme.colors.onImageViewer}
-            />
-          )}
-          <IconButton icon={AppIcons.close} onPress={onClose} iconColor={theme.colors.onImageViewer} />
-        </View>
+        <ImageViewerHeaderView
+          viewerImages={viewerImages}
+          imageIndex={imageIndex}
+          enableDownload={enableDownload}
+          onSave={() => saveImage(imageIndex)}
+          onClose={onClose}
+        />
       );
     },
-    [enableDownload, saveImage, onClose, styles.header, theme.colors.onImageViewer],
+    [enableDownload, saveImage, onClose, viewerImages],
   );
 
   const viewerFooter = useCallback(
