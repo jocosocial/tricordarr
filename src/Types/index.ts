@@ -172,7 +172,6 @@ export interface APIImageV2Data {
   thumbURI: string;
   fullURI: string;
   mimeType: string;
-  fullCachePath?: string | null;
 }
 
 export namespace APIImageV2Data {
@@ -181,6 +180,18 @@ export namespace APIImageV2Data {
       fileName: fileName,
       thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
       fullURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
+      mimeType: lookupMimeType(fileName) || 'application/octet-stream',
+    };
+  };
+
+  export const fromURI = (uri: string): APIImageV2Data => {
+    // Remove query parameters before extracting filename
+    const uriWithoutQuery = uri.split('?')[0];
+    const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
+    return {
+      fileName: fileName,
+      thumbURI: uri,
+      fullURI: uri,
       mimeType: lookupMimeType(fileName) || 'application/octet-stream',
     };
   };

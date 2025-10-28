@@ -15,7 +15,9 @@ interface MicroKaraokeSongListItemProps {
 }
 
 const downloadFile = async (url: string) => {
-  const fileName = url.split('/').pop();
+  // Remove query parameters before extracting filename
+  const urlWithoutQuery = url.split('?')[0];
+  const fileName = urlWithoutQuery.split('/').pop();
   if (!fileName) {
     throw Error(`Unable to determine fileName from url: ${url}`);
   }
@@ -92,7 +94,9 @@ export const MicroKaraokeSongListItem = ({mkSong}: MicroKaraokeSongListItemProps
   const onClear = async () => {
     if (data) {
       const results = data.snippetVideoURLs.map(async snippetVideoURL => {
-        const fileName = snippetVideoURL.split('/').pop();
+        // Remove query parameters before extracting filename
+        const urlWithoutQuery = snippetVideoURL.split('?')[0];
+        const fileName = urlWithoutQuery.split('/').pop();
         if (!fileName) {
           return;
         }

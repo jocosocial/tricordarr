@@ -1,11 +1,10 @@
-import {encode as base64_encode} from 'base-64';
 import React, {useState} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';
@@ -65,55 +64,21 @@ export const MainImageCardCover = () => {
     viewerIndex = 4;
   }
 
-  const viewerImages: ImageQueryData[] = [
-    {
-      dataURI: Image.resolveAssetSource(DayImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrDayImage.jpg',
-      base64: base64_encode(DayImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(HappyHourImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrHappyHourImage.jpg',
-      base64: base64_encode(HappyHourImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(MainShowImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrMainShowImage.jpg',
-      base64: base64_encode(MainShowImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(SunsetImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrSunsetImage.jpg',
-      base64: base64_encode(SunsetImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(LateShowImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrLateShowImage.jpg',
-      base64: base64_encode(LateShowImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(NightImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrNightImage.jpg',
-      base64: base64_encode(NightImage),
-    },
+  const viewerImages: APIImageV2Data[] = [
+    APIImageV2Data.fromURI(Image.resolveAssetSource(DayImage).uri),
+    APIImageV2Data.fromURI(Image.resolveAssetSource(HappyHourImage).uri),
+    APIImageV2Data.fromURI(Image.resolveAssetSource(MainShowImage).uri),
+    APIImageV2Data.fromURI(Image.resolveAssetSource(SunsetImage).uri),
+    APIImageV2Data.fromURI(Image.resolveAssetSource(LateShowImage).uri),
+    APIImageV2Data.fromURI(Image.resolveAssetSource(NightImage).uri),
   ];
 
-  // Have to disable download since loading static images is actually really hard and I don't feel
-  // like figuring it out right now.
-  // https://javascript.plainenglish.io/using-images-in-react-native-668e3a835858
   return (
     <View>
       <AppImageViewer
         viewerImages={viewerImages}
         isVisible={isViewerVisible}
         setIsVisible={setIsViewerVisible}
-        enableDownload={false}
         initialIndex={viewerIndex}
       />
       <TouchableOpacity onPress={() => setIsViewerVisible(true)}>

@@ -20,7 +20,9 @@ export const useImageQuery = (path: string, enabled: boolean = true) => {
       let url = `${serverUrl}/${appConfig.urlPrefix}/${path}`;
       const base64Data = await CacheManager.prefetchBlob(url);
 
-      const fileName = path.split('/').pop();
+      // Remove query parameters before extracting filename
+      const pathWithoutQuery = path.split('?')[0];
+      const fileName = pathWithoutQuery.split('/').pop();
       if (!fileName) {
         throw Error(`Unable to determine fileName from query: ${path}`);
       }

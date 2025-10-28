@@ -27,7 +27,9 @@ export const MicroKaraokeSongScreen = ({route}: Props) => {
   }
 
   const filePaths = data.snippetVideoURLs.map((url: string) => {
-    const fileName = url.split('/').pop();
+    // Remove query parameters before extracting filename
+    const urlWithoutQuery = url.split('?')[0];
+    const fileName = urlWithoutQuery.split('/').pop();
     return `${RNFS.DocumentDirectoryPath}/${fileName}`;
   });
 

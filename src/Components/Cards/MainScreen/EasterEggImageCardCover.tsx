@@ -1,10 +1,9 @@
-import {encode as base64_encode} from 'base-64';
 import React, {useState} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 // @ts-ignore
 import AllImage from '#assets/easteregg_all.jpg';
@@ -18,25 +17,14 @@ export const EasterEggImageCardCover = () => {
   let sourceImage = AllImage;
   let viewerIndex = 0;
 
-  const viewerImages: ImageQueryData[] = [
-    {
-      dataURI: Image.resolveAssetSource(AllImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'EasterEggAllImage.jpg',
-      base64: base64_encode(AllImage),
-    },
-  ];
+  const viewerImages: APIImageV2Data[] = [APIImageV2Data.fromURI(Image.resolveAssetSource(AllImage).uri)];
 
-  // Have to disable download since loading static images is actually really hard and I don't feel
-  // like figuring it out right now.
-  // https://javascript.plainenglish.io/using-images-in-react-native-668e3a835858
   return (
     <View>
       <AppImageViewer
         viewerImages={viewerImages}
         isVisible={isViewerVisible}
         setIsVisible={setIsViewerVisible}
-        enableDownload={false}
         initialIndex={viewerIndex}
       />
       <TouchableOpacity onPress={() => setIsViewerVisible(true)}>
