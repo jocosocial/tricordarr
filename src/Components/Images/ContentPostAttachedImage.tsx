@@ -7,7 +7,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;
@@ -31,7 +31,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
         <AppImage
           onPress={props.onImagePress}
           mode={'image'}
-          image={APIImageV2Data.fromData(props.imageData.image)}
+          image={AppImageMetaData.fromData(props.imageData.image)}
           style={styles.image}
         />
       </ContentPostAttachment>

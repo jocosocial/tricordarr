@@ -6,7 +6,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDayMarker} from '#src/Libraries/DateTime';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
@@ -24,7 +24,7 @@ export const OobePreRegistrationCompleteCard = () => {
           nothing for it to do until you board the ship. Other than pack.
         </Text>
       </Card.Content>
-      <AppImage image={APIImageV2Data.fromURI(Image.resolveAssetSource(preregistration).uri)} mode={'cardcover'} />
+      <AppImage image={AppImageMetaData.fromURI(Image.resolveAssetSource(preregistration).uri)} mode={'cardcover'} />
     </Card>
   );
 };

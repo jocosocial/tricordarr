@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs';
 import * as mime from 'react-native-mime-types';
 
 import {ImageQueryData} from '#src/Types';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 const extensionRegExp = new RegExp('\\.', 'i');
 
@@ -50,7 +50,7 @@ export const saveImageURIToLocal = async (fileName: string, imageURI: string) =>
 /**
  * @deprecated this is brand new but deprecated because these functions are insane
  */
-export const saveImageDataURIToCameraRoll = async (imageData: APIImageV2Data) => {
+export const saveImageDataURIToCameraRoll = async (imageData: AppImageMetaData) => {
   let destPath = getImageDestinationPath(imageData.fileName, imageData.mimeType);
   const dataURI = imageData.dataURI;
   if (!dataURI) {
@@ -99,7 +99,7 @@ export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
  * @returns Promise<CameraRoll.Asset> The camera roll save result
  * @throws Error if the dataURI is not provided or unsupported format
  */
-export const newSaveImage = async (image: APIImageV2Data) => {
+export const newSaveImage = async (image: AppImageMetaData) => {
   // Always get the proper destination path for the file
   let destPath = getImageDestinationPath(image.fileName, image.mimeType);
 

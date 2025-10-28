@@ -8,11 +8,11 @@ import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFoot
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface AppImageViewerProps {
   initialIndex?: number;
-  viewerImages?: APIImageV2Data[];
+  viewerImages?: AppImageMetaData[];
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
   enableDownload?: boolean;
@@ -40,7 +40,7 @@ export const AppImageViewer = ({
   /**
    * Function to get the FastImage cache URI for an image.
    */
-  const getImageCacheURI = useCallback(async (image: APIImageV2Data) => {
+  const getImageCacheURI = useCallback(async (image: AppImageMetaData) => {
     const cachePath = await FastImage.getCachePath({uri: image.fullURI});
     if (cachePath) {
       return `file://${cachePath}`;

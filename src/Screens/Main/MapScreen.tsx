@@ -19,7 +19,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 
@@ -77,7 +77,7 @@ export const MapScreen = ({navigation, route}: Props) => {
           <AppImage
             key={shipDeck.number}
             mode={'scaledimage'}
-            image={APIImageV2Data.fromAsset(shipDeck.imageSource, `deck${shipDeck.number}.png`)}
+            image={AppImageMetaData.fromAsset(shipDeck.imageSource, `deck${shipDeck.number}.png`)}
             style={styles.image}
           />
         </View>

@@ -2,7 +2,7 @@ import React from 'react';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';
@@ -63,12 +63,12 @@ export const MainImageCardCover = () => {
 
   const viewerImages = React.useMemo(
     () => [
-      APIImageV2Data.fromAsset(DayImage, 'mainview_day.jpg'),
-      APIImageV2Data.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
-      APIImageV2Data.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
-      APIImageV2Data.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
-      APIImageV2Data.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
-      APIImageV2Data.fromAsset(NightImage, 'mainview_night.jpg'),
+      AppImageMetaData.fromAsset(DayImage, 'mainview_day.jpg'),
+      AppImageMetaData.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
+      AppImageMetaData.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
+      AppImageMetaData.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
+      AppImageMetaData.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
+      AppImageMetaData.fromAsset(NightImage, 'mainview_night.jpg'),
     ],
     [],
   );
@@ -76,7 +76,7 @@ export const MainImageCardCover = () => {
   return (
     <AppImage
       mode={'cardcover'}
-      image={APIImageV2Data.fromAsset(sourceImage, 'current_image.jpg')}
+      image={AppImageMetaData.fromAsset(sourceImage, 'current_image.jpg')}
       viewerImages={viewerImages}
       initialViewerIndex={viewerIndex}
     />

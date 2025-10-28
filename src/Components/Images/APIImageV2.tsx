@@ -25,8 +25,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageSizePaths} from '#src/Types/APIImageV2Data';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface APIImageV2Props {
   path: string;
@@ -45,17 +45,17 @@ interface APIImageV2Props {
  * Setting your own onPress effectively disables the image viewer.
  */
 export const APIImageV2 = ({path, style, mode, disableTouch, staticSize, onPress}: APIImageV2Props) => {
-  const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
+  const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
-  const [imageSourceMetadata, setImageSourceMetadata] = useState<APIImageV2Data>(
+  const [imageSourceMetadata, setImageSourceMetadata] = useState<AppImageMetaData>(
     staticSize === 'identicon'
-      ? APIImageV2Data.fromIdenticon(path, appConfig)
-      : APIImageV2Data.fromFileName(path, appConfig),
+      ? AppImageMetaData.fromIdenticon(path, appConfig)
+      : AppImageMetaData.fromFileName(path, appConfig),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -146,8 +146,8 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize, onPress
   React.useEffect(() => {
     setImageSourceMetadata(
       staticSize === 'identicon'
-        ? APIImageV2Data.fromIdenticon(path, appConfig)
-        : APIImageV2Data.fromFileName(path, appConfig),
+        ? AppImageMetaData.fromIdenticon(path, appConfig)
+        : AppImageMetaData.fromFileName(path, appConfig),
     );
   }, [path, appConfig, staticSize]);
 

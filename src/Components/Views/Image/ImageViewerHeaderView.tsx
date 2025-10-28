@@ -8,13 +8,13 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
   enableDownload: boolean;
   onSave: () => void;
   onClose: () => void;
-  viewerImages: APIImageV2Data[];
+  viewerImages: AppImageMetaData[];
   imageIndex: number;
   imageViewImages: (ImageURISource | ImageRequireSource)[];
 }

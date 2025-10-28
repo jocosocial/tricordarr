@@ -3,7 +3,7 @@ import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
 
-export interface APIImageV2Data {
+export interface AppImageMetaData {
   fileName: string;
   thumbURI?: string;
   fullURI?: string;
@@ -14,8 +14,8 @@ export interface APIImageV2Data {
   dataURI?: string;
   identiconURI?: string;
 }
-export namespace APIImageV2Data {
-  export const fromFileName = (fileName: string, appConfig: AppConfig): APIImageV2Data => {
+export namespace AppImageMetaData {
+  export const fromFileName = (fileName: string, appConfig: AppConfig): AppImageMetaData => {
     return {
       fileName: fileName,
       thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
@@ -24,7 +24,7 @@ export namespace APIImageV2Data {
     };
   };
 
-  export const fromIdenticon = (userID: string, appConfig: AppConfig): APIImageV2Data => {
+  export const fromIdenticon = (userID: string, appConfig: AppConfig): AppImageMetaData => {
     return {
       fileName: `${userID}.png`,
       identiconURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
@@ -37,7 +37,7 @@ export namespace APIImageV2Data {
    * @param uri
    * @returns
    */
-  export const fromURI = (uri: string): APIImageV2Data => {
+  export const fromURI = (uri: string): AppImageMetaData => {
     // Remove query parameters before extracting filename
     const uriWithoutQuery = uri.split('?')[0];
     const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
@@ -74,7 +74,7 @@ export namespace APIImageV2Data {
    * and we insert its base64 data into a form field. We do this so that the preview can
    * support the AppImageViewer component for inspection.
    */
-  export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): APIImageV2Data => {
+  export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
     return {
       fileName: fileName,
@@ -94,7 +94,7 @@ export namespace APIImageV2Data {
    * @param imageAsset The imported image asset
    * @param fileName The filename with extension (used to determine MIME type)
    */
-  export const fromAsset = (imageAsset: ImageRequireSource, fileName: string): APIImageV2Data => {
+  export const fromAsset = (imageAsset: ImageRequireSource, fileName: string): AppImageMetaData => {
     // Determine mimeType based on file extension
     const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
 

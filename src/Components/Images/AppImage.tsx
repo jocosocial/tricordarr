@@ -6,14 +6,14 @@ import {Card} from 'react-native-paper';
 import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface AppImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
-  image: APIImageV2Data;
+  image: AppImageMetaData;
   disableTouch?: boolean;
-  viewerImages?: APIImageV2Data[];
+  viewerImages?: AppImageMetaData[];
   initialViewerIndex?: number;
   onPress?: () => void;
 }
@@ -45,7 +45,7 @@ export const AppImage = ({
   onPress,
 }: AppImageProps) => {
   const {commonStyles} = useStyles();
-  const [viewerImagesState, setViewerImagesState] = useState<APIImageV2Data[]>(viewerImages);
+  const [viewerImagesState, setViewerImagesState] = useState<AppImageMetaData[]>(viewerImages);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   const handlePress = () => {

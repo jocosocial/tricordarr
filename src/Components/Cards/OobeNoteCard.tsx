@@ -4,7 +4,7 @@ import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImageV2Data} from '#src/Types/APIImageV2Data';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import twitarrteam from '#assets/contributors/twitarrteam.jpg';
@@ -20,7 +20,7 @@ export const OobeNoteCard = () => {
           and have a great cruise!
         </Text>
       </Card.Content>
-      <AppImage image={APIImageV2Data.fromURI(Image.resolveAssetSource(twitarrteam).uri)} mode={'cardcover'} />
+      <AppImage image={AppImageMetaData.fromURI(Image.resolveAssetSource(twitarrteam).uri)} mode={'cardcover'} />
     </Card>
   );
 };
