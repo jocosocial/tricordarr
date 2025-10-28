@@ -19,10 +19,3 @@ That's great except I don't seem to be using Yarn.
 To do version revs, use Xcode or edit `project.pbxproj`.
 
 `npx uri-scheme add tricordarr --ios`
-
-Big TODO
-========
-* Foreground Service Worker
-* Photostream Blur
-* Permissions for media stuff
-

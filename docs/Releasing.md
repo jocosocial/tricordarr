@@ -10,7 +10,21 @@ Version number plan:
 
 Android
 -------
-https://reactnative.dev/docs/signed-apk-android
+
+### Setup
+
+At the root of the repo need `local.properties`:
+
+```bash
+TRICORDARR_UPLOAD_STORE_FILE=../../Tricordarr-Upload.keystore
+TRICORDARR_UPLOAD_STORE_PASSWORD=redacted
+TRICORDARR_UPLOAD_KEY_ALIAS=tricordarr-upload
+TRICORDARR_UPLOAD_KEY_PASSWORD=redacted
+```
+
+Then put the keystore there too.
+
+### Build Release
 
 Edit `android/app/build.gradle` with appropriate version info.
 
@@ -26,4 +40,5 @@ adb -s device-name-here install ~/Projects/jocosocial/tricordarr/android/app/bui
 
 iOS
 ---
+
 Set the version info in Xcode. Click the target `Tricordarr` then in the `General` tab under `Identity`.
