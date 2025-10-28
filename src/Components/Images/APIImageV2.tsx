@@ -1,4 +1,4 @@
-import FastImage, {ImageStyle as FastImageStyle} from '@d11/react-native-fast-image';
+import FastImage, {ImageStyle as FastImageStyle, OnErrorEvent, OnProgressEvent} from '@d11/react-native-fast-image';
 import React from 'react';
 import {useCallback, useState} from 'react';
 import {type ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from 'react-native';
@@ -8,8 +8,10 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {HelpModalView} from '#src/Components/Views/Modals/HelpModalView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
@@ -23,6 +25,11 @@ interface APIImageV2Props {
   initialSize?: keyof typeof APIImageSizePaths;
 }
 
+/**
+ * Displays an Image from the Swiftarr API. This will properly handle itself if the Images
+ * feature is disabled. It will also include an image viewer that allows the user to see
+ * the image in more detail.
+ */
 export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
@@ -31,7 +38,11 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   const isDisabled = getIsDisabled(SwiftarrFeature.images);
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
-  const [imageData, setImageData] = useState<APIImageV2Data>(APIImageV2Data.fromFileName(path, appConfig));
+  const [imageSourceMetadata, setImageSourceMetadata] = useState<APIImageV2Data>(
+    APIImageV2Data.fromFileName(path, appConfig),
+  );
+  const {setErrorBanner} = useErrorHandler();
+  const {setSnackbarPayload} = useSnackbar();
 
   const styles = StyleSheet.create({
     disabledCard: {
@@ -43,16 +54,46 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     },
   });
 
-  const onLoad = () => {
-    setViewerImages([imageData]);
-  };
-
-  const onPress = useCallback(() => {
-    setIsViewerVisible(true);
-  }, [setIsViewerVisible]);
+  /**
+   * Callback that fires when the image is successfully loaded. This will give information
+   * to the image viewer.
+   */
+  const onLoad = useCallback(() => {
+    setViewerImages([imageSourceMetadata]);
+  }, [imageSourceMetadata]);
 
   /**
-   * Function to show the disabled modal if we need to do that. See below.
+   * Callback that fires when the image is pressed. In our case this opens the image viewer.
+   */
+  const onPress = useCallback(() => {
+    if (viewerImages.length !== 0) {
+      setIsViewerVisible(true);
+      return;
+    }
+    setErrorBanner('Error loading image');
+  }, [setIsViewerVisible, setErrorBanner, viewerImages]);
+
+  /**
+   * Callback that fires when the image fails to load. This will display an error message
+   * in the snackbar.
+   */
+  const onError = useCallback(
+    (event: OnErrorEvent) => {
+      setSnackbarPayload({message: String(event.nativeEvent.error), messageType: 'error'});
+    },
+    [setSnackbarPayload],
+  );
+
+  /**
+   * Callback that fires when the image is loading. At least theoretically. When
+   * testing in low network conditions nothing happened. EDGE might have been too low.
+   */
+  const onProgress = useCallback((event: OnProgressEvent) => {
+    console.log('onProgress', event.nativeEvent.loaded, event.nativeEvent.total);
+  }, []);
+
+  /**
+   * Callback to show the disabled modal if we need to do that. See below.
    */
   const handleDisableModal = useCallback(() => {
     setModalContent(
@@ -65,15 +106,23 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     setModalVisible(true);
   }, [setModalContent, setModalVisible]);
 
+  /**
+   * Effect to set the image source metadata on mount.This is used to display the image in
+   * the image viewer and what to show in the underlying image component.
+   */
   React.useEffect(() => {
-    setImageData(APIImageV2Data.fromFileName(path, appConfig));
+    setImageSourceMetadata(APIImageV2Data.fromFileName(path, appConfig));
   }, [path, appConfig]);
 
+  /**
+   * Effect to preload the full image if the initial size is set to thumb.
+   * That gets handled under the hood by the FastImage component.
+   */
   React.useEffect(() => {
     if (initialSize === 'thumb') {
-      FastImage.preload([{uri: imageData.fullURI}]);
+      FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
     }
-  }, [initialSize, imageData.fullURI]);
+  }, [initialSize, imageSourceMetadata.fullURI]);
 
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
@@ -97,8 +146,10 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
           <FastImage
             resizeMode={'cover'}
             style={styles.image}
-            source={{uri: initialSize === 'full' ? imageData.fullURI : imageData.thumbURI}}
+            source={{uri: initialSize === 'full' ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI}}
             onLoad={onLoad}
+            onError={onError}
+            onProgress={onProgress}
           />
         )}
         {/* {mode === 'scaledimage' && (
