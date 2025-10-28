@@ -1,11 +1,13 @@
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;
@@ -26,7 +28,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
         onIconPress={props.onIconPress}
         onImagePress={props.onImagePress}
         disabled={props.disabled}>
-        <Image resizeMode={'cover'} style={styles.image} source={{uri: `data:image;base64,${props.imageData.image}`}} />
+        <AppImage mode={'image'} image={APIImageV2Data.fromData(props.imageData.image)} style={styles.image} />
       </ContentPostAttachment>
     );
   } else if (props.imageData.filename) {
