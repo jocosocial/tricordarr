@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import {Card} from 'react-native-paper';
+import React from 'react';
 
-import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
@@ -25,8 +23,6 @@ import SunsetImage from '#assets/mainview_sunset.jpg';
 export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
-  const [isViewerVisible, setIsViewerVisible] = useState(false);
-  const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
@@ -65,31 +61,24 @@ export const MainImageCardCover = () => {
     viewerIndex = 4;
   }
 
-  // Load viewer images
-  useEffect(() => {
-    const images = [
+  const viewerImages = React.useMemo(
+    () => [
       APIImageV2Data.fromAsset(DayImage, 'mainview_day.jpg'),
       APIImageV2Data.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
       APIImageV2Data.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
       APIImageV2Data.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
       APIImageV2Data.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
       APIImageV2Data.fromAsset(NightImage, 'mainview_night.jpg'),
-    ];
-    setViewerImages(images);
-    console.log('viewerImages', images);
-  }, []);
+    ],
+    [],
+  );
 
   return (
-    <View>
-      <AppImageViewer
-        viewerImages={viewerImages}
-        isVisible={isViewerVisible}
-        setIsVisible={setIsViewerVisible}
-        initialIndex={viewerIndex}
-      />
-      <TouchableOpacity onPress={() => setIsViewerVisible(true)}>
-        <Card.Cover source={sourceImage} />
-      </TouchableOpacity>
-    </View>
+    <AppImage
+      mode={'cardcover'}
+      image={APIImageV2Data.fromAsset(sourceImage, 'current_image.jpg')}
+      viewerImages={viewerImages}
+      initialViewerIndex={viewerIndex}
+    />
   );
 };

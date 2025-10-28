@@ -13,10 +13,13 @@ interface AppImageProps {
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
   image: APIImageV2Data;
   disableTouch?: boolean;
+  viewerImages?: APIImageV2Data[];
+  initialViewerIndex?: number;
 }
 
 /**
  * AppImage is for displaying an image. Very similar to APIImageV2, but without the API integration.
+ * Used for displaying app assets.
  *
  * This also includes the AppImageViewer which is the "modal" component that appears when
  * you tap on an image that lets you zoom, download, and other stuff.
@@ -27,21 +30,39 @@ interface AppImageProps {
  * @param disableTouch Disable touching the image.
  * @constructor
  */
-export const AppImage = ({image, style, mode = 'cardcover', disableTouch = false}: AppImageProps) => {
+export const AppImage = ({
+  image,
+  style,
+  mode = 'cardcover',
+  disableTouch = false,
+  viewerImages = [],
+  initialViewerIndex,
+}: AppImageProps) => {
   const {commonStyles} = useStyles();
-  const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
+  const [viewerImagesState, setViewerImagesState] = useState<APIImageV2Data[]>(viewerImages);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   const handlePress = () => {
-    setViewerImages([image]);
+    if (viewerImagesState.length === 0) {
+      console.log('setting viewer images state', image);
+      setViewerImagesState([image]);
+    }
     setIsViewerVisible(true);
   };
 
+  // @TODO this is all busted
   const imageUriSource = image.dataURI ? {uri: image.dataURI} : {uri: image.fullURI};
 
   return (
     <View>
-      <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
+      <AppImageViewer
+        // @TODO disable downloads because it's all busted
+        enableDownload={false}
+        viewerImages={viewerImagesState}
+        isVisible={isViewerVisible}
+        setIsVisible={setIsViewerVisible}
+        initialIndex={initialViewerIndex}
+      />
       <TouchableOpacity activeOpacity={1} onPress={handlePress} disabled={disableTouch}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
         {mode === 'image' && (

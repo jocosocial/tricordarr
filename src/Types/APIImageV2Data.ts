@@ -1,4 +1,4 @@
-import {ImageRequireSource} from 'react-native';
+import {Image, ImageRequireSource} from 'react-native';
 import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
@@ -8,7 +8,7 @@ export interface APIImageV2Data {
   thumbURI?: string;
   fullURI?: string;
   mimeType: string;
-  dataURI?: string; // Base64 encoded image data
+  dataURI?: string;
 }
 export namespace APIImageV2Data {
   export const fromFileName = (fileName: string, appConfig: AppConfig): APIImageV2Data => {
@@ -89,6 +89,8 @@ export namespace APIImageV2Data {
     return {
       fileName: fileName,
       mimeType: mimeType,
+      // @TODO this is not what a dataURI is
+      dataURI: Image.resolveAssetSource(imageAsset).uri,
     };
   };
 }
