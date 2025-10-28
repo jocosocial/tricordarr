@@ -52,6 +52,9 @@ export type ScheduleFilterSettings = {
 
 export type ScheduleCardMarkerType = 'now' | 'soon' | undefined;
 
+/**
+ * @deprecated Use APIImageV2Data instead.
+ */
 export interface ImageQueryData {
   base64?: string;
   mimeType: string;
@@ -59,6 +62,9 @@ export interface ImageQueryData {
   fileName: string;
 }
 
+/**
+ * @deprecated Use APIImageV2Data instead.
+ */
 export namespace ImageQueryData {
   export const fromData = (data: string): ImageQueryData => {
     return {
@@ -166,6 +172,7 @@ export interface APIImageV2Data {
   thumbURI: string;
   fullURI: string;
   mimeType: string;
+  fullCachePath?: string | null;
 }
 
 export namespace APIImageV2Data {

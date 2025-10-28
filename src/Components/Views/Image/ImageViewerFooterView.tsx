@@ -3,11 +3,11 @@ import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;
-  viewerImages: ImageQueryData[];
+  viewerImages: APIImageV2Data[];
 }
 
 /**

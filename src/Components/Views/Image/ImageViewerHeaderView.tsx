@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {ImageRequireSource, ImageURISource, Platform, StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
@@ -7,14 +7,15 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 interface ImageViewerHeaderViewProps {
   enableDownload: boolean;
   onSave: () => void;
   onClose: () => void;
-  viewerImages: ImageQueryData[];
+  viewerImages: APIImageV2Data[];
   imageIndex: number;
+  imageViewImages: (ImageURISource | ImageRequireSource)[];
 }
 
 export const ImageViewerHeaderView = ({
@@ -23,6 +24,7 @@ export const ImageViewerHeaderView = ({
   enableDownload,
   onSave,
   onClose,
+  imageViewImages,
 }: ImageViewerHeaderViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
@@ -64,9 +66,16 @@ export const ImageViewerHeaderView = ({
           </Text>
           <HyperlinkText disableLinkInterpolation={true}>
             <Text selectable={true} style={styles.infoText} variant={'bodyMedium'}>
-              Data URI: {viewerImages[imageIndex].dataURI}
+              Full URI: {viewerImages[imageIndex].fullURI}
             </Text>
           </HyperlinkText>
+          {typeof imageViewImages[imageIndex] === 'object' && 'uri' in imageViewImages[imageIndex] && (
+            <HyperlinkText disableLinkInterpolation={true}>
+              <Text selectable={true} style={styles.infoText} variant={'bodyMedium'}>
+                Render URI: {imageViewImages[imageIndex].uri}
+              </Text>
+            </HyperlinkText>
+          )}
         </>
       )}
     </View>

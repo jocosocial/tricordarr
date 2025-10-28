@@ -6,13 +6,13 @@ import ImageView from 'react-native-image-viewing';
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
 import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFooterView';
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
-import {saveImageQueryToLocal, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
+import {saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 interface AppImageViewerProps {
   initialIndex?: number;
-  viewerImages?: ImageQueryData[];
+  viewerImages?: APIImageV2Data[];
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
   enableDownload?: boolean;
@@ -34,20 +34,23 @@ export const AppImageViewer = ({
   const [imageViewImages, setImageViewImages] = useState<(ImageURISource | ImageRequireSource)[]>([]);
   const theme = useAppTheme();
 
+  const getImageCacheURI = useCallback(async (image: APIImageV2Data) => {
+    const cachePath = await FastImage.getCachePath({uri: image.fullURI});
+    if (cachePath) {
+      return `file://${cachePath}`;
+    }
+    return undefined;
+  }, []);
+
   const saveImage = useCallback(
     async (index: number) => {
       try {
         const image = viewerImages[index];
-        if (image.base64) {
-          await saveImageQueryToLocal(image);
+        const cacheURI = await getImageCacheURI(image);
+        if (cacheURI) {
+          await saveImageURIToLocal(image.fileName, cacheURI);
         } else {
-          // await saveImageURIToLocal(image.fileName, image.dataURI);
-          const cachePath = await FastImage.getCachePath({uri: image.dataURI});
-          if (cachePath) {
-            await saveImageURIToLocal(image.fileName, `file://${cachePath}`);
-          } else {
-            await saveImageURIToLocal(image.fileName, image.dataURI);
-          }
+          await saveImageURIToLocal(image.fileName, image.fullURI);
         }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
@@ -55,7 +58,7 @@ export const AppImageViewer = ({
         setViewerMessage(error);
       }
     },
-    [viewerImages],
+    [viewerImages, getImageCacheURI],
   );
 
   const onClose = useCallback(() => {
@@ -72,10 +75,11 @@ export const AppImageViewer = ({
           enableDownload={enableDownload}
           onSave={() => saveImage(imageIndex)}
           onClose={onClose}
+          imageViewImages={imageViewImages}
         />
       );
     },
-    [enableDownload, saveImage, onClose, viewerImages],
+    [enableDownload, saveImage, onClose, viewerImages, imageViewImages],
   );
 
   const viewerFooter = useCallback(
@@ -97,12 +101,20 @@ export const AppImageViewer = ({
   }, [viewerImages, initialIndex]);
 
   useEffect(() => {
-    setImageViewImages(
-      viewerImages.map(image => {
-        return {uri: image.dataURI};
-      }),
-    );
-  }, [viewerImages]);
+    const getImages = async () => {
+      const images = await Promise.all(
+        viewerImages.map(async image => {
+          const cacheURI = await getImageCacheURI(image);
+          if (cacheURI) {
+            return {uri: cacheURI};
+          }
+          return {uri: image.fullURI};
+        }),
+      );
+      setImageViewImages(images);
+    };
+    getImages();
+  }, [viewerImages, getImageCacheURI]);
 
   if (!viewerImages) {
     return <></>;

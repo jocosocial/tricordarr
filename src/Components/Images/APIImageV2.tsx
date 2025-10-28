@@ -13,7 +13,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {APIImageSizePaths, APIImageV2Data, ImageQueryData} from '#src/Types';
+import {APIImageSizePaths, APIImageV2Data} from '#src/Types';
 
 interface APIImageV2Props {
   path: string;
@@ -24,7 +24,7 @@ interface APIImageV2Props {
 }
 
 export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIImageV2Props) => {
-  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
+  const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();
   const {getIsDisabled} = useFeature();
@@ -44,13 +44,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   });
 
   const onLoad = () => {
-    setViewerImages([
-      {
-        dataURI: imageData.fullURI,
-        fileName: imageData.fileName,
-        mimeType: imageData.mimeType,
-      },
-    ]);
+    setViewerImages([imageData]);
   };
 
   const onPress = useCallback(() => {
