@@ -1,3 +1,4 @@
+import {Image, ImageRequireSource} from 'react-native';
 import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
@@ -19,6 +20,11 @@ export namespace APIImageV2Data {
     };
   };
 
+  /**
+   * @deprecated nope
+   * @param uri
+   * @returns
+   */
   export const fromURI = (uri: string): APIImageV2Data => {
     // Remove query parameters before extracting filename
     const uriWithoutQuery = uri.split('?')[0];
@@ -51,6 +57,11 @@ export namespace APIImageV2Data {
     };
   };
 
+  /**
+   * Create an object from a base64 data string. This is used when the user takes a photo
+   * and we insert its base64 data into a form field. We do this so that the preview can
+   * support the AppImageViewer component for inspection.
+   */
   export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): APIImageV2Data => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
     return {
@@ -59,7 +70,36 @@ export namespace APIImageV2Data {
       dataURI: `data:${mimeType};base64,${base64Data}`,
     };
   };
+
+  /**
+   * Create an object from a directly imported image asset (ImageRequireSource).
+   * This function converts a local asset import like `import DayImage from '#assets/mainview_day.jpg'`
+   * into an APIImageV2Data object with proper URI, mimeType, and fileName.
+   * Note: For bundled assets, we use the URI directly instead of base64 data since
+   * bundled assets can't be easily read as files.
+   */
+  export const fromAsset = (imageAsset: ImageRequireSource): APIImageV2Data => {
+    const resolvedAsset = Image.resolveAssetSource(imageAsset);
+    const uri = resolvedAsset.uri;
+
+    // Extract fileName from URI (remove query parameters first)
+    const uriWithoutQuery = uri.split('?')[0];
+    const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
+
+    // Determine mimeType based on file extension
+    const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
+
+    return {
+      fileName: fileName,
+      mimeType: mimeType,
+      dataURI: uri, // Use the URI directly instead of base64 data
+    };
+  };
 }
+
+/**
+ * Mapping of supported image sizes to URL paths.
+ */
 export const APIImageSizePaths = {
   thumb: 'thumb',
   full: 'full',

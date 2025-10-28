@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
@@ -26,6 +26,7 @@ export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
   const [isViewerVisible, setIsViewerVisible] = useState(false);
+  const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
@@ -64,14 +65,19 @@ export const MainImageCardCover = () => {
     viewerIndex = 4;
   }
 
-  const viewerImages: APIImageV2Data[] = [
-    APIImageV2Data.fromURI(Image.resolveAssetSource(DayImage).uri),
-    APIImageV2Data.fromURI(Image.resolveAssetSource(HappyHourImage).uri),
-    APIImageV2Data.fromURI(Image.resolveAssetSource(MainShowImage).uri),
-    APIImageV2Data.fromURI(Image.resolveAssetSource(SunsetImage).uri),
-    APIImageV2Data.fromURI(Image.resolveAssetSource(LateShowImage).uri),
-    APIImageV2Data.fromURI(Image.resolveAssetSource(NightImage).uri),
-  ];
+  // Load viewer images
+  useEffect(() => {
+    const images = [
+      APIImageV2Data.fromAsset(DayImage),
+      APIImageV2Data.fromAsset(HappyHourImage),
+      APIImageV2Data.fromAsset(MainShowImage),
+      APIImageV2Data.fromAsset(SunsetImage),
+      APIImageV2Data.fromAsset(LateShowImage),
+      APIImageV2Data.fromAsset(NightImage),
+    ];
+    setViewerImages(images);
+    console.log('viewerImages', images);
+  }, []);
 
   return (
     <View>
