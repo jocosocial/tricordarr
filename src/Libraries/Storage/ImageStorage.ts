@@ -73,6 +73,89 @@ export const saveImageQueryToLocal = async (imageData: ImageQueryData) => {
   return cameraRollSaveResult;
 };
 
+/**
+ * Saves an image to the device's camera roll.
+ * Handles different types of dataURI sources:
+ * - file:// URIs: Copies the file to a temporary location
+ * - http/https URIs: Downloads the file to a temporary location
+ * - asset:// URIs: Copies bundled assets to a temporary location
+ * - data: URIs: Writes base64 data to a temporary location
+ *
+ * @deprecated doesnt work
+ * @param image The APIImageV2Data object containing the image information
+ * @returns Promise<CameraRoll.Asset> The camera roll save result
+ * @throws Error if the dataURI is not provided or unsupported format
+ */
+export const newSaveImage = async (image: APIImageV2Data) => {
+  // Always get the proper destination path for the file
+  let destPath = getImageDestinationPath(image.fileName, image.mimeType);
+
+  if (!image.dataURI) {
+    throw new Error(`No dataURI provided for image ${image.fileName}`);
+  }
+
+  const dataURI = image.dataURI;
+
+  try {
+    // Handle different types of dataURI
+    if (dataURI.startsWith('file://')) {
+      // Copy file from local file system to destination
+      console.log('[ImageStorage.ts] Copying file from', dataURI, 'to', destPath);
+      await RNFS.copyFile(dataURI, destPath);
+    } else if (dataURI.startsWith('http://') || dataURI.startsWith('https://')) {
+      // Download file from URL to destination
+      console.log('[ImageStorage.ts] Downloading file from', dataURI, 'to', destPath);
+      const result = await RNFS.downloadFile({
+        fromUrl: dataURI,
+        toFile: destPath,
+      }).promise;
+
+      if (result.statusCode !== 200) {
+        throw new Error(`Failed to download file: HTTP ${result.statusCode}`);
+      }
+    } else if (dataURI.startsWith('asset://') || dataURI.includes('asset_')) {
+      // Handle bundled assets - these are typically referenced by name like 'asset_mainview_day'
+      // The fromAsset function in APIImageV2Data resolves these to actual file paths
+      // so we can treat them like regular file:// URIs
+      console.log('[ImageStorage.ts] Handling bundled asset:', dataURI);
+      await RNFS.copyFile(dataURI, destPath);
+    } else if (dataURI.startsWith('data:')) {
+      // Handle base64 data URI
+      console.log('[ImageStorage.ts] Writing base64 data to', destPath);
+      const base64Data = dataURI.split(',')[1]; // Remove the data:image/jpeg;base64, prefix
+      await RNFS.writeFile(destPath, base64Data, 'base64');
+    } else {
+      throw new Error(`Unsupported dataURI format: ${dataURI.substring(0, 50)}...`);
+    }
+
+    // Always save to camera roll and return the response
+    console.log('[ImageStorage.ts] Saving to camera roll:', destPath);
+    const response = await CameraRoll.saveAsset(destPath, {
+      type: 'photo',
+      album: 'Tricordarr',
+    });
+
+    // Clean up the temporary file
+    await RNFS.unlink(destPath);
+
+    console.log('[ImageStorage.ts] Successfully saved to camera roll:', response);
+    return response;
+  } catch (error) {
+    // Clean up the temporary file if it exists
+    try {
+      const exists = await RNFS.exists(destPath);
+      if (exists) {
+        await RNFS.unlink(destPath);
+      }
+    } catch (cleanupError) {
+      console.warn('[ImageStorage.ts] Failed to clean up temporary file:', cleanupError);
+    }
+
+    console.error('[ImageStorage.ts] Failed to save image:', error);
+    throw error;
+  }
+};
+
 export const configureImageCache = () => {
   CacheManager.config = {
     baseDir: `${Dirs.CacheDir}/images_cache/`,

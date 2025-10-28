@@ -65,21 +65,21 @@ export const ImageViewerHeaderView = ({
       {showMetadata && (
         <PaddedContentView padTop={true} style={styles.textContainer}>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-            MIME Type: {viewerImages[imageIndex].mimeType}
+            mimeType: {viewerImages[imageIndex].mimeType}
           </Text>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-            Data URI:{' '}
+            dataURI:{' '}
             {viewerImages[imageIndex].dataURI ? `${viewerImages[imageIndex].dataURI.substring(0, 40)}...` : undefined}
           </Text>
           <HyperlinkText disableLinkInterpolation={true}>
             <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-              Full URI: {viewerImages[imageIndex].fullURI}
+              fullURI: {viewerImages[imageIndex].fullURI}
             </Text>
           </HyperlinkText>
           {typeof imageViewImages[imageIndex] === 'object' && 'uri' in imageViewImages[imageIndex] && (
             <HyperlinkText disableLinkInterpolation={true}>
               <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-                Render URI: {imageViewImages[imageIndex].uri}
+                [render]uri: {imageViewImages[imageIndex].uri}
               </Text>
             </HyperlinkText>
           )}

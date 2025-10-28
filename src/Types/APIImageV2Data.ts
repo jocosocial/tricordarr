@@ -1,4 +1,4 @@
-import {Image, ImageRequireSource} from 'react-native';
+import {ImageRequireSource} from 'react-native';
 import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
@@ -78,20 +78,17 @@ export namespace APIImageV2Data {
    * Note: For bundled assets, we use the URI directly instead of base64 data since
    * bundled assets can't be easily read as files.
    *
+   * @deprecated doesnt work
    * @param imageAsset The imported image asset
    * @param fileName The filename with extension (used to determine MIME type)
    */
   export const fromAsset = (imageAsset: ImageRequireSource, fileName: string): APIImageV2Data => {
-    const resolvedAsset = Image.resolveAssetSource(imageAsset);
-    const uri = resolvedAsset.uri;
-
     // Determine mimeType based on file extension
     const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
 
     return {
       fileName: fileName,
       mimeType: mimeType,
-      dataURI: uri, // Use the URI directly instead of base64 data
     };
   };
 }
