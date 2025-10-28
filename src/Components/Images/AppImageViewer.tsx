@@ -57,16 +57,18 @@ export const AppImageViewer = ({
         const image = viewerImages[index];
         if (image.dataURI) {
           await saveImageDataURIToCameraRoll(image);
-          return;
-        }
-        const cacheURI = await getImageCacheURI(image);
-        if (cacheURI) {
-          await saveImageURIToLocal(image.fileName, cacheURI);
+        } else if (image.identiconURI) {
+          await saveImageURIToLocal(image.fileName, image.identiconURI);
         } else {
-          if (image.fullURI) {
-            await saveImageURIToLocal(image.fileName, image.fullURI);
+          const cacheURI = await getImageCacheURI(image);
+          if (cacheURI) {
+            await saveImageURIToLocal(image.fileName, cacheURI);
+          } else {
+            if (image.fullURI) {
+              await saveImageURIToLocal(image.fileName, image.fullURI);
+            }
+            throw Error('No image URI to save');
           }
-          throw Error('No image URI to save');
         }
         setViewerMessage('Saved to camera roll.');
       } catch (error: any) {
@@ -135,6 +137,9 @@ export const AppImageViewer = ({
         viewerImages.map(async image => {
           if (image.dataURI) {
             return {uri: image.dataURI};
+          }
+          if (image.identiconURI) {
+            return {uri: image.identiconURI};
           }
           const cacheURI = await getImageCacheURI(image);
           if (cacheURI) {

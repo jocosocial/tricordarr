@@ -50,7 +50,9 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
   const {setModalContent, setModalVisible} = useModal();
   const {appConfig} = useConfig();
   const [imageSourceMetadata, setImageSourceMetadata] = useState<APIImageV2Data>(
-    APIImageV2Data.fromFileName(path, appConfig),
+    staticSize === 'identicon'
+      ? APIImageV2Data.fromIdenticon(path, appConfig)
+      : APIImageV2Data.fromFileName(path, appConfig),
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
@@ -135,19 +137,23 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
   }, [setModalContent, setModalVisible]);
 
   /**
-   * Effect to set the image source metadata on mount.This is used to display the image in
+   * Effect to set the image source metadata on mount. This is used to display the image in
    * the image viewer and what to show in the underlying image component.
    */
   React.useEffect(() => {
-    setImageSourceMetadata(APIImageV2Data.fromFileName(path, appConfig));
-  }, [path, appConfig]);
+    setImageSourceMetadata(
+      staticSize === 'identicon'
+        ? APIImageV2Data.fromIdenticon(path, appConfig)
+        : APIImageV2Data.fromFileName(path, appConfig),
+    );
+  }, [path, appConfig, staticSize]);
 
   /**
    * Effect to preload the full image if the initial size is set to thumb.
    * That gets handled under the hood by the FastImage component.
    */
   React.useEffect(() => {
-    if (staticSize !== 'thumb') {
+    if (staticSize === 'thumb' && imageSourceMetadata.fullURI) {
       FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
     }
   }, [staticSize, imageSourceMetadata.fullURI]);
@@ -159,6 +165,10 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
   React.useEffect(() => {
     if (staticSize === 'thumb') {
       setImageSource({uri: imageSourceMetadata.thumbURI});
+      return;
+    }
+    if (staticSize === 'identicon') {
+      setImageSource({uri: imageSourceMetadata.identiconURI});
       return;
     }
     const hasCachePath = async () => {
@@ -174,7 +184,13 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
         });
       }
     });
-  }, [staticSize, appConfig.skipThumbnails, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
+  }, [
+    staticSize,
+    appConfig.skipThumbnails,
+    imageSourceMetadata.fullURI,
+    imageSourceMetadata.thumbURI,
+    imageSourceMetadata.identiconURI,
+  ]);
 
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.

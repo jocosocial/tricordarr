@@ -8,7 +8,11 @@ export interface APIImageV2Data {
   thumbURI?: string;
   fullURI?: string;
   mimeType: string;
+  /**
+   * @deprecated need dataURI to go away in V2 and deal with assets better.
+   */
   dataURI?: string;
+  identiconURI?: string;
 }
 export namespace APIImageV2Data {
   export const fromFileName = (fileName: string, appConfig: AppConfig): APIImageV2Data => {
@@ -17,6 +21,14 @@ export namespace APIImageV2Data {
       thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
       fullURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
       mimeType: lookupMimeType(fileName) || 'application/octet-stream',
+    };
+  };
+
+  export const fromIdenticon = (userID: string, appConfig: AppConfig): APIImageV2Data => {
+    return {
+      fileName: `${userID}.png`,
+      identiconURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
+      mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
     };
   };
 
@@ -101,4 +113,5 @@ export namespace APIImageV2Data {
 export const APIImageSizePaths = {
   thumb: 'thumb',
   full: 'full',
+  identicon: 'user/identicon',
 } as const;

@@ -5,7 +5,8 @@ import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
-import {APIImage} from '#src/Components/Images/APIImage';
+import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -21,6 +22,37 @@ interface UserProfileAvatarProps {
   setRefreshing: Dispatch<SetStateAction<boolean>>;
 }
 
+const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
+  const {appConfig} = useConfig();
+  const {commonStyles} = useStyles();
+  const styles = StyleSheet.create({
+    image: {
+      ...commonStyles.roundedBorderLarge,
+      ...commonStyles.headerImage,
+    },
+  });
+
+  if (!user.header.userImage) {
+    console.log('[UserProfileAvatarImage.tsx] ITS AN IDENTICON');
+    return <APIImageV2 path={user.header.userID} mode={'image'} style={styles.image} staticSize={'identicon'} />;
+  }
+  return <APIImageV2 path={user.header.userImage} mode={'image'} style={styles.image} />;
+
+  // const imageData: APIImageV2Data = user.header.userImage
+  //   ? APIImageV2Data.fromFileName(user.header.userImage, appConfig)
+  //   : APIImageV2Data.fromIdenticon(user.header.userID, appConfig);
+
+  // console.log('[UserProfileAvatarImage.tsx] imageData', imageData);
+  // if (!imageData.fullURI && !imageData.identiconURI) {
+  //   return <AppIcon icon={AppIcons.error} style={styles.image} />;
+  // }
+
+  // const imagePath = user.header.userImage ? imageData.fullURI : imageData.identiconURI;
+  // console.log('[UserProfileAvatarImage.tsx] imagePath', imagePath);
+
+  // return <APIImageV2 path={imagePath} mode={'image'} style={styles.image} />;
+};
+
 export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps) => {
   const {commonStyles} = useStyles();
   const avatarDeleteMutation = useUserImageDeleteMutation();
@@ -30,13 +62,6 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
   const {data: profilePublicData} = useUserProfileQuery();
   const {getIsDisabled} = useFeature();
   const queryClient = useQueryClient();
-
-  const styles = StyleSheet.create({
-    image: {
-      ...commonStyles.roundedBorderLarge,
-      ...commonStyles.headerImage,
-    },
-  });
 
   const pickImage = async () => {
     try {
@@ -114,16 +139,9 @@ export const UserProfileAvatar = ({user, setRefreshing}: UserProfileAvatarProps)
     return <></>;
   }
 
-  let thumbPath = `/image/thumb/${user.header.userImage}`;
-  let fullPath = `/image/full/${user.header.userImage}`;
-  if (!user.header.userImage) {
-    thumbPath = `/image/user/identicon/${user.header.userID}`;
-    fullPath = `/image/user/identicon/${user.header.userID}`;
-  }
-
   return (
     <View>
-      <APIImage thumbPath={thumbPath} fullPath={fullPath} mode={'image'} style={styles.image} />
+      <UserProfileAvatarImage user={user} />
       {isSelf && !getIsDisabled(SwiftarrFeature.images) && (
         <ImageButtons
           takeImage={takeImage}

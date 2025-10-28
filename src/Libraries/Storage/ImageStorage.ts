@@ -29,9 +29,22 @@ export const saveImageToCameraRoll = async (localURI: string) => {
 export const saveImageURIToLocal = async (fileName: string, imageURI: string) => {
   console.log(`[ImageStorage.ts] Saving image to ${fileName} from ${imageURI}`);
   const cachePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
-  await RNFS.copyFile(imageURI, cachePath);
+  if (imageURI.startsWith('http')) {
+    console.log('[ImageStorage.ts] Downloading file from', imageURI, 'to', cachePath);
+    const result = await RNFS.downloadFile({
+      fromUrl: imageURI,
+      toFile: cachePath,
+    }).promise;
+    if (result.statusCode !== 200) {
+      throw new Error(`Failed to download file: HTTP ${result.statusCode}`);
+    }
+  } else {
+    console.log('[ImageStorage.ts] Copying file from', imageURI, 'to', cachePath);
+    await RNFS.copyFile(imageURI, cachePath);
+  }
   await saveImageToCameraRoll(cachePath);
   await RNFS.unlink(cachePath);
+  console.log('[ImageStorage.ts] Saved to camera roll');
 };
 
 /**
