@@ -20,11 +20,14 @@ interface AppImageProps {
 
 /**
  * AppImage is for displaying an image. Very similar to APIImageV2, but without the API integration.
- * Used for displaying app assets.
+ * Used for displaying app assets and locally taken image data.
  *
  * This also includes the AppImageViewer which is the "modal" component that appears when
  * you tap on an image that lets you zoom, download, and other stuff. Setting your own onPress
  * effectively disables the image viewer.
+ *
+ * "Locally taken image data" means image data that came from the camera via a proper dataURI.
+ * Examples include PhotostreamImageSelectionView or ContentPostAttachedImage.
  *
  * @param image The APIImageV2Data that feeds this image.
  * @param style Custom style props for the image display component.

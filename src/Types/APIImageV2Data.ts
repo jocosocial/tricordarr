@@ -9,7 +9,7 @@ export interface APIImageV2Data {
   fullURI?: string;
   mimeType: string;
   /**
-   * @deprecated need dataURI to go away in V2 and deal with assets better.
+   * @deprecated keep data URI but need to maybe add assetURI or something?
    */
   dataURI?: string;
   identiconURI?: string;
