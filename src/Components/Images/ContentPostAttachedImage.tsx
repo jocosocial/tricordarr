@@ -28,13 +28,24 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
         onIconPress={props.onIconPress}
         onImagePress={props.onImagePress}
         disabled={props.disabled}>
-        <AppImage mode={'image'} image={APIImageV2Data.fromData(props.imageData.image)} style={styles.image} />
+        <AppImage
+          onPress={props.onImagePress}
+          mode={'image'}
+          image={APIImageV2Data.fromData(props.imageData.image)}
+          style={styles.image}
+        />
       </ContentPostAttachment>
     );
   } else if (props.imageData.filename) {
     return (
       <ContentPostAttachment onIconPress={props.onIconPress} disabled={props.disabled}>
-        <APIImageV2 path={props.imageData.filename} style={styles.image} mode={'image'} staticSize={'thumb'} />
+        <APIImageV2
+          onPress={props.onImagePress}
+          path={props.imageData.filename}
+          style={styles.image}
+          mode={'image'}
+          staticSize={'thumb'}
+        />
       </ContentPostAttachment>
     );
   }

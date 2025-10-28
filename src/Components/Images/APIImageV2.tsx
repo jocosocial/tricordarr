@@ -34,14 +34,17 @@ interface APIImageV2Props {
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
   disableTouch?: boolean;
   staticSize?: keyof typeof APIImageSizePaths;
+  onPress?: () => void;
 }
 
 /**
  * Displays an Image from the Swiftarr API. This will properly handle itself if the Images
  * feature is disabled. It will also include an image viewer that allows the user to see
  * the image in more detail.
+ *
+ * Setting your own onPress effectively disables the image viewer.
  */
-export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIImageV2Props) => {
+export const APIImageV2 = ({path, style, mode, disableTouch, staticSize, onPress}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();
@@ -95,7 +98,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
   /**
    * Callback that fires when the image is pressed. In our case this opens the image viewer.
    */
-  const onPress = useCallback(() => {
+  const onPressDefault = useCallback(() => {
     if (viewerImages.length !== 0) {
       setIsViewerVisible(true);
       return;
@@ -216,7 +219,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
-      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress}>
+      <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
           {/* {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />

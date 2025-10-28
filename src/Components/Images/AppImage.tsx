@@ -15,6 +15,7 @@ interface AppImageProps {
   disableTouch?: boolean;
   viewerImages?: APIImageV2Data[];
   initialViewerIndex?: number;
+  onPress?: () => void;
 }
 
 /**
@@ -22,7 +23,8 @@ interface AppImageProps {
  * Used for displaying app assets.
  *
  * This also includes the AppImageViewer which is the "modal" component that appears when
- * you tap on an image that lets you zoom, download, and other stuff.
+ * you tap on an image that lets you zoom, download, and other stuff. Setting your own onPress
+ * effectively disables the image viewer.
  *
  * @param image The APIImageV2Data that feeds this image.
  * @param style Custom style props for the image display component.
@@ -37,6 +39,7 @@ export const AppImage = ({
   disableTouch = false,
   viewerImages = [],
   initialViewerIndex,
+  onPress,
 }: AppImageProps) => {
   const {commonStyles} = useStyles();
   const [viewerImagesState, setViewerImagesState] = useState<APIImageV2Data[]>(viewerImages);
@@ -44,7 +47,6 @@ export const AppImage = ({
 
   const handlePress = () => {
     if (viewerImagesState.length === 0) {
-      console.log('setting viewer images state', image);
       setViewerImagesState([image]);
     }
     setIsViewerVisible(true);
@@ -63,7 +65,7 @@ export const AppImage = ({
         setIsVisible={setIsViewerVisible}
         initialIndex={initialViewerIndex}
       />
-      <TouchableOpacity activeOpacity={1} onPress={handlePress} disabled={disableTouch}>
+      <TouchableOpacity activeOpacity={1} onPress={onPress || handlePress} disabled={disableTouch}>
         {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageUriSource} />}
         {mode === 'image' && (
           <Image resizeMode={'cover'} style={[commonStyles.headerImage, style]} source={imageUriSource} />
