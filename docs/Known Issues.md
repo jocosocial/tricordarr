@@ -18,7 +18,7 @@ React keys must be passed directly to JSX without using spread:
   <Text key={someKey} {...props} /> Error Stack:
 ```
 
-Unrecorded bug in https://github.com/obipawan/react-native-hyperlink
+Unrecorded bug in https://github.com/obipawan/react-native-hyperlink. Patched in this repo.
 
 Historical
 ----------
