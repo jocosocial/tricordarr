@@ -42,7 +42,7 @@ export const AboutTricordarrScreen = () => {
                   <DataTable.Cell>{DeviceInfo.getBuildNumber()}</DataTable.Cell>
                 </DataTable.Row>
                 <DataTable.Row>
-                  <DataTable.Cell>Android</DataTable.Cell>
+                  <DataTable.Cell>OS Version</DataTable.Cell>
                   <DataTable.Cell>{DeviceInfo.getSystemVersion()}</DataTable.Cell>
                 </DataTable.Row>
               </DataTable>
