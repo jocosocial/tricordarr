@@ -67,6 +67,10 @@ export const ImageViewerHeaderView = ({
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
             MIME Type: {viewerImages[imageIndex].mimeType}
           </Text>
+          <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
+            Data URI:{' '}
+            {viewerImages[imageIndex].dataURI ? `${viewerImages[imageIndex].dataURI.substring(0, 40)}...` : undefined}
+          </Text>
           <HyperlinkText disableLinkInterpolation={true}>
             <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
               Full URI: {viewerImages[imageIndex].fullURI}

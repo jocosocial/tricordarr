@@ -77,14 +77,13 @@ export namespace APIImageV2Data {
    * into an APIImageV2Data object with proper URI, mimeType, and fileName.
    * Note: For bundled assets, we use the URI directly instead of base64 data since
    * bundled assets can't be easily read as files.
+   *
+   * @param imageAsset The imported image asset
+   * @param fileName The filename with extension (used to determine MIME type)
    */
-  export const fromAsset = (imageAsset: ImageRequireSource): APIImageV2Data => {
+  export const fromAsset = (imageAsset: ImageRequireSource, fileName: string): APIImageV2Data => {
     const resolvedAsset = Image.resolveAssetSource(imageAsset);
     const uri = resolvedAsset.uri;
-
-    // Extract fileName from URI (remove query parameters first)
-    const uriWithoutQuery = uri.split('?')[0];
-    const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
 
     // Determine mimeType based on file extension
     const mimeType = lookupMimeType(fileName) || 'application/octet-stream';

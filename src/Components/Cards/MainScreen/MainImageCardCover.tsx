@@ -68,12 +68,12 @@ export const MainImageCardCover = () => {
   // Load viewer images
   useEffect(() => {
     const images = [
-      APIImageV2Data.fromAsset(DayImage),
-      APIImageV2Data.fromAsset(HappyHourImage),
-      APIImageV2Data.fromAsset(MainShowImage),
-      APIImageV2Data.fromAsset(SunsetImage),
-      APIImageV2Data.fromAsset(LateShowImage),
-      APIImageV2Data.fromAsset(NightImage),
+      APIImageV2Data.fromAsset(DayImage, 'mainview_day.jpg'),
+      APIImageV2Data.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
+      APIImageV2Data.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
+      APIImageV2Data.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
+      APIImageV2Data.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
+      APIImageV2Data.fromAsset(NightImage, 'mainview_night.jpg'),
     ];
     setViewerImages(images);
     console.log('viewerImages', images);
