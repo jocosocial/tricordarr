@@ -3,6 +3,7 @@ import {ImageRequireSource, ImageURISource, Platform, StyleSheet, View} from 're
 import {IconButton, Text} from 'react-native-paper';
 
 import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
+import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -38,9 +39,11 @@ export const ImageViewerHeaderView = ({
       ...commonStyles.imageViewerBackground,
       ...(Platform.OS === 'ios' && commonStyles.safePaddingTop),
     },
+    textContainer: {
+      ...commonStyles.imageViewerBackgroundAlpha,
+    },
     infoText: {
       ...commonStyles.marginBottomSmall,
-      ...commonStyles.onImageViewer,
     },
   });
 
@@ -60,23 +63,23 @@ export const ImageViewerHeaderView = ({
         <IconButton icon={AppIcons.close} onPress={onClose} iconColor={theme.colors.onImageViewer} />
       </View>
       {showMetadata && (
-        <>
-          <Text selectable={true} style={styles.infoText} variant={'bodyMedium'}>
+        <PaddedContentView padTop={true} style={styles.textContainer}>
+          <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
             MIME Type: {viewerImages[imageIndex].mimeType}
           </Text>
           <HyperlinkText disableLinkInterpolation={true}>
-            <Text selectable={true} style={styles.infoText} variant={'bodyMedium'}>
+            <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
               Full URI: {viewerImages[imageIndex].fullURI}
             </Text>
           </HyperlinkText>
           {typeof imageViewImages[imageIndex] === 'object' && 'uri' in imageViewImages[imageIndex] && (
             <HyperlinkText disableLinkInterpolation={true}>
-              <Text selectable={true} style={styles.infoText} variant={'bodyMedium'}>
+              <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
                 Render URI: {imageViewImages[imageIndex].uri}
               </Text>
             </HyperlinkText>
           )}
-        </>
+        </PaddedContentView>
       )}
     </View>
   );

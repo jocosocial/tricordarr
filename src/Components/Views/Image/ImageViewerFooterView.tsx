@@ -26,7 +26,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.paddingVertical,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
-      ...commonStyles.imageViewerBackground,
+      ...commonStyles.imageViewerBackgroundAlpha,
       ...(Platform.OS === 'ios' && commonStyles.safePaddingBottom),
     },
     verticalContainer: {

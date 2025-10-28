@@ -110,6 +110,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     onImageViewer: {
       color: theme.colors.onImageViewer,
     },
+    imageViewerBackgroundAlpha: {
+      backgroundColor: theme.colors.constantAlphaBlack,
+    },
     chipContainer: {
       ...commonStyles.flexRow,
       ...commonStyles.flexStart,
@@ -123,7 +126,6 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     imageViewerBackground: {
       backgroundColor: theme.colors.constantBlack,
       color: theme.colors.constantWhite,
-      // Opacity of 0.7 was messing with the text color.
     },
     safeMarginTop: {
       marginTop: inset.top,
