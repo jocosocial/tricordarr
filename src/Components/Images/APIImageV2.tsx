@@ -243,7 +243,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
           {appConfig.enableDeveloperOptions && (
             <View style={styles.imageDebugIcon}>
               <AppIcon
-                icon={isThumbnail ? AppIcons.thumbnail : AppIcons.full}
+                icon={isThumbnail ? AppIcons.thumbnail : staticSize === 'identicon' ? AppIcons.user : AppIcons.full}
                 small={true}
                 color={theme.colors.constantWhite}
               />
