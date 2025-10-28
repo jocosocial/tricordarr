@@ -1,5 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
+import {ImageRequireSource, ImageURISource} from 'react-native';
 import ImageView from 'react-native-image-viewing';
 
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
@@ -28,8 +29,9 @@ export const AppImageViewer = ({
   initialIndex = 0,
   enableDownload = true,
 }: AppImageViewerProps) => {
-  const [viewerMessage, setViewerMessage] = useState<string>();
+  const [viewerMessage, setViewerMessage] = useState<string | Error>();
   const [currentImageIndex, setCurrentImageIndex] = useState(initialIndex);
+  const [imageViewImages, setImageViewImages] = useState<(ImageURISource | ImageRequireSource)[]>([]);
   const theme = useAppTheme();
 
   const saveImage = useCallback(
@@ -80,12 +82,8 @@ export const AppImageViewer = ({
     ({imageIndex}: ImageViewerComponentProps) => {
       return (
         <>
-          <ImageViewerSnackbar message={viewerMessage} setMessage={setViewerMessage} />
-          <ImageViewerFooterView
-            currentIndex={imageIndex}
-            viewerImages={viewerImages}
-            setImageIndex={setCurrentImageIndex}
-          />
+          <ImageViewerSnackbar message={viewerMessage as string} setMessage={setViewerMessage} />
+          <ImageViewerFooterView currentIndex={imageIndex} viewerImages={viewerImages} />
         </>
       );
     },
@@ -98,15 +96,21 @@ export const AppImageViewer = ({
     setCurrentImageIndex(initialIndex);
   }, [viewerImages, initialIndex]);
 
+  useEffect(() => {
+    setImageViewImages(
+      viewerImages.map(image => {
+        return {uri: image.dataURI};
+      }),
+    );
+  }, [viewerImages]);
+
   if (!viewerImages) {
     return <></>;
   }
 
   return (
     <ImageView
-      images={viewerImages.map(image => {
-        return {uri: image.dataURI};
-      })}
+      images={imageViewImages}
       imageIndex={currentImageIndex}
       visible={isVisible}
       onRequestClose={onRequestClose}

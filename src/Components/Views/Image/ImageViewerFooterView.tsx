@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
@@ -8,7 +8,6 @@ import {ImageQueryData} from '#src/Types';
 interface ImageViewerFooterViewProps {
   currentIndex: number;
   viewerImages: ImageQueryData[];
-  setImageIndex: Dispatch<SetStateAction<number>>;
 }
 
 /**
