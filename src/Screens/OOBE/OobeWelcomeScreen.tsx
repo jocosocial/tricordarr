@@ -1,6 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {encode as base64_encode} from 'base-64';
 import React from 'react';
 import {Image, StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -15,6 +14,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useAppTheme} from '#src/Styles/Theme';
+import {APIImageV2Data} from '#src/Types';
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
@@ -56,12 +56,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <AppImage
             mode={'scaledimage'}
-            image={{
-              dataURI: Image.resolveAssetSource(tricordarr).uri,
-              mimeType: 'image/jpeg',
-              fileName: 'tricordarr.jpg',
-              base64: base64_encode(tricordarr),
-            }}
+            image={APIImageV2Data.fromURI(Image.resolveAssetSource(tricordarr).uri)}
             style={styles.image}
             disableTouch={true}
           />

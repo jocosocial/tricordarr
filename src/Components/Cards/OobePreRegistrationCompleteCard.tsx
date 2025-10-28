@@ -1,4 +1,3 @@
-import {encode as base64_encode} from 'base-64';
 import React from 'react';
 import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
@@ -7,6 +6,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDayMarker} from '#src/Libraries/DateTime';
+import {APIImageV2Data} from '#src/Types';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';
@@ -24,15 +24,7 @@ export const OobePreRegistrationCompleteCard = () => {
           nothing for it to do until you board the ship. Other than pack.
         </Text>
       </Card.Content>
-      <AppImage
-        image={{
-          dataURI: Image.resolveAssetSource(preregistration).uri,
-          mimeType: 'image/jpeg',
-          fileName: 'preregistration.jpg',
-          base64: base64_encode(preregistration),
-        }}
-        mode={'cardcover'}
-      />
+      <AppImage image={APIImageV2Data.fromURI(Image.resolveAssetSource(preregistration).uri)} mode={'cardcover'} />
     </Card>
   );
 };

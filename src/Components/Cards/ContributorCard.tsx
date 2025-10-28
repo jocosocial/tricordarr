@@ -4,11 +4,11 @@ import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types';
 
 interface ContributorCardProps {
   bodyText: string;
-  image: ImageQueryData;
+  image: APIImageV2Data;
 }
 
 export const ContributorCard = (props: ContributorCardProps) => {
