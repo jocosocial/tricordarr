@@ -25,7 +25,8 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageSizePaths, APIImageV2Data} from '#src/Types';
+import {APIImageSizePaths} from '#src/Types/APIImageV2Data';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface APIImageV2Props {
   path: string;

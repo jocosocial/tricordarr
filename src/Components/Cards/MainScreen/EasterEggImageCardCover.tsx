@@ -3,7 +3,7 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 // @ts-ignore
 import AllImage from '#assets/easteregg_all.jpg';

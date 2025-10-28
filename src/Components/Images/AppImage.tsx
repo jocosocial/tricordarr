@@ -6,7 +6,7 @@ import {Card} from 'react-native-paper';
 import {AppScaledImage} from '#src/Components/Images/AppFastImage';
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface AppImageProps {
   style?: StyleProp<FastImageStyle | RNImageStyle>;

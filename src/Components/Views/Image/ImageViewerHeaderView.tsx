@@ -7,7 +7,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface ImageViewerHeaderViewProps {
   enableDownload: boolean;

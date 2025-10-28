@@ -6,7 +6,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {getDayMarker} from '#src/Libraries/DateTime';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 // @ts-ignore
 import preregistration from '#assets/preregistration.jpg';

@@ -11,7 +11,7 @@ import {AppImage} from '#src/Components/Images/AppImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
-import {ImageQueryData} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
@@ -80,7 +80,7 @@ export const PhotostreamImageSelectionView = () => {
     }
   };
 
-  const imageData = ImageQueryData.fromData(values.image);
+  const imageData = APIImageV2Data.fromData(values.image);
 
   return (
     <View>

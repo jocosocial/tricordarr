@@ -19,7 +19,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 

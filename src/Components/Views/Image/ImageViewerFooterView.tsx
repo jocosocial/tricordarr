@@ -3,7 +3,7 @@ import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;

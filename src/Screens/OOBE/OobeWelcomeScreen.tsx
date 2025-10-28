@@ -14,7 +14,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';

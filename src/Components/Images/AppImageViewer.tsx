@@ -8,7 +8,7 @@ import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFoot
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface AppImageViewerProps {
   initialIndex?: number;

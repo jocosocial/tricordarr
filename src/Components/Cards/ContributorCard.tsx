@@ -4,7 +4,7 @@ import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 interface ContributorCardProps {
   bodyText: string;

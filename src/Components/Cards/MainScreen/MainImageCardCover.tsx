@@ -4,7 +4,7 @@ import {Card} from 'react-native-paper';
 
 import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {APIImageV2Data} from '#src/Types';
+import {APIImageV2Data} from '#src/Types/APIImageV2Data';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';

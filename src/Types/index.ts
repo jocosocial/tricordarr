@@ -9,14 +9,12 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import {lookup as lookupMimeType} from 'react-native-mime-types';
 import Button from 'react-native-paper/lib/typescript/components/Button/Button';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import type {$RemoveChildren} from 'react-native-paper/lib/typescript/types';
 
 import {EventType} from '#src/Enums/EventType';
 import {FezType} from '#src/Enums/FezType';
-import {AppConfig} from '#src/Libraries/AppConfig';
 
 export type StringOrError = string | Error | undefined;
 
@@ -161,38 +159,3 @@ export interface ParamsWithOobe {
 export type RNInputModeOptions = 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
 
 export type RNFlatListSeparatorComponent<TItem> = React.ComponentType<{leadingItem: TItem}> | undefined;
-
-export const APIImageSizePaths = {
-  thumb: 'thumb',
-  full: 'full',
-} as const;
-
-export interface APIImageV2Data {
-  fileName: string;
-  thumbURI: string;
-  fullURI: string;
-  mimeType: string;
-}
-
-export namespace APIImageV2Data {
-  export const fromFileName = (fileName: string, appConfig: AppConfig): APIImageV2Data => {
-    return {
-      fileName: fileName,
-      thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
-      fullURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
-      mimeType: lookupMimeType(fileName) || 'application/octet-stream',
-    };
-  };
-
-  export const fromURI = (uri: string): APIImageV2Data => {
-    // Remove query parameters before extracting filename
-    const uriWithoutQuery = uri.split('?')[0];
-    const fileName = uriWithoutQuery.split('/').pop() || 'unknown';
-    return {
-      fileName: fileName,
-      thumbURI: uri,
-      fullURI: uri,
-      mimeType: lookupMimeType(fileName) || 'application/octet-stream',
-    };
-  };
-}
