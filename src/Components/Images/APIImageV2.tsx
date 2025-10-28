@@ -1,7 +1,15 @@
 import FastImage, {ImageStyle as FastImageStyle, OnErrorEvent, OnProgressEvent} from '@d11/react-native-fast-image';
+import {type Source as FastImageSource} from '@d11/react-native-fast-image';
 import React from 'react';
 import {useCallback, useState} from 'react';
-import {type ImageStyle as RNImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  type ImageStyle as RNImageStyle,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
@@ -16,6 +24,7 @@ import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
+import {useAppTheme} from '#src/Styles/Theme';
 import {APIImageSizePaths, APIImageV2Data} from '#src/Types';
 
 interface APIImageV2Props {
@@ -23,7 +32,7 @@ interface APIImageV2Props {
   style?: StyleProp<FastImageStyle | RNImageStyle>;
   mode?: 'cardcover' | 'image' | 'avatar' | 'scaledimage';
   disableTouch?: boolean;
-  initialSize?: keyof typeof APIImageSizePaths;
+  staticSize?: keyof typeof APIImageSizePaths;
 }
 
 /**
@@ -31,7 +40,7 @@ interface APIImageV2Props {
  * feature is disabled. It will also include an image viewer that allows the user to see
  * the image in more detail.
  */
-export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIImageV2Props) => {
+export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<APIImageV2Data[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();
@@ -44,6 +53,8 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
   );
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
+  const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
+  const theme = useAppTheme();
 
   const styles = StyleSheet.create({
     disabledCard: {
@@ -52,6 +63,21 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     image: {
       ...commonStyles.headerImage,
       ...style,
+    },
+    loadingCard: {
+      ...commonStyles.marginVerticalSmall,
+    },
+    imageContainer: {
+      position: 'relative',
+    },
+    imageDebugIcon: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      borderRadius: 12,
+      padding: 4,
+      zIndex: 1,
     },
   });
 
@@ -120,10 +146,34 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
    * That gets handled under the hood by the FastImage component.
    */
   React.useEffect(() => {
-    if (initialSize === 'thumb') {
+    if (staticSize !== 'thumb') {
       FastImage.preload([{uri: imageSourceMetadata.fullURI, priority: FastImage.priority.low}]);
     }
-  }, [initialSize, imageSourceMetadata.fullURI]);
+  }, [staticSize, imageSourceMetadata.fullURI]);
+
+  /**
+   * Sets the image source to the appropriate URI based on the initial size.
+   * Soon to also include if we have a cache path for the full size!
+   */
+  React.useEffect(() => {
+    if (staticSize === 'thumb') {
+      setImageSource({uri: imageSourceMetadata.thumbURI});
+      return;
+    }
+    const hasCachePath = async () => {
+      const cachePath = await FastImage.getCachePath({uri: imageSourceMetadata.fullURI});
+      return !!cachePath;
+    };
+    hasCachePath().then(isFullCached => {
+      if (isFullCached) {
+        setImageSource({uri: imageSourceMetadata.fullURI});
+      } else {
+        setImageSource({
+          uri: appConfig.skipThumbnails ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI,
+        });
+      }
+    });
+  }, [staticSize, appConfig.skipThumbnails, imageSourceMetadata.fullURI, imageSourceMetadata.thumbURI]);
 
   /**
    * If the Images feature of Swiftarr is disabled, then show a generic disabled icon.
@@ -136,34 +186,53 @@ export const APIImageV2 = ({path, style, mode, disableTouch, initialSize}: APIIm
     );
   }
 
-  const imageSource = {uri: initialSize === 'full' ? imageSourceMetadata.fullURI : imageSourceMetadata.thumbURI};
+  if (!imageSource) {
+    return (
+      <Card.Content style={styles.loadingCard}>
+        <ActivityIndicator />
+      </Card.Content>
+    );
+  }
+
+  const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress}>
-        {/* {mode === 'cardcover' && (
+        <View style={styles.imageContainer}>
+          {/* {mode === 'cardcover' && (
           <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
         )} */}
-        {mode === 'image' && (
-          <FastImage
-            resizeMode={'cover'}
-            style={styles.image}
-            source={imageSource}
-            onLoad={onLoad}
-            onError={onError}
-            onProgress={onProgress}
-          />
-        )}
-        {mode === 'scaledimage' && (
-          <AppScaledImage
-            image={imageSource}
-            style={style as FastImageStyle}
-            onLoad={onLoad}
-            onError={onError}
-            onProgress={onProgress}
-          />
-        )}
+          {mode === 'image' && (
+            <FastImage
+              resizeMode={'cover'}
+              style={styles.image}
+              source={imageSource}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+            />
+          )}
+          {mode === 'scaledimage' && (
+            <AppScaledImage
+              image={imageSource}
+              style={style as FastImageStyle}
+              onLoad={onLoad}
+              onError={onError}
+              onProgress={onProgress}
+            />
+          )}
+          {appConfig.enableDeveloperOptions && (
+            <View style={styles.imageDebugIcon}>
+              <AppIcon
+                icon={isThumbnail ? AppIcons.thumbnail : AppIcons.full}
+                small={true}
+                color={theme.colors.constantWhite}
+              />
+            </View>
+          )}
+        </View>
       </TouchableOpacity>
     </View>
   );

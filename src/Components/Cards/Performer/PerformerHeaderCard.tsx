@@ -55,7 +55,7 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
             path={header.photo}
             mode={'image'}
             disableTouch={true}
-            initialSize={'thumb'}
+            staticSize={'thumb'}
           />
         )}
       </Card.Content>

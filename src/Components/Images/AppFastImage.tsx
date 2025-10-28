@@ -1,10 +1,11 @@
 import FastImage, {
+  type Source as FastImageSource,
   type ImageStyle as FastImageStyle,
   type OnErrorEvent,
   type OnProgressEvent,
 } from '@d11/react-native-fast-image';
 import React, {useEffect, useState} from 'react';
-import {Image, ImageURISource, StyleProp, StyleSheet} from 'react-native';
+import {Image, StyleProp, StyleSheet} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -15,7 +16,7 @@ interface ImageDimensionProps {
 }
 
 interface AppScaledImageProps {
-  image: ImageURISource;
+  image: FastImageSource;
   style?: StyleProp<FastImageStyle>;
   onLoad?: () => void;
   onError?: (event: OnErrorEvent) => void;
