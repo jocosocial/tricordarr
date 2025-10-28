@@ -73,7 +73,7 @@ export const APIImageV2 = ({path, style, mode, disableTouch, staticSize}: APIIma
     imageDebugIcon: {
       position: 'absolute',
       top: 4,
-      right: 4,
+      left: 4,
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
       borderRadius: 12,
       padding: 4,
