@@ -7,8 +7,8 @@ Quick Start
 -----------
 
 ```bash
-nvm install lts/jod
-nvm use lts/jod (v22.13.0)
+nvm install lts/jod # v22.18.0
+nvm use lts/jod
 
 npm clean-install
 
