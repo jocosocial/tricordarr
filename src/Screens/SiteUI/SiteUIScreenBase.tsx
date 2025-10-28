@@ -5,10 +5,11 @@ import {WebView, WebViewNavigation} from 'react-native-webview';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {SiteUIScreenActionsMenu} from '#src/Components/Menus/SiteUI/SiteUIScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+import {useCommonStack} from '#src/Navigation/CommonScreens';
 
 interface SiteUIScreenBaseProps {
   initialUrl: string;
@@ -31,22 +32,21 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
 
   const reload = () => webViewRef.current?.reload();
 
-  const onHelp = useCallback(
-    () => navigation.push(CommonStackComponents.siteUIHelpScreen, {oobe: oobe}),
-    [navigation, oobe],
-  );
-
   const getNavBarIcons = useCallback(
     () => (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-          <Item title={'Home'} iconName={AppIcons.home} onPress={onHome} />
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
-          <Item title={'Help'} iconName={AppIcons.help} onPress={onHelp} />
+          <SiteUIScreenActionsMenu
+            onHome={onHome}
+            onBack={handleBackButtonPress}
+            canGoBack={handleGoBack}
+            oobe={oobe}
+          />
         </HeaderButtons>
       </View>
     ),
-    [onHelp, onHome],
+    [onHome, oobe, handleGoBack],
   );
 
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
