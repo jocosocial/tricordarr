@@ -3,20 +3,27 @@ import {lookup as lookupMimeType} from 'react-native-mime-types';
 
 import {AppConfig} from '#src/Libraries/AppConfig';
 
+export enum AppImageMode {
+  api = 'api',
+  asset = 'asset',
+  data = 'data',
+  identicon = 'identicon',
+}
+
 export interface AppImageMetaData {
+  mode: AppImageMode;
   fileName: string;
+  mimeType: string;
   thumbURI?: string;
   fullURI?: string;
-  mimeType: string;
-  /**
-   * @deprecated keep data URI but need to maybe add assetURI or something?
-   */
   dataURI?: string;
   identiconURI?: string;
+  assetURI?: string;
 }
 export namespace AppImageMetaData {
   export const fromFileName = (fileName: string, appConfig: AppConfig): AppImageMetaData => {
     return {
+      mode: AppImageMode.api,
       fileName: fileName,
       thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
       fullURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
@@ -26,6 +33,7 @@ export namespace AppImageMetaData {
 
   export const fromIdenticon = (userID: string, appConfig: AppConfig): AppImageMetaData => {
     return {
+      mode: AppImageMode.identicon,
       fileName: `${userID}.png`,
       identiconURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
       mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
@@ -77,6 +85,7 @@ export namespace AppImageMetaData {
   export const fromData = (base64Data: string, mimeType: string = 'image/jpeg'): AppImageMetaData => {
     const fileName = `tricordarr-${new Date().getTime()}.${mimeType.split('/')[1] || 'jpg'}`;
     return {
+      mode: AppImageMode.data,
       fileName: fileName,
       mimeType: mimeType,
       dataURI: `data:${mimeType};base64,${base64Data}`,
@@ -99,11 +108,36 @@ export namespace AppImageMetaData {
     const mimeType = lookupMimeType(fileName) || 'application/octet-stream';
 
     return {
+      mode: AppImageMode.asset,
       fileName: fileName,
       mimeType: mimeType,
-      // @TODO this is not what a dataURI is
-      dataURI: Image.resolveAssetSource(imageAsset).uri,
+      assetURI: Image.resolveAssetSource(imageAsset).uri,
     };
+  };
+
+  export const getSourceURI = (imageMetaData: AppImageMetaData): string => {
+    switch (imageMetaData.mode) {
+      case AppImageMode.api:
+        if (!imageMetaData.fullURI) {
+          throw new Error('Full URI is required for API images');
+        }
+        return imageMetaData.fullURI;
+      case AppImageMode.asset:
+        if (!imageMetaData.assetURI) {
+          throw new Error('Asset URI is required for asset images');
+        }
+        return imageMetaData.assetURI;
+      case AppImageMode.data:
+        if (!imageMetaData.dataURI) {
+          throw new Error('Data URI is required for data images');
+        }
+        return imageMetaData.dataURI;
+      case AppImageMode.identicon:
+        if (!imageMetaData.identiconURI) {
+          throw new Error('Identicon URI is required for identicon images');
+        }
+        return imageMetaData.identiconURI;
+    }
   };
 }
 

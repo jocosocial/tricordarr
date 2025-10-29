@@ -8,7 +8,7 @@ import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFoot
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
 import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {useAppTheme} from '#src/Styles/Theme';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface AppImageViewerProps {
   initialIndex?: number;
@@ -50,6 +50,7 @@ export const AppImageViewer = ({
 
   /**
    * Function to save an image to the camera roll.
+   * @TODO still need to enable this for [assets, data]. Confirm against [identicon, api].
    */
   const saveImage = useCallback(
     async (index: number) => {
@@ -135,17 +136,15 @@ export const AppImageViewer = ({
     const getImages = async () => {
       const images = await Promise.all(
         viewerImages.map(async image => {
-          if (image.dataURI) {
-            return {uri: image.dataURI};
+          if (image.mode === AppImageMode.api) {
+            const cacheURI = await getImageCacheURI(image);
+            if (cacheURI) {
+              return {uri: cacheURI};
+            }
+            return {uri: image.fullURI};
+          } else {
+            return {uri: AppImageMetaData.getSourceURI(image)};
           }
-          if (image.identiconURI) {
-            return {uri: image.identiconURI};
-          }
-          const cacheURI = await getImageCacheURI(image);
-          if (cacheURI) {
-            return {uri: cacheURI};
-          }
-          return {uri: image.fullURI};
         }),
       );
       setImageViewImages(images);

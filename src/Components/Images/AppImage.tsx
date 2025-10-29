@@ -55,8 +55,7 @@ export const AppImage = ({
     setIsViewerVisible(true);
   };
 
-  // @TODO this is all busted
-  const imageUriSource = image.dataURI ? {uri: image.dataURI} : {uri: image.fullURI};
+  const imageUriSource = {uri: AppImageMetaData.getSourceURI(image)};
 
   return (
     <View>
