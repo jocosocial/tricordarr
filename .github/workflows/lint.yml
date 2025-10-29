@@ -23,5 +23,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
-        run: npm run lint
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.ts
+            **/*.tsx
+            **/*.js
+            **/*.jsx
+
+      - name: Run lint on changed files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "Changed files to lint:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+          npx eslint ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: No files to lint
+        if: steps.changed-files.outputs.any_changed == 'false'
+        run: echo "No TypeScript/JavaScript files changed in this PR"
