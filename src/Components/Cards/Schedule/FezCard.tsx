@@ -10,6 +10,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {useAppTheme} from '#src/Styles/Theme';
 import {ScheduleCardMarkerType} from '#src/Types';
@@ -48,6 +49,7 @@ const FezCardInternal = ({
     },
     [setModalContent, setModalVisible],
   );
+  const {data: profilePublicData} = useUserProfileQuery();
 
   const styles = StyleSheet.create({
     badge: {
@@ -76,10 +78,14 @@ const FezCardInternal = ({
     }
   };
 
-  // Only show the participation information if:
-  // * You are a member AND
-  // * It's an LFG or a Private Event. Personal Events don't count since you're the only member.
-  const showParticipation = fez.members && (FezType.isLFGType(fez.fezType) || fez.fezType === FezType.privateEvent);
+  /**
+   * Only show the participation information if:
+   * It's an LFG (doesnt matter if you're a member or not).
+   * It's a Personal or Private Event and you are a member.
+   */
+  const showParticipation =
+    FezType.isLFGType(fez.fezType) ||
+    (FezType.isPrivateEventType(fez.fezType) && FezData.isParticipant(fez, profilePublicData?.header));
 
   return (
     <ScheduleItemCardBase
