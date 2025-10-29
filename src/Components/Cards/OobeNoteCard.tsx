@@ -1,10 +1,10 @@
-import {encode as base64_encode} from 'base-64';
 import React from 'react';
 import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import twitarrteam from '#assets/contributors/twitarrteam.jpg';
@@ -20,15 +20,7 @@ export const OobeNoteCard = () => {
           and have a great cruise!
         </Text>
       </Card.Content>
-      <AppImage
-        image={{
-          dataURI: Image.resolveAssetSource(twitarrteam).uri,
-          mimeType: 'image/jpeg',
-          fileName: 'twitarrteam.jpg',
-          base64: base64_encode(twitarrteam),
-        }}
-        mode={'cardcover'}
-      />
+      <AppImage image={AppImageMetaData.fromURI(Image.resolveAssetSource(twitarrteam).uri)} mode={'cardcover'} />
     </Card>
   );
 };

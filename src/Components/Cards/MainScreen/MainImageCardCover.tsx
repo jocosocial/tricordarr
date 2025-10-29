@@ -1,11 +1,8 @@
-import {encode as base64_encode} from 'base-64';
-import React, {useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
-import {Card} from 'react-native-paper';
+import React from 'react';
 
-import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
-import {ImageQueryData} from '#src/Types';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import DayImage from '#assets/mainview_day.jpg';
@@ -26,7 +23,6 @@ import SunsetImage from '#assets/mainview_sunset.jpg';
 export const MainImageCardCover = () => {
   // const {userNotificationData} = useUserNotificationData();
   const {hourlyUpdatingDate} = useCruise();
-  const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   // Default to local, but override with the server offset.
   let currentHour = hourlyUpdatingDate.getHours();
@@ -65,60 +61,24 @@ export const MainImageCardCover = () => {
     viewerIndex = 4;
   }
 
-  const viewerImages: ImageQueryData[] = [
-    {
-      dataURI: Image.resolveAssetSource(DayImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrDayImage.jpg',
-      base64: base64_encode(DayImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(HappyHourImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrHappyHourImage.jpg',
-      base64: base64_encode(HappyHourImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(MainShowImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrMainShowImage.jpg',
-      base64: base64_encode(MainShowImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(SunsetImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrSunsetImage.jpg',
-      base64: base64_encode(SunsetImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(LateShowImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrLateShowImage.jpg',
-      base64: base64_encode(LateShowImage),
-    },
-    {
-      dataURI: Image.resolveAssetSource(NightImage).uri,
-      mimeType: 'image/jpeg',
-      fileName: 'TwitarrNightImage.jpg',
-      base64: base64_encode(NightImage),
-    },
-  ];
+  const viewerImages = React.useMemo(
+    () => [
+      AppImageMetaData.fromAsset(DayImage, 'mainview_day.jpg'),
+      AppImageMetaData.fromAsset(HappyHourImage, 'mainview_happy.jpg'),
+      AppImageMetaData.fromAsset(MainShowImage, 'mainview_mainshow.jpg'),
+      AppImageMetaData.fromAsset(SunsetImage, 'mainview_sunset.jpg'),
+      AppImageMetaData.fromAsset(LateShowImage, 'mainview_lateshow.jpg'),
+      AppImageMetaData.fromAsset(NightImage, 'mainview_night.jpg'),
+    ],
+    [],
+  );
 
-  // Have to disable download since loading static images is actually really hard and I don't feel
-  // like figuring it out right now.
-  // https://javascript.plainenglish.io/using-images-in-react-native-668e3a835858
   return (
-    <View>
-      <AppImageViewer
-        viewerImages={viewerImages}
-        isVisible={isViewerVisible}
-        setIsVisible={setIsViewerVisible}
-        enableDownload={false}
-        initialIndex={viewerIndex}
-      />
-      <TouchableOpacity onPress={() => setIsViewerVisible(true)}>
-        <Card.Cover source={sourceImage} />
-      </TouchableOpacity>
-    </View>
+    <AppImage
+      mode={'cardcover'}
+      image={AppImageMetaData.fromAsset(sourceImage, 'current_image.jpg')}
+      viewerImages={viewerImages}
+      initialViewerIndex={viewerIndex}
+    />
   );
 };

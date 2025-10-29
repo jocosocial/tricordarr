@@ -1,4 +1,4 @@
-import {ImageURISource} from 'react-native';
+import {ImageRequireSource} from 'react-native';
 
 import {ProfilePublicData} from '#src/Structs/ControllerStructs';
 
@@ -32,7 +32,7 @@ export interface DeckData {
   label: string;
   roomStart?: number;
   roomEnd?: number;
-  imageSource: ImageURISource;
+  imageSource: ImageRequireSource;
 }
 
 export const ShipDecks: DeckData[] = [

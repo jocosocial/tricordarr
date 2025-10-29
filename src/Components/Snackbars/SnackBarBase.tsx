@@ -6,7 +6,7 @@ import {useAppTheme} from '#src/Styles/Theme';
 import {StringOrError} from '#src/Types';
 
 export interface SnackBarBaseProps {
-  message: string | undefined;
+  message: StringOrError;
   setMessage: (e: StringOrError) => void;
   actionLabel?: string;
   duration?: number;
@@ -44,8 +44,8 @@ export const SnackBarBase = ({
       elevation={elevation}
       onDismiss={() => setMessage(undefined)}>
       <Text style={styles.text}>
-        {messagePrefix}
-        {message}
+        {typeof message === 'string' ? messagePrefix : '🚨 '}
+        {typeof message === 'string' ? message : message?.message || 'An error occurred'}
       </Text>
     </Snackbar>
   );

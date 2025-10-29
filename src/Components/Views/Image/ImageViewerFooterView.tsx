@@ -1,16 +1,13 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
-import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {ImageQueryData} from '#src/Types';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerFooterViewProps {
   currentIndex: number;
-  viewerImages: ImageQueryData[];
-  setImageIndex: Dispatch<SetStateAction<number>>;
+  viewerImages: AppImageMetaData[];
 }
 
 /**
@@ -20,7 +17,6 @@ interface ImageViewerFooterViewProps {
  */
 export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerFooterViewProps) => {
   const {commonStyles} = useStyles();
-  const {appConfig} = useConfig();
 
   const styles = StyleSheet.create({
     footerContainer: {
@@ -30,7 +26,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
       ...commonStyles.paddingVertical,
       ...commonStyles.alignItemsCenter,
       ...commonStyles.justifyCenter,
-      ...commonStyles.imageViewerBackground,
+      ...commonStyles.imageViewerBackgroundAlpha,
       ...(Platform.OS === 'ios' && commonStyles.safePaddingBottom),
     },
     verticalContainer: {
@@ -51,10 +47,7 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
   // https://github.com/jobtoday/react-native-image-viewing/issues/203
   //
   // The Text variant is because iOS was too big and defaultly newlined the g in jpg.
-  // @TODO this sucks.
   const filename = viewerImages[currentIndex] ? viewerImages[currentIndex].fileName : '';
-  const mimeType = viewerImages[currentIndex] ? viewerImages[currentIndex].mimeType : '';
-  const dataURI = viewerImages[currentIndex] ? viewerImages[currentIndex].dataURI : '';
 
   return (
     <View style={styles.footerContainer}>
@@ -62,18 +55,6 @@ export const ImageViewerFooterView = ({currentIndex, viewerImages}: ImageViewerF
         <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
           {filename}
         </Text>
-        {appConfig.enableDeveloperOptions && (
-          <>
-            <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
-              {mimeType}
-            </Text>
-            <HyperlinkText disableLinkInterpolation={true}>
-              <Text selectable={true} style={styles.filenameText} variant={'bodyMedium'}>
-                {dataURI}
-              </Text>
-            </HyperlinkText>
-          </>
-        )}
         <Text style={styles.indexText} variant={'bodyMedium'}>
           {currentIndex + 1} of {viewerImages.length}
         </Text>

@@ -105,8 +105,8 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
         {(performerData.title || performerData.organization) && (
           <PaddedContentView style={styles.listContentContainer}>
             <View style={styles.titleContentContainer}>
-              {performerData.title && <Text>{performerData.title}</Text>}
-              {performerData.organization && <Text>{performerData.organization}</Text>}
+              {performerData.title && <Text selectable={true}>{performerData.title}</Text>}
+              {performerData.organization && <Text selectable={true}>{performerData.organization}</Text>}
             </View>
           </PaddedContentView>
         )}

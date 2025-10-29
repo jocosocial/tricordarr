@@ -1,6 +1,11 @@
-import FastImage, {ImageStyle} from '@d11/react-native-fast-image';
+import FastImage, {
+  type Source as FastImageSource,
+  type ImageStyle as FastImageStyle,
+  type OnErrorEvent,
+  type OnProgressEvent,
+} from '@d11/react-native-fast-image';
 import React, {useEffect, useState} from 'react';
-import {Image, ImageURISource, StyleProp, StyleSheet} from 'react-native';
+import {Image, StyleProp, StyleSheet} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -10,9 +15,12 @@ interface ImageDimensionProps {
   height?: number;
 }
 
-interface AppFastImageProps {
-  image: ImageURISource;
-  style?: StyleProp<ImageStyle>;
+interface AppScaledImageProps {
+  image: FastImageSource;
+  style?: StyleProp<FastImageStyle>;
+  onLoad?: () => void;
+  onError?: (event: OnErrorEvent) => void;
+  onProgress?: (event: OnProgressEvent) => void;
 }
 
 /**
@@ -23,11 +31,9 @@ interface AppFastImageProps {
  *
  * This has some overlap and origin in MapScreen.tsx where it was used to display the ship map.
  * Maybe dedupe with that some day?
- * @param image The image data to render in the form of {uri: 'data_uri_here'}
- * @param style Optional styling for the image.
  * @constructor
  */
-export const AppFastImage = ({image, style}: AppFastImageProps) => {
+export const AppScaledImage = ({image, style, onLoad, onError, onProgress}: AppScaledImageProps) => {
   const [imageSize, setImageSize] = useState<ImageDimensionProps>({width: undefined, height: undefined});
   const {commonStyles} = useStyles();
 
@@ -59,5 +65,13 @@ export const AppFastImage = ({image, style}: AppFastImageProps) => {
     },
   });
 
-  return <FastImage style={[styles.image, style]} source={{uri: image.uri}} />;
+  return (
+    <FastImage
+      style={[styles.image, style]}
+      source={{uri: image.uri}}
+      onLoad={onLoad}
+      onError={onError}
+      onProgress={onProgress}
+    />
+  );
 };

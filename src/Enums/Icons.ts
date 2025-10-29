@@ -127,4 +127,6 @@ export enum AppIcons {
   official = 'shield-check',
   archive = 'archive',
   hunts = 'puzzle',
+  thumbnail = 'image-size-select-small',
+  full = 'image-size-select-actual',
 }

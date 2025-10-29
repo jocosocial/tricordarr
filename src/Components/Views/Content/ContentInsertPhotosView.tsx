@@ -6,14 +6,14 @@ import {AppImageViewer} from '#src/Components/Images/AppImageViewer';
 import {ContentPostAttachedImage} from '#src/Components/Images/ContentPostAttachedImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {PostContentData} from '#src/Structs/ControllerStructs';
-import {ImageQueryData} from '#src/Types';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // Some day it might be good to break the viewer out of this into a generic "PendingAttachmentImage" thing.
 // Basically APIImage but LocalImage or BlobImage
 export const ContentInsertPhotosView = () => {
   const {commonStyles} = useStyles();
   const {values, setFieldValue, isSubmitting} = useFormikContext<PostContentData>();
-  const [viewerImages, setViewerImages] = useState<ImageQueryData[]>([]);
+  const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
 
@@ -26,9 +26,11 @@ export const ContentInsertPhotosView = () => {
 
   useEffect(() => {
     setViewerImages(
-      values.images.map(img => {
-        return ImageQueryData.fromData(img.image);
-      }),
+      values.images
+        .filter(img => img.image) // Filter out images without base64 data
+        .map(img => {
+          return AppImageMetaData.fromData(img.image!);
+        }),
     );
   }, [values.images]);
 

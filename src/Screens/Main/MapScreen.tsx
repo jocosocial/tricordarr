@@ -1,5 +1,4 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {encode as base64_encode} from 'base-64';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
@@ -20,6 +19,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 
@@ -75,13 +75,9 @@ export const MapScreen = ({navigation, route}: Props) => {
         <MapIndicatorView direction={'Forward'} />
         <View style={styles.imageContainer}>
           <AppImage
+            key={shipDeck.number}
             mode={'scaledimage'}
-            image={{
-              dataURI: Image.resolveAssetSource(shipDeck.imageSource).uri,
-              mimeType: 'image/png',
-              fileName: `deck${shipDeck.number}.png`,
-              base64: base64_encode(shipDeck.imageSource as string),
-            }}
+            image={AppImageMetaData.fromAsset(shipDeck.imageSource, `deck${shipDeck.number}.png`)}
             style={styles.image}
           />
         </View>

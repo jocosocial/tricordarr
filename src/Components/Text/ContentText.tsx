@@ -1,6 +1,7 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import React, {useCallback, useMemo} from 'react';
-import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Linking, Pressable, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
@@ -19,6 +20,7 @@ interface ContentTextProps {
   hashtagOnPress?: (tag: string) => void;
   mentionOnPress?: (username: string) => void;
   forceMarkdown?: boolean;
+  onLongPress?: () => void;
 }
 
 // ChatGPT wrote this. Needed something to deal with newline characters appearing
@@ -50,8 +52,6 @@ interface ContentTextProps {
 
 /**
  * Text view to render content with our various filters applied. Filters such as emoji and Markdown.
- * @TODO this may need cleaned up and refactored to be more generic with content views.
- * Right now it's just announcements.
  */
 export const ContentText = ({
   textStyle,
@@ -60,6 +60,7 @@ export const ContentText = ({
   hashtagOnPress,
   mentionOnPress,
   forceMarkdown,
+  onLongPress,
 }: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {data} = useUserKeywordQuery({
@@ -71,6 +72,15 @@ export const ContentText = ({
   const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
   const {appConfig} = useConfig();
   const {setErrorBanner} = useErrorHandler();
+
+  // Default onLongPress behavior to copy text to clipboard
+  const defaultOnLongPress = useCallback(() => {
+    Clipboard.setString(text);
+  }, [text]);
+
+  // Use provided onLongPress or default to copy to clipboard
+  const handleLongPress = onLongPress || defaultOnLongPress;
+
   const renderEmojiText = useCallback(
     (
       line: string,
@@ -193,16 +203,19 @@ export const ContentText = ({
   const markdownIdentifier = '<Markdown>';
   if (forceMarkdown || text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '');
+
     return (
-      <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
-        {strippedText}
-      </Markdown>
+      <Pressable onLongPress={handleLongPress}>
+        <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
+          {strippedText}
+        </Markdown>
+      </Pressable>
     );
   }
 
   return (
     <HyperlinkText>
-      <Text variant={textVariant} style={textStyle}>
+      <Text variant={textVariant} style={textStyle} onLongPress={handleLongPress}>
         {renderContentText(text)}
       </Text>
     </HyperlinkText>

@@ -1,11 +1,13 @@
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {APIImage} from '#src/Components/Images/APIImage';
+import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 interface ContentPostAttachedImageProps {
   imageData: ImageUploadData;
@@ -26,17 +28,23 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
         onIconPress={props.onIconPress}
         onImagePress={props.onImagePress}
         disabled={props.disabled}>
-        <Image resizeMode={'cover'} style={styles.image} source={{uri: `data:image;base64,${props.imageData.image}`}} />
+        <AppImage
+          onPress={props.onImagePress}
+          mode={'image'}
+          image={AppImageMetaData.fromData(props.imageData.image)}
+          style={styles.image}
+        />
       </ContentPostAttachment>
     );
   } else if (props.imageData.filename) {
     return (
       <ContentPostAttachment onIconPress={props.onIconPress} disabled={props.disabled}>
-        <APIImage
-          thumbPath={`/image/thumb/${props.imageData.filename}`}
-          fullPath={`/image/full/${props.imageData.filename}`}
-          mode={'image'}
+        <APIImageV2
+          onPress={props.onImagePress}
+          path={props.imageData.filename}
           style={styles.image}
+          mode={'image'}
+          staticSize={'thumb'}
         />
       </ContentPostAttachment>
     );

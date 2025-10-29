@@ -85,6 +85,7 @@ export const twitarrTheme = {
     onImageViewer: 'rgb(255, 255, 255)',
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
+    constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
   },
 };
 
@@ -154,6 +155,7 @@ export const twitarrThemeDark = {
     onImageViewer: 'rgb(255, 255, 255)',
     constantBlack: 'rgb(0, 0, 0)',
     constantWhite: 'rgb(255, 255, 255)',
+    constantAlphaBlack: 'rgba(0, 0, 0, 0.5)',
   },
 };
 

@@ -94,13 +94,21 @@ android {
         }
         release {
             def keystorePropertiesFile = rootProject.file("../local.properties")
-            def keystoreProperties = new Properties()
-            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            if (keystorePropertiesFile.exists()) {
+                def keystoreProperties = new Properties()
+                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-            storeFile file(keystoreProperties['TRICORDARR_UPLOAD_STORE_FILE'])
-            storePassword keystoreProperties['TRICORDARR_UPLOAD_STORE_PASSWORD']
-            keyAlias keystoreProperties['TRICORDARR_UPLOAD_KEY_ALIAS']
-            keyPassword keystoreProperties['TRICORDARR_UPLOAD_KEY_PASSWORD']
+                storeFile file(keystoreProperties['TRICORDARR_UPLOAD_STORE_FILE'])
+                storePassword keystoreProperties['TRICORDARR_UPLOAD_STORE_PASSWORD']
+                keyAlias keystoreProperties['TRICORDARR_UPLOAD_KEY_ALIAS']
+                keyPassword keystoreProperties['TRICORDARR_UPLOAD_KEY_PASSWORD']
+            } else {
+                // Fallback to debug keystore if local.properties doesn't exist
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
     }
     buildTypes {

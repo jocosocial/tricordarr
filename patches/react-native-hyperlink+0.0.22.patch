@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-hyperlink/src/Hyperlink.tsx b/node_modules/react-native-hyperlink/src/Hyperlink.tsx
+index 891a97e..3e70f4e 100644
+--- a/node_modules/react-native-hyperlink/src/Hyperlink.tsx
++++ b/node_modules/react-native-hyperlink/src/Hyperlink.tsx
+@@ -151,6 +151,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 					return this.linkify(
+ 						<Text
+ 							{...componentProps}
++							key={componentProps.key}
+ 							style={component.props.style}
+ 						>
+ 							{child}

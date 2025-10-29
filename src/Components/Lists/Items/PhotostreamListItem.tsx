@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {View} from 'react-native';
 
-import {APIImage} from '#src/Components/Images/APIImage';
+import {APIImageV2} from '#src/Components/Images/APIImageV2';
 import {PhotostreamImageBodyView} from '#src/Components/Views/Photostream/PhotostreamImageBodyView';
 import {PhotostreamImageHeaderView} from '#src/Components/Views/Photostream/PhotostreamImageHeaderView';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
@@ -15,11 +15,7 @@ const PhotostreamListItemInternal = ({item}: PhotostreamListItemProps) => {
     <View>
       <PhotostreamImageHeaderView image={item} />
       <View>
-        <APIImage
-          mode={'scaledimage'}
-          thumbPath={`/image/thumb/${item.image}`}
-          fullPath={`/image/full/${item.image}`}
-        />
+        <APIImageV2 mode={'scaledimage'} path={item.image} />
       </View>
       <PhotostreamImageBodyView image={item} />
     </View>
