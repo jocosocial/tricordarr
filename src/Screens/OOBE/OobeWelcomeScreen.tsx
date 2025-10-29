@@ -1,7 +1,7 @@
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
 
@@ -56,7 +56,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         <PaddedContentView>
           <AppImage
             mode={'scaledimage'}
-            image={AppImageMetaData.fromURI(Image.resolveAssetSource(tricordarr).uri)}
+            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
             style={styles.image}
             disableTouch={true}
           />

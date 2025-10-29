@@ -1,5 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
-import {FlashList} from '@shopify/flash-list';
+import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -55,7 +55,7 @@ export const LfgListScreen = ({
   const {notificationSocket} = useSocket();
   const [showFabLabel, setShowFabLabel] = useState(true);
   const onScrollThreshold = (hasScrolled: boolean) => setShowFabLabel(!hasScrolled);
-  const listRef = useRef<FlashList<FezData>>(null);
+  const listRef = useRef<FlashListRef<FezData>>(null);
   const queryClient = useQueryClient();
   const [fezList, setFezList] = useState<FezData[]>([]);
 

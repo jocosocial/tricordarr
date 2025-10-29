@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {HeaderButtons} from 'react-navigation-header-buttons';
 
@@ -40,19 +40,11 @@ export const MapScreen = ({navigation, route}: Props) => {
     );
   }, [shipDeck]);
 
-  // https://stackoverflow.com/questions/36436913/image-contain-resizemode-not-working-in-react-native
-  const asset = Image.resolveAssetSource(shipDeck.imageSource);
   const styles = StyleSheet.create({
     imageContainer: {
       ...commonStyles.paddingHorizontal,
       ...commonStyles.paddingVertical,
       ...commonStyles.flex,
-    },
-    image: {
-      flex: 1,
-      height: undefined,
-      width: undefined,
-      aspectRatio: asset.width / asset.height,
     },
     buttons: {
       minWidth: undefined,
@@ -78,7 +70,6 @@ export const MapScreen = ({navigation, route}: Props) => {
             key={shipDeck.number}
             mode={'scaledimage'}
             image={AppImageMetaData.fromAsset(shipDeck.imageSource, `deck${shipDeck.number}.png`)}
-            style={styles.image}
           />
         </View>
         <MapIndicatorView direction={'Aft'} />

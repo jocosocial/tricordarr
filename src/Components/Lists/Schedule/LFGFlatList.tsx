@@ -13,7 +13,7 @@ import {ScheduleFlatListSeparator} from '#src/Types';
 interface LFGFlatListProps {
   items: FezData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
-  listRef: React.RefObject<FlashListRef<FezData>>;
+  listRef: React.RefObject<FlashListRef<FezData> | null>;
   separator?: ScheduleFlatListSeparator;
   listHeader?: ReactElement;
   listFooter?: ReactElement;

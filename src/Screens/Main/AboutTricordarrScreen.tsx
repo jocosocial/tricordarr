@@ -1,6 +1,5 @@
-import {encode as base64_encode} from 'base-64';
 import React from 'react';
-import {Image, View} from 'react-native';
+import {View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Card, DataTable, Text} from 'react-native-paper';
 
@@ -11,6 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
 import cfry from '#assets/contributors/cfry.jpg';
@@ -54,12 +54,7 @@ export const AboutTricordarrScreen = () => {
             Background
           </Text>
           <ContributorCard
-            image={{
-              dataURI: Image.resolveAssetSource(tricordarr).uri,
-              mimeType: 'image/jpeg',
-              fileName: 'tricordarr.jpg',
-              base64: base64_encode(tricordarr),
-            }}
+            image={AppImageMetaData.fromAsset(tricordarr, 'tricordarr.jpg')}
             bodyText={
               'Tricordarr started as a proof-of-concept in the weeks before JoCo Cruise 2023 and evolved into a fully-featured showcase project for JoCo Cruise 2024. It is proof that any idea can become a reality with determination, vision, an AI co-pilot, and a seemingly unlimited supply of time.'
             }
@@ -70,34 +65,19 @@ export const AboutTricordarrScreen = () => {
             Contributors
           </Text>
           <ContributorCard
-            image={{
-              dataURI: Image.resolveAssetSource(grant).uri,
-              mimeType: 'image/jpeg',
-              fileName: 'grant.jpg',
-              base64: base64_encode(grant),
-            }}
+            image={AppImageMetaData.fromAsset(grant, 'grant.jpg')}
             bodyText={
               "Grant Cohoe (@grant) is the primary developer of this app. If you're looking for someone to shout at, it's him."
             }
           />
           <ContributorCard
-            image={{
-              dataURI: Image.resolveAssetSource(hendu).uri,
-              mimeType: 'image/jpeg',
-              fileName: 'hendu.jpg',
-              base64: base64_encode(hendu),
-            }}
+            image={AppImageMetaData.fromAsset(hendu, 'hendu.jpg')}
             bodyText={
               'Dustin Hendrickson (@hendu) contributed the fantastic built-in webview integration, many bug fixes, and plenty of PR tests & reviews.'
             }
           />
           <ContributorCard
-            image={{
-              dataURI: Image.resolveAssetSource(cfry).uri,
-              mimeType: 'image/jpeg',
-              fileName: 'cfry.jpg',
-              base64: base64_encode(cfry),
-            }}
+            image={AppImageMetaData.fromAsset(cfry, 'cfry.jpg')}
             bodyText={
               'Chall Fry (@cfry) is the lead architect of the Twitarr service and the iOS app The Kraken. His guidance and insight on software engineering and the mobile app world has been invaluable. He made the cool lighter video and PhotoStream processing library.'
             }

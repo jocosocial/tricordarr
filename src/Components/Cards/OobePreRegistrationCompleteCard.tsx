@@ -1,5 +1,4 @@
 import React from 'react';
-import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
@@ -24,7 +23,7 @@ export const OobePreRegistrationCompleteCard = () => {
           nothing for it to do until you board the ship. Other than pack.
         </Text>
       </Card.Content>
-      <AppImage image={AppImageMetaData.fromURI(Image.resolveAssetSource(preregistration).uri)} mode={'cardcover'} />
+      <AppImage image={AppImageMetaData.fromAsset(preregistration, 'preregistration.jpg')} mode={'cardcover'} />
     </Card>
   );
 };
