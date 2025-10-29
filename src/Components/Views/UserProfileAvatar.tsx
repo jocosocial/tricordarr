@@ -6,7 +6,6 @@ import {PERMISSIONS, request as requestPermission} from 'react-native-permission
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
 import {APIImageV2} from '#src/Components/Images/APIImageV2';
-import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -23,7 +22,6 @@ interface UserProfileAvatarProps {
 }
 
 const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
-  const {appConfig} = useConfig();
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
     image: {

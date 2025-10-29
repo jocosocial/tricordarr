@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {ImageRequireSource, ImageURISource, Platform, StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
-import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -47,6 +46,17 @@ export const ImageViewerHeaderView = ({
     },
   });
 
+  const getDisplayURI = useCallback((image: AppImageMetaData) => {
+    const imageURI = AppImageMetaData.getSourceURI(image);
+    const displayLength = 100;
+    if (imageURI.length > displayLength) {
+      return `${imageURI.substring(0, displayLength)}...`;
+    }
+    return imageURI;
+  }, []);
+
+  const image = viewerImages[imageIndex];
+
   return (
     <View>
       <View style={styles.buttonContainer}>
@@ -68,21 +78,11 @@ export const ImageViewerHeaderView = ({
             mimeType: {viewerImages[imageIndex].mimeType}
           </Text>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-            dataURI:{' '}
-            {viewerImages[imageIndex].dataURI ? `${viewerImages[imageIndex].dataURI.substring(0, 40)}...` : undefined}
+            mode: {image.mode}
           </Text>
-          <HyperlinkText disableLinkInterpolation={true}>
-            <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-              fullURI: {viewerImages[imageIndex].fullURI}
-            </Text>
-          </HyperlinkText>
-          {typeof imageViewImages[imageIndex] === 'object' && 'uri' in imageViewImages[imageIndex] && (
-            <HyperlinkText disableLinkInterpolation={true}>
-              <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-                [render]uri: {imageViewImages[imageIndex].uri}
-              </Text>
-            </HyperlinkText>
-          )}
+          <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
+            URI: {getDisplayURI(image)}
+          </Text>
         </PaddedContentView>
       )}
     </View>
