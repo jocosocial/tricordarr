@@ -101,6 +101,9 @@ export const commonStyles = StyleSheet.create({
   marginRightSmall: {
     marginRight: styleDefaults.marginSize / 2,
   },
+  marginRightTiny: {
+    marginRight: styleDefaults.marginSize / 4,
+  },
   booleanSettingRowView: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -177,6 +180,9 @@ export const commonStyles = StyleSheet.create({
   },
   marginTopSmall: {
     marginTop: styleDefaults.marginSize / 2,
+  },
+  marginTopTiny: {
+    marginTop: styleDefaults.marginSize / 4,
   },
   marginBottomSmall: {
     marginBottom: styleDefaults.marginSize / 2,

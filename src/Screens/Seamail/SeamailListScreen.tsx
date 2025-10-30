@@ -51,6 +51,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
 
   useEffect(() => {
     if (data && data.pages) {
+      console.log(data.pages);
       setFezList(data.pages.flatMap(p => p.fezzes));
     }
   }, [data]);
