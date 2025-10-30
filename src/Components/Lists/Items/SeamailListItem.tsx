@@ -42,10 +42,6 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     },
     timeStyleActive: {
       ...commonStyles.bold,
-      ...commonStyles.fontSizeMedium,
-    },
-    timeStyleInactive: {
-      ...commonStyles.fontSizeMedium,
     },
     rightContainer: {
       ...commonStyles.verticalContainer,
@@ -79,13 +75,15 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       );
     }
 
-    const timeStyle = badgeCount ? styles.timeStyleActive : styles.timeStyleInactive;
-
     return (
       <View style={styles.rightContainer}>
         <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
         <View>
-          <RelativeTimeTag date={new Date(fez.lastModificationTime)} style={timeStyle} />
+          <RelativeTimeTag
+            date={new Date(fez.lastModificationTime)}
+            variant={'bodyMedium'}
+            style={badgeCount ? styles.timeStyleActive : undefined}
+          />
         </View>
       </View>
     );

@@ -21,7 +21,6 @@ export const SeamailMessageCountIndicator = ({
       ...commonStyles.alignItemsCenter,
     },
     text: {
-      ...commonStyles.fontSizeMedium,
       ...(badgeCount ? commonStyles.bold : undefined),
     },
     badge: {
@@ -34,7 +33,7 @@ export const SeamailMessageCountIndicator = ({
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>
+        <Text variant={'bodyMedium'} style={styles.text}>
           {totalPostCount} {pluralize('messages', totalPostCount)}
         </Text>
         {!!badgeCount && <Badge style={styles.badge}>{`${badgeCount} new`}</Badge>}
