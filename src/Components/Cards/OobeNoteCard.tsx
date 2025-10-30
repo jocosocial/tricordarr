@@ -1,5 +1,4 @@
 import React from 'react';
-import {Image} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {AppImage} from '#src/Components/Images/AppImage';
@@ -20,7 +19,7 @@ export const OobeNoteCard = () => {
           and have a great cruise!
         </Text>
       </Card.Content>
-      <AppImage image={AppImageMetaData.fromURI(Image.resolveAssetSource(twitarrteam).uri)} mode={'cardcover'} />
+      <AppImage image={AppImageMetaData.fromAsset(twitarrteam, 'twitarrteam.jpg')} mode={'cardcover'} />
     </Card>
   );
 };

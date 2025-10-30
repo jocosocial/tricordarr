@@ -1,5 +1,5 @@
 import {type FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
@@ -27,6 +27,7 @@ export const SchedulePrivateEventsScreen = () => {
   });
   const listRef = useRef<FlashListRef<FezData>>(null);
   const navigation = useCommonStack();
+  const [items, setItems] = useState<FezData[]>([]);
 
   const getNavButtons = useCallback(() => {
     return (
@@ -50,6 +51,16 @@ export const SchedulePrivateEventsScreen = () => {
     });
   }, [getNavButtons, navigation]);
 
+  /**
+   * Effect to set the items when the data loads. This was necessary because the
+   * list would infinitely re-render with this lambda as the items prop.
+   */
+  useEffect(() => {
+    if (data) {
+      setItems(data.pages.flatMap(page => page.fezzes));
+    }
+  }, [data]);
+
   if (!data) {
     return <LoadingView />;
   }
@@ -57,7 +68,7 @@ export const SchedulePrivateEventsScreen = () => {
   return (
     <AppView>
       <LFGFlatList
-        items={data.pages.flatMap(p => p.fezzes)}
+        items={items}
         listRef={listRef}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         separator={'day'}
