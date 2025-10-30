@@ -1,3 +1,4 @@
+import pluralize from 'pluralize';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -12,7 +13,11 @@ interface ForumCategoryListItemProps {
 export const ForumCategoryListItem = ({category}: ForumCategoryListItemProps) => {
   const forumNavigation = useForumStackNavigation();
 
-  const getThreadCount = () => <Text variant={'bodyMedium'}>{category.paginator.total} threads</Text>;
+  const getThreadCount = () => (
+    <Text variant={'bodyMedium'}>
+      {category.paginator.total} {pluralize('thread', category.paginator.total)}
+    </Text>
+  );
   const onPress = () => forumNavigation.push(ForumStackComponents.forumCategoryScreen, {category: category});
 
   return (

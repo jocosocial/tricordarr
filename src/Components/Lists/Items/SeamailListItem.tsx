@@ -4,7 +4,8 @@ import {StyleSheet, View} from 'react-native';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
 import {ListItem} from '#src/Components/Lists/ListItem';
-import {SeamailTimeBadge} from '#src/Components/Text/SeamailTimeBadge';
+import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -34,6 +35,18 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     },
     leftContainer: {
       ...commonStyles.paddingLeftSmall,
+      justifyContent: 'center',
+    },
+    postCountColor: {
+      color: '#cfcfcf',
+    },
+    timeStyleActive: {
+      ...commonStyles.bold,
+    },
+    rightContainer: {
+      ...commonStyles.verticalContainer,
+      ...commonStyles.alignItemsEnd,
+      ...commonStyles.paddingLeftSmall,
     },
   });
 
@@ -41,7 +54,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const description = otherParticipants.map(p => p.username).join(', ');
 
   const getAvatar = () => (
-    <View style={styles.leftContainer}>
+    <View style={[styles.leftContainer, commonStyles.alignItemsCenter]}>
       <FezAvatarImage fez={fez} />
     </View>
   );
@@ -52,10 +65,28 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     });
 
   const getRight = () => {
+    const totalPostCount = fez.members?.postCount || 0;
+
     if (fez.members?.isMuted) {
-      return <AppIcon icon={AppIcons.mute} />;
+      return (
+        <View style={styles.leftContainer}>
+          <AppIcon icon={AppIcons.mute} />
+        </View>
+      );
     }
-    return <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />;
+
+    return (
+      <View style={styles.rightContainer}>
+        <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
+        <View>
+          <RelativeTimeTag
+            date={new Date(fez.lastModificationTime)}
+            variant={'bodyMedium'}
+            style={badgeCount ? styles.timeStyleActive : undefined}
+          />
+        </View>
+      </View>
+    );
   };
 
   return (
