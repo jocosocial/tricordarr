@@ -22,7 +22,6 @@ export const PhotostreamImageSelectionView = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onBlur = async (newPath: string) => {
-    setRefreshing(true);
     try {
       const imageData = await RNFS.readFile(newPath, 'base64');
       await setFieldValue('image', imageData);
@@ -36,7 +35,15 @@ export const PhotostreamImageSelectionView = () => {
   };
 
   const processImage = (image: Image) => {
-    NativeTricordarrModule.blurTextInImage(image.path, onBlur);
+    setRefreshing(true);
+    try {
+      NativeTricordarrModule.blurTextInImage(image.path, onBlur);
+    } catch (err: any) {
+      if (err instanceof Error) {
+        setSnackbarPayload({message: err.message, messageType: 'error'});
+      }
+      setRefreshing(false);
+    }
   };
 
   const clearImage = async () => {

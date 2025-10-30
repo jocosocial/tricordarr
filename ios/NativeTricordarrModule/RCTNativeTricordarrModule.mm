@@ -6,9 +6,12 @@
 //
 
 #import "RCTNativeTricordarrModule.h"
+#import "Tricordarr-Swift.h"
 
 @implementation RCTNativeTricordarrModule
 
+// Name of the module. This must align with the directory structure and the specs/NativeTricordarrModule.ts
+// spec file on the JS side and the `.codegenConfig` in package.json.
 + (NSString *)moduleName {
   return @"NativeTricordarrModule";
 }
@@ -21,15 +24,7 @@
 
 - (void)blurTextInImage:(nonnull NSString *)inputFilePath
                callback:(nonnull RCTResponseSenderBlock)callback {
-  // TODO: Implement image text blurring logic
-  // 1. Load image from inputFilePath
-  // 2. Detect text regions in the image (using Vision framework)
-  // 3. Apply blur to detected regions
-  // 4. Save processed image
-  // 5. Return the processed file path
-
-  // Placeholder: Return the input file path
-  callback(@[ inputFilePath ]);
+  [ImageBlur blurTextInImage:inputFilePath callback:callback];
 }
 
 @end
