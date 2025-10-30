@@ -10,7 +10,6 @@ export const styleDefaults = {
   avatarSizeSmall: 24, // 2/3rds.
   headerImageSize: 216,
   fontSize: 16, // This is copied from styles/Theme.
-  fontSizeMedium: 14, // This came from the default of the List.Item description styling in react-native-paper.
   // Arbitrary point at which things happen when scrolling a list.
   // Things such as displaying a back-to-top button.
   // 450 was originally roughly 8 messages @ 56 units per message.
@@ -270,9 +269,6 @@ export const commonStyles = StyleSheet.create({
   },
   fontSizeDefault: {
     fontSize: styleDefaults.fontSize,
-  },
-  fontSizeMedium: {
-    fontSize: styleDefaults.fontSizeMedium,
   },
   fontSizeLabel: {
     fontSize: styleDefaults.fontSize * 0.75,
