@@ -1,7 +1,6 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import Markdown from '@ronradtke/react-native-markdown-display';
 import React, {useCallback, useMemo} from 'react';
-import {Linking, Pressable, StyleProp, StyleSheet, TextStyle} from 'react-native';
+import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
@@ -20,7 +19,6 @@ interface ContentTextProps {
   hashtagOnPress?: (tag: string) => void;
   mentionOnPress?: (username: string) => void;
   forceMarkdown?: boolean;
-  onLongPress?: () => void;
 }
 
 // ChatGPT wrote this. Needed something to deal with newline characters appearing
@@ -60,7 +58,6 @@ export const ContentText = ({
   hashtagOnPress,
   mentionOnPress,
   forceMarkdown,
-  onLongPress,
 }: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {data} = useUserKeywordQuery({
@@ -72,14 +69,6 @@ export const ContentText = ({
   const undWords = useMemo(() => data?.keywords.map(aw => aw.toLowerCase()) || [], [data]);
   const {appConfig} = useConfig();
   const {setErrorBanner} = useErrorHandler();
-
-  // Default onLongPress behavior to copy text to clipboard
-  const defaultOnLongPress = useCallback(() => {
-    Clipboard.setString(text);
-  }, [text]);
-
-  // Use provided onLongPress or default to copy to clipboard
-  const handleLongPress = onLongPress || defaultOnLongPress;
 
   const renderEmojiText = useCallback(
     (
@@ -205,17 +194,19 @@ export const ContentText = ({
     const strippedText = text.replace(markdownIdentifier, '');
 
     return (
-      <Pressable onLongPress={handleLongPress}>
-        <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
-          {strippedText}
-        </Markdown>
-      </Pressable>
+      <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
+        {strippedText}
+      </Markdown>
     );
   }
 
+  /**
+   * Do not implement onPress or onLongPress in this component. It's used so often in places
+   * that may not be touchable/selectable that it interrupts any touchable containers.
+   */
   return (
     <HyperlinkText>
-      <Text variant={textVariant} style={textStyle} onLongPress={handleLongPress}>
+      <Text variant={textVariant} style={textStyle}>
         {renderContentText(text)}
       </Text>
     </HyperlinkText>

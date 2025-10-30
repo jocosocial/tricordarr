@@ -1,12 +1,13 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {ContentText} from '#src/Components/Text/ContentText';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface PerformerBioCardProps {
-  bio?: string;
+  bio: string;
 }
 
 export const PerformerBioCard = (props: PerformerBioCardProps) => {
@@ -18,14 +19,12 @@ export const PerformerBioCard = (props: PerformerBioCardProps) => {
     },
   });
 
-  if (!props.bio) {
-    return <></>;
-  }
-
   return (
     <Card style={styles.bioCard}>
       <Card.Content>
-        <ContentText text={props.bio} forceMarkdown={true} />
+        <TouchableOpacity onLongPress={() => Clipboard.setString(props.bio)}>
+          <ContentText text={props.bio} forceMarkdown={true} />
+        </TouchableOpacity>
       </Card.Content>
     </Card>
   );

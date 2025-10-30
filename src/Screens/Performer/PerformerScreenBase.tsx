@@ -83,7 +83,7 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
         isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
           {performerData.header.photo && (
-            <APIImageV2 path={performerData.header.photo} mode={'image'} style={styles.image} initialSize={'full'} />
+            <APIImageV2 path={performerData.header.photo} mode={'image'} style={styles.image} staticSize={'full'} />
           )}
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer} padBottom={false}>
