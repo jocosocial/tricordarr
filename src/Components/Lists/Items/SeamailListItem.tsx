@@ -60,24 +60,22 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
   const getRight = () => {
     const totalPostCount = fez.members?.postCount || 0;
 
-    const postCountElement = (
-      <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.marginTopTiny]}>
-        <Text variant="bodySmall" style={styles.postCountColor}>
-          {totalPostCount} {pluralize('messages', totalPostCount)}
-        </Text>
-      </View>
-    );
-
-    const topElement = fez.members?.isMuted ? (
-      <AppIcon icon={AppIcons.mute} />
-    ) : (
-      <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />
-    );
+    if (fez.members?.isMuted) {
+      return (
+        <View style={styles.leftContainer}>
+          <AppIcon icon={AppIcons.mute} />
+        </View>
+      );
+    }
 
     return (
       <View style={[commonStyles.verticalContainer, commonStyles.alignItemsEnd]}>
-        {topElement}
-        {postCountElement}
+        <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />
+        <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.marginTopTiny]}>
+          <Text variant="bodySmall" style={styles.postCountColor}>
+            {totalPostCount} {pluralize('messages', totalPostCount)}
+          </Text>
+        </View>
       </View>
     );
   };
