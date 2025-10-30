@@ -40,6 +40,18 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     postCountColor: {
       color: '#cfcfcf',
     },
+    timeStyleActive: {
+      ...commonStyles.bold,
+      ...commonStyles.fontSizeMedium,
+    },
+    timeStyleInactive: {
+      ...commonStyles.fontSizeMedium,
+    },
+    rightContainer: {
+      ...commonStyles.verticalContainer,
+      ...commonStyles.alignItemsEnd,
+      ...commonStyles.paddingLeftSmall,
+    },
   });
 
   const otherParticipants = fez.members?.participants.filter(p => p.userID !== profilePublicData?.header.userID) || [];
@@ -67,13 +79,13 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       );
     }
 
-    const timeStyle = badgeCount ? [commonStyles.bold] : undefined;
+    const timeStyle = badgeCount ? styles.timeStyleActive : styles.timeStyleInactive;
 
     return (
-      <View style={[commonStyles.verticalContainer, commonStyles.alignItemsEnd]}>
+      <View style={styles.rightContainer}>
         <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
-        <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.marginTopTiny]}>
-          <RelativeTimeTag variant={'bodySmall'} date={new Date(fez.lastModificationTime)} style={timeStyle} />
+        <View>
+          <RelativeTimeTag date={new Date(fez.lastModificationTime)} style={timeStyle} />
         </View>
       </View>
     );

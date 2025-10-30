@@ -1,6 +1,6 @@
 import pluralize from 'pluralize';
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Badge, Text} from 'react-native-paper';
 
 import {commonStyles} from '#src/Styles';
@@ -12,17 +12,32 @@ export const SeamailMessageCountIndicator = ({
   totalPostCount: number;
   badgeCount: number;
 }) => {
+  const styles = StyleSheet.create({
+    container: {
+      ...commonStyles.verticalContainer,
+    },
+    textContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
+    },
+    text: {
+      ...commonStyles.fontSizeMedium,
+      ...(badgeCount ? commonStyles.bold : undefined),
+    },
+    badge: {
+      ...commonStyles.marginLeftSmall,
+      ...commonStyles.paddingHorizontalSmall,
+      ...commonStyles.bold,
+    },
+  });
+
   return (
-    <View style={commonStyles.verticalContainer}>
-      <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter]}>
-        <Text variant={'bodySmall'}>
+    <View style={styles.container}>
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>
           {totalPostCount} {pluralize('messages', totalPostCount)}
         </Text>
-        {!!badgeCount && (
-          <Badge style={[commonStyles.marginLeftSmall, commonStyles.paddingHorizontalSmall, commonStyles.bold]}>
-            {badgeCount} new
-          </Badge>
-        )}
+        {!!badgeCount && <Badge style={styles.badge}>{`${badgeCount} new`}</Badge>}
       </View>
     </View>
   );
