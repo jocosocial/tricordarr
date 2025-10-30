@@ -44,7 +44,7 @@ interface APIImageV2Props {
  *
  * Setting your own onPress effectively disables the image viewer.
  */
-export const APIImageV2 = ({path, style, mode, disableTouch, staticSize, onPress}: APIImageV2Props) => {
+export const APIImage = ({path, style, mode, disableTouch, staticSize, onPress}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();

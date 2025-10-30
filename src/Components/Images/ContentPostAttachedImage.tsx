@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {ContentPostAttachment} from '#src/Components/Views/Content/ContentPostAttachment';
 import {AppIcons} from '#src/Enums/Icons';
@@ -39,7 +39,7 @@ export const ContentPostAttachedImage = (props: ContentPostAttachedImageProps) =
   } else if (props.imageData.filename) {
     return (
       <ContentPostAttachment onIconPress={props.onIconPress} disabled={props.disabled}>
-        <APIImageV2
+        <APIImage
           onPress={props.onImagePress}
           path={props.imageData.filename}
           style={styles.image}

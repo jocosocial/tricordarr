@@ -15,7 +15,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
-  const {appConfig, oobeCompleted} = useConfig();
+  const {oobeCompleted} = useConfig();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
   const {tokenData} = useAuth();
@@ -94,8 +94,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   onPress={() => handleDrawerNav('tricordarr://photostream')}
                 />
               )}
-              {/*This is Beta!*/}
-              {hasVerified && appConfig.enableExperiments && (
+              {hasVerified && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}

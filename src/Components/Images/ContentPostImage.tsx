@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 
 interface FezPostImageProps {
@@ -26,7 +26,7 @@ export const ContentPostImage = ({image, messageOnRight}: FezPostImageProps) => 
 
   return (
     <View style={styles.view}>
-      <APIImageV2 path={image} style={styles.image} mode={'scaledimage'} />
+      <APIImage path={image} style={styles.image} mode={'scaledimage'} />
     </View>
   );
 };

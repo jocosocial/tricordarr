@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "pod-install": "cd ios && pod install"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.0",
@@ -20,7 +21,7 @@
     "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-camera-roll/camera-roll": "^7.10.2",
-    "@react-native-clipboard/clipboard": "^1.16.0",
+    "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/hooks": "^100.1.0",
     "@react-native-community/netinfo": "^11.3.3",
     "@react-native-community/slider": "^5.0.1",

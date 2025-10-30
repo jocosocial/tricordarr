@@ -42,6 +42,7 @@ export const AppImageViewer = ({
    */
   const getImageCacheURI = useCallback(async (image: AppImageMetaData) => {
     const cachePath = await FastImage.getCachePath({uri: image.fullURI});
+    console.log('[AppImageViewer.tsx] cachePath', cachePath);
     if (cachePath) {
       return `file://${cachePath}`;
     }
@@ -55,18 +56,18 @@ export const AppImageViewer = ({
   const saveImage = useCallback(
     async (index: number) => {
       try {
-        const image = viewerImages[index];
-        if (image.dataURI) {
-          await saveImageDataURIToCameraRoll(image);
-        } else if (image.identiconURI) {
-          await saveImageURIToLocal(image.fileName, image.identiconURI);
+        const imageMeta = viewerImages[index];
+        if (imageMeta.dataURI) {
+          await saveImageDataURIToCameraRoll(imageMeta);
+        } else if (imageMeta.identiconURI) {
+          await saveImageURIToLocal(imageMeta.fileName, imageMeta.identiconURI);
         } else {
-          const cacheURI = await getImageCacheURI(image);
+          const cacheURI = await getImageCacheURI(imageMeta);
           if (cacheURI) {
-            await saveImageURIToLocal(image.fileName, cacheURI);
+            await saveImageURIToLocal(imageMeta.fileName, cacheURI);
           } else {
-            if (image.fullURI) {
-              await saveImageURIToLocal(image.fileName, image.fullURI);
+            if (imageMeta.fullURI) {
+              await saveImageURIToLocal(imageMeta.fileName, imageMeta.fullURI);
             }
             throw Error('No image URI to save');
           }
@@ -100,11 +101,10 @@ export const AppImageViewer = ({
           enableDownload={enableDownload}
           onSave={() => saveImage(imageIndex)}
           onClose={onClose}
-          imageViewImages={imageViewImages}
         />
       );
     },
-    [enableDownload, saveImage, onClose, viewerImages, imageViewImages],
+    [enableDownload, saveImage, onClose, viewerImages],
   );
 
   /**
@@ -133,6 +133,7 @@ export const AppImageViewer = ({
    * Effect to get the underlying image sources for the image viewer.
    */
   useEffect(() => {
+    console.log('[AppImageViewer.tsx] Triggering useEffect to get images');
     const getImages = async () => {
       const images = await Promise.all(
         viewerImages.map(async image => {
