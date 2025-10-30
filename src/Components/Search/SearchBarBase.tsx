@@ -36,13 +36,31 @@ export const SearchBarBase = ({
     },
   });
 
-  const onIconPress = () => {
-    if (searchQuery.length < minLength) {
+  const attemptSearch = () => {
+    const trimmedQuery = searchQuery.trim();
+
+    // Validate the trimmed query meets minimum length
+    if (trimmedQuery.length < minLength) {
       setShowHelp(true);
-    } else {
-      setShowHelp(false);
-      onSearch ? onSearch() : undefined;
+      return;
     }
+
+    setShowHelp(false);
+
+    // If query needs trimming, update it first
+    if (trimmedQuery !== searchQuery && onChangeSearch) {
+      onChangeSearch(trimmedQuery);
+    }
+
+    // Execute the search
+    // The parent's searchQuery state will already be updated with the trimmed value
+    if (onSearch) {
+      onSearch();
+    }
+  };
+
+  const onIconPress = () => {
+    attemptSearch();
   };
 
   // Clear search results when you go back or otherwise unmount this screen
@@ -58,7 +76,9 @@ export const SearchBarBase = ({
         onIconPress={onIconPress}
         onChangeText={onChangeSearch}
         value={searchQuery}
-        onSubmitEditing={onSearch}
+        onSubmitEditing={() => {
+          attemptSearch();
+        }}
         onClearIconPress={onClear}
         style={styles.searchBar}
       />

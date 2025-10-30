@@ -29,13 +29,9 @@ export const SeamailSearchBar = () => {
     setQueryEnable(false);
   };
   const onSearch = () => {
-    if (!searchQuery || searchQuery.length < 3) {
-      setQueryEnable(false);
-    } else {
-      setQueryEnable(true);
-      refetch();
-      Keyboard.dismiss();
-    }
+    setQueryEnable(true);
+    refetch();
+    Keyboard.dismiss();
   };
 
   const handleLoadNext = () => {
