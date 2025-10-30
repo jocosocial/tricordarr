@@ -1,3 +1,4 @@
+import pluralize from 'pluralize';
 import React, {memo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -12,7 +13,6 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useChatStack} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import pluralize from 'pluralize';
 
 interface SeamailListItemProps {
   fez: FezData;
@@ -72,7 +72,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       <View style={[commonStyles.verticalContainer, commonStyles.alignItemsEnd]}>
         <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />
         <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.marginTopTiny]}>
-          <Text variant="bodySmall" style={styles.postCountColor}>
+          <Text variant={'bodySmall'} style={styles.postCountColor}>
             {totalPostCount} {pluralize('messages', totalPostCount)}
           </Text>
         </View>
