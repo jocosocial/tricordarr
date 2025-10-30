@@ -7,7 +7,7 @@ import {PerformerBioCard} from '#src/Components/Cards/Performer/PerformerBioCard
 import {PerformerYearsCard} from '#src/Components/Cards/Performer/PerformerYearsCard';
 import {EventCard} from '#src/Components/Cards/Schedule/EventCard';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -83,7 +83,7 @@ export const PerformerScreenBase = ({performerData, onRefresh, isFetching = fals
         isStack={true}>
         <PaddedContentView style={styles.listContentContainer} padTop={true}>
           {performerData.header.photo && (
-            <APIImageV2 path={performerData.header.photo} mode={'image'} style={styles.image} initialSize={'full'} />
+            <APIImage path={performerData.header.photo} mode={'image'} style={styles.image} staticSize={'full'} />
           )}
         </PaddedContentView>
         <PaddedContentView style={styles.listContentContainer} padBottom={false}>

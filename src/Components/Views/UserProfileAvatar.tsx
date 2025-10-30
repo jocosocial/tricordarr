@@ -5,7 +5,7 @@ import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -32,9 +32,9 @@ const UserProfileAvatarImage = ({user}: {user: ProfilePublicData}) => {
 
   if (!user.header.userImage) {
     console.log('[UserProfileAvatarImage.tsx] ITS AN IDENTICON');
-    return <APIImageV2 path={user.header.userID} mode={'image'} style={styles.image} staticSize={'identicon'} />;
+    return <APIImage path={user.header.userID} mode={'image'} style={styles.image} staticSize={'identicon'} />;
   }
-  return <APIImageV2 path={user.header.userImage} mode={'image'} style={styles.image} />;
+  return <APIImage path={user.header.userImage} mode={'image'} style={styles.image} />;
 
   // const imageData: APIImageV2Data = user.header.userImage
   //   ? APIImageV2Data.fromFileName(user.header.userImage, appConfig)

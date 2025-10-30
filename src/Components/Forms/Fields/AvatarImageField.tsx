@@ -5,7 +5,7 @@ import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {PERMISSIONS, request as requestPermission} from 'react-native-permissions';
 
 import {ImageButtons} from '#src/Components/Buttons/ImageButtons';
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {ImageUploadData} from '#src/Structs/ControllerStructs';
@@ -90,7 +90,7 @@ export const AvatarImageField = <TFormData,>({imageData, name}: AvatarImageField
     <View>
       <View style={styles.imageContainer}>
         {field.value.filename && imageData.filename && (
-          <APIImageV2 path={imageData.filename} mode={'image'} style={styles.image} staticSize={'thumb'} />
+          <APIImage path={imageData.filename} mode={'image'} style={styles.image} staticSize={'thumb'} />
         )}
         {field.value.image && (
           <NativeImage

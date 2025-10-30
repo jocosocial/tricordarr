@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, Text} from 'react-native-paper';
 
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {DailyThemeData} from '#src/Structs/ControllerStructs';
@@ -39,7 +39,7 @@ export const DailyThemeCard = (props: DailyThemeCardProps) => {
           {props.dailyTheme.info}
         </Text>
       </Card.Content>
-      {props.dailyTheme.image && <APIImageV2 path={props.dailyTheme.image} />}
+      {props.dailyTheme.image && <APIImage path={props.dailyTheme.image} />}
     </Card>
   );
 };

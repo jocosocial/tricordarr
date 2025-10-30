@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
-import {APIImageV2} from '#src/Components/Images/APIImageV2';
+import {APIImage} from '#src/Components/Images/APIImage';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -50,13 +50,7 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
       <Card.Content style={styles.cardContent}>
         <Text style={styles.title}>{header.name}</Text>
         {header.photo && (
-          <APIImageV2
-            style={styles.image}
-            path={header.photo}
-            mode={'image'}
-            disableTouch={true}
-            staticSize={'thumb'}
-          />
+          <APIImage style={styles.image} path={header.photo} mode={'image'} disableTouch={true} staticSize={'thumb'} />
         )}
       </Card.Content>
     </Card>

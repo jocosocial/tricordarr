@@ -1,13 +1,15 @@
+import FastImage from '@d11/react-native-fast-image';
 import React, {useCallback} from 'react';
-import {ImageRequireSource, ImageURISource, Platform, StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 
+import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useAppTheme} from '#src/Styles/Theme';
-import {AppImageMetaData} from '#src/Types/AppImageMetaData';
+import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
   enableDownload: boolean;
@@ -15,7 +17,6 @@ interface ImageViewerHeaderViewProps {
   onClose: () => void;
   viewerImages: AppImageMetaData[];
   imageIndex: number;
-  imageViewImages: (ImageURISource | ImageRequireSource)[];
 }
 
 export const ImageViewerHeaderView = ({
@@ -24,7 +25,6 @@ export const ImageViewerHeaderView = ({
   enableDownload,
   onSave,
   onClose,
-  imageViewImages,
 }: ImageViewerHeaderViewProps) => {
   const {commonStyles} = useStyles();
   const theme = useAppTheme();
@@ -48,11 +48,17 @@ export const ImageViewerHeaderView = ({
 
   const getDisplayURI = useCallback((image: AppImageMetaData) => {
     const imageURI = AppImageMetaData.getSourceURI(image);
-    const displayLength = 100;
+    const displayLength = 200;
     if (imageURI.length > displayLength) {
       return `${imageURI.substring(0, displayLength)}...`;
     }
     return imageURI;
+  }, []);
+
+  const getCachePath = useCallback(async (image: AppImageMetaData) => {
+    if (image.mode === AppImageMode.api || image.mode === AppImageMode.identicon) {
+      return await FastImage.getCachePath({uri: AppImageMetaData.getSourceURI(image)});
+    }
   }, []);
 
   const image = viewerImages[imageIndex];
@@ -80,8 +86,13 @@ export const ImageViewerHeaderView = ({
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
             mode: {image.mode}
           </Text>
+          <HyperlinkText disableLinkInterpolation={true}>
+            <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
+              URI: {getDisplayURI(image)}
+            </Text>
+          </HyperlinkText>
           <Text selectable={true} style={styles.infoText} variant={'bodySmall'}>
-            URI: {getDisplayURI(image)}
+            Cache Path: {getCachePath(image)}
           </Text>
         </PaddedContentView>
       )}
