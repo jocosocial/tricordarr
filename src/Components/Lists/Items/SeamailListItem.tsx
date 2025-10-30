@@ -1,12 +1,11 @@
-import pluralize from 'pluralize';
 import React, {memo} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {FezAvatarImage} from '#src/Components/Images/FezAvatarImage';
 import {ListItem} from '#src/Components/Lists/ListItem';
-import {SeamailTimeBadge} from '#src/Components/Text/SeamailTimeBadge';
+import {SeamailMessageCountIndicator} from '#src/Components/Text/SeamailMessageCountIndicator';
+import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -68,13 +67,13 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       );
     }
 
+    const timeStyle = badgeCount ? [commonStyles.bold] : undefined;
+
     return (
       <View style={[commonStyles.verticalContainer, commonStyles.alignItemsEnd]}>
-        <SeamailTimeBadge date={fez.lastModificationTime} badgeCount={badgeCount} />
+        <SeamailMessageCountIndicator badgeCount={badgeCount} totalPostCount={totalPostCount} />
         <View style={[commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.marginTopTiny]}>
-          <Text variant={'bodySmall'} style={styles.postCountColor}>
-            {totalPostCount} {pluralize('messages', totalPostCount)}
-          </Text>
+          <RelativeTimeTag variant={'bodySmall'} date={new Date(fez.lastModificationTime)} style={timeStyle} />
         </View>
       </View>
     );
