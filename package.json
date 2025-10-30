@@ -11,8 +11,8 @@
     "start": "react-native start",
     "test": "jest",
     "postinstall": "patch-package",
-    "build-android-apk": "npx react-native run-android --tasks assembleRelease",
-    "build-android-aab": "npx react-native run-android --tasks bundleRelease"
+    "build-android-apk": "npx react-native build-android --tasks assembleRelease",
+    "build-android-aab": "npx react-native build-android --mode release"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.0",
