@@ -16,7 +16,7 @@ npm clean-install
 npx react-native run-android
 
 # iOS (Mac)
-npm run pod-install
+npx pod-install
 npx react-native run-ios --scheme Development # or Release
 ```
 

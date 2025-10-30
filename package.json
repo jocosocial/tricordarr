@@ -11,7 +11,6 @@
     "start": "react-native start",
     "test": "jest",
     "postinstall": "patch-package",
-    "pod-install": "cd ios && pod install"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.0",
