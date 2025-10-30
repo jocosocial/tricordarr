@@ -61,13 +61,9 @@ export const ForumThreadSearchBar = (props: Props) => {
   };
 
   const onSearch = () => {
-    if (!searchQuery || searchQuery.length < 3) {
-      setEnable(false);
-    } else {
-      setEnable(true);
-      refetch();
-      Keyboard.dismiss();
-    }
+    setEnable(true);
+    refetch();
+    Keyboard.dismiss();
   };
 
   const handleLoadNext = () => {

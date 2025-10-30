@@ -27,11 +27,7 @@ export const EventSearchBar = () => {
   };
 
   const onSearch = () => {
-    if (!searchQuery || searchQuery.length < 3) {
-      setQueryEnable(false);
-    } else {
-      setQueryEnable(true);
-    }
+    setQueryEnable(true);
   };
 
   // Deal with some undefined issues below by defaulting to empty list.
