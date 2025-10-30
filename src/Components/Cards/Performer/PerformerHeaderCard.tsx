@@ -50,13 +50,7 @@ const PerformerHeaderCardInternal = ({header}: PerformerHeaderCardProps) => {
       <Card.Content style={styles.cardContent}>
         <Text style={styles.title}>{header.name}</Text>
         {header.photo && (
-          <APIImage
-            style={styles.image}
-            path={header.photo}
-            mode={'image'}
-            disableTouch={true}
-            staticSize={'thumb'}
-          />
+          <APIImage style={styles.image} path={header.photo} mode={'image'} disableTouch={true} staticSize={'thumb'} />
         )}
       </Card.Content>
     </Card>
