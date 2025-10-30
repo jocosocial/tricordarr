@@ -42,6 +42,7 @@ export const AppImageViewer = ({
    */
   const getImageCacheURI = useCallback(async (image: AppImageMetaData) => {
     const cachePath = await FastImage.getCachePath({uri: image.fullURI});
+    console.log('[AppImageViewer.tsx] cachePath', cachePath);
     if (cachePath) {
       return `file://${cachePath}`;
     }
@@ -132,6 +133,7 @@ export const AppImageViewer = ({
    * Effect to get the underlying image sources for the image viewer.
    */
   useEffect(() => {
+    console.log('[AppImageViewer.tsx] Triggering useEffect to get images');
     const getImages = async () => {
       const images = await Promise.all(
         viewerImages.map(async image => {
