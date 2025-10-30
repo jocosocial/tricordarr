@@ -103,6 +103,12 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
             <Text>{fez.title}</Text>
           </TouchableOpacity>
         </PaddedContentView>
+        { fez.members &&
+          <PaddedContentView>
+            <TitleTag>Total Posts</TitleTag>
+            <Text>{fez.members?.postCount}</Text>
+          </PaddedContentView>
+        }
         <PaddedContentView>
           <TitleTag>Type</TitleTag>
           <Text>{fez.fezType}</Text>
