@@ -17,7 +17,7 @@ npx react-native run-android
 
 # iOS (Mac)
 npx pod-install
-npx react-native run-ios --scheme Development # or Release
+npx react-native run-ios --scheme Development # or Production
 ```
 
 See [Docs](./docs/) for more.

@@ -28,7 +28,7 @@
             buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "YES"
-            buildForArchiving = "NO"
+            buildForArchiving = "YES"
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
@@ -101,6 +101,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      revealArchiveInOrganizer = "YES">
+      revealArchiveInOrganizer = "YES"
+      allowsArchivingForSimulator = "YES">
    </ArchiveAction>
 </Scheme>
