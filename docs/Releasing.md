@@ -41,3 +41,5 @@ iOS
 ---
 
 Set the version info in Xcode. Click the target `Tricordarr` then in the `General` tab under `Identity`.
+
+https://stackoverflow.com/questions/51022884/ios-testflight-no-build-available-for-external-testers
