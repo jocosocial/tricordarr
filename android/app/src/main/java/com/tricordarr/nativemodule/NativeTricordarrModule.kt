@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Callback
 import android.content.Context
 import android.content.SharedPreferences
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableArray
 import android.util.Log
 
 // This get codegen'd from specs/NativeTricordarrModule.ts.
@@ -31,6 +32,16 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
   // calls the callback with the original file path.
   override fun blurTextInImage(inputFilePath: String, callback: Callback) {
     ImageBlur.blurTextInImage(inputFilePath, callback)
+  }
+
+  override fun setupLocalPushManager(
+    socketUrl: String,
+    token: String,
+    wifiNetworkNames: ReadableArray,
+    healthcheckTimer: Double,
+    enable: Boolean,
+  ) {
+    Log.d(NAME, "setupLocalPushManager is a no-op on Android")
   }
 
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.

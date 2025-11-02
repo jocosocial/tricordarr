@@ -14,6 +14,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
 		938DD99E2EB3DA1600AF1BA5 /* ImageBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938DD99D2EB3DA1600AF1BA5 /* ImageBlur.swift */; };
+		939E5E752EB7169E00976A0E /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939E5E742EB7169E00976A0E /* Logging.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
 		938DD99D2EB3DA1600AF1BA5 /* ImageBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBlur.swift; sourceTree = "<group>"; };
+		939E5E742EB7169E00976A0E /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -99,6 +101,7 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
+				939E5E742EB7169E00976A0E /* Logging.swift */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
@@ -275,6 +278,7 @@
 				93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 				938DD99E2EB3DA1600AF1BA5 /* ImageBlur.swift in Sources */,
+				939E5E752EB7169E00976A0E /* Logging.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
