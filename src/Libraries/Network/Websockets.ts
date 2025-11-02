@@ -11,7 +11,7 @@ import {WebSocketOptions} from '#src/Types';
  * React-Native does not support all the same properties as browser URL
  * objects. Big sad.
  */
-async function buildWebsocketURL(fezID?: string) {
+export async function buildWebsocketURL(fezID?: string) {
   const {serverUrl, urlPrefix} = await getAppConfig();
   let wsUrl = `${serverUrl}${urlPrefix}/notification/socket`;
   if (fezID) {

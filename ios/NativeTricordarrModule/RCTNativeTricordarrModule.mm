@@ -39,6 +39,8 @@
   NSLog(@"  wifiNetworkNames: %@", wifiNetworkNames);
   NSLog(@"  healthcheckTimer: %f", healthcheckTimer);
   NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
+
+  [PushNotifications testNotification];
 }
 
 @end
