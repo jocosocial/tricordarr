@@ -17,10 +17,21 @@ Query
 Native Code
 -----------
 
+### Codegen
+
+Do not attempt to run `npx @react-native-community/cli codegen` or `npx react-native codegen`. Those commands are not fully baked and undocumented. If you want to re-run Codegen just do a build.
+
+```
+[Codegen] Analyzing /Users/grant/Projects/jocosocial/tricordarr/package.json
+[Codegen] TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+[Codegen] Done.
+```
+
+That is because the `--outputDir` is empty. And there isn't an easy way to automatically set the correct output directories. Can be done, but ugh.
+
 ### Android Studio
 
-Open the `android` directory in Android Studio instead of the project root. It behaves better.
-Might be able to mark a different one as Project Root?
+Open the `android` directory in Android Studio instead of the project root. It behaves better. Might be able to mark a different one as Project Root?
 https://stackoverflow.com/questions/70816347/i-cant-find-the-image-asset-option-in-android-studio
 
 ### Xcode
