@@ -8,7 +8,7 @@
 import Foundation
 import os
 
-// Common logging components.
+/// Common logging components.
 struct Logging {
 	static let logger = Logger(
 		subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",

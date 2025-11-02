@@ -5,3 +5,4 @@
 //
 
 #import <RCTAppDelegate.h>
+#import <UserNotifications/UserNotifications.h>

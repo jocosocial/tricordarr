@@ -20,12 +20,10 @@
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params {
-  return std::make_shared<facebook::react::NativeTricordarrModuleSpecJSI>(
-      params);
+  return std::make_shared<facebook::react::NativeTricordarrModuleSpecJSI>(params);
 }
 
-- (void)blurTextInImage:(nonnull NSString *)inputFilePath
-               callback:(nonnull RCTResponseSenderBlock)callback {
+- (void)blurTextInImage:(nonnull NSString *)inputFilePath callback:(nonnull RCTResponseSenderBlock)callback {
   [ImageBlur blurTextInImage:inputFilePath callback:callback];
 }
 
