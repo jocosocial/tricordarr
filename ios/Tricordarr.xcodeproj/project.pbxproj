@@ -15,7 +15,7 @@
 		93690EF42EAB269900CA8914 /* RCTNativeTricordarrModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */; };
 		938DD99E2EB3DA1600AF1BA5 /* ImageBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938DD99D2EB3DA1600AF1BA5 /* ImageBlur.swift */; };
 		939E5E752EB7169E00976A0E /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939E5E742EB7169E00976A0E /* Logging.swift */; };
-		93E8092A2EB7BEDC00405C08 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E809292EB7BEDC00405C08 /* PushNotifications.swift */; };
+		93E8092A2EB7BEDC00405C08 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E809292EB7BEDC00405C08 /* Notifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +33,7 @@
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
 		938DD99D2EB3DA1600AF1BA5 /* ImageBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBlur.swift; sourceTree = "<group>"; };
 		939E5E742EB7169E00976A0E /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		93E809292EB7BEDC00405C08 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
+		93E809292EB7BEDC00405C08 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -108,7 +108,7 @@
 				93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */,
 				93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */,
 				938DD99D2EB3DA1600AF1BA5 /* ImageBlur.swift */,
-				93E809292EB7BEDC00405C08 /* PushNotifications.swift */,
+				93E809292EB7BEDC00405C08 /* Notifications.swift */,
 			);
 			path = NativeTricordarrModule;
 			sourceTree = "<group>";
@@ -282,7 +282,7 @@
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 				938DD99E2EB3DA1600AF1BA5 /* ImageBlur.swift in Sources */,
 				939E5E752EB7169E00976A0E /* Logging.swift in Sources */,
-				93E8092A2EB7BEDC00405C08 /* PushNotifications.swift in Sources */,
+				93E8092A2EB7BEDC00405C08 /* Notifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 
 #import "RCTNativeTricordarrModule.h"
 #import "Tricordarr-Swift.h"
+#import <UserNotifications/UserNotifications.h>
 
 @implementation RCTNativeTricordarrModule
 
@@ -40,7 +41,7 @@
   NSLog(@"  healthcheckTimer: %f", healthcheckTimer);
   NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
 
-  [PushNotifications testNotification];
+  [Notifications testNotification];
 }
 
 @end

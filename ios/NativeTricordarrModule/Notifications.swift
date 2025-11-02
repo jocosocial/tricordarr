@@ -7,7 +7,9 @@
 
 import Foundation
 
-@objc class PushNotifications: NSObject {
+@objc class Notifications: NSObject, UNUserNotificationCenterDelegate {
+  static let shared = Notifications()
+
   /// Generates and posts a local notification containing custom content and metadata.
   ///
   /// Mostly mirrors what's going on in https://github.com/jocosocial/tricordarr/blob/main/src/Libraries/Notifications/Content.ts
@@ -60,5 +62,25 @@ import Foundation
   @objc static func testNotification() {
     Logging.logger.info("generating test notification")
     generateContentNotification(title: "Test Notification", body: "This is a test", type: "announcement", url: "http://localhost")
+  }
+  
+  class func appForegrounded() {
+    let center = UNUserNotificationCenter.current()
+    center.getDeliveredNotifications { notifications in
+      Notifications.shared.processNotifications(notifications)
+      // Remove older notifications; keep ones that are within 10 minutes of delivery (during this time,
+      // people may still be getting to the event the notification is reminding them of).
+      let oldNotifications = notifications.compactMap { notification in
+        notification.date < Date() - 60 * 10 ? notification.request.identifier : nil
+      }
+
+      center.removeDeliveredNotifications(withIdentifiers: oldNotifications)
+    }
+  }
+  
+  func processNotifications(_ notifications: [UNNotification]) {
+    notifications.forEach { notification in
+      Logging.logger.info("processNotifications \(notification.request.content.title)")
+    }
   }
 }

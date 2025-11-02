@@ -28,6 +28,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       in: window,
       launchOptions: launchOptions
     )
+    
+    // Setup foreground notification handler. This has to be done pretty early in the app
+    // startup process otherwise we could miss notification events.
+    // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate
+    UNUserNotificationCenter.current().delegate = Notifications.shared
+    Notifications.appForegrounded()
 
     return true
   }
