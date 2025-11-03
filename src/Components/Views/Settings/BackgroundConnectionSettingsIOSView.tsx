@@ -12,12 +12,16 @@ import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
+import {buildWebsocketURL} from '#src/Libraries/Network/Websockets';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {commonStyles} from '#src/Styles';
 import {useAppTheme} from '#src/Styles/Theme';
 import {BackgroundConnectionSettingsFormValues} from '#src/Types/FormValues';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 export const BackgroundConnectionSettingsIOSView = () => {
   const {appConfig, updateAppConfig} = useConfig();
@@ -27,6 +31,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
   const theme = useAppTheme();
   const {setSnackbarPayload} = useSnackbar();
   const formikRef = useRef<FormikProps<BackgroundConnectionSettingsFormValues>>(null);
+  const {tokenData} = useAuth();
 
   const handleEnable = () => {
     const newValue = !appConfig.enableBackgroundWorker;
@@ -82,6 +87,28 @@ export const BackgroundConnectionSettingsIOSView = () => {
         wifiNetworkNames: values.wifiNetworkNames,
       },
     });
+  };
+
+  const handleSetupManager = async () => {
+    if (!tokenData) {
+      return;
+    }
+    const socketUrl = await buildWebsocketURL();
+    console.log(
+      'setupLocalPushManager',
+      socketUrl,
+      tokenData.token,
+      appConfig.wifiNetworkNames,
+      appConfig.fgsWorkerHealthTimer,
+      enable,
+    );
+    NativeTricordarrModule.setupLocalPushManager(
+      socketUrl,
+      tokenData.token,
+      appConfig.wifiNetworkNames,
+      appConfig.fgsWorkerHealthTimer,
+      enable,
+    );
   };
 
   return (
@@ -140,6 +167,17 @@ export const BackgroundConnectionSettingsIOSView = () => {
             onPress={resetDefaultValues}
             buttonText={'Reset'}
             style={commonStyles.marginTopSmall}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+        <ListSection>
+          <ListSubheader>Worker Control</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Recycle Worker'}
+            onPress={handleSetupManager}
+            disabled={!tokenData}
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>

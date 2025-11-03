@@ -3,16 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
+import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
-import {
-  generateFgsShutdownNotification,
-  generateForegroundServiceNotification,
-} from '#src/Libraries/Notifications/ForegroundService';
+import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
+import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Styles/Theme';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;
@@ -183,4 +181,68 @@ export async function startForegroundServiceWorker() {
   // starts up (assuming the console.log is still in there).
   await AsyncStorage.setItem(StorageKeys.FGS_START, JSON.stringify(new Date().toISOString()));
   await generateForegroundServiceNotification();
+}
+
+async function generateForegroundServiceNotification(
+  body: string | undefined = 'A background worker has been started to maintain a connection to the Twitarr server.',
+  color = twitarrPrimaryColor,
+  onlyIfShowing = false,
+) {
+  // Kill a shutdown notification if we had one
+  await notifee.cancelNotification(fgsWorkerNotificationIDs.shutdown);
+
+  let show = !onlyIfShowing;
+  const displayedNotifications = await notifee.getDisplayedNotifications();
+  displayedNotifications.map(entry => {
+    if (entry.id === fgsWorkerNotificationIDs.worker) {
+      // We are currently showing.
+      if (onlyIfShowing) {
+        show = true;
+      }
+    }
+  });
+  if (show) {
+    await notifee.displayNotification({
+      id: fgsWorkerNotificationIDs.worker,
+      title: 'Twitarr Server Connection',
+      body: body,
+      android: {
+        channelId: serviceChannel.id,
+        asForegroundService: true,
+        color: color,
+        colorized: true,
+        pressAction: {
+          id: PressAction.home,
+        },
+        actions: [
+          {
+            title: 'Settings',
+            pressAction: {
+              id: PressAction.worker,
+            },
+          },
+        ],
+        smallIcon: 'ic_notification',
+      },
+    });
+  }
+}
+
+async function generateFgsShutdownNotification() {
+  const currentTime = new Date();
+  const body = 'Relaunch the app to try again. Connection lost at ' + currentTime.toLocaleTimeString();
+  await notifee.displayNotification({
+    id: fgsWorkerNotificationIDs.shutdown,
+    title: 'Twitarr Connection Lost',
+    body: body,
+    android: {
+      channelId: serviceChannel.id,
+      color: twitarrErrorColor,
+      colorized: true,
+      pressAction: {
+        id: PressAction.worker,
+      },
+      smallIcon: 'ic_notification',
+    },
+  });
 }

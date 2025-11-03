@@ -12,7 +12,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
-import {stopForegroundServiceWorker} from '#src/Libraries/Service';
+import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';

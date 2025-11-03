@@ -15,9 +15,9 @@ import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
-import {ForegroundService} from '#src/Components/Libraries/Notifications/ForegroundService';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
+import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
 import {AppEventHandler} from '#src/Components/Navigation/AppEventHandler';
 import {AppNavigationThemeProvider} from '#src/Context/Providers/AppNavigationThemeProvider.tsx';
 import {AuthProvider} from '#src/Context/Providers/AuthProvider';
@@ -40,7 +40,7 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
-import {registerFgsWorker} from '#src/Libraries/Service';
+import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {configureImageCache} from '#src/Libraries/Storage/ImageStorage.ts';
 import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 
@@ -122,7 +122,7 @@ function App(): React.JSX.Element {
                                                 <FilterProvider>
                                                   <SelectionProvider>
                                                     <AppEventHandler />
-                                                    <ForegroundService />
+                                                    <PushNotificationService />
                                                     <NotificationDataListener />
                                                     <NotificationDataPoller />
                                                     <RootStackNavigator />

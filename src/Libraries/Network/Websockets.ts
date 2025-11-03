@@ -11,18 +11,17 @@ import {WebSocketOptions} from '#src/Types';
  * React-Native does not support all the same properties as browser URL
  * objects. Big sad.
  */
-async function buildWebsocketURL(fezID?: string) {
+export async function buildWebsocketURL(fezID?: string) {
   const {serverUrl, urlPrefix} = await getAppConfig();
   let wsUrl = `${serverUrl}${urlPrefix}/notification/socket`;
   if (fezID) {
     wsUrl = `${serverUrl}${urlPrefix}/fez/${fezID}/socket`;
   }
   if (wsUrl.startsWith('https://')) {
-    wsUrl.replace('https', 'wss');
+    wsUrl = wsUrl.replace('https', 'wss');
   } else {
-    wsUrl.replace('http', 'ws');
+    wsUrl = wsUrl.replace('http', 'ws');
   }
-  // console.log('[Websockets.ts] Websocket URL is', wsUrl);
   return wsUrl;
 }
 
@@ -45,7 +44,7 @@ function WebSocketConstructor(options?: WebSocketOptions) {
  * Based on reading through the internet it seems like this is an anti-pattern. But is
  * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
  */
-async function getToken() {
+export async function getToken() {
   const rawTokenData = await TokenStringData.getLocal(StorageKeys.TOKEN_STRING_DATA_V2);
   if (rawTokenData) {
     const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;

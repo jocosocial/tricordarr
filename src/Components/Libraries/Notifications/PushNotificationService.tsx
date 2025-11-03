@@ -1,0 +1,37 @@
+import {useEffect} from 'react';
+
+import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
+import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
+/**
+ * Functional component to control the lifecycle of the platform-dependent push notification
+ * system.
+ *
+ * iOS uses a combination of a background `NEAppPushManager` and a websocket listener to generate
+ * notifications purely on the native side.
+ *
+ * Android uses a Foreground Service worker, which runs in the background (ironic naming, right?)
+ * and generates notifications on the JS side.
+ */
+export const PushNotificationService = () => {
+  const {enableUserNotifications} = useUserNotificationData();
+  const {isLoggedIn, isLoading} = useAuth();
+
+  useEffect(() => {
+    console.log(
+      `[PushNotificationService.tsx] isLoggedIn ${isLoggedIn}, enableUserNotifications ${enableUserNotifications}`,
+    );
+    if (isLoading || enableUserNotifications === null) {
+      console.log('[PushNotificationService.tsx] Conditions for push notifications not met. Not starting.');
+      return;
+    }
+
+    if (isLoggedIn && enableUserNotifications) {
+      startPushProvider();
+    } else {
+      stopPushProvider();
+    }
+  }, [enableUserNotifications, isLoading, isLoggedIn]);
+
+  return null;
+};

@@ -1,7 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {FormikHelpers} from 'formik';
 import React, {useCallback} from 'react';
-import {Platform} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {LoginForm} from '#src/Components/Forms/User/LoginForm';
@@ -11,7 +10,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
-import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useLoginMutation} from '#src/Queries/Auth/LoginMutations';
 import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
@@ -45,8 +44,8 @@ export const LoginScreen = () => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
           await signIn(response.data, preRegistrationMode);
-          if (Platform.OS === 'android' && oobeCompleted) {
-            await startForegroundServiceWorker();
+          if (oobeCompleted) {
+            await startPushProvider();
           }
           await updateClientConfig();
           navigation.goBack();
