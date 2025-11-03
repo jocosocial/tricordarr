@@ -44,7 +44,7 @@ function WebSocketConstructor(options?: WebSocketOptions) {
  * Based on reading through the internet it seems like this is an anti-pattern. But is
  * something we'd have to re-implement in Swiftarr first. I doubt we're gonna do that.
  */
-async function getToken() {
+export async function getToken() {
   const rawTokenData = await TokenStringData.getLocal(StorageKeys.TOKEN_STRING_DATA_V2);
   if (rawTokenData) {
     const tokenStringData = JSON.parse(rawTokenData) as TokenStringData;
