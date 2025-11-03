@@ -170,8 +170,16 @@ export const BackgroundConnectionSettingsIOSView = () => {
             buttonColor={theme.colors.twitarrNeutralButton}
           />
         </PaddedContentView>
-        <PaddedContentView>
-          <PrimaryActionButton buttonText={'Setup Manager'} onPress={handleSetupManager} disabled={!tokenData} />
+        <ListSection>
+          <ListSubheader>Worker Control</ListSubheader>
+        </ListSection>
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Recycle Worker'}
+            onPress={handleSetupManager}
+            disabled={!tokenData}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
         </PaddedContentView>
       </ScrollingContentView>
     </AppView>
