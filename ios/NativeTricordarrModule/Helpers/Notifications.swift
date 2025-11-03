@@ -136,6 +136,7 @@ import UserNotifications
 
 	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
+   @TODO this should ensure the background manager and foreground provider cycle.
 	 */
 	@objc static func saveSettings(socketUrl: String, token: String) {
 		if let urlComponents = URLComponents(string: socketUrl) {
