@@ -8,6 +8,8 @@
 import Foundation
 import NetworkExtension
 
+/// Local Push Connectivity provider. The lifecycle of this class is automagically managed by the NEAppPushManager.
+/// It will start/stop when the device is on certain pre-configured wifi networks.
 class LocalPushProvider: NEAppPushProvider {
 	var websocketNotifier = WebsocketNotifier()
 

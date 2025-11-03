@@ -19,10 +19,10 @@ import UserNotifications
 	static let shared = Notifications()
 
 	/// The pushManager is the instance that handles the local push provider.
-	@objc dynamic var pushManager: NEAppPushManager?
-	/// InApp runs when app is foregrounded and the extension isn't running
-	@objc dynamic var krakenInAppPushProvider = WebsocketNotifier(isInApp: true)
-	private let logger = Logging.getLogger("Notifications")
+	@objc dynamic var backgroundPushManager: NEAppPushManager?
+	/// InApp runs when app is foregrounded and the extension isn't running.
+	@objc dynamic var foregroundPushProvider = WebsocketNotifier(isInApp: true)
+  /// This timer is used in various places to determine if the foregroundPushProvider should be started.
 	private var providerDownTimer: Timer?
 
 	/**
@@ -106,16 +106,6 @@ import UserNotifications
 			}
 	}
 
-	@objc static func testNotification() {
-		Logging.logger.info("generating test notification")
-		generateContentNotification(
-			title: "Test Notification",
-			body: "This is a test",
-			type: "announcement",
-			url: "http://localhost"
-		)
-	}
-
 	/**
 	 Process displaying notifications as the app comes into the foreground. Often this will do nothing, but if the user has a ton of old
 	 notifications then it will clear them out automatically.
@@ -132,35 +122,47 @@ import UserNotifications
 			center.removeDeliveredNotifications(withIdentifiers: oldNotifications)
 		}
 	}
-  
-  func appStarted() {
-    // If at app launch the extension isn't running, start using in-app provider.
-    providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { timer in
-      self.checkStartInAppSocket()
-    }
-  }
-  
-  @objc static func saveSettings(socketUrl: String, token: String) {
-    if let urlComponents = URLComponents(string: socketUrl) {
-      Notifications.shared.krakenInAppPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
-    }
-    Notifications.shared.checkStartInAppSocket()
-  }
 
-	// MARK: - In-app pushProvider
-
-	// At app launch, app fg, or after 30 secs of the app extension being offline,
-  // try starting the in-app websocket for notifications.
-	// Try to ensure the app extension's socket and our in-app socket are not running at the same time.
-	func checkStartInAppSocket() {
-		if pushManager?.isActive != true, krakenInAppPushProvider.startState == false {
-			krakenInAppPushProvider.start()
+	/**
+	 What to do when the app starts. This is called in `AppDelegate.swift`.
+	 */
+	func appStarted() {
+		// If at app launch the extension isn't running, start using in-app provider.
+		// withTimeInterval unit is seconds.
+		providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { timer in
+			self.checkStartInAppSocket()
 		}
 	}
 
+	/**
+	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
+	 */
+	@objc static func saveSettings(socketUrl: String, token: String) {
+		if let urlComponents = URLComponents(string: socketUrl) {
+			Notifications.shared.foregroundPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
+		}
+		Notifications.shared.checkStartInAppSocket()
+	}
+
+	// MARK: - Foreground Push Provider
+
+  /**
+   At app launch, app fg, or after 30 secs of the app extension being offline, try starting the in-app websocket for notifications.
+   Try to ensure the app extension's socket and our in-app socket are not running at the same time.
+   */
+	func checkStartInAppSocket() {
+		if backgroundPushManager?.isActive != true, foregroundPushProvider.startState == false {
+			foregroundPushProvider.start()
+		}
+	}
+
+  /**
+   Attempt to shut down the foreground provider. Usually called when the background manager says the
+   background provider is active.
+   */
 	func checkStopInAppSocket() {
-		if krakenInAppPushProvider.startState == true {
-			krakenInAppPushProvider.stop(with: .superceded) {}
+		if foregroundPushProvider.startState == true {
+			foregroundPushProvider.stop(with: .superceded) {}
 		}
 	}
 }

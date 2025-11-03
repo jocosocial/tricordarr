@@ -14,11 +14,11 @@ public final class Logging {
 		subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
 		category: "App"
 	)
-  
-  public static func getLogger(_ category: String = "App") -> Logger {
-    return Logger(
-      subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
-      category: category
-    )
-  }
+
+	public static func getLogger(_ category: String = "App") -> Logger {
+		return Logger(
+			subsystem: Bundle.main.bundleIdentifier ?? "com.grantcohoe.unknown",
+			category: category
+		)
+	}
 }

@@ -34,6 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate
     UNUserNotificationCenter.current().delegate = Notifications.shared
     Notifications.appForegrounded()
+    
+    // Trigger the push notification system to start.
+    Notifications.shared.appStarted()
 
     return true
   }
