@@ -5,7 +5,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
-import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
+import {buildWebSocket, buildWebsocketURL, getToken, wsHealthcheck} from '#src/Libraries/Network/Websockets';
 import {
   generateFgsShutdownNotification,
   generateForegroundServiceNotification,
@@ -13,6 +13,8 @@ import {
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
+
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;
@@ -184,3 +186,51 @@ export async function startForegroundServiceWorker() {
   await AsyncStorage.setItem(StorageKeys.FGS_START, JSON.stringify(new Date().toISOString()));
   await generateForegroundServiceNotification();
 }
+
+/**
+ * Start the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
+ * the Native side for implementation details.
+ */
+export const startLocalPushManager = async () => {
+  const {status: notificationPermission} = await checkNotifications();
+  // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
+  // We can safely assume that notifications are allowed and available if that is the case.
+  if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
+    console.log('[Service.ts] Notification permission not allowed. Not starting manager.');
+    return;
+  }
+  const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
+  if (!socketUrl || !token) {
+    console.error('[Service.ts] Failed to get socket URL or token. Not starting manager.');
+    return;
+  }
+  console.log('[Service.ts] Starting local push manager.');
+  NativeTricordarrModule.setupLocalPushManager(
+    socketUrl,
+    token,
+    appConfig.wifiNetworkNames,
+    appConfig.fgsWorkerHealthTimer,
+    appConfig.enableNotificationSocket,
+  );
+};
+
+/**
+ * Stop the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
+ * the Native side for implementation details.
+ */
+export const stopLocalPushManager = async () => {
+  const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
+  if (!socketUrl || !token) {
+    console.error('[Service.ts] Failed to get socket URL or token. Cant stop manager.');
+    return;
+  }
+  console.log('[Service.ts] Stopping local push manager.');
+  // @TODO should we make a dedicated stop function?
+  NativeTricordarrModule.setupLocalPushManager(
+    socketUrl,
+    token,
+    appConfig.wifiNetworkNames,
+    appConfig.fgsWorkerHealthTimer,
+    false,
+  );
+};

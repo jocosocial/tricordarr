@@ -1,6 +1,7 @@
 Known Issues
 ============
 
+### javascript-time-ago package.json
 ```
  WARN  The package /Users/grant/Projects/jocosocial/tricordarr/node_modules/javascript-time-ago/locale/en contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
 Reason: One or more mappings for subpaths defined in "exports" are invalid. All values must begin with "./". Falling back to file-based resolution.
@@ -9,6 +10,8 @@ Reason: One or more mappings for subpaths defined in "exports" are invalid. All 
 https://gitlab.com/catamphetamine/javascript-time-ago/-/issues/7
 
 Ignore it.
+
+### Text props containing key
 
 ```
 A props object containing a "key" prop is being spread into JSX:
@@ -20,6 +23,10 @@ React keys must be passed directly to JSX without using spread:
 ```
 
 Unrecorded bug in https://github.com/obipawan/react-native-hyperlink. Patched in this repo.
+
+### A file you didn't touch went missing
+
+Seems to happen if renaming or moving components around. The best answer I have for this a "React Ghost". Reboot your laptop. Seriously.
 
 Historical
 ----------
