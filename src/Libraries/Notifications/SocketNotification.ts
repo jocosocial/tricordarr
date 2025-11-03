@@ -160,6 +160,12 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
       title = 'LFG Canceled';
       url = `/lfg/${notificationData.contentID}`;
       break;
+    case NotificationTypeData.privateEventUnreadMsg:
+      channel = eventChannel;
+      pressActionID = PressAction.personalEvent;
+      title = 'New Private Event Message';
+      url = `/privateevent/${notificationData.contentID}`;
+      break;
     default:
       console.warn(`[SocketNotification.ts] Ignoring event of type ${notificationType}`);
       break;

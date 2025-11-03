@@ -151,62 +151,47 @@ import os
 					{
 						var sendNotification = true
 						var title = "From Kraken"
-						var userInfo: [String: Any] = [
-							//                "type": socketNotification.type.rawValue,
-							"message": socketNotification.info
-						]
-						switch socketNotification.type {
-						case .announcement:
-							title = "Announcement"
-							userInfo["Announcement"] = socketNotification.contentID
+						var url = ""
+						var markAsReadUrl: String? = nil
 
-						case .addedToSeamail:
-							title = "Added to Seamail"
-							userInfo["Seamail"] = socketNotification.contentID
-						case .addedToLFG:
-							title = "Added to LFG"
-							userInfo["LFG"] = socketNotification.contentID
-						case .addedToPrivateEvent:
-							title = "Added to Private Event"
-							userInfo["PrivateEvent"] = socketNotification.contentID
+						// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
+						switch socketNotification.type {
+						case .seamailUnreadMsg:
+							title = "New Seamail"
+							url = "/seamail/\(socketNotification.contentID)"
+							markAsReadUrl = "/fez/\(socketNotification.contentID)"
 
 						case .fezUnreadMsg:
-							title = "New Looking For Group Message"
-							userInfo["LFG"] = socketNotification.contentID
-						case .seamailUnreadMsg:
-							title = "New Seamail Message"
-							userInfo["Seamail"] = socketNotification.contentID
-						case .privateEventUnreadMsg:
-							title = "New Private Event Message"
-							userInfo["PrivateEvent"] = socketNotification.contentID
+							title = "New LFG Message"
+							url = "/lfg/\(socketNotification.contentID)/chat"
+							markAsReadUrl = "/fez/\(socketNotification.contentID)"
 
-						case .alertwordTwarrt:
-							title = "Alert Word"
-							userInfo["Twarrt"] = socketNotification.contentID
+						case .announcement:
+							title = "Announcement"
+							url = "/home"
+							markAsReadUrl = "/notification/global"
+
 						case .alertwordPost:
-							title = "Alert Word"
-							userInfo["ForumPost"] = socketNotification.contentID
-						case .twarrtMention:
-							title = "Someone Mentioned You"
-							userInfo["Twarrt"] = socketNotification.contentID
-						case .forumMention:
-							title = "Someone Mentioned You"
-							userInfo["ForumPost"] = socketNotification.contentID
-						case .moderatorForumMention:
-							break
-						case .twitarrTeamForumMention:
-							break
+							title = "Forum Alert Word"
+							url = "/forum/containingpost/\(socketNotification.contentID)"
 
-						case .followedEventStarting:
-							title = "Event Starting Soon"
-							userInfo["eventID"] = socketNotification.contentID
-						case .joinedLFGStarting:
-							userInfo["LFG"] = socketNotification.contentID
-						case .personalEventStarting:
-							break
+						case .forumMention:
+							title = "Forum Mention"
+							url = "/forumpost/mentions"
+
+						case .twitarrTeamForumMention:
+							title = "TwitarrTeam Forum Mention"
+							url = "/forum/containingpost/\(socketNotification.contentID)"
+
+						case .moderatorForumMention:
+							title = "Moderator Forum Mention"
+							url = "/forum/containingpost/\(socketNotification.contentID)"
 
 						case .incomingPhoneCall:
 							if let caller = socketNotification.caller {
+								title = "Incoming Call"
+								url =
+									"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
 								self.incomingCallNotification(
 									name: socketNotification.info,
 									callID: socketNotification.contentID,
@@ -215,35 +200,84 @@ import os
 								)
 							}
 							sendNotification = false
+
 						case .phoneCallAnswered:
 							sendNotification = false
 							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
 								.set(socketNotification.contentID, forKey: "phoneCallAnswered")
 							self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
+
 						case .phoneCallEnded:
 							sendNotification = false
 							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
 								.set(socketNotification.contentID, forKey: "phoneCallEnded")
 							self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
 
-						case .microKaraokeSongReady:
-							title = "Micro Karaoke Music Video Ready"
-							userInfo["mkSongID"] = socketNotification.contentID
+						case .followedEventStarting:
+							title = "Followed Event Starting"
+							url = "/events/\(socketNotification.contentID)"
+
+						case .joinedLFGStarting:
+							title = "Joined LFG Starting"
+							url = "/lfg/\(socketNotification.contentID)"
+
+						case .personalEventStarting:
+							title = "Personal Event Starting"
+							url = "/privateevent/\(socketNotification.contentID)"
+
+						case .addedToPrivateEvent:
+							title = "Added to Private Event"
+							url = "/privateevent/\(socketNotification.contentID)"
+
+						case .addedToLFG:
+							title = "Added to LFG"
+							url = "/lfg/\(socketNotification.contentID)"
+
+						case .addedToSeamail:
+							title = "Added to Seamail"
+							url = "/seamail/\(socketNotification.contentID)"
+
 						case .privateEventCanceled:
 							title = "Private Event Canceled"
-							userInfo["PrivateEvent"] = socketNotification.contentID
+							url = "/privateevent/\(socketNotification.contentID)"
+
 						case .lfgCanceled:
 							title = "LFG Canceled"
-							userInfo["LFG"] = socketNotification.contentID
+							url = "/lfg/\(socketNotification.contentID)"
+
+						case .alertwordTwarrt:
+							title = "Alert Word"
+						// No URL defined in JavaScript for this type
+
+						case .twarrtMention:
+							title = "Someone Mentioned You"
+						// No URL defined in JavaScript for this type
+
+						case .privateEventUnreadMsg:
+							title = "New Private Event Message"
+              url = "/privateevent/\(socketNotification.contentID)"
+
+						case .microKaraokeSongReady:
+							title = "Micro Karaoke Music Video Ready"
+						// No URL defined in JavaScript for this type
+
 						@unknown default:
 							break
 						}
+
 						if sendNotification {
+							// Use UserInfoData to generate userInfo, matching the JavaScript data payload structure
+							let userInfoData = UserInfoData(
+								type: socketNotification.type,
+								url: url,
+								markAsReadUrl: markAsReadUrl
+							)
+
 							let content = UNMutableNotificationContent()
 							content.title = title
 							content.body = socketNotification.info
 							content.sound = .default
-							content.userInfo = userInfo  //[
+							content.userInfo = userInfoData.asDictionary
 
 							let request = UNNotificationRequest(
 								identifier: UUID().uuidString,

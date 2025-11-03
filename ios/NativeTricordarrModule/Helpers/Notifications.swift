@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import UserNotifications
 
 /// Class to manage User Notifications.
@@ -22,7 +23,7 @@ import UserNotifications
 	@objc dynamic var backgroundPushManager: NEAppPushManager?
 	/// InApp runs when app is foregrounded and the extension isn't running.
 	@objc dynamic var foregroundPushProvider = WebsocketNotifier(isInApp: true)
-  /// This timer is used in various places to determine if the foregroundPushProvider should be started.
+	/// This timer is used in various places to determine if the foregroundPushProvider should be started.
 	private var providerDownTimer: Timer?
 
 	/**
@@ -49,7 +50,7 @@ import UserNotifications
 		didReceive response: UNNotificationResponse,
 		withCompletionHandler completionHandler: @escaping () -> Void
 	) {
-		// @TODO this should open a deep link to the appropriate content.
+		handleNotificationDeepLink(response)
 		completionHandler()
 	}
 
@@ -71,25 +72,27 @@ import UserNotifications
 		_ id: UUID = UUID(),
 		title: String,
 		body: String,
-		type: String,
+		type: NotificationTypeData,
 		url: String,
 		markAsReadUrl: String? = nil
 	) {
 		// Construct the userInfo data
-		var userInfo: [String: String] = [
-			"type": type,
-			"url": url,
-		]
-		if let markAsReadUrl {
-			userInfo["markAsReadUrl"] = markAsReadUrl
-		}
+		//		var userInfo: NotificationTypeData = [
+		//			"type": type,
+		//			"url": url,
+		//
+		//		]
+		//		if let markAsReadUrl {
+		//			userInfo["markAsReadUrl"] = markAsReadUrl
+		//		}
+		let userInfo = UserInfoData(type: type, url: url, markAsReadUrl: markAsReadUrl)
 
 		// Construct the notification payload
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
 		content.sound = .default
-		content.userInfo = userInfo
+		content.userInfo = userInfo.asDictionary
 
 		// Send it
 		let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: nil)
@@ -147,23 +150,110 @@ import UserNotifications
 
 	// MARK: - Foreground Push Provider
 
-  /**
-   At app launch, app fg, or after 30 secs of the app extension being offline, try starting the in-app websocket for notifications.
-   Try to ensure the app extension's socket and our in-app socket are not running at the same time.
-   */
+	/**
+	 At app launch, app fg, or after 30 secs of the app extension being offline, try starting the in-app websocket for notifications.
+	 Try to ensure the app extension's socket and our in-app socket are not running at the same time.
+	 */
 	func checkStartInAppSocket() {
 		if backgroundPushManager?.isActive != true, foregroundPushProvider.startState == false {
 			foregroundPushProvider.start()
 		}
 	}
 
-  /**
-   Attempt to shut down the foreground provider. Usually called when the background manager says the
-   background provider is active.
-   */
+	/**
+	 Attempt to shut down the foreground provider. Usually called when the background manager says the
+	 background provider is active.
+	 */
 	func checkStopInAppSocket() {
 		if foregroundPushProvider.startState == true {
 			foregroundPushProvider.stop(with: .superceded) {}
 		}
 	}
+  
+  // MARK: - Deep Link Handling
+
+  /**
+   Decodes notification userInfo dictionary into UserInfoData struct.
+  
+   - Parameter userInfo: The userInfo dictionary from the notification
+   - Returns: Decoded UserInfoData object, or nil if decoding fails (logs error on failure)
+   */
+  private func decodeUserInfo(_ userInfo: [AnyHashable: Any]) -> UserInfoData? {
+    guard let typeString = userInfo["type"] as? String,
+      let type = NotificationTypeData(rawValue: typeString),
+      let urlString = userInfo["url"] as? String
+    else {
+      Logging.logger.error(
+        "Failed to decode UserInfoData from notification userInfo: \(userInfo, privacy: .public)"
+      )
+      return nil
+    }
+
+    return UserInfoData(
+      type: type,
+      url: urlString,
+      markAsReadUrl: userInfo["markAsReadUrl"] as? String
+    )
+  }
+
+  /**
+   Constructs a deep link URL with the tricordarr:// prefix from a notification URL path.
+   The urlPath should start with a /, so we add tricordarr:/ to get tricordarr://...
+  
+   - Parameter urlPath: The URL path from the notification (e.g., "/seamail/123")
+   - Returns: The constructed deep link URL object, or nil if the URL is invalid (logs error on failure)
+   */
+  private func createDeepLinkUrl(from urlPath: String) -> URL? {
+    let deepLinkUrl = "tricordarr:/\(urlPath)"
+    guard let url = URL(string: deepLinkUrl) else {
+      Logging.logger.error(
+        "Invalid URL string in notification userInfo: \(urlPath, privacy: .public)"
+      )
+      return nil
+    }
+    return url
+  }
+
+  /**
+   Handles deep linking from a notification response.
+   Decodes the notification's userInfo, constructs a deep link URL, and opens it.
+   Falls back to home screen if decoding fails.
+  
+   - Parameter response: The notification response containing userInfo
+   */
+  private func handleNotificationDeepLink(_ response: UNNotificationResponse) {
+    // Extract the URL from the notification's userInfo
+    let userInfo = response.notification.request.content.userInfo
+
+    // Decode userInfo as UserInfoData
+    guard let userInfoData = decodeUserInfo(userInfo) else {
+      // If no URL is present, navigate to home as a fallback
+      if let url = URL(string: "tricordarr://home") {
+        UIApplication.shared.open(url)
+      }
+      return
+    }
+
+    // Construct the deep link URL with the tricordarr:// prefix
+    guard let url = createDeepLinkUrl(from: userInfoData.url) else {
+      return
+    }
+
+    // Open the deep link URL, which will be handled by AppDelegate's application(_:open:options:)
+    // and routed through RCTLinkingManager to React Navigation
+    if UIApplication.shared.canOpenURL(url) {
+      UIApplication.shared.open(url) { success in
+        if !success {
+          Logging.logger.error(
+            "Failed to open deep link URL: \(url.absoluteString, privacy: .public)"
+          )
+        }
+      }
+    }
+    else {
+      Logging.logger.error(
+        "Cannot open deep link URL: \(url.absoluteString, privacy: .public)"
+      )
+    }
+  }
 }
