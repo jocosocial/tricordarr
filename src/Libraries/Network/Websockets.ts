@@ -18,11 +18,10 @@ export async function buildWebsocketURL(fezID?: string) {
     wsUrl = `${serverUrl}${urlPrefix}/fez/${fezID}/socket`;
   }
   if (wsUrl.startsWith('https://')) {
-    wsUrl.replace('https', 'wss');
+    wsUrl = wsUrl.replace('https', 'wss');
   } else {
-    wsUrl.replace('http', 'ws');
+    wsUrl = wsUrl.replace('http', 'ws');
   }
-  // console.log('[Websockets.ts] Websocket URL is', wsUrl);
   return wsUrl;
 }
 
