@@ -18,6 +18,13 @@ import UserNotifications
 @objc class Notifications: NSObject, UNUserNotificationCenterDelegate {
 	static let shared = Notifications()
 
+	/// The pushManager is the instance that handles the local push provider.
+	@objc dynamic var pushManager: NEAppPushManager?
+	/// InApp runs when app is foregrounded and the extension isn't running
+	@objc dynamic var krakenInAppPushProvider = WebsocketNotifier(isInApp: true)
+	private let logger = Logging.getLogger("Notifications")
+	private var providerDownTimer: Timer?
+
 	/**
 	 Required delegate method to display notifications when app is in foreground. This gets called when a notification is *delivered* while the app is running
    in the foreground. The completion handler argument lets us choose how to show the notification to the user.
@@ -123,6 +130,37 @@ import UserNotifications
 			}
 
 			center.removeDeliveredNotifications(withIdentifiers: oldNotifications)
+		}
+	}
+  
+  func appStarted() {
+    // If at app launch the extension isn't running, start using in-app provider.
+    providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { timer in
+      self.checkStartInAppSocket()
+    }
+  }
+  
+  @objc static func saveSettings(socketUrl: String, token: String) {
+    if let urlComponents = URLComponents(string: socketUrl) {
+      Notifications.shared.krakenInAppPushProvider.updateConfig(serverURL: urlComponents.url, token: token)
+    }
+    Notifications.shared.checkStartInAppSocket()
+  }
+
+	// MARK: - In-app pushProvider
+
+	// At app launch, app fg, or after 30 secs of the app extension being offline,
+  // try starting the in-app websocket for notifications.
+	// Try to ensure the app extension's socket and our in-app socket are not running at the same time.
+	func checkStartInAppSocket() {
+		if pushManager?.isActive != true, krakenInAppPushProvider.startState == false {
+			krakenInAppPushProvider.start()
+		}
+	}
+
+	func checkStopInAppSocket() {
+		if krakenInAppPushProvider.startState == true {
+			krakenInAppPushProvider.stop(with: .superceded) {}
 		}
 	}
 }

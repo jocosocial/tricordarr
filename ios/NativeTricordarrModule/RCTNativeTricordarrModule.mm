@@ -39,7 +39,9 @@
   NSLog(@"  healthcheckTimer: %f", healthcheckTimer);
   NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
 
-  [Notifications testNotification];
+//  [Notifications testNotification];
+  // This is so weird...
+  [Notifications saveSettingsWithSocketUrl:socketUrl token:token];
 }
 
 @end
