@@ -1,15 +1,8 @@
 import {useEffect} from 'react';
-import {Platform} from 'react-native';
 
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
-import {
-  startForegroundServiceWorker,
-  startLocalPushManager,
-  stopForegroundServiceWorker,
-  stopLocalPushManager,
-} from '#src/Libraries/Service';
-
+import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
 /**
  * Functional component to control the lifecycle of the platform-dependent push notification
  * system.
@@ -34,17 +27,9 @@ export const PushNotificationService = () => {
     }
 
     if (isLoggedIn && enableUserNotifications) {
-      if (Platform.OS === 'ios') {
-        startLocalPushManager();
-      } else {
-        startForegroundServiceWorker();
-      }
+      startPushProvider();
     } else {
-      if (Platform.OS === 'ios') {
-        stopLocalPushManager();
-      } else {
-        stopForegroundServiceWorker();
-      }
+      stopPushProvider();
     }
   }, [enableUserNotifications, isLoading, isLoggedIn]);
 

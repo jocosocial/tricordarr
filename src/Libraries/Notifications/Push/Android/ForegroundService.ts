@@ -3,18 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import {fgsWorkerNotificationIDs} from '#src/Enums/Notifications';
+import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
-import {buildWebSocket, buildWebsocketURL, getToken, wsHealthcheck} from '#src/Libraries/Network/Websockets';
-import {
-  generateFgsShutdownNotification,
-  generateForegroundServiceNotification,
-} from '#src/Libraries/Notifications/ForegroundService';
+import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
+import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-
-import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Styles/Theme';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;
@@ -187,50 +183,66 @@ export async function startForegroundServiceWorker() {
   await generateForegroundServiceNotification();
 }
 
-/**
- * Start the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
- * the Native side for implementation details.
- */
-export const startLocalPushManager = async () => {
-  const {status: notificationPermission} = await checkNotifications();
-  // Android 13 API Level 33 added POST_NOTIFICATIONS permission. Devices less than that return UNAVAILABLE.
-  // We can safely assume that notifications are allowed and available if that is the case.
-  if (notificationPermission !== RESULTS.UNAVAILABLE && notificationPermission !== RESULTS.GRANTED) {
-    console.log('[Service.ts] Notification permission not allowed. Not starting manager.');
-    return;
-  }
-  const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
-  if (!socketUrl || !token) {
-    console.error('[Service.ts] Failed to get socket URL or token. Not starting manager.');
-    return;
-  }
-  console.log('[Service.ts] Starting local push manager.');
-  NativeTricordarrModule.setupLocalPushManager(
-    socketUrl,
-    token,
-    appConfig.wifiNetworkNames,
-    appConfig.fgsWorkerHealthTimer,
-    appConfig.enableNotificationSocket,
-  );
-};
+async function generateForegroundServiceNotification(
+  body: string | undefined = 'A background worker has been started to maintain a connection to the Twitarr server.',
+  color = twitarrPrimaryColor,
+  onlyIfShowing = false,
+) {
+  // Kill a shutdown notification if we had one
+  await notifee.cancelNotification(fgsWorkerNotificationIDs.shutdown);
 
-/**
- * Stop the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
- * the Native side for implementation details.
- */
-export const stopLocalPushManager = async () => {
-  const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
-  if (!socketUrl || !token) {
-    console.error('[Service.ts] Failed to get socket URL or token. Cant stop manager.');
-    return;
+  let show = !onlyIfShowing;
+  const displayedNotifications = await notifee.getDisplayedNotifications();
+  displayedNotifications.map(entry => {
+    if (entry.id === fgsWorkerNotificationIDs.worker) {
+      // We are currently showing.
+      if (onlyIfShowing) {
+        show = true;
+      }
+    }
+  });
+  if (show) {
+    await notifee.displayNotification({
+      id: fgsWorkerNotificationIDs.worker,
+      title: 'Twitarr Server Connection',
+      body: body,
+      android: {
+        channelId: serviceChannel.id,
+        asForegroundService: true,
+        color: color,
+        colorized: true,
+        pressAction: {
+          id: PressAction.home,
+        },
+        actions: [
+          {
+            title: 'Settings',
+            pressAction: {
+              id: PressAction.worker,
+            },
+          },
+        ],
+        smallIcon: 'ic_notification',
+      },
+    });
   }
-  console.log('[Service.ts] Stopping local push manager.');
-  // @TODO should we make a dedicated stop function?
-  NativeTricordarrModule.setupLocalPushManager(
-    socketUrl,
-    token,
-    appConfig.wifiNetworkNames,
-    appConfig.fgsWorkerHealthTimer,
-    false,
-  );
-};
+}
+
+async function generateFgsShutdownNotification() {
+  const currentTime = new Date();
+  const body = 'Relaunch the app to try again. Connection lost at ' + currentTime.toLocaleTimeString();
+  await notifee.displayNotification({
+    id: fgsWorkerNotificationIDs.shutdown,
+    title: 'Twitarr Connection Lost',
+    body: body,
+    android: {
+      channelId: serviceChannel.id,
+      color: twitarrErrorColor,
+      colorized: true,
+      pressAction: {
+        id: PressAction.worker,
+      },
+      smallIcon: 'ic_notification',
+    },
+  });
+}

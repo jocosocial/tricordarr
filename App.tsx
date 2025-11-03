@@ -40,7 +40,7 @@ import {TwitarrProvider} from '#src/Context/Providers/TwitarrProvider';
 import {UserNotificationDataProvider} from '#src/Context/Providers/UserNotificationDataProvider';
 import {setupChannels} from '#src/Libraries/Notifications/Channels';
 import {setupInitialNotification} from '#src/Libraries/Notifications/InitialNotification';
-import {registerFgsWorker} from '#src/Libraries/Service';
+import {registerFgsWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {configureImageCache} from '#src/Libraries/Storage/ImageStorage.ts';
 import {RootStackNavigator} from '#src/Navigation/Stacks/RootStackNavigator';
 

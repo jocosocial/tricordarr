@@ -16,7 +16,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
-import {startForegroundServiceWorker} from '#src/Libraries/Service';
+import {startPushProvider} from '#src/Libraries/Notifications/Push';
 import {useAppTheme} from '#src/Styles/Theme';
 import {SegmentedButtonType} from '#src/Types';
 
@@ -87,7 +87,7 @@ export const PushNotificationSettingsScreen = () => {
       setNotificationPermissionStatus(status);
       setHasNotificationPermission(status === RESULTS.GRANTED);
       if (status === RESULTS.GRANTED) {
-        startForegroundServiceWorker();
+        startPushProvider();
       }
     });
   };

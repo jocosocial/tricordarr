@@ -18,12 +18,8 @@ import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/Ba
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
-import {
-  fgsFailedCounter,
-  getSharedWebSocket,
-  startForegroundServiceWorker,
-  stopForegroundServiceWorker,
-} from '#src/Libraries/Service';
+import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
+import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import {commonStyles} from '#src/Styles';
@@ -97,7 +93,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         fgsWorkerHealthTimer: newValue,
       });
       setFgsHealthTime(seconds);
-      stopForegroundServiceWorker().then(() => startForegroundServiceWorker());
+      stopPushProvider().then(() => startPushProvider());
     }
   };
 
@@ -183,13 +179,13 @@ export const BackgroundConnectionSettingsAndroidView = () => {
           <PrimaryActionButton
             buttonText={'Start'}
             buttonColor={theme.colors.twitarrPositiveButton}
-            onPress={() => startForegroundServiceWorker().then(() => onRefresh())}
+            onPress={() => startPushProvider().then(() => onRefresh())}
             style={[commonStyles.marginTopSmall]}
           />
           <PrimaryActionButton
             buttonText={'Stop'}
             buttonColor={theme.colors.twitarrNegativeButton}
-            onPress={() => stopForegroundServiceWorker().then(() => onRefresh())}
+            onPress={() => stopPushProvider().then(() => onRefresh())}
             style={[commonStyles.marginTopSmall]}
           />
         </PaddedContentView>
