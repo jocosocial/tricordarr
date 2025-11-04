@@ -38,6 +38,8 @@ import os
 		logger.log("KrakenPushProvider de-init. inApp: \(self.isInApp)")
 	}
 
+	// MARK: - Configuration
+
 	// Don't call this from within websocketnotifier.
 	func updateConfig(serverURL: URL? = nil, token: String? = nil) {
 		if let provider = pushProvider {
@@ -62,47 +64,47 @@ import os
 		}
 	}
 
-	func start() {
-		if startState == true {
-			logger.log("KrakenPushProvider start() called while already started.")
-		}
-		else if self.serverURL == nil {
-			logger.log(
-				"KrakenPushProvider \(self.isInApp ? "In-App" : "Extension", privacy: .public) can't start -- no server URL"
-			)
-		}
-		else if self.token == nil || token == "" {
-			logger.log(
-				"KrakenPushProvider \(self.isInApp ? "In-App" : "Extension", privacy: .public) can't start -- no user token"
-			)
-		}
-		else {
-			logger.log("KrakenPushProvider \(self.isInApp ? "In-App" : "Extension", privacy: .public) start()")
-		}
-		startState = true
-		openWebSocket()
-	}
-
-	func openWebSocket() {
-		guard let twitarrURL = self.serverURL, let token = self.token, !token.isEmpty else {
-			return
-		}
+	/**
+	 Configures a `URLSession` for an instance of this class to use. Manages all web requests under one context roof.
+	 */
+	private func configureURLSession() {
 		if session == nil {
 			let config = URLSessionConfiguration.ephemeral
-			config.allowsCellularAccess = false
+			// Kraken has `allowsCellularAccess` set to false. I am not convinced that is a good thing
+			// for testing and using Twitarr out in the world which I often do. Testing at bars is great.
+			// config.allowsCellularAccess = false
 			config.waitsForConnectivity = true
-			let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-			config.httpAdditionalHeaders = ["X-Swiftarr-Client": "Kraken \(appVersion)"]
+			config.httpAdditionalHeaders = ["X-Swiftarr-Client": "Tricordarr \(Settings.shared.appVersion)"]
 			session = .init(configuration: config, delegate: self, delegateQueue: nil)
 		}
-		if let existingSocket = socket, existingSocket.state == .running {
-			self.logger.log("Not opening socket; existing one is already open.")
+	}
+
+	// MARK: - Open Socket
+
+	/**
+	 Opens a Websocket connection to the server and listens for events (messages). Implicitly does some things along the way to ensure
+	 that all the necessary dependencies are satisfied (such as `URLSession`).
+	 */
+	func openWebSocket() {
+		// No config == no socket.
+		guard let twitarrURL = self.serverURL, let token = self.token, !token.isEmpty else {
+			self.logger.error("[WebsocketNotifier.swift] openWebSocket essential configuration missing")
 			return
 		}
 
-		self.logger.log("Opening socket to \(twitarrURL.absoluteString, privacy: .public)")
+		// Make sure this instance has a `URLSession` (the `session`) member
+		configureURLSession()
+
+		if let existingSocket = socket, existingSocket.state == .running {
+			self.logger.log("[WebsocketNotifier.swift] Not opening socket; existing one is already open.")
+			return
+		}
+
+		self.logger.log("[WebsocketNotifier.swift] Opening socket to \(twitarrURL.absoluteString, privacy: .public)")
 		var request = URLRequest(url: twitarrURL, cachePolicy: .useProtocolCachePolicy)
 		request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+		// Build a new socket, make sure we actually have one, start (resume) it, and listen for messages
 		socket = session?.webSocketTask(with: request)
 		if let socket = socket {
 			socket.resume()
@@ -110,9 +112,12 @@ import os
 			receiveNextMessage()
 		}
 		else {
-			self.logger.log("openWebSocket didn't create a socket.")
+			self.logger.error("[WebsocketNotifier.swift] openWebSocket didn't create a socket")
 		}
 
+		// The NEAppPushProvider framework calls `handleTimerEvent` every 60 seconds via `LocalPushProvider`.
+		// When we're running a `WebsocketNotifier` outside of that context (aka Foreground mode) we set a
+		// similar timer to perform healthcheck actions on the socket.
 		if pushProvider == nil && socketPingTimer == nil {
 			socketPingTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] timer in
 				self?.handleTimerEvent()
@@ -120,11 +125,12 @@ import os
 		}
 	}
 
+	// MARK: - Message/Event Processing
+
 	func receiveNextMessage() {
 		if let socket = socket {
 			socket.receive { [weak self] result in
 				guard let self = self else { return }
-				//        self.logger.log("Got some data incoming!!!! ")
 				self.lastPing = Date()
 				switch result {
 				case .failure(let error):
@@ -141,6 +147,7 @@ import os
 						self.logger.log("STRING MESSAGE: \(str, privacy: .public)")
 						msgData = str.data(using: .utf8)
 					case .data(let data):
+						// @TODO uhh, is this logging every call audio packet?
 						self.logger.log("DATA MESSAGE: \(data, privacy: .public)")
 						msgData = data
 					@unknown default:
@@ -285,45 +292,6 @@ import os
 		}
 	}
 
-	func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		logger.log("stop() called")
-		socket?.cancel(with: .goingAway, reason: nil)
-		socket = nil
-		session?.finishTasksAndInvalidate()
-		startState = false
-		socketPingTimer?.invalidate()
-		socketPingTimer = nil
-		completionHandler()
-	}
-
-	func handleTimerEvent() {
-		if let pingTime = lastPing, Date().timeIntervalSince(pingTime) < 1.0 {
-			logger.warning("HandleTimerEvent() called with very low delay from last call.")
-			return
-		}
-		else if startState == false {
-			logger.warning("HandleTimerEvent() called while in stop state.")
-			return
-		}
-		logger.log(
-			"HandleTimerEvent() called for instance \(String(format: "%p", self), privacy: .public) lastPing: \(self.lastPing?.debugDescription ?? "<nil>", privacy: .public)"
-		)
-
-		lastPing = Date()
-		if socket == nil, startState == true {
-			openWebSocket()
-		}
-		socket?
-			.sendPing { [weak self] error in
-				if let err = error {
-					self?.logger.error("Error during ping to server: \(err.localizedDescription, privacy: .public)")
-					self?.socket?.cancel(with: .goingAway, reason: nil)
-					self?.socket = nil
-					self?.start()
-				}
-			}
-	}
-
 	func incomingCallNotification(
 		name: String,
 		callID: String,
@@ -356,12 +324,96 @@ import os
 			incomingPhonecallHandler?(dict)
 		}
 	}
+
+	// MARK: - Provider Lifecycle
+
+	/**
+	 Start the websocket.
+	 */
+	func start() {
+		let providerLogTerm = "\(self.isInApp ? "Foreground" : "Background") Provider"
+
+		if startState == true {
+			logger.log("[WebsocketNotifier.swift] start called while already started")
+		}
+		else if self.serverURL == nil {
+			logger.log(
+				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no server URL"
+			)
+		}
+		else if self.token == nil || token == "" {
+			logger.log(
+				"[WebsocketNotifier.swift] \(providerLogTerm) can't start -- no user token"
+			)
+		}
+		else {
+			logger.log("[WebsocketNotifier.swift] \(providerLogTerm) start")
+		}
+		startState = true
+		openWebSocket()
+	}
+
+	/**
+	 Stop and shutdown the websocket. We need to do this quickly and quietly in cases where the phone switches/loses wifi.
+	 */
+	func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
+		logger.log("[WebsocketNotifier.swift] stop called")
+		socket?.cancel(with: .goingAway, reason: nil)
+		socket = nil
+		session?.finishTasksAndInvalidate()
+		startState = false
+		socketPingTimer?.invalidate()
+		socketPingTimer = nil
+		completionHandler()
+	}
+
+	/**
+	 Websocket healthcheck function. This is triggered periodically by timers (set by us or automagically by the Local Push framework).
+	 If the socket is unhealthy/nonexistant this should jumpstart it.
+	 */
+	func handleTimerEvent() {
+		if let pingTime = lastPing, Date().timeIntervalSince(pingTime) < 1.0 {
+			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called with very low delay from last call.")
+			return
+		}
+		else if startState == false {
+			logger.warning("[WebsocketNotifier.swift] HandleTimerEvent called while in stop state.")
+			return
+		}
+		logger.log(
+			"[WebsocketNotifier.swift] HandleTimerEvent called for instance \(String(format: "%p", self), privacy: .public)"
+		)
+		logger.log(
+			"[WebsocketNotifier.swift] lastPing: \(self.lastPing?.debugDescription ?? "<nil>", privacy: .public)"
+		)
+
+		lastPing = Date()
+
+		// You're supposed to be alive at this point
+		if socket == nil, startState == true {
+			openWebSocket()
+		}
+		socket?
+			.sendPing { [weak self] error in
+				if let err = error {
+					self?.logger
+						.error(
+							"[WebsocketNotifier.swift] Error during ping to server: \(err.localizedDescription, privacy: .public)"
+						)
+					self?.socket?.cancel(with: .goingAway, reason: nil)
+					self?.socket = nil
+					self?.start()
+				}
+			}
+	}
 }
+
+// MARK: - URLSession Overrides
 
 // Delegate methods for the session itself
 extension WebsocketNotifier: URLSessionDelegate {
 	func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-		logger.log("Session went invalid because: \(error)")
+		logger.log("[WebsocketNotifier.swift] Session went invalid because: \(error, privacy: .public)")
 		self.session = nil
 	}
 }
@@ -369,7 +421,9 @@ extension WebsocketNotifier: URLSessionDelegate {
 // Delegate methods for the session's Tasks -- common to all task types
 extension WebsocketNotifier: URLSessionTaskDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		logger.log("Notifier Socket task received didCompleteWithError: \(error, privacy: .public)")
+		logger.log(
+			"[WebsocketNotifier.swift] Notifier Socket task received didCompleteWithError: \(error, privacy: .public)"
+		)
 	}
 
 	public func urlSession(
@@ -379,7 +433,7 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 		newRequest request: URLRequest,
 		completionHandler: @escaping (URLRequest?) -> Void
 	) {
-		logger.log("Notifier Socket task received willPerformHTTPRedirection")
+		logger.log("[WebsocketNotifier.swift] Notifier Socket task received willPerformHTTPRedirection")
 		completionHandler(request)
 	}
 
@@ -390,17 +444,18 @@ extension WebsocketNotifier: URLSessionTaskDelegate {
 		completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 	) {
 		logger.log(
-			"Notifier Socket task received URLAuthenticationChallenge of type \(challenge.protectionSpace.authenticationMethod)."
+			"[WebsocketNotifier.swift] Notifier Socket task received URLAuthenticationChallenge of type \(challenge.protectionSpace.authenticationMethod)."
 		)
 		completionHandler(.performDefaultHandling, nil)
 	}
 }
 
-// Delegate methods for WebSocket tasks
+/// Delegate methods for WebSocket tasks
 extension WebsocketNotifier: URLSessionWebSocketDelegate {
 	func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
-		logger.log("Notifier Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)")
-
+		logger.log(
+			"[WebsocketNotifier.swift] Socket opened with protocol: \(didOpenWithProtocol ?? "<unknown>", privacy: .public)"
+		)
 	}
 
 	func urlSession(
@@ -409,7 +464,7 @@ extension WebsocketNotifier: URLSessionWebSocketDelegate {
 		didCloseWith: URLSessionWebSocketTask.CloseCode,
 		reason: Data?
 	) {
-		logger.log("Socket closed with code: \(didCloseWith.rawValue)")
+		logger.log("[WebsocketNotifier.swift] Socket closed with code: \(didCloseWith.rawValue)")
 		socket?.cancel(with: .goingAway, reason: nil)
 		socket = nil
 	}
