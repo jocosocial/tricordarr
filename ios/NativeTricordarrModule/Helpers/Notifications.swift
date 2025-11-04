@@ -27,117 +27,6 @@ import UserNotifications
 	private var providerDownTimer: Timer?
 
 	/**
-	 Required delegate method to display notifications when app is in foreground. This gets called when a notification is *delivered* while the app is running
-   in the foreground. The completion handler argument lets us choose how to show the notification to the user.
-   Options: .banner (show banner), .sound (play sound), .badge (update badge)
-
-	 If it's shown to the user (over our app's UI--we're in the FG) and the user taps it, the
-   `userNotificationCenter(_:didReceive:withCompletionHandler)` below is called instead.
-	 */
-	func userNotificationCenter(
-		_ center: UNUserNotificationCenter,
-		willPresent notification: UNNotification,
-		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-	) {
-		completionHandler([.banner, .sound, .badge])
-	}
-
-	/**
-	 Called when the user taps a notification, whether the notification is displayed while the app running or not.
-	 */
-	func userNotificationCenter(
-		_ center: UNUserNotificationCenter,
-		didReceive response: UNNotificationResponse,
-		withCompletionHandler completionHandler: @escaping () -> Void
-	) {
-		handleNotificationDeepLink(response)
-		completionHandler()
-	}
-
-	/**
-	 Generates and posts a local notification containing custom content and metadata.
-	 Mostly mirrors what's going on in `src/Libraries/Notifications/Content.ts`.
-	 The userInfo (aka "data") payload is arbitrary metadata that is associated with the notification. This payload is read during various
-	 app event handlers to trigger certain behavior.
-	
-	 - Parameters:
-	   - id: A unique identifier for the notification. Defaults to a new `UUID()` if not provided.
-	   - title: The title text displayed in the notification banner.
-	   - body: The body text displayed below the title in the notification.
-	   - type: String value of `src/Structs/SocketStructs.ts`.
-	   - url: A URL string associated with the content. This is typically used for deep linking.
-	   - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
-	 */
-	static func generateContentNotification(
-		_ id: UUID = UUID(),
-		title: String,
-		body: String,
-		type: NotificationTypeData,
-		url: String,
-		markAsReadUrl: String? = nil
-	) {
-		// Construct the userInfo data
-		//		var userInfo: NotificationTypeData = [
-		//			"type": type,
-		//			"url": url,
-		//
-		//		]
-		//		if let markAsReadUrl {
-		//			userInfo["markAsReadUrl"] = markAsReadUrl
-		//		}
-		let userInfo = UserInfoData(type: type, url: url, markAsReadUrl: markAsReadUrl)
-
-		// Construct the notification payload
-		let content = UNMutableNotificationContent()
-		content.title = title
-		content.body = body
-		content.sound = .default
-		content.userInfo = userInfo.asDictionary
-
-		// Send it
-		let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: nil)
-		UNUserNotificationCenter.current()
-			.add(request) { error in
-				if let error = error {
-					Logging.logger.log(
-						"Error submitting local notification: \(error.localizedDescription, privacy: .public)"
-					)
-					return
-				}
-
-				Logging.logger.log("Local notification posted successfully")
-			}
-	}
-
-	/**
-	 Process displaying notifications as the app comes into the foreground. Often this will do nothing, but if the user has a ton of old
-	 notifications then it will clear them out automatically.
-	 */
-	class func appForegrounded() {
-		let center = UNUserNotificationCenter.current()
-		center.getDeliveredNotifications { notifications in
-			// Remove older notifications; keep ones that are within 10 minutes of delivery (during this time,
-			// people may still be getting to the event the notification is reminding them of).
-			let oldNotifications = notifications.compactMap { notification in
-				notification.date < Date() - 60 * 10 ? notification.request.identifier : nil
-			}
-
-			center.removeDeliveredNotifications(withIdentifiers: oldNotifications)
-		}
-	}
-
-	/**
-	 What to do when the app starts. This is called in `AppDelegate.swift`.
-	 */
-	func appStarted() {
-		// If at app launch the extension isn't running, start using in-app provider.
-		// withTimeInterval unit is seconds.
-		providerDownTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { timer in
-			self.checkStartInAppSocket()
-		}
-	}
-
-	/**
 	 Configure the providers with settings. Called from the JavaScript side over the "bridge".
    @TODO this should ensure the background manager and foreground provider cycle.
 	 */
@@ -147,6 +36,100 @@ import UserNotifications
 		}
 		Notifications.shared.checkStartInAppSocket()
 	}
+  
+  // MARK: - Notification Handling
+  
+  /**
+   Generates and posts a local notification containing custom content and metadata.
+   Mostly mirrors what's going on in `src/Libraries/Notifications/Content.ts`.
+   The userInfo (aka "data") payload is arbitrary metadata that is associated with the notification. This payload is read during various
+   app event handlers to trigger certain behavior.
+  
+   - Parameters:
+     - id: A unique identifier for the notification. Defaults to a new `UUID()` if not provided.
+     - title: The title text displayed in the notification banner.
+     - body: The body text displayed below the title in the notification.
+     - type: String value of `src/Structs/SocketStructs.ts`.
+     - url: A URL string associated with the content. This is typically used for deep linking.
+     - markAsReadUrl: An optional URL string used to mark the content as read when acted upon.
+   */
+  static func generateContentNotification(
+    _ id: UUID = UUID(),
+    title: String,
+    body: String,
+    type: NotificationTypeData,
+    url: String,
+    markAsReadUrl: String? = nil
+  ) {
+    // `userInfo` is the equivant of `data` in Notifee
+    let userInfo = UserInfoData(type: type, url: url, markAsReadUrl: markAsReadUrl)
+
+    // Construct the notification payload
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+    content.sound = .default
+    content.userInfo = userInfo.asDictionary
+
+    // Send it
+    let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: nil)
+    UNUserNotificationCenter.current()
+      .add(request) { error in
+        if let error = error {
+          Logging.logger.log(
+            "Error submitting local notification: \(error.localizedDescription, privacy: .public)"
+          )
+          return
+        }
+
+        Logging.logger.log("Local notification posted successfully")
+      }
+  }
+  
+  /**
+   Required delegate method to display notifications when app is in foreground. This gets called when a notification is *delivered* while the app is running
+   in the foreground. The completion handler argument lets us choose how to show the notification to the user.
+   Options: .banner (show banner), .sound (play sound), .badge (update badge)
+
+   If it's shown to the user (over our app's UI--we're in the FG) and the user taps it, the
+   `userNotificationCenter(_:didReceive:withCompletionHandler)` below is called instead.
+   */
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    completionHandler([.banner, .sound, .badge])
+  }
+  
+  /**
+   Process displaying notifications as the app comes into the foreground. Often this will do nothing, but if the user has a ton of old
+   notifications then it will clear them out automatically. Called in `AppDelegate.swift`.
+   */
+  static func appForegrounded() {
+    let center = UNUserNotificationCenter.current()
+    center.getDeliveredNotifications { notifications in
+      // Remove older notifications; keep ones that are within 10 minutes of delivery (during this time,
+      // people may still be getting to the event the notification is reminding them of).
+      let oldNotifications = notifications.compactMap { notification in
+        notification.date < Date() - 60 * 10 ? notification.request.identifier : nil
+      }
+
+      center.removeDeliveredNotifications(withIdentifiers: oldNotifications)
+    }
+  }
+
+  /**
+   Called when the user taps a notification, whether the notification is displayed while the app running or not.
+   */
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    handleNotificationDeepLink(response)
+    completionHandler()
+  }
 
 	// MARK: - Foreground Push Provider
 

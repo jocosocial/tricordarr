@@ -255,7 +255,7 @@ import os
 
 						case .privateEventUnreadMsg:
 							title = "New Private Event Message"
-              url = "/privateevent/\(socketNotification.contentID)"
+							url = "/privateevent/\(socketNotification.contentID)"
 
 						case .microKaraokeSongReady:
 							title = "Micro Karaoke Music Video Ready"
@@ -266,36 +266,14 @@ import os
 						}
 
 						if sendNotification {
-							// Use UserInfoData to generate userInfo, matching the JavaScript data payload structure
-							let userInfoData = UserInfoData(
+							Notifications.generateContentNotification(
+								UUID(),
+								title: title,
+								body: socketNotification.info,
 								type: socketNotification.type,
 								url: url,
 								markAsReadUrl: markAsReadUrl
 							)
-
-							let content = UNMutableNotificationContent()
-							content.title = title
-							content.body = socketNotification.info
-							content.sound = .default
-							content.userInfo = userInfoData.asDictionary
-
-							let request = UNNotificationRequest(
-								identifier: UUID().uuidString,
-								content: content,
-								trigger: nil
-							)
-							UNUserNotificationCenter.current()
-								.add(request) { [weak self] error in
-									if let error = error {
-										self?.logger
-											.log(
-												"Error submitting local notification: \(error.localizedDescription, privacy: .public)"
-											)
-										return
-									}
-
-									self?.logger.log("Local notification posted successfully")
-								}
 						}
 					}
 					else {
