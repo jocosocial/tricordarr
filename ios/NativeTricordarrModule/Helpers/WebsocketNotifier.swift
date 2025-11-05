@@ -128,132 +128,156 @@ import os
 	// MARK: - Message/Event Processing
 
 	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {
-						var sendNotification = true
+		var sendNotification = true
 		var title = "From Tricordarr"
-						var url = ""
-						var markAsReadUrl: String? = nil
+		var url = ""
+		var markAsReadUrl: String? = nil
 
-						// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
-						switch socketNotification.type {
-						case .seamailUnreadMsg:
-							title = "New Seamail"
-							url = "/seamail/\(socketNotification.contentID)"
-							markAsReadUrl = "/fez/\(socketNotification.contentID)"
+//		guard let appConfig = Storage.getAppConfig() else {
+//			self.logger.error("Could not get AppConfig")
+//			return
+//		}
+//
+//		// Do not generate a notification if the user has disabled that category.
+//		if appConfig.pushNotifications[socketNotification.type] == false {
+//			self.logger
+//				.info(
+//					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
+//				)
+//			return
+//		}
+//
+//		// Do not generate a notification if the user has muted notifications.
+//		if let muteString = appConfig.muteNotifications, let muteUntil = ISO8601DateFormatter().date(from: muteString) {
+//			if Date() < muteUntil {
+//				self.logger.info(
+//					"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
+//				)
+//				return
+//			}
+//		}
 
-						case .fezUnreadMsg:
-							title = "New LFG Message"
-							url = "/lfg/\(socketNotification.contentID)/chat"
-							markAsReadUrl = "/fez/\(socketNotification.contentID)"
+		// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
+		switch socketNotification.type {
+		case .seamailUnreadMsg:
+			title = "New Seamail"
+			url = "/seamail/\(socketNotification.contentID)"
+			markAsReadUrl = "/fez/\(socketNotification.contentID)"
 
-						case .announcement:
-							title = "Announcement"
-							url = "/home"
-							markAsReadUrl = "/notification/global"
+		case .fezUnreadMsg:
+			title = "New LFG Message"
+			url = "/lfg/\(socketNotification.contentID)/chat"
+			markAsReadUrl = "/fez/\(socketNotification.contentID)"
 
-						case .alertwordPost:
-							title = "Forum Alert Word"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
+		case .announcement:
+			title = "Announcement"
+			url = "/home"
+			markAsReadUrl = "/notification/global"
 
-						case .forumMention:
-							title = "Forum Mention"
-							url = "/forumpost/mentions"
+		case .alertwordPost:
+			title = "Forum Alert Word"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
 
-						case .twitarrTeamForumMention:
-							title = "TwitarrTeam Forum Mention"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
+		case .forumMention:
+			title = "Forum Mention"
+			url = "/forumpost/mentions"
 
-						case .moderatorForumMention:
-							title = "Moderator Forum Mention"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
+		case .twitarrTeamForumMention:
+			title = "TwitarrTeam Forum Mention"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
 
-						case .incomingPhoneCall:
-							if let caller = socketNotification.caller {
-								title = "Incoming Call"
-								url =
-									"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
-								self.incomingCallNotification(
-									name: socketNotification.info,
-									callID: socketNotification.contentID,
-									userHeader: caller,
-									callerAddr: socketNotification.callerAddress
-								)
-							}
-							sendNotification = false
+		case .moderatorForumMention:
+			title = "Moderator Forum Mention"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
 
-						case .phoneCallAnswered:
-							sendNotification = false
-							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
-								.set(socketNotification.contentID, forKey: "phoneCallAnswered")
-							self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
+		case .incomingPhoneCall:
+			if let caller = socketNotification.caller {
+				title = "Incoming Call"
+				url =
+					"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
+				self.incomingCallNotification(
+					name: socketNotification.info,
+					callID: socketNotification.contentID,
+					userHeader: caller,
+					callerAddr: socketNotification.callerAddress
+				)
+			}
+			sendNotification = false
 
-						case .phoneCallEnded:
-							sendNotification = false
-							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
-								.set(socketNotification.contentID, forKey: "phoneCallEnded")
-							self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
+		case .phoneCallAnswered:
+			sendNotification = false
+			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
+			self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
 
-						case .followedEventStarting:
-							title = "Followed Event Starting"
-							url = "/events/\(socketNotification.contentID)"
+		case .phoneCallEnded:
+			sendNotification = false
+			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+				.set(socketNotification.contentID, forKey: "phoneCallEnded")
+			self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
 
-						case .joinedLFGStarting:
-							title = "Joined LFG Starting"
-							url = "/lfg/\(socketNotification.contentID)"
+		case .followedEventStarting:
+			title = "Followed Event Starting"
+			url = "/events/\(socketNotification.contentID)"
 
-						case .personalEventStarting:
-							title = "Personal Event Starting"
-							url = "/privateevent/\(socketNotification.contentID)"
+		case .joinedLFGStarting:
+			title = "Joined LFG Starting"
+			url = "/lfg/\(socketNotification.contentID)"
 
-						case .addedToPrivateEvent:
-							title = "Added to Private Event"
-							url = "/privateevent/\(socketNotification.contentID)"
+		case .personalEventStarting:
+			title = "Personal Event Starting"
+			url = "/privateevent/\(socketNotification.contentID)"
 
-						case .addedToLFG:
-							title = "Added to LFG"
-							url = "/lfg/\(socketNotification.contentID)"
+		case .addedToPrivateEvent:
+			title = "Added to Private Event"
+			url = "/privateevent/\(socketNotification.contentID)"
 
-						case .addedToSeamail:
-							title = "Added to Seamail"
-							url = "/seamail/\(socketNotification.contentID)"
+		case .addedToLFG:
+			title = "Added to LFG"
+			url = "/lfg/\(socketNotification.contentID)"
 
-						case .privateEventCanceled:
-							title = "Private Event Canceled"
-							url = "/privateevent/\(socketNotification.contentID)"
+		case .addedToSeamail:
+			title = "Added to Seamail"
+			url = "/seamail/\(socketNotification.contentID)"
 
-						case .lfgCanceled:
-							title = "LFG Canceled"
-							url = "/lfg/\(socketNotification.contentID)"
+		case .privateEventCanceled:
+			title = "Private Event Canceled"
+			url = "/privateevent/\(socketNotification.contentID)"
 
-						case .alertwordTwarrt:
-							title = "Alert Word"
-						// No URL defined in JavaScript for this type
+		case .lfgCanceled:
+			title = "LFG Canceled"
+			url = "/lfg/\(socketNotification.contentID)"
 
-						case .twarrtMention:
-							title = "Someone Mentioned You"
-						// No URL defined in JavaScript for this type
+		case .alertwordTwarrt:
+			title = "Alert Word"
+		// No URL defined in JavaScript for this type
 
-						case .privateEventUnreadMsg:
-							title = "New Private Event Message"
-							url = "/privateevent/\(socketNotification.contentID)"
+		case .twarrtMention:
+			title = "Someone Mentioned You"
+		// No URL defined in JavaScript for this type
 
-						case .microKaraokeSongReady:
-							title = "Micro Karaoke Music Video Ready"
-						// No URL defined in JavaScript for this type
+		case .privateEventUnreadMsg:
+			title = "New Private Event Message"
+			url = "/privateevent/\(socketNotification.contentID)"
 
-						@unknown default:
-							break
-						}
+		case .microKaraokeSongReady:
+			title = "Micro Karaoke Music Video Ready"
+		// No URL defined in JavaScript for this type
 
-						if sendNotification {
-							Notifications.generateContentNotification(
-								UUID(),
-								title: title,
-								body: socketNotification.info,
-								type: socketNotification.type,
-								url: url,
-								markAsReadUrl: markAsReadUrl
-							)
-						}
+		@unknown default:
+			break
+		}
+
+		if sendNotification {
+			Notifications.generateContentNotification(
+				UUID(),
+				title: title,
+				body: socketNotification.info,
+				type: socketNotification.type,
+				url: url,
+				markAsReadUrl: markAsReadUrl
+			)
+		}
 	}
 
 	func receiveNextMessage() {
