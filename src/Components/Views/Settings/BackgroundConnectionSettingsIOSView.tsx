@@ -94,21 +94,8 @@ export const BackgroundConnectionSettingsIOSView = () => {
       return;
     }
     const socketUrl = await buildWebsocketURL();
-    console.log(
-      'setupLocalPushManager',
-      socketUrl,
-      tokenData.token,
-      appConfig.wifiNetworkNames,
-      appConfig.fgsWorkerHealthTimer,
-      enable,
-    );
-    NativeTricordarrModule.setupLocalPushManager(
-      socketUrl,
-      tokenData.token,
-      appConfig.wifiNetworkNames,
-      appConfig.fgsWorkerHealthTimer,
-      enable,
-    );
+    console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
+    NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
   };
 
   return (

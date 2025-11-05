@@ -6,6 +6,8 @@ import {ConfigContext} from '#src/Context/Contexts/ConfigContext';
 import {AppConfig, getAppConfig} from '#src/Libraries/AppConfig';
 import {StorageKeys} from '#src/Libraries/Storage';
 
+import NativeTricordarrModule from '#specs/NativeTricordarrModule';
+
 export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
@@ -17,7 +19,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
       return getAppConfig();
     };
     loadConfig()
-      .then(config => setAppConfig(config))
+      .then(config => {
+        setAppConfig(config);
+        NativeTricordarrModule.setAppConfig(JSON.stringify(config));
+      })
       .finally(() => console.log('[ConfigProvider.tsx] Finished loading app config.'));
     checkNotifications().then(({status}) => {
       setHasNotificationPermission(status === RESULTS.GRANTED);
@@ -27,7 +32,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
 
   const updateAppConfig = (newConfig: AppConfig) => {
     console.info('[ConfigProvider.tsx] Updating app config to', newConfig);
-    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => setAppConfig(newConfig));
+    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => {
+      setAppConfig(newConfig);
+      NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
+    });
   };
 
   if (!appConfig) {

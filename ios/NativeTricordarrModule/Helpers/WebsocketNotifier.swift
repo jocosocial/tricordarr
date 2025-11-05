@@ -133,29 +133,29 @@ import os
 		var url = ""
 		var markAsReadUrl: String? = nil
 
-//		guard let appConfig = Storage.getAppConfig() else {
-//			self.logger.error("Could not get AppConfig")
-//			return
-//		}
-//
-//		// Do not generate a notification if the user has disabled that category.
-//		if appConfig.pushNotifications[socketNotification.type] == false {
-//			self.logger
-//				.info(
-//					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
-//				)
-//			return
-//		}
-//
-//		// Do not generate a notification if the user has muted notifications.
-//		if let muteString = appConfig.muteNotifications, let muteUntil = ISO8601DateFormatter().date(from: muteString) {
-//			if Date() < muteUntil {
-//				self.logger.info(
-//					"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
-//				)
-//				return
-//			}
-//		}
+    guard let appConfig = AppConfig.shared else {
+			self.logger.error("Could not get shared AppConfig")
+			return
+		}
+
+		// Do not generate a notification if the user has disabled that category.
+		if appConfig.pushNotifications[socketNotification.type] == false {
+			self.logger
+				.info(
+					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
+				)
+			return
+		}
+
+		// Do not generate a notification if the user has muted notifications.
+		if let muteString = appConfig.muteNotifications, let muteUntil = ISO8601DateFormatter().date(from: muteString) {
+			if Date() < muteUntil {
+				self.logger.info(
+					"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
+				)
+				return
+			}
+		}
 
 		// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
 		switch socketNotification.type {
