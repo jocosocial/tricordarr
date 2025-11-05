@@ -34,6 +34,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		93980FED2EB846F90067E8A1 /* Structs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Structs; sourceTree = "<group>"; };
 		93980FF02EB849190067E8A1 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
+		93B71A582EBACAC2004BC91E /* Enumerations */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Enumerations; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +103,7 @@
 		93690EF02EAB266C00CA8914 /* NativeTricordarrModule */ = {
 			isa = PBXGroup;
 			children = (
+				93B71A582EBACAC2004BC91E /* Enumerations */,
 				93980FF02EB849190067E8A1 /* Helpers */,
 				93980FED2EB846F90067E8A1 /* Structs */,
 				93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */,
@@ -142,6 +144,7 @@
 			fileSystemSynchronizedGroups = (
 				93980FED2EB846F90067E8A1 /* Structs */,
 				93980FF02EB849190067E8A1 /* Helpers */,
+				93B71A582EBACAC2004BC91E /* Enumerations */,
 			);
 			name = Tricordarr;
 			productName = Tricordarr;

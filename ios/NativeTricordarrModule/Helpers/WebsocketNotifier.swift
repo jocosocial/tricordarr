@@ -127,37 +127,9 @@ import os
 
 	// MARK: - Message/Event Processing
 
-	func receiveNextMessage() {
-		if let socket = socket {
-			socket.receive { [weak self] result in
-				guard let self = self else { return }
-				self.lastPing = Date()
-				switch result {
-				case .failure(let error):
-					self.logger.error("Error during websocket receive: \(error.localizedDescription, privacy: .public)")
-					socket.cancel(with: .goingAway, reason: nil)
-					self.socket = nil
-					self.session?.finishTasksAndInvalidate()
-					self.session = nil
-				case .success(let msg):
-					self.logger.log("got a successful message. Instance: \(debugAddr, privacy: .public)")
-					var msgData: Data?
-					switch msg {
-					case .string(let str):
-						self.logger.log("STRING MESSAGE: \(str, privacy: .public)")
-						msgData = str.data(using: .utf8)
-					case .data(let data):
-						// @TODO uhh, is this logging every call audio packet?
-						self.logger.log("DATA MESSAGE: \(data, privacy: .public)")
-						msgData = data
-					@unknown default:
-						self.logger.error("Error during websocket receive: Unknown ws data type delivered.)")
-					}
-					if let msgData = msgData,
-						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
-					{
+	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {
 						var sendNotification = true
-						var title = "From Kraken"
+		var title = "From Tricordarr"
 						var url = ""
 						var markAsReadUrl: String? = nil
 
@@ -282,6 +254,38 @@ import os
 								markAsReadUrl: markAsReadUrl
 							)
 						}
+	}
+
+	func receiveNextMessage() {
+		if let socket = socket {
+			socket.receive { [weak self] result in
+				guard let self = self else { return }
+				self.lastPing = Date()
+				switch result {
+				case .failure(let error):
+					self.logger.error("Error during websocket receive: \(error.localizedDescription, privacy: .public)")
+					socket.cancel(with: .goingAway, reason: nil)
+					self.socket = nil
+					self.session?.finishTasksAndInvalidate()
+					self.session = nil
+				case .success(let msg):
+					self.logger.log("got a successful message. Instance: \(debugAddr, privacy: .public)")
+					var msgData: Data?
+					switch msg {
+					case .string(let str):
+						self.logger.log("STRING MESSAGE: \(str, privacy: .public)")
+						msgData = str.data(using: .utf8)
+					case .data(let data):
+						// @TODO uhh, is this logging every call audio packet?
+						self.logger.log("DATA MESSAGE: \(data, privacy: .public)")
+						msgData = data
+					@unknown default:
+						self.logger.error("Error during websocket receive: Unknown ws data type delivered.)")
+					}
+					if let msgData = msgData,
+						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
+					{
+						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {
 						self.logger.error("Error during websocket receive: Looks like we couldn't parse the data?)")
