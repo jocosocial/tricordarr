@@ -94,21 +94,8 @@ export const BackgroundConnectionSettingsIOSView = () => {
       return;
     }
     const socketUrl = await buildWebsocketURL();
-    console.log(
-      'setupLocalPushManager',
-      socketUrl,
-      tokenData.token,
-      appConfig.wifiNetworkNames,
-      appConfig.fgsWorkerHealthTimer,
-      enable,
-    );
-    NativeTricordarrModule.setupLocalPushManager(
-      socketUrl,
-      tokenData.token,
-      appConfig.wifiNetworkNames,
-      appConfig.fgsWorkerHealthTimer,
-      enable,
-    );
+    console.log('setupLocalPushManager', socketUrl, tokenData.token, enable);
+    NativeTricordarrModule.setupLocalPushManager(socketUrl, tokenData.token, enable);
   };
 
   return (
@@ -120,7 +107,13 @@ export const BackgroundConnectionSettingsIOSView = () => {
           <ListSubheader>About</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
-          <Text>In progress...</Text>
+          <Text style={commonStyles.marginBottomSmall}>
+            The background worker extension is necessary to enable push notifications in an off-grid environment.
+          </Text>
+          <Text>
+            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list
+            of networks below.
+          </Text>
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Settings</ListSubheader>

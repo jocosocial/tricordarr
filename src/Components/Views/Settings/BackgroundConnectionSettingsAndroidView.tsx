@@ -111,7 +111,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
             in an off-grid environment.
           </Text>
           <Text>
-            Android Law(tm) currently requires the app to display a notification that this worker has started. You can
+            Android Law™ currently requires the app to display a notification that this worker has started. You can
             safely dismiss the notification and the worker will continue to run.
           </Text>
         </PaddedContentView>

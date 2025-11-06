@@ -91,7 +91,7 @@ import UserNotifications
 	/**
 	 Required delegate method to display notifications when app is in foreground. This gets called when a notification is *delivered* while the app is running
 	 in the foreground. The completion handler argument lets us choose how to show the notification to the user.
-	 Options: .banner (show banner), .sound (play sound), .badge (update badge)
+	 Options: .banner (show banner), .sound (play sound), .badge (update badge), .list (add to notification center)
 	
 	 If it's shown to the user (over our app's UI--we're in the FG) and the user taps it, the
 	 `userNotificationCenter(_:didReceive:withCompletionHandler)` below is called instead.
@@ -101,7 +101,7 @@ import UserNotifications
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
 	) {
-		completionHandler([.banner, .sound, .badge])
+		completionHandler([.banner, .sound, .badge, .list])
 	}
 
 	/**

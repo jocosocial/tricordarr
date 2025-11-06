@@ -28,7 +28,7 @@ export const generatePushNotificationFromEvent = async (event: WebSocketMessageE
   let channel = serviceChannel;
   let url = '';
   let pressActionID = PressAction.twitarrTab;
-  let title = '';
+  let title = 'From Tricordarr';
   let autoCancel = false;
   let ongoing = false;
   let markAsReadUrl: string | undefined;

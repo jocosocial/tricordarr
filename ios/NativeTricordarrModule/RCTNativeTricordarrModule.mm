@@ -20,28 +20,30 @@
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params {
-  return std::make_shared<facebook::react::NativeTricordarrModuleSpecJSI>(params);
+  return std::make_shared<facebook::react::NativeTricordarrModuleSpecJSI>(
+      params);
 }
 
-- (void)blurTextInImage:(nonnull NSString *)inputFilePath callback:(nonnull RCTResponseSenderBlock)callback {
+- (void)blurTextInImage:(nonnull NSString *)inputFilePath
+               callback:(nonnull RCTResponseSenderBlock)callback {
   [ImageBlur blurTextInImage:inputFilePath callback:callback];
+}
+
+- (void)setAppConfig:(nonnull NSString *)appConfigJson {
+  [AppConfig setAppConfigWithAppConfigJson:appConfigJson];
 }
 
 - (void)setupLocalPushManager:(nonnull NSString *)socketUrl
                         token:(nonnull NSString *)token
-             wifiNetworkNames:(nonnull NSArray *)wifiNetworkNames
-             healthcheckTimer:(double)healthcheckTimer
                        enable:(BOOL)enable {
   NSLog(@"setupLocalPushManager called with parameters:");
   NSLog(@"  socketUrl: %@", socketUrl);
   NSLog(@"  token: %@", token);
-  NSLog(@"  wifiNetworkNames: %@", wifiNetworkNames);
-  NSLog(@"  healthcheckTimer: %f", healthcheckTimer);
   NSLog(@"  enable: %@", enable ? @"YES" : @"NO");
 
-//  [Notifications testNotification];
-  // This is so weird...
-  [Notifications saveSettingsWithSocketUrl:socketUrl token:token];
+  [AppConfig setupLocalPushManagerWithSocketUrl:socketUrl
+                                          token:token
+                                         enable:enable];
 }
 
 @end

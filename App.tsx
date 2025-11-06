@@ -15,10 +15,10 @@ import {en as paperEn, registerTranslation} from 'react-native-paper-dates';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {HeaderButtonsProvider} from 'react-navigation-header-buttons/HeaderButtonsProvider';
 
+import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
-import {AppEventHandler} from '#src/Components/Navigation/AppEventHandler';
 import {AppNavigationThemeProvider} from '#src/Context/Providers/AppNavigationThemeProvider.tsx';
 import {AuthProvider} from '#src/Context/Providers/AuthProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';

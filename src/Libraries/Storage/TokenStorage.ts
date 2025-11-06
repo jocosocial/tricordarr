@@ -5,6 +5,9 @@ import {TokenStringData} from '#src/Structs/ControllerStructs';
 
 export type TokenStorageData = TokenStringData[];
 
+/**
+ * This is not in use. Likely started as some evening project and forgotten about.
+ */
 export namespace TokenStorageData {
   /**
    * Retrieve the local token storage array.

@@ -127,6 +127,163 @@ import os
 
 	// MARK: - Message/Event Processing
 
+	private func generatePushNotificationFromEvent(_ socketNotification: SocketNotificationData) {
+		var sendNotification = true
+		var title = "From Tricordarr"
+		var url = ""
+		var markAsReadUrl: String? = nil
+
+		guard let appConfig = AppConfig.shared else {
+			self.logger.error("Could not get shared AppConfig")
+			return
+		}
+
+		// Do not generate a notification if the user has disabled that category.
+		if appConfig.pushNotifications[socketNotification.type] == false {
+			self.logger
+				.info(
+					"[WebsocketNotifier.swift] user has disabled category \(socketNotification.type.rawValue, privacy: .public)"
+				)
+			return
+		}
+
+		// Do not generate a notification if the user has muted notifications.
+		if let muteString = appConfig.muteNotifications {
+			let formatter = ISO8601DateFormatter()
+			formatter.formatOptions.insert(.withFractionalSeconds)
+			if let muteUntil = formatter.date(from: muteString) {
+				if Date() < muteUntil {
+					self.logger.info(
+						"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
+					)
+					return
+				}
+			}
+		}
+
+		// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
+		switch socketNotification.type {
+		case .seamailUnreadMsg:
+			title = "New Seamail"
+			url = "/seamail/\(socketNotification.contentID)"
+			markAsReadUrl = "/fez/\(socketNotification.contentID)"
+
+		case .fezUnreadMsg:
+			title = "New LFG Message"
+			url = "/lfg/\(socketNotification.contentID)/chat"
+			markAsReadUrl = "/fez/\(socketNotification.contentID)"
+
+		case .announcement:
+			title = "Announcement"
+			url = "/home"
+			markAsReadUrl = "/notification/global"
+
+		case .alertwordPost:
+			title = "Forum Alert Word"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
+
+		case .forumMention:
+			title = "Forum Mention"
+			url = "/forumpost/mentions"
+
+		case .twitarrTeamForumMention:
+			title = "TwitarrTeam Forum Mention"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
+
+		case .moderatorForumMention:
+			title = "Moderator Forum Mention"
+			url = "/forum/containingpost/\(socketNotification.contentID)"
+
+		case .incomingPhoneCall:
+			if let caller = socketNotification.caller {
+				title = "Incoming Call"
+				url =
+					"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
+				self.incomingCallNotification(
+					name: socketNotification.info,
+					callID: socketNotification.contentID,
+					userHeader: caller,
+					callerAddr: socketNotification.callerAddress
+				)
+			}
+			sendNotification = false
+
+		case .phoneCallAnswered:
+			sendNotification = false
+			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+				.set(socketNotification.contentID, forKey: "phoneCallAnswered")
+			self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
+
+		case .phoneCallEnded:
+			sendNotification = false
+			UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
+				.set(socketNotification.contentID, forKey: "phoneCallEnded")
+			self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
+
+		case .followedEventStarting:
+			title = "Followed Event Starting"
+			url = "/events/\(socketNotification.contentID)"
+
+		case .joinedLFGStarting:
+			title = "Joined LFG Starting"
+			url = "/lfg/\(socketNotification.contentID)"
+
+		case .personalEventStarting:
+			title = "Personal Event Starting"
+			url = "/privateevent/\(socketNotification.contentID)"
+
+		case .addedToPrivateEvent:
+			title = "Added to Private Event"
+			url = "/privateevent/\(socketNotification.contentID)"
+
+		case .addedToLFG:
+			title = "Added to LFG"
+			url = "/lfg/\(socketNotification.contentID)"
+
+		case .addedToSeamail:
+			title = "Added to Seamail"
+			url = "/seamail/\(socketNotification.contentID)"
+
+		case .privateEventCanceled:
+			title = "Private Event Canceled"
+			url = "/privateevent/\(socketNotification.contentID)"
+
+		case .lfgCanceled:
+			title = "LFG Canceled"
+			url = "/lfg/\(socketNotification.contentID)"
+
+		case .alertwordTwarrt:
+			title = "Alert Word"
+		// No URL defined in JavaScript for this type
+
+		case .twarrtMention:
+			title = "Someone Mentioned You"
+		// No URL defined in JavaScript for this type
+
+		case .privateEventUnreadMsg:
+			title = "New Private Event Message"
+			url = "/privateevent/\(socketNotification.contentID)"
+
+		case .microKaraokeSongReady:
+			title = "Micro Karaoke Music Video Ready"
+		// No URL defined in JavaScript for this type
+
+		@unknown default:
+			break
+		}
+
+		if sendNotification {
+			Notifications.generateContentNotification(
+				UUID(),
+				title: title,
+				body: socketNotification.info,
+				type: socketNotification.type,
+				url: url,
+				markAsReadUrl: markAsReadUrl
+			)
+		}
+	}
+
 	func receiveNextMessage() {
 		if let socket = socket {
 			socket.receive { [weak self] result in
@@ -156,132 +313,7 @@ import os
 					if let msgData = msgData,
 						let socketNotification = try? JSONDecoder().decode(SocketNotificationData.self, from: msgData)
 					{
-						var sendNotification = true
-						var title = "From Kraken"
-						var url = ""
-						var markAsReadUrl: String? = nil
-
-						// Generate URL and markAsReadUrl based on notification type, matching JavaScript generatePushNotificationFromEvent
-						switch socketNotification.type {
-						case .seamailUnreadMsg:
-							title = "New Seamail"
-							url = "/seamail/\(socketNotification.contentID)"
-							markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-						case .fezUnreadMsg:
-							title = "New LFG Message"
-							url = "/lfg/\(socketNotification.contentID)/chat"
-							markAsReadUrl = "/fez/\(socketNotification.contentID)"
-
-						case .announcement:
-							title = "Announcement"
-							url = "/home"
-							markAsReadUrl = "/notification/global"
-
-						case .alertwordPost:
-							title = "Forum Alert Word"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
-
-						case .forumMention:
-							title = "Forum Mention"
-							url = "/forumpost/mentions"
-
-						case .twitarrTeamForumMention:
-							title = "TwitarrTeam Forum Mention"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
-
-						case .moderatorForumMention:
-							title = "Moderator Forum Mention"
-							url = "/forum/containingpost/\(socketNotification.contentID)"
-
-						case .incomingPhoneCall:
-							if let caller = socketNotification.caller {
-								title = "Incoming Call"
-								url =
-									"/phonecall/\(socketNotification.contentID)/from/\(caller.userID.uuidString)/\(caller.username)"
-								self.incomingCallNotification(
-									name: socketNotification.info,
-									callID: socketNotification.contentID,
-									userHeader: caller,
-									callerAddr: socketNotification.callerAddress
-								)
-							}
-							sendNotification = false
-
-						case .phoneCallAnswered:
-							sendNotification = false
-							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
-								.set(socketNotification.contentID, forKey: "phoneCallAnswered")
-							self.logger.log("KrakenPushProvider set UserDefault for phoneCallAnswered")
-
-						case .phoneCallEnded:
-							sendNotification = false
-							UserDefaults(suiteName: "group.com.challfry-FQD.Kraken")?
-								.set(socketNotification.contentID, forKey: "phoneCallEnded")
-							self.logger.log("KrakenPushProvider set UserDefault for phoneCallEnded")
-
-						case .followedEventStarting:
-							title = "Followed Event Starting"
-							url = "/events/\(socketNotification.contentID)"
-
-						case .joinedLFGStarting:
-							title = "Joined LFG Starting"
-							url = "/lfg/\(socketNotification.contentID)"
-
-						case .personalEventStarting:
-							title = "Personal Event Starting"
-							url = "/privateevent/\(socketNotification.contentID)"
-
-						case .addedToPrivateEvent:
-							title = "Added to Private Event"
-							url = "/privateevent/\(socketNotification.contentID)"
-
-						case .addedToLFG:
-							title = "Added to LFG"
-							url = "/lfg/\(socketNotification.contentID)"
-
-						case .addedToSeamail:
-							title = "Added to Seamail"
-							url = "/seamail/\(socketNotification.contentID)"
-
-						case .privateEventCanceled:
-							title = "Private Event Canceled"
-							url = "/privateevent/\(socketNotification.contentID)"
-
-						case .lfgCanceled:
-							title = "LFG Canceled"
-							url = "/lfg/\(socketNotification.contentID)"
-
-						case .alertwordTwarrt:
-							title = "Alert Word"
-						// No URL defined in JavaScript for this type
-
-						case .twarrtMention:
-							title = "Someone Mentioned You"
-						// No URL defined in JavaScript for this type
-
-						case .privateEventUnreadMsg:
-							title = "New Private Event Message"
-							url = "/privateevent/\(socketNotification.contentID)"
-
-						case .microKaraokeSongReady:
-							title = "Micro Karaoke Music Video Ready"
-						// No URL defined in JavaScript for this type
-
-						@unknown default:
-							break
-						}
-
-						if sendNotification {
-							Notifications.generateContentNotification(
-								UUID(),
-								title: title,
-								body: socketNotification.info,
-								type: socketNotification.type,
-								url: url,
-								markAsReadUrl: markAsReadUrl
-							)
-						}
+						self.generatePushNotificationFromEvent(socketNotification)
 					}
 					else {
 						self.logger.error("Error during websocket receive: Looks like we couldn't parse the data?)")

@@ -24,31 +24,19 @@ export const startLocalPushManager = async () => {
     return;
   }
   console.log('[Service.ts] Starting local push manager.');
-  NativeTricordarrModule.setupLocalPushManager(
-    socketUrl,
-    token,
-    appConfig.wifiNetworkNames,
-    appConfig.fgsWorkerHealthTimer,
-    appConfig.enableNotificationSocket,
-  );
+  NativeTricordarrModule.setupLocalPushManager(socketUrl, token, appConfig.enableNotificationSocket);
 }; /**
  * Stop the iOS Local Push Manager and Websocket notifier. See `NativeTricordarrModule` on
  * the Native side for implementation details.
  */
 
 export const stopLocalPushManager = async () => {
-  const [socketUrl, token, appConfig] = await Promise.all([buildWebsocketURL(), getToken(), getAppConfig()]);
+  const [socketUrl, token] = await Promise.all([buildWebsocketURL(), getToken()]);
   if (!socketUrl || !token) {
     console.error('[Service.ts] Failed to get socket URL or token. Cant stop manager.');
     return;
   }
   console.log('[Service.ts] Stopping local push manager.');
   // @TODO should we make a dedicated stop function?
-  NativeTricordarrModule.setupLocalPushManager(
-    socketUrl,
-    token,
-    appConfig.wifiNetworkNames,
-    appConfig.fgsWorkerHealthTimer,
-    false,
-  );
+  NativeTricordarrModule.setupLocalPushManager(socketUrl, token, false);
 };

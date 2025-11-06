@@ -1,6 +1,7 @@
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
+import {Platform} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
@@ -92,6 +93,9 @@ export const PushNotificationSettingsScreen = () => {
     });
   };
 
+  /**
+   * This is not supported on iOS. Notifications are automatically dusmissed on push.
+   */
   const toggleMarkReadCancelPush = () => {
     const newValue = !markReadCancelPush;
     updateAppConfig({
@@ -100,6 +104,17 @@ export const PushNotificationSettingsScreen = () => {
     });
     setMarkReadCancelPush(newValue);
   };
+
+  useEffect(() => {
+    if (appConfig.muteNotifications && new Date() >= appConfig.muteNotifications) {
+      console.log('[PushNotificationSettingsScreen.tsx] muteNotifications expired, clearing');
+      setMuteNotifications(undefined);
+      updateAppConfig({
+        ...appConfig,
+        muteNotifications: undefined,
+      });
+    }
+  }, [appConfig, updateAppConfig]);
 
   return (
     <AppView>
@@ -194,27 +209,29 @@ export const PushNotificationSettingsScreen = () => {
             <PrimaryActionButton buttonText={'Resume'} onPress={resumeNotifications} disabled={!muteNotifications} />
           </PaddedContentView>
         </ListSection>
-        <ListSection>
-          <ListSubheader>Auto Cancel</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <Text variant={'bodyMedium'}>
-              Automatically dismiss push notifications for unread content when you have read the content. This can be
-              useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the
-              notification and want the notification to go away.
-            </Text>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <View>
-                <BooleanField
-                  name={'markReadCancelPush'}
-                  label={'Dismiss Notifications on Read'}
-                  value={markReadCancelPush}
-                  onPress={toggleMarkReadCancelPush}
-                  helperText={'This setting only applies to Seamails and LFGs at this time.'}
-                />
-              </View>
-            </Formik>
-          </PaddedContentView>
-        </ListSection>
+        {Platform.OS === 'android' && (
+          <ListSection>
+            <ListSubheader>Auto Cancel</ListSubheader>
+            <PaddedContentView padTop={true}>
+              <Text variant={'bodyMedium'}>
+                Automatically dismiss push notifications for unread content when you have read the content. This can be
+                useful if you tend to navigate to content (such as a Seamail conversation) without tapping on the
+                notification and want the notification to go away.
+              </Text>
+              <Formik initialValues={{}} onSubmit={() => {}}>
+                <View>
+                  <BooleanField
+                    name={'markReadCancelPush'}
+                    label={'Dismiss Notifications on Read'}
+                    value={markReadCancelPush}
+                    onPress={toggleMarkReadCancelPush}
+                    helperText={'This setting only applies to Seamails and LFGs at this time.'}
+                  />
+                </View>
+              </Formik>
+            </PaddedContentView>
+          </ListSection>
+        )}
       </ScrollingContentView>
     </AppView>
   );

@@ -37,11 +37,13 @@ class NativeTricordarrModule(reactContext: ReactApplicationContext) : NativeTric
   override fun setupLocalPushManager(
     socketUrl: String,
     token: String,
-    wifiNetworkNames: ReadableArray,
-    healthcheckTimer: Double,
     enable: Boolean,
   ) {
     Log.d(NAME, "setupLocalPushManager is a no-op on Android")
+  }
+
+  override fun setAppConfig(appConfigJson: String) {
+    Log.d(NAME, "setAppConfig is a no-op on Android")
   }
 
   // Kotlin doesn't have "static" like Java so this does a similar thing of making class members.
