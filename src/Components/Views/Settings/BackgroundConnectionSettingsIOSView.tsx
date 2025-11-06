@@ -107,7 +107,13 @@ export const BackgroundConnectionSettingsIOSView = () => {
           <ListSubheader>About</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
-          <Text>In progress...</Text>
+          <Text style={commonStyles.marginBottomSmall}>
+            The background worker extension is necessary to enable push notifications in an off-grid environment.
+          </Text>
+          <Text>
+            Apple Law™ allows the worker to start only when joined to certain WiFi networks. You can manage that list
+            of networks below.
+          </Text>
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Settings</ListSubheader>
