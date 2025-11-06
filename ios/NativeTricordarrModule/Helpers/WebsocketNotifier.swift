@@ -133,7 +133,7 @@ import os
 		var url = ""
 		var markAsReadUrl: String? = nil
 
-    guard let appConfig = AppConfig.shared else {
+		guard let appConfig = AppConfig.shared else {
 			self.logger.error("Could not get shared AppConfig")
 			return
 		}
@@ -148,12 +148,16 @@ import os
 		}
 
 		// Do not generate a notification if the user has muted notifications.
-		if let muteString = appConfig.muteNotifications, let muteUntil = ISO8601DateFormatter().date(from: muteString) {
-			if Date() < muteUntil {
-				self.logger.info(
-					"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
-				)
-				return
+		if let muteString = appConfig.muteNotifications {
+			let formatter = ISO8601DateFormatter()
+			formatter.formatOptions.insert(.withFractionalSeconds)
+			if let muteUntil = formatter.date(from: muteString) {
+				if Date() < muteUntil {
+					self.logger.info(
+						"[WebsocketNotifier.swift] user has muted notifications until \(muteUntil, privacy: .public)"
+					)
+					return
+				}
 			}
 		}
 
