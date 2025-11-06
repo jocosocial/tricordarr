@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
+import {Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {DataTable} from 'react-native-paper';
 
+import {ListItem} from '#src/Components/Lists/ListItem';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 
 export const AboutSettingsScreen = () => {
@@ -22,42 +24,15 @@ export const AboutSettingsScreen = () => {
     <AppView>
       <ScrollView>
         <View>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>This App</DataTable.Title>
-            </DataTable.Header>
-            <DataTable.Row>
-              <DataTable.Cell>App Name</DataTable.Cell>
-              <DataTable.Cell>{DeviceInfo.getApplicationName()}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>App Version</DataTable.Cell>
-              <DataTable.Cell>{DeviceInfo.getVersion()}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Build</DataTable.Cell>
-              <DataTable.Cell>{DeviceInfo.getBuildNumber()}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Header>
-              <DataTable.Title>Your Device</DataTable.Title>
-            </DataTable.Header>
-            <DataTable.Row>
-              <DataTable.Cell>Android Version</DataTable.Cell>
-              <DataTable.Cell>{DeviceInfo.getSystemVersion()}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>API Level</DataTable.Cell>
-              <DataTable.Cell>{apiLevel}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Device ID</DataTable.Cell>
-              <DataTable.Cell>{DeviceInfo.getDeviceId()}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-              <DataTable.Cell>Manufacturer</DataTable.Cell>
-              <DataTable.Cell>{manufacturer}</DataTable.Cell>
-            </DataTable.Row>
-          </DataTable>
+          <ListSubheader>This App</ListSubheader>
+          <ListItem title={'App Name'} description={DeviceInfo.getApplicationName()} />
+          <ListItem title={'App Version'} description={DeviceInfo.getVersion()} />
+          <ListItem title={'Build'} description={DeviceInfo.getBuildNumber()} />
+          <ListSubheader>Your Device</ListSubheader>
+          <ListItem title={'System Version'} description={DeviceInfo.getSystemVersion()} />
+          {Platform.OS === 'android' && <ListItem title={'API Level'} description={apiLevel?.toString()} />}
+          <ListItem title={'Device ID'} description={DeviceInfo.getDeviceId()} />
+          <ListItem title={'Manufacturer'} description={manufacturer} />
         </View>
       </ScrollView>
     </AppView>

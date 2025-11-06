@@ -21,7 +21,7 @@ export const TimeSettingsScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true}>
-        <PaddedContentView>
+        <PaddedContentView padTop={true}>
           <TimeSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
       </ScrollingContentView>

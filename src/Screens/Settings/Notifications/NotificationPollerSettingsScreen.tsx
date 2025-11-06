@@ -36,7 +36,7 @@ export const NotificationPollerSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView isStack={true}>
         <PaddedContentView>
           <NotificationPollingSettingsForm onSubmit={handleSubmit} initialValues={initialValues} />
         </PaddedContentView>

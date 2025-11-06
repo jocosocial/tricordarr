@@ -61,7 +61,7 @@ export const PickerField = <TData,>({
       fontSize: styleDefaults.fontSize,
       fontWeight: 'normal',
       ...commonStyles.fontFamilyNormal,
-      ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : undefined),
+      ...(anchorButtonMode === 'outlined' ? {marginHorizontal: 14} : commonStyles.marginHorizontalSmall),
       color: meta.error ? theme.colors.error : theme.colors.onBackground,
     },
     content: {
@@ -71,7 +71,7 @@ export const PickerField = <TData,>({
       justifyContent: 'flex-start',
     },
     helperTextContainer: {
-      ...commonStyles.paddingHorizontal,
+      ...commonStyles.paddingHorizontalSmall,
     },
     helperText: {
       color: theme.colors.onBackground,

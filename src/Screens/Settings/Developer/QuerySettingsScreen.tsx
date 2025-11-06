@@ -2,15 +2,13 @@ import FastImage from '@d11/react-native-fast-image';
 import {CacheManager} from '@georstat/react-native-image-cache';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
-import {filesize} from 'filesize';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {DataTable} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -142,57 +140,17 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
             <QuerySettingsForm initialValues={initialValues} onSubmit={onSubmit} />
           </PaddedContentView>
         </ListSection>
-        <ListSection>
-          <ListSubheader>Query Cache</ListSubheader>
-          <PaddedContentView padTop={true}>
-            <DataTable style={commonStyles.marginBottomSmall}>
-              <SettingDataTableRow title={'Last Query Bust'} reverseSplit={true}>
-                <RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />
-              </SettingDataTableRow>
-              <SettingDataTableRow
-                reverseSplit={true}
-                title={'Query Item Count'}
-                value={queryClient.getQueryCache().getAll().length.toString()}
-              />
-              <SettingDataTableRow reverseSplit={true} title={'Oldest Item'}>
-                <RelativeTimeTag date={oldestCacheItem} />
-              </SettingDataTableRow>
-            </DataTable>
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              buttonText={'Cached Keys'}
-              onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
-              buttonColor={theme.colors.twitarrNeutralButton}
-            />
-          </PaddedContentView>
-          <PaddedContentView>
-            <PrimaryActionButton
-              buttonText={'Bust Query Cache'}
-              onPress={bustQueryCache}
-              buttonColor={theme.colors.twitarrNegativeButton}
-            />
-          </PaddedContentView>
-        </ListSection>
-        <ListSection>
-          <ListSubheader>Image Cache</ListSubheader>
-          <PaddedContentView>
-            <DataTable>
-              <SettingDataTableRow reverseSplit={true} title={'Image Cache Size'} value={filesize(imageCacheSize)} />
-            </DataTable>
-            <PrimaryActionButton
-              buttonText={'Bust Image Cache'}
-              onPress={bustImageCache}
-              buttonColor={theme.colors.twitarrNegativeButton}
-            />
-          </PaddedContentView>
-        </ListSection>
+        <ListSubheader>Query Cache</ListSubheader>
+        <ListItem
+          title={'Last Query Bust'}
+          description={<RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />}
+        />
+        <ListItem title={'Query Item Count'} description={queryClient.getQueryCache().getAll().length.toString()} />
+        <ListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <ListSection>
           <ListSubheader>Connection Disruption</ListSubheader>
+          <ListItem title={'Error Count'} description={errorCount.toString()} />
           <PaddedContentView padTop={true}>
-            <DataTable style={commonStyles.marginBottomSmall}>
-              <SettingDataTableRow title={'Error Count'} value={errorCount.toString()} />
-            </DataTable>
             <PrimaryActionButton
               buttonText={'Trigger Disruption'}
               onPress={triggerDisruption}

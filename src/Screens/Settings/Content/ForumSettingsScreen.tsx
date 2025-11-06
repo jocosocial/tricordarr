@@ -110,7 +110,7 @@ export const ForumSettingsScreen = () => {
                     'Visually identify your alert keywords in forums like 🚨this🚨. Disabling this has no effect on your notifications for the alert words.'
                   }
                   onPress={handleHighlightAlerts}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
               <ListSection>
@@ -124,7 +124,7 @@ export const ForumSettingsScreen = () => {
                 onPress={() => toggleValue(contentNotificationCategories.forumMention.configKey)}
                 disabled={!hasNotificationPermission}
                 helperText={contentNotificationCategories.forumMention.description}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
               />
               <BooleanField
                 key={contentNotificationCategories.alertwordPost.configKey}
@@ -134,7 +134,7 @@ export const ForumSettingsScreen = () => {
                 onPress={() => toggleValue(contentNotificationCategories.alertwordPost.configKey)}
                 disabled={!hasNotificationPermission}
                 helperText={contentNotificationCategories.alertwordPost.description}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
               />
               <BooleanField
                 key={contentNotificationCategories.twitarrTeamForumMention.configKey}
@@ -144,7 +144,7 @@ export const ForumSettingsScreen = () => {
                 onPress={() => toggleValue(contentNotificationCategories.twitarrTeamForumMention.configKey)}
                 disabled={!hasNotificationPermission}
                 helperText={contentNotificationCategories.twitarrTeamForumMention.description}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
               />
               <BooleanField
                 key={contentNotificationCategories.moderatorForumMention.configKey}
@@ -154,7 +154,7 @@ export const ForumSettingsScreen = () => {
                 onPress={() => toggleValue(contentNotificationCategories.moderatorForumMention.configKey)}
                 disabled={!hasNotificationPermission}
                 helperText={contentNotificationCategories.moderatorForumMention.description}
-                style={commonStyles.paddingHorizontal}
+                style={commonStyles.paddingHorizontalSmall}
               />
             </View>
           </Formik>

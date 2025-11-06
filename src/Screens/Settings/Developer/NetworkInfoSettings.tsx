@@ -1,8 +1,9 @@
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import React, {useCallback, useState} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
-import {DataTable} from 'react-native-paper';
 
+import {ListItem} from '#src/Components/Lists/ListItem';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 
 export const NetworkInfoSettings = () => {
@@ -18,19 +19,14 @@ export const NetworkInfoSettings = () => {
     <AppView>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>NetInfo</DataTable.Title>
-            </DataTable.Header>
-            {Object.keys(data.details ?? []).map(key => (
-              <DataTable.Row key={key}>
-                <DataTable.Cell>{key}</DataTable.Cell>
-                <DataTable.Cell>
-                  {data.details ? data.details[key as keyof typeof data.details].toString() : 'UNKNOWN'}
-                </DataTable.Cell>
-              </DataTable.Row>
-            ))}
-          </DataTable>
+          <ListSubheader>NetInfo</ListSubheader>
+          {Object.keys(data.details ?? []).map(key => (
+            <ListItem
+              key={key}
+              title={key}
+              description={data.details ? data.details[key as keyof typeof data.details].toString() : 'UNKNOWN'}
+            />
+          ))}
         </View>
       </ScrollView>
     </AppView>

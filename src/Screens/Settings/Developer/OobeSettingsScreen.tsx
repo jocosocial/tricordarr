@@ -1,8 +1,7 @@
 import React from 'react';
-import {DataTable} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -27,11 +26,9 @@ export const OobeSettingsScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <ListSubheader>Config</ListSubheader>
+        <ListItem title={'Expected'} description={String(appConfig.oobeExpectedVersion)} />
+        <ListItem title={'Completed'} description={String(appConfig.oobeCompletedVersion)} />
         <PaddedContentView>
-          <DataTable>
-            <SettingDataTableRow title={'Expected'} value={String(appConfig.oobeExpectedVersion)} />
-            <SettingDataTableRow title={'Completed'} value={String(appConfig.oobeCompletedVersion)} />
-          </DataTable>
           <PrimaryActionButton buttonText={'Reset'} onPress={resetOobeVersion} />
         </PaddedContentView>
         <ListSubheader>Debugging</ListSubheader>

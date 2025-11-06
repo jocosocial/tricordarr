@@ -164,7 +164,7 @@ export const BackgroundConnectionSettingsIOSView = () => {
           />
         </PaddedContentView>
         <ListSection>
-          <ListSubheader>Worker Control</ListSubheader>
+          <ListSubheader>Control</ListSubheader>
         </ListSection>
         <PaddedContentView padTop={true}>
           <PrimaryActionButton

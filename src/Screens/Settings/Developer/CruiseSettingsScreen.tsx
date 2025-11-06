@@ -1,12 +1,11 @@
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
 import {RefreshControl} from 'react-native';
-import {DataTable} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
 import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -110,23 +109,11 @@ export const CruiseSettingsScreen = () => {
           <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         <ListSubheader>Internal State</ListSubheader>
-        <PaddedContentView>
-          <DataTable>
-            <SettingDataTableRow title={'Cruise Day Today'} value={cruiseDayToday.toString()} reverseSplit={true} />
-            <SettingDataTableRow
-              title={'Adjusted Cruise Day Today'}
-              value={adjustedCruiseDayToday.toString()}
-              reverseSplit={true}
-            />
-            <SettingDataTableRow title={'Cruise Day Index'} value={cruiseDayIndex.toString()} reverseSplit={true} />
-            <SettingDataTableRow
-              title={'Adjusted Cruise Day Index'}
-              value={adjustedCruiseDayIndex.toString()}
-              reverseSplit={true}
-            />
-            <SettingDataTableRow title={'Latest Version'} value={data?.spec.latestVersion} reverseSplit={true} />
-          </DataTable>
-        </PaddedContentView>
+        <ListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
+        <ListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
+        <ListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
+        <ListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
+        <ListItem title={'Latest Version'} description={data?.spec.latestVersion} />
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>
           <PreRegistrationSettingsForm

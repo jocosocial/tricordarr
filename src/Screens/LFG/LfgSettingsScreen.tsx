@@ -89,7 +89,7 @@ export const LfgSettingsScreen = () => {
                   name={'hidePastLfgs'}
                   label={'Hide Past LFGs by Default'}
                   onPress={handleHidePastLfgs}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                   helperText={
                     'Default to not showing LFGs that have already happened. You can still use the filters to view them.'
                   }
@@ -119,7 +119,7 @@ export const LfgSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.fezUnreadMsg.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.fezUnreadMsg.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.joinedLFGStarting.configKey}
@@ -129,7 +129,7 @@ export const LfgSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.joinedLFGStarting.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.joinedLFGStarting.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.addedToLFG.configKey}
@@ -139,7 +139,7 @@ export const LfgSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.addedToLFG.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.addedToLFG.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
                 <BooleanField
                   key={contentNotificationCategories.lfgCanceled.configKey}
@@ -149,7 +149,7 @@ export const LfgSettingsScreen = () => {
                   onPress={() => toggleValue(contentNotificationCategories.lfgCanceled.configKey)}
                   disabled={!hasNotificationPermission}
                   helperText={contentNotificationCategories.lfgCanceled.description}
-                  style={commonStyles.paddingHorizontal}
+                  style={commonStyles.paddingHorizontalSmall}
                 />
               </ListSection>
             </View>

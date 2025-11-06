@@ -2,12 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Formik} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {DataTable, HelperText, Text} from 'react-native-paper';
+import {HelperText, Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
+import {ListItem} from '#src/Components/Lists/ListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -148,22 +148,15 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Status</ListSubheader>
+          <ListItem title={'Previous Start'} description={<RelativeTimeTag date={fgsStartDate} />} />
+          <ListItem title={'Socket State'} description={WebSocketState[socketState as keyof typeof WebSocketState]} />
+          <ListItem
+            title={'Last Check'}
+            description={healthData ? <RelativeTimeTag date={new Date(healthData.timestamp)} /> : <Text>Unknown</Text>}
+          />
+          <ListItem title={'Failed Count'} description={String(fgsFailedCounter)} />
         </ListSection>
-        <PaddedContentView padBottom={false}>
-          <DataTable>
-            <SettingDataTableRow title={'Previous Start'}>
-              <RelativeTimeTag date={fgsStartDate} />
-            </SettingDataTableRow>
-            <SettingDataTableRow
-              title={'Socket State'}
-              value={WebSocketState[socketState as keyof typeof WebSocketState]}
-            />
-            <SettingDataTableRow title={'Last Check'}>
-              {healthData ? <RelativeTimeTag date={new Date(healthData.timestamp)} /> : <Text>Unknown</Text>}
-            </SettingDataTableRow>
-            <SettingDataTableRow title={'Failed Count'} value={String(fgsFailedCounter)} />
-          </DataTable>
-        </PaddedContentView>
+        <PaddedContentView padBottom={false} />
         <PaddedContentView padSides={false}>
           <HelperText type={'info'} style={{color: theme.colors.onBackground}}>
             You can pull to refresh this page if you believe the WebSocket state is out of date.
@@ -172,10 +165,8 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         <ListSection>
           <ListSubheader>Control</ListSubheader>
         </ListSection>
+        <ListItem title={'Enabled'} description={String(enableUserNotifications)} />
         <PaddedContentView>
-          <DataTable>
-            <SettingDataTableRow title={'Enabled'} value={String(enableUserNotifications)} />
-          </DataTable>
           <PrimaryActionButton
             buttonText={'Start'}
             buttonColor={theme.colors.twitarrPositiveButton}

@@ -6,7 +6,6 @@ import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {SettingDataTableRow} from '#src/Components/DataTables/SettingDataTableRow';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
@@ -191,11 +190,11 @@ export const PushNotificationSettingsScreen = () => {
               particularly distracting or you do not wish to be disturbed for a bit.
             </Text>
             {muteNotifications && (
-              <DataTable>
-                <SettingDataTableRow title={'Resuming:'}>
-                  <RelativeTimeTag date={muteNotifications} />
-                </SettingDataTableRow>
-              </DataTable>
+              <PaddedContentView padTop={true}>
+                <Text>
+                  Resuming in <RelativeTimeTag date={muteNotifications} />
+                </Text>
+              </PaddedContentView>
             )}
           </PaddedContentView>
           <PaddedContentView>

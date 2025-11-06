@@ -38,7 +38,7 @@ export const ImageSettingsScreen = () => {
 
   return (
     <AppView>
-      <ScrollingContentView>
+      <ScrollingContentView isStack={true}>
         <PaddedContentView padSides={false}>
           <Formik initialValues={{}} onSubmit={() => {}}>
             <View>
