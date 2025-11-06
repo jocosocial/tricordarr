@@ -248,6 +248,7 @@ export const FezChatScreen = ({route}: Props) => {
       Promise.all(invalidations);
       if (appConfig.markReadCancelPush) {
         console.log('[FezChatScreen.tsx] auto canceling notifications.');
+        // This is a no-op on iOS. The system automatically dismisses notifications on press.
         notifee.cancelDisplayedNotification(fez.fezID);
       }
     }
