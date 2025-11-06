@@ -63,7 +63,7 @@ export const buildWebSocket = async (fezID?: string) => {
   // Swiftarr should probably fix this some day.
   const token = await getToken();
   const authHeaders = getAuthHeaders(undefined, undefined, token);
-  console.log(`Websockets.ts built new socket to ${wsUrl}`);
+  console.log(`[Websockets.ts] built new socket to ${wsUrl}`);
 
   // https://www.npmjs.com/package/reconnecting-websocket
   return new ReconnectingWebSocket(wsUrl, [], {

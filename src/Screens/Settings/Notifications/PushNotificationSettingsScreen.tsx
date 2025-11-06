@@ -1,5 +1,5 @@
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {DataTable, SegmentedButtons, Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
@@ -100,6 +100,17 @@ export const PushNotificationSettingsScreen = () => {
     });
     setMarkReadCancelPush(newValue);
   };
+
+  useEffect(() => {
+    if (appConfig.muteNotifications && new Date() >= appConfig.muteNotifications) {
+      console.log('[PushNotificationSettingsScreen.tsx] muteNotifications expired, clearing');
+      setMuteNotifications(undefined);
+      updateAppConfig({
+        ...appConfig,
+        muteNotifications: undefined,
+      });
+    }
+  }, [appConfig, updateAppConfig]);
 
   return (
     <AppView>
