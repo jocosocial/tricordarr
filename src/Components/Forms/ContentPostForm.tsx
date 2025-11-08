@@ -28,6 +28,7 @@ interface ContentPostFormProps {
   maxLength?: number;
   maxPhotos?: number;
   initialValues?: PostContentData;
+  disabled?: boolean;
 }
 
 // https://formik.org/docs/guides/react-native
@@ -40,6 +41,7 @@ export const ContentPostForm = ({
   maxLength = 500,
   maxPhotos = 1,
   initialValues,
+  disabled = false,
 }: ContentPostFormProps) => {
   const {commonStyles} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
@@ -173,7 +175,7 @@ export const ContentPostForm = ({
                 </View>
                 <View style={styles.inputWrapperViewSide}>
                   <SubmitIconButton
-                    disabled={!values.text || !isValid}
+                    disabled={disabled || !values.text || !isValid}
                     submitting={overrideSubmitting || isSubmitting}
                     onPress={onPress || handleSubmit}
                     withPrivilegeColors={true}

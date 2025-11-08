@@ -24,8 +24,14 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const fezMutation = useFezCreateMutation();
   const fezPostMutation = useFezPostMutation();
   const [newSeamail, setNewSeamail] = useState<FezData>();
-  const [submitting, setSubmitting] = useState(false);
+  const [seamailFormValid, setSeamailFormValid] = useState(false);
   const queryClient = useQueryClient();
+
+  // Helper to reset submitting state on both forms
+  const resetSubmitting = useCallback(() => {
+    seamailPostFormRef.current?.setSubmitting(false);
+    seamailCreateFormRef.current?.setSubmitting(false);
+  }, []);
 
   const initialFormValues: SeamailFormValues = {
     fezType: FezType.open,
@@ -41,7 +47,6 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   // Handler for creating the Fez.
   const onFezSubmit = useCallback(
     (values: SeamailFormValues) => {
-      setSubmitting(true);
       const contentData: FezContentData = {
         ...values,
         initialUsers: values.initialUsers.map(u => u.userID),
@@ -61,16 +66,17 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
             seamailPostFormRef.current?.submitForm();
           },
           onSettled: () => {
-            setSubmitting(false);
-            seamailCreateFormRef.current?.setSubmitting(false);
+            resetSubmitting();
           },
         },
       );
     },
-    [queryClient, fezMutation],
+    [queryClient, fezMutation, resetSubmitting],
   );
 
   // Handler for pushing the FezPost submit button.
+  // @TODO this has an issue where the cache invalidations occur in the other onSubmit
+  // handler. Putting them in here messed things up a lot.
   const onPostSubmit = useCallback(
     (values: PostContentData) => {
       if (newSeamail) {
@@ -78,24 +84,26 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
           {fezID: newSeamail.fezID, postContentData: values},
           {
             onSuccess: () => {
-              setSubmitting(false);
+              resetSubmitting();
               navigation.replace(CommonStackComponents.seamailChatScreen, {
                 fezID: newSeamail.fezID,
               });
+            },
+            onError: () => {
+              resetSubmitting();
             },
           },
         );
       } else {
         console.error('Seamail is empty?');
-        setSubmitting(false);
+        resetSubmitting();
       }
     },
-    [fezPostMutation, navigation, newSeamail],
+    [fezPostMutation, navigation, newSeamail, resetSubmitting],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = useCallback(() => {
-    setSubmitting(true);
     seamailCreateFormRef.current?.submitForm();
   }, []);
 
@@ -103,14 +111,20 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
     <AppView>
       <PostAsUserBanner />
       <ScrollingContentView>
-        <SeamailCreateForm formRef={seamailCreateFormRef} onSubmit={onFezSubmit} initialValues={initialFormValues} />
+        <SeamailCreateForm
+          formRef={seamailCreateFormRef}
+          onSubmit={onFezSubmit}
+          initialValues={initialFormValues}
+          onValidationChange={setSeamailFormValid}
+        />
       </ScrollingContentView>
       <ContentPostForm
         formRef={seamailPostFormRef}
-        overrideSubmitting={submitting}
+        overrideSubmitting={fezMutation.isPending || fezPostMutation.isPending}
         onPress={onSubmit}
         onSubmit={onPostSubmit}
         enablePhotos={false}
+        disabled={!seamailFormValid}
       />
     </AppView>
   );

@@ -15,16 +15,21 @@ import {SeamailFormValues} from '#src/Types/FormValues';
 
 interface SeamailCreateFormProps {
   onSubmit: (values: SeamailFormValues, formikBag: FormikHelpers<SeamailFormValues>) => void;
-  formRef: React.RefObject<FormikProps<SeamailFormValues>>;
+  formRef: React.RefObject<FormikProps<SeamailFormValues> | null>;
   initialValues: SeamailFormValues;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Subject cannot be empty.'),
 });
 
-const InnerSeamailCreateForm = () => {
-  const {values, setFieldValue} = useFormikContext<FezContentData>();
+interface InnerSeamailCreateFormProps {
+  onValidationChange?: (isValid: boolean) => void;
+}
+
+const InnerSeamailCreateForm = ({onValidationChange}: InnerSeamailCreateFormProps) => {
+  const {values, setFieldValue, isValid, dirty} = useFormikContext<FezContentData>();
   const {setAsModerator, setAsTwitarrTeam, clearPrivileges, hasTwitarrTeam, hasModerator} = usePrivilege();
 
   useEffect(() => {
@@ -36,6 +41,11 @@ const InnerSeamailCreateForm = () => {
     }
     // return () => clearPrivileges();
   }, [values, setAsModerator, setAsTwitarrTeam, clearPrivileges]);
+
+  useEffect(() => {
+    // Only consider the form valid if it's both valid AND has been touched
+    onValidationChange?.(isValid && dirty);
+  }, [isValid, dirty, onValidationChange]);
 
   return (
     <PaddedContentView>
@@ -69,7 +79,7 @@ const InnerSeamailCreateForm = () => {
   );
 };
 
-export const SeamailCreateForm = ({onSubmit, formRef, initialValues}: SeamailCreateFormProps) => {
+export const SeamailCreateForm = ({onSubmit, formRef, initialValues, onValidationChange}: SeamailCreateFormProps) => {
   return (
     <Formik
       innerRef={formRef}
@@ -77,7 +87,7 @@ export const SeamailCreateForm = ({onSubmit, formRef, initialValues}: SeamailCre
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      <InnerSeamailCreateForm />
+      <InnerSeamailCreateForm onValidationChange={onValidationChange} />
     </Formik>
   );
 };
