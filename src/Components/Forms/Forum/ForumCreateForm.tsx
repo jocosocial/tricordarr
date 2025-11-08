@@ -13,15 +13,20 @@ import {ForumThreadValues} from '#src/Types/FormValues';
 
 interface ForumCreateFormProps {
   onSubmit: (values: ForumThreadValues, formikBag: FormikHelpers<ForumThreadValues>) => void;
-  formRef: React.RefObject<FormikProps<ForumThreadValues>>;
+  formRef: React.RefObject<FormikProps<ForumThreadValues> | null>;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 const validationSchema = Yup.object().shape({
   title: InfoStringValidation,
 });
 
-const InnerForm = () => {
-  const {values} = useFormikContext<ForumThreadValues>();
+interface InnerFormProps {
+  onValidationChange?: (isValid: boolean) => void;
+}
+
+const InnerForm = ({onValidationChange}: InnerFormProps) => {
+  const {values, isValid, dirty} = useFormikContext<ForumThreadValues>();
   const {setAsModerator, setAsTwitarrTeam, hasModerator, hasTwitarrTeam} = usePrivilege();
   useEffect(() => {
     if (values.postAsModerator !== undefined) {
@@ -31,6 +36,11 @@ const InnerForm = () => {
       setAsTwitarrTeam(values.postAsTwitarrTeam);
     }
   }, [values, setAsModerator, setAsTwitarrTeam]);
+
+  useEffect(() => {
+    // Only consider the form valid if it's both valid AND has been touched
+    onValidationChange?.(isValid && dirty);
+  }, [isValid, dirty, onValidationChange]);
 
   return (
     <PaddedContentView>
@@ -56,7 +66,7 @@ const InnerForm = () => {
   );
 };
 
-export const ForumCreateForm = ({onSubmit, formRef}: ForumCreateFormProps) => {
+export const ForumCreateForm = ({onSubmit, formRef, onValidationChange}: ForumCreateFormProps) => {
   const {} = usePrivilege();
   const initialValues: ForumThreadValues = {
     title: '',
@@ -70,7 +80,7 @@ export const ForumCreateForm = ({onSubmit, formRef}: ForumCreateFormProps) => {
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      <InnerForm />
+      <InnerForm onValidationChange={onValidationChange} />
     </Formik>
   );
 };
