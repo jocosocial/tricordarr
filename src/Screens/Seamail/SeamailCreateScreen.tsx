@@ -23,9 +23,10 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
   const fezMutation = useFezCreateMutation();
   const fezPostMutation = useFezPostMutation();
-  const [newSeamail, setNewSeamail] = useState<FezData>();
   const [seamailFormValid, setSeamailFormValid] = useState(false);
   const queryClient = useQueryClient();
+  // Use a ref to store the created fez data immediately (synchronously) to avoid race condition
+  const createdFezRef = useRef<FezData | null>(null);
 
   // Helper to reset submitting state on both forms
   const resetSubmitting = useCallback(() => {
@@ -54,12 +55,9 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
       fezMutation.mutate(
         {fezContentData: contentData},
         {
-          onSuccess: async response => {
-            setNewSeamail(response.data);
-            const invalidations = FezData.getCacheKeys().map(key => {
-              return queryClient.invalidateQueries({queryKey: key});
-            });
-            await Promise.all(invalidations);
+          onSuccess: response => {
+            // Store in ref immediately (synchronously) to avoid race condition with submitForm
+            createdFezRef.current = response.data;
             // Whatever we picked in the SeamailCreate is what should be set in the Post.
             seamailPostFormRef.current?.setFieldValue('postAsModerator', values.createdByModerator);
             seamailPostFormRef.current?.setFieldValue('postAsTwitarrTeam', values.createdByTwitarrTeam);
@@ -71,22 +69,26 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         },
       );
     },
-    [queryClient, fezMutation, resetSubmitting],
+    [fezMutation, resetSubmitting],
   );
 
   // Handler for pushing the FezPost submit button.
-  // @TODO this has an issue where the cache invalidations occur in the other onSubmit
-  // handler. Putting them in here messed things up a lot.
   const onPostSubmit = useCallback(
     (values: PostContentData) => {
-      if (newSeamail) {
+      // Use ref instead of state to avoid race condition - ref is set synchronously
+      const fezData = createdFezRef.current;
+      if (fezData) {
         fezPostMutation.mutate(
-          {fezID: newSeamail.fezID, postContentData: values},
+          {fezID: fezData.fezID, postContentData: values},
           {
-            onSuccess: () => {
+            onSuccess: async () => {
+              const invalidations = FezData.getCacheKeys().map(key => {
+                return queryClient.invalidateQueries({queryKey: key});
+              });
+              await Promise.all(invalidations);
               resetSubmitting();
               navigation.replace(CommonStackComponents.seamailChatScreen, {
-                fezID: newSeamail.fezID,
+                fezID: fezData.fezID,
               });
             },
             onError: () => {
@@ -99,7 +101,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
         resetSubmitting();
       }
     },
-    [fezPostMutation, navigation, newSeamail, resetSubmitting],
+    [fezPostMutation, navigation, resetSubmitting, queryClient],
   );
 
   // Handler to trigger the chain of events needed to complete this screen.
