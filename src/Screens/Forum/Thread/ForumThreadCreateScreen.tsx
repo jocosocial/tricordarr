@@ -12,7 +12,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
-import {ForumCreateData, PostContentData} from '#src/Structs/ControllerStructs';
+import {ForumCreateData, ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
@@ -21,8 +21,11 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [forumFormValid, setForumFormValid] = useState(false);
   const forumCreateMutation = useForumCreateMutation();
   const queryClient = useQueryClient();
+  // Use a ref to store the created forum data immediately (synchronously) to avoid race condition
+  const createdForumRef = useRef<ForumData | null>(null);
 
   const onForumSubmit = (values: ForumThreadValues, formikHelpers: FormikHelpers<ForumThreadValues>) => {
     setSubmitting(true);
@@ -46,23 +49,33 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
         categoryId: route.params.categoryId,
       },
       {
-        onSuccess: async response => {
-          await Promise.all([
-            queryClient.invalidateQueries({queryKey: [`/forum/${response.data.forumID}`]}),
-            queryClient.invalidateQueries({queryKey: [`/forum/categories/${response.data.categoryID}`]}),
-            queryClient.invalidateQueries({queryKey: ['/forum/search']}),
-            queryClient.invalidateQueries({queryKey: ['/forum/categories']}),
-          ]);
-          navigation.replace(CommonStackComponents.forumThreadScreen, {
-            forumID: response.data.forumID,
-          });
+        onSuccess: response => {
+          // Store in ref immediately (synchronously) to avoid race condition
+          createdForumRef.current = response.data;
+          // Use ref instead of response.data to avoid race condition - ref is set synchronously
+          const createdForum = createdForumRef.current;
+          if (createdForum) {
+            navigation.replace(CommonStackComponents.forumThreadScreen, {
+              forumID: createdForum.forumID,
+            });
+          }
         },
         onSettled: () => formikHelpers.setSubmitting(false),
       },
     );
   };
 
-  const onPostSubmit = () => null;
+  const onPostSubmit = async (values: PostContentData, formikBag: FormikHelpers<PostContentData>) => {
+    // Invalidations moved here from onForumSubmit to match pattern from SeamailCreateScreen
+    const createdForum = createdForumRef.current;
+    if (createdForum) {
+      const invalidations = ForumListData.getCacheKeys(createdForum.categoryID, createdForum.forumID).map(key => {
+        return queryClient.invalidateQueries({queryKey: key});
+      });
+      await Promise.all(invalidations);
+    }
+    formikBag.setSubmitting(false);
+  };
 
   // Handler to trigger the chain of events needed to complete this screen.
   const onSubmit = () => {
@@ -74,7 +87,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
     <AppView>
       <PostAsUserBanner />
       <ScrollingContentView>
-        <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} />
+        <ForumCreateForm onSubmit={onForumSubmit} formRef={forumFormRef} onValidationChange={setForumFormValid} />
       </ScrollingContentView>
       <ContentPostForm
         onSubmit={onPostSubmit}
@@ -84,6 +97,7 @@ export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
         enablePhotos={true}
         maxLength={2000}
         maxPhotos={4}
+        disabled={!forumFormValid}
       />
     </AppView>
   );
