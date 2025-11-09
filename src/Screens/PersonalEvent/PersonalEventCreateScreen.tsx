@@ -1,14 +1,18 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
@@ -20,6 +24,26 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
   const createMutation = useFezCreateMutation();
   const queryClient = useQueryClient();
   const {startDate, adjustedCruiseDayToday} = useCruise();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.lfgCreateHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     let {startTime, endTime} = getScheduleItemStartEndTime(values.startDate, values.startTime, values.duration);

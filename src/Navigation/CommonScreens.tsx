@@ -25,6 +25,7 @@ import {ForumThreadPostScreen} from '#src/Screens/Forum/Thread/ForumThreadPostSc
 import {ForumThreadScreen} from '#src/Screens/Forum/Thread/ForumThreadScreen';
 import {ForumThreadUserScreen} from '#src/Screens/Forum/Thread/ForumThreadUserScreen';
 import {LfgAddParticipantScreen} from '#src/Screens/LFG/LfgAddParticipantScreen';
+import {LfgCreateHelpScreen} from '#src/Screens/LFG/LfgCreateHelpScreen';
 import {LfgEditScreen} from '#src/Screens/LFG/LfgEditScreen';
 import {LfgHelpScreen} from '#src/Screens/LFG/LfgHelpScreen';
 import {LfgParticipationScreen} from '#src/Screens/LFG/LfgParticipationScreen';
@@ -218,6 +219,7 @@ export type CommonStackParamList = {
   PerformerHelpScreen: undefined;
   SiteUIHelpScreen: ParamsWithOobe;
   LfgHelpScreen: undefined;
+  LfgCreateHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
   TimeZoneHelpScreen: undefined;
   PrivateEventChatScreen: {
@@ -294,6 +296,7 @@ export enum CommonStackComponents {
   performerHelpScreen = 'PerformerHelpScreen',
   siteUIHelpScreen = 'SiteUIHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
+  lfgCreateHelpScreen = 'LfgCreateHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
   timeZoneHelpScreen = 'TimeZoneHelpScreen',
   privateEventChatScreen = 'PrivateEventChatScreen',
@@ -565,6 +568,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.lfgHelpScreen}
         component={LfgHelpScreen}
         options={{title: 'Looking For Group (LFG) Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.lfgCreateHelpScreen}
+        component={isLfgDisabled ? DisabledView : LfgCreateHelpScreen}
+        options={{title: 'New LFG Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.mainTimeZoneScreen}

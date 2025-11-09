@@ -1,12 +1,16 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {View} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
+import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {LfgForm} from '#src/Components/Forms/LfgForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {FezType} from '#src/Enums/FezType';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -35,6 +39,26 @@ export const LfgCreateScreenBase = ({
   const fezMutation = useFezCreateMutation();
   const {startDate, adjustedCruiseDayToday} = useCruise();
   const queryClient = useQueryClient();
+
+  const getNavButtons = useCallback(() => {
+    return (
+      <View>
+        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Help'}
+            iconName={AppIcons.help}
+            onPress={() => navigation.push(CommonStackComponents.lfgCreateHelpScreen)}
+          />
+        </HeaderButtons>
+      </View>
+    );
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: getNavButtons,
+    });
+  }, [getNavButtons, navigation]);
 
   const onSubmit = (values: FezFormValues, helpers: FormikHelpers<FezFormValues>) => {
     helpers.setSubmitting(true);

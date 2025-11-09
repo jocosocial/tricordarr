@@ -1,10 +1,13 @@
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
-import {HelperText, Menu, TextInput} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {Keyboard} from 'react-native';
+import {HelperText, Menu, Text, TextInput} from 'react-native-paper';
 
 import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
-import {useModal} from '#src/Context/Contexts/ModalContext';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {useAppTheme} from '#src/Styles/Theme';
 
@@ -27,7 +30,7 @@ export const SuggestedTextField = ({
   secureTextEntry,
   label,
   left,
-  right,
+  right: _right,
   viewStyle,
   inputMode,
   autoCapitalize,
@@ -38,12 +41,17 @@ export const SuggestedTextField = ({
   const {visible, openMenu, closeMenu} = useMenu();
   const {isSubmitting} = useFormikContext();
   const [field, meta, helpers] = useField<string>(name);
-  const {modalVisible} = useModal();
   const theme = useAppTheme();
+  const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
     outline: {
       borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+    },
+    headerContainer: {
+      ...commonStyles.paddingVerticalSmall,
+      ...commonStyles.onMenu,
+      ...commonStyles.paddingHorizontalSmall,
     },
   });
 
@@ -52,21 +60,32 @@ export const SuggestedTextField = ({
     await helpers.setValue(newValue);
   };
 
-  const handleOpen = () => {
-    console.log(`[SuggestedTextField.tex] triggering handleOpen, current value "${field.value}"`);
-    if (field.value !== '' || modalVisible) {
-      return;
+  const toggleMenu = () => {
+    // Dismiss keyboard when toggling menu
+    Keyboard.dismiss();
+    if (visible) {
+      closeMenu();
+    } else {
+      openMenu();
     }
-    openMenu();
   };
 
+  const headerComponent = () => (
+    <View style={styles.headerContainer}>
+      <Text variant={'labelSmall'}>These are just suggestions. You can{'\n'}put anything you want.</Text>
+    </View>
+  );
+
+  // Always show suggestions icon - TextInput.Icon must be direct child of TextInput
+  // If right prop is provided, it will be overridden by the suggestions icon
+  const suggestionsIcon = <TextInput.Icon icon={AppIcons.menu} onPress={toggleMenu} />;
+
   return (
-    <Menu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
-      // onScroll is a patch I added
-      // @ts-ignore
       onScroll={() => Keyboard.dismiss()}
+      header={headerComponent}
       anchor={
         <View style={viewStyle}>
           <TextInput
@@ -77,15 +96,13 @@ export const SuggestedTextField = ({
             label={label}
             error={!!meta.error}
             left={left}
-            right={right}
+            right={suggestionsIcon}
             inputMode={inputMode}
             autoCapitalize={autoCapitalize}
             maxLength={maxLength}
-            onFocus={handleOpen}
             onChangeText={onValueChange}
             value={field.value}
             disabled={disabled || isSubmitting}
-            onPress={handleOpen}
             outlineStyle={styles.outline}
           />
           <HelperText type={'error'} visible={!!meta.error && meta.touched}>
@@ -96,6 +113,6 @@ export const SuggestedTextField = ({
       {suggestions.map((suggestion, index) => {
         return <Menu.Item key={index} title={suggestion} onPress={() => helpers.setValue(suggestion)} />;
       })}
-    </Menu>
+    </AppMenu>
   );
 };
