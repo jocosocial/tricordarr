@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -43,11 +42,12 @@ export const MessageView = ({fezPost, messageOnRight = false, showAuthor, fez}: 
     opacity: [commonStyles.paddingSmall, commonStyles.roundedBorderLarge],
   };
 
-  const onLongPress = () => Clipboard.setString(fezPost.text);
-
+  /**
+   * See ForumPostMessageView.tsx for the rationale for the onLongPress vs onPress.
+   */
   return (
     <View style={styles.messageView}>
-      <TouchableOpacity style={styles.opacity} onPress={openMenu} onLongPress={onLongPress} activeOpacity={1}>
+      <TouchableOpacity style={styles.opacity} onLongPress={openMenu} activeOpacity={1}>
         {showAuthor && <Text style={styles.messageTextHeader}>{fezPost.author.username}</Text>}
         <FezPostActionsMenu
           visible={menuVisible}

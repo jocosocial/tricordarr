@@ -31,6 +31,9 @@ export const SeamailHelpScreen = () => {
           Messages made in Open seamails can be reported to the moderation team by long-pressing on the message and
           selecting Report.
         </HelpTopicView>
+        <HelpTopicView>
+          You can long-press on a message to access a menu of additional actions such as copy to clipboard.
+        </HelpTopicView>
       </ScrollingContentView>
     </AppView>
   );

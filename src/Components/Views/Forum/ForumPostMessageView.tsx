@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
@@ -92,15 +91,17 @@ export const ForumPostMessageView = ({
     });
   };
 
-  const onLongPress = () => Clipboard.setString(postData.text);
-
   return (
     <View style={styles.messageView}>
       <TouchableOpacity
         style={styles.opacity}
-        onLongPress={enableShowInThread ? openMenu : onLongPress}
         activeOpacity={1}
-        onPress={enableShowInThread ? onPress : openMenu}>
+        /**
+         * The onLongPress used to be a onPress, and onLongPress would copy to clipboard.
+         * Touching items was too sensitive and lead to unexpected menu opens. So I am
+         * electing to make this a long press instead since copy is an option in the menu.
+         */
+        onLongPress={enableShowInThread ? onPress : openMenu}>
         <View style={styles.authorContainer}>
           {showAuthor && (
             <>

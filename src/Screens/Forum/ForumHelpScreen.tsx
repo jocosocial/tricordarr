@@ -30,7 +30,7 @@ export const ForumHelpScreen = () => {
         <HelpChapterTitleView title={'Posts'} />
         <HelpTopicView title={'Posts'} icon={AppIcons.post}>
           Long-press a post to favorite, edit, or add a reaction. Tapping on a post will take you to the posts forum to
-          see it in context. You can edit or delete your own forum posts.
+          see it in context (if you aren't already). You can edit or delete your own forum posts.
         </HelpTopicView>
         <HelpTopicView title={'Favorite'} icon={AppIcons.favorite}>
           Favoriting a post will save it to an easily accessible Personal Category on the Forums page.
