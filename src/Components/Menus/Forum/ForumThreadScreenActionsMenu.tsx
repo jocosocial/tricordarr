@@ -11,10 +11,12 @@ import {MuteMenuItem} from '#src/Components/Menus/Items/MuteMenuItem';
 import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
@@ -135,7 +137,6 @@ export const ForumThreadScreenActionsMenu = ({
               });
             }}
           />
-          <Divider bold={true} />
         </>
       )}
       {forumData?.creator.username !== profilePublicData?.header.username && (
@@ -146,9 +147,10 @@ export const ForumThreadScreenActionsMenu = ({
             title={'Report'}
             onPress={() => handleModal(<ReportModalView forum={forumData} />)}
           />
-          <Divider bold={true} />
         </>
       )}
+      <ShareMenuItem contentType={ShareContentType.forum} contentID={forumData.forumID} closeMenu={closeMenu} />
+      <Divider bold={true} />
       {hasTwitarrTeam && (
         <>
           <PostAsTwitarrTeamMenuItem closeMenu={closeMenu} />

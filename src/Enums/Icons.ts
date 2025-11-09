@@ -129,4 +129,5 @@ export enum AppIcons {
   hunts = 'puzzle',
   thumbnail = 'image-size-select-small',
   full = 'image-size-select-actual',
+  share = 'share-variant',
 }

@@ -8,11 +8,14 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
+
+import {ShareMenuItem} from '../Items/ShareMenuItem';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const {visible, openMenu, closeMenu} = useMenu();
@@ -39,6 +42,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
           disabled={fezData.cancelled}
         />
       )}
+      <ShareMenuItem contentType={ShareContentType.lfg} contentID={fezData.fezID} closeMenu={closeMenu} />
       <Menu.Item
         leadingIcon={AppIcons.report}
         title={'Report'}

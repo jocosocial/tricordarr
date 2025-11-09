@@ -10,9 +10,12 @@ import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/Fo
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
+
+import {ShareMenuItem} from '../Items/ShareMenuItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -55,6 +58,7 @@ export const ForumPostActionsMenu = ({
           closeMenu();
         }}
       />
+      <ShareMenuItem contentType={ShareContentType.forumPost} contentID={forumPost.postID} closeMenu={closeMenu} />
       <Divider bold={true} />
       {bySelf && (
         <>

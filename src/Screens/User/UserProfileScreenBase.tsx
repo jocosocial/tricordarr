@@ -90,7 +90,7 @@ export const UserProfileScreenBase = ({
                 commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data, oobe: oobe})
               }
             />
-            <UserProfileSelfActionsMenu />
+            <UserProfileSelfActionsMenu userID={data.header.userID} />
           </HeaderButtons>
         </View>
       );

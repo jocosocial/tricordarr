@@ -2,8 +2,10 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Menu} from 'react-native-paper';
 
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData} from '#src/Structs/ControllerStructs';
 
@@ -43,6 +45,7 @@ export const EventCardActionsMenu = (props: EventCardActionsMenuProps) => {
         />
       )}
       {props.eventData.forum && <Menu.Item title={'Forum'} leadingIcon={AppIcons.forum} onPress={handleForumPress} />}
+      <ShareMenuItem contentType={ShareContentType.event} contentID={props.eventData.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.eventData} />
     </Menu>
   );

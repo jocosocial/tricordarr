@@ -4,9 +4,11 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData} from '#src/Structs/ControllerStructs';
@@ -30,6 +32,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
+      <ShareMenuItem contentType={ShareContentType.event} contentID={props.event.eventID} closeMenu={closeMenu} />
       <EventDownloadMenuItem closeMenu={closeMenu} event={props.event} />
       {props.event.eventType === EventType.shadow && (
         <Menu.Item

@@ -5,12 +5,14 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
 import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
@@ -71,6 +73,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item leadingIcon={AppIcons.privateNoteEdit} title={'Private Note'} onPress={handleNote} />
+      <ShareMenuItem contentType={ShareContentType.user} contentID={profile.header.userID} closeMenu={closeMenu} />
       <Divider bold={true} />
       <Menu.Item
         leadingIcon={isBlocked ? AppIcons.unblock : AppIcons.block}
