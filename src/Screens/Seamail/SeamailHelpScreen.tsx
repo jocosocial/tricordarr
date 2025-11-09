@@ -4,6 +4,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
+import {AppIcons} from '#src/Enums/Icons';
 
 export const SeamailHelpScreen = () => {
   return (
@@ -33,6 +34,11 @@ export const SeamailHelpScreen = () => {
         </HelpTopicView>
         <HelpTopicView>
           You can long-press on a message to access a menu of additional actions such as copy to clipboard.
+        </HelpTopicView>
+        <HelpChapterTitleView title={'Search'} />
+        <HelpTopicView icon={AppIcons.search}>
+          You can search for seamail conversations by keyword. This will search the subject line and the content of the
+          messages.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>
