@@ -4,7 +4,7 @@ import {Linking} from 'react-native';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -22,7 +22,7 @@ export const NotificationsMenu = () => {
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={
@@ -77,6 +77,6 @@ export const NotificationsMenu = () => {
         leadingIcon={AppIcons.settings}
         onPress={() => handleUrl('tricordarr://settings/pushnotifications')}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

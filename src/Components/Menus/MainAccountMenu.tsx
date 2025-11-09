@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {Divider, Menu} from 'react-native-paper';
 
 import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
@@ -57,7 +57,7 @@ export const MainAccountMenu = () => {
   const getAvatarImage = () => <UserAvatarImage userHeader={profilePublicData?.header} small={true} />;
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       anchor={<TouchableOpacity onPress={openMenu}>{getAvatarImage()}</TouchableOpacity>}
       onDismiss={closeMenu}>
@@ -78,6 +78,6 @@ export const MainAccountMenu = () => {
       <Menu.Item leadingIcon={AppIcons.settings} title={'Settings'} onPress={handleSettings} />
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {PostAsModeratorMenuItem} from '#src/Components/Menus/Items/PostAsModeratorMenuItem';
 import {PostAsTwitarrTeamMenuItem} from '#src/Components/Menus/Items/PostAsTwitarrTeamMenuItem';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
@@ -59,7 +59,7 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -95,6 +95,6 @@ export const FezChatScreenActionsMenu = ({fez, enableDetails = true, onRefresh}:
           }
         }}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

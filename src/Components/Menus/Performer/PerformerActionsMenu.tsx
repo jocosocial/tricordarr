@@ -2,7 +2,7 @@ import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
@@ -23,7 +23,7 @@ export const PerformerActionsMenu = ({performerData}: PerformerActionsMenuProps)
   const performerID = performerData?.header.id;
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -67,6 +67,6 @@ export const PerformerActionsMenu = ({performerData}: PerformerActionsMenuProps)
           navigation.push(CommonStackComponents.performerHelpScreen);
         }}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

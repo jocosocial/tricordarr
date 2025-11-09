@@ -3,7 +3,7 @@ import React, {ReactNode, useCallback, useState} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ForumThreadPinItem} from '#src/Components/Menus/Forum/Items/ForumThreadPinItem';
 import {FavoriteMenuItem} from '#src/Components/Menus/Items/FavoriteMenuItem';
 import {ModerateMenuItem} from '#src/Components/Menus/Items/ModerateMenuItem';
@@ -105,7 +105,7 @@ export const ForumThreadScreenActionsMenu = ({
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -179,6 +179,6 @@ export const ForumThreadScreenActionsMenu = ({
         </>
       )}
       <Menu.Item onPress={handleHelp} title={'Help'} leadingIcon={AppIcons.help} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

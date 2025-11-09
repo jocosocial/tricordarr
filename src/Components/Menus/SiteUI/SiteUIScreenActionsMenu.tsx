@@ -4,7 +4,7 @@ import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -57,7 +57,7 @@ export const SiteUIScreenActionsMenu = ({
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -66,6 +66,6 @@ export const SiteUIScreenActionsMenu = ({
       <Menu.Item title={'Open in Browser'} leadingIcon={AppIcons.webview} onPress={handleOpenInBrowser} />
       <Menu.Item title={'Copy URL'} leadingIcon={AppIcons.copy} onPress={handleCopyUrl} />
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

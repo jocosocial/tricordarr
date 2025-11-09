@@ -4,7 +4,7 @@ import {ReactNode} from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {BlockUserModalView} from '#src/Components/Views/Modals/BlockUserModalView';
 import {MuteUserModalView} from '#src/Components/Views/Modals/MuteUserModalView';
@@ -68,7 +68,7 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -135,6 +135,6 @@ export const UserProfileScreenActionsMenu = ({profile, isMuted, isBlocked, oobe}
       )}
       <Divider bold={true} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

@@ -2,7 +2,7 @@ import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {PersonalEventDeleteModal} from '#src/Components/Views/Modals/PersonalEventDeleteModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
@@ -32,7 +32,7 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -67,6 +67,6 @@ export const PersonalEventScreenActionsMenu = (props: PersonalEventScreenActions
           navigation.push(CommonStackComponents.scheduleHelpScreen);
         }}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

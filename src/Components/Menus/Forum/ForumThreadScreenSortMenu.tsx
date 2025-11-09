@@ -1,7 +1,7 @@
 import React from 'react';
 import {Divider} from 'react-native-paper';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
@@ -50,7 +50,7 @@ export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps)
   };
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {props.category && props.category.isEventCategory && (
         <SelectableMenuItem
           title={ForumSort.getLabel(ForumSort.event)}
@@ -90,6 +90,6 @@ export const ForumThreadScreenSortMenu = (props: ForumThreadScreenSortMenuProps)
         selected={forumSortDirection === ForumSortDirection.descending}
         onPress={() => handleDirectionSelection(ForumSortDirection.descending)}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

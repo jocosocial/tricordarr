@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
@@ -26,12 +26,12 @@ export const UserProfileSelfActionsMenu = ({userID}: UserProfileSelfActionsMenuP
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <ShareMenuItem contentType={ShareContentType.user} contentID={userID} closeMenu={closeMenu} />
       <Menu.Item leadingIcon={AppIcons.help} title={'Help'} onPress={handleHelp} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

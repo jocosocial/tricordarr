@@ -1,7 +1,7 @@
 import {format} from 'date-fns';
 import React from 'react';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
@@ -38,7 +38,7 @@ export const LfgCruiseDayFilterMenu = () => {
   );
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {cruiseDays.map(day => {
         return (
           <SelectableMenuItem
@@ -49,6 +49,6 @@ export const LfgCruiseDayFilterMenu = () => {
           />
         );
       })}
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

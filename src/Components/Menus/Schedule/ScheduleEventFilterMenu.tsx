@@ -1,7 +1,7 @@
 import React from 'react';
 import {Divider} from 'react-native-paper';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -69,7 +69,7 @@ export const ScheduleEventFilterMenu = () => {
   );
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Favorite Events'} onPress={handleFavoriteSelection} selected={eventFavoriteFilter} />
       <SelectableMenuItem
         title={'Personal Events'}
@@ -94,6 +94,6 @@ export const ScheduleEventFilterMenu = () => {
           />
         );
       })}
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

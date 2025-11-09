@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import {Menu, MenuProps} from 'react-native-paper';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {MenuScrollIndicator} from '#src/Components/Views/MenuScrollIndicator';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -29,29 +28,15 @@ export interface AppMenuProps extends MenuProps {
  */
 export const AppMenu = ({visible, children, onScroll, style, header, ...menuProps}: AppMenuProps) => {
   const {commonStyles} = useStyles();
-  const insets = useSafeAreaInsets();
   const screenHeight = Dimensions.get('window').height;
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);
-  const [menuTop, setMenuTop] = useState<number | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const containerRef = useRef<View>(null);
 
-  // Calculate max height based on menu position
-  // If menu position is known, use available space below the menu (menus typically expand downward)
-  // Otherwise, fall back to the original calculation
+  // Calculate max height as a percentage of screen height
   const calculateMaxHeight = () => {
-    if (menuTop === null) {
-      // Fallback: assume menu is at top, leave some padding
-      return screenHeight - insets.top - insets.bottom - 80;
-    }
-
-    // Calculate available space below the menu position
-    // The menu expands downward, so we use the space from menuTop to bottom of screen
-    const spaceBelow = screenHeight - menuTop - insets.bottom;
-    // Ensure minimum padding and don't allow negative values
-    const padding = 40;
-    return Math.max(spaceBelow - padding, 100); // Minimum 100px height
+    return screenHeight * 0.5; // 50% of screen height
   };
 
   const maxMenuHeight = calculateMaxHeight();
@@ -64,20 +49,8 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
     if (visible) {
       setScrollY(0);
       scrollViewRef.current?.scrollTo({y: 0, animated: false});
-      // Reset menu position measurement when menu opens
-      setMenuTop(null);
     }
   }, [visible]);
-
-  // Measure menu container position when it's laid out
-  const handleContainerLayout = () => {
-    if (visible) {
-      // Get absolute position by measuring relative to window
-      containerRef.current?.measureInWindow((_x, measuredY) => {
-        setMenuTop(measuredY);
-      });
-    }
-  };
 
   const styles = StyleSheet.create({
     menu: {
@@ -116,7 +89,7 @@ export const AppMenu = ({visible, children, onScroll, style, header, ...menuProp
       style={styles.menu}
       keyboardShouldPersistTaps={menuProps.keyboardShouldPersistTaps || 'handled'}
       {...menuProps}>
-      <View ref={containerRef} style={styles.scrollViewContainer} onLayout={handleContainerLayout}>
+      <View ref={containerRef} style={styles.scrollViewContainer}>
         {renderHeader()}
         <ScrollView
           ref={scrollViewRef}

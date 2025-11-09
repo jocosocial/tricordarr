@@ -2,7 +2,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -18,7 +18,7 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
   const forumNavigation = useForumStackNavigation();
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Search'} iconName={AppIcons.search} onPress={openMenu} />}>
@@ -44,6 +44,6 @@ export const ForumCategoryScreenSearchMenu = (props: ForumCategoryScreenSearchMe
           });
         }}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

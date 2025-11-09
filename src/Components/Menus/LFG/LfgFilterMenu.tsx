@@ -1,7 +1,7 @@
 import React from 'react';
 import {Divider} from 'react-native-paper';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -51,7 +51,7 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
   );
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       <SelectableMenuItem title={'Hide Past'} onPress={handleHidePast} selected={lfgHidePastFilter} />
       {showTypes && (
         <>
@@ -68,6 +68,6 @@ export const LfgFilterMenu = ({showTypes = true}: LfgFilterMenuProps) => {
           })}
         </>
       )}
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

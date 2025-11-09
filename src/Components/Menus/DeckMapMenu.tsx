@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Dispatch, SetStateAction} from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
@@ -22,7 +22,7 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.decks} onPress={openMenu} />}>
@@ -36,6 +36,6 @@ export const DeckMapMenu = (props: DeckMapMenuProps) => {
           />
         );
       })}
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

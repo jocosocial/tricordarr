@@ -2,7 +2,7 @@ import React from 'react';
 import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -16,7 +16,7 @@ export const LfgListActionsMenu = () => {
   const menuAnchor = <Item title={'Schedule Options'} iconName={AppIcons.menu} onPress={openMenu} />;
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {route.name !== LfgStackComponents.lfgFormerScreen && (
         <>
           <Menu.Item
@@ -37,6 +37,6 @@ export const LfgListActionsMenu = () => {
         title={'Help'}
         onPress={() => navigation.push(CommonStackComponents.lfgHelpScreen)}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

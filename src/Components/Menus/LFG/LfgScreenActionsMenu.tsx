@@ -2,7 +2,7 @@ import React, {ReactNode} from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
@@ -33,7 +33,7 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   };
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {fezData.owner.userID === profilePublicData?.header.userID && (
         <Menu.Item
           leadingIcon={AppIcons.cancel}
@@ -70,6 +70,6 @@ export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
           closeMenu();
         }}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

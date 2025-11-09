@@ -2,7 +2,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
@@ -21,7 +21,7 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActio
   const menuAnchor = <Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />;
 
   return (
-    <AppHeaderMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
+    <AppMenu visible={visible} onDismiss={closeMenu} anchor={menuAnchor}>
       {onRefresh && <ReloadMenuItem closeMenu={closeMenu} onReload={onRefresh} />}
       <Menu.Item
         title={'Import'}
@@ -39,6 +39,6 @@ export const ScheduleDayScreenActionsMenu = ({onRefresh}: ScheduleDayScreenActio
         leadingIcon={AppIcons.help}
         onPress={() => navigation.push(CommonStackComponents.scheduleHelpScreen)}
       />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };

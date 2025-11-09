@@ -2,7 +2,7 @@ import React from 'react';
 import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
-import {AppHeaderMenu} from '#src/Components/Menus/AppHeaderMenu';
+import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {EventDownloadMenuItem} from '#src/Components/Menus/Events/Items/EventDownloadMenuItem';
 import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -28,7 +28,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   };
 
   return (
-    <AppHeaderMenu
+    <AppMenu
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
@@ -48,6 +48,6 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
         />
       )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
-    </AppHeaderMenu>
+    </AppMenu>
   );
 };
