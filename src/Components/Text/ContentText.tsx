@@ -191,7 +191,7 @@ export const ContentText = ({
 
   const markdownIdentifier = '<Markdown>';
   if (forceMarkdown || text.startsWith(markdownIdentifier)) {
-    const strippedText = text.replace(markdownIdentifier, '');
+    const strippedText = text.replace(markdownIdentifier, '').trim();
 
     return (
       <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
