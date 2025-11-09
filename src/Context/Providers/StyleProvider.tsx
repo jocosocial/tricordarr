@@ -143,6 +143,9 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     safePaddingBottom: {
       paddingBottom: inset.bottom,
     },
+    onMenu: {
+      backgroundColor: theme.colors.elevation.level2,
+    },
   });
 
   const screenOptions = {
