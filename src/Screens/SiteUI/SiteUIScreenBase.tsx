@@ -21,16 +21,20 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
+  const currentUrlRef = useRef<string>(initialUrl);
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
   const navigation = useCommonStack();
 
   const onHome = useCallback(() => {
     setWebviewUrl(serverUrl);
+    currentUrlRef.current = serverUrl;
     setKey(String(Date.now()));
   }, [serverUrl]);
 
   const reload = () => webViewRef.current?.reload();
+
+  const getCurrentUrl = useCallback(() => currentUrlRef.current, []);
 
   const getNavBarIcons = useCallback(
     () => (
@@ -42,17 +46,19 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
             onBack={handleBackButtonPress}
             canGoBack={handleGoBack}
             oobe={oobe}
+            getCurrentUrl={getCurrentUrl}
           />
         </HeaderButtons>
       </View>
     ),
-    [onHome, oobe, handleGoBack],
+    [onHome, oobe, handleGoBack, getCurrentUrl],
   );
 
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
     const {canGoBack, url} = newNavState;
     console.log(`[SiteUIScreenBase.tsx] webview navigating to ${url}`);
     setHandleGoBack(canGoBack);
+    currentUrlRef.current = url;
   };
 
   const handleBackButtonPress = () => {
