@@ -96,21 +96,21 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={BottomTabComponents.scheduleTab}
-        component={ScheduleStackNavigator}
-        options={{
-          title: 'Schedule',
-          tabBarIcon: () => getIcon(AppIcons.events),
-          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
-        }}
-      />
-      <Tab.Screen
         name={BottomTabComponents.lfgTab}
         component={LfgStackNavigator}
         options={{
           title: 'LFG',
           tabBarIcon: () => getIcon(AppIcons.lfg),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
+        }}
+      />
+      <Tab.Screen
+        name={BottomTabComponents.scheduleTab}
+        component={ScheduleStackNavigator}
+        options={{
+          title: 'Schedule',
+          tabBarIcon: () => getIcon(AppIcons.events),
+          tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />
     </Tab.Navigator>

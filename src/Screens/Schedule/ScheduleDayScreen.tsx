@@ -130,17 +130,18 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     return (
       <View>
         <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+          <Item
+            title={'Search'}
+            iconName={AppIcons.search}
+            onPress={() => navigation.push(CommonStackComponents.eventSearchScreen)}
+          />
           {appConfig.enableExperiments ? (
             <HeaderDayPlannerButton cruiseDay={selectedCruiseDay} />
           ) : (
             <HeaderScheduleYourDayButton />
           )}
           <ScheduleEventFilterMenu />
-          <Item
-            title={'Search'}
-            iconName={AppIcons.search}
-            onPress={() => navigation.push(CommonStackComponents.eventSearchScreen)}
-          />
+
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
         </HeaderButtons>
       </View>
