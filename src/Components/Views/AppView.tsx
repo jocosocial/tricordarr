@@ -76,8 +76,8 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
         {preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
+        <UnsavedChangesView isVisible={hasUnsavedWork} />
       </ModuleKeyboardAvoidingView>
-      <UnsavedChangesView isVisible={hasUnsavedWork} />
     </View>
   );
 };
