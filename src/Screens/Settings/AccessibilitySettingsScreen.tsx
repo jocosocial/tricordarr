@@ -68,7 +68,7 @@ export const AccessibilitySettingsScreen = () => {
               onPress={toggleSystemTheme}
               value={useSystemTheme}
               helperText={'Match your devices color scheme automatically.'}
-              style={commonStyles.paddingHorizontal}
+              style={commonStyles.paddingHorizontalSmall}
             />
             <BooleanField
               name={'darkMode'}
@@ -77,7 +77,7 @@ export const AccessibilitySettingsScreen = () => {
               value={darkMode}
               helperText={'White or light text on black or dark background.'}
               disabled={useSystemTheme}
-              style={commonStyles.paddingHorizontal}
+              style={commonStyles.paddingHorizontalSmall}
             />
           </View>
         </Formik>
@@ -90,9 +90,9 @@ export const AccessibilitySettingsScreen = () => {
               name={'reverseSwipeOrientation'}
               label={'Reverse Swipe Orientation'}
               onPress={handleOrientation}
-              style={commonStyles.paddingHorizontal}
+              style={commonStyles.paddingHorizontalSmall}
               helperText={
-                'Switch the Left and Right swipe actions for swipeable items such as Forum Threads and Seamails. Could be useful if you are left-handed.'
+                'Switches the orientation of certain horizontal swipe gestures and UI components. Could be useful if you are left-handed.'
               }
               value={reverseSwipeOrientation}
             />
