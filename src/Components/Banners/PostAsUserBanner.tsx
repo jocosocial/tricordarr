@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {Banner, Text} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {Text} from 'react-native-paper';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -12,13 +12,21 @@ export const PostAsUserBanner = () => {
   const styles = StyleSheet.create({
     banner: {
       ...commonStyles.errorContainer,
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.paddingVerticalSmall,
     },
-    text: commonStyles.errorContainer,
+    text: {
+      ...commonStyles.errorContainer,
+    },
   });
 
+  if (!asPrivilegedUser) {
+    return <></>;
+  }
+
   return (
-    <Banner visible={!!asPrivilegedUser} style={styles.banner}>
+    <View style={styles.banner}>
       <Text style={styles.text}>Posting as {asPrivilegedUser}</Text>
-    </Banner>
+    </View>
   );
 };
