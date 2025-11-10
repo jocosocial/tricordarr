@@ -11,30 +11,17 @@ import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScree
 
 interface SiteUIScreenActionsMenuProps {
   onHome: () => void;
-  onBack: () => void;
-  canGoBack: boolean;
   oobe?: boolean;
   getCurrentUrl: () => string;
 }
 
-export const SiteUIScreenActionsMenu = ({
-  onHome,
-  onBack,
-  canGoBack,
-  oobe,
-  getCurrentUrl,
-}: SiteUIScreenActionsMenuProps) => {
+export const SiteUIScreenActionsMenu = ({onHome, oobe, getCurrentUrl}: SiteUIScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
   const handleHome = () => {
     closeMenu();
     onHome();
-  };
-
-  const handleBack = () => {
-    closeMenu();
-    onBack();
   };
 
   const handleHelp = () => {
@@ -61,7 +48,6 @@ export const SiteUIScreenActionsMenu = ({
       visible={visible}
       onDismiss={closeMenu}
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
-      <Menu.Item title={'Back'} leadingIcon={AppIcons.back} onPress={handleBack} disabled={!canGoBack} />
       <Menu.Item title={'Home'} leadingIcon={AppIcons.home} onPress={handleHome} />
       <Menu.Item title={'Open in Browser'} leadingIcon={AppIcons.webview} onPress={handleOpenInBrowser} />
       <Menu.Item title={'Copy URL'} leadingIcon={AppIcons.copy} onPress={handleCopyUrl} />
