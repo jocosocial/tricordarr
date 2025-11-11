@@ -1,5 +1,4 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
@@ -110,9 +109,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
         {showStack && (
           <PaddedContentView>
             <BoldText>Stack Trace:</BoldText>
-            <Text
-              variant={'labelSmall'}
-              onLongPress={() => (props.error.stack ? Clipboard.setString(props.error.stack) : undefined)}>
+            <Text variant={'labelSmall'} selectable={true}>
               {props.error.stack}
             </Text>
           </PaddedContentView>
