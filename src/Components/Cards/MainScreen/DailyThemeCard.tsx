@@ -39,7 +39,7 @@ export const DailyThemeCard = (props: DailyThemeCardProps) => {
           {props.dailyTheme.info}
         </Text>
       </Card.Content>
-      {props.dailyTheme.image && <APIImage path={props.dailyTheme.image} />}
+      {props.dailyTheme.image && <APIImage path={props.dailyTheme.image} mode={'scaledimage'} />}
     </Card>
   );
 };

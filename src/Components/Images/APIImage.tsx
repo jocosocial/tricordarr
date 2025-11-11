@@ -44,7 +44,7 @@ interface APIImageV2Props {
  *
  * Setting your own onPress effectively disables the image viewer.
  */
-export const APIImage = ({path, style, mode, disableTouch, staticSize, onPress}: APIImageV2Props) => {
+export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, staticSize, onPress}: APIImageV2Props) => {
   const [viewerImages, setViewerImages] = useState<AppImageMetaData[]>([]);
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const {commonStyles} = useStyles();
@@ -216,14 +216,13 @@ export const APIImage = ({path, style, mode, disableTouch, staticSize, onPress}:
 
   const isThumbnail = imageSource.uri === imageSourceMetadata.thumbURI;
 
+  // @TODO cardcover does use FastImage under the hood.
   return (
     <View>
       <AppImageViewer viewerImages={viewerImages} isVisible={isViewerVisible} setIsVisible={setIsViewerVisible} />
       <TouchableOpacity disabled={disableTouch} activeOpacity={1} onPress={onPress || onPressDefault}>
         <View style={styles.imageContainer}>
-          {/* {mode === 'cardcover' && (
-          <Card.Cover style={style as RNImageStyle} source={ImageQueryData.toImageSource(imageQueryData)} />
-        )} */}
+          {/* {mode === 'cardcover' && <Card.Cover style={style as RNImageStyle} source={imageSource} />} */}
           {mode === 'image' && (
             <FastImage
               resizeMode={'cover'}
