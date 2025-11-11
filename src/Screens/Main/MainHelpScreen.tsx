@@ -37,6 +37,10 @@ export const MainHelpScreen = () => {
           Most content is searchable. Look for a magnifying glass icon around the header menu. There may be different
           modes of search.
         </HelpTopicView>
+        <HelpTopicView title={'Share'} icon={AppIcons.share}>
+          You can copy the URL to certain content to share with others. This should also work on other devices and
+          browsers.
+        </HelpTopicView>
         <HelpChapterTitleView title={'Content'} />
         <HelpTopicView
           title={'Floating Action Button'}

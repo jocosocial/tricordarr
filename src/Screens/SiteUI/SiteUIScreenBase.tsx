@@ -37,13 +37,17 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   const getCurrentUrl = useCallback(() => currentUrlRef.current, []);
 
   const handleBackButtonPress = useCallback(() => {
+    if (!handleGoBack) {
+      navigation.goBack();
+      return true;
+    }
     try {
       webViewRef.current?.goBack();
       return true;
     } catch (err) {
       return false;
     }
-  }, []);
+  }, [navigation, handleGoBack]);
 
   const getNavBarIcons = useCallback(
     () => (
@@ -57,6 +61,14 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
     [onHome, oobe, getCurrentUrl],
   );
 
+  const getBackButton = useCallback(() => {
+    return (
+      <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <Item title={'Back'} iconName={AppIcons.back} onPress={handleBackButtonPress} />
+      </HeaderButtons>
+    );
+  }, [handleBackButtonPress]);
+
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
     const {canGoBack, url} = newNavState;
     console.log(`[SiteUIScreenBase.tsx] webview navigating to ${url}`);
@@ -67,24 +79,25 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   useEffect(() => {
     navigation.setOptions({
       headerRight: getNavBarIcons,
+      headerLeft: getBackButton,
     });
-  }, [getNavBarIcons, navigation]);
+  }, [getNavBarIcons, getBackButton, navigation]);
 
   // Override React Navigation back button to go back in webview when possible
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      // Only intercept if the action is not POP_TO_TOP (happens when you hit the Today tab).
-      // If webview can go back and it's not a POP_TO_TOP action, prevent navigation and go back in webview instead
-      const actionType = e.data?.action?.type;
-      if (handleGoBack && actionType !== 'POP_TO_TOP') {
-        e.preventDefault();
-        handleBackButtonPress();
-      }
-      // Otherwise, let the default navigation behavior happen
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('beforeRemove', e => {
+  //     // Only intercept if the action is not POP_TO_TOP (happens when you hit the Today tab).
+  //     // If webview can go back and it's not a POP_TO_TOP action, prevent navigation and go back in webview instead
+  //     const actionType = e.data?.action?.type;
+  //     if (handleGoBack && actionType !== 'POP_TO_TOP') {
+  //       e.preventDefault();
+  //       handleBackButtonPress();
+  //     }
+  //     // Otherwise, let the default navigation behavior happen
+  //   });
 
-    return unsubscribe;
-  }, [navigation, handleGoBack, handleBackButtonPress]);
+  //   return unsubscribe;
+  // }, [navigation, handleGoBack, handleBackButtonPress]);
 
   useBackHandler(() => {
     // This means we're gonna go back in the WebView, not in app.

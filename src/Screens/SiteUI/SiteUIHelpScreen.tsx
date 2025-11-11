@@ -29,8 +29,7 @@ export const SiteUIHelpScreen = ({route}: Props) => {
           Refresh the webview at the current URL, whatever it may be.
         </HelpTopicView>
         <HelpTopicView title={'Back'} icon={AppIcons.back}>
-          The back button in the header will take you back to the previous screen, not back like in your browser. Use
-          your device back button or gesture to navigate around the webview.
+          The back button in the header will take you back in the webview, then to the previous screen in the app.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>

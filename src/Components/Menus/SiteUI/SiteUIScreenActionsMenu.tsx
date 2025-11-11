@@ -6,8 +6,11 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
+import {ShareContentType} from '#src/Enums/ShareContentType';
 import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
+
+import {ShareMenuItem} from '../Items/ShareMenuItem';
 
 interface SiteUIScreenActionsMenuProps {
   onHome: () => void;
@@ -50,7 +53,7 @@ export const SiteUIScreenActionsMenu = ({onHome, oobe, getCurrentUrl}: SiteUIScr
       anchor={<Item title={'Actions'} iconName={AppIcons.menu} onPress={openMenu} />}>
       <Menu.Item title={'Home'} leadingIcon={AppIcons.home} onPress={handleHome} />
       <Menu.Item title={'Open in Browser'} leadingIcon={AppIcons.webview} onPress={handleOpenInBrowser} />
-      <Menu.Item title={'Copy URL'} leadingIcon={AppIcons.copy} onPress={handleCopyUrl} />
+      <ShareMenuItem contentType={ShareContentType.siteUI} contentID={getCurrentUrl()} closeMenu={closeMenu} />
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
     </AppMenu>
   );

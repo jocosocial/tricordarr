@@ -16,7 +16,12 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
   const {appConfig} = useConfig();
 
   const handlePress = () => {
-    const fullURL = `${appConfig.serverUrl}/${contentType}/${contentID}`;
+    let fullURL = '';
+    if (contentType === ShareContentType.siteUI) {
+      fullURL = contentID as string;
+    } else {
+      fullURL = `${appConfig.serverUrl}/${contentType}/${contentID}`;
+    }
 
     Clipboard.setString(fullURL);
 
