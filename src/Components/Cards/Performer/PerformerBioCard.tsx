@@ -1,6 +1,5 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
-import {Pressable, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Card} from 'react-native-paper';
 
 import {ContentText} from '#src/Components/Text/ContentText';
@@ -22,9 +21,7 @@ export const PerformerBioCard = (props: PerformerBioCardProps) => {
   return (
     <Card style={styles.bioCard}>
       <Card.Content>
-        <Pressable onLongPress={() => Clipboard.setString(props.bio)}>
-          <ContentText text={props.bio} forceMarkdown={true} />
-        </Pressable>
+        <ContentText text={props.bio} forceMarkdown={true} />
       </Card.Content>
     </Card>
   );

@@ -123,6 +123,7 @@ export const ForumPostMessageView = ({
               text={postData.text}
               hashtagOnPress={hashtagOnPress}
               mentionOnPress={mentionOnPress}
+              selectable={false}
             />
           }
           forumPost={postData}

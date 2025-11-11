@@ -1,4 +1,4 @@
-import Markdown from '@ronradtke/react-native-markdown-display';
+import Markdown, {ASTNode, RenderRules} from '@ronradtke/react-native-markdown-display';
 import React, {useCallback, useMemo} from 'react';
 import {Linking, StyleProp, StyleSheet, TextStyle} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -19,6 +19,7 @@ interface ContentTextProps {
   hashtagOnPress?: (tag: string) => void;
   mentionOnPress?: (username: string) => void;
   forceMarkdown?: boolean;
+  selectable?: boolean;
 }
 
 // ChatGPT wrote this. Needed something to deal with newline characters appearing
@@ -58,6 +59,7 @@ export const ContentText = ({
   hashtagOnPress,
   mentionOnPress,
   forceMarkdown,
+  selectable = true,
 }: ContentTextProps) => {
   const {commonStyles, styleDefaults} = useStyles();
   const {data} = useUserKeywordQuery({
@@ -179,22 +181,41 @@ export const ContentText = ({
   );
 
   // https://www.npmjs.com/package/@ronradtke/react-native-markdown-display
-  const markdownStyle = StyleSheet.create({
-    text: {
-      ...commonStyles.onBackground,
-      ...(textStyle as TextStyle),
-    },
-    body: {
-      fontSize: styleDefaults.fontSize,
-    },
-  });
+  const markdownStyle = useMemo(
+    () =>
+      StyleSheet.create({
+        text: {
+          ...commonStyles.onBackground,
+          ...(textStyle as TextStyle),
+        },
+        body: {
+          fontSize: styleDefaults.fontSize,
+        },
+      }),
+    [commonStyles.onBackground, textStyle, styleDefaults.fontSize],
+  );
+
+  // Custom render rules to make text groups selectable
+  const markdownRules: RenderRules = useMemo(
+    () => ({
+      // eslint-disable-next-line react/no-unstable-nested-components
+      textgroup: (node: ASTNode, children, parentNodes, styles) => {
+        return (
+          <Text key={node.key} style={styles.text} selectable={selectable}>
+            {children}
+          </Text>
+        );
+      },
+    }),
+    [selectable],
+  );
 
   const markdownIdentifier = '<Markdown>';
   if (forceMarkdown || text.startsWith(markdownIdentifier)) {
     const strippedText = text.replace(markdownIdentifier, '').trim();
 
     return (
-      <Markdown style={markdownStyle} onLinkPress={handleMarkdownLinkPress}>
+      <Markdown style={markdownStyle} rules={markdownRules} onLinkPress={handleMarkdownLinkPress}>
         {strippedText}
       </Markdown>
     );
@@ -206,7 +227,7 @@ export const ContentText = ({
    */
   return (
     <HyperlinkText>
-      <Text variant={textVariant} style={textStyle}>
+      <Text variant={textVariant} style={textStyle} selectable={selectable}>
         {renderContentText(text)}
       </Text>
     </HyperlinkText>
