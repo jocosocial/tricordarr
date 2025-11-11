@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {HelperText, TextInput} from 'react-native-paper';
 
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 import {RNInputModeOptions} from '#src/Types';
 
@@ -64,10 +65,17 @@ export const TextField = ({
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
   const theme = useAppTheme();
   const [field, meta] = useField<string>(name);
+  const {styleDefaults} = useStyles();
+
+  // Calculate minHeight based on numberOfLines
+  const calculatedMinHeight = styleDefaults.fontSize * numberOfLines + styleDefaults.marginSize * 2;
 
   const styles = StyleSheet.create({
     outline: {
       borderColor: meta.error ? theme.colors.error : theme.colors.onBackground,
+    },
+    textInput: {
+      minHeight: calculatedMinHeight,
     },
   });
 
@@ -107,7 +115,7 @@ export const TextField = ({
             autoCapitalize={autoCapitalize}
             maxLength={maxLength}
             onFocus={onFocus}
-            style={innerTextStyle}
+            style={[styles.textInput, innerTextStyle]}
             onSelectionChange={onSelectionChange}
             outlineStyle={styles.outline}
           />

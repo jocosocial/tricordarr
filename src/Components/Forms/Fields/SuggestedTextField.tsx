@@ -111,7 +111,7 @@ export const SuggestedTextField = ({
         </View>
       }>
       {suggestions.map((suggestion, index) => {
-        return <Menu.Item key={index} title={suggestion} onPress={() => helpers.setValue(suggestion)} />;
+        return <Menu.Item key={index} title={suggestion} onPress={() => onValueChange(suggestion)} />;
       })}
     </AppMenu>
   );
