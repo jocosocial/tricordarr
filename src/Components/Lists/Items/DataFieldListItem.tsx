@@ -43,7 +43,7 @@ export const DataFieldListItem = ({
       ...commonStyles.onBackground,
     },
     item: {
-      ...(icon ? commonStyles.paddingHorizontal : undefined),
+      ...(icon ? commonStyles.paddingHorizontalSmall : undefined),
       ...itemStyle,
     },
     icon: {

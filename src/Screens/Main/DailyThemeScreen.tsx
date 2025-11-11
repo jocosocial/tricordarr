@@ -18,9 +18,6 @@ export const DailyThemeScreen = ({route}: Props) => {
   const {commonStyles} = useStyles();
   const [refreshing, setRefreshing] = useState(false);
   const styles = StyleSheet.create({
-    item: {
-      ...commonStyles.paddingHorizontalSmall,
-    },
     imageView: {
       ...commonStyles.marginHorizontal,
       ...commonStyles.marginVerticalSmall,
@@ -34,10 +31,12 @@ export const DailyThemeScreen = ({route}: Props) => {
 
   return (
     <AppView>
-      <ScrollingContentView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollingContentView
+        isStack={true}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <ListSection>
-          <DataFieldListItem itemStyle={styles.item} description={route.params.dailyTheme.title} title={'Title'} />
-          <DataFieldListItem itemStyle={styles.item} description={route.params.dailyTheme.info} title={'Info'} />
+          <DataFieldListItem description={route.params.dailyTheme.title} title={'Title'} />
+          <DataFieldListItem description={route.params.dailyTheme.info} title={'Info'} />
           {route.params.dailyTheme.image && (
             <View style={styles.imageView}>
               <APIImage path={route.params.dailyTheme.image} />
