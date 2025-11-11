@@ -29,7 +29,7 @@ export const QueryKeysSettingsScreen = ({navigation}: Props) => {
 
   const styles = StyleSheet.create({
     itemContainer: {
-      ...commonStyles.paddingHorizontal,
+      ...commonStyles.paddingHorizontalSmall,
       ...commonStyles.paddingVerticalSmall,
     },
   });

@@ -147,6 +147,13 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         />
         <ListItem title={'Query Item Count'} description={queryClient.getQueryCache().getAll().length.toString()} />
         <ListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
+        <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={'Query Keys'}
+            onPress={() => navigation.push(SettingsStackScreenComponents.queryKeysSettingsScreen)}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
         <ListSection>
           <ListSubheader>Connection Disruption</ListSubheader>
           <ListItem title={'Error Count'} description={errorCount.toString()} />
