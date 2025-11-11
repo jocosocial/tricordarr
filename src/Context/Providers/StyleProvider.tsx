@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
@@ -145,6 +145,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     onMenu: {
       backgroundColor: theme.colors.elevation.level2,
+    },
+    headerLeftWrapper: {
+      // This is close enough on Android. Haven't seen anything on iOS yet.
+      marginRight: Platform.select({android: 30, default: 15}),
     },
   });
 

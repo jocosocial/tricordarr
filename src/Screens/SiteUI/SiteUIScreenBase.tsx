@@ -4,9 +4,11 @@ import {View} from 'react-native';
 import {WebView, WebViewNavigation} from 'react-native-webview';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
+import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
 import {SiteUIScreenActionsMenu} from '#src/Components/Menus/SiteUI/SiteUIScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useCommonStack} from '#src/Navigation/CommonScreens';
@@ -25,6 +27,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   const [key, setKey] = useState(initialKey);
   const [handleGoBack, setHandleGoBack] = useState(false);
   const navigation = useCommonStack();
+  const {commonStyles} = useStyles();
 
   const onHome = useCallback(() => {
     setWebviewUrl(serverUrl);
@@ -63,11 +66,11 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
 
   const getBackButton = useCallback(() => {
     return (
-      <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
-        <Item title={'Back'} iconName={AppIcons.back} onPress={handleBackButtonPress} />
+      <HeaderButtons style={commonStyles.headerLeftWrapper} HeaderButtonComponent={MaterialHeaderButton}>
+        <HeaderBackButton onPress={handleBackButtonPress} />
       </HeaderButtons>
     );
-  }, [handleBackButtonPress]);
+  }, [handleBackButtonPress, commonStyles.headerLeftWrapper]);
 
   const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
     const {canGoBack, url} = newNavState;
