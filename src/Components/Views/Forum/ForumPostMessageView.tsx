@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
@@ -8,6 +8,7 @@ import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
+import {useMenu} from '#src/Hooks/MenuHook';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, PostData, UserHeader} from '#src/Structs/ControllerStructs';
@@ -36,9 +37,7 @@ export const ForumPostMessageView = ({
   forumData,
 }: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
-  const [menuVisible, setMenuVisible] = useState(false);
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
+  const {visible: menuVisible, openMenu, closeMenu} = useMenu();
   const theme = useAppTheme();
   const commonNavigation = useCommonStack();
   const {data: favorites} = useUserFavoritesQuery();

@@ -41,8 +41,8 @@ export const ForumPostActionsMenu = ({
   const commonNavigation = useCommonStack();
 
   /**
-   * For some reason, closeMenu through the hook is not available in the child components
-   * for the actions.
+   * closeMenu comes from the instance established in ForumPostMessageView so we need to drill
+   * that through.
    */
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>

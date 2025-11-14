@@ -10,7 +10,6 @@ import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 interface ForumPostActionsFavoriteItemProps {
   forumPost: PostData;
   forumData?: ForumData;
-  // For some reason, closeMenu through the hook is not available.
   closeMenu: () => void;
 }
 
