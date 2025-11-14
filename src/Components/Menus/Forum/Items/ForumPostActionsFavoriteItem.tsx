@@ -10,9 +10,11 @@ import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 interface ForumPostActionsFavoriteItemProps {
   forumPost: PostData;
   forumData?: ForumData;
+  // For some reason, closeMenu through the hook is not available.
+  closeMenu: () => void;
 }
 
-export const ForumPostActionsFavoriteItem = ({forumPost, forumData}: ForumPostActionsFavoriteItemProps) => {
+export const ForumPostActionsFavoriteItem = ({forumPost, forumData, closeMenu}: ForumPostActionsFavoriteItemProps) => {
   const favoriteMutation = useForumPostBookmarkMutation();
   const queryClient = useQueryClient();
 
@@ -24,6 +26,7 @@ export const ForumPostActionsFavoriteItem = ({forumPost, forumData}: ForumPostAc
       },
       {
         onSuccess: async () => {
+          closeMenu();
           await Promise.all([
             queryClient.invalidateQueries({queryKey: [`/forum/post/${forumPost.postID}`]}),
             queryClient.invalidateQueries({queryKey: ['/forum/post/search']}),

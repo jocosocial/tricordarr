@@ -60,13 +60,30 @@ export const ForumPostMessageView = ({
       ...commonStyles.bold,
       ...commonStyles.flexStart,
     },
-    messageDateText: {},
+    messageDateText: {
+      ...commonStyles.flexStart,
+    },
     opacity: {
       ...commonStyles.paddingSmall,
       ...commonStyles.roundedBorderLarge,
     },
     authorContainer: {
       ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.flex,
+    },
+    // authorInnerContainer: {
+    //   ...commonStyles.flexRow,
+    //   ...commonStyles.alignItemsCenter,
+
+    // },
+    postIconsContainer: {
+      ...commonStyles.flex0,
+      ...commonStyles.flexRow,
+    },
+    postFooterContainer: {
+      ...commonStyles.flexRow,
+      ...commonStyles.justifySpaceBetween,
       ...commonStyles.alignItemsCenter,
     },
   });
@@ -110,7 +127,7 @@ export const ForumPostMessageView = ({
           {showAuthor && (
             <>
               <View>
-                <UserBylineTag user={postData.author} style={styles.messageTextHeader} />
+                <UserBylineTag user={postData.author} style={styles.messageTextHeader} selectable={false} />
               </View>
               {UserHeader.contains(favorites, postData.author) && (
                 <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} />
@@ -135,21 +152,21 @@ export const ForumPostMessageView = ({
           enablePinnedPosts={enablePinnedPosts}
           forumData={forumData}
         />
-        <View style={[commonStyles.flexRow, commonStyles.justifySpaceBetween, commonStyles.alignItemsCenter]}>
-          <View style={[commonStyles.flex0]}>
+        <View style={styles.postFooterContainer}>
+          <View style={commonStyles.flex0}>
             {postData.createdAt && (
               <RelativeTimeTag
                 date={new Date(postData.createdAt)}
-                style={[styles.messageDateText, commonStyles.flexStart]}
+                style={styles.messageDateText}
                 variant={'labelSmall'}
               />
             )}
           </View>
-          <View style={[commonStyles.flex0, commonStyles.flexRow]}>
+          <View style={styles.postIconsContainer}>
             {postData.isBookmarked && (
-              <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={[commonStyles.flexEnd]} />
+              <AppIcon icon={AppIcons.favorite} color={theme.colors.twitarrYellow} style={commonStyles.flexEnd} />
             )}
-            {postData.isPinned && <AppIcon icon={AppIcons.pin} style={[commonStyles.flexEnd]} />}
+            {postData.isPinned && <AppIcon icon={AppIcons.pin} style={commonStyles.flexEnd} />}
           </View>
         </View>
       </TouchableOpacity>

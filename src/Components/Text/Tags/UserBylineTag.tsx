@@ -64,8 +64,19 @@ export const UserBylineTag = ({
     },
   });
 
+  /**
+   * numberOfLines and ellipizeMode were needed because certain combinations of text would
+   * trigger an effectively invisible newline.
+   */
   return (
-    <Text style={styles.user} onPress={onPress} selectable={selectable} variant={variant} onLongPress={onLongPress}>
+    <Text
+      numberOfLines={1}
+      ellipsizeMode={'tail'}
+      style={styles.user}
+      onPress={onPress}
+      selectable={selectable}
+      variant={variant}
+      onLongPress={onLongPress}>
       {prefix && (
         <Text variant={variant} style={styles.innerText}>
           {prefix}{' '}

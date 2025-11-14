@@ -10,6 +10,7 @@ import {ForumData, PostData} from '#src/Structs/ControllerStructs';
 interface ForumPostActionsPinItemProps {
   forumPost: PostData;
   forumData?: ForumData;
+  closeMenu: () => void;
 }
 
 export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => {
@@ -24,6 +25,7 @@ export const ForumPostActionsPinItem = (props: ForumPostActionsPinItemProps) => 
       },
       {
         onSuccess: async () => {
+          props.closeMenu();
           if (props.forumData) {
             await Promise.all([
               queryClient.invalidateQueries({queryKey: [`/forum/${props.forumData.forumID}`]}),

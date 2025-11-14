@@ -9,13 +9,12 @@ import {ForumPostActionsPinItem} from '#src/Components/Menus/Forum/Items/ForumPo
 import {ForumPostActionsReactionItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReactionItem';
 import {ForumPostActionsReportItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsReportItem';
 import {ForumPostActionsShowThreadItem} from '#src/Components/Menus/Forum/Items/ForumPostActionsShowThreadItem';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
-
-import {ShareMenuItem} from '../Items/ShareMenuItem';
 
 interface ForumPostActionsMenuProps {
   visible: boolean;
@@ -41,6 +40,10 @@ export const ForumPostActionsMenu = ({
   // Apparently this doesn't get to be available in the sub items? That's annoying.
   const commonNavigation = useCommonStack();
 
+  /**
+   * For some reason, closeMenu through the hook is not available in the child components
+   * for the actions.
+   */
   return (
     <Menu visible={visible} onDismiss={closeMenu} anchor={anchor}>
       {enableShowInThread && (
@@ -79,10 +82,10 @@ export const ForumPostActionsMenu = ({
       )}
       <ForumPostActionsDeleteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       <Divider bold={true} />
-      <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} />
+      <ForumPostActionsFavoriteItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
       {enablePinnedPosts && (
         <>
-          <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} />
+          <ForumPostActionsPinItem forumPost={forumPost} forumData={forumData} closeMenu={closeMenu} />
           <Divider bold={true} />
         </>
       )}
