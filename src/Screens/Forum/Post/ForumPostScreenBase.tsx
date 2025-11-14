@@ -27,17 +27,8 @@ interface ForumPostScreenBaseProps {
  * Not used for Post Search
  */
 export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, title}: ForumPostScreenBaseProps) => {
-  const {
-    data,
-    refetch,
-    isFetchingPreviousPage,
-    isFetchingNextPage,
-    hasNextPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-    fetchNextPage,
-    isLoading,
-  } = useForumPostSearchQuery(queryParams);
+  const {data, refetch, isFetchingNextPage, hasNextPage, hasPreviousPage, fetchNextPage, isLoading} =
+    useForumPostSearchQuery(queryParams);
   const commonNavigation = useCommonStack();
   const [refreshing, setRefreshing] = useState(false);
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
@@ -72,12 +63,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
     if (!isFetchingNextPage && hasNextPage) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
     }
   };
 
@@ -118,7 +103,6 @@ export const ForumPostScreenBase = ({queryParams, refreshOnUserNotification, tit
         listRef={flatListRef}
         postList={forumPosts}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        handleLoadPrevious={handleLoadPrevious}
         handleLoadNext={handleLoadNext}
         itemSeparator={'time'}
         enableShowInThread={true}

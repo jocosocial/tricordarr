@@ -1,5 +1,6 @@
+import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, Keyboard, RefreshControl, View} from 'react-native';
+import {Keyboard, RefreshControl, View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
@@ -19,17 +20,7 @@ interface ForumPostSearchBarProps {
 export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [queryEnable, setQueryEnable] = useState(false);
-  const {
-    data,
-    refetch,
-    hasNextPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-    fetchNextPage,
-    isFetchingPreviousPage,
-    isFetchingNextPage,
-    isFetching,
-  } = useForumPostSearchQuery(
+  const {data, refetch, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching} = useForumPostSearchQuery(
     {
       search: searchQuery,
       ...(props.category ? {category: props.category.categoryID} : undefined),
@@ -43,7 +34,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const [forumPosts, setForumPosts] = useState<PostData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const commonNavigation = useCommonStack();
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  const flatListRef = useRef<FlashListRef<PostData>>(null);
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -70,12 +61,6 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
     if (!isFetchingNextPage && hasNextPage && queryEnable) {
       setRefreshing(true);
       fetchNextPage().finally(() => setRefreshing(false));
-    }
-  };
-  const handleLoadPrevious = () => {
-    if (!isFetchingPreviousPage && hasPreviousPage && queryEnable) {
-      setRefreshing(true);
-      fetchPreviousPage().finally(() => setRefreshing(false));
     }
   };
 
@@ -118,7 +103,6 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
           }
           postList={forumPosts}
           handleLoadNext={handleLoadNext}
-          handleLoadPrevious={handleLoadPrevious}
           itemSeparator={'time'}
           enableShowInThread={true}
           hasNextPage={hasNextPage}

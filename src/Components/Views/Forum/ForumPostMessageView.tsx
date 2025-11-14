@@ -99,9 +99,13 @@ export const ForumPostMessageView = ({
         /**
          * The onLongPress used to be a onPress, and onLongPress would copy to clipboard.
          * Touching items was too sensitive and lead to unexpected menu opens. So I am
-         * electing to make this a long press instead since copy is an option in the menu.
+         * electing to make openMenu a long press instead since copy is an option in the menu.
+         *
+         * If enableShowInThread is true (aka we're in a PostList-style view) then
+         * keep the regular onPress action.
          */
-        onLongPress={enableShowInThread ? onPress : openMenu}>
+        onPress={enableShowInThread ? onPress : undefined}
+        onLongPress={openMenu}>
         <View style={styles.authorContainer}>
           {showAuthor && (
             <>

@@ -18,7 +18,6 @@ interface ForumPostListProps {
   postList: PostData[];
   refreshControl?: React.ReactElement<RefreshControlProps>;
   handleLoadNext?: () => void;
-  handleLoadPrevious?: () => void;
   itemSeparator?: 'time';
   forumData?: ForumData;
   hasPreviousPage?: boolean;
@@ -28,13 +27,15 @@ interface ForumPostListProps {
   listRef: React.RefObject<FlashListRef<PostData> | null>;
   getListHeader?: () => React.JSX.Element;
   initialScrollIndex?: number;
+  // I don't think handleLoadPrevious was ever used for ForumPostLists
+  // because PostLists always start from the beginning.
+  // handleLoadPrevious?: () => void;
 }
 
 export const ForumPostList = ({
   postList,
   refreshControl,
   handleLoadNext,
-  handleLoadPrevious,
   itemSeparator = 'time',
   forumData,
   hasPreviousPage,

@@ -1,6 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FlashListRef} from '@shopify/flash-list';
 import React, {useRef} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 
 import {TimeDivider} from '#src/Components/Lists/Dividers/TimeDivider';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
@@ -19,7 +20,7 @@ export const ForumPostPinnedScreen = ({route}: Props) => {
   const {data, refetch, isFetching} = useForumThreadPinnedPostsQuery(route.params.forumID);
   const {data: forumData} = useForumThreadQuery(route.params.forumID);
   const {commonStyles} = useStyles();
-  const flatListRef = useRef<FlatList<PostData>>(null);
+  const flatListRef = useRef<FlashListRef<PostData>>(null);
 
   if (data === undefined) {
     return <LoadingView />;
