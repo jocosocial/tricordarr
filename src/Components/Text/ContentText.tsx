@@ -195,19 +195,64 @@ export const ContentText = ({
     [commonStyles.onBackground, textStyle, styleDefaults.fontSize],
   );
 
-  // Custom render rules to make text groups selectable
+  // Custom render rules to make text groups selectable.
+  // Cursor wrote all of this.
   const markdownRules: RenderRules = useMemo(
     () => ({
       // eslint-disable-next-line react/no-unstable-nested-components
       textgroup: (node: ASTNode, children, parentNodes, styles) => {
+        // Determine variant based on markdown tree structure (header level)
+        let variant: VariantProp<never> | undefined = textVariant;
+
+        // Check parent nodes to see if we're inside a heading
+        if (parentNodes && parentNodes.length > 0) {
+          // Find the closest heading parent node
+          const headingParent = parentNodes.find((parent: ASTNode) => {
+            const type = parent.type;
+            return type && (type.startsWith('heading') || type.startsWith('h') || type === 'heading');
+          });
+
+          if (headingParent) {
+            let level: number | undefined;
+            // Try to extract level from type (e.g., "heading1" -> 1, "h2" -> 2)
+            const headingMatch = headingParent.type.match(/(?:heading|h)(\d+)/);
+            if (headingMatch) {
+              level = parseInt(headingMatch[1], 10);
+            } else if ((headingParent as any).depth) {
+              // Some markdown parsers use a depth property
+              level = (headingParent as any).depth;
+            }
+
+            if (level) {
+              // Map heading levels to appropriate variants
+              switch (level) {
+                case 1:
+                  variant = 'headlineMedium';
+                  break;
+                case 2:
+                  variant = 'titleLarge';
+                  break;
+                case 3:
+                  variant = 'titleMedium';
+                  break;
+                case 4:
+                  variant = 'titleSmall';
+                  break;
+                default:
+                  variant = 'bodyLarge';
+              }
+            }
+          }
+        }
+
         return (
-          <Text key={node.key} style={styles.text} selectable={selectable}>
+          <Text key={node.key} variant={variant} style={styles.text} selectable={selectable}>
             {children}
           </Text>
         );
       },
     }),
-    [selectable],
+    [selectable, textVariant],
   );
 
   const markdownIdentifier = '<Markdown>';
