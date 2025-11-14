@@ -89,6 +89,12 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
     );
   };
 
+  /**
+   * descriptionNumberOfLines={1} is needed to prevent the description from wrapping
+   * multiple lines. The default seems to have been 2. The right length of participants
+   * would cause it to render an excess newline with no content on it. So I'm clipping
+   * the description to one line.
+   */
   return (
     <ListItem
       title={fez.title}
@@ -96,6 +102,7 @@ const SeamailListItemInternal = ({fez}: SeamailListItemProps) => {
       titleNumberOfLines={0}
       description={description}
       descriptionStyle={styles.description}
+      descriptionNumberOfLines={1}
       onPress={onPress}
       left={getAvatar}
       right={getRight}
