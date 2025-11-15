@@ -80,8 +80,20 @@ export const MarkdownText = ({text, textStyle, textVariant, selectable = true}: 
         body: {
           fontSize: styleDefaults.fontSize,
         },
+        code_inline: {
+          ...commonStyles.background,
+          ...commonStyles.onBackground,
+        },
+        code_block: {
+          ...commonStyles.background,
+          ...commonStyles.onBackground,
+        },
+        fence: {
+          ...commonStyles.background,
+          ...commonStyles.onBackground,
+        },
       }),
-    [commonStyles.onBackground, textStyle, styleDefaults.fontSize],
+    [commonStyles.onBackground, commonStyles.background, textStyle, styleDefaults.fontSize],
   );
 
   // Custom render rules to make text groups selectable.
