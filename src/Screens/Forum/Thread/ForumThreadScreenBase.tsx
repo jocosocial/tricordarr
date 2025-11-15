@@ -180,7 +180,13 @@ export const ForumThreadScreenBase = ({
               return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
-            flatListRef.current?.scrollToEnd({animated: false, viewOffset: -100});
+            // Wait for the next render cycle to ensure the new post is rendered before scrolling.
+            // Had an issue where the new post was not coming into view after it was made.
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                flatListRef.current?.scrollToEnd({animated: false});
+              });
+            });
           }
         },
         onSettled: () => {
