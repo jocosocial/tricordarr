@@ -57,9 +57,12 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
         imageUploadData: payload,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           queryClient.invalidateQueries({queryKey: ['/photostream']});
           navigation.goBack();
+          // Wait for navigation transition to start before onSettled runs
+          // This is some AI shit that needs tested.
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         },
         onSettled: () => {
           helpers.setSubmitting(false);
