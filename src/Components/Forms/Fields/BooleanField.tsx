@@ -1,6 +1,6 @@
 import {Field, useField, useFormikContext} from 'formik';
 import React from 'react';
-import {StyleProp, Switch, View, ViewStyle} from 'react-native';
+import {StyleProp, StyleSheet, Switch, View, ViewStyle} from 'react-native';
 import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
@@ -37,13 +37,19 @@ export const BooleanField = ({
     setFieldValue(name, !field.value);
   };
 
-  const styles = {
-    ripple: [commonStyles.marginVerticalSmall],
-    wrapper: [commonStyles.flexRow, commonStyles.alignItemsCenter, commonStyles.justifySpaceBetween],
+  const styles = StyleSheet.create({
+    ripple: {
+      ...commonStyles.marginVerticalSmall,
+    },
+    wrapper: {
+      ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.justifySpaceBetween,
+    },
     helperText: {
       color: theme.colors.onBackground,
     },
-  };
+  });
 
   // https://codereacter.medium.com/reducing-the-number-of-renders-when-using-formik-9790bf111ab9
   // FastField didn't update correctly
