@@ -8,7 +8,7 @@ import {RefreshControl} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -141,12 +141,15 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
           </PaddedContentView>
         </ListSection>
         <ListSubheader>Query Cache</ListSubheader>
-        <ListItem
+        <DataFieldListItem
           title={'Last Query Bust'}
           description={<RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />}
         />
-        <ListItem title={'Query Item Count'} description={queryClient.getQueryCache().getAll().length.toString()} />
-        <ListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
+        <DataFieldListItem
+          title={'Query Item Count'}
+          description={queryClient.getQueryCache().getAll().length.toString()}
+        />
+        <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
             buttonText={'Query Keys'}
@@ -156,7 +159,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Connection Disruption</ListSubheader>
-          <ListItem title={'Error Count'} description={errorCount.toString()} />
+          <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
               buttonText={'Trigger Disruption'}

@@ -5,7 +5,7 @@ import {RefreshControl} from 'react-native';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {CruiseSettingsForm} from '#src/Components/Forms/Settings/CruiseSettingsForm';
 import {PreRegistrationSettingsForm} from '#src/Components/Forms/Settings/PreRegistrationSettingsForm';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -109,11 +109,11 @@ export const CruiseSettingsScreen = () => {
           <CruiseSettingsForm onSubmit={onSubmit} initialValues={initialValues} />
         </PaddedContentView>
         <ListSubheader>Internal State</ListSubheader>
-        <ListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
-        <ListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
-        <ListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
-        <ListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
-        <ListItem title={'Latest Version'} description={data?.spec.latestVersion} />
+        <DataFieldListItem title={'Cruise Day Today'} description={cruiseDayToday.toString()} />
+        <DataFieldListItem title={'Adjusted Cruise Day Today'} description={adjustedCruiseDayToday.toString()} />
+        <DataFieldListItem title={'Cruise Day Index'} description={cruiseDayIndex.toString()} />
+        <DataFieldListItem title={'Adjusted Cruise Day Index'} description={adjustedCruiseDayIndex.toString()} />
+        <DataFieldListItem title={'Latest Version'} description={data?.spec.latestVersion} />
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>
           <PreRegistrationSettingsForm

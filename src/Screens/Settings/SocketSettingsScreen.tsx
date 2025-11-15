@@ -4,7 +4,7 @@ import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
@@ -58,7 +58,7 @@ export const SocketSettingsScreen = () => {
           <View>
             <ListSection>
               <ListSubheader>Notification Socket</ListSubheader>
-              <ListItem title={'Socket State'} description={notificationSocketState} />
+              <DataFieldListItem title={'Socket State'} description={notificationSocketState} />
               <PaddedContentView padSides={false}>
                 <BooleanField
                   name={'enableNotificationSocket'}

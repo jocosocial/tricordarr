@@ -18,7 +18,11 @@ interface DataFieldListItemProps {
 }
 
 /**
- * Item for user profile content.
+ * List.Item wrapper for displaying information or data to the user in a consistent manner.
+ * Unlike ListItem, this is intended to be a dumb "Text Title + Text Description" component.
+ *
+ * To build a fancy List.Item such as Forum Thread or Seamail Conversation use ListItem
+ * as your base instead.
  */
 export const DataFieldListItem = ({
   title,
@@ -49,6 +53,14 @@ export const DataFieldListItem = ({
     icon: {
       ...commonStyles.paddingTopSmall,
     },
+    /**
+     * Default paddingLeft was 16, rendered inconsistent when no icon was provided.
+     * I like this better for all cases. Consistent padding on each side of an icon
+     * and consistent with new smaller margins.
+     */
+    content: {
+      ...commonStyles.paddingLeftSmall,
+    },
   });
 
   const getIcon = useCallback(
@@ -71,6 +83,7 @@ export const DataFieldListItem = ({
           ? Clipboard.setString(description.toString())
           : undefined
       }
+      contentStyle={styles.content}
     />
   );
 };

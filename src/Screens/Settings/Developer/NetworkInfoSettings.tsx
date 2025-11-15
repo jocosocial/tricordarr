@@ -2,7 +2,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import React, {useCallback, useState} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 
@@ -21,10 +21,10 @@ export const NetworkInfoSettings = () => {
         <View>
           <ListSubheader>NetInfo</ListSubheader>
           {Object.keys(data.details ?? []).map(key => (
-            <ListItem
-              key={key}
+            <DataFieldListItem
               title={key}
               description={data.details ? data.details[key as keyof typeof data.details].toString() : 'UNKNOWN'}
+              key={key}
             />
           ))}
         </View>
