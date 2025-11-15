@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton, List} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
@@ -20,19 +20,29 @@ interface UserListItemProps {
  */
 export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
-  // This has to account for some Paper bullshit where there is a secret View added when you define
-  // a Right, and it has things that we can't override.
-  const styles = {
-    item: [commonStyles.paddingHorizontal, {paddingVertical: 2}],
-  };
 
-  const getAvatar = () => (
-    <View style={[commonStyles.justifyCenter]}>
-      <UserAvatarImage userHeader={userHeader} />
-    </View>
+  const styles = StyleSheet.create({
+    // This has to account for some Paper bullshit where there is a secret View added when you define
+    // a Right, and it has things that we can't override.
+    item: {
+      ...commonStyles.paddingHorizontalSmall,
+      paddingVertical: 2,
+    },
+    avatar: {
+      ...commonStyles.justifyCenter,
+    },
+  });
+
+  const getAvatar = React.useCallback(
+    () => (
+      <View style={styles.avatar}>
+        <UserAvatarImage userHeader={userHeader} />
+      </View>
+    ),
+    [userHeader, styles.avatar],
   );
 
-  const getActionButton = () => {
+  const getActionButton = React.useCallback(() => {
     if (buttonOnPress && buttonIcon) {
       return (
         <IconButton
@@ -43,7 +53,7 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: U
         />
       );
     }
-  };
+  }, [buttonOnPress, buttonIcon, userHeader, styleDefaults.avatarSizeSmall]);
 
   return (
     <List.Item

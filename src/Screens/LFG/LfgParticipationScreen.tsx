@@ -9,7 +9,6 @@ import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
-import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -171,9 +170,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         </PaddedContentView>
         {isFull && !isUnlimited && (
           <>
-            <PaddedContentView padBottom={false}>
-              <TitleTag>Waitlist ({lfg.members.waitingList.length})</TitleTag>
-            </PaddedContentView>
+            <DataFieldListItem title={`Waitlist (${lfg.members.waitingList.length})`} />
             <PaddedContentView padSides={false}>
               <ListSection>
                 {manageUsers && (
