@@ -157,6 +157,15 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     headerStyle: themedStyles.background,
     headerTitleStyle: themedStyles.background,
     headerTintColor: theme.colors.onBackground,
+    // Add padding to header button containers for @react-navigation/stack
+    // (native-stack had this by default, but stack does not)
+    // Use smaller padding for left side to accommodate back button positioning
+    headerLeftContainerStyle: {
+      paddingLeft: 4,
+    },
+    headerRightContainerStyle: {
+      paddingRight: 16,
+    },
   };
 
   return (
