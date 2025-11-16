@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
@@ -19,7 +19,7 @@ import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
 export const BlockUsersScreen = ({navigation}: Props) => {
   const {hasModerator} = usePrivilege();
   const userBlockMutation = useUserBlockMutation();

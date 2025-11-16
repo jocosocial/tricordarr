@@ -1,5 +1,5 @@
 import notifee from '@notifee/react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -16,7 +16,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
 export const PersonalEventScreen = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();

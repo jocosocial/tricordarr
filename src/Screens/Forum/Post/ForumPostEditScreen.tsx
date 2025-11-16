@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
@@ -11,7 +11,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {ImageUploadData, PostContentData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
 
 export const ForumPostEditScreen = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();

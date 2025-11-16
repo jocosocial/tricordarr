@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -6,7 +6,7 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 
-export type Props = NativeStackScreenProps<LfgStackParamList, LfgStackComponents.lfgFindScreen>;
+export type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgFindScreen>;
 
 export const LfgFindScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();

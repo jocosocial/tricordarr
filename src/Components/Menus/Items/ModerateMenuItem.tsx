@@ -1,4 +1,4 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import * as React from 'react';
 import {Menu} from 'react-native-paper';
 
@@ -9,7 +9,7 @@ interface ModerateMenuItemProps {
   closeMenu: () => void;
   resource: 'forum' | 'photostream';
   resourceID: string;
-  navigation: NativeStackNavigationProp<CommonStackParamList>;
+  navigation: StackNavigationProp<CommonStackParamList>;
 }
 export const ModerateMenuItem = (props: ModerateMenuItemProps) => {
   return (

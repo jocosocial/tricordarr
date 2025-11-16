@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
@@ -12,7 +12,7 @@ import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
 import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerCreateScreen>;
+type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerCreateScreen>;
 
 export const PerformerCreateScreen = ({route, navigation}: Props) => {
   const performerMutation = usePerformerUpsertMutation();

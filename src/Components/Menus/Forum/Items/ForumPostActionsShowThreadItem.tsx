@@ -1,4 +1,4 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Menu} from 'react-native-paper';
 
@@ -9,7 +9,7 @@ import {PostData} from '#src/Structs/ControllerStructs';
 interface ForumPostActionsShowThreadItemProps {
   forumPost: PostData;
   closeMenu: () => void;
-  navigation: NativeStackNavigationProp<CommonStackParamList>;
+  navigation: StackNavigationProp<CommonStackParamList>;
 }
 
 export const ForumPostActionsShowThreadItem = ({

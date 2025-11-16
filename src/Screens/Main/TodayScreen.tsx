@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
@@ -30,7 +30,7 @@ import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
 export const TodayScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();

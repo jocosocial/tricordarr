@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
@@ -15,7 +15,7 @@ import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStac
 import {BottomTabComponents} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
 export const OobeFinishScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();

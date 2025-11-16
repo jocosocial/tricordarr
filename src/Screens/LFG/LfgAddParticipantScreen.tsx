@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
@@ -13,7 +13,7 @@ import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
 
 export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();

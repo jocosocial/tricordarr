@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {RefreshControl} from 'react-native';
 
@@ -12,7 +12,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useConductQuery} from '#src/Queries/PublicQueries';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeConductScreen>;
 
 export const OobeConductScreen = ({navigation}: Props) => {
   const {data, refetch, isFetching} = useConductQuery();

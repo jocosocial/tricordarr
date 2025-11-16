@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
@@ -15,7 +15,7 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 export const UserDirectoryScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useAuth();
 

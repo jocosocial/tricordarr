@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {Query, useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import {RefreshControl, ScrollView} from 'react-native';
@@ -9,7 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
-export type Props = NativeStackScreenProps<
+export type Props = StackScreenProps<
   SettingsStackParamList,
   SettingsStackScreenComponents.queryDataSettingsScreen
 >;

@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -641,6 +641,6 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
   );
 };
 
-export const useCommonStack = () => useNavigation<NativeStackNavigationProp<CommonStackParamList>>();
+export const useCommonStack = () => useNavigation<StackNavigationProp<CommonStackParamList>>();
 
 export const useCommonRoute = () => useRoute<RouteProp<CommonStackParamList>>();

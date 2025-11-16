@@ -1,6 +1,6 @@
 import notifee from '@notifee/react-native';
 import {useAppState} from '@react-native-community/hooks';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,7 +32,7 @@ import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
 
-type Props = NativeStackScreenProps<
+type Props = StackScreenProps<
   CommonStackParamList,
   | CommonStackComponents.lfgChatScreen
   | CommonStackComponents.seamailChatScreen

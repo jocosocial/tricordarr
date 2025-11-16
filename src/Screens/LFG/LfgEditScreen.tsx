@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {addMinutes, differenceInMinutes} from 'date-fns';
 import {FormikHelpers} from 'formik';
@@ -16,7 +16,7 @@ import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
 export const LfgEditScreen = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
   const {appConfig} = useConfig();

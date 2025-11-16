@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers, FormikProps} from 'formik';
 import React, {useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQuer
 import {ForumCreateData, ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
+type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
 
 export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);

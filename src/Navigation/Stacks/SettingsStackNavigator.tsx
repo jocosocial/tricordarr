@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -90,7 +90,7 @@ export enum SettingsStackScreenComponents {
 
 export const SettingsStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<SettingsStackParamList>();
+  const Stack = createStackNavigator<SettingsStackParamList>();
 
   // We don't put the title in the various Screens because we define it in the NavigationListItem
   // so we're always consistent between setting name and header title.
@@ -222,4 +222,4 @@ export const SettingsStackNavigator = () => {
   );
 };
 
-export const useSettingsStack = () => useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
+export const useSettingsStack = () => useNavigation<StackNavigationProp<SettingsStackParamList>>();

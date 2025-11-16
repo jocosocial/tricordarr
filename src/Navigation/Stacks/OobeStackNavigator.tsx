@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -48,7 +48,7 @@ export enum OobeStackComponents {
 
 export const OobeStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<OobeStackParamList>();
+  const Stack = createStackNavigator<OobeStackParamList>();
 
   return (
     <Stack.Navigator
@@ -110,4 +110,4 @@ export const OobeStackNavigator = () => {
   );
 };
 
-export const useOobeStack = () => useNavigation<NativeStackNavigationProp<OobeStackParamList>>();
+export const useOobeStack = () => useNavigation<StackNavigationProp<OobeStackParamList>>();

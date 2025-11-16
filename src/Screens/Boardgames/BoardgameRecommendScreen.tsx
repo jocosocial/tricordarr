@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -40,7 +40,7 @@ const ListHeader = ({
   </>
 );
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
 
 export const BoardgameRecommendScreen = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();

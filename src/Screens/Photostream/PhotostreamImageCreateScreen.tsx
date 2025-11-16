@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,7 +21,7 @@ import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
-export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
+export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
 export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();

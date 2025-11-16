@@ -1,5 +1,5 @@
 import {CacheManager} from '@georstat/react-native-image-cache';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {HttpStatusCode} from 'axios';
 import {FormikHelpers} from 'formik';
@@ -24,7 +24,7 @@ import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oo
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {ServerUrlFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeServerScreen>;
 
 export const OobeServerScreen = ({navigation}: Props) => {
   const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();

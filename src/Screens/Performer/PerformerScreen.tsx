@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -13,7 +13,7 @@ import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
-type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
+type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
 export const PerformerScreen = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = usePerformerQuery(route.params.id);

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
 import React from 'react';
 
@@ -6,7 +6,7 @@ import {FezType} from '#src/Enums/FezType';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {LfgCreateScreenBase} from '#src/Screens/LFG/LfgCreateScreenBase';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameCreateLfgScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameCreateLfgScreen>;
 
 export const BoardgameCreateLfgScreen = ({route}: Props) => {
   const description = `Play a board game! We'll be playing "${

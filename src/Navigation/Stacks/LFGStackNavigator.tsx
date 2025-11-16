@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -41,7 +41,7 @@ export enum LfgStackComponents {
 
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<LfgStackParamList>();
+  const Stack = createStackNavigator<LfgStackParamList>();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const {appConfig} = useConfig();
@@ -90,6 +90,6 @@ export const LfgStackNavigator = () => {
   );
 };
 
-export const useLFGStackNavigation = () => useNavigation<NativeStackNavigationProp<LfgStackParamList>>();
+export const useLFGStackNavigation = () => useNavigation<StackNavigationProp<LfgStackParamList>>();
 
 export const useLFGStackRoute = () => useRoute<RouteProp<LfgStackParamList>>();

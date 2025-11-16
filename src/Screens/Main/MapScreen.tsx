@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
@@ -21,7 +21,7 @@ import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.mapScreen>;
 
 export const MapScreen = ({navigation, route}: Props) => {
   const {commonStyles} = useStyles();

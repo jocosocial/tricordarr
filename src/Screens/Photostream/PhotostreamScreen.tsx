@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -19,7 +19,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
-export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
+export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
 export const PhotostreamScreen = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = usePhotostreamQuery();

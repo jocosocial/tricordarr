@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback} from 'react';
 import {Text} from 'react-native-paper';
 
@@ -11,7 +11,7 @@ import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Sta
 import {usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
 import {useAppTheme} from '#src/Styles/Theme';
 
-type Props = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
+type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   const declineMutation = usePhoneCallDeclineMutation();
   const theme = useAppTheme();

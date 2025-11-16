@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useRef} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -14,7 +14,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useForumThreadPinnedPostsQuery, useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {PostData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostPinnedScreen>;
 
 export const ForumPostPinnedScreen = ({route}: Props) => {
   const {data, refetch, isFetching} = useForumThreadPinnedPostsQuery(route.params.forumID);

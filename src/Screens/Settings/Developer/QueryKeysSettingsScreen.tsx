@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashList} from '@shopify/flash-list';
 import {Query, useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -10,7 +10,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
-export type Props = NativeStackScreenProps<
+export type Props = StackScreenProps<
   SettingsStackParamList,
   SettingsStackScreenComponents.queryKeysSettingsScreen
 >;

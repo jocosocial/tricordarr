@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -11,7 +11,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
-type SeamailSearchScreenProps = NativeStackScreenProps<
+type SeamailSearchScreenProps = StackScreenProps<
   ChatStackParamList,
   ChatStackScreenComponents.seamailSearchScreen
 >;

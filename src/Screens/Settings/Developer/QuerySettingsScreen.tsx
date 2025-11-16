@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import {CacheManager} from '@georstat/react-native-image-cache';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -24,7 +24,7 @@ import {commonStyles} from '#src/Styles';
 import {useAppTheme} from '#src/Styles/Theme';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
-export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
+export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 
 const generateNewCacheBuster = () => new Date().toString();
 

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -17,7 +17,7 @@ import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/Oo
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useAppTheme} from '#src/Styles/Theme';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
 export const OobeAccountScreen = ({navigation}: Props) => {
   const theme = useAppTheme();

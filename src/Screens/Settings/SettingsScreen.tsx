@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -17,7 +17,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
-export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.settings>;
+export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.settings>;
 
 export const SettingsScreen = ({navigation}: Props) => {
   const {appConfig} = useConfig();

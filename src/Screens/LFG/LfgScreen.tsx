@@ -1,5 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -18,7 +18,7 @@ import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBa
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
 export const LfgScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {MinorActionListItem} from '#src/Components/Lists/Items/MinorActionListItem';
@@ -18,7 +18,7 @@ import {
 } from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
+type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.accountManagement>;
 export const AccountManagementScreen = ({navigation}: Props) => {
   const settingsNavigation = useSettingsStack();
   const {data: profilePublicData} = useUserProfileQuery();

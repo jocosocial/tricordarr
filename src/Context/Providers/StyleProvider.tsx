@@ -64,7 +64,6 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     background: {
       backgroundColor: theme.colors.background,
-      color: theme.colors.onBackground,
     },
     onBackground: {
       color: theme.colors.onBackground,

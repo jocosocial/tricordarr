@@ -1,5 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -25,7 +25,7 @@ import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
+type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
 export const ForumCategoryScreen = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();

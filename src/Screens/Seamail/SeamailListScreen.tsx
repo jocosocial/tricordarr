@@ -1,5 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
@@ -25,7 +25,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
-type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
+type SeamailListScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();

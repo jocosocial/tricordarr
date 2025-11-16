@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {HeaderButtons} from 'react-navigation-header-buttons';
@@ -10,7 +10,7 @@ import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThread
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
 
-type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumMutesScreen>;
+type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumMutesScreen>;
 
 export const ForumThreadMutesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {

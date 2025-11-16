@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
@@ -23,7 +23,7 @@ import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries';
 import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
 import {useAppTheme} from '#src/Styles/Theme';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 
 export const EventAddPerformerScreen = ({navigation, route}: Props) => {
   const {

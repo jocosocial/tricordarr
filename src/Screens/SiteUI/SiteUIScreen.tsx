@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {SiteUIScreenBase} from '#src/Screens/SiteUI/SiteUIScreenBase';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.siteUIScreen>;
 
 export const SiteUIScreen = ({route}: Props) => {
   const {serverUrl} = useSwiftarrQueryClient();

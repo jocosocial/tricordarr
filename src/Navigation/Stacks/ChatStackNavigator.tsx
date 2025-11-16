@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -32,7 +32,7 @@ export type ChatStackParamList = CommonStackParamList & {
   SeamailSettingsScreen: undefined;
 };
 
-const ChatStack = createNativeStackNavigator<ChatStackParamList>();
+const ChatStack = createStackNavigator<ChatStackParamList>();
 
 export enum ChatStackScreenComponents {
   seamailListScreen = 'SeamailListScreen',
@@ -83,4 +83,4 @@ export const ChatStackNavigator = () => {
   );
 };
 
-export const useChatStack = () => useNavigation<NativeStackNavigationProp<ChatStackParamList>>();
+export const useChatStack = () => useNavigation<StackNavigationProp<ChatStackParamList>>();

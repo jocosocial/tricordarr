@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 
@@ -10,7 +10,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
 
 export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();

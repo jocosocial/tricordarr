@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -19,7 +19,7 @@ import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 // @ts-ignore
 import tricordarr from '#assets/PlayStore/tricordarr.jpg';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcomeScreen>;
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
