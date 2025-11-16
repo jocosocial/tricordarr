@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {HeaderButtons, HeaderButtonsProps} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
@@ -10,7 +10,9 @@ import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton
 export const MaterialHeaderButtons = (props: Omit<HeaderButtonsProps, 'HeaderButtonComponent'>) => {
   const styles = StyleSheet.create({
     headerButtons: {
-      columnGap: 16,
+      // I don't love what iOS does with the title in the middle of the header.
+      // Hoping this isn't too visually gross. 12 needed for iPhone SE. 16 standard.
+      columnGap: Platform.select({ios: 12, default: 16}),
       ...props.style,
     },
   });
