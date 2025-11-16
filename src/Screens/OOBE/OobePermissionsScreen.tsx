@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
 import {requestNotifications, RESULTS} from 'react-native-permissions';
@@ -15,7 +15,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobePermissionsScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobePermissionsScreen>;
 
 export const OobePermissionsScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();

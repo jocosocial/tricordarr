@@ -2,12 +2,12 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {BlockedOrMutedBanner} from '#src/Components/Banners/BlockedOrMutedBanner';
 import {HeaderProfileFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileFavoriteButton';
 import {HeaderProfileSeamailButton} from '#src/Components/Buttons/HeaderButtons/HeaderProfileSeamailButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserAboutCard} from '#src/Components/Cards/UserProfile/UserAboutCard';
 import {UserContentCard} from '#src/Components/Cards/UserProfile/UserContentCard';
 import {UserNoteCard} from '#src/Components/Cards/UserProfile/UserNoteCard';
@@ -82,7 +82,7 @@ export const UserProfileScreenBase = ({
     if (data && data?.header.userID === profilePublicData?.header.userID) {
       return (
         <View>
-          <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+          <MaterialHeaderButtons left>
             <Item
               title={'Edit'}
               iconName={AppIcons.edituser}
@@ -91,13 +91,13 @@ export const UserProfileScreenBase = ({
               }
             />
             <UserProfileSelfActionsMenu userID={data.header.userID} />
-          </HeaderButtons>
+          </MaterialHeaderButtons>
         </View>
       );
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {data && (
             <>
               <HeaderProfileSeamailButton profile={data} />
@@ -105,7 +105,7 @@ export const UserProfileScreenBase = ({
               <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} oobe={oobe} />
             </>
           )}
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn, data, profilePublicData?.header.userID, isMuted, isBlocked, oobe, commonNavigation]);

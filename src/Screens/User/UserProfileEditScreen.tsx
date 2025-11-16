@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
@@ -13,7 +13,7 @@ import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
 import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
 import {UserProfileFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
 
 export const UserProfileEditScreen = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();

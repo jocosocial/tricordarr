@@ -1,4 +1,4 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -7,7 +7,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {ForumData, ForumListData} from '#src/Structs/ControllerStructs';
 
 interface ForumThreadSearchPostsItemProps {
-  navigation: NativeStackNavigationProp<CommonStackParamList>;
+  navigation: StackNavigationProp<CommonStackParamList>;
   forum: ForumListData | ForumData;
 }
 

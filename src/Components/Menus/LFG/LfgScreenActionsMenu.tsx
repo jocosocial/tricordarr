@@ -3,6 +3,7 @@ import {Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {ShareMenuItem} from '#src/Components/Menus/Items/ShareMenuItem';
 import {FezCancelModal} from '#src/Components/Views/Modals/FezCancelModal';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
@@ -14,8 +15,6 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-
-import {ShareMenuItem} from '../Items/ShareMenuItem';
 
 export const LfgScreenActionsMenu = ({fezData}: {fezData: FezData}) => {
   const {visible, openMenu, closeMenu} = useMenu();

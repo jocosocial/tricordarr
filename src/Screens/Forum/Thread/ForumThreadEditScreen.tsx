@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React from 'react';
@@ -11,7 +11,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;
 
 export const ForumThreadEditScreen = ({route, navigation}: Props) => {
   const editMutation = useForumRenameMutation();

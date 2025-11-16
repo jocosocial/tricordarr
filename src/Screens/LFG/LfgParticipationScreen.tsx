@@ -1,15 +1,14 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
-import {TitleTag} from '#src/Components/Text/Tags/TitleTag';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -25,7 +24,7 @@ import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManageme
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
 export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
@@ -72,13 +71,13 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(
     () => (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.lfgHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [navigation],
@@ -171,9 +170,7 @@ export const LfgParticipationScreen = ({navigation, route}: Props) => {
         </PaddedContentView>
         {isFull && !isUnlimited && (
           <>
-            <PaddedContentView padBottom={false}>
-              <TitleTag>Waitlist ({lfg.members.waitingList.length})</TitleTag>
-            </PaddedContentView>
+            <DataFieldListItem title={`Waitlist (${lfg.members.waitingList.length})`} />
             <PaddedContentView padSides={false}>
               <ListSection>
                 {manageUsers && (

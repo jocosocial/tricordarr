@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
 
@@ -11,7 +11,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.dailyThemeScreen>;
 
 export const DailyThemeScreen = ({route}: Props) => {
   const {refetch} = useDailyThemeQuery();

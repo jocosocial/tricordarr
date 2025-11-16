@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
 import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
 export const ForumThreadScreen = ({route}: Props) => {
   const {
     data,

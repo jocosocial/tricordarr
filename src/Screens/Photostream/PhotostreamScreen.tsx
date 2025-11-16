@@ -1,12 +1,12 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useFocusEffect} from '@react-navigation/native';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {HeaderButtons} from 'react-navigation-header-buttons';
 
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
@@ -18,13 +18,15 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
-export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
+export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
 export const PhotostreamScreen = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
   const [expandFab, setExpandFab] = useState(true);
   const flashListRef = useRef<FlashListRef<PhotostreamImageData>>(null);
+  const shouldScrollToTopRef = useRef<boolean>(false);
+  const streamListLengthWhenNavigatedAwayRef = useRef<number | null>(null);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -41,9 +43,9 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <PhotostreamActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);
@@ -61,7 +63,67 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   const renderItem = useCallback(({item}: {item: PhotostreamImageData}) => <PhotostreamListItem item={item} />, []);
   const keyExtractor = useCallback((item: PhotostreamImageData) => item.postID.toString(), []);
 
-  const streamList = data?.pages.flatMap(p => p.photos);
+  const streamList = useMemo(() => data?.pages.flatMap(p => p.photos), [data?.pages]);
+
+  // Track when user navigates to create screen and store current list length
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      const state = navigation.getState();
+      const currentRoute = state.routes[state.index];
+      // If current route is the create screen, store current list length
+      if (currentRoute.name === MainStackComponents.photostreamImageCreateScreen) {
+        streamListLengthWhenNavigatedAwayRef.current = streamList?.length ?? null;
+        shouldScrollToTopRef.current = true;
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, streamList?.length]);
+
+  // Watch for list length changes when returning from posting
+  useEffect(() => {
+    if (shouldScrollToTopRef.current && flashListRef.current) {
+      const previousLength = streamListLengthWhenNavigatedAwayRef.current;
+      const currentLength = streamList?.length ?? 0;
+
+      // Only scroll if the list length increased (indicating a successful post)
+      if (previousLength !== null && currentLength > previousLength) {
+        // Use requestAnimationFrame to ensure the list has rendered
+        requestAnimationFrame(() => {
+          try {
+            flashListRef.current?.scrollToIndex({index: 0, animated: true});
+          } catch {
+            // If scrollToIndex fails (e.g., list not fully rendered), use scrollToOffset as fallback
+            flashListRef.current?.scrollToOffset({offset: 0, animated: true});
+          }
+        });
+
+        // Reset flags after scrolling
+        shouldScrollToTopRef.current = false;
+        streamListLengthWhenNavigatedAwayRef.current = null;
+      }
+    }
+  }, [streamList?.length]);
+
+  // Reset flag if user navigates away without posting (length didn't change)
+  useFocusEffect(
+    useCallback(() => {
+      // When screen loses focus, if flag is still set but we're not on create screen, reset it
+      return () => {
+        const state = navigation.getState();
+        const currentRoute = state.routes[state.index];
+        if (shouldScrollToTopRef.current && currentRoute.name !== MainStackComponents.photostreamImageCreateScreen) {
+          // Give it a moment for the length check to happen, then reset if still set
+          setTimeout(() => {
+            if (shouldScrollToTopRef.current) {
+              shouldScrollToTopRef.current = false;
+              streamListLengthWhenNavigatedAwayRef.current = null;
+            }
+          }, 1000);
+        }
+      };
+    }, [navigation]),
+  );
 
   if (!streamList || streamList.length === 0) {
     return (

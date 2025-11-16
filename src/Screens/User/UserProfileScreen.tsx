@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
 
 export const UserProfileScreen = ({route}: Props) => {
   const {data, refetch, isLoading} = useUsersProfileQuery(route.params.userID);

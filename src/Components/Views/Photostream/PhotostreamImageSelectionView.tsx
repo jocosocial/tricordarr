@@ -94,6 +94,7 @@ export const PhotostreamImageSelectionView = () => {
       {!values.image && refreshing && <ActivityIndicator />}
       {values.image && <AppImage mode={'scaledimage'} image={imageData} />}
       <ImageButtons
+        hideAttach={true}
         takeImage={takeImage}
         clearImage={clearImage}
         pickImage={pickImage}

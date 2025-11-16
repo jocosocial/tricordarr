@@ -8,6 +8,9 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 /**
  * Generic wrapper for List.Item that applies common styles.
  * They can all be overridden as necessary.
+ * This should not be used to present information or data to the user. It's intended
+ * to be heavily customized. If you need to show the user information or data use
+ * a DataFieldListItem instead.
  */
 export const ListItem = forwardRef<View, RNPListItemProps>((props, ref) => {
   const {commonStyles} = useStyles();

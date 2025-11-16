@@ -1,10 +1,9 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
@@ -19,7 +18,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {PerformerType, usePerformersQuery} from '#src/Queries/Performer/PerformerQueries';
 import {PerformerHeaderData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.performerListScreen>;
 
 export const PerformerListScreen = ({navigation, route}: Props) => {
   const [performerType, setPerformerType] = useState<PerformerType>(route.params?.performerType || 'official');
@@ -69,9 +68,9 @@ export const PerformerListScreen = ({navigation, route}: Props) => {
   const getHeaderButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <PerformerListActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);

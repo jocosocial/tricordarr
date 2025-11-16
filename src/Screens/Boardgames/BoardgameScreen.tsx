@@ -1,12 +1,12 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {decode} from 'html-entities';
 import React, {useCallback, useEffect} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {AppView} from '#src/Components/Views/AppView';
@@ -19,7 +19,7 @@ import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMut
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
 
 // This is kinda shady.
 const decodeHtml = (html?: string) => {
@@ -62,7 +62,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(
     () => (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           {data && (
             <>
               <Item title={'Create LFG'} iconName={AppIcons.lfgCreate} onPress={onCreate} />
@@ -74,7 +74,7 @@ export const BoardgameScreen = ({navigation, route}: Props) => {
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [data, navigation, onCreate, onFavorite],

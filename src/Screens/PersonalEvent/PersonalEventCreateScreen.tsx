@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PersonalEventForm} from '#src/Components/Forms/PersonalEventForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -19,7 +19,7 @@ import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
 export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
   const createMutation = useFezCreateMutation();
   const queryClient = useQueryClient();
@@ -28,13 +28,13 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.lfgCreateHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);

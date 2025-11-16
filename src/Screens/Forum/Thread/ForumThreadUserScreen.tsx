@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {Text} from 'react-native-paper';
@@ -14,7 +14,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
 
 export const ForumThreadUserScreen = ({route}: Props) => {
   const {

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useState} from 'react';
 // import {RefreshControl} from 'react-native';
 import RNFS from 'react-native-fs';
@@ -14,7 +14,7 @@ import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
 
 export const MicroKaraokeSongScreen = ({route}: Props) => {
   console.log(route.params.songID);

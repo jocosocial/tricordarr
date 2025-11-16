@@ -3,10 +3,10 @@ import {FormikHelpers, FormikProps} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {type TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {ForumConversationList} from '#src/Components/Lists/Forums/ForumConversationList';
@@ -105,7 +105,7 @@ export const ForumThreadScreenBase = ({
 
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {eventID && (
             <Item
               title={'Event'}
@@ -120,7 +120,7 @@ export const ForumThreadScreenBase = ({
             invalidationQueryKeys={otherInvalidationKeys}
             onRefresh={onRefresh}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [data?.pages, otherInvalidationKeys, navigation, onRefresh]);
@@ -180,7 +180,13 @@ export const ForumThreadScreenBase = ({
               return queryClient.invalidateQueries({queryKey: key});
             });
             await Promise.all(invalidations);
-            flatListRef.current?.scrollToEnd({animated: false, viewOffset: -100});
+            // Wait for the next render cycle to ensure the new post is rendered before scrolling.
+            // Had an issue where the new post was not coming into view after it was made.
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                flatListRef.current?.scrollToEnd({animated: false});
+              });
+            });
           }
         },
         onSettled: () => {

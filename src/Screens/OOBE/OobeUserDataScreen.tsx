@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {Text} from 'react-native-paper';
 
@@ -13,7 +13,7 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useAppTheme} from '#src/Styles/Theme';
 
-type Props = NativeStackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
+type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 
 export const OobeUserDataScreen = ({navigation}: Props) => {
   const {tokenData} = useAuth();

@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -9,7 +9,7 @@ export type ScheduleStackParamList = CommonStackParamList & {};
 
 export const ScheduleStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<ScheduleStackParamList>();
+  const Stack = createStackNavigator<ScheduleStackParamList>();
 
   return (
     <Stack.Navigator
@@ -20,6 +20,6 @@ export const ScheduleStackNavigator = () => {
   );
 };
 
-export const useScheduleStackNavigation = () => useNavigation<NativeStackNavigationProp<ScheduleStackParamList>>();
+export const useScheduleStackNavigation = () => useNavigation<StackNavigationProp<ScheduleStackParamList>>();
 
 export const useScheduleStackRoute = () => useRoute<RouteProp<ScheduleStackParamList>>();

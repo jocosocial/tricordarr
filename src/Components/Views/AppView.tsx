@@ -31,6 +31,8 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
   const insets = useSafeAreaInsets();
   const {preRegistrationMode} = useConfig();
 
+  console.log('insets', insets);
+
   const styles = StyleSheet.create({
     appView: {
       ...commonStyles.background,

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
@@ -18,7 +18,7 @@ import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations'
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
 export const FavoriteUsersScreen = ({navigation}: Props) => {
   const userFavoriteMutation = useUserFavoriteMutation();
   const {data, isFetching, refetch} = useUserFavoritesQuery();

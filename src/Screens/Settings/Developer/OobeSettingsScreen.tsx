@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -26,8 +26,8 @@ export const OobeSettingsScreen = () => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <ListSubheader>Config</ListSubheader>
-        <ListItem title={'Expected'} description={String(appConfig.oobeExpectedVersion)} />
-        <ListItem title={'Completed'} description={String(appConfig.oobeCompletedVersion)} />
+        <DataFieldListItem title={'Expected'} description={String(appConfig.oobeExpectedVersion)} />
+        <DataFieldListItem title={'Completed'} description={String(appConfig.oobeCompletedVersion)} />
         <PaddedContentView>
           <PrimaryActionButton buttonText={'Reset'} onPress={resetOobeVersion} />
         </PaddedContentView>

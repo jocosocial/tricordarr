@@ -1,12 +1,12 @@
 import {useIsFocused} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {SeamailFAB} from '#src/Components/Buttons/FloatingActionButtons/SeamailFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailAccountButtons} from '#src/Components/Buttons/SegmentedButtons/SeamailAccountButtons';
 import {SeamailFlatList} from '#src/Components/Lists/Fez/SeamailFlatList';
 import {SeamailListScreenActionsMenu} from '#src/Components/Menus/Seamail/SeamailListScreenActionsMenu';
@@ -25,7 +25,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
-type SeamailListScreenProps = NativeStackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
+type SeamailListScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
 export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
@@ -83,7 +83,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item
             title={'Search'}
             iconName={AppIcons.seamailSearch}
@@ -94,7 +94,7 @@ export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
             }
           />
           <SeamailListScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [asPrivilegedUser, navigation]);

@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {Card, Text} from 'react-native-paper';
 
@@ -10,7 +10,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 
 export const UserRegCodeScreen = ({route, navigation}: Props) => {
   const {data} = useRegCodeForUserQuery({userID: route.params.userID});

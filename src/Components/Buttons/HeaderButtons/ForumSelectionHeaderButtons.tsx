@@ -1,9 +1,9 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {AxiosResponse} from 'axios';
 import React, {Dispatch, SetStateAction} from 'react';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
@@ -57,9 +57,9 @@ export const ForumSelectionHeaderButtons = (props: ForumSelectionHeaderButtonsPr
   };
 
   return (
-    <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+    <MaterialHeaderButtons>
       <Item iconName={AppIcons.favorite} title={'Favorite'} onPress={() => onPress('favorite')} />
       <Item iconName={AppIcons.mute} title={'Mute'} onPress={() => onPress('mute')} />
-    </HeaderButtons>
+    </MaterialHeaderButtons>
   );
 };

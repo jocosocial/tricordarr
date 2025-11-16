@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React from 'react';
 import {RefreshControl} from 'react-native';
@@ -19,7 +19,7 @@ import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.muteUsers>;
 export const MuteUsersScreen = ({navigation}: Props) => {
   const {hasModerator} = usePrivilege();
   const userMuteMutation = useUserMuteMutation();

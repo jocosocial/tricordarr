@@ -1,13 +1,13 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {ScheduleFAB} from '#src/Components/Buttons/FloatingActionButtons/ScheduleFAB';
 import {HeaderDayPlannerButton} from '#src/Components/Buttons/HeaderButtons/HeaderDayPlannerButton';
 import {HeaderScheduleYourDayButton} from '#src/Components/Buttons/HeaderButtons/HeaderScheduleYourDayButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ScheduleFlatList} from '#src/Components/Lists/Schedule/ScheduleFlatList';
 import {ScheduleDayScreenActionsMenu} from '#src/Components/Menus/Schedule/ScheduleDayScreenActionsMenu';
 import {ScheduleEventFilterMenu} from '#src/Components/Menus/Schedule/ScheduleEventFilterMenu';
@@ -28,7 +28,7 @@ import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 export const ScheduleDayScreen = ({navigation, route}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
@@ -129,7 +129,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Search'}
             iconName={AppIcons.search}
@@ -143,7 +143,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
           <ScheduleEventFilterMenu />
 
           <ScheduleDayScreenActionsMenu onRefresh={onRefresh} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn, onRefresh, navigation, selectedCruiseDay, appConfig.enableExperiments]);

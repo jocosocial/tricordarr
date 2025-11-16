@@ -1,11 +1,10 @@
 import {useIsFocused} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {HeaderButtons} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
@@ -25,7 +24,7 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 
-type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
+type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 export const ForumCategoriesScreen = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
@@ -46,10 +45,10 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <ForumCategoriesScreenSearchMenu />
           <ForumCategoriesScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);

@@ -44,7 +44,7 @@ export const PhotostreamImageCreateForm = ({
     submitButton: commonStyles.marginTopSmall,
     textWrapper: {
       ...commonStyles.flexRow,
-      ...commonStyles.justifyCenter,
+      // ...commonStyles.justifyCenter,
       ...commonStyles.paddingBottomSmall,
     },
   });
@@ -64,7 +64,18 @@ export const PhotostreamImageCreateForm = ({
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({handleSubmit, values, isSubmitting, isValid}) => (
         <View>
-          <PhotostreamImageSelectionView />
+          <View style={styles.textWrapper}>
+            <Text variant={'labelMedium'}>
+              You can only post one image every five minutes. It cannot be removed except by moderators. Any text will
+              be automatically blurred. Choose wisely!
+            </Text>
+          </View>
+          <View style={styles.fieldWrapper}>
+            <PhotostreamImageSelectionView />
+          </View>
+          <View style={styles.textWrapper}>
+            <Text variant={'labelMedium'}>At least one of Location or Event must be selected.</Text>
+          </View>
           <View style={styles.fieldWrapper}>
             <PickerField<string>
               name={'locationName'}
@@ -85,18 +96,7 @@ export const PhotostreamImageCreateForm = ({
               addUndefinedOption={true}
             />
           </View>
-          <View style={styles.textWrapper}>
-            <Text variant={'labelMedium'}>
-              You can only post one image every five minutes. It cannot be removed except by moderators. Any text will
-              be automatically blurred. Choose wisely!
-            </Text>
-          </View>
-          <BooleanField
-            name={'savePhoto'}
-            label={'Save Photo to Device'}
-            style={commonStyles.paddingHorizontalSmall}
-            value={values.savePhoto}
-          />
+          <BooleanField name={'savePhoto'} label={'Save Photo to Device'} value={values.savePhoto} />
           <PrimaryActionButton
             disabled={!(values.eventData || values.locationName) || isSubmitting || !isValid}
             isLoading={isSubmitting}

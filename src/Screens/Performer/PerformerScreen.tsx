@@ -1,9 +1,9 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -13,7 +13,7 @@ import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
-type Props = NativeStackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
+type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
 export const PerformerScreen = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = usePerformerQuery(route.params.id);
@@ -23,7 +23,7 @@ export const PerformerScreen = ({route, navigation}: Props) => {
     const eventID = route.params.eventID;
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {data && eventID && profilePublicData && profilePublicData.header.userID === data?.user?.userID && (
             <Item
               title={'Edit'}
@@ -37,7 +37,7 @@ export const PerformerScreen = ({route, navigation}: Props) => {
             />
           )}
           <PerformerActionsMenu performerData={data} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [data, navigation, profilePublicData, route]);

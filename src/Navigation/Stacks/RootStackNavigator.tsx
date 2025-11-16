@@ -1,5 +1,5 @@
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
@@ -27,7 +27,7 @@ export enum RootStackComponents {
 
 export const RootStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<RootStackParamList>();
+  const Stack = createStackNavigator<RootStackParamList>();
   const {appConfig} = useConfig();
   const {setHasUnsavedWork} = useErrorHandler();
   const {setEnableSelection, dispatchSelectedForums} = useSelection();
@@ -60,4 +60,4 @@ export const RootStackNavigator = () => {
   );
 };
 
-export const useRootStack = () => useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+export const useRootStack = () => useNavigation<StackNavigationProp<RootStackParamList>>();

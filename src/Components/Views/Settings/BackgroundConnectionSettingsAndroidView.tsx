@@ -7,7 +7,7 @@ import {HelperText, Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {BooleanField} from '#src/Components/Forms/Fields/BooleanField';
 import {SliderField} from '#src/Components/Forms/Fields/SliderField';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -148,13 +148,16 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Status</ListSubheader>
-          <ListItem title={'Previous Start'} description={<RelativeTimeTag date={fgsStartDate} />} />
-          <ListItem title={'Socket State'} description={WebSocketState[socketState as keyof typeof WebSocketState]} />
-          <ListItem
+          <DataFieldListItem title={'Previous Start'} description={<RelativeTimeTag date={fgsStartDate} />} />
+          <DataFieldListItem
+            title={'Socket State'}
+            description={WebSocketState[socketState as keyof typeof WebSocketState]}
+          />
+          <DataFieldListItem
             title={'Last Check'}
             description={healthData ? <RelativeTimeTag date={new Date(healthData.timestamp)} /> : <Text>Unknown</Text>}
           />
-          <ListItem title={'Failed Count'} description={String(fgsFailedCounter)} />
+          <DataFieldListItem title={'Failed Count'} description={String(fgsFailedCounter)} />
         </ListSection>
         <PaddedContentView padBottom={false} />
         <PaddedContentView padSides={false}>
@@ -165,7 +168,7 @@ export const BackgroundConnectionSettingsAndroidView = () => {
         <ListSection>
           <ListSubheader>Control</ListSubheader>
         </ListSection>
-        <ListItem title={'Enabled'} description={String(enableUserNotifications)} />
+        <DataFieldListItem title={'Enabled'} description={String(enableUserNotifications)} />
         <PaddedContentView>
           <PrimaryActionButton
             buttonText={'Start'}

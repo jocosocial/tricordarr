@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
@@ -8,7 +8,7 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.userProfileHelpScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileHelpScreen>;
 
 export const UserProfileHelpScreen = ({route}: Props) => {
   return (

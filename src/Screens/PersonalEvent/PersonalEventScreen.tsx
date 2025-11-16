@@ -1,11 +1,11 @@
 import notifee from '@notifee/react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {FezType} from '#src/Enums/FezType';
@@ -16,7 +16,7 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
 export const PersonalEventScreen = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
@@ -31,7 +31,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           {eventData && (
             <>
               {showChat && (
@@ -54,7 +54,7 @@ export const PersonalEventScreen = ({navigation, route}: Props) => {
               <PersonalEventScreenActionsMenu event={eventData} />
             </>
           )}
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [eventData, navigation, profilePublicData?.header.userID, showChat]);

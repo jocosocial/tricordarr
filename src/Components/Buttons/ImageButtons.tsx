@@ -10,6 +10,7 @@ interface ImageButtonsProps {
   disableAttach?: boolean;
   disableTake?: boolean;
   disableDelete?: boolean;
+  hideAttach?: boolean;
   pickImage: () => void;
   takeImage: () => void;
   clearImage: () => void;
@@ -33,7 +34,9 @@ export const ImageButtons = (props: ImageButtonsProps) => {
 
   return (
     <View style={styles.outerView}>
-      <IconButton icon={AppIcons.newImage} onPress={props.pickImage} disabled={props.disableAttach} />
+      {!props.hideAttach && (
+        <IconButton icon={AppIcons.newImage} onPress={props.pickImage} disabled={props.disableAttach} />
+      )}
       <IconButton icon={AppIcons.newImageCamera} onPress={props.takeImage} disabled={props.disableTake} />
       <IconButton icon={AppIcons.delete} onPress={props.clearImage} disabled={props.disableDelete} />
     </View>

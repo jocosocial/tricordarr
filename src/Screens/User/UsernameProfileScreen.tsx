@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFindQuery, useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.usernameProfileScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.usernameProfileScreen>;
 
 export const UsernameProfileScreen = ({route}: Props) => {
   const [userID, setUserID] = useState('');

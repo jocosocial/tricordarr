@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikProps} from 'formik';
 import React, {useCallback, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {FezContentData, FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 
 // Chips: https://github.com/callstack/react-native-paper/issues/801
 export const SeamailCreateScreen = ({navigation, route}: Props) => {

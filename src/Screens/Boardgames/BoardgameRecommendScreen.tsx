@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BoardgameRecommendationForm} from '#src/Components/Forms/BoardgameRecommendationForm';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
@@ -40,7 +40,7 @@ const ListHeader = ({
   </>
 );
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
 
 export const BoardgameRecommendScreen = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
@@ -67,13 +67,13 @@ export const BoardgameRecommendScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(
     () => (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [navigation],

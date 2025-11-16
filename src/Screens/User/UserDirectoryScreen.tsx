@@ -1,9 +1,8 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserDirectoryScreenActionsMenu} from '#src/Components/Menus/User/UserDirectoryScreenActionsMenu';
 import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
 import {UserDirectoryText} from '#src/Components/Text/UserRelationsText';
@@ -15,7 +14,7 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
 export const UserDirectoryScreen = ({navigation}: Props) => {
   const {isLoggedIn} = useAuth();
 
@@ -25,9 +24,9 @@ export const UserDirectoryScreen = ({navigation}: Props) => {
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <UserDirectoryScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn]);

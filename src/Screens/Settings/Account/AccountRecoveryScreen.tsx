@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FormikHelpers} from 'formik';
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
@@ -13,7 +13,7 @@ import {useUserRecoveryMutation} from '#src/Queries/Auth/RecoveryMutations';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 import {UserRegistrationFormValues} from '#src/Types/FormValues';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.accountRecoveryScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.accountRecoveryScreen>;
 
 export const AccountRecoveryScreen = ({navigation}: Props) => {
   const recoveryMutation = useUserRecoveryMutation();

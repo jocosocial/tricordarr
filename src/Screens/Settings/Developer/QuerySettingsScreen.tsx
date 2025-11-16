@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import {CacheManager} from '@georstat/react-native-image-cache';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -8,7 +8,7 @@ import {RefreshControl} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {QuerySettingsForm} from '#src/Components/Forms/Settings/QuerySettingsForm';
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
@@ -24,7 +24,7 @@ import {commonStyles} from '#src/Styles';
 import {useAppTheme} from '#src/Styles/Theme';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
-export type Props = NativeStackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
+export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
 
 const generateNewCacheBuster = () => new Date().toString();
 
@@ -141,12 +141,15 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
           </PaddedContentView>
         </ListSection>
         <ListSubheader>Query Cache</ListSubheader>
-        <ListItem
+        <DataFieldListItem
           title={'Last Query Bust'}
           description={<RelativeTimeTag date={new Date(appConfig.apiClientConfig.cacheBuster)} />}
         />
-        <ListItem title={'Query Item Count'} description={queryClient.getQueryCache().getAll().length.toString()} />
-        <ListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
+        <DataFieldListItem
+          title={'Query Item Count'}
+          description={queryClient.getQueryCache().getAll().length.toString()}
+        />
+        <DataFieldListItem title={'Oldest Item'} description={<RelativeTimeTag date={oldestCacheItem} />} />
         <PaddedContentView padTop={true}>
           <PrimaryActionButton
             buttonText={'Query Keys'}
@@ -156,7 +159,7 @@ export const QuerySettingsScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <ListSection>
           <ListSubheader>Connection Disruption</ListSubheader>
-          <ListItem title={'Error Count'} description={errorCount.toString()} />
+          <DataFieldListItem title={'Error Count'} description={errorCount.toString()} />
           <PaddedContentView padTop={true}>
             <PrimaryActionButton
               buttonText={'Trigger Disruption'}

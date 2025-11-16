@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useState} from 'react';
 import {Text} from 'react-native-paper';
 
@@ -8,7 +8,7 @@ import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 
-type Props = NativeStackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
+type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 
 export const ScheduleDayPlannerScreen = ({route}: Props) => {
   const {adjustedCruiseDayToday} = useCruise();

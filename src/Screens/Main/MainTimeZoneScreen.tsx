@@ -3,9 +3,9 @@ import moment from 'moment-timezone';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, RefreshControl, View} from 'react-native';
 import {DataTable, Text} from 'react-native-paper';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {DataTableCell} from '#src/Components/Tables/DataTableCell';
 import {AppView} from '#src/Components/Views/AppView';
@@ -56,13 +56,13 @@ export const MainTimeZoneScreen = () => {
   const getNavBarIcons = useCallback(
     () => (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.timeZoneHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [navigation],

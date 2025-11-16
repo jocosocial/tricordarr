@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useEffect, useRef, useState} from 'react';
@@ -12,7 +12,7 @@ import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/
 import {useForumPostSearchQuery} from '#src/Queries/Forum/ForumPostSearchQueries';
 import {PostData} from '#src/Structs/ControllerStructs';
 
-type Props = NativeStackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;
+type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumPostAlertwordScreen>;
 
 export const ForumPostAlertwordScreen = ({route}: Props) => {
   const {data, refetch, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching} = useForumPostSearchQuery({

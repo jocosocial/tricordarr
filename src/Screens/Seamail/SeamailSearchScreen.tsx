@@ -1,9 +1,9 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SeamailSearchBar} from '#src/Components/Search/SeamailSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
@@ -11,22 +11,19 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
-type SeamailSearchScreenProps = NativeStackScreenProps<
-  ChatStackParamList,
-  ChatStackScreenComponents.seamailSearchScreen
->;
+type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
 export const SeamailSearchScreen = ({navigation, route}: SeamailSearchScreenProps) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.seamailHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);

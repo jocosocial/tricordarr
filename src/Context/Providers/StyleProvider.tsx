@@ -64,7 +64,6 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     },
     background: {
       backgroundColor: theme.colors.background,
-      color: theme.colors.onBackground,
     },
     onBackground: {
       color: theme.colors.onBackground,
@@ -153,9 +152,24 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
   });
 
   const screenOptions = {
+    // headerStyle seems to only accept backgroundColor.
+    // https://reactnavigation.org/docs/elements/#headerstyle
     headerStyle: themedStyles.background,
     headerTitleStyle: themedStyles.background,
     headerTintColor: theme.colors.onBackground,
+    // Add padding to header button containers for @react-navigation/stack
+    // (native-stack had this by default, but stack does not)
+    // Use smaller padding for left side to accommodate back button positioning
+    headerLeftContainerStyle: {
+      paddingLeft: 4,
+    },
+    headerRightContainerStyle: {
+      paddingRight: 16,
+    },
+    // This is needed to prevent iOS from crowding the header.
+    // Got the idea from https://github.com/react-navigation/react-navigation/issues/11337
+    // https://reactnavigation.org/docs/header-buttons/
+    headerBackTitle: 'Back',
   };
 
   return (

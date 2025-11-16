@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
 
-import {ListItem} from '#src/Components/Lists/ListItem';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
@@ -24,19 +24,29 @@ const toSecureString = (originalText?: string) => {
 export const UserInfoSettingsScreen = () => {
   const {data: profilePublicData} = useUserProfileQuery();
   const {tokenData} = useAuth();
+  const [showToken, setShowToken] = React.useState(false);
+
+  const toggleToken = () => {
+    setShowToken(!showToken);
+  };
+
   return (
     <AppView>
       <ScrollView>
         <View>
           <ListSubheader>Profile Public Data</ListSubheader>
-          <ListItem title={'UserID'} description={profilePublicData?.header.userID} />
-          <ListItem title={'Username'} description={profilePublicData?.header.username} />
+          <DataFieldListItem title={'UserID'} description={profilePublicData?.header.userID} />
+          <DataFieldListItem title={'Username'} description={profilePublicData?.header.username} />
         </View>
         <View>
           <ListSubheader>Token Auth Data</ListSubheader>
-          <ListItem title={'UserID'} description={tokenData?.userID} />
-          <ListItem title={'Access Level'} description={tokenData?.accessLevel} />
-          <ListItem title={'Token'} description={toSecureString(tokenData?.token)} />
+          <DataFieldListItem title={'UserID'} description={tokenData?.userID} />
+          <DataFieldListItem title={'Access Level'} description={tokenData?.accessLevel} />
+          <DataFieldListItem
+            title={'Token'}
+            onPress={toggleToken}
+            description={showToken ? tokenData?.token : toSecureString(tokenData?.token)}
+          />
         </View>
       </ScrollView>
     </AppView>

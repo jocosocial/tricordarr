@@ -1,5 +1,5 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -62,7 +62,7 @@ export enum ForumStackComponents {
 
 export const ForumStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const Stack = createNativeStackNavigator<ForumStackParamList>();
+  const Stack = createStackNavigator<ForumStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
   const {getIsDisabled} = useFeature();
   const isDisabled = getIsDisabled(SwiftarrFeature.forums);
@@ -141,6 +141,6 @@ export const ForumStackNavigator = () => {
   );
 };
 
-export const useForumStackNavigation = () => useNavigation<NativeStackNavigationProp<ForumStackParamList>>();
+export const useForumStackNavigation = () => useNavigation<StackNavigationProp<ForumStackParamList>>();
 
 export const useForumStackRoute = () => useRoute<RouteProp<ForumStackParamList>>();

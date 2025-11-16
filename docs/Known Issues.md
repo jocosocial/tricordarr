@@ -1,6 +1,12 @@
 Known Issues
 ============
 
+### React Navigation InteractionManager
+```
+InteractionManager has been deprecated and will be removed in a future release. Please refactor long tasks into smaller ones, and  use 'requestIdleCallback' instead.
+```
+https://github.com/react-navigation/react-navigation/issues/12785
+
 ### javascript-time-ago package.json
 ```
  WARN  The package /Users/grant/Projects/jocosocial/tricordarr/node_modules/javascript-time-ago/locale/en contains an invalid package.json configuration. Consider raising this issue with the package maintainer(s).
@@ -51,3 +57,8 @@ meters instead.
 ```
 
 Fixed in react-native-paper 5.12.5
+
+```
+[Xcodeproj] Unable to find compatibility version string for object version 70.
+```
+https://github.com/CocoaPods/CocoaPods/issues/12671#issuecomment-2467142931

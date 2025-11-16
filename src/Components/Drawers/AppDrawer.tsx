@@ -1,5 +1,6 @@
+import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {PropsWithChildren} from 'react';
+import {PropsWithChildren, useEffect} from 'react';
 import {Linking, ScrollView, StyleSheet} from 'react-native';
 import {Drawer} from 'react-native-drawer-layout';
 import {Badge, Drawer as PaperDrawer} from 'react-native-paper';
@@ -21,6 +22,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
   const {tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();
+  const navigation = useNavigation();
 
   const styles = StyleSheet.create({
     drawer: {
@@ -29,10 +31,21 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
     },
   });
 
-  const handleDrawerNav = (url: string) => {
-    Linking.openURL(url);
-    setDrawerOpen(false);
-  };
+  /**
+   * Close drawer when navigation events occur. Previously this was a function
+   * that took a URL and closed the drawer. But that didn't account for tapping
+   * a notification quick action (such as notification settings) which would
+   * trigger a navigation event but would not close the drawer.
+   */
+  useEffect(() => {
+    if (!drawerOpen) {
+      return;
+    }
+    const unsubscribe = navigation.addListener('state', () => {
+      setDrawerOpen(false);
+    });
+    return unsubscribe;
+  }, [navigation, drawerOpen, setDrawerOpen]);
 
   const getModBadge = () => {
     let count = 0;
@@ -71,19 +84,19 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                   <PaperDrawer.Item
                     label={`Your Profile (${profilePublicData?.header.username})`}
                     icon={AppIcons.profile}
-                    onPress={() => handleDrawerNav(`tricordarr://user/${tokenData?.userID}`)}
+                    onPress={() => Linking.openURL(`tricordarr://user/${tokenData?.userID}`)}
                   />
                   <PaperDrawer.Item
                     label={'Directory'}
                     icon={AppIcons.group}
-                    onPress={() => handleDrawerNav('tricordarr://users')}
+                    onPress={() => Linking.openURL('tricordarr://users')}
                   />
                 </>
               )}
               <PaperDrawer.Item
                 label={'Performers'}
                 icon={AppIcons.performer}
-                onPress={() => handleDrawerNav('tricordarr://performers')}
+                onPress={() => Linking.openURL('tricordarr://performers')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Entertainment'} showDivider={false}>
@@ -91,90 +104,90 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Photo Stream'}
                   icon={AppIcons.photostream}
-                  onPress={() => handleDrawerNav('tricordarr://photostream')}
+                  onPress={() => Linking.openURL('tricordarr://photostream')}
                 />
               )}
               {hasVerified && (
                 <PaperDrawer.Item
                   label={'Micro Karaoke'}
                   icon={AppIcons.microKaraoke}
-                  onPress={() => handleDrawerNav('tricordarr://microkaraoke')}
+                  onPress={() => Linking.openURL('tricordarr://microkaraoke')}
                 />
               )}
               <PaperDrawer.Item
                 label={'Board Games'}
                 icon={AppIcons.games}
-                onPress={() => handleDrawerNav('tricordarr://boardgames')}
+                onPress={() => Linking.openURL('tricordarr://boardgames')}
               />
               <PaperDrawer.Item
                 label={'Karaoke'}
                 icon={AppIcons.karaoke}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/karaoke`)}
               />
               <PaperDrawer.Item
                 label={'Lighter'}
                 icon={AppIcons.lighter}
-                onPress={() => handleDrawerNav('tricordarr://lighter')}
+                onPress={() => Linking.openURL('tricordarr://lighter')}
               />
               <PaperDrawer.Item
                 label={'Daily Themes'}
                 icon={AppIcons.dailyTheme}
-                onPress={() => handleDrawerNav('tricordarr://dailyThemes')}
+                onPress={() => Linking.openURL('tricordarr://dailyThemes')}
               />
               <PaperDrawer.Item
                 label={'Puzzle Hunts'}
                 icon={AppIcons.hunts}
-                onPress={() => handleDrawerNav('tricordarr://hunts')}
+                onPress={() => Linking.openURL('tricordarr://hunts')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Documentation'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Deck Map'}
                 icon={AppIcons.map}
-                onPress={() => handleDrawerNav('tricordarr://map')}
+                onPress={() => Linking.openURL('tricordarr://map')}
               />
               <PaperDrawer.Item
                 label={'Time Zones'}
                 icon={AppIcons.time}
-                onPress={() => handleDrawerNav('tricordarr://time')}
+                onPress={() => Linking.openURL('tricordarr://time')}
               />
               <PaperDrawer.Item
                 label={'JoCo Cruise FAQ'}
                 icon={AppIcons.faq}
-                onPress={() => handleDrawerNav('tricordarr://faq')}
+                onPress={() => Linking.openURL('tricordarr://faq')}
               />
               <PaperDrawer.Item
                 label={'Code of Conduct'}
                 icon={AppIcons.codeofconduct}
-                onPress={() => handleDrawerNav('tricordarr://codeOfConduct')}
+                onPress={() => Linking.openURL('tricordarr://codeOfConduct')}
               />
               <PaperDrawer.Item
                 label={'About Twitarr (Service)'}
                 icon={AppIcons.twitarr}
-                onPress={() => handleDrawerNav('tricordarr://about')}
+                onPress={() => Linking.openURL('tricordarr://about')}
               />
               <PaperDrawer.Item
                 label={'About Tricordarr (App)'}
                 icon={AppIcons.tricordarr}
-                onPress={() => handleDrawerNav('tricordarr://about-app')}
+                onPress={() => Linking.openURL('tricordarr://about-app')}
               />
             </PaperDrawer.Section>
             <PaperDrawer.Section title={'Advanced'} showDivider={false}>
               <PaperDrawer.Item
                 label={'Settings'}
                 icon={AppIcons.settings}
-                onPress={() => handleDrawerNav('tricordarr://settings')}
+                onPress={() => Linking.openURL('tricordarr://settings')}
               />
               <PaperDrawer.Item
                 label={'Twitarr Web UI'}
                 icon={AppIcons.webview}
-                onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}`)}
+                onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}`)}
               />
               {hasModerator && (
                 <PaperDrawer.Item
                   label={'Moderator Actions'}
                   icon={AppIcons.moderator}
-                  onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/moderator`)}
                   right={getModBadge}
                 />
               )}
@@ -182,7 +195,7 @@ export const AppDrawer = ({children}: PropsWithChildren) => {
                 <PaperDrawer.Item
                   label={'Server Admin'}
                   icon={AppIcons.twitarteam}
-                  onPress={() => handleDrawerNav(`tricordarr://twitarrtab/${Date.now()}/admin`)}
+                  onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/admin`)}
                   right={getTTBadge}
                 />
               )}

@@ -1,9 +1,8 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
@@ -30,7 +29,7 @@ import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {useUserMutesQuery} from '#src/Queries/Users/UserMuteQueries';
 
-type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
+type Props = StackScreenProps<MainStackParamList, MainStackComponents.mainScreen>;
 
 export const TodayScreen = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
@@ -63,10 +62,10 @@ export const TodayScreen = ({navigation}: Props) => {
   const getRightMainHeaderButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {isLoggedIn && <NotificationsMenu />}
           <MainAccountMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn]);

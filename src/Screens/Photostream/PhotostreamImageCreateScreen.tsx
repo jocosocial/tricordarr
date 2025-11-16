@@ -1,11 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PhotostreamImageCreateForm} from '#src/Components/Forms/Photostream/PhotostreamImageCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -21,7 +21,7 @@ import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
-export type Props = NativeStackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
+export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
 export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();
@@ -57,9 +57,12 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
         imageUploadData: payload,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           queryClient.invalidateQueries({queryKey: ['/photostream']});
           navigation.goBack();
+          // Wait for navigation transition to start before onSettled runs
+          // This is some AI shit that needs tested.
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         },
         onSettled: () => {
           helpers.setSubmitting(false);
@@ -71,13 +74,13 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);

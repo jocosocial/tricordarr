@@ -1,5 +1,5 @@
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
 import {DisabledView} from '#src/Components/Views/Static/DisabledView';
@@ -71,7 +71,7 @@ export type MainStackParamList = CommonStackParamList & {
   };
 };
 
-export const MainStack = createNativeStackNavigator<MainStackParamList>();
+export const MainStack = createStackNavigator<MainStackParamList>();
 
 export enum MainStackComponents {
   mainScreen = 'MainScreen',
@@ -222,4 +222,4 @@ export const MainStackNavigator = () => {
   );
 };
 
-export const useMainStack = () => useNavigation<NativeStackNavigationProp<MainStackParamList>>();
+export const useMainStack = () => useNavigation<StackNavigationProp<MainStackParamList>>();

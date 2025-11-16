@@ -1,4 +1,4 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
@@ -6,7 +6,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
 interface ForumThreadPinnedPostsItemProps {
-  navigation: NativeStackNavigationProp<CommonStackParamList>;
+  navigation: StackNavigationProp<CommonStackParamList>;
   forumID: string;
 }
 
