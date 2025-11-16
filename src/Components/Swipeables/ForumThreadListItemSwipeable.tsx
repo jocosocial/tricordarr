@@ -41,13 +41,17 @@ export const ForumThreadListItemSwipeable = (props: ForumThreadListItemSwipeable
       // Reset first. Improves response time.
       swipeable.reset();
       setReadRefreshing(true);
-      await Promise.all([
-        refetch(),
-        queryClient.invalidateQueries({queryKey: [`/forum/categories/${props.categoryID}`]}),
-      ]);
+      // We need to "refetch" (which triggers markAsRead) before we then go invalidate
+      // the other keys. This had an issue where marking a favorite forum as read would
+      // not update the favorites list.
+      await refetch();
+      const invalidations = invalidationQueryKeys.map(key => {
+        return queryClient.invalidateQueries({queryKey: key});
+      });
+      await Promise.all(invalidations);
       setReadRefreshing(false);
     },
-    [props.categoryID, queryClient, refetch],
+    [queryClient, invalidationQueryKeys, refetch],
   );
 
   const handleFavorite = useCallback(
