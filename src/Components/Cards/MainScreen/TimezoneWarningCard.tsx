@@ -1,12 +1,14 @@
 import React from 'react';
-import {Linking} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const TimezoneWarningCard = () => {
   const {commonStyles} = useStyles();
-  const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`);
+  const navigation = useCommonStack();
+  // const onPress = () => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`);
+  const onPress = () => navigation.push(CommonStackComponents.mainTimeZoneScreen);
   return (
     <Card style={commonStyles.twitarrNegative} onPress={onPress}>
       <Card.Title

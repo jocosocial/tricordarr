@@ -1,19 +1,19 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment-timezone';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Linking, RefreshControl, View} from 'react-native';
-import {DataTable, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
-import {DataTableCell} from '#src/Components/Tables/DataTableCell';
+import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
+import {ListSection} from '#src/Components/Lists/ListSection';
+import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
-import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
-import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
@@ -25,22 +25,12 @@ const getCleanISOString = (dateString: string): string => {
 };
 
 const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
-  const [showID, setShowID] = useState(false);
-  const {commonStyles} = useStyles();
   return (
-    <DataTable.Row>
-      <DataTableCell value={getCleanISOString(record.activeDate)} />
-      <DataTable.Cell
-        onPress={() => setShowID(!showID)}
-        onLongPress={() => Clipboard.setString(record.timeZoneID)}
-        style={commonStyles.paddingVerticalTiny}>
-        <Text>
-          {record.timeZoneID}
-          {'\n'}
-          {record.timeZoneAbbrev} (UTC{moment.tz(record.timeZoneID).utcOffset()})
-        </Text>
-      </DataTable.Cell>
-    </DataTable.Row>
+    <DataFieldListItem
+      title={`${record.timeZoneID} (${record.timeZoneAbbrev}, UTC${moment.tz(record.timeZoneID).utcOffset()})`}
+      description={`Effective at ${getCleanISOString(record.activeDate)}`}
+      onLongPress={() => Clipboard.setString(record.timeZoneID)}
+    />
   );
 };
 
@@ -83,7 +73,9 @@ export const MainTimeZoneScreen = () => {
       <ScrollingContentView
         isStack={true}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refresh} />}>
-        <ListTitleView title={'Check Device Time'} />
+        <ListSection>
+          <ListSubheader>Device Time</ListSubheader>
+        </ListSection>
         <PaddedContentView padTop={true}>
           <Text>
             You can compare your device time to the server with the button below. Remember that if there is a
@@ -96,38 +88,22 @@ export const MainTimeZoneScreen = () => {
             onPress={() => Linking.openURL(`tricordarr://twitarrtab/${Date.now()}/time`)}
           />
         </PaddedContentView>
-        <ListTitleView title={'Time Zone Changes'} />
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>Effective Date (UTC)</DataTable.Title>
-            <DataTable.Title>Details</DataTable.Title>
-          </DataTable.Header>
-          {data?.records.map((record, index) => {
-            return <TimeZoneListItem key={index} record={record} />;
-          })}
-        </DataTable>
+        <ListSection>
+          <ListSubheader>Time Zone Changes</ListSubheader>
+        </ListSection>
+        {data?.records.map((record, index) => {
+          return <TimeZoneListItem key={index} record={record} />;
+        })}
         {notificationData && (
-          <>
-            <ListTitleView title={'Server Time Information'} />
-            <DataTable>
-              <DataTable.Row>
-                <DataTable.Cell>Time</DataTable.Cell>
-                <DataTableCell value={notificationData.serverTime} />
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>Time Zone ID</DataTable.Cell>
-                <DataTableCell value={notificationData.serverTimeZoneID} />
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>Time Zone Abbreviation</DataTable.Cell>
-                <DataTableCell value={notificationData.serverTimeZone} />
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>UTC Offset</DataTable.Cell>
-                <DataTableCell value={notificationData.serverTimeOffset / 60} />
-              </DataTable.Row>
-            </DataTable>
-          </>
+          <View>
+            <ListSection>
+              <ListSubheader>Server Time Information</ListSubheader>
+            </ListSection>
+            <DataFieldListItem title={'Time'} description={notificationData.serverTime} />
+            <DataFieldListItem title={'Time Zone ID'} description={notificationData.serverTimeZoneID} />
+            <DataFieldListItem title={'Time Zone Abbreviation'} description={notificationData.serverTimeZone} />
+            <DataFieldListItem title={'UTC Offset'} description={notificationData.serverTimeOffset / 60} />
+          </View>
         )}
       </ScrollingContentView>
     </AppView>

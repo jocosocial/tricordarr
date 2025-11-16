@@ -15,6 +15,7 @@ interface DataFieldListItemProps {
   itemStyle?: ViewStyle;
   left?: () => ReactNode;
   icon?: string;
+  onLongPress?: () => void;
 }
 
 /**
@@ -33,6 +34,7 @@ export const DataFieldListItem = ({
   itemStyle,
   icon,
   left,
+  onLongPress,
 }: DataFieldListItemProps) => {
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({
@@ -78,10 +80,12 @@ export const DataFieldListItem = ({
       descriptionNumberOfLines={0}
       title={title}
       onPress={onPress}
-      onLongPress={() =>
-        description && (typeof description === 'string' || typeof description === 'number')
-          ? Clipboard.setString(description.toString())
-          : undefined
+      onLongPress={
+        onLongPress ||
+        (() =>
+          description && (typeof description === 'string' || typeof description === 'number')
+            ? Clipboard.setString(description.toString())
+            : undefined)
       }
       contentStyle={styles.content}
     />
