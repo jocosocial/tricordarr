@@ -30,8 +30,8 @@ export const SearchBarBase = ({
 
   const styles = StyleSheet.create({
     searchBar: {
-      ...commonStyles.marginTop,
-      ...commonStyles.marginHorizontal,
+      ...commonStyles.marginTopSmall,
+      ...commonStyles.marginHorizontalSmall,
       ...style,
     },
   });
