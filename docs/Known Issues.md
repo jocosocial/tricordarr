@@ -57,3 +57,8 @@ meters instead.
 ```
 
 Fixed in react-native-paper 5.12.5
+
+```
+[Xcodeproj] Unable to find compatibility version string for object version 70.
+```
+https://github.com/CocoaPods/CocoaPods/issues/12671#issuecomment-2467142931
