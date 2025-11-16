@@ -1,5 +1,36 @@
 import {useNavigation} from '@react-navigation/native';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
+
+/**
+ * Module-level registry of all menu close functions.
+ * This allows NavigationContainer's onStateChange to close all menus
+ * when deep linking occurs (e.g., notification taps).
+ */
+const menuCloseFunctions = new Set<() => void>();
+
+/**
+ * Register a menu's close function. Returns an unsubscribe function.
+ */
+export const registerMenuClose = (closeMenu: () => void) => {
+  menuCloseFunctions.add(closeMenu);
+  return () => {
+    menuCloseFunctions.delete(closeMenu);
+  };
+};
+
+/**
+ * Close all registered menus. Called by NavigationContainer's onStateChange.
+ */
+export const closeAllMenus = () => {
+  console.log('[MenuHook.ts] closeAllMenus called, registered menus:', menuCloseFunctions.size);
+  menuCloseFunctions.forEach(closeMenu => {
+    try {
+      closeMenu();
+    } catch (error) {
+      console.error('[MenuHook.ts] Error closing menu:', error);
+    }
+  });
+};
 
 /**
  * Hook to manage the visibility of a menu. Attaches to the global navigation state
@@ -30,14 +61,42 @@ export const useMenu = () => {
     setVisible(false);
   }, []);
 
+  // Register this menu's close function so it can be closed by NavigationContainer's onStateChange
+  // when deep linking occurs (e.g., notification taps)
+  const closeMenuRef = useRef(closeMenu);
+  const visibleRef = useRef(visible);
+
   useEffect(() => {
-    if (!visible) {
-      return;
-    }
-    console.log('[MenuHook.ts] adding closeMenu listener in useEffect');
-    const unsubscribe = navigation.addListener('state', closeMenu);
+    closeMenuRef.current = closeMenu;
+  }, [closeMenu]);
+
+  useEffect(() => {
+    visibleRef.current = visible;
+  }, [visible]);
+
+  useEffect(() => {
+    const closeMenuWrapper = () => {
+      if (visibleRef.current) {
+        console.log('[MenuHook.ts] closeMenuWrapper called, closing menu');
+        closeMenuRef.current();
+      }
+    };
+    const unsubscribe = registerMenuClose(closeMenuWrapper);
+    console.log('[MenuHook.ts] registered menu close function');
     return unsubscribe;
-  }, [navigation, closeMenu, visible]);
+  }, []);
+
+  // Also listen to navigation state changes for regular navigation
+  // Similar to how AppDrawer handles this
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      if (visible) {
+        console.log('[MenuHook.ts] navigation state changed, closing menu');
+        setVisible(false);
+      }
+    });
+    return unsubscribe;
+  }, [navigation, visible]);
 
   return {visible, openMenu, closeMenu};
 };

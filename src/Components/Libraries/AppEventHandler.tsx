@@ -50,6 +50,7 @@ export const AppEventHandler = () => {
       const url = getUrlForNotificationEvent(event.type, notification, pressAction);
       if (url) {
         console.log('[AppEventHandler.tsx] handleForegroundEvent responding to url', url);
+        // NavigationContainer's onStateChange will close menus when linkTo() triggers navigation
         linkTo(url);
       } else {
         console.warn('[AppEventHandler.tsx] handleForegroundEvent unable to determine URL.');

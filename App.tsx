@@ -29,6 +29,7 @@ import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider'
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
+import {MenuProvider} from '#src/Context/Providers/MenuProvider';
 import {ModalProvider} from '#src/Context/Providers/ModalProvider';
 import {PrivilegeProvider} from '#src/Context/Providers/PrivilegeProvider';
 import {SelectionProvider} from '#src/Context/Providers/SelectionProvider.tsx';
@@ -119,15 +120,17 @@ function App(): React.JSX.Element {
                                           <HeaderButtonsProvider stackType={'native'}>
                                             <CruiseProvider>
                                               <DrawerProvider>
-                                                <FilterProvider>
-                                                  <SelectionProvider>
-                                                    <AppEventHandler />
-                                                    <PushNotificationService />
-                                                    <NotificationDataListener />
-                                                    <NotificationDataPoller />
-                                                    <RootStackNavigator />
-                                                  </SelectionProvider>
-                                                </FilterProvider>
+                                                <MenuProvider>
+                                                  <FilterProvider>
+                                                    <SelectionProvider>
+                                                      <AppEventHandler />
+                                                      <PushNotificationService />
+                                                      <NotificationDataListener />
+                                                      <NotificationDataPoller />
+                                                      <RootStackNavigator />
+                                                    </SelectionProvider>
+                                                  </FilterProvider>
+                                                </MenuProvider>
                                               </DrawerProvider>
                                             </CruiseProvider>
                                           </HeaderButtonsProvider>
