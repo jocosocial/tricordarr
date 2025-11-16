@@ -3,6 +3,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
+
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';

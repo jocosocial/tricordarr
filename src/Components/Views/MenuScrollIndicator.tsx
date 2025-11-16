@@ -35,4 +35,3 @@ export const MenuScrollIndicator = ({visible}: MenuScrollIndicatorProps) => {
     </View>
   );
 };
-

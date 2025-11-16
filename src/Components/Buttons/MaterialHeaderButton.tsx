@@ -1,8 +1,9 @@
 import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {defaultRenderVisibleButton, HeaderButton, HeaderButtonsComponentType} from 'react-navigation-header-buttons';
 
+import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useAppTheme} from '#src/Styles/Theme';
 
 /**
@@ -11,6 +12,15 @@ import {useAppTheme} from '#src/Styles/Theme';
  */
 export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
   const theme = useAppTheme();
+
+  const {commonStyles} = useStyles();
+  const styles = StyleSheet.create({
+    button: {
+      ...commonStyles.flexRow,
+      ...commonStyles.alignItemsCenter,
+    },
+    title: {color: theme.colors.onBackground, fontSize: 17, marginLeft: 4},
+  });
 
   // the `props` here come from <Item ... />
   // you may access them and pass something else to `HeaderButton` if you like
@@ -33,9 +43,9 @@ export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
         // On iOS, if both icon and title are provided and showTitle is enabled, render both (e.g., for back button)
         if (showTitle) {
           return (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={styles.button}>
               <MaterialCommunityIcons name={iconName as any} color={color} size={23} />
-              <Text style={{color, fontSize: 17, marginLeft: 4}}>{title}</Text>
+              <Text style={styles.title}>{title}</Text>
             </View>
           );
         }

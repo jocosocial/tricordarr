@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
+
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';

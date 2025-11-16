@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
+
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {AppView} from '#src/Components/Views/AppView';

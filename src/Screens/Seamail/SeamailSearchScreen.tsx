@@ -11,10 +11,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 
-type SeamailSearchScreenProps = StackScreenProps<
-  ChatStackParamList,
-  ChatStackScreenComponents.seamailSearchScreen
->;
+type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
 export const SeamailSearchScreen = ({navigation, route}: SeamailSearchScreenProps) => {
   const getNavButtons = useCallback(() => {

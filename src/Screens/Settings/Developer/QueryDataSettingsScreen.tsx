@@ -9,10 +9,7 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 
-export type Props = StackScreenProps<
-  SettingsStackParamList,
-  SettingsStackScreenComponents.queryDataSettingsScreen
->;
+export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.queryDataSettingsScreen>;
 
 export const QueryDataSettingsScreen = ({route}: Props) => {
   const queryClient = useQueryClient();

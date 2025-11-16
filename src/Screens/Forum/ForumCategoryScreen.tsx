@@ -3,6 +3,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {ForumSelectionHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ForumSelectionHeaderButtons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';

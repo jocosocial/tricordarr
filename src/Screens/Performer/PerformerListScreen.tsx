@@ -2,6 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, StyleSheet, View} from 'react-native';
+
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerTypeButtons} from '#src/Components/Buttons/SegmentedButtons/PerformerTypeButtons';
 import {PerformerHeaderCard} from '#src/Components/Cards/Performer/PerformerHeaderCard';
