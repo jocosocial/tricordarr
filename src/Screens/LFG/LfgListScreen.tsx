@@ -3,10 +3,10 @@ import {type FlashListRef} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {LfgFAB} from '#src/Components/Buttons/FloatingActionButtons/LfgFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
@@ -65,7 +65,7 @@ export const LfgListScreen = ({
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {enableFilters && (
             <>
               <Item
@@ -82,7 +82,7 @@ export const LfgListScreen = ({
             </>
           )}
           <LfgListActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [enableFilters, endpoint, isLoggedIn, navigation]);

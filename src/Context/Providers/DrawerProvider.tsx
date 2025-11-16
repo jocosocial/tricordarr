@@ -1,8 +1,8 @@
 import React, {PropsWithChildren, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppDrawer} from '#src/Components/Drawers/AppDrawer';
 import {DrawerContext} from '#src/Context/Contexts/DrawerContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -30,9 +30,9 @@ export const DrawerProvider = ({children}: PropsWithChildren) => {
   const getLeftMainHeaderButtons = useCallback(() => {
     return (
       <View style={styles.container}>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item title={'Drawer'} iconName={AppIcons.drawer} onPress={() => setDrawerOpen(prevOpen => !prevOpen)} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [setDrawerOpen, styles]);

@@ -2,9 +2,9 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {DataFieldListItem} from '#src/Components/Lists/Items/DataFieldListItem';
 import {FezParticipantAddItem} from '#src/Components/Lists/Items/FezParticipantAddItem';
 import {FezParticipantListItem} from '#src/Components/Lists/Items/FezParticipantListItem';
@@ -54,7 +54,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const getHeaderRight = useCallback(
     () => (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -64,7 +64,7 @@ export const FezChatDetailsScreen = ({route, navigation}: Props) => {
               }
             }}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [fez, navigation],

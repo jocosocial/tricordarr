@@ -1,10 +1,10 @@
 import {type FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {SchedulePersonalEventCreateFAB} from '#src/Components/Buttons/FloatingActionButtons/SchedulePersonalEventCreateFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGFlatList} from '#src/Components/Lists/Schedule/LFGFlatList';
 import {LfgCruiseDayFilterMenu} from '#src/Components/Menus/LFG/LfgCruiseDayFilterMenu';
 import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
@@ -32,7 +32,7 @@ export const SchedulePrivateEventsScreen = () => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <LfgCruiseDayFilterMenu />
           <LfgFilterMenu showTypes={false} />
           <Item
@@ -40,7 +40,7 @@ export const SchedulePrivateEventsScreen = () => {
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.scheduleHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);

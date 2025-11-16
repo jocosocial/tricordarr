@@ -2,10 +2,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useQueryClient} from '@tanstack/react-query';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderFavoriteButton} from '#src/Components/Buttons/HeaderButtons/HeaderFavoriteButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {EventScreenActionsMenu} from '#src/Components/Menus/Events/EventScreenActionsMenu';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -53,7 +53,7 @@ export const EventScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           {eventData && (
             <>
               <HeaderFavoriteButton isFavorite={eventData.isFavorite} onPress={() => handleFavorite(eventData)} />
@@ -73,7 +73,7 @@ export const EventScreen = ({navigation, route}: Props) => {
               <EventScreenActionsMenu event={eventData} />
             </>
           )}
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [eventData, handleFavorite, navigation]);

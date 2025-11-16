@@ -4,10 +4,8 @@ import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
 import {PhotostreamFAB} from '#src/Components/Buttons/FloatingActionButtons/PhotostreamFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {AppFlashList} from '#src/Components/Lists/AppFlashList';
 import {EndResultsFooter} from '#src/Components/Lists/Footers/EndResultsFooter';
 import {PhotostreamListItem} from '#src/Components/Lists/Items/PhotostreamListItem';
@@ -44,9 +42,9 @@ export const PhotostreamScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <PhotostreamActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);

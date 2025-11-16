@@ -1,9 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LFGSearchBar} from '#src/Components/Search/LFGSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
@@ -25,13 +25,13 @@ export const LfgSearchScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(CommonStackComponents.lfgHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);

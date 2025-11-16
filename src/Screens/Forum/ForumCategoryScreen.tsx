@@ -3,11 +3,9 @@ import {StackScreenProps} from '@react-navigation/stack';
 import pluralize from 'pluralize';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
 import {ForumCategoryFAB} from '#src/Components/Buttons/FloatingActionButtons/ForumCategoryFAB';
 import {ForumSelectionHeaderButtons} from '#src/Components/Buttons/HeaderButtons/ForumSelectionHeaderButtons';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumCategoryScreenActionsMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenActionsMenu';
 import {ForumCategoryScreenSearchMenu} from '#src/Components/Menus/Forum/ForumCategoryScreenSearchMenu';
 import {ForumThreadScreenFilterMenu} from '#src/Components/Menus/Forum/ForumThreadScreenFilterMenu';
@@ -81,12 +79,12 @@ export const ForumCategoryScreen = ({route, navigation}: Props) => {
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <ForumCategoryScreenSearchMenu category={route.params.category} />
           <ForumThreadScreenSortMenu category={route.params.category} />
           <ForumThreadScreenFilterMenu />
           <ForumCategoryScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [enableSelection, route.params.category]);

@@ -1,9 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {UserDirectoryScreenActionsMenu} from '#src/Components/Menus/User/UserDirectoryScreenActionsMenu';
 import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
 import {UserDirectoryText} from '#src/Components/Text/UserRelationsText';
@@ -25,9 +23,9 @@ export const UserDirectoryScreen = ({navigation}: Props) => {
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <UserDirectoryScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn]);

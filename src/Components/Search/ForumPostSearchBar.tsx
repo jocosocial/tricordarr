@@ -1,9 +1,9 @@
 import {FlashListRef} from '@shopify/flash-list';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Keyboard, RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumPostList} from '#src/Components/Lists/Forums/ForumPostList';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -67,7 +67,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
@@ -75,7 +75,7 @@ export const ForumPostSearchBar = (props: ForumPostSearchBarProps) => {
               commonNavigation.push(CommonStackComponents.forumHelpScreen);
             }}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [commonNavigation]);

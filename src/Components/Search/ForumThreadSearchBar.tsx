@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Keyboard, RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumThreadList} from '#src/Components/Lists/Forums/ForumThreadList';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
@@ -82,7 +82,7 @@ export const ForumThreadSearchBar = (props: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <ForumThreadScreenSortMenu />
           <Item
             title={'Help'}
@@ -91,7 +91,7 @@ export const ForumThreadSearchBar = (props: Props) => {
               commonNavigation.push(CommonStackComponents.forumHelpScreen);
             }}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [commonNavigation]);

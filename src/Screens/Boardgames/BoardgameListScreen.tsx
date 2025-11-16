@@ -1,10 +1,10 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {BoardgameGuideFAB} from '#src/Components/Buttons/FloatingActionButtons/BoardgameGuideFAB';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {AppView} from '#src/Components/Views/AppView';
@@ -49,7 +49,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(
     () => (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           <Item
             title={'Search'}
             iconName={AppIcons.search}
@@ -66,7 +66,7 @@ export const BoardgameListScreen = ({navigation}: Props) => {
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.boardgameHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [favorites, navigation],

@@ -2,10 +2,10 @@ import {useBackHandler} from '@react-native-community/hooks';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {WebView, WebViewNavigation} from 'react-native-webview';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderBackButton} from '#src/Components/Buttons/HeaderButtons/HeaderBackButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {SiteUIScreenActionsMenu} from '#src/Components/Menus/SiteUI/SiteUIScreenActionsMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
@@ -55,10 +55,10 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   const getNavBarIcons = useCallback(
     () => (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
           <SiteUIScreenActionsMenu onHome={onHome} oobe={oobe} getCurrentUrl={getCurrentUrl} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     ),
     [onHome, oobe, getCurrentUrl],
@@ -66,9 +66,9 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
 
   const getBackButton = useCallback(() => {
     return (
-      <HeaderButtons style={commonStyles.headerLeftWrapper} HeaderButtonComponent={MaterialHeaderButton}>
+      <MaterialHeaderButtons style={commonStyles.headerLeftWrapper}>
         <HeaderBackButton onPress={handleBackButtonPress} />
-      </HeaderButtons>
+      </MaterialHeaderButtons>
     );
   }, [handleBackButtonPress, commonStyles.headerLeftWrapper]);
 

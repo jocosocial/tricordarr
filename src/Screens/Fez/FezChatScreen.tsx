@@ -6,10 +6,8 @@ import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {TConversationListRef} from '#src/Components/Lists/ConversationList';
 import {ChatFlatList} from '#src/Components/Lists/Fez/ChatFlatList';
@@ -79,9 +77,9 @@ export const FezChatScreen = ({route}: Props) => {
     }
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <FezChatScreenActionsMenu fez={fez} onRefresh={onRefresh} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [fez, onRefresh]);

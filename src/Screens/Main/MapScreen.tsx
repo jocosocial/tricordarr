@@ -2,9 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Menu} from 'react-native-paper';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppImage} from '#src/Components/Images/AppImage';
 import {DeckMapMenu} from '#src/Components/Menus/DeckMapMenu';
@@ -33,9 +31,9 @@ export const MapScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <DeckMapMenu shipDeck={shipDeck} setShipDeck={setShipDeck} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [shipDeck]);

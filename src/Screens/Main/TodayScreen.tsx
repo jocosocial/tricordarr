@@ -1,9 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ModeratorCard} from '#src/Components/Cards/MainScreen/ModeratorCard';
 import {MainAccountMenu} from '#src/Components/Menus/MainAccountMenu';
 import {NotificationsMenu} from '#src/Components/Menus/NotificationsMenu';
@@ -63,10 +61,10 @@ export const TodayScreen = ({navigation}: Props) => {
   const getRightMainHeaderButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {isLoggedIn && <NotificationsMenu />}
           <MainAccountMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [isLoggedIn]);

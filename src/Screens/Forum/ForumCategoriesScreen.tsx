@@ -3,9 +3,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {Divider} from 'react-native-paper';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumAlertwordListItem} from '#src/Components/Lists/Items/Forum/ForumAlertwordListItem';
 import {ForumCategoryListItem} from '#src/Components/Lists/Items/Forum/ForumCategoryListItem';
 import {ForumCategoryListItemBase} from '#src/Components/Lists/Items/Forum/ForumCategoryListItemBase';
@@ -46,10 +44,10 @@ export const ForumCategoriesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <ForumCategoriesScreenSearchMenu />
           <ForumCategoriesScreenActionsMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);

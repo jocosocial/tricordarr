@@ -1,9 +1,9 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {AppIcons} from '#src/Enums/Icons';
@@ -23,7 +23,7 @@ export const PerformerScreen = ({route, navigation}: Props) => {
     const eventID = route.params.eventID;
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           {data && eventID && profilePublicData && profilePublicData.header.userID === data?.user?.userID && (
             <Item
               title={'Edit'}
@@ -37,7 +37,7 @@ export const PerformerScreen = ({route, navigation}: Props) => {
             />
           )}
           <PerformerActionsMenu performerData={data} />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [data, navigation, profilePublicData, route]);

@@ -2,10 +2,10 @@ import {useIsFocused} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
 import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEditButton';
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {LfgScreenActionsMenu} from '#src/Components/Menus/LFG/LfgScreenActionsMenu';
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
@@ -38,7 +38,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons left HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons left>
           {lfg && profilePublicData && showChat && (
             <Item
               title={'Chat'}
@@ -57,7 +57,7 @@ export const LfgScreen = ({navigation, route}: Props) => {
             />
           )}
           {lfg && <LfgScreenActionsMenu fezData={lfg} />}
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [lfg, navigation, profilePublicData, showChat]);

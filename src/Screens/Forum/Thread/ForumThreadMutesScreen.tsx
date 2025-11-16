@@ -1,9 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import {HeaderButtons} from 'react-navigation-header-buttons';
-
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
@@ -16,9 +14,9 @@ export const ForumThreadMutesScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <ForumThreadScreenSortMenu />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, []);

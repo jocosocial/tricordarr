@@ -3,9 +3,9 @@ import {useQueryClient} from '@tanstack/react-query';
 import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import {Item} from 'react-navigation-header-buttons';
 
-import {MaterialHeaderButton} from '#src/Components/Buttons/MaterialHeaderButton';
+import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PhotostreamImageCreateForm} from '#src/Components/Forms/Photostream/PhotostreamImageCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
@@ -74,13 +74,13 @@ export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>
-        <HeaderButtons HeaderButtonComponent={MaterialHeaderButton}>
+        <MaterialHeaderButtons>
           <Item
             title={'Help'}
             iconName={AppIcons.help}
             onPress={() => navigation.push(MainStackComponents.photostreamHelpScreen)}
           />
-        </HeaderButtons>
+        </MaterialHeaderButtons>
       </View>
     );
   }, [navigation]);
