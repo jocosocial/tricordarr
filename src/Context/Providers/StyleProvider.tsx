@@ -166,6 +166,10 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
     headerRightContainerStyle: {
       paddingRight: 16,
     },
+    // This is needed to prevent iOS from crowding the header.
+    // Got the idea from https://github.com/react-navigation/react-navigation/issues/11337
+    // https://reactnavigation.org/docs/header-buttons/
+    headerBackTitle: 'Back',
   };
 
   return (
