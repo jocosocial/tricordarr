@@ -153,6 +153,8 @@ export const StyleProvider = ({children}: PropsWithChildren) => {
   });
 
   const screenOptions = {
+    // headerStyle seems to only accept backgroundColor.
+    // https://reactnavigation.org/docs/elements/#headerstyle
     headerStyle: themedStyles.background,
     headerTitleStyle: themedStyles.background,
     headerTintColor: theme.colors.onBackground,
