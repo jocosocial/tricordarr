@@ -12,5 +12,12 @@ export const HeaderBackButton = ({onPress, title = 'Back'}: HeaderBackButtonProp
   // On iOS, show title with icon (matching default React Navigation behavior)
   // On Android, show only icon (matching default React Navigation behavior)
   // Using empty string on Android to satisfy type requirement while hiding text
-  return <Item title={Platform.OS === 'ios' ? title : ''} iconName={AppIcons.back} onPress={onPress} />;
+  return (
+    <Item
+      title={Platform.OS === 'ios' ? title : ''}
+      iconName={AppIcons.back}
+      onPress={onPress}
+      showTitle={Platform.OS === 'ios'}
+    />
+  );
 };
