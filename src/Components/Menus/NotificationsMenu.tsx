@@ -6,7 +6,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {UserNotificationData} from '#src/Structs/ControllerStructs';
 

@@ -4,7 +4,7 @@ import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigator';
 

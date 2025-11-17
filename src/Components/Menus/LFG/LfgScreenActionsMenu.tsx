@@ -10,7 +10,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useLFGStackNavigation} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';

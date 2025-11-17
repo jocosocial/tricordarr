@@ -6,7 +6,7 @@ import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {ReloadMenuItem} from '#src/Components/Menus/Items/ReloadMenuItem';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 

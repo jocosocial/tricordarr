@@ -17,7 +17,7 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useForumRelationMutation} from '#src/Queries/Forum/ForumThreadRelationMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';

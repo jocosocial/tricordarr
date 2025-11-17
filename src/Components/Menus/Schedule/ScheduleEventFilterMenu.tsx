@@ -8,7 +8,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 
 export const ScheduleEventFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

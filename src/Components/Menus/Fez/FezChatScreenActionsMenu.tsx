@@ -11,7 +11,7 @@ import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useFezMuteMutation} from '#src/Queries/Fez/FezMuteMutations';
 import {FezData} from '#src/Structs/ControllerStructs';

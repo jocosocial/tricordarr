@@ -9,7 +9,7 @@ import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {useScheduleStackNavigation} from '#src/Navigation/Stacks/ScheduleStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';

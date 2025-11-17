@@ -9,7 +9,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {ShareContentType} from '#src/Enums/ShareContentType';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {EventData} from '#src/Structs/ControllerStructs';
 

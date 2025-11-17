@@ -15,7 +15,7 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {MapIndicatorView} from '#src/Components/Views/MapIndicatorView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {ShipDecks} from '#src/Libraries/Ship';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';

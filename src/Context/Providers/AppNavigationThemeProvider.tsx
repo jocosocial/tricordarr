@@ -4,7 +4,7 @@ import {useColorScheme} from 'react-native';
 import {adaptNavigationTheme, PaperProvider} from 'react-native-paper';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {closeAllMenus} from '#src/Hooks/MenuHook';
+import {closeAllMenus} from '#src/Hooks/useMenu';
 import {navigationLinking} from '#src/Libraries/Linking';
 import {twitarrTheme, twitarrThemeDark} from '#src/Styles/Theme';
 

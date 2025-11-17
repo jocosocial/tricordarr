@@ -6,7 +6,7 @@ import {UserAvatarImage} from '#src/Components/Images/UserAvatarImage';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, useMainStack} from '#src/Navigation/Stacks/MainStackNavigator';
 import {SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';

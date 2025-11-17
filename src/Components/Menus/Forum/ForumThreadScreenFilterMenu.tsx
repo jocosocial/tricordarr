@@ -6,7 +6,7 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 
 export const ForumThreadScreenFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

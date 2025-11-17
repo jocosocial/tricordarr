@@ -1,6 +1,22 @@
 import {StyleSheet} from 'react-native';
 
-export const styleDefaults = {
+export interface StyleDefaults {
+  marginSize: number;
+  iconSize: number;
+  iconSizeSmall: number;
+  avatarSize: number;
+  avatarSizeSmall: number;
+  headerImageSize: number;
+  fontSize: number;
+  /**
+   * Arbitrary point at which things happen when scrolling a list.
+   */
+  listScrollThreshold: number;
+  imageSquareCropDimension: number;
+  overScrollHeight: number;
+}
+
+export const styleDefaults: StyleDefaults = {
   marginSize: 20,
   iconSize: 25,
   // iconSizeSmall used to be 20 but I feel that most of the time I use that it's when it's in-line

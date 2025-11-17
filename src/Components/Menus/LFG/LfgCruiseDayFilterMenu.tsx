@@ -7,7 +7,7 @@ import {MenuAnchor} from '#src/Components/Menus/MenuAnchor';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 
 export const LfgCruiseDayFilterMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();

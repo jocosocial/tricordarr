@@ -5,7 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {SelectableMenuItem} from '#src/Components/Menus/Items/SelectableMenuItem';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {DeckData, ShipDecks} from '#src/Libraries/Ship';
 
 interface DeckMapMenuProps {

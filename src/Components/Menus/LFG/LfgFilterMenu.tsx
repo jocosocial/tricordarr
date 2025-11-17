@@ -8,7 +8,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 
 interface LfgFilterMenuProps {
   showTypes?: boolean;

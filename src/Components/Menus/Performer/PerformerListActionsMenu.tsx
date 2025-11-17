@@ -5,7 +5,7 @@ import {Item} from 'react-navigation-header-buttons';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useMenu} from '#src/Hooks/MenuHook';
+import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 
 export const PerformerListActionsMenu = () => {
