@@ -1,3 +1,4 @@
+import {type StackNavigationOptions} from '@react-navigation/stack';
 import {createContext, useContext} from 'react';
 
 import {type StyleDefaults} from '#src/Styles';
@@ -5,7 +6,7 @@ import {type StyleDefaults} from '#src/Styles';
 interface StyleContextType {
   commonStyles: any;
   styleDefaults: StyleDefaults;
-  screenOptions: any;
+  screenOptions: StackNavigationOptions;
 }
 
 export const StyleContext = createContext(<StyleContextType>{});
