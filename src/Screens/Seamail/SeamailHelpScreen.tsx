@@ -35,10 +35,14 @@ export const SeamailHelpScreen = () => {
         <HelpTopicView>
           You can long-press on a message to access a menu of additional actions such as copy to clipboard.
         </HelpTopicView>
-        <HelpChapterTitleView title={'Search'} />
+        <HelpChapterTitleView title={'Misc'} />
         <HelpTopicView icon={AppIcons.search}>
           You can search for seamail conversations by keyword. This will search the subject line and the content of the
           messages.
+        </HelpTopicView>
+        <HelpTopicView icon={AppIcons.personalEvent}>
+          You can schedule a personal event with the users in a seamail conversation by pressing the "Create Event"
+          button in the header.
         </HelpTopicView>
       </ScrollingContentView>
     </AppView>

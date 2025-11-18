@@ -63,12 +63,14 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
         },
       },
       {
-        onSuccess: async () => {
+        onSuccess: async response => {
           const invalidations = FezData.getCacheKeys().map(key => {
             return queryClient.invalidateQueries({queryKey: key});
           });
           await Promise.all(invalidations);
-          navigation.goBack();
+          navigation.replace(CommonStackComponents.personalEventScreen, {
+            eventID: response.data.fezID,
+          });
         },
         onSettled: () => helpers.setSubmitting(false),
       },
@@ -89,7 +91,7 @@ export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
     fezType: FezType.personalEvent,
     minCapacity: '0',
     maxCapacity: '0',
-    initialUsers: [],
+    initialUsers: route.params?.initialUserHeaders || [],
     location: '',
   };
   return (

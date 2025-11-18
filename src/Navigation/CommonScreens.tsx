@@ -152,7 +152,7 @@ export type CommonStackParamList = {
     forumData?: ForumData;
   };
   SeamailCreateScreen?: {
-    initialUserHeader?: UserHeader;
+    initialUserHeaders?: UserHeader[];
     initialAsModerator?: boolean;
     initialAsTwitarrTeam?: boolean;
   };
@@ -197,6 +197,7 @@ export type CommonStackParamList = {
   };
   PersonalEventCreateScreen: {
     cruiseDay?: number;
+    initialUserHeaders?: UserHeader[];
   };
   UserProfileHelpScreen: ParamsWithOobe;
   BlockUsersScreen: undefined;
