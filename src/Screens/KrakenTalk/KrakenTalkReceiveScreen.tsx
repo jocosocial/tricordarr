@@ -24,10 +24,12 @@ export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
 
   const seamailCreateHandler = useCallback(() => {
     navigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeader: {
-        userID: route.params.callerUserID,
-        username: route.params.callerUsername,
-      },
+      initialUserHeaders: [
+        {
+          userID: route.params.callerUserID,
+          username: route.params.callerUsername,
+        },
+      ],
     });
   }, [route, navigation]);
 

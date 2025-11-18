@@ -6,6 +6,7 @@ import {FormikHelpers} from 'formik';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, View} from 'react-native';
 import {replaceTriggerValues} from 'react-native-controlled-mentions';
+import {Item} from 'react-navigation-header-buttons';
 
 import {PostAsUserBanner} from '#src/Components/Banners/PostAsUserBanner';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
@@ -22,6 +23,7 @@ import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {FezType} from '#src/Enums/FezType';
+import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
@@ -76,14 +78,29 @@ export const FezChatScreen = ({route}: Props) => {
     if (!fez) {
       return <></>;
     }
+    const isSeamail = FezType.isSeamailType(fez.fezType);
+    const participants = fez.members?.participants;
+    const canCreateEvent = isSeamail && participants && participants.length > 0;
+
     return (
       <View>
         <MaterialHeaderButtons>
+          {canCreateEvent && (
+            <Item
+              title={'Create Event'}
+              iconName={AppIcons.personalEvent}
+              onPress={() =>
+                navigation.push(CommonStackComponents.personalEventCreateScreen, {
+                  initialUserHeaders: participants,
+                })
+              }
+            />
+          )}
           <FezChatScreenActionsMenu fez={fez} onRefresh={onRefresh} />
         </MaterialHeaderButtons>
       </View>
     );
-  }, [fez, onRefresh]);
+  }, [fez, onRefresh, navigation]);
 
   const fezSocketMessageHandler = useCallback(
     (event: WebSocketMessageEvent) => {

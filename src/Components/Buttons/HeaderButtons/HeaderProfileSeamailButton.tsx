@@ -13,7 +13,7 @@ export const HeaderProfileSeamailButton = (props: HeaderProfileSeamailButtonProp
   const commonNavigation = useCommonStack();
   const seamailCreateHandler = () => {
     commonNavigation.push(CommonStackComponents.seamailCreateScreen, {
-      initialUserHeader: props.profile.header,
+      initialUserHeaders: [props.profile.header],
     });
   };
   return <Item title={'Create Seamail'} iconName={AppIcons.seamailCreate} onPress={seamailCreateHandler} />;

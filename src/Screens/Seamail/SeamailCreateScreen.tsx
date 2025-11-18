@@ -37,7 +37,7 @@ export const SeamailCreateScreen = ({navigation, route}: Props) => {
   const initialFormValues: SeamailFormValues = {
     fezType: FezType.open,
     info: '',
-    initialUsers: route.params?.initialUserHeader ? [route.params.initialUserHeader] : [],
+    initialUsers: route.params?.initialUserHeaders || [],
     maxCapacity: 0,
     minCapacity: 0,
     title: '',
