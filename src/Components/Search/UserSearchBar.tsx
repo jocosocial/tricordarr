@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
-import {HelperText, Searchbar} from 'react-native-paper';
 
 import {UserListItem} from '#src/Components/Lists/Items/UserListItem';
 import {ListSection} from '#src/Components/Lists/ListSection';
+import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {useUserMatchQuery} from '#src/Queries/Users/UsersQueries';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
@@ -41,20 +41,36 @@ export const UserSearchBar = ({
     }
   };
 
-  const showHelper = searchQuery.length < 2 && searchQuery !== '';
+  const onClear = () => {
+    setSearchQuery('');
+  };
 
+  // The query hook automatically searches when searchQuery.length >= 2 (via enabled condition)
+  // So we use autoSearch mode but don't need to provide onSearch since the query is reactive
   // https://stackoverflow.com/questions/8668174/indexof-method-in-an-object-array
   return (
     <View>
-      <Searchbar placeholder={label} onChangeText={onChangeSearch} value={searchQuery} />
-      {showHelper && <HelperText type={'error'}>Must enter at least two characters to search.</HelperText>}
+      <SearchBarBase
+        placeholder={label}
+        searchQuery={searchQuery}
+        onChangeSearch={onChangeSearch}
+        onClear={onClear}
+        minLength={2}
+        autoSearch={true}
+      />
       <ListSection>
         {data &&
-          data
-            // data (the search results) gets filtered to remove headers
-            // that are already present (userHeaders.indexOf "exists")
-            .filter(user => excludeHeaders.map(p => p.userID).indexOf(user.userID) === -1)
-            .flatMap(user => <UserListItem key={user.userID} userHeader={user} onPress={() => handlePress(user)} />)}
+          data.map(user => {
+            const isExcluded = excludeHeaders.some(excluded => excluded.userID === user.userID);
+            return (
+              <UserListItem
+                key={user.userID}
+                userHeader={user}
+                onPress={isExcluded ? undefined : () => handlePress(user)}
+                disabled={isExcluded}
+              />
+            );
+          })}
       </ListSection>
     </View>
   );

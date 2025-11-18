@@ -13,6 +13,11 @@ interface SearchBarBaseProps {
   minLength?: number;
   style?: ViewStyle;
   remove?: () => void;
+  /**
+   * If true, automatically triggers onSearch when the query meets minLength requirements.
+   * Useful for reactive search patterns where results update as the user types.
+   */
+  autoSearch?: boolean;
 }
 
 export const SearchBarBase = ({
@@ -24,6 +29,7 @@ export const SearchBarBase = ({
   minLength = 3,
   style,
   remove,
+  autoSearch = false,
 }: SearchBarBaseProps) => {
   const {commonStyles} = useStyles();
   const [showHelp, setShowHelp] = React.useState(false);
@@ -63,6 +69,26 @@ export const SearchBarBase = ({
     attemptSearch();
   };
 
+  // Handle auto-search: trigger search automatically when query meets minLength
+  // Also manage helper text visibility for reactive search patterns
+  useEffect(() => {
+    if (autoSearch) {
+      const trimmedQuery = searchQuery.trim();
+      if (trimmedQuery.length >= minLength) {
+        setShowHelp(false);
+        // Call onSearch if provided (for explicit search triggers)
+        // If not provided, the query hook will handle reactive searching
+        if (onSearch) {
+          onSearch();
+        }
+      } else if (trimmedQuery.length > 0 && trimmedQuery.length < minLength) {
+        setShowHelp(true);
+      } else {
+        setShowHelp(false);
+      }
+    }
+  }, [autoSearch, onSearch, searchQuery, minLength]);
+
   // Clear search results when you go back or otherwise unmount this screen
   // @TODO react query v5 removed remove(). Is this still relevant? Should we do something else?
   useEffect(() => {
@@ -73,7 +99,7 @@ export const SearchBarBase = ({
     <>
       <Searchbar
         placeholder={placeholder}
-        onIconPress={onIconPress}
+        onIconPress={autoSearch ? undefined : onIconPress}
         onChangeText={onChangeSearch}
         value={searchQuery}
         onSubmitEditing={() => {

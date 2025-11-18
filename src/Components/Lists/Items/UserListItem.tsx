@@ -12,13 +12,14 @@ interface UserListItemProps {
   userHeader: UserHeader;
   buttonOnPress?: (uh: UserHeader) => void;
   buttonIcon?: IconSource;
+  disabled?: boolean;
 }
 
 /**
  * Generic List.Item for displaying a user. Takes a UserHeader and lets you add special features like an action button
  * or something that happens when you press it.
  */
-export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: UserListItemProps) => {
+export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon, disabled = false}: UserListItemProps) => {
   const {styleDefaults, commonStyles} = useStyles();
 
   const styles = StyleSheet.create({
@@ -30,6 +31,13 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: U
     },
     avatar: {
       ...commonStyles.justifyCenter,
+      ...(disabled ? commonStyles.opacityHalf : {}),
+    },
+    titleStyle: {
+      ...(disabled ? commonStyles.opacityHalf : {}),
+    },
+    descriptionStyle: {
+      ...(disabled ? commonStyles.opacityHalf : {}),
     },
   });
 
@@ -60,9 +68,12 @@ export const UserListItem = ({userHeader, onPress, buttonOnPress, buttonIcon}: U
       style={styles.item}
       title={userHeader.username}
       description={userHeader.displayName}
+      titleStyle={styles.titleStyle}
+      descriptionStyle={styles.descriptionStyle}
       onPress={onPress}
       left={getAvatar}
       right={getActionButton}
+      disabled={disabled}
     />
   );
 };
