@@ -27,6 +27,7 @@ import {DrawerProvider} from '#src/Context/Providers/DrawerProvider';
 import {ErrorHandlerProvider} from '#src/Context/Providers/ErrorHandlerProvider';
 import {FeatureProvider} from '#src/Context/Providers/FeatureProvider';
 import {FilterProvider} from '#src/Context/Providers/FilterProvider';
+import {LayoutProvider} from '#src/Context/Providers/LayoutProvider';
 import {LoadingProvider} from '#src/Context/Providers/LoadingProvider';
 import {MenuProvider} from '#src/Context/Providers/MenuProvider';
 import {ModalProvider} from '#src/Context/Providers/ModalProvider';
@@ -104,53 +105,55 @@ function App(): React.JSX.Element {
         <ConfigProvider>
           <ThemeProvider>
             <NavigationProvider>
-              <KeyboardProvider>
-                <StyleProvider>
-                  <ErrorHandlerProvider>
-                    <SnackbarProvider>
-                      <AuthProvider>
-                        <SwiftarrQueryClientProvider>
-                          <LoadingProvider>
-                            <CriticalErrorProvider>
-                              <PrivilegeProvider>
-                                <SocketProvider>
-                                  <TwitarrProvider>
-                                    <UserNotificationDataProvider>
-                                      <FeatureProvider>
-                                        <ModalProvider>
-                                          <Portal.Host>
-                                            <HeaderButtonsProvider stackType={'native'}>
-                                              <CruiseProvider>
-                                                <DrawerProvider>
-                                                  <MenuProvider>
-                                                    <FilterProvider>
-                                                      <SelectionProvider>
-                                                        <AppEventHandler />
-                                                        <PushNotificationService />
-                                                        <NotificationDataListener />
-                                                        <NotificationDataPoller />
-                                                        <RootStackNavigator />
-                                                      </SelectionProvider>
-                                                    </FilterProvider>
-                                                  </MenuProvider>
-                                                </DrawerProvider>
-                                              </CruiseProvider>
-                                            </HeaderButtonsProvider>
-                                          </Portal.Host>
-                                        </ModalProvider>
-                                      </FeatureProvider>
-                                    </UserNotificationDataProvider>
-                                  </TwitarrProvider>
-                                </SocketProvider>
-                              </PrivilegeProvider>
-                            </CriticalErrorProvider>
-                          </LoadingProvider>
-                        </SwiftarrQueryClientProvider>
-                      </AuthProvider>
-                    </SnackbarProvider>
-                  </ErrorHandlerProvider>
-                </StyleProvider>
-              </KeyboardProvider>
+              <LayoutProvider>
+                <KeyboardProvider>
+                  <StyleProvider>
+                    <ErrorHandlerProvider>
+                      <SnackbarProvider>
+                        <AuthProvider>
+                          <SwiftarrQueryClientProvider>
+                            <LoadingProvider>
+                              <CriticalErrorProvider>
+                                <PrivilegeProvider>
+                                  <SocketProvider>
+                                    <TwitarrProvider>
+                                      <UserNotificationDataProvider>
+                                        <FeatureProvider>
+                                          <ModalProvider>
+                                            <Portal.Host>
+                                              <HeaderButtonsProvider stackType={'native'}>
+                                                <CruiseProvider>
+                                                  <DrawerProvider>
+                                                    <MenuProvider>
+                                                      <FilterProvider>
+                                                        <SelectionProvider>
+                                                          <AppEventHandler />
+                                                          <PushNotificationService />
+                                                          <NotificationDataListener />
+                                                          <NotificationDataPoller />
+                                                          <RootStackNavigator />
+                                                        </SelectionProvider>
+                                                      </FilterProvider>
+                                                    </MenuProvider>
+                                                  </DrawerProvider>
+                                                </CruiseProvider>
+                                              </HeaderButtonsProvider>
+                                            </Portal.Host>
+                                          </ModalProvider>
+                                        </FeatureProvider>
+                                      </UserNotificationDataProvider>
+                                    </TwitarrProvider>
+                                  </SocketProvider>
+                                </PrivilegeProvider>
+                              </CriticalErrorProvider>
+                            </LoadingProvider>
+                          </SwiftarrQueryClientProvider>
+                        </AuthProvider>
+                      </SnackbarProvider>
+                    </ErrorHandlerProvider>
+                  </StyleProvider>
+                </KeyboardProvider>
+              </LayoutProvider>
             </NavigationProvider>
           </ThemeProvider>
         </ConfigProvider>
