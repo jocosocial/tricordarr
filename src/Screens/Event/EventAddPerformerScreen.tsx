@@ -13,6 +13,7 @@ import {PerformerProfileDeleteModalView} from '#src/Components/Views/Modals/Perf
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {PerformerProfileWarningView} from '#src/Components/Views/Warnings/PerformerProfileWarningView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useEventQuery} from '#src/Queries/Events/EventQueries';
 import {
@@ -21,7 +22,6 @@ import {
 } from '#src/Queries/Performer/PerformerMutations';
 import {usePerformerSelfQuery} from '#src/Queries/Performer/PerformerQueries';
 import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.eventAddPerformerScreen>;
 
@@ -41,7 +41,7 @@ export const EventAddPerformerScreen = ({navigation, route}: Props) => {
 
   const performerCreateMutation = usePerformerUpsertMutation();
   const performerRemoveMutation = usePerformerDeleteForEventMutation();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {setModalVisible, setModalContent} = useModal();
   const queryClient = useQueryClient();
 

@@ -5,8 +5,8 @@ import {MD3TypescaleKey} from 'react-native-paper/lib/typescript/types';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface UserBylineTagProps {
   user: UserHeader;
@@ -51,7 +51,7 @@ export const UserBylineTag = ({
   prefix,
 }: UserBylineTagProps) => {
   const {privilegedUsernames} = usePrivilege();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
   const byPrivilegedUser = privilegedUsernames.some(username => user.username === username);
 

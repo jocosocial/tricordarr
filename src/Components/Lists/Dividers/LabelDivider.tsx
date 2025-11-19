@@ -2,8 +2,8 @@ import React from 'react';
 import {ColorValue, StyleProp, View, ViewStyle} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
 
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {commonStyles} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface LabelDividerProps {
   label?: string;
@@ -13,7 +13,7 @@ interface LabelDividerProps {
 }
 
 export const LabelDivider = ({label = 'New', color = undefined, wrapperStyle, dividerColor}: LabelDividerProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = {
     wrapper: {
       // Changing these to Smalls for the ForumPostFlatList use case.

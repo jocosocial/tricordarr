@@ -6,15 +6,15 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {usePhoneCallDeclineMutation} from '#src/Queries/PhoneCall/PhoneCallMutations';
-import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.krakenTalkReceiveScreen>;
 export const KrakenTalkReceiveScreen = ({route, navigation}: Props) => {
   const declineMutation = usePhoneCallDeclineMutation();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const onDecline = () => {
     declineMutation.mutate({

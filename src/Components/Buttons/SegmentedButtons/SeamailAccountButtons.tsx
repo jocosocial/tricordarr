@@ -3,11 +3,11 @@ import {SegmentedButtons} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PrivilegedUserAccounts} from '#src/Enums/UserAccessLevel';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {useAppTheme} from '#src/Styles/Theme';
 import {SegmentedButtonType} from '#src/Types';
 
 export const SeamailAccountButtons = () => {
@@ -15,7 +15,7 @@ export const SeamailAccountButtons = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const {clearPrivileges, becomeUser, hasModerator, hasTwitarrTeam, asPrivilegedUser} = usePrivilege();
   const [forUser, setForUser] = useState(asPrivilegedUser || profilePublicData?.header.username);
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [buttons, setButtons] = useState<SegmentedButtonType[]>([]);
 
   useEffect(() => {

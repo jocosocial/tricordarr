@@ -5,7 +5,7 @@ import {HelperText, Text, TouchableRipple} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface BooleanFieldProps {
   onPress?: () => void;
@@ -29,7 +29,7 @@ export const BooleanField = ({
   disabled = false,
 }: BooleanFieldProps) => {
   const {commonStyles, styleDefaults} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [field] = useField<boolean>(name);
   const {setFieldValue} = useFormikContext();
 

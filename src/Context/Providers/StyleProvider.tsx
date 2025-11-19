@@ -3,11 +3,11 @@ import {Platform, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {StyleContext} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {commonStyles, styleDefaults} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const StyleProvider = ({children}: PropsWithChildren) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const inset = useSafeAreaInsets();
 
   const themedStyles = StyleSheet.create({

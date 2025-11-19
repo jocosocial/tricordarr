@@ -14,10 +14,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PushNotificationConfig} from '#src/Libraries/AppConfig';
 import {contentNotificationCategories} from '#src/Libraries/Notifications/Content';
 import {startPushProvider} from '#src/Libraries/Notifications/Push';
-import {useAppTheme} from '#src/Styles/Theme';
 import {SegmentedButtonType} from '#src/Types';
 
 export const PushNotificationSettingsScreen = () => {
@@ -29,7 +29,7 @@ export const PushNotificationSettingsScreen = () => {
     notificationPermissionStatus,
     setHasNotificationPermission,
   } = useConfig();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [muteDuration] = useState(0);
   const [muteNotifications, setMuteNotifications] = useState(appConfig.muteNotifications);
   const [markReadCancelPush, setMarkReadCancelPush] = useState(appConfig.markReadCancelPush);

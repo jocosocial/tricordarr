@@ -7,10 +7,10 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 const ModalContent = ({fezData}: {fezData: FezData}) => {
   const {commonStyles} = useStyles();
@@ -29,7 +29,7 @@ const ModalContent = ({fezData}: {fezData: FezData}) => {
 
 export const LfgLeaveModal = ({fezData}: {fezData: FezData}) => {
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const membershipMutation = useFezMembershipMutation();
   const queryClient = useQueryClient();
 

@@ -12,8 +12,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {useAppTheme} from '#src/Styles/Theme';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
 // @ts-ignore
@@ -24,7 +24,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
   const {preRegistrationAvailable, setPreRegistrationMode} = useConfig();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,

@@ -10,6 +10,7 @@ import {ForumThreadListItemSwipeable} from '#src/Components/Swipeables/ForumThre
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {getEventTimeString} from '#src/Libraries/DateTime';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
@@ -17,7 +18,6 @@ import {useForumStackNavigation} from '#src/Navigation/Stacks/ForumStackNavigato
 import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 import {commonStyles} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface ForumThreadListItemProps {
   forumListData: ForumListData;
@@ -36,7 +36,7 @@ const ForumThreadListInternal = ({
   setEnableSelection,
 }: ForumThreadListItemProps) => {
   const forumNavigation = useForumStackNavigation();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {dispatchSelectedForums} = useSelection();
 
   const styles = StyleSheet.create({

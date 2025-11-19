@@ -6,8 +6,8 @@ import ImageView from 'react-native-image-viewing';
 import {ImageViewerSnackbar} from '#src/Components/Snackbars/ImageViewerSnackbar';
 import {ImageViewerFooterView} from '#src/Components/Views/Image/ImageViewerFooterView';
 import {ImageViewerHeaderView} from '#src/Components/Views/Image/ImageViewerHeaderView';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {saveImageDataURIToCameraRoll, saveImageURIToLocal} from '#src/Libraries/Storage/ImageStorage';
-import {useAppTheme} from '#src/Styles/Theme';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface AppImageViewerProps {
@@ -35,7 +35,7 @@ export const AppImageViewer = ({
   const [viewerMessage, setViewerMessage] = useState<string | Error>();
   const [currentImageIndex, setCurrentImageIndex] = useState(initialIndex);
   const [imageViewImages, setImageViewImages] = useState<(ImageURISource | ImageRequireSource)[]>([]);
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   /**
    * Function to get the FastImage cache URI for an image.

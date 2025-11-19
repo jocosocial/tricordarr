@@ -5,11 +5,11 @@ import {ActivityIndicator} from 'react-native-paper';
 
 import {ScheduleItemCardBase} from '#src/Components/Cards/Schedule/ScheduleItemCardBase';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {EventType} from '#src/Enums/EventType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useEventFavoriteMutation} from '#src/Queries/Events/EventFavoriteMutations';
 import {EventData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 import {ScheduleCardMarkerType} from '#src/Types';
 
 interface EventCardProps {
@@ -31,7 +31,7 @@ export const EventCard = ({
   showDay = false,
   hideFavorite = false,
 }: EventCardProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const eventFavoriteMutation = useEventFavoriteMutation();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);

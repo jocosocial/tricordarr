@@ -13,12 +13,12 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {useOpenQuery} from '#src/Queries/OpenQuery';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const TestErrorScreen = () => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {setErrorBanner, errorBanner} = useErrorHandler();
   const {snackbarPayload, setSnackbarPayload} = useSnackbar();
   const {commonStyles} = useStyles();

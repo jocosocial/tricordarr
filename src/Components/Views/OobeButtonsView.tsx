@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface OobeButtonsViewProps {
   leftText?: string;
@@ -35,7 +35,7 @@ export const OobeButtonsView = ({
   rightButtonTextColor,
 }: OobeButtonsViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     buttonContainer: {

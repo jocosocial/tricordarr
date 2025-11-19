@@ -5,7 +5,7 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface SwipeableButtonProps {
   onPress?: () => void;
@@ -21,7 +21,7 @@ interface SwipeableButtonProps {
 
 export const SwipeableButton = (props: SwipeableButtonProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = StyleSheet.create({
     button: {
       ...commonStyles.justifyCenter,

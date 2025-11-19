@@ -5,15 +5,15 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {PressAction} from '#src/Enums/Notifications';
 import {eventChannel} from '#src/Libraries/Notifications/Channels';
 import {generateContentNotification} from '#src/Libraries/Notifications/Content';
 import {cancelTestNotification, displayTestNotification} from '#src/Libraries/Notifications/TestNotification';
 import {NotificationTypeData} from '#src/Structs/SocketStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const TestNotificationScreen = () => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
 
   return (

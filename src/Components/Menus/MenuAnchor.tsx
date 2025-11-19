@@ -1,8 +1,8 @@
 import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface MenuAnchorProps {
   active?: boolean;
@@ -13,7 +13,7 @@ interface MenuAnchorProps {
 }
 
 export const MenuAnchor = ({title, active, onPress, onLongPress, iconName = AppIcons.menu}: MenuAnchorProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   return (
     <Item
       title={title}

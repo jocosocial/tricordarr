@@ -16,6 +16,7 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {BatteryOptimizationSettingsView} from '#src/Components/Views/Settings/BatteryOptimizationSettingsView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {WebSocketState} from '#src/Libraries/Network/Websockets';
 import {startPushProvider, stopPushProvider} from '#src/Libraries/Notifications/Push';
@@ -23,10 +24,9 @@ import {fgsFailedCounter, getSharedWebSocket} from '#src/Libraries/Notifications
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
 import {commonStyles} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const BackgroundConnectionSettingsAndroidView = () => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [socketState, setSocketState] = useState(69);
   const [refreshing, setRefreshing] = useState(false);
   const {enableUserNotifications} = useUserNotificationData();

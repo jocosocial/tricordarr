@@ -4,8 +4,8 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Button, Divider, HelperText, Menu} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface PickerFieldProps<TData> {
   name: string;
@@ -37,7 +37,7 @@ export const PickerField = <TData,>({
 }: PickerFieldProps<TData>) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const {commonStyles, styleDefaults} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {setFieldValue, isSubmitting} = useFormikContext();
   const [_, meta] = useField<TData>(name);
 

@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface AppIconProps {
   icon: string;
@@ -20,7 +20,7 @@ interface AppIconProps {
  * https://pictogrammers.com/library/mdi/
  */
 export const AppIcon = ({icon, size, color, style, onPress, onLongPress, small}: AppIconProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {styleDefaults} = useStyles();
 
   return (

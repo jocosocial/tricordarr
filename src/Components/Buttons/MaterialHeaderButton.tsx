@@ -4,14 +4,14 @@ import {StyleSheet, Text, View} from 'react-native';
 import {defaultRenderVisibleButton, HeaderButton, HeaderButtonsComponentType} from 'react-navigation-header-buttons';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 /**
  * Button for navigation headers. Based on
  * https://github.com/vonovak/react-navigation-header-buttons/blob/master/example/src/components/MaterialHeaderButton.tsx
  */
 export const MaterialHeaderButton: HeaderButtonsComponentType = props => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const {commonStyles} = useStyles();
   const styles = StyleSheet.create({

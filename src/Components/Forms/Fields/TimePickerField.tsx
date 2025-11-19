@@ -6,7 +6,7 @@ import {Button} from 'react-native-paper';
 import {TimePickerModal} from 'react-native-paper-dates';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface TimePickerFieldProps {
   name: string;
@@ -22,7 +22,7 @@ export const TimePickerField = ({name}: TimePickerFieldProps) => {
   const {setFieldValue} = useFormikContext();
   const [visible, setVisible] = React.useState(false);
   const {commonStyles, styleDefaults} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const onDismiss = React.useCallback(() => {
     setVisible(false);

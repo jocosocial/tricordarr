@@ -7,8 +7,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 import {FabGroupActionType} from '#src/Types';
 
 interface BaseFABProps {
@@ -29,7 +29,7 @@ export const BaseFABGroup = ({
   showLabel = true,
 }: BaseFABProps) => {
   const [state, setState] = useState({open: false});
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {styleDefaults} = useStyles();
   const insets = useSafeAreaInsets();
   const {snackbarPayload} = useSnackbar();

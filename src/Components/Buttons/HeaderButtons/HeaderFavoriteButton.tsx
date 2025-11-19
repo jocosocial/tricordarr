@@ -1,8 +1,8 @@
 import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface HeaderFavoriteButtonProps {
   onPress?: () => void;
@@ -10,7 +10,7 @@ interface HeaderFavoriteButtonProps {
 }
 
 export const HeaderFavoriteButton = (props: HeaderFavoriteButtonProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   return (
     <Item
       title={'Favorite'}

@@ -12,14 +12,14 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useClientConfigQuery} from '#src/Queries/Client/ClientQueries';
-import {useAppTheme} from '#src/Styles/Theme';
 import {CruiseSettingsFormValues, PreRegistrationSettingsFormValues} from '#src/Types/FormValues';
 
 export const CruiseSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const {data, refetch} = useClientConfigQuery({enabled: false});
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
   const {cruiseDayToday, adjustedCruiseDayToday, cruiseDayIndex, adjustedCruiseDayIndex} = useCruise();
 

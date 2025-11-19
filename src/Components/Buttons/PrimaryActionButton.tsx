@@ -3,7 +3,7 @@ import {StyleProp, View, ViewStyle} from 'react-native';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface PrimaryActionButtonProps {
   buttonText: string;
@@ -33,7 +33,7 @@ export const PrimaryActionButton = ({
   viewStyle,
   icon,
 }: PrimaryActionButtonProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const buttonStyle = {
     borderWidth: mode === 'contained' ? 0 : 1,

@@ -7,9 +7,9 @@ import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {ModeratorBlockText, UserBlockText} from '#src/Components/Text/UserRelationsText';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface BlockUserModalViewProps {
   user: UserHeader;
@@ -28,7 +28,7 @@ const BlockUserModalContent = () => {
 export const BlockUserModalView = ({user}: BlockUserModalViewProps) => {
   const blockMutation = useUserBlockMutation();
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const queryClient = useQueryClient();
 
   const onSubmit = () => {

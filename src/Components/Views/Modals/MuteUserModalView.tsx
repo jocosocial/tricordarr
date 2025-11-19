@@ -7,9 +7,9 @@ import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {ModeratorMuteText, UserMuteText} from '#src/Components/Text/UserRelationsText';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserMuteMutation} from '#src/Queries/Users/UserMuteMutations';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface MuteUserModalViewProps {
   user: UserHeader;
@@ -28,7 +28,7 @@ const MuteUserModalContent = () => {
 export const MuteUserModalView = ({user}: MuteUserModalViewProps) => {
   const muteMutation = useUserMuteMutation();
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const queryClient = useQueryClient();
 
   const onSubmit = () => {

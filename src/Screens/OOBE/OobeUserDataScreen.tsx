@@ -9,15 +9,15 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
-import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDataScreen>;
 
 export const OobeUserDataScreen = ({navigation}: Props) => {
   const {tokenData} = useAuth();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {preRegistrationMode} = useConfig();
 
   return (
