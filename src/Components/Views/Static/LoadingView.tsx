@@ -1,5 +1,5 @@
 import React from 'react';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl, StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 
 import {AppView} from '#src/Components/Views/AppView';
@@ -13,18 +13,22 @@ interface LoadingViewProps {
 
 export const LoadingView = (props: LoadingViewProps) => {
   const {commonStyles} = useStyles();
+
+  const styles = StyleSheet.create({
+    container: {
+      ...commonStyles.flex,
+      ...commonStyles.justifyCenter,
+      ...commonStyles.alignItemsCenter,
+      ...commonStyles.marginTop,
+    },
+  });
+
   return (
     <AppView safeEdges={['bottom', 'top']}>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
         <ActivityIndicator />
-        <View
-          style={[
-            commonStyles.flex,
-            commonStyles.justifyCenter,
-            commonStyles.alignItemsCenter,
-            commonStyles.marginTop,
-          ]}>
+        <View style={styles.container}>
           <Text>Loading...</Text>
         </View>
       </ScrollingContentView>
