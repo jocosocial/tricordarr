@@ -1,76 +1,63 @@
-import {type $Typed, type AppBskyEmbedRecord, AppBskyRichtextFacet, RichText} from '@atproto/api';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {type LayoutChangeEvent, View} from 'react-native';
+import {type LayoutChangeEvent, StyleSheet, View} from 'react-native';
 import {useKeyboardHandler} from 'react-native-keyboard-controller';
+import {ActivityIndicator} from 'react-native-paper';
 import Animated, {runOnJS, scrollTo, useAnimatedRef, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
 import {type ReanimatedScrollEvent} from 'react-native-reanimated/lib/typescript/hook/commonTypes';
 
-import {ChatStatusInfo} from './ChatStatusInfo';
-import {MessageInputEmbed, useMessageEmbed} from './MessageInputEmbed';
+import {AppListV2, type ListMethods} from '#src/Components/ListsV2/AppListV2';
+import {isNative, isWeb} from '#src/Libraries/Platform/Detection';
 
-import {ChatEmptyPill} from '#/components/dms/ChatEmptyPill';
-import {MessageItem} from '#/components/dms/MessageItem';
-import {NewMessagesPill} from '#/components/dms/NewMessagesPill';
-import {Loader} from '#/components/Loader';
-import {Text} from '#/components/Typography';
-import {useHideBottomBarBorderForScreen} from '#/lib/hooks/useHideBottomBarBorder';
-import {ScrollProvider} from '#/lib/ScrollContext';
-import {shortenLinks, stripInvalidMentions} from '#/lib/strings/rich-text-manip';
-import {convertBskyAppUrlIfNeeded, isBskyPostUrl} from '#/lib/strings/url-helpers';
-import {logger} from '#/logger';
-import {isNative} from '#/platform/detection';
-import {isWeb} from '#/platform/detection';
-import {ChatDisabled} from '#/screens/Messages/components/ChatDisabled';
-import {MessageInput} from '#/screens/Messages/components/MessageInput';
-import {MessageListError} from '#/screens/Messages/components/MessageListError';
-import {
-  type ActiveConvoStates,
-  isConvoActive,
-  useConvoActive,
-} from '#/state/messages/convo'
-import {
-  type ConvoItem,
-  type ConvoState,
-  ConvoStatus,
-} from '#/state/messages/convo/types'
-import {useGetPost} from '#/state/queries/post'
-import {useAgent} from '#/state/session'
-import {useShellLayout} from '#/state/shell/shell-layout'
-import {
-  EmojiPicker,
-  type EmojiPickerState,
-} from '#/view/com/composer/text-input/web/EmojiPicker'
-import {List, type ListMethods} from '#/view/com/util/List'
+// import {MessageInputEmbed, useMessageEmbed} from './MessageInputEmbed';
+// // import {MessageItem} from '#/components/dms/MessageItem';
+// import {NewMessagesPill} from '#/components/dms/NewMessagesPill';
+// // import {Text} from '#/components/Typography';
+// import {useHideBottomBarBorderForScreen} from '#/lib/hooks/useHideBottomBarBorder';
+// import {ScrollProvider} from '#/lib/ScrollContext';
+// import {shortenLinks, stripInvalidMentions} from '#/lib/strings/rich-text-manip';
+// import {convertBskyAppUrlIfNeeded, isBskyPostUrl} from '#/lib/strings/url-helpers';
+// import {logger} from '#/logger';
+// import {ChatDisabled} from '#/screens/Messages/components/ChatDisabled';
+// import {MessageInput} from '#/screens/Messages/components/MessageInput';
+// // import {MessageListError} from '#/screens/Messages/components/MessageListError';
+// import {type ActiveConvoStates, isConvoActive, useConvoActive} from '#/state/messages/convo';
+// import {type ConvoState, ConvoStatus} from '#/state/messages/convo/types';
+// import {useGetPost} from '#/state/queries/post';
+// import {useAgent} from '#/state/session';
+// import {useShellLayout} from '#/state/shell/shell-layout';
+// import {EmojiPicker, type EmojiPickerState} from '#/view/com/composer/text-input/web/EmojiPicker';
 
-function MaybeLoader({isLoading}: {isLoading: boolean}) {
-  return (
-    <View
-      style={{
-        height: 50,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      {isLoading && <Loader size={'xl'} />}
-    </View>
-  );
-}
+/**
+ * Loading view. Used in the list header.
+ */
+const MaybeLoader = ({isLoading}: {isLoading: boolean}) => {
+  const styles = StyleSheet.create({
+    container: {
+      height: 50,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
+  return <View style={styles.container}>{isLoading && <ActivityIndicator />}</View>;
+};
 
-function renderItem({item}: {item: ConvoItem}) {
-  if (item.type === 'message' || item.type === 'pending-message') {
-    return <MessageItem item={item} />;
-  } else if (item.type === 'deleted-message') {
-    return <Text>Deleted message</Text>;
-  } else if (item.type === 'error') {
-    return <MessageListError item={item} />;
-  }
+// Dont need this, passed in as a prop
+// const renderItem = ({item}: {item: ConvoItem}) => {
+//   if (item.type === 'message' || item.type === 'pending-message') {
+//     return <MessageItem item={item} />;
+//   } else if (item.type === 'deleted-message') {
+//     return <Text>Deleted message</Text>;
+//   } else if (item.type === 'error') {
+//     return <MessageListError item={item} />;
+//   }
 
-  return null;
-}
+//   return null;
+// };
 
-function keyExtractor(item: ConvoItem) {
-  return item.key;
-}
+// function keyExtractor(item: ConvoItem) {
+//   return item.key;
+// }
 
 function onScrollToIndexFailed() {
   // Placeholder function. You have to give FlatList something or else it will error.
@@ -94,7 +81,9 @@ export function MessagesList({
   const getPost = useGetPost();
   const {embedUri, setEmbed} = useMessageEmbed();
 
-  useHideBottomBarBorderForScreen();
+  // Simply including this hides the bottom bar border
+  // What a journey for a simple thing.
+  // useHideBottomBarBorderForScreen();
 
   const flatListRef = useAnimatedRef<ListMethods>();
 
@@ -392,7 +381,7 @@ export function MessagesList({
     <>
       {/* Custom scroll provider so that we can use the `onScroll` event in our custom List implementation */}
       <ScrollProvider onScroll={onScroll}>
-        <List
+        <AppListV2
           ref={flatListRef}
           data={convoState.items}
           renderItem={renderItem}
@@ -476,25 +465,26 @@ function ConversationFooter({
   hasAcceptOverride?: boolean;
   children?: React.ReactNode; // message input
 }) {
-  if (!isConvoActive(convoState)) {
-    return null;
-  }
+  // if (!isConvoActive(convoState)) {
+  //   return null;
+  // }
 
   const footerState = getFooterState(convoState, hasAcceptOverride);
 
   switch (footerState) {
     case 'loading':
       return null;
-    case 'new-chat':
-      return (
-        <>
-          <ChatEmptyPill />
-          {children}
-        </>
-      );
-    case 'request':
-      return <ChatStatusInfo convoState={convoState} />;
+    // case 'new-chat':
+    //   return (
+    //     <>
+    //       <ChatEmptyPill />
+    //       {children}
+    //     </>
+    //   );
+    // case 'request':
+    //   return <ChatStatusInfo convoState={convoState} />;
     case 'standard':
+    case 'new-chat':
       return children;
   }
 }

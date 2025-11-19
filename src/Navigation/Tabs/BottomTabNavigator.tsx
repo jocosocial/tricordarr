@@ -1,9 +1,9 @@
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {type BottomTabBarProps, BottomTabNavigationProp, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
+import React, {useCallback} from 'react';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
+import {AppBottomTabBar} from '#src/Components/Navigation/AppBottomTabBar';
 import {AppIcons} from '#src/Enums/Icons';
 import {ChatStackNavigator, ChatStackParamList} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {ForumStackNavigator, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
@@ -41,13 +41,13 @@ export enum BottomTabComponents {
 
 export const BottomTabNavigator = () => {
   const {data: userNotificationData} = useUserNotificationDataQuery({enabled: false});
-  const Tab = createMaterialBottomTabNavigator<BottomTabParamList>();
+  const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-  function getIcon(icon: string) {
+  const getIcon = useCallback((icon: string) => {
     return <AppIcon icon={icon} />;
-  }
+  }, []);
 
-  const getChatBadgeCount = () => {
+  const getChatBadgeCount = useCallback(() => {
     let count = userNotificationData?.newSeamailMessageCount || 0;
     if (userNotificationData?.moderatorData?.newModeratorSeamailMessageCount) {
       count += userNotificationData.moderatorData.newModeratorSeamailMessageCount;
@@ -56,18 +56,26 @@ export const BottomTabNavigator = () => {
       count += userNotificationData.moderatorData.newTTSeamailMessageCount;
     }
     return count;
-  };
+  }, [userNotificationData]);
 
-  const getForumBadgeCount = () => {
+  const getForumBadgeCount = useCallback(() => {
     let count = userNotificationData?.newForumMentionCount || 0;
     userNotificationData?.alertWords.map(alertData => {
       count += alertData.newForumMentionCount;
     });
     return count;
-  };
+  }, [userNotificationData]);
+
+  const tabBar = useCallback((props: BottomTabBarProps) => {
+    return <AppBottomTabBar {...props} />;
+  }, []);
 
   return (
-    <Tab.Navigator initialRouteName={BottomTabComponents.homeTab} backBehavior={'history'}>
+    <Tab.Navigator
+      initialRouteName={BottomTabComponents.homeTab}
+      backBehavior={'history'}
+      tabBar={tabBar}
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
         name={BottomTabComponents.homeTab}
         component={MainStackNavigator}

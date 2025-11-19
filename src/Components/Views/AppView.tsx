@@ -5,6 +5,7 @@ import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
+import {HeaderHeightMeasurer} from '#src/Components/Layout/HeaderHeightMeasurer';
 import {AppModal} from '#src/Components/Modals/AppModal';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
@@ -12,6 +13,7 @@ import {PreRegistrationWarningView} from '#src/Components/Views/Warnings/PreRegi
 import {UnsavedChangesView} from '#src/Components/Views/Warnings/UnsavedChangesView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
+import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
@@ -23,25 +25,33 @@ interface AppViewProps extends PropsWithChildren {
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children, safeEdges}: AppViewProps) => {
+export const AppView = ({children, safeEdges: _safeEdges}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
   const {preRegistrationMode} = useConfig();
+  const {headerHeightValue, footerHeightValue} = useLayout();
 
+  // Log layout values for debugging
   console.log('insets', insets);
+  console.log(`[AppView] headerHeight: ${headerHeightValue}, footerHeight: ${footerHeightValue}`);
+
+  // Apply safe area insets only if header/footer heights are zero
+  // This ensures proper spacing when navigation bars aren't present
+  const paddingTop = headerHeightValue === 0 ? insets.top : undefined;
+  const paddingBottom = footerHeightValue === 0 ? insets.bottom : undefined;
 
   const styles = StyleSheet.create({
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
       // I hate all of this shit.
-      paddingTop: safeEdges?.includes('top') ? insets.top : undefined,
-      paddingBottom: safeEdges?.includes('bottom') ? insets.bottom : undefined,
-      paddingLeft: safeEdges?.includes('left') ? insets.left : undefined,
-      paddingRight: safeEdges?.includes('right') ? insets.right : undefined,
+      paddingTop,
+      paddingBottom,
+      paddingLeft: undefined,
+      paddingRight: undefined,
     },
     keyboardView: {
       ...commonStyles.flex,
@@ -75,6 +85,7 @@ export const AppView = ({children, safeEdges}: AppViewProps) => {
           <AppModal />
           <AppSnackbar />
         </Portal>
+        <HeaderHeightMeasurer />
         {preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
