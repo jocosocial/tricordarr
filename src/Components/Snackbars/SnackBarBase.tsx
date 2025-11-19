@@ -2,7 +2,7 @@ import React from 'react';
 import {Animated, StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {Snackbar, Text} from 'react-native-paper';
 
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {StringOrError} from '#src/Types';
 
 export interface SnackBarBaseProps {
@@ -24,7 +24,7 @@ export const SnackBarBase = ({
   messagePrefix = '',
   elevation,
 }: SnackBarBaseProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   // Snackbar uses .onSurface color, so we need to invert
   // any custom text.

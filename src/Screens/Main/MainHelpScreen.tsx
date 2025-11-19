@@ -7,12 +7,12 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const MainHelpScreen = () => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   return (
     <AppView>

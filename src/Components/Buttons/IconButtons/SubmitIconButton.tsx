@@ -4,8 +4,8 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface SubmitIconButtonProps {
   onPress: () => void;
@@ -26,7 +26,7 @@ export const SubmitIconButton = ({
   containerColor,
   withPrivilegeColors,
 }: SubmitIconButtonProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {styleDefaults} = useStyles();
   const {asPrivilegedUser} = usePrivilege();
   const buttonContainerColor = asPrivilegedUser ? theme.colors.errorContainer : theme.colors.twitarrNeutralButton;

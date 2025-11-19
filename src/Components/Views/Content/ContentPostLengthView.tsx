@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface PostLengthViewProps {
   content: string;
@@ -15,7 +15,7 @@ export const ContentPostLengthView = ({content, maxLines = 25, maxChars = 500}: 
   const chars = content.length;
   const lines = content.split(/\r\n|\r|\n/).length;
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const isMax = chars >= maxChars || lines >= maxLines;
 

@@ -4,8 +4,8 @@ import {Card, Text, TouchableRipple} from 'react-native-paper';
 
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface AppUpdateCardProps {
   currentVersion: string;
@@ -14,7 +14,7 @@ interface AppUpdateCardProps {
 
 export const AppUpdateCard = (props: AppUpdateCardProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     card: {

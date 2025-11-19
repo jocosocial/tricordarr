@@ -8,11 +8,11 @@ import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {ReportModalView} from '#src/Components/Views/Modals/ReportModalView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 import {ScheduleCardMarkerType} from '#src/Types';
 
 interface FezCardProps {
@@ -38,7 +38,7 @@ const FezCardInternal = ({
   enableReportOnly = false,
   icon,
 }: FezCardProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const unreadCount = fez.members ? fez.members.postCount - fez.members.readCount : 0;
   const {commonStyles} = useStyles();
   const {setModalContent, setModalVisible} = useModal();

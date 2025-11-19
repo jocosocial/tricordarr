@@ -10,10 +10,10 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '#src/Queries/Users/UserNoteMutations';
 import {UserHeader} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 import {UserNoteFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userPrivateNoteScreen>;
@@ -25,7 +25,7 @@ export const UserPrivateNoteScreen = ({route, navigation}: Props) => {
     note: route.params.user.note || '',
   };
   const queryClient = useQueryClient();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
   const onSubmit = (values: UserNoteFormValues, helpers: FormikHelpers<UserNoteFormValues>) => {
     helpers.setSubmitting(true);

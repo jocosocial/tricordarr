@@ -7,9 +7,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useForumPostDeleteMutation} from '#src/Queries/Forum/ForumPostMutations';
 import {ForumData, PostData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -27,7 +27,7 @@ interface Props {
 
 export const ForumPostDeleteModalView = ({postData, forumData}: Props) => {
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const deleteMutation = useForumPostDeleteMutation();
   const queryClient = useQueryClient();
 

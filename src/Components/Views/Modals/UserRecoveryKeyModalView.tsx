@@ -6,7 +6,7 @@ import {Text} from 'react-native-paper';
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface UserRecoveryKeyModalViewProps {
   userRecoveryKey: string;
@@ -40,7 +40,7 @@ const UserRecoveryKeyModalContent = ({recoveryKey}: {recoveryKey: string}) => {
 };
 
 export const UserRecoveryKeyModalView = ({userRecoveryKey, onPress}: UserRecoveryKeyModalViewProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const cardActions = (
     <PrimaryActionButton

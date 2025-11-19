@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Context/Contexts/ThemeContext';
 import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
 import {buildWebSocket, wsHealthcheck} from '#src/Libraries/Network/Websockets';
@@ -10,7 +11,6 @@ import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Styles/Theme';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;

@@ -2,8 +2,8 @@ import React from 'react';
 import {ColorValue, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
 
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {commonStyles} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface LabelDividerProps {
   label?: string;
@@ -12,7 +12,7 @@ interface LabelDividerProps {
 }
 
 export const TimeDivider = ({label = '', style}: LabelDividerProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = StyleSheet.create({
     wrapper: {
       ...commonStyles.flexRow,

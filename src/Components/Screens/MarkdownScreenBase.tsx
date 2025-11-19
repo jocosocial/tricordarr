@@ -12,8 +12,8 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface MarkdownScreenBaseProps {
   data: string | undefined;
@@ -54,7 +54,7 @@ export const MarkdownScreenBase = ({
   const [highlightedMatchIndex, setHighlightedMatchIndex] = useState<number | undefined>(undefined);
   const scrollViewRef = useRef<ScrollView>(null);
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   // Filter search query to only allow 2+ characters - only use submitted query
   const effectiveSearchQuery = React.useMemo(() => {

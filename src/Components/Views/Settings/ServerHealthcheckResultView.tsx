@@ -5,9 +5,9 @@ import {Text} from 'react-native-paper';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface ServerHealthcheckResultViewProps {
   serverHealthPassed: boolean;
@@ -16,7 +16,7 @@ interface ServerHealthcheckResultViewProps {
 export const ServerHealthcheckResultView = ({serverHealthPassed}: ServerHealthcheckResultViewProps) => {
   const {commonStyles} = useStyles();
   const {data: serverHealthData, dataUpdatedAt, errorUpdatedAt, isError, isSuccess} = useHealthQuery();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     viewContainer: {

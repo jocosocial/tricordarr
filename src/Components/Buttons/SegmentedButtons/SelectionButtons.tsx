@@ -5,10 +5,10 @@ import {Button} from 'react-native-paper';
 
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
 import {ForumListData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 import {SegmentedButtonType} from '#src/Types';
 
 interface SelectionButtonsProps {
@@ -17,7 +17,7 @@ interface SelectionButtonsProps {
 
 export const SelectionButtons = ({items = []}: SelectionButtonsProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const isFocused = useIsFocused();
   const {dispatchSelectedForums, setEnableSelection, selectedForums} = useSelection();
 

@@ -6,7 +6,7 @@ import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface BaseFABProps {
   icon?: IconSource;
@@ -28,7 +28,7 @@ export const BaseFAB = ({
   label,
   showLabel = true,
 }: BaseFABProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {asPrivilegedUser} = usePrivilege();
   const {commonStyles, styleDefaults} = useStyles();
   const {snackbarPayload} = useSnackbar();

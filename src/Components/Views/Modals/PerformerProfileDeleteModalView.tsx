@@ -7,9 +7,9 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {usePerformerDeleteMutation} from '#src/Queries/Performer/PerformerMutations';
 import {EventData, PerformerData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 const ModalContent = () => {
   const {commonStyles} = useStyles();
@@ -24,7 +24,7 @@ const ModalContent = () => {
 
 export const PerformerProfileDeleteModalView = () => {
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const deleteMutation = usePerformerDeleteMutation();
   const queryClient = useQueryClient();
 

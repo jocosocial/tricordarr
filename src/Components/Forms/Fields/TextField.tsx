@@ -13,7 +13,7 @@ import {
 import {HelperText, TextInput} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {RNInputModeOptions} from '#src/Types';
 
 export interface TextFieldProps {
@@ -63,7 +63,7 @@ export const TextField = ({
   onSelectionChange,
 }: TextFieldProps) => {
   const {handleChange, handleBlur, isSubmitting} = useFormikContext();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [field, meta] = useField<string>(name);
   const {styleDefaults} = useStyles();
 

@@ -5,7 +5,7 @@ import {Text} from 'react-native-paper';
 
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {CruiseDayData} from '#src/Types';
 
 interface ScheduleHeaderDayViewProps {
@@ -17,7 +17,7 @@ interface ScheduleHeaderDayViewProps {
 
 export const ScheduleHeaderDayButton = (props: ScheduleHeaderDayViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {adjustedCruiseDayToday} = useCruise();
   const isToday = props.cruiseDay.cruiseDay === adjustedCruiseDayToday;
 

@@ -7,8 +7,8 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {ReportData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface ReportContentFormProps {
   onSubmit: (values: ReportData, formikBag: FormikHelpers<ReportData>) => void;
@@ -41,7 +41,7 @@ const ReportContentFormBody = () => {
 
 // https://formik.org/docs/guides/react-native
 export const ReportContentForm = ({onSubmit}: ReportContentFormProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   return (
     <Formik enableReinitialize={true} initialValues={initialValues} onSubmit={onSubmit}>

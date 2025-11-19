@@ -14,9 +14,9 @@ import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {getInitialAppConfig} from '#src/Libraries/AppConfig';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface CriticalErrorViewProps {
   error: Error;
@@ -25,7 +25,7 @@ interface CriticalErrorViewProps {
 
 export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const {signOut} = useAuth();

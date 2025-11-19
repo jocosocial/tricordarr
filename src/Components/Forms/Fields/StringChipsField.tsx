@@ -4,8 +4,8 @@ import {StyleSheet, View} from 'react-native';
 import {Chip, HelperText, IconButton, Text, TextInput} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface StringChipsFieldProps {
   name: string;
@@ -24,7 +24,7 @@ export const StringChipsField = ({
   inputLabel = 'Add new value',
 }: StringChipsFieldProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const [field, _meta, helpers] = useField<string[]>(name);
   const [inputValue, setInputValue] = React.useState('');
 

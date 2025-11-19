@@ -7,13 +7,13 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStackNavigator';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const OobeSettingsScreen = () => {
   const {appConfig, updateAppConfig} = useConfig();
   const navigation = useRootStack();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   async function resetOobeVersion() {
     updateAppConfig({

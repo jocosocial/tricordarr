@@ -11,12 +11,12 @@ import {useModal} from '#src/Context/Contexts/ModalContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {useUserNotificationData} from '#src/Context/Contexts/UserNotificationDataContext';
 import {stopForegroundServiceWorker} from '#src/Libraries/Notifications/Push/Android/ForegroundService';
 import {useSettingsStack} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useLogoutMutation} from '#src/Queries/Auth/LogoutMutations';
 import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface LogoutModalContentProps {
   allDevices: boolean;
@@ -34,7 +34,7 @@ const LogoutModalContent = ({allDevices = false}: LogoutModalContentProps) => {
 
 export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentProps) => {
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const settingsNavigation = useSettingsStack();
 
   const {setEnableUserNotifications} = useUserNotificationData();

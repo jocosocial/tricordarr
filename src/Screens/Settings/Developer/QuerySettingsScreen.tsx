@@ -17,11 +17,11 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {getDirSize} from '#src/Libraries/Storage/ImageStorage';
 import {SettingsStackParamList, SettingsStackScreenComponents} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {useHealthQuery} from '#src/Queries/Client/ClientQueries';
 import {commonStyles} from '#src/Styles';
-import {useAppTheme} from '#src/Styles/Theme';
 import {QuerySettingsFormValues} from '#src/Types/FormValues';
 
 export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreenComponents.querySettingsScreen>;
@@ -29,7 +29,7 @@ export type Props = StackScreenProps<SettingsStackParamList, SettingsStackScreen
 const generateNewCacheBuster = () => new Date().toString();
 
 export const QuerySettingsScreen = ({navigation}: Props) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const queryClient = useQueryClient();
   const {appConfig, updateAppConfig} = useConfig();
   const {errorCount, setErrorCount} = useSwiftarrQueryClient();

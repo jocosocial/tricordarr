@@ -2,8 +2,8 @@ import React from 'react';
 import {Item} from 'react-navigation-header-buttons';
 
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const HeaderScheduleYourDayButton = () => {
   const {
@@ -15,7 +15,7 @@ export const HeaderScheduleYourDayButton = () => {
     setEventLfgFilter,
     setEventTypeFilter,
   } = useFilter();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const yourDayActiveFilter = eventFavoriteFilter && eventPersonalFilter && eventLfgFilter;
 

@@ -8,10 +8,10 @@ import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {SecureTextField} from '#src/Components/Forms/Fields/SecureTextField';
 import {TextField} from '#src/Components/Forms/Fields/TextField';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {PasswordValidation, UsernameValidation} from '#src/Libraries/ValidationSchema';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
-import {useAppTheme} from '#src/Styles/Theme';
 import {LoginFormValues} from '#src/Types/FormValues';
 
 interface LoginFormProps {
@@ -35,7 +35,7 @@ export const LoginForm = ({onSubmit}: LoginFormProps) => {
     inputContainer: [],
     buttonContainer: [commonStyles.marginTopSmall, commonStyles.marginBottom],
   };
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const commonNavigation = useCommonStack();
 
   return (

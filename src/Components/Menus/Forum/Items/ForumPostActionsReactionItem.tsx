@@ -5,12 +5,12 @@ import {ActivityIndicator, Text} from 'react-native-paper';
 import {SubmitIconButton} from '#src/Components/Buttons/IconButtons/SubmitIconButton';
 import {LaughReaction, LikeReaction, LoveReaction} from '#src/Components/Text/Reactions';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {LikeType} from '#src/Enums/LikeType';
 import {useForumPostReactionMutation} from '#src/Queries/Forum/ForumPostBookmarkMutations';
 import {useForumPostQuery} from '#src/Queries/Forum/ForumPostQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {PostData, PostDetailData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface ForumPostActionsReactionItemProps {
   forumPost: PostData;
@@ -22,7 +22,7 @@ export const ForumPostActionsReactionItem = ({forumPost}: ForumPostActionsReacti
   const {data: profilePublicData} = useUserProfileQuery();
   const bySelf = profilePublicData?.header.userID === forumPost.author.userID;
   const {data, isLoading, refetch} = useForumPostQuery(forumPost.postID.toString());
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     view: {

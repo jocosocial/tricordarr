@@ -12,15 +12,15 @@ import {LogoutDeviceModalView} from '#src/Components/Views/Modals/LogoutModal';
 import {OobeButtonsView} from '#src/Components/Views/OobeButtonsView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {OobeStackComponents, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
-import {useAppTheme} from '#src/Styles/Theme';
 
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeAccountScreen>;
 
 export const OobeAccountScreen = ({navigation}: Props) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {isLoggedIn, tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: !!tokenData});
   const {setModalContent, setModalVisible} = useModal();

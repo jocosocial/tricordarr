@@ -4,7 +4,7 @@ import {Text} from 'react-native-paper';
 
 import {PrimaryActionButton} from '#src/Components/Buttons/PrimaryActionButton';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface SocketControlViewProps {
   title: string;
@@ -14,7 +14,7 @@ interface SocketControlViewProps {
 
 export const SocketControlView = ({title, onReset, disabled}: SocketControlViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   return (
     <View

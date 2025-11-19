@@ -7,9 +7,9 @@ import {HelperText, Menu, Text, TextInput} from 'react-native-paper';
 import {TextFieldProps} from '#src/Components/Forms/Fields/TextField';
 import {AppMenu} from '#src/Components/Menus/AppMenu';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface SuggestedTextFieldProps extends TextFieldProps {
   suggestions?: string[];
@@ -41,7 +41,7 @@ export const SuggestedTextField = ({
   const {visible, openMenu, closeMenu} = useMenu();
   const {isSubmitting} = useFormikContext();
   const [field, meta, helpers] = useField<string>(name);
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
 
   const styles = StyleSheet.create({

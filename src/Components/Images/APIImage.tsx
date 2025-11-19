@@ -22,9 +22,9 @@ import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 import {APIImageSizePaths} from '#src/Types/AppImageMetaData';
 import {AppImageMetaData} from '#src/Types/AppImageMetaData';
 
@@ -60,7 +60,7 @@ export const APIImage = ({path, style, mode = 'scaledimage', disableTouch, stati
   const {setErrorBanner} = useErrorHandler();
   const {setSnackbarPayload} = useSnackbar();
   const [imageSource, setImageSource] = useState<FastImageSource | undefined>(undefined);
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const styles = StyleSheet.create({
     disabledCard: {

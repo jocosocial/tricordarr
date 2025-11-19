@@ -1,7 +1,7 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
-import {configureFonts, DefaultTheme, useTheme} from 'react-native-paper';
+import {configureFonts, DefaultTheme} from 'react-native-paper';
 
 // Primary color is the blue-ish element we use for everything.
 export const twitarrPrimaryColor = '#063953';
@@ -161,4 +161,3 @@ export const twitarrThemeDark = {
 
 // https://callstack.github.io/react-native-paper/docs/guides/theming/#typescript
 export type AppThemeType = typeof twitarrTheme;
-export const useAppTheme = () => useTheme<AppThemeType>();

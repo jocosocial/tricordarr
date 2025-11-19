@@ -8,10 +8,10 @@ import {ModalCard} from '#src/Components/Cards/ModalCard';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezCancelMutation} from '#src/Queries/Fez/FezMutations';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 const ModalContent = ({fez}: {fez: FezData}) => {
   const {commonStyles} = useStyles();
@@ -32,7 +32,7 @@ const ModalContent = ({fez}: {fez: FezData}) => {
 export const FezCancelModal = ({fezData}: {fezData: FezData}) => {
   const {setSnackbarPayload} = useSnackbar();
   const {setModalVisible} = useModal();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const cancelMutation = useFezCancelMutation();
   const queryClient = useQueryClient();
 

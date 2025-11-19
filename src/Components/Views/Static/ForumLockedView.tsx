@@ -5,12 +5,12 @@ import {Text} from 'react-native-paper';
 import {AppIcon} from '#src/Components/Icons/AppIcon';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 
 export const ForumLockedView = () => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {hasModerator} = usePrivilege();
 
   const styles = StyleSheet.create({

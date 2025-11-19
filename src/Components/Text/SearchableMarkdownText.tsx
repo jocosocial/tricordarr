@@ -10,7 +10,7 @@ import {
   useMarkdownLinkHandler,
   useMarkdownStyles,
 } from '#src/Components/Text/MarkdownUtils';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface SearchableMarkdownTextProps {
   text: string;
@@ -33,7 +33,7 @@ export const SearchableMarkdownText = ({
   searchQuery = '',
   highlightedMatchIndex: _highlightedMatchIndex,
 }: SearchableMarkdownTextProps) => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const handleMarkdownLinkPress = useMarkdownLinkHandler();
   const markdownStyle = useMarkdownStyles(textStyle);
 

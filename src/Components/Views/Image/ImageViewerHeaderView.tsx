@@ -7,8 +7,8 @@ import {HyperlinkText} from '#src/Components/Text/HyperlinkText';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
-import {useAppTheme} from '#src/Styles/Theme';
 import {AppImageMetaData, AppImageMode} from '#src/Types/AppImageMetaData';
 
 interface ImageViewerHeaderViewProps {
@@ -27,7 +27,7 @@ export const ImageViewerHeaderView = ({
   onClose,
 }: ImageViewerHeaderViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {appConfig} = useConfig();
   const [showMetadata, setShowMetadata] = React.useState(false);
 

@@ -6,7 +6,7 @@ import {StyleProp, View, ViewStyle} from 'react-native';
 import {HelperText, Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 interface SliderFieldProps {
   name: string;
@@ -26,7 +26,7 @@ interface SliderFieldProps {
 export const SliderField = (props: SliderFieldProps) => {
   const {setFieldValue} = useFormikContext();
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
 
   const onValueChange = (value: number) => {
     setFieldValue(props.name, value);

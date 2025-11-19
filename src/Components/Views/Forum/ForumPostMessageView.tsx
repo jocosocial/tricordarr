@@ -7,12 +7,12 @@ import {ContentText} from '#src/Components/Text/ContentText';
 import {RelativeTimeTag} from '#src/Components/Text/Tags/RelativeTimeTag';
 import {UserBylineTag} from '#src/Components/Text/Tags/UserBylineTag';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {ForumData, PostData, UserHeader} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface ForumPostMessageViewProps {
   postData: PostData;
@@ -38,7 +38,7 @@ export const ForumPostMessageView = ({
 }: ForumPostMessageViewProps) => {
   const {commonStyles} = useStyles();
   const {visible: menuVisible, openMenu, closeMenu} = useMenu();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const commonNavigation = useCommonStack();
   const {data: favorites} = useUserFavoritesQuery();
 

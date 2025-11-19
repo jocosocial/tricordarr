@@ -10,10 +10,10 @@ import {ListSection} from '#src/Components/Lists/ListSection';
 import {ListSubheader} from '#src/Components/Lists/ListSubheader';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {useAppTheme} from '#src/Styles/Theme';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 
 const BatteryOptimizationSettingsViewInternal = () => {
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {commonStyles} = useStyles();
   const [optEnabled, setOptEnabled] = useState(false);
   const appStateVisible = useAppState();

@@ -27,7 +27,7 @@
 // const queryClient = useQueryClient();
 // const {commonStyles} = useStyles();
 // const {appConfig} = useConfig();
-// const theme = useAppTheme();
+// const {theme} = useAppTheme();
 // const {setSnackbarPayload} = useSnackbar();
 //
 // const styles = StyleSheet.create({

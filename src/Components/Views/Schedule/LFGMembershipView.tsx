@@ -7,11 +7,11 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {useModal} from '#src/Context/Contexts/ModalContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {useAppTheme} from '#src/Context/Contexts/ThemeContext';
 import {FezType} from '#src/Enums/FezType';
 import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {FezData} from '#src/Structs/ControllerStructs';
-import {useAppTheme} from '#src/Styles/Theme';
 
 interface LFGMembershipViewProps {
   lfg: FezData;
@@ -19,7 +19,7 @@ interface LFGMembershipViewProps {
 
 export const LFGMembershipView = ({lfg}: LFGMembershipViewProps) => {
   const {commonStyles} = useStyles();
-  const theme = useAppTheme();
+  const {theme} = useAppTheme();
   const {data: profilePublicData} = useUserProfileQuery();
   const queryClient = useQueryClient();
   const {setModalVisible, setModalContent} = useModal();
