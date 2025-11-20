@@ -12,13 +12,13 @@ import {ScrollContext} from '#src/Context/Contexts/ScrollContext';
  * Note: this completely *overrides* the parent handlers.
  * It's up to you to compose them with the parent ones via useScrollHandlers() if needed.
  */
-export function ScrollProvider({
+export const ScrollProvider = ({
   children,
   onBeginDrag,
   onEndDrag,
   onScroll,
   onMomentumEnd,
-}: PropsWithChildren<ScrollHandlers<any>>) {
+}: PropsWithChildren<ScrollHandlers<any>>) => {
   const handlers = useMemo(
     () => ({
       onBeginDrag,
@@ -29,4 +29,4 @@ export function ScrollProvider({
     [onBeginDrag, onEndDrag, onScroll, onMomentumEnd],
   );
   return <ScrollContext.Provider value={handlers}>{children}</ScrollContext.Provider>;
-}
+};
