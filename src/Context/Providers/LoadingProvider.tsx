@@ -1,7 +1,7 @@
 import {useIsRestoring} from '@tanstack/react-query';
 import React, {createContext, PropsWithChildren} from 'react';
 
-import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {AppLoadingScreen} from '#src/Components/Views/Static/AppLoadingScreen';
 
 export const LoadingProvider = ({children}: PropsWithChildren) => {
   const isRestoring = useIsRestoring();
@@ -9,7 +9,7 @@ export const LoadingProvider = ({children}: PropsWithChildren) => {
 
   if (isRestoring) {
     console.log('[LoadingProvider.tsx] Please hold, restoring query cache.');
-    return <LoadingView />;
+    return <AppLoadingScreen />;
   }
 
   return <Context.Provider value={{}}>{children}</Context.Provider>;
