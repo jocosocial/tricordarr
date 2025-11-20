@@ -1,8 +1,11 @@
-import {LegendListRenderItemProps} from '@legendapp/list';
 import React, {useCallback} from 'react';
 import {RefreshControlProps, StyleSheet, View} from 'react-native';
 
-import {ConversationList, type TConversationListRefObject} from '#src/Components/Lists/ConversationList';
+import {
+  ConversationList,
+  type ConversationListRenderItemProps,
+  type TConversationListRefObject,
+} from '#src/Components/Lists/ConversationList';
 import {LabelDivider} from '#src/Components/Lists/Dividers/LabelDivider';
 import {SpaceDivider} from '#src/Components/Lists/Dividers/SpaceDivider';
 import {ChatFlatListHeader} from '#src/Components/Lists/Headers/ChatFlatListHeader';
@@ -72,7 +75,7 @@ export const ChatFlatList = ({
    *
    * @returns The rendered item.
    */
-  const renderItem = ({item, index}: LegendListRenderItemProps<FezPostData>) => (
+  const renderItem = ({item, index}: ConversationListRenderItemProps<FezPostData>) => (
     <View style={styles.itemContainer}>
       {showNewDivider(index) && <LabelDivider label={'New'} />}
       <FezPostListItem fezPost={item} index={index} fez={fez} />
