@@ -1,11 +1,12 @@
-import React, {PropsWithChildren} from 'react';
+import {useHeaderHeight} from '@react-navigation/elements';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {PropsWithChildren, useCallback} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import {KeyboardAvoidingView as ModuleKeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Portal} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ErrorBanner} from '#src/Components/Banners/ErrorBanner';
-import {HeaderHeightMeasurer} from '#src/Components/Layout/HeaderHeightMeasurer';
 import {AppModal} from '#src/Components/Modals/AppModal';
 import {AppSnackbar} from '#src/Components/Snackbars/AppSnackbar';
 import {ConnectionDisruptedView} from '#src/Components/Views/Warnings/ConnectionDisruptedView';
@@ -32,26 +33,22 @@ export const AppView = ({children, safeEdges: _safeEdges}: AppViewProps) => {
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
   const {preRegistrationMode} = useConfig();
-  const {headerHeightValue, footerHeightValue} = useLayout();
+  const {headerHeight, headerHeightValue, footerHeightValue} = useLayout();
+  const directHeaderHeight = useHeaderHeight();
 
   // Log layout values for debugging
-  console.log('insets', insets);
-  console.log(`[AppView] headerHeight: ${headerHeightValue}, footerHeight: ${footerHeightValue}`);
-
-  // Apply safe area insets only if header/footer heights are zero
-  // This ensures proper spacing when navigation bars aren't present
-  const paddingTop = headerHeightValue === 0 ? insets.top : undefined;
-  const paddingBottom = footerHeightValue === 0 ? insets.bottom : undefined;
+  console.log('[AppView.tsx] insets', insets);
+  console.log(`[AppView.tsx] headerHeightValue: ${headerHeightValue}, footerHeightValue: ${footerHeightValue}`);
+  console.log(`[AppView.tsx] headerHeight: ${directHeaderHeight}`);
 
   const styles = StyleSheet.create({
     appView: {
       ...commonStyles.background,
       ...commonStyles.flex,
-      // I hate all of this shit.
-      paddingTop,
-      paddingBottom,
-      paddingLeft: undefined,
-      paddingRight: undefined,
+      // Apply safe area insets only if header/footer heights are zero
+      // This ensures proper spacing when navigation bars aren't present
+      ...(headerHeightValue === 0 ? commonStyles.safePaddingTop : undefined),
+      ...(footerHeightValue === 0 ? commonStyles.safePaddingBottom : undefined),
     },
     keyboardView: {
       ...commonStyles.flex,
@@ -73,6 +70,17 @@ export const AppView = ({children, safeEdges: _safeEdges}: AppViewProps) => {
     keyboardVerticalOffset += 40;
   }
 
+  /**
+   * Any time a screen is focused, set the header height. The value includes any
+   * safe area insets since thats handled by React Navigation.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      console.log('[AppView.tsx] useFocusEffect setting headerHeight', directHeaderHeight);
+      headerHeight.set(directHeaderHeight);
+    }, [directHeaderHeight, headerHeight]),
+  );
+
   return (
     <View style={styles.appView}>
       <ModuleKeyboardAvoidingView
@@ -85,7 +93,6 @@ export const AppView = ({children, safeEdges: _safeEdges}: AppViewProps) => {
           <AppModal />
           <AppSnackbar />
         </Portal>
-        <HeaderHeightMeasurer />
         {preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
