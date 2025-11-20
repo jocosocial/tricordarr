@@ -112,7 +112,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
   });
 
   return (
-    <AppView safeEdges={oobe ? ['bottom'] : []}>
+    <AppView>
       <WebView
         source={{uri: webviewUrl}}
         key={key}

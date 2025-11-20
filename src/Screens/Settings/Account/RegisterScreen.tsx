@@ -115,7 +115,7 @@ export const RegisterScreen = () => {
 
 export const OobeRegisterScreen = () => {
   return (
-    <AppView safeEdges={['bottom']}>
+    <AppView>
       <RegisterScreenBase />
     </AppView>
   );

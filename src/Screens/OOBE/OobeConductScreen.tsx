@@ -18,7 +18,6 @@ export const OobeConductScreen = ({navigation}: Props) => {
       data={data}
       refetch={refetch}
       isFetching={isFetching}
-      safeEdges={['bottom']}
       scrollViewStyle={commonStyles.marginBottomZero}
       footer={
         <OobeButtonsView

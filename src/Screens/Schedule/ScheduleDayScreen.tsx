@@ -209,7 +209,7 @@ export const ScheduleDayScreen = ({navigation, route}: Props) => {
     refreshing;
 
   return (
-    <AppView safeEdges={route.params?.oobe ? ['bottom'] : undefined}>
+    <AppView>
       <TimezoneWarningView />
       <ScheduleHeaderView
         selectedCruiseDay={selectedCruiseDay}

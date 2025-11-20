@@ -12,7 +12,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.siteUI
 
 export const SiteUIHelpScreen = ({route}: Props) => {
   return (
-    <AppView safeEdges={route.params?.oobe ? ['bottom'] : []}>
+    <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>

@@ -12,7 +12,7 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userPr
 
 export const UserProfileHelpScreen = ({route}: Props) => {
   return (
-    <AppView safeEdges={route.params?.oobe ? ['bottom'] : []}>
+    <AppView>
       <ScrollingContentView isStack={true}>
         <HelpChapterTitleView title={'General'} />
         <HelpTopicView>
