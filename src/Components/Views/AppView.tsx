@@ -18,15 +18,13 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
 import {useSwiftarrQueryClient} from '#src/Context/Contexts/SwiftarrQueryClientContext';
 
-interface AppViewProps extends PropsWithChildren {
-  safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];
-}
+interface AppViewProps extends PropsWithChildren {}
 
 /**
  * Highest level View container that contains app-specific components that
  * can be utilized by all children. For example, error messages.
  */
-export const AppView = ({children, safeEdges: _safeEdges}: AppViewProps) => {
+export const AppView = ({children}: AppViewProps) => {
   const {commonStyles} = useStyles();
   const {disruptionDetected} = useSwiftarrQueryClient();
   const {hasUnsavedWork} = useErrorHandler();

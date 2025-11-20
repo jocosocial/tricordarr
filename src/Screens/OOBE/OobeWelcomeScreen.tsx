@@ -43,7 +43,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
-    <AppView safeEdges={['top', 'bottom']}>
+    <AppView>
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
           <Text style={styles.text} variant={'displayLarge'}>

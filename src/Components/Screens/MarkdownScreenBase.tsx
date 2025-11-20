@@ -25,7 +25,6 @@ interface MarkdownScreenBaseProps {
   navigation?: {
     setOptions: (options: any) => void;
   };
-  safeEdges?: ('top' | 'bottom' | 'left' | 'right')[];
   scrollViewStyle?: object;
   actionsMenu?: ReactElement;
 }
@@ -44,7 +43,6 @@ export const MarkdownScreenBase = ({
   searchPlaceholder = 'Search',
   footer,
   navigation,
-  safeEdges,
   scrollViewStyle,
   actionsMenu,
 }: MarkdownScreenBaseProps) => {
@@ -196,7 +194,7 @@ export const MarkdownScreenBase = ({
   }
 
   return (
-    <AppView safeEdges={safeEdges}>
+    <AppView>
       {isSearchActive && enableSearch && (
         <>
           <SearchBarBase

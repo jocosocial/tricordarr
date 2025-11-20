@@ -24,7 +24,7 @@ export const LoadingView = (props: LoadingViewProps) => {
   });
 
   return (
-    <AppView safeEdges={['bottom', 'top']}>
+    <AppView>
       <ScrollingContentView
         refreshControl={<RefreshControl refreshing={props.refreshing || false} onRefresh={props.onRefresh} />}>
         <ActivityIndicator />

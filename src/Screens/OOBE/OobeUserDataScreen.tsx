@@ -21,7 +21,7 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
   const {preRegistrationMode} = useConfig();
 
   return (
-    <AppView safeEdges={['bottom']}>
+    <AppView>
       <ScrollingContentView>
         <PaddedContentView>
           <Text>

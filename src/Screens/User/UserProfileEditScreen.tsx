@@ -62,7 +62,7 @@ export const UserProfileEditScreen = ({route, navigation}: Props) => {
   };
 
   return (
-    <AppView safeEdges={route.params.oobe ? ['bottom'] : []}>
+    <AppView>
       <ScrollingContentView>
         <PaddedContentView>
           <UserProfileForm initialValues={initialValues} onSubmit={onSubmit} />
