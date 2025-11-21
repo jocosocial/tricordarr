@@ -2,6 +2,7 @@ import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {checkNotifications, RESULTS} from 'react-native-permissions';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import tinycolor from 'tinycolor2';
 
 import {fgsWorkerNotificationIDs, PressAction} from '#src/Enums/Notifications';
 import {getAppConfig} from '#src/Libraries/AppConfig';
@@ -10,7 +11,7 @@ import {serviceChannel} from '#src/Libraries/Notifications/Channels';
 import {generatePushNotificationFromEvent} from '#src/Libraries/Notifications/SocketNotification';
 import {StorageKeys} from '#src/Libraries/Storage';
 import {SocketHealthcheckData} from '#src/Structs/SocketStructs';
-import {twitarrErrorColor, twitarrPrimaryColor} from '#src/Styles/Theme';
+import {getTheme} from '#src/Styles/Theme';
 
 let sharedWebSocket: ReconnectingWebSocket | undefined;
 let fgsWorkerTimer: ReturnType<typeof setInterval>;
@@ -185,7 +186,7 @@ export async function startForegroundServiceWorker() {
 
 async function generateForegroundServiceNotification(
   body: string | undefined = 'A background worker has been started to maintain a connection to the Twitarr server.',
-  color = twitarrPrimaryColor,
+  color = tinycolor(getTheme().colors.twitarrPrimary).toHexString(),
   onlyIfShowing = false,
 ) {
   // Kill a shutdown notification if we had one
@@ -237,7 +238,7 @@ async function generateFgsShutdownNotification() {
     body: body,
     android: {
       channelId: serviceChannel.id,
-      color: twitarrErrorColor,
+      color: tinycolor(getTheme().colors.twitarrNegativeButton).toHexString(),
       colorized: true,
       pressAction: {
         id: PressAction.worker,
