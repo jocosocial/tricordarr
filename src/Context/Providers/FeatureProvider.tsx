@@ -43,7 +43,7 @@ export const FeatureProvider = ({children}: PropsWithChildren) => {
     // If client app specified, check if feature is disabled for that app or for all apps
     return allDisabledFeatures.some(
       disabledFeature =>
-        disabledFeature.featureName === feature &&
+        (disabledFeature.featureName === feature || disabledFeature.featureName === SwiftarrFeature.all) &&
         (disabledFeature.appName === clientApp || disabledFeature.appName === SwiftarrClientApp.all),
     );
   };
