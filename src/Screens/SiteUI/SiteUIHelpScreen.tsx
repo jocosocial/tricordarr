@@ -1,4 +1,3 @@
-import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {AppView} from '#src/Components/Views/AppView';
@@ -6,11 +5,8 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {HelpChapterTitleView} from '#src/Components/Views/Help/HelpChapterTitleView';
 import {HelpTopicView} from '#src/Components/Views/Help/HelpTopicView';
 import {AppIcons} from '#src/Enums/Icons';
-import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 
-type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.siteUIHelpScreen>;
-
-export const SiteUIHelpScreen = ({route}: Props) => {
+export const SiteUIHelpScreen = () => {
   return (
     <AppView>
       <ScrollingContentView isStack={true} overScroll={true}>

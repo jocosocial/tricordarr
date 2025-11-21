@@ -78,7 +78,6 @@ import {
   ProfilePublicData,
   UserHeader,
 } from '#src/Structs/ControllerStructs';
-import {ParamsWithOobe} from '#src/Types';
 
 /**
  * The "Common Screens" pattern was adopted from
@@ -199,7 +198,7 @@ export type CommonStackParamList = {
     cruiseDay?: number;
     initialUserHeaders?: UserHeader[];
   };
-  UserProfileHelpScreen: ParamsWithOobe;
+  UserProfileHelpScreen: undefined;
   BlockUsersScreen: undefined;
   MuteUsersScreen: undefined;
   FavoriteUsersScreen: undefined;
@@ -218,7 +217,7 @@ export type CommonStackParamList = {
     eventID?: string;
   };
   PerformerHelpScreen: undefined;
-  SiteUIHelpScreen: ParamsWithOobe;
+  SiteUIHelpScreen: undefined;
   LfgHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
@@ -241,7 +240,7 @@ export type CommonStackParamList = {
   };
   EventSettingsScreen: undefined;
   SchedulePrivateEventsScreen: undefined;
-  ScheduleDayScreen: ParamsWithOobe;
+  ScheduleDayScreen: undefined;
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };

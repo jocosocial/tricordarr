@@ -29,7 +29,8 @@ import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueri
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
-export const ScheduleDayScreen = ({navigation, route}: Props) => {
+
+export const ScheduleDayScreen = ({navigation}: Props) => {
   const {adjustedCruiseDayToday, startDate, endDate} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(adjustedCruiseDayToday);
   const {isLoggedIn} = useAuth();
