@@ -19,6 +19,7 @@ import {AppEventHandler} from '#src/Components/Libraries/AppEventHandler';
 import {NotificationDataListener} from '#src/Components/Libraries/Notifications/NotificationDataListener';
 import {NotificationDataPoller} from '#src/Components/Libraries/Notifications/NotificationDataPoller';
 import {PushNotificationService} from '#src/Components/Libraries/Notifications/PushNotificationService';
+import {ActiveConversationProvider} from '#src/Context/Providers/ActiveConversationProvider';
 import {AuthProvider} from '#src/Context/Providers/AuthProvider';
 import {ConfigProvider} from '#src/Context/Providers/ConfigProvider';
 import {CriticalErrorProvider} from '#src/Context/Providers/CriticalErrorProvider.tsx';
@@ -127,11 +128,13 @@ function App(): React.JSX.Element {
                                                     <MenuProvider>
                                                       <FilterProvider>
                                                         <SelectionProvider>
-                                                          <AppEventHandler />
-                                                          <PushNotificationService />
-                                                          <NotificationDataListener />
-                                                          <NotificationDataPoller />
-                                                          <RootStackNavigator />
+                                                          <ActiveConversationProvider>
+                                                            <AppEventHandler />
+                                                            <PushNotificationService />
+                                                            <NotificationDataListener />
+                                                            <NotificationDataPoller />
+                                                            <RootStackNavigator />
+                                                          </ActiveConversationProvider>
                                                         </SelectionProvider>
                                                       </FilterProvider>
                                                     </MenuProvider>
