@@ -17,17 +17,27 @@ import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type SeamailListScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailListScreen>;
 
-export const SeamailListScreen = ({navigation}: SeamailListScreenProps) => {
+export const SeamailListScreen = (props: SeamailListScreenProps) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
+      <SeamailListScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const SeamailListScreenInner = ({navigation}: SeamailListScreenProps) => {
   const {hasTwitarrTeam, hasModerator, asPrivilegedUser} = usePrivilege();
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage, isRefetching, isLoading} = useSeamailListQuery({
     forUser: asPrivilegedUser,

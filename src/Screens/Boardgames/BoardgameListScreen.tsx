@@ -12,13 +12,23 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameListScreen>;
 
-export const BoardgameListScreen = ({navigation}: Props) => {
+export const BoardgameListScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+      <BoardgameListScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BoardgameListScreenInner = ({navigation}: Props) => {
   const [favorites, setFavorites] = useState(false);
   const {
     data,

@@ -8,17 +8,27 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {SeamailCreateForm} from '#src/Components/Forms/SeamailCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezContentData, FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailCreateScreen>;
 
+export const SeamailCreateScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
+      <SeamailCreateScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
 // Chips: https://github.com/callstack/react-native-paper/issues/801
-export const SeamailCreateScreen = ({navigation, route}: Props) => {
+const SeamailCreateScreenInner = ({navigation, route}: Props) => {
   const seamailCreateFormRef = useRef<FormikProps<SeamailFormValues>>(null);
   const seamailPostFormRef = useRef<FormikProps<PostContentData>>(null);
   const fezMutation = useFezCreateMutation();

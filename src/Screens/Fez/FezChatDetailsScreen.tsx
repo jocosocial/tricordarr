@@ -24,6 +24,10 @@ import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.fezChatDetailsScreen>;
 
+/**
+ * @TODO This needs a proper DisabledFeatureScreen wrapper but we dont have unique routes.
+ * Consider passing the entire FezData for typing? or just FezType?
+ */
 export const FezChatDetailsScreen = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {data, refetch, isFetching} = useFezQuery({fezID: route.params.fezID});

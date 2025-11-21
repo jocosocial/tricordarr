@@ -5,12 +5,22 @@ import {Text} from 'react-native-paper';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScheduleHeaderView} from '#src/Components/Views/Schedule/ScheduleHeaderView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 
-export const ScheduleDayPlannerScreen = ({route}: Props) => {
+export const ScheduleDayPlannerScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
+      <ScheduleDayPlannerScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ScheduleDayPlannerScreenInner = ({route}: Props) => {
   const {adjustedCruiseDayToday} = useCruise();
   const [selectedCruiseDay, setSelectedCruiseDay] = useState(route.params?.cruiseDay ?? adjustedCruiseDayToday);
 

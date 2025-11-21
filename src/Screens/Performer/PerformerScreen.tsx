@@ -6,16 +6,26 @@ import {Item} from 'react-navigation-header-buttons';
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PerformerActionsMenu} from '#src/Components/Menus/Performer/PerformerActionsMenu';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
-export const PerformerScreen = ({route, navigation}: Props) => {
+export const PerformerScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
+      <PerformerScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const PerformerScreenInner = ({route, navigation}: Props) => {
   const {data, refetch, isFetching} = usePerformerQuery(route.params.id);
   const {data: profilePublicData} = useUserProfileQuery();
 

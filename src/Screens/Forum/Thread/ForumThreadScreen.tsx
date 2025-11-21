@@ -1,12 +1,23 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadScreen>;
-export const ForumThreadScreen = ({route}: Props) => {
+
+export const ForumThreadScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={`/forum/${props.route.params.forumID}`}>
+      <ForumThreadScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadScreenInner = ({route}: Props) => {
   const {
     data,
     refetch,

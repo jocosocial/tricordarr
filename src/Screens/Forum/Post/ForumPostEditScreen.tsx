@@ -7,13 +7,25 @@ import {replaceTriggerValues} from 'react-native-controlled-mentions';
 import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumPostUpdateMutation} from '#src/Queries/Forum/ForumPostMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ImageUploadData, PostContentData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostEditScreen>;
 
-export const ForumPostEditScreen = ({route, navigation}: Props) => {
+export const ForumPostEditScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forumpost/edit/${props.route.params.postData.postID}`}>
+      <ForumPostEditScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumPostEditScreenInner = ({route, navigation}: Props) => {
   const postUpdateMutation = useForumPostUpdateMutation();
   const queryClient = useQueryClient();
 

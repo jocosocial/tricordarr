@@ -7,14 +7,26 @@ import {ShadowPerformerForm} from '#src/Components/Forms/Performer/ShadowPerform
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerCreateScreen>;
 
-export const PerformerCreateScreen = ({route, navigation}: Props) => {
+export const PerformerCreateScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.performers}
+      urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
+      <PerformerCreateScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const PerformerCreateScreenInner = ({route, navigation}: Props) => {
   const performerMutation = usePerformerUpsertMutation();
   const queryClient = useQueryClient();
 

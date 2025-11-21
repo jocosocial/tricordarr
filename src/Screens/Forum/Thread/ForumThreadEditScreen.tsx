@@ -7,13 +7,25 @@ import {ForumThreadEditForm} from '#src/Components/Forms/Forum/ForumThreadEditFo
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;
 
-export const ForumThreadEditScreen = ({route, navigation}: Props) => {
+export const ForumThreadEditScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forum/${props.route.params.forumData.forumID}/edit`}>
+      <ForumThreadEditScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadEditScreenInner = ({route, navigation}: Props) => {
   const editMutation = useForumRenameMutation();
   const queryClient = useQueryClient();
 

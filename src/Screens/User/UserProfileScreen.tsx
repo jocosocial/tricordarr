@@ -1,13 +1,23 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
 
-export const UserProfileScreen = ({route}: Props) => {
+export const UserProfileScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile'}>
+      <UserProfileScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const UserProfileScreenInner = ({route}: Props) => {
   const {data, refetch, isLoading} = useUsersProfileQuery(route.params.userID);
 
   // This used to have isLoading for each of the [useUserBlocksQuery, useUserMutesQuery,

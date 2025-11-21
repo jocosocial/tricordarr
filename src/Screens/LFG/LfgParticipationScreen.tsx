@@ -15,6 +15,7 @@ import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingConte
 import {LfgLeaveModal} from '#src/Components/Views/Modals/LfgLeaveModal';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
@@ -22,11 +23,20 @@ import {useFezMembershipMutation} from '#src/Queries/Fez/FezMembershipQueries';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
-export const LfgParticipationScreen = ({navigation, route}: Props) => {
+export const LfgParticipationScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
+      <LfgParticipationScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgParticipationScreenInner = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.fezID,
   });

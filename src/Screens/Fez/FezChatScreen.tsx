@@ -22,6 +22,7 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList, useCommonStack} from '#src/Navigation/CommonScreens';
@@ -30,6 +31,7 @@ import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezPostsActions, useFezPostsReducer} from '#src/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
 
@@ -44,7 +46,37 @@ type Props = StackScreenProps<
  * Common screen for Fez chats. All features [Seamail, LFG, PrivateEvent] can
  * be enabled/disabled independently so the typing logic above is a bit different.
  */
-export const FezChatScreen = ({route}: Props) => {
+export const FezChatScreen = (props: Props) => {
+  const {route} = props;
+  const routeName = route.name;
+
+  // Determine feature and urlPath based on route name
+  let feature: SwiftarrFeature;
+  let urlPath: string;
+
+  if (routeName === CommonStackComponents.seamailChatScreen) {
+    feature = SwiftarrFeature.seamail;
+    urlPath = '/seamail/${route.params.fezID}';
+  } else if (routeName === CommonStackComponents.lfgChatScreen) {
+    feature = SwiftarrFeature.friendlyfez;
+    urlPath = '/lfg/${route.params.fezID}';
+  } else if (routeName === CommonStackComponents.privateEventChatScreen) {
+    feature = SwiftarrFeature.personalevents;
+    urlPath = '/privateevent/${route.params.fezID}';
+  } else {
+    // Fallback (shouldn't happen)
+    feature = SwiftarrFeature.seamail;
+    urlPath = '/seamail';
+  }
+
+  return (
+    <DisabledFeatureScreen feature={feature} urlPath={urlPath}>
+      <FezChatScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const FezChatScreenInner = ({route}: Props) => {
   const {
     data,
     refetch,

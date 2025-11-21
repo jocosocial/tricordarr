@@ -10,17 +10,27 @@ import {LfgScreenActionsMenu} from '#src/Components/Menus/LFG/LfgScreenActionsMe
 import {NavHeaderTitle} from '#src/Components/Text/NavHeaderTitle';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSocket} from '#src/Context/Contexts/SocketContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgScreen>;
 
-export const LfgScreen = ({navigation, route}: Props) => {
+export const LfgScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
+      <LfgScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgScreenInner = ({navigation, route}: Props) => {
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.fezID,
   });

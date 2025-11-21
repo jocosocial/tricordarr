@@ -1,12 +1,24 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostUserScreen>;
 
-export const ForumPostUserScreen = ({route}: Props) => {
+export const ForumPostUserScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
+      <ForumPostUserScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumPostUserScreenInner = ({route}: Props) => {
   return (
     <ForumPostScreenBase
       refreshOnUserNotification={true}

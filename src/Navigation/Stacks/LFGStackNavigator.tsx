@@ -2,11 +2,8 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {LfgCreateScreen} from '#src/Screens/LFG/LfgCreateScreen';
 import {LfgFindScreen} from '#src/Screens/LFG/LfgFindScreen';
@@ -42,8 +39,6 @@ export enum LfgStackComponents {
 export const LfgStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<LfgStackParamList>();
-  const {getIsDisabled} = useFeature();
-  const isDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
   const {appConfig} = useConfig();
 
   return (
@@ -57,12 +52,12 @@ export const LfgStackNavigator = () => {
       />
       <Stack.Screen
         name={LfgStackComponents.lfgFindScreen}
-        component={isDisabled ? DisabledView : LfgFindScreen}
+        component={LfgFindScreen}
         options={{title: 'Find Groups'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgOwnedScreen}
-        component={isDisabled ? DisabledView : LfgOwnedScreen}
+        component={LfgOwnedScreen}
         options={{title: 'Your Groups'}}
       />
       <Stack.Screen
@@ -77,12 +72,12 @@ export const LfgStackNavigator = () => {
       />
       <Stack.Screen
         name={LfgStackComponents.lfgFormerScreen}
-        component={isDisabled ? DisabledView : LfgFormerScreen}
+        component={LfgFormerScreen}
         options={{title: 'Former Groups'}}
       />
       <Stack.Screen
         name={LfgStackComponents.lfgSearchScreen}
-        component={isDisabled ? DisabledView : LfgSearchScreen}
+        component={LfgSearchScreen}
         options={{title: 'Search LFGs'}}
       />
       {CommonScreens(Stack)}

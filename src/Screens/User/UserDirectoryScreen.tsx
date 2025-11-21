@@ -11,11 +11,22 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.userDirectoryScreen>;
-export const UserDirectoryScreen = ({navigation}: Props) => {
+
+export const UserDirectoryScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/directory'}>
+      <UserDirectoryScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const UserDirectoryScreenInner = ({navigation}: Props) => {
   const {isLoggedIn} = useAuth();
 
   const getNavButtons = useCallback(() => {

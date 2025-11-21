@@ -7,13 +7,23 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {LFGSearchBar} from '#src/Components/Search/LFGSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgSearchScreen>;
 
-export const LfgSearchScreen = ({navigation, route}: Props) => {
+export const LfgSearchScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg'}>
+      <LfgSearchScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgSearchScreenInner = ({navigation, route}: Props) => {
   const getTitle = () => {
     if (route.params.endpoint) {
       const title = route.params.endpoint.charAt(0).toUpperCase() + route.params.endpoint.slice(1);

@@ -7,13 +7,23 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {SeamailSearchBar} from '#src/Components/Search/SeamailSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
-export const SeamailSearchScreen = ({navigation, route}: SeamailSearchScreenProps) => {
+export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
+      <SeamailSearchScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const SeamailSearchScreenInner = ({navigation, route}: SeamailSearchScreenProps) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>

@@ -6,12 +6,22 @@ import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButto
 import {ForumThreadScreenSortMenu} from '#src/Components/Menus/Forum/ForumThreadScreenSortMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {ForumThreadsRelationsView} from '#src/Components/Views/Forum/ForumThreadsRelationsView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {ForumRelationQueryType} from '#src/Queries/Forum/ForumThreadRelationQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumOwnedScreen>;
 
-export const ForumThreadOwnedScreen = ({navigation}: Props) => {
+export const ForumThreadOwnedScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forum/owned'}>
+      <ForumThreadOwnedScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadOwnedScreenInner = ({navigation}: Props) => {
   const getNavButtons = useCallback(() => {
     return (
       <View>

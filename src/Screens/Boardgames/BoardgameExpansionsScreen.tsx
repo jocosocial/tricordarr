@@ -9,13 +9,25 @@ import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameExpansionsQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameExpansionsScreen>;
 
-export const BoardgameExpansionsScreen = ({navigation, route}: Props) => {
+export const BoardgameExpansionsScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.gameslist}
+      urlPath={`/boardgames/${props.route.params.boardgameID}/expansions`}>
+      <BoardgameExpansionsScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BoardgameExpansionsScreenInner = ({navigation, route}: Props) => {
   const {
     data,
     hasNextPage,

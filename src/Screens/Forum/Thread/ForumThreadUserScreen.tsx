@@ -10,13 +10,25 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumSearchQuery} from '#src/Queries/Forum/ForumThreadSearchQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadUserScreen>;
 
-export const ForumThreadUserScreen = ({route}: Props) => {
+export const ForumThreadUserScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forumpost/search?creatorid=${props.route.params.user.userID}`}>
+      <ForumThreadUserScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadUserScreenInner = ({route}: Props) => {
   const {
     data,
     refetch,

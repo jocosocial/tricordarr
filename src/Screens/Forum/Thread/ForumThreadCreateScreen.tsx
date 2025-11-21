@@ -9,15 +9,27 @@ import {ContentPostForm} from '#src/Components/Forms/ContentPostForm';
 import {ForumCreateForm} from '#src/Components/Forms/Forum/ForumCreateForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumCreateData, ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadCreateScreen>;
 
-export const ForumThreadCreateScreen = ({route, navigation}: Props) => {
+export const ForumThreadCreateScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
+      <ForumThreadCreateScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadCreateScreenInner = ({route, navigation}: Props) => {
   const forumFormRef = useRef<FormikProps<ForumThreadValues>>(null);
   const postFormRef = useRef<FormikProps<PostContentData>>(null);
   const [submitting, setSubmitting] = useState(false);
