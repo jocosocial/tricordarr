@@ -19,13 +19,24 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
-export const ForumCategoriesScreen = ({navigation}: Props) => {
+
+export const ForumCategoriesScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+      <ForumCategoriesScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumCategoriesScreenInner = ({navigation}: Props) => {
   const {data, refetch, isLoading} = useForumCategoriesQuery();
   const [refreshing, setRefreshing] = useState(false);
   const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery();
