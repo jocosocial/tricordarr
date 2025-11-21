@@ -5,6 +5,7 @@ import React from 'react';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
+import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
@@ -213,6 +214,7 @@ export type CommonStackParamList = {
   };
   PerformerHelpScreen: undefined;
   SiteUIHelpScreen: undefined;
+  DisabledHelpScreen: undefined;
   LfgHelpScreen: undefined;
   LfgCreateHelpScreen: undefined;
   MainTimeZoneScreen: undefined;
@@ -290,6 +292,7 @@ export enum CommonStackComponents {
   performerScreen = 'PerformerScreen',
   performerHelpScreen = 'PerformerHelpScreen',
   siteUIHelpScreen = 'SiteUIHelpScreen',
+  disabledHelpScreen = 'DisabledHelpScreen',
   lfgHelpScreen = 'LfgHelpScreen',
   lfgCreateHelpScreen = 'LfgCreateHelpScreen',
   mainTimeZoneScreen = 'MainTimeZoneScreen',
@@ -546,6 +549,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.siteUIHelpScreen}
         component={SiteUIHelpScreen}
         options={{title: 'Webview Help'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.disabledHelpScreen}
+        component={DisabledHelpScreen}
+        options={{title: 'Help'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgHelpScreen}
