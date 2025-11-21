@@ -81,7 +81,7 @@ export const BottomTabNavigator = () => {
         component={MainStackNavigator}
         options={{
           title: 'Today',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.homeActive : AppIcons.home),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.home : AppIcons.homeInactive),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newAnnouncementCount),
         }}
       />
@@ -90,7 +90,7 @@ export const BottomTabNavigator = () => {
         component={ForumStackNavigator}
         options={{
           title: 'Forums',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forumActive : AppIcons.forum),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.forum : AppIcons.forumInactive),
           tabBarBadge: getBadgeDisplayValue(getForumBadgeCount()),
         }}
       />
@@ -99,7 +99,7 @@ export const BottomTabNavigator = () => {
         component={ChatStackNavigator}
         options={{
           title: 'Seamail',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamailActive : AppIcons.seamail),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.seamail : AppIcons.seamailInactive),
           tabBarBadge: getBadgeDisplayValue(getChatBadgeCount()),
         }}
       />
@@ -108,7 +108,7 @@ export const BottomTabNavigator = () => {
         component={LfgStackNavigator}
         options={{
           title: 'LFG',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfgActive : AppIcons.lfg),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.lfg : AppIcons.lfgInactive),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newFezMessageCount),
         }}
       />
@@ -117,7 +117,7 @@ export const BottomTabNavigator = () => {
         component={ScheduleStackNavigator}
         options={{
           title: 'Schedule',
-          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.eventsActive : AppIcons.events),
+          tabBarIcon: ({focused}) => getIcon(focused ? AppIcons.events : AppIcons.eventsInactive),
           tabBarBadge: getBadgeDisplayValue(userNotificationData?.newPrivateEventMessageCount),
         }}
       />
