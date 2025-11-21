@@ -13,9 +13,9 @@ interface ShareMenuItemProps {
 }
 
 export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItemProps) => {
-  const {appConfig} = useConfig();
+  const {appConfig, oobeCompleted} = useConfig();
 
-  const handlePress = () => {
+  const handlePress = React.useCallback(() => {
     let fullURL = '';
     if (contentType === ShareContentType.siteUI) {
       fullURL = contentID as string;
@@ -28,7 +28,15 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
     if (closeMenu) {
       closeMenu();
     }
-  };
+  }, [contentType, contentID, appConfig, closeMenu]);
+
+  /**
+   * If the user hasn't finished setup, don't let them share content.
+   * @TODO this should probably expand to preregistration mode as well.
+   */
+  if (!oobeCompleted) {
+    return null;
+  }
 
   return <Menu.Item title={'Share'} leadingIcon={AppIcons.share} onPress={handlePress} />;
 };
