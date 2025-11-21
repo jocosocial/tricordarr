@@ -1,12 +1,8 @@
 // Generated from #063953 at
 // https://callstack.github.io/react-native-paper/docs/guides/theming#creating-dynamic-theme-colors
 // with a couple of added values from the Swiftarr UI.
+import {Appearance} from 'react-native';
 import {configureFonts, DefaultTheme} from 'react-native-paper';
-
-// Primary color is the blue-ish element we use for everything.
-export const twitarrPrimaryColor = '#063953';
-// Error color for things that have gone wrong.
-export const twitarrErrorColor = '#BA1A1A';
 
 /**
  * This may need some additional love and care. I don't enjoy that we are
@@ -71,6 +67,7 @@ export const twitarrTheme = {
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
+    twitarrPrimary: 'rgb(6, 57, 83)',
     jocoGreen: 'rgb(73, 205, 140)',
     jocoBlue: 'rgb(28, 110, 255)',
     jocoPurple: 'rgb(112, 60, 190)',
@@ -141,6 +138,7 @@ export const twitarrThemeDark = {
     twitarrNeutralButton: 'rgb(13, 110, 253)',
     twitarrPositiveButton: 'rgb(25, 135, 84)',
     twitarrNegativeButton: 'rgb(220, 53, 69)',
+    twitarrPrimary: 'rgb(6, 57, 83)',
     jocoGreen: 'rgb(73, 205, 140)',
     jocoBlue: 'rgb(28, 110, 255)',
     jocoPurple: 'rgb(112, 60, 190)',
@@ -159,5 +157,15 @@ export const twitarrThemeDark = {
   },
 };
 
-// https://callstack.github.io/react-native-paper/docs/guides/theming/#typescript
-export type AppThemeType = typeof twitarrTheme;
+/**
+ * Gets the current theme based on the device color scheme.
+ * This is intended to be called outside of the React context since Native provides
+ * a hook for that.
+ * @returns The current theme based on the device color scheme.
+ */
+export const getTheme = () => {
+  if (Appearance.getColorScheme() === 'dark') {
+    return twitarrThemeDark;
+  }
+  return twitarrTheme;
+};
