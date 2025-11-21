@@ -16,10 +16,9 @@ import {useCommonStack} from '#src/Navigation/CommonScreens';
 interface SiteUIScreenBaseProps {
   initialUrl: string;
   initialKey?: string;
-  oobe?: boolean;
 }
 
-export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScreenBaseProps) => {
+export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBaseProps) => {
   const {serverUrl} = useSwiftarrQueryClient();
   const [webviewUrl, setWebviewUrl] = React.useState(initialUrl);
   const webViewRef = useRef<WebView>(null);
@@ -57,13 +56,21 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
       <View>
         <MaterialHeaderButtons>
           <Item title={'Reload'} iconName={AppIcons.reload} onPress={reload} />
-          <SiteUIScreenActionsMenu onHome={onHome} oobe={oobe} getCurrentUrl={getCurrentUrl} />
+          <SiteUIScreenActionsMenu onHome={onHome} getCurrentUrl={getCurrentUrl} />
         </MaterialHeaderButtons>
       </View>
     ),
-    [onHome, oobe, getCurrentUrl],
+    [onHome, getCurrentUrl],
   );
 
+  /**
+   * An initial iteration of this feature hooked into the navigation system and would
+   * override the default back button. This didn't work on iOS because the previous
+   * screen title was in the header and it didn't work. So this replaces the button.
+   *
+   * On iOS the button is subtly different than the default. I don't think it's enough
+   * to worry about fixing.
+   */
   const getBackButton = useCallback(() => {
     return (
       <MaterialHeaderButtons style={commonStyles.headerLeftWrapper}>
@@ -85,22 +92,6 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = '', oobe}: SiteUIScre
       headerLeft: getBackButton,
     });
   }, [getNavBarIcons, getBackButton, navigation]);
-
-  // Override React Navigation back button to go back in webview when possible
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('beforeRemove', e => {
-  //     // Only intercept if the action is not POP_TO_TOP (happens when you hit the Today tab).
-  //     // If webview can go back and it's not a POP_TO_TOP action, prevent navigation and go back in webview instead
-  //     const actionType = e.data?.action?.type;
-  //     if (handleGoBack && actionType !== 'POP_TO_TOP') {
-  //       e.preventDefault();
-  //       handleBackButtonPress();
-  //     }
-  //     // Otherwise, let the default navigation behavior happen
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation, handleGoBack, handleBackButtonPress]);
 
   useBackHandler(() => {
     // This means we're gonna go back in the WebView, not in app.

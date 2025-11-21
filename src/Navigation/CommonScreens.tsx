@@ -99,11 +99,9 @@ export type CommonStackParamList = {
   UserProfileScreen: {
     userID: string;
     enableContent?: boolean;
-    oobe?: boolean;
   };
   EditUserProfileScreen: {
     user: ProfilePublicData;
-    oobe?: boolean;
   };
   UserPrivateNoteScreen: {
     user: ProfilePublicData;
