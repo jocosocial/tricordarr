@@ -37,15 +37,8 @@ interface UserProfileScreenBaseProps {
   refetch: () => Promise<any>;
   isLoading: boolean;
   enableContent?: boolean;
-  oobe?: boolean;
 }
-export const UserProfileScreenBase = ({
-  data,
-  refetch,
-  isLoading,
-  enableContent = true,
-  oobe = false,
-}: UserProfileScreenBaseProps) => {
+export const UserProfileScreenBase = ({data, refetch, isLoading, enableContent = true}: UserProfileScreenBaseProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: profilePublicData, refetch: refetchSelf} = useUserProfileQuery();
   const {commonStyles} = useStyles();
@@ -57,38 +50,30 @@ export const UserProfileScreenBase = ({
   const {data: mutes, refetch: refetchMutes} = useUserMutesQuery();
   const {data: blocks, refetch: refetchBlocks} = useUserBlocksQuery();
 
+  const isSelf = data?.header.userID === profilePublicData?.header.userID;
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     let refreshes = [refetch(), refetchFavorites(), refetchMutes(), refetchBlocks()];
-    if (data?.header.userID === profilePublicData?.header.userID) {
+    if (isSelf) {
       refreshes.push(refetchSelf());
     }
     await Promise.all(refreshes);
     setRefreshing(false);
-  }, [
-    refetch,
-    refetchFavorites,
-    refetchMutes,
-    refetchBlocks,
-    data?.header.userID,
-    profilePublicData?.header.userID,
-    refetchSelf,
-  ]);
+  }, [refetch, refetchFavorites, refetchMutes, refetchBlocks, isSelf, refetchSelf]);
 
   const getNavButtons = useCallback(() => {
     if (!isLoggedIn) {
       return <></>;
     }
-    if (data && data?.header.userID === profilePublicData?.header.userID) {
+    if (data && isSelf) {
       return (
         <View>
           <MaterialHeaderButtons left>
             <Item
               title={'Edit'}
               iconName={AppIcons.edituser}
-              onPress={() =>
-                commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data, oobe: oobe})
-              }
+              onPress={() => commonNavigation.push(CommonStackComponents.userProfileEditScreen, {user: data})}
             />
             <UserProfileSelfActionsMenu userID={data.header.userID} />
           </MaterialHeaderButtons>
@@ -102,13 +87,13 @@ export const UserProfileScreenBase = ({
             <>
               <HeaderProfileSeamailButton profile={data} />
               <HeaderProfileFavoriteButton profile={data} />
-              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} oobe={oobe} />
+              <UserProfileScreenActionsMenu profile={data} isMuted={isMuted} isBlocked={isBlocked} />
             </>
           )}
         </MaterialHeaderButtons>
       </View>
     );
-  }, [isLoggedIn, data, profilePublicData?.header.userID, isMuted, isBlocked, oobe, commonNavigation]);
+  }, [isLoggedIn, data, isSelf, isMuted, isBlocked, commonNavigation]);
 
   useEffect(() => {
     commonNavigation.setOptions({

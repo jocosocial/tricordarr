@@ -32,7 +32,6 @@ const UserProfileScreenInner = ({route}: Props) => {
       refetch={refetch}
       isLoading={isLoading}
       enableContent={route.params.enableContent}
-      oobe={route.params.oobe}
     />
   );
 };
