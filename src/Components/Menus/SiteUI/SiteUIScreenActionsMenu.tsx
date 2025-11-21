@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
 import {Linking} from 'react-native';
 import {Menu} from 'react-native-paper';
@@ -13,11 +12,10 @@ import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScree
 
 interface SiteUIScreenActionsMenuProps {
   onHome: () => void;
-  oobe?: boolean;
   getCurrentUrl: () => string;
 }
 
-export const SiteUIScreenActionsMenu = ({onHome, oobe, getCurrentUrl}: SiteUIScreenActionsMenuProps) => {
+export const SiteUIScreenActionsMenu = ({onHome, getCurrentUrl}: SiteUIScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
 
@@ -28,7 +26,7 @@ export const SiteUIScreenActionsMenu = ({onHome, oobe, getCurrentUrl}: SiteUIScr
 
   const handleHelp = () => {
     closeMenu();
-    commonNavigation.push(CommonStackComponents.siteUIHelpScreen, {oobe: oobe});
+    commonNavigation.push(CommonStackComponents.siteUIHelpScreen);
   };
 
   const handleOpenInBrowser = () => {
@@ -37,12 +35,6 @@ export const SiteUIScreenActionsMenu = ({onHome, oobe, getCurrentUrl}: SiteUIScr
     Linking.openURL(currentUrl).catch(err => {
       console.error('[SiteUIScreenActionsMenu.tsx] Failed to open URL in browser:', err);
     });
-  };
-
-  const handleCopyUrl = () => {
-    closeMenu();
-    const currentUrl = getCurrentUrl();
-    Clipboard.setString(currentUrl);
   };
 
   return (
