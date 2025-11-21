@@ -15,7 +15,7 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
  *
  * The inconsistent pill animation is a known bug:
  * https://github.com/callstack/react-native-paper/issues/4767
- * I tried applying the code in https://github.com/callstack/react-native-paper/issues/4767
+ * I tried applying the code in https://github.com/callstack/react-native-paper/pull/4820
  * but it had unintended side effects on the styling of the tab buttons. So I am going to
  * leave it for now until it gets merged or sorted out.
  * https://github.com/jocosocial/tricordarr/issues/366
