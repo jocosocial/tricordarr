@@ -4,13 +4,25 @@ import {StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumThreadQuery} from '#src/Queries/Forum/ForumThreadQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumThreadScreenBase} from '#src/Screens/Forum/Thread/ForumThreadScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadPostScreen>;
 
-export const ForumThreadPostScreen = ({route, navigation}: Props) => {
+export const ForumThreadPostScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forum/containingpost/${props.route.params.postID}`}>
+      <ForumThreadPostScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumThreadPostScreenInner = ({route, navigation}: Props) => {
   const {
     data,
     refetch,

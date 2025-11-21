@@ -6,13 +6,24 @@ import {UserSearchBar} from '#src/Components/Search/UserSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData, UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamailAddParticipantScreen>;
 
-export const SeamailAddParticipantScreen = ({route, navigation}: Props) => {
+export const SeamailAddParticipantScreen = (props: Props) => {
+  // Yes this is an /lfg route.
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={`/lfg/${props.route.params.fez.fezID}/members`}>
+      <SeamailAddParticipantScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const SeamailAddParticipantScreenInner = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const queryClient = useQueryClient();
 

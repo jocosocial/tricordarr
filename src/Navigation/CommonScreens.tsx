@@ -2,10 +2,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
@@ -310,41 +307,33 @@ export enum CommonStackComponents {
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
-  const {getIsDisabled} = useFeature();
-  const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
-  const isForumsDisabled = getIsDisabled(SwiftarrFeature.forums);
-  const isSeamailDisabled = getIsDisabled(SwiftarrFeature.seamail);
-  const isLfgDisabled = getIsDisabled(SwiftarrFeature.friendlyfez);
-  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
-  const isPersonalEventDisabled = getIsDisabled(SwiftarrFeature.personalevents);
-  const isScheduleDisabled = getIsDisabled(SwiftarrFeature.schedule);
   const {getLeftMainHeaderButtons} = useDrawer();
 
   return (
     <>
       <Stack.Screen
         name={CommonStackComponents.userProfileScreen}
-        component={isUsersDisabled ? DisabledView : UserProfileScreen}
+        component={UserProfileScreen}
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.usernameProfileScreen}
-        component={isUsersDisabled ? DisabledView : UsernameProfileScreen}
+        component={UsernameProfileScreen}
         options={{title: 'User Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userProfileEditScreen}
-        component={isUsersDisabled ? DisabledView : UserProfileEditScreen}
+        component={UserProfileEditScreen}
         options={{title: 'Edit Profile'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userPrivateNoteScreen}
-        component={isUsersDisabled ? DisabledView : UserPrivateNoteScreen}
+        component={UserPrivateNoteScreen}
         options={{title: 'Private Note'}}
       />
       <Stack.Screen
         name={CommonStackComponents.userRegCodeScreen}
-        component={isUsersDisabled ? DisabledView : UserRegCodeScreen}
+        component={UserRegCodeScreen}
         options={{title: 'Registration'}}
       />
       <Stack.Screen
@@ -360,18 +349,18 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostUserScreen}
-        component={isForumsDisabled ? DisabledView : ForumPostUserScreen}
+        component={ForumPostUserScreen}
         options={{title: 'Posts by User'}}
       />
       <Stack.Screen
         name={CommonStackComponents.forumThreadUserScreen}
-        component={isForumsDisabled ? DisabledView : ForumThreadUserScreen}
+        component={ForumThreadUserScreen}
         options={{title: 'Forums by User'}}
       />
       <Stack.Screen name={CommonStackComponents.eventScreen} component={EventScreen} options={{title: 'Event'}} />
       <Stack.Screen
         name={CommonStackComponents.forumThreadScreen}
-        component={isForumsDisabled ? DisabledView : ForumThreadScreen}
+        component={ForumThreadScreen}
         options={{
           title: 'Forum',
         }}
@@ -388,19 +377,19 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.forumThreadPostScreen}
-        component={isForumsDisabled ? DisabledView : ForumThreadPostScreen}
+        component={ForumThreadPostScreen}
         options={{
           title: 'Forum',
         }}
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostEditScreen}
-        component={isForumsDisabled ? DisabledView : ForumPostEditScreen}
+        component={ForumPostEditScreen}
         options={{title: 'Edit Post'}}
       />
       <Stack.Screen
         name={CommonStackComponents.seamailCreateScreen}
-        component={isSeamailDisabled ? DisabledView : SeamailCreateScreen}
+        component={SeamailCreateScreen}
         options={{title: 'New Seamail'}}
       />
       <Stack.Screen
@@ -415,12 +404,12 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostHashtagScreen}
-        component={isForumsDisabled ? DisabledView : ForumPostHashtagScreen}
+        component={ForumPostHashtagScreen}
         options={{title: 'Hashtag'}}
       />
       <Stack.Screen
         name={CommonStackComponents.seamailChatScreen}
-        component={isSeamailDisabled ? DisabledView : FezChatScreen}
+        component={FezChatScreen}
         // The simple headerTitle string below gets overwritten in the SeamailScreen component.
         // This is here as a performance optimization.
         // The reason it renders in the component is that deep linking doesnt pass in the title
@@ -429,42 +418,38 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.fezChatDetailsScreen}
-        component={isSeamailDisabled ? DisabledView : FezChatDetailsScreen}
+        component={FezChatDetailsScreen}
         options={() => ({title: 'Chat Details'})}
       />
       <Stack.Screen
         name={CommonStackComponents.seamailAddParticipantScreen}
-        component={isSeamailDisabled ? DisabledView : SeamailAddParticipantScreen}
+        component={SeamailAddParticipantScreen}
         options={{title: 'Add Participant'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgScreen}
-        component={isLfgDisabled ? DisabledView : LfgScreen}
+        component={LfgScreen}
         options={{title: 'Looking For Group'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgParticipationScreen}
-        component={isLfgDisabled ? DisabledView : LfgParticipationScreen}
+        component={LfgParticipationScreen}
         options={{title: 'Participation'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgAddParticipantScreen}
-        component={isLfgDisabled ? DisabledView : LfgAddParticipantScreen}
+        component={LfgAddParticipantScreen}
         options={{title: 'Add Participant'}}
       />
       <Stack.Screen
         name={CommonStackComponents.lfgChatScreen}
-        component={isLfgDisabled ? DisabledView : FezChatScreen}
+        component={FezChatScreen}
         options={{title: FezType.getChatTitle(FezType.activity)}}
       />
-      <Stack.Screen
-        name={CommonStackComponents.lfgEditScreen}
-        component={isLfgDisabled ? DisabledView : LfgEditScreen}
-        options={{title: 'Edit'}}
-      />
+      <Stack.Screen name={CommonStackComponents.lfgEditScreen} component={LfgEditScreen} options={{title: 'Edit'}} />
       <Stack.Screen
         name={CommonStackComponents.forumThreadEditScreen}
-        component={isForumsDisabled ? DisabledView : ForumThreadEditScreen}
+        component={ForumThreadEditScreen}
         options={{title: 'Edit Forum'}}
       />
       <Stack.Screen
@@ -534,7 +519,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.forumPostSearchScreen}
-        component={isForumsDisabled ? DisabledView : ForumPostSearchScreen}
+        component={ForumPostSearchScreen}
         options={{title: 'Post Search'}}
       />
       <Stack.Screen
@@ -549,7 +534,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.performerScreen}
-        component={isPerformersDisabled ? DisabledView : PerformerScreen}
+        component={PerformerScreen}
         options={{title: 'Performer'}}
       />
       <Stack.Screen
@@ -569,7 +554,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.lfgCreateHelpScreen}
-        component={isLfgDisabled ? DisabledView : LfgCreateHelpScreen}
+        component={LfgCreateHelpScreen}
         options={{title: 'New LFG Help'}}
       />
       <Stack.Screen
@@ -584,7 +569,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.privateEventChatScreen}
-        component={isPersonalEventDisabled ? DisabledView : FezChatScreen}
+        component={FezChatScreen}
         options={{title: FezType.getChatTitle(FezType.privateEvent)}}
       />
       <Stack.Screen
@@ -619,7 +604,7 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleDayScreen}
-        component={isScheduleDisabled ? DisabledView : ScheduleDayScreen}
+        component={ScheduleDayScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Schedule',
@@ -627,12 +612,12 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
       />
       <Stack.Screen
         name={CommonStackComponents.schedulePrivateEventsScreen}
-        component={isScheduleDisabled ? DisabledView : SchedulePrivateEventsScreen}
+        component={SchedulePrivateEventsScreen}
         options={{title: 'Personal Events'}}
       />
       <Stack.Screen
         name={CommonStackComponents.scheduleDayPlannerScreen}
-        component={isScheduleDisabled ? DisabledView : ScheduleDayPlannerScreen}
+        component={ScheduleDayPlannerScreen}
         options={{title: 'Day Planner'}}
       />
     </>

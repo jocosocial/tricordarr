@@ -12,14 +12,25 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoriteMutation} from '#src/Queries/Users/UserFavoriteMutations';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.favoriteUsers>;
-export const FavoriteUsersScreen = ({navigation}: Props) => {
+
+export const FavoriteUsersScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/favorites'}>
+      <FavoriteUsersScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const FavoriteUsersScreenInner = ({navigation}: Props) => {
   const userFavoriteMutation = useUserFavoriteMutation();
   const {data, isFetching, refetch} = useUserFavoritesQuery();
   const queryClient = useQueryClient();

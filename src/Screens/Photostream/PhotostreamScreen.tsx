@@ -14,13 +14,23 @@ import {PhotostreamActionsMenu} from '#src/Components/Menus/Photostream/Photostr
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamQuery} from '#src/Queries/Photostream/PhotostreamQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {PhotostreamImageData} from '#src/Structs/ControllerStructs';
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamScreen>;
 
-export const PhotostreamScreen = ({navigation}: Props) => {
+export const PhotostreamScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
+      <PhotostreamScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const PhotostreamScreenInner = ({navigation}: Props) => {
   const {data, refetch, isFetchingNextPage, hasNextPage, fetchNextPage} = usePhotostreamQuery();
   const [refreshing, setRefreshing] = useState(false);
   const [expandFab, setExpandFab] = useState(true);

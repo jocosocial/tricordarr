@@ -17,8 +17,8 @@ export const KrakenView = () => {
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
           <Text>
-            This feature is not available in this app. Since you have an iPhone, you can use The Kraken app to access it
-            instead!
+            This feature is not available and/or disabled in this app. Since you have an iPhone, you can use The Kraken
+            app to access it instead!
           </Text>
         </PaddedContentView>
         <PaddedContentView>
@@ -26,9 +26,7 @@ export const KrakenView = () => {
             onPress={() => Linking.openURL('https://apps.apple.com/us/app/the-kraken-a-twitarr-client/id1496322373')}>
             <ContributorCard
               image={AppImageMetaData.fromAsset(Krakn, 'Krakn.png')}
-              bodyText={
-                "The Kraken is a social media app custom-built for JoCo Cruise. If you're coming with us on the cruise, you want to have this app installed to maximize your experience."
-              }
+              bodyText={'The Kraken is a social media app custom-built for JoCo Cruise by Chall Fry.'}
             />
           </TouchableOpacity>
         </PaddedContentView>

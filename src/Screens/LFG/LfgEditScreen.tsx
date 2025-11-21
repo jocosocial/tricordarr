@@ -10,14 +10,27 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LfgCanceledView} from '#src/Components/Views/Static/LfgCanceledView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEditScreen>;
-export const LfgEditScreen = ({route, navigation}: Props) => {
+
+export const LfgEditScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.friendlyfez}
+      urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
+      <LfgEditScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgEditScreenInner = ({route, navigation}: Props) => {
   const updateMutation = useFezUpdateMutation();
   const {appConfig} = useConfig();
   const offset = getEventTimezoneOffset(

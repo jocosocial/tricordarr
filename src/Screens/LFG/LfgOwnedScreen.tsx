@@ -3,12 +3,22 @@ import React, {useEffect} from 'react';
 
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
 
 type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgOwnedScreen>;
 
-export const LfgOwnedScreen = ({navigation}: Props) => {
+export const LfgOwnedScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/owned'}>
+      <LfgOwnedScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgOwnedScreenInner = ({navigation}: Props) => {
   const {getLeftMainHeaderButtons} = useDrawer();
   const {appConfig} = useConfig();
 

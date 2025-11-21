@@ -19,14 +19,26 @@ import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumFilter} from '#src/Enums/ForumSortFilter';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCategoryQuery} from '#src/Queries/Forum/ForumCategoryQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumListData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoryScreen>;
 
-export const ForumCategoryScreen = ({route, navigation}: Props) => {
+export const ForumCategoryScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.forums}
+      urlPath={`/forums/${props.route.params.category.categoryID}`}>
+      <ForumCategoryScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumCategoryScreenInner = ({route, navigation}: Props) => {
   const {forumFilter} = useFilter();
   const isFocused = useIsFocused();
   const {clearPrivileges} = usePrivilege();

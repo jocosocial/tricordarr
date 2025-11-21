@@ -8,14 +8,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgAddParticipantScreen>;
 
-export const LfgAddParticipantScreen = ({route, navigation}: Props) => {
+export const LfgAddParticipantScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}/members`}>
+      <LfgAddParticipantScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const LfgAddParticipantScreenInner = ({route, navigation}: Props) => {
   const participantMutation = useFezParticipantMutation();
   const {data} = useFezQuery({
     fezID: route.params.fezID,

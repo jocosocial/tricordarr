@@ -2,11 +2,8 @@ import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {KrakenTalkCreateScreen} from '#src/Screens/KrakenTalk/KrakenTalkCreateScreen';
 import {KrakenTalkReceiveScreen} from '#src/Screens/KrakenTalk/KrakenTalkReceiveScreen';
@@ -45,14 +42,12 @@ export enum ChatStackScreenComponents {
 export const ChatStackNavigator = () => {
   const {screenOptions} = useStyles();
   const {getLeftMainHeaderButtons} = useDrawer();
-  const {getIsDisabled} = useFeature();
-  const isDisabled = getIsDisabled(SwiftarrFeature.seamail);
 
   return (
     <ChatStack.Navigator initialRouteName={ChatStackScreenComponents.seamailListScreen} screenOptions={screenOptions}>
       <ChatStack.Screen
         name={ChatStackScreenComponents.seamailListScreen}
-        component={isDisabled ? DisabledView : SeamailListScreen}
+        component={SeamailListScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Seamail',

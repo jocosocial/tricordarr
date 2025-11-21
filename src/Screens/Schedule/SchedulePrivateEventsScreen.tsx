@@ -11,13 +11,23 @@ import {LfgFilterMenu} from '#src/Components/Menus/LFG/LfgFilterMenu';
 import {AppView} from '#src/Components/Views/AppView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useFilter} from '#src/Context/Contexts/FilterContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
+      <SchedulePrivateEventsScreenInner />
+    </DisabledFeatureScreen>
+  );
+};
+
+const SchedulePrivateEventsScreenInner = () => {
   const {lfgCruiseDayFilter, lfgHidePastFilter} = useFilter();
   const {data, isFetching, refetch, hasNextPage, fetchNextPage} = usePersonalEventsQuery({
     fezType: [FezType.privateEvent, FezType.personalEvent],

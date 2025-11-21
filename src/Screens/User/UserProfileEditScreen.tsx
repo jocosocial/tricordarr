@@ -7,15 +7,25 @@ import {UserProfileForm} from '#src/Components/Forms/User/UserProfileForm';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DinnerTeam} from '#src/Enums/DinnerTeam';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserProfileMutation} from '#src/Queries/User/UserProfileMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {UserHeader, UserProfileUploadData} from '#src/Structs/ControllerStructs';
 import {UserProfileFormValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileEditScreen>;
 
-export const UserProfileEditScreen = ({route, navigation}: Props) => {
+export const UserProfileEditScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile/edit'}>
+      <UserProfileEditScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const UserProfileEditScreenInner = ({route, navigation}: Props) => {
   const profileMutation = useUserProfileMutation();
   const queryClient = useQueryClient();
   const initialValues: UserProfileFormValues = {

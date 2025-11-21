@@ -7,12 +7,24 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useModal} from '#src/Context/Contexts/ModalContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useRegCodeForUserQuery} from '#src/Queries/Admin/RegCodeQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userRegCodeScreen>;
 
-export const UserRegCodeScreen = ({route, navigation}: Props) => {
+export const UserRegCodeScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen
+      feature={SwiftarrFeature.users}
+      urlPath={`/admin/regcodes/showuser/${props.route.params.userID}`}>
+      <UserRegCodeScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const UserRegCodeScreenInner = ({route, navigation}: Props) => {
   const {data} = useRegCodeForUserQuery({userID: route.params.userID});
   const {setModalVisible} = useModal();
 

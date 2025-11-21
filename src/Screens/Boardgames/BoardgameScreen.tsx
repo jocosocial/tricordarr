@@ -13,10 +13,12 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameFavoriteMutation} from '#src/Queries/Boardgames/BoardgameMutations';
 import {useBoardgameQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {BoardgameData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameScreen>;
@@ -27,7 +29,15 @@ const decodeHtml = (html?: string) => {
   return text.replaceAll('<br/>', '\n').replaceAll('    ', '').trimEnd();
 };
 
-export const BoardgameScreen = ({navigation, route}: Props) => {
+export const BoardgameScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+      <BoardgameScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BoardgameScreenInner = ({navigation, route}: Props) => {
   const {data, isFetching, isLoading, refetch} = useBoardgameQuery({boardgameID: route.params.boardgame.gameID});
   const favoriteMutation = useBoardgameFavoriteMutation();
   const queryClient = useQueryClient();

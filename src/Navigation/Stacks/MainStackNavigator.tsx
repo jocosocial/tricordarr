@@ -2,10 +2,7 @@ import {NavigatorScreenParams, useNavigation} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {SettingsStackNavigator, SettingsStackParamList} from '#src/Navigation/Stacks/SettingsStackNavigator';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
@@ -101,12 +98,6 @@ export enum MainStackComponents {
 
 export const MainStackNavigator = () => {
   const {screenOptions} = useStyles();
-  const {getIsDisabled} = useFeature();
-  const isUsersDisabled = getIsDisabled(SwiftarrFeature.users);
-  const isPerformersDisabled = getIsDisabled(SwiftarrFeature.performers);
-  const isPhotostreamDisabled = getIsDisabled(SwiftarrFeature.photostream);
-  const isMicroKaraokeDisabled = getIsDisabled(SwiftarrFeature.microkaraoke);
-  const isGamesDisabled = getIsDisabled(SwiftarrFeature.gameslist);
 
   return (
     <MainStack.Navigator initialRouteName={MainStackComponents.mainScreen} screenOptions={screenOptions}>
@@ -129,7 +120,7 @@ export const MainStackNavigator = () => {
       <MainStack.Screen name={MainStackComponents.faqScreen} component={FaqScreen} options={{title: 'FAQ'}} />
       <MainStack.Screen
         name={MainStackComponents.userDirectoryScreen}
-        component={isUsersDisabled ? DisabledView : UserDirectoryScreen}
+        component={UserDirectoryScreen}
         options={{title: 'Directory'}}
       />
       <MainStack.Screen
@@ -154,12 +145,12 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamScreen}
-        component={isPhotostreamDisabled ? DisabledView : PhotostreamScreen}
+        component={PhotostreamScreen}
         options={{title: 'Photo Stream'}}
       />
       <MainStack.Screen
         name={MainStackComponents.photostreamImageCreateScreen}
-        component={isPhotostreamDisabled ? DisabledView : PhotostreamImageCreateScreen}
+        component={PhotostreamImageCreateScreen}
         options={{title: 'Upload'}}
       />
       <MainStack.Screen
@@ -169,52 +160,52 @@ export const MainStackNavigator = () => {
       />
       <MainStack.Screen
         name={MainStackComponents.microKaraokeListScreen}
-        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeListScreen}
+        component={MicroKaraokeListScreen}
         options={{title: 'Song List'}}
       />
       <MainStack.Screen
         name={MainStackComponents.microKaraokeSongScreen}
-        component={isMicroKaraokeDisabled ? DisabledView : MicroKaraokeSongScreen}
+        component={MicroKaraokeSongScreen}
         options={{title: 'Song'}}
       />
       <MainStack.Screen
         name={MainStackComponents.performerListScreen}
-        component={isPerformersDisabled ? DisabledView : PerformerListScreen}
+        component={PerformerListScreen}
         options={{title: 'Performers'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameListScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameListScreen}
+        component={BoardgameListScreen}
         options={{title: 'Board Games'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameScreen}
+        component={BoardgameScreen}
         options={{title: 'Board Game'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameHelpScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameHelpScreen}
+        component={BoardgameHelpScreen}
         options={{title: 'Board Game Help'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameSearchScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameSearchScreen}
+        component={BoardgameSearchScreen}
         options={{title: 'Search'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameRecommendScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameRecommendScreen}
+        component={BoardgameRecommendScreen}
         options={{title: 'Game Guide'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameExpansionsScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameExpansionsScreen}
+        component={BoardgameExpansionsScreen}
         options={{title: 'Expansions'}}
       />
       <MainStack.Screen
         name={MainStackComponents.boardgameCreateLfgScreen}
-        component={isGamesDisabled ? DisabledView : BoardgameCreateLfgScreen}
+        component={BoardgameCreateLfgScreen}
         options={{title: 'Create LFG'}}
       />
       {CommonScreens(MainStack)}

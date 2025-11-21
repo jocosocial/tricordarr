@@ -5,9 +5,19 @@ import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatL
 import {SearchBarBase} from '#src/Components/Search/SearchBarBase';
 import {AppView} from '#src/Components/Views/AppView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {useBoardgamesQuery} from '#src/Queries/Boardgames/BoardgameQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 export const BoardgameSearchScreen = () => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames'}>
+      <BoardgameSearchScreenInner />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BoardgameSearchScreenInner = () => {
   const {commonStyles} = useStyles();
   const [searchQuery, setSearchQuery] = React.useState('');
   const {data, hasNextPage, fetchNextPage, isFetching, refetch} = useBoardgamesQuery({

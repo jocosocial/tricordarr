@@ -5,12 +5,22 @@ import {ForumPostSearchBar} from '#src/Components/Search/ForumPostSearchBar';
 import {AppView} from '#src/Components/Views/AppView';
 import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 export type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostSearchScreen>;
 
-export const ForumPostSearchScreen = ({route}: Props) => {
+export const ForumPostSearchScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+      <ForumPostSearchScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const ForumPostSearchScreenInner = ({route}: Props) => {
   // This is used deep in the FlatList to star posts by favorite users.
   // Will trigger an initial load if the data is empty else a background refetch on staleTime.
   const {isLoading: isLoadingFavorites} = useUserFavoritesQuery();

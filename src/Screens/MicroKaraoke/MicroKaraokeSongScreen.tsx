@@ -11,12 +11,22 @@ import {AppView} from '#src/Components/Views/AppView';
 // import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useMicroKaraokeSongQuery} from '#src/Queries/MicroKaraoke/MicroKaraokeQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.microKaraokeSongScreen>;
 
-export const MicroKaraokeSongScreen = ({route}: Props) => {
+export const MicroKaraokeSongScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
+      <MicroKaraokeSongScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const MicroKaraokeSongScreenInner = ({route}: Props) => {
   console.log(route.params.songID);
   const {data} = useMicroKaraokeSongQuery(route.params.songID);
   const [currentIndex, setCurrentIndex] = useState(0);

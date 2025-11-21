@@ -4,8 +4,18 @@ import {Platform} from 'react-native';
 import {KrakenView} from '#src/Components/Views/Static/KrakenView';
 import {NotImplementedView} from '#src/Components/Views/Static/NotImplementedView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 
 export const MicroKaraokeListScreen = () => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.microkaraoke}>
+      <MicroKaraokeListScreenInner />
+    </DisabledFeatureScreen>
+  );
+};
+
+const MicroKaraokeListScreenInner = () => {
   // const {data, refetch, isFetching} = useMicroKaraokeSonglistQuery();
   // console.log(data);
   const {appConfig} = useConfig();

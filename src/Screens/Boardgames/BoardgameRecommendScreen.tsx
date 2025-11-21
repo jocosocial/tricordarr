@@ -10,9 +10,11 @@ import {BoardgameRecommendationForm} from '#src/Components/Forms/BoardgameRecomm
 import {BoardgameFlatList} from '#src/Components/Lists/Boardgames/BoardgameFlatList';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {useBoardgameRecommendMutation} from '#src/Queries/Boardgames/BoardgameMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {BoardgameData, BoardgameRecommendationData} from '#src/Structs/ControllerStructs';
 
 const defaultValues: BoardgameRecommendationData = {
@@ -42,7 +44,15 @@ const ListHeader = ({
 
 type Props = StackScreenProps<MainStackParamList, MainStackComponents.boardgameRecommendScreen>;
 
-export const BoardgameRecommendScreen = ({navigation}: Props) => {
+export const BoardgameRecommendScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.gameslist} urlPath={'/boardgames/guide'}>
+      <BoardgameRecommendScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BoardgameRecommendScreenInner = ({navigation}: Props) => {
   const guideMutation = useBoardgameRecommendMutation();
   const [games, setGames] = useState<BoardgameData[]>([]);
   const [fieldValues, setFieldValues] = useState<BoardgameRecommendationData>(defaultValues);

@@ -12,18 +12,28 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {saveImageQueryToLocal} from '#src/Libraries/Storage/ImageStorage';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
 
 export type Props = StackScreenProps<MainStackParamList, MainStackComponents.photostreamImageCreateScreen>;
 
-export const PhotostreamImageCreateScreen = ({navigation}: Props) => {
+export const PhotostreamImageCreateScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
+      <PhotostreamImageCreateScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const PhotostreamImageCreateScreenInner = ({navigation}: Props) => {
   const {data: locationData, refetch: refetchLocationData} = usePhotostreamLocationDataQuery();
   const [refreshing, setRefreshing] = useState(false);
   const uploadMutation = usePhotostreamImageUploadMutation();

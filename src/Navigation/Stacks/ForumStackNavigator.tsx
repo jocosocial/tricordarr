@@ -2,11 +2,8 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 
-import {DisabledView} from '#src/Components/Views/Static/DisabledView';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
-import {useFeature} from '#src/Context/Contexts/FeatureContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonScreens, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {ForumCategoriesScreen} from '#src/Screens/Forum/ForumCategoriesScreen';
 import {ForumCategoryScreen} from '#src/Screens/Forum/ForumCategoryScreen';
@@ -64,8 +61,6 @@ export const ForumStackNavigator = () => {
   const {screenOptions} = useStyles();
   const Stack = createStackNavigator<ForumStackParamList>();
   const {getLeftMainHeaderButtons} = useDrawer();
-  const {getIsDisabled} = useFeature();
-  const isDisabled = getIsDisabled(SwiftarrFeature.forums);
 
   return (
     <Stack.Navigator
@@ -73,7 +68,7 @@ export const ForumStackNavigator = () => {
       screenOptions={{...screenOptions, headerShown: true}}>
       <Stack.Screen
         name={ForumStackComponents.forumCategoriesScreen}
-        component={isDisabled ? DisabledView : ForumCategoriesScreen}
+        component={ForumCategoriesScreen}
         options={{
           headerLeft: getLeftMainHeaderButtons,
           title: 'Forum Categories',
@@ -81,54 +76,54 @@ export const ForumStackNavigator = () => {
       />
       <Stack.Screen
         name={ForumStackComponents.forumCategoryScreen}
-        component={isDisabled ? DisabledView : ForumCategoryScreen}
+        component={ForumCategoryScreen}
         options={{
           title: 'Forums',
         }}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostMentionScreen}
-        component={isDisabled ? DisabledView : ForumPostMentionScreen}
+        component={ForumPostMentionScreen}
         options={{title: 'Posts Mentioning You'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostSelfScreen}
-        component={isDisabled ? DisabledView : ForumPostSelfScreen}
+        component={ForumPostSelfScreen}
         options={{title: 'Your Posts'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumPostFavoriteScreen}
-        component={isDisabled ? DisabledView : ForumPostFavoriteScreen}
+        component={ForumPostFavoriteScreen}
         options={{title: 'Favorite Posts'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumFavoritesScreen}
-        component={isDisabled ? DisabledView : ForumThreadFavoritesScreen}
+        component={ForumThreadFavoritesScreen}
         options={{title: 'Favorite Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumMutesScreen}
-        component={isDisabled ? DisabledView : ForumThreadMutesScreen}
+        component={ForumThreadMutesScreen}
         options={{title: 'Muted Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumOwnedScreen}
-        component={isDisabled ? DisabledView : ForumThreadOwnedScreen}
+        component={ForumThreadOwnedScreen}
         options={{title: 'Your Forums'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumRecentScreen}
-        component={isDisabled ? DisabledView : ForumThreadRecentScreen}
+        component={ForumThreadRecentScreen}
         options={{title: 'Recently Viewed'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumThreadSearchScreen}
-        component={isDisabled ? DisabledView : ForumThreadSearchScreen}
+        component={ForumThreadSearchScreen}
         options={{title: 'Forum Search'}}
       />
       <Stack.Screen
         name={ForumStackComponents.forumThreadCreateScreen}
-        component={isDisabled ? DisabledView : ForumThreadCreateScreen}
+        component={ForumThreadCreateScreen}
         options={{title: 'New Forum'}}
       />
       <Stack.Screen

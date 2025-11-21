@@ -13,14 +13,25 @@ import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {LoadingView} from '#src/Components/Views/Static/LoadingView';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
-export const BlockUsersScreen = ({navigation}: Props) => {
+
+export const BlockUsersScreen = (props: Props) => {
+  return (
+    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
+      <BlockUsersScreenInner {...props} />
+    </DisabledFeatureScreen>
+  );
+};
+
+const BlockUsersScreenInner = ({navigation}: Props) => {
   const {hasModerator} = usePrivilege();
   const userBlockMutation = useUserBlockMutation();
   const {data, isFetching, refetch} = useUserBlocksQuery();
