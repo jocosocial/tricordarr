@@ -2,7 +2,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
-import {OobePreRegistrationCompleteCard} from '#src/Components/Cards/OobePreRegistrationCompleteCard';
+import {PreRegistrationCompleteCard} from '#src/Components/Cards/PreRegistrationCompleteCard';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -42,7 +42,7 @@ export const OobeFinishScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          {appConfig.preRegistrationMode ? <OobePreRegistrationCompleteCard /> : <OobeNoteCard />}
+          {appConfig.preRegistrationMode ? <PreRegistrationCompleteCard /> : <OobeNoteCard />}
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
