@@ -1,4 +1,3 @@
-import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback} from 'react';
 import {StyleSheet} from 'react-native';
@@ -43,15 +42,10 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  /**
-   * Uhhh.... why?
-   */
-  useFocusEffect(
-    useCallback(() => {
-      console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
-      setPreRegistrationMode(false);
-    }, [setPreRegistrationMode]),
-  );
+  // This used to have a useFocusEffect that would disable preregistration mode
+  // which caught if you entered prereg and then changed your mind. This actually
+  // sucks as a pattern so I'm turning it off and making that happen depending on
+  // how you proceed.
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
