@@ -36,6 +36,11 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
+  const onBackPress = () => {
+    setPreRegistrationMode(true);
+    navigation.goBack();
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={false}>
@@ -46,11 +51,12 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
         </PaddedContentView>
         <PaddedContentView>
           <Text style={styles.text}>
-            Do not proceed until you are physically on the ship, have enabled airplane mode, and connected to ship wifi.
+            Before proceeding ensure that your phone is on ship WiFi and you have disabled any VPNs, private DNS, or
+            other network blockers.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView leftText={'Back'} leftOnPress={() => navigation.goBack()} rightOnPress={onPress} />
+      <OobeButtonsView leftText={'Back'} leftOnPress={onBackPress} rightOnPress={onPress} />
     </AppView>
   );
 };

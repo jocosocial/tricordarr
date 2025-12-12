@@ -55,8 +55,6 @@ export const AppView = ({children, disablePreRegistrationWarning = false}: AppVi
     },
   });
 
-  console.log(headerHeightValue, footerHeightValue);
-
   /**
    * Holy fuck what an adventure the KeyboardAvoidingView is.
    * This issue covers most of it: https://github.com/facebook/react-native/issues/52596
