@@ -18,9 +18,8 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
-
-import {PreRegistrationScreen} from '../PreRegistrationScreen';
 
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';

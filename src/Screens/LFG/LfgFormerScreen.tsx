@@ -2,8 +2,8 @@ import React from 'react';
 
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export const LfgFormerScreen = () => {
   return (
