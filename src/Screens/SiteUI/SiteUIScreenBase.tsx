@@ -103,7 +103,7 @@ export const SiteUIScreenBase = ({initialUrl, initialKey = ''}: SiteUIScreenBase
   });
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={true}>
       <WebView
         source={{uri: webviewUrl}}
         key={key}
