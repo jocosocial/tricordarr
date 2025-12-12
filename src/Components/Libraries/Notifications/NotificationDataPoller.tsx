@@ -9,7 +9,8 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 export const NotificationDataPoller = () => {
   const {isLoggedIn, isLoading} = useAuth();
   const {appConfig, oobeCompleted} = useConfig();
-  const enablePolling = oobeCompleted && isLoggedIn && !isLoading && appConfig.enableNotificationPolling;
+  const enablePolling =
+    oobeCompleted && isLoggedIn && !isLoading && !appConfig.preRegistrationMode && appConfig.enableNotificationPolling;
   const {data} = useUserNotificationDataQuery({
     refetchInterval: enablePolling ? appConfig.notificationPollInterval : false,
     enabled: enablePolling,

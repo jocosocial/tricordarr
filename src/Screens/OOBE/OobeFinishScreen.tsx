@@ -2,7 +2,6 @@ import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 
 import {OobeNoteCard} from '#src/Components/Cards/OobeNoteCard';
-import {PreRegistrationCompleteCard} from '#src/Components/Cards/PreRegistrationCompleteCard';
 import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
@@ -29,7 +28,9 @@ export const OobeFinishScreen = ({navigation}: Props) => {
       // Hopefully this is set by the time we get here?
       ...(userNotificationData?.shipWifiSSID ? {wifiNetworkNames: [userNotificationData.shipWifiSSID]} : {}),
     });
-    startPushProvider();
+    if (!appConfig.preRegistrationMode) {
+      startPushProvider();
+    }
     rootNavigation.replace(RootStackComponents.rootContentScreen, {
       screen: BottomTabComponents.homeTab,
       params: {
@@ -42,15 +43,10 @@ export const OobeFinishScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          {appConfig.preRegistrationMode ? <PreRegistrationCompleteCard /> : <OobeNoteCard />}
+          <OobeNoteCard />
         </PaddedContentView>
       </ScrollingContentView>
-      <OobeButtonsView
-        leftOnPress={() => navigation.goBack()}
-        rightText={'Finish'}
-        rightOnPress={onFinish}
-        rightDisabled={appConfig.preRegistrationMode}
-      />
+      <OobeButtonsView leftOnPress={() => navigation.goBack()} rightText={'Finish'} rightOnPress={onFinish} />
     </AppView>
   );
 };

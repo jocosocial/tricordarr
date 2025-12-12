@@ -10,7 +10,7 @@ import {RootStackComponents, useRootStack} from '#src/Navigation/Stacks/RootStac
 export const PreRegistrationWarningView = () => {
   const {commonStyles} = useStyles();
   const navigation = useRootStack();
-  const {appConfig} = useConfig();
+  const {oobeCompleted} = useConfig();
 
   const styles = StyleSheet.create({
     headerView: {
@@ -31,9 +31,9 @@ export const PreRegistrationWarningView = () => {
   };
 
   return (
-    <TouchableOpacity disabled={!appConfig.oobeCompleted} style={styles.headerView} onPress={onPress}>
+    <TouchableOpacity disabled={!oobeCompleted} style={styles.headerView} onPress={onPress}>
       <Text style={styles.headerText}>Pre-Registration Mode</Text>
-      {appConfig.oobeCompleted ? (
+      {oobeCompleted ? (
         <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
           Tap here when you are physically on the ship.
         </Text>

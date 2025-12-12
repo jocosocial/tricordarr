@@ -42,7 +42,7 @@ export const OobePreregistrationScreen = ({navigation}: Props) => {
   };
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={true}>
       <ScrollingContentView isStack={false}>
         <PaddedContentView>
           <Text style={styles.text} variant={'displayLarge'}>

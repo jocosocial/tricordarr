@@ -67,6 +67,11 @@ export const OobeServerScreen = ({navigation}: Props) => {
     setSnackbarPayload(undefined);
   };
 
+  const onBackPress = () => {
+    updateAppConfig({...appConfig, preRegistrationMode: false});
+    navigation.goBack();
+  };
+
   useEffect(() => {
     if (serverHealthData && serverHealthData.status === HttpStatusCode.Ok) {
       setServerHealthPassed(true);
@@ -118,7 +123,7 @@ export const OobeServerScreen = ({navigation}: Props) => {
         )}
       </ScrollingContentView>
       <OobeButtonsView
-        leftOnPress={() => navigation.goBack()}
+        leftOnPress={onBackPress}
         rightOnPress={() => navigation.push(OobeStackComponents.oobeConductScreen)}
         rightDisabled={!serverHealthPassed || isFetching || hasUnsavedWork}
       />

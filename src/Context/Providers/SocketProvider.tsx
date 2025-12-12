@@ -55,7 +55,9 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
   );
 
   const openNotificationSocket = useCallback(() => {
-    if (!appConfig.enableNotificationSocket) {
+    // If the notification socket is disabled or we're in pre-registration mode, don't open it.
+    // This returns the function early.
+    if (!appConfig.enableNotificationSocket || appConfig.preRegistrationMode) {
       console.log('[SocketProvider.tsx] NotificationSocket is disabled. Skipping open.');
       return;
     }
@@ -69,7 +71,7 @@ export const SocketProvider = ({children}: PropsWithChildren) => {
       buildWebSocket().then(ws => setNotificationSocket(ws));
     }
     console.log(`[SocketProvider.tsx] NotificationSocket open complete! State: ${notificationSocket?.readyState}`);
-  }, [appConfig.enableNotificationSocket, notificationSocket]);
+  }, [appConfig.enableNotificationSocket, notificationSocket, appConfig.preRegistrationMode]);
 
   // Socket Close
 
