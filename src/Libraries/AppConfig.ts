@@ -74,9 +74,9 @@ export interface AppConfig {
   userPreferences: UserPreferences;
   markReadCancelPush: boolean;
   preRegistrationServerUrl: string;
-  preRegistrationEndDate: Date;
   manualTimeOffset: number;
   wifiNetworkNames: string[];
+  preRegistrationMode: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -153,9 +153,9 @@ const defaultAppConfig: AppConfig = {
   },
   markReadCancelPush: true,
   preRegistrationServerUrl: '',
-  preRegistrationEndDate: new Date(2023, 3, 5),
   enableExperiments: false,
   wifiNetworkNames: [],
+  preRegistrationMode: false,
 };
 
 /**
@@ -188,11 +188,6 @@ export const getInitialAppConfig = () => {
   } else {
     config.preRegistrationServerUrl = config.serverUrl;
   }
-  if (Config.PREREGISTRATION_END_DATE) {
-    const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
-    // Because Javascript, Fools!
-    config.preRegistrationEndDate = new Date(year, month - 1, day, 23, 59, 59);
-  }
   return config;
 };
 
@@ -210,16 +205,15 @@ export const getAppConfig = async () => {
   // Certain keys should always be loaded from the app environment.
   // I'm becoming less certain about this. Dropped cruise settings because I have screens for that.
   // Avoid putting things from the SwiftarrClientData endpoint in here. It's confusing.
-  if (Config.PREREGISTRATION_END_DATE) {
-    const [year, month, day] = Config.PREREGISTRATION_END_DATE.split('-').map(Number);
-    // Because Javascript, Fools!
-    appConfig.preRegistrationEndDate = new Date(year, month - 1, day, 23, 59, 59);
-  }
   // Type conversions on a couple of keys. Barf.
   appConfig.cruiseStartDate = new Date(appConfig.cruiseStartDate);
-  appConfig.preRegistrationEndDate = new Date(appConfig.preRegistrationEndDate);
   if (appConfig.muteNotifications) {
     appConfig.muteNotifications = new Date(appConfig.muteNotifications);
+  }
+
+  // If you haven't completed OOBE then you can't be in pre-registration mode
+  if (appConfig.oobeCompletedVersion !== appConfig.oobeExpectedVersion) {
+    appConfig.preRegistrationMode = false;
   }
 
   // "Migration"

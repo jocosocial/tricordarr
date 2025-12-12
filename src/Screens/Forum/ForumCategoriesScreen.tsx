@@ -25,14 +25,17 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useForumCategoriesQuery} from '#src/Queries/Forum/ForumCategoryQueries';
 import {useUserKeywordQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumCategoriesScreen>;
 
 export const ForumCategoriesScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
-      <ForumCategoriesScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+        <ForumCategoriesScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

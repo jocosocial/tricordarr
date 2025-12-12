@@ -17,13 +17,16 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 export const SchedulePrivateEventsScreen = () => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
-      <SchedulePrivateEventsScreenInner />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
+        <SchedulePrivateEventsScreenInner />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

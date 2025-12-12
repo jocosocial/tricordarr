@@ -19,6 +19,7 @@ import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/Ma
 import {usePhotostreamImageUploadMutation} from '#src/Queries/Photostream/PhotostreamMutations';
 import {usePhotostreamLocationDataQuery} from '#src/Queries/Photostream/PhotostreamQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {PhotostreamUploadData} from '#src/Structs/ControllerStructs';
 import {ImageQueryData} from '#src/Types';
 import {PhotostreamCreateFormValues} from '#src/Types/FormValues';
@@ -27,9 +28,11 @@ export type Props = StackScreenProps<MainStackParamList, MainStackComponents.pho
 
 export const PhotostreamImageCreateScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
-      <PhotostreamImageCreateScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.photostream}>
+        <PhotostreamImageCreateScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

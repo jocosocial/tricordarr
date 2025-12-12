@@ -24,15 +24,18 @@ import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useFezParticipantMutation} from '#src/Queries/Fez/Management/FezManagementUserMutations';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgParticipationScreen>;
 
 export const LfgParticipationScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
-      <LfgParticipationScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={`/lfg/${props.route.params.fezID}`}>
+        <LfgParticipationScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

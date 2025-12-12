@@ -7,14 +7,17 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {LfgStackComponents, LfgStackParamList} from '#src/Navigation/Stacks/LFGStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {LfgListScreen} from '#src/Screens/LFG/LfgListScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<LfgStackParamList, LfgStackComponents.lfgOwnedScreen>;
 
 export const LfgOwnedScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/owned'}>
-      <LfgOwnedScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.friendlyfez} urlPath={'/lfg/owned'}>
+        <LfgOwnedScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

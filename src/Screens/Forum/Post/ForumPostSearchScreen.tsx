@@ -9,14 +9,17 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserFavoritesQuery} from '#src/Queries/Users/UserFavoriteQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostSearchScreen>;
 
 export const ForumPostSearchScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
-      <ForumPostSearchScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+        <ForumPostSearchScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

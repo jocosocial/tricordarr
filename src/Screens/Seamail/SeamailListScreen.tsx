@@ -24,6 +24,7 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {useSeamailListQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketStructs';
 
@@ -31,9 +32,11 @@ type SeamailListScreenProps = StackScreenProps<ChatStackParamList, ChatStackScre
 
 export const SeamailListScreen = (props: SeamailListScreenProps) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-      <SeamailListScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
+        <SeamailListScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

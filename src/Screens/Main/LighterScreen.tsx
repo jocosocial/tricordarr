@@ -18,7 +18,7 @@ export const LighterScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <AppView>
+    <AppView disablePreRegistrationWarning={true}>
       <VideoPlayer
         source={LighterVideo}
         style={commonStyles.backgroundVideo}

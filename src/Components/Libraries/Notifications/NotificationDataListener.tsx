@@ -19,8 +19,10 @@ import {NotificationTypeData, SocketNotificationData} from '#src/Structs/SocketS
 export const NotificationDataListener = () => {
   const {enableUserNotifications} = useUserNotificationData();
   const {isLoggedIn} = useAuth();
-  const {oobeCompleted} = useConfig();
-  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted && isLoggedIn});
+  const {oobeCompleted, appConfig} = useConfig();
+  const {refetch: refetchUserNotificationData} = useUserNotificationDataQuery({
+    enabled: oobeCompleted && isLoggedIn && !appConfig.preRegistrationMode,
+  });
   const appStateVisible = useAppState();
   const {notificationSocket} = useSocket();
   const {refetch: refetchAnnouncements} = useAnnouncementsQuery({enabled: false});

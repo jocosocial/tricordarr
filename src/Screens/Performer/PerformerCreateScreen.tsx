@@ -12,17 +12,20 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerUpsertMutation} from '#src/Queries/Performer/PerformerMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {EventData, PerformerData, PerformerUploadData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerCreateScreen>;
 
 export const PerformerCreateScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.performers}
-      urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
-      <PerformerCreateScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.performers}
+        urlPath={`/performer/shadow/addtoevent/${props.route.params.eventID}`}>
+        <PerformerCreateScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

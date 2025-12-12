@@ -19,15 +19,18 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useUserBlockMutation} from '#src/Queries/Users/UserBlockMutations';
 import {useUserBlocksQuery} from '#src/Queries/Users/UserBlockQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.blockUsers>;
 
 export const BlockUsersScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
-      <BlockUsersScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/blocks'}>
+        <BlockUsersScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

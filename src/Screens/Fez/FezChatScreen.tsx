@@ -32,6 +32,7 @@ import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {FezPostsActions, useFezPostsReducer} from '#src/Reducers/Fez/FezPostsReducers';
 import {WebSocketStorageActions} from '#src/Reducers/Fez/FezSocketReducer';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SocketFezMemberChangeData} from '#src/Structs/SocketStructs';
 
@@ -70,9 +71,11 @@ export const FezChatScreen = (props: Props) => {
   }
 
   return (
-    <DisabledFeatureScreen feature={feature} urlPath={urlPath}>
-      <FezChatScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={feature} urlPath={urlPath}>
+        <FezChatScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

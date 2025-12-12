@@ -12,7 +12,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
   const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<PermissionStatus | undefined>();
-  const [preRegistrationMode, setPreRegistrationMode] = useState<boolean>(false);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -32,10 +31,12 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
 
   const updateAppConfig = (newConfig: AppConfig) => {
     console.info('[ConfigProvider.tsx] Updating app config to', newConfig);
-    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig)).then(() => {
-      setAppConfig(newConfig);
-      NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
-    });
+    // Update state immediately to avoid race conditions where consumers navigate
+    // before the state is updated.
+    setAppConfig(newConfig);
+    NativeTricordarrModule.setAppConfig(JSON.stringify(newConfig));
+    // Persist to storage in the background.
+    AsyncStorage.setItem(StorageKeys.APP_CONFIG, JSON.stringify(newConfig));
   };
 
   if (!appConfig) {
@@ -43,7 +44,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
-  const preRegistrationAvailable = new Date() <= appConfig.preRegistrationEndDate;
+  // Pre-registration is available until two days before the cruise starts
+  const twoDaysBeforeCruise = new Date(appConfig.cruiseStartDate);
+  twoDaysBeforeCruise.setDate(twoDaysBeforeCruise.getDate() - 2);
+  const preRegistrationAvailable = new Date() <= twoDaysBeforeCruise || __DEV__;
 
   return (
     <ConfigContext.Provider
@@ -56,8 +60,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         notificationPermissionStatus,
         setNotificationPermissionStatus,
         preRegistrationAvailable,
-        preRegistrationMode,
-        setPreRegistrationMode,
       }}>
       {children}
     </ConfigContext.Provider>

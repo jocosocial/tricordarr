@@ -14,6 +14,7 @@ import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {useForumCreateMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {ForumCreateData, ForumData, ForumListData, PostContentData} from '#src/Structs/ControllerStructs';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
@@ -21,11 +22,13 @@ type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThr
 
 export const ForumThreadCreateScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.forums}
-      urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
-      <ForumThreadCreateScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.forums}
+        urlPath={`/forums/${props.route.params.categoryId}/createForum`}>
+        <ForumThreadCreateScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

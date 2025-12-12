@@ -15,6 +15,7 @@ import {getEventTimezoneOffset, getScheduleItemStartEndTime} from '#src/Librarie
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezUpdateMutation} from '#src/Queries/Fez/FezMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
@@ -22,11 +23,13 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.lfgEdi
 
 export const LfgEditScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.friendlyfez}
-      urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
-      <LfgEditScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.friendlyfez}
+        urlPath={`/lfg/${props.route.params.fez.fezID}/update`}>
+        <LfgEditScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

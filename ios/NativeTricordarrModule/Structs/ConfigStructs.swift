@@ -75,7 +75,6 @@ struct AppConfigData: Codable {
 	var userPreferences: UserPreferences
 	var markReadCancelPush: Bool
 	var preRegistrationServerUrl: String
-	var preRegistrationEndDate: String  // Stored as ISO8601 string, will be converted to Date on read
 	var manualTimeOffset: Int
 	var wifiNetworkNames: [String]
 
@@ -88,7 +87,7 @@ struct AppConfigData: Codable {
 		case schedule, portTimeZoneID, apiClientConfig, enableEasterEgg
 		case accessibility, muteNotifications, skipThumbnails, schedBaseUrl
 		case userPreferences, markReadCancelPush, preRegistrationServerUrl
-		case preRegistrationEndDate, manualTimeOffset, wifiNetworkNames
+		case manualTimeOffset, wifiNetworkNames
 	}
 
 	init(from decoder: Decoder) throws {
@@ -120,7 +119,6 @@ struct AppConfigData: Codable {
 		userPreferences = try container.decode(UserPreferences.self, forKey: .userPreferences)
 		markReadCancelPush = try container.decode(Bool.self, forKey: .markReadCancelPush)
 		preRegistrationServerUrl = try container.decode(String.self, forKey: .preRegistrationServerUrl)
-		preRegistrationEndDate = try container.decode(String.self, forKey: .preRegistrationEndDate)
 		manualTimeOffset = try container.decode(Int.self, forKey: .manualTimeOffset)
 		wifiNetworkNames = try container.decode([String].self, forKey: .wifiNetworkNames)
 
@@ -164,7 +162,6 @@ struct AppConfigData: Codable {
 		try container.encode(userPreferences, forKey: .userPreferences)
 		try container.encode(markReadCancelPush, forKey: .markReadCancelPush)
 		try container.encode(preRegistrationServerUrl, forKey: .preRegistrationServerUrl)
-		try container.encode(preRegistrationEndDate, forKey: .preRegistrationEndDate)
 		try container.encode(manualTimeOffset, forKey: .manualTimeOffset)
 		try container.encode(wifiNetworkNames, forKey: .wifiNetworkNames)
 

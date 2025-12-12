@@ -24,7 +24,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       console.log('[UserNotificationDataProvider.tsx] App is still loading');
       return;
     }
-    if (isLoggedIn && oobeCompleted) {
+    if (isLoggedIn && oobeCompleted && !appConfig.preRegistrationMode) {
       console.log('[UserNotificationDataProvider.tsx] User notifications can start.');
       console.log('[UserNotificationDataProvider.tsx] Enabled is', appConfig.enableBackgroundWorker);
       setEnableUserNotifications(appConfig.enableBackgroundWorker);
@@ -32,7 +32,7 @@ export const UserNotificationDataProvider = ({children}: PropsWithChildren) => {
       console.log('[UserNotificationDataProvider.tsx] Disabling user notifications');
       setEnableUserNotifications(false);
     }
-  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted]);
+  }, [isLoggedIn, isLoading, appConfig.enableBackgroundWorker, oobeCompleted, appConfig.preRegistrationMode]);
 
   /**
    * Fetch the UserNotificationData and whenever it changes update the global state.

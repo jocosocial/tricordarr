@@ -76,7 +76,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'open',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && oobeCompleted,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowOpenLfgs && oobeCompleted && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -90,7 +90,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
     endpoint: 'joined',
     hidePast: false,
     options: {
-      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && oobeCompleted,
+      enabled: isLoggedIn && appConfig.schedule.eventsShowJoinedLfgs && oobeCompleted && !appConfig.preRegistrationMode,
     },
   });
   const {
@@ -102,7 +102,7 @@ const ScheduleDayScreenInner = ({navigation}: Props) => {
   } = usePersonalEventsQuery({
     cruiseDay: selectedCruiseDay - 1,
     options: {
-      enabled: isLoggedIn && oobeCompleted,
+      enabled: isLoggedIn && oobeCompleted && !appConfig.preRegistrationMode,
     },
   });
 

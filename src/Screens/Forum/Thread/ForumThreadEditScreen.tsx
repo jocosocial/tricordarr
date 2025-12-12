@@ -11,17 +11,20 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useForumRenameMutation} from '#src/Queries/Forum/ForumThreadMutationQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {ForumThreadValues} from '#src/Types/FormValues';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumThreadEditScreen>;
 
 export const ForumThreadEditScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.forums}
-      urlPath={`/forum/${props.route.params.forumData.forumID}/edit`}>
-      <ForumThreadEditScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.forums}
+        urlPath={`/forum/${props.route.params.forumData.forumID}/edit`}>
+        <ForumThreadEditScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

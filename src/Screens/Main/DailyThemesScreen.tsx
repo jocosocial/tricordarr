@@ -11,8 +11,17 @@ import {NotLoggedInView} from '#src/Components/Views/Static/NotLoggedInView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
 import {useDailyThemeQuery} from '#src/Queries/Alert/DailyThemeQueries';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export const DailyThemesScreen = () => {
+  return (
+    <PreRegistrationScreen>
+      <DailyThemesScreenInner />
+    </PreRegistrationScreen>
+  );
+};
+
+const DailyThemesScreenInner = () => {
   const {data, refetch, isLoading, isRefetching} = useDailyThemeQuery();
   const {cruiseDayIndex} = useCruise();
   const {isLoggedIn} = useAuth();

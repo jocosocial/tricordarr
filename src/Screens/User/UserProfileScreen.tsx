@@ -3,18 +3,29 @@ import React from 'react';
 
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
+import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {useUsersProfileQuery} from '#src/Queries/Users/UsersQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserProfileScreenBase} from '#src/Screens/User/UserProfileScreenBase';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userProfileScreen>;
 
 export const UserProfileScreen = (props: Props) => {
-  return (
+  const {data: profilePublicData} = useUserProfileQuery();
+  // Cursor wrote this. I don't love it but it works so it's gonna stay.
+  const isSelf = props.route.params.userID === profilePublicData?.header.userID;
+  const content = (
     <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={'/profile'}>
       <UserProfileScreenInner {...props} />
     </DisabledFeatureScreen>
   );
+
+  if (isSelf) {
+    return content;
+  }
+
+  return <PreRegistrationScreen>{content}</PreRegistrationScreen>;
 };
 
 const UserProfileScreenInner = ({route}: Props) => {

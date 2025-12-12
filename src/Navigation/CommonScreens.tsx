@@ -6,6 +6,7 @@ import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {FezType} from '#src/Enums/FezType';
 import {PerformerType} from '#src/Queries/Performer/PerformerQueries';
 import {DisabledHelpScreen} from '#src/Screens/Disabled/DisabledHelpScreen';
+import {PreRegistrationHelpScreen} from '#src/Screens/Disabled/PreRegistrationHelpScreen';
 import {EventAddPerformerScreen} from '#src/Screens/Event/EventAddPerformerScreen';
 import {EventScreen} from '#src/Screens/Event/EventScreen';
 import {EventSearchScreen} from '#src/Screens/Event/EventSearchScreen';
@@ -242,6 +243,7 @@ export type CommonStackParamList = {
   ScheduleDayPlannerScreen: {
     cruiseDay?: number;
   };
+  PreRegistrationHelpScreen: undefined;
 };
 
 export enum CommonStackComponents {
@@ -308,6 +310,7 @@ export enum CommonStackComponents {
   schedulePrivateEventsScreen = 'SchedulePrivateEventsScreen',
   scheduleDayScreen = 'ScheduleDayScreen',
   scheduleDayPlannerScreen = 'ScheduleDayPlannerScreen',
+  preRegistrationHelpScreen = 'PreRegistrationHelpScreen',
 }
 
 export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
@@ -628,6 +631,11 @@ export const CommonScreens = (Stack: {Screen: React.ComponentType<any>}) => {
         name={CommonStackComponents.scheduleDayPlannerScreen}
         component={ScheduleDayPlannerScreen}
         options={{title: 'Day Planner'}}
+      />
+      <Stack.Screen
+        name={CommonStackComponents.preRegistrationHelpScreen}
+        component={PreRegistrationHelpScreen}
+        options={{title: 'Pre-Registration Help'}}
       />
     </>
   );

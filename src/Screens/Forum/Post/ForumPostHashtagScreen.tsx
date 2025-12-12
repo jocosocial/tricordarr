@@ -5,16 +5,19 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
 import {ForumPostScreenBase} from '#src/Screens/Forum/Post/ForumPostScreenBase';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.forumPostHashtagScreen>;
 
 export const ForumPostHashtagScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen
-      feature={SwiftarrFeature.forums}
-      urlPath={`/forumpost/search?hashtag=${props.route.params.hashtag}`}>
-      <ForumPostHashtagScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen
+        feature={SwiftarrFeature.forums}
+        urlPath={`/forumpost/search?hashtag=${props.route.params.hashtag}`}>
+        <ForumPostHashtagScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

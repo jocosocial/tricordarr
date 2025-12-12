@@ -16,9 +16,11 @@ import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 
 export const AppDrawer = ({children}: PropsWithChildren) => {
   const {drawerOpen, setDrawerOpen} = useDrawer();
-  const {oobeCompleted} = useConfig();
+  const {oobeCompleted, appConfig} = useConfig();
   const {hasTwitarrTeam, hasModerator, hasVerified} = usePrivilege();
-  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
+  const {data: userNotificationData} = useUserNotificationDataQuery({
+    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+  });
   const {tokenData} = useAuth();
   const {data: profilePublicData} = useUserProfileQuery({enabled: oobeCompleted});
   const {commonStyles} = useStyles();

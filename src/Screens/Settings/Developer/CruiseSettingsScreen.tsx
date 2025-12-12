@@ -32,7 +32,6 @@ export const CruiseSettingsScreen = () => {
 
   const preRegistrationInitialValues: PreRegistrationSettingsFormValues = {
     preRegistrationServerUrl: appConfig.preRegistrationServerUrl,
-    preRegistrationEndDate: appConfig.preRegistrationEndDate,
   };
 
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
@@ -66,13 +65,11 @@ export const CruiseSettingsScreen = () => {
     updateAppConfig({
       ...appConfig,
       preRegistrationServerUrl: values.preRegistrationServerUrl,
-      preRegistrationEndDate: values.preRegistrationEndDate,
     });
     helpers.setSubmitting(false);
     helpers.resetForm({
       values: {
         preRegistrationServerUrl: values.preRegistrationServerUrl,
-        preRegistrationEndDate: values.preRegistrationEndDate,
       },
     });
   };
@@ -92,6 +89,14 @@ export const CruiseSettingsScreen = () => {
       });
     }
     setRefreshing(false);
+  };
+
+  const togglePreRegistrationMode = () => {
+    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', !appConfig.preRegistrationMode);
+    updateAppConfig({
+      ...appConfig,
+      preRegistrationMode: !appConfig.preRegistrationMode,
+    });
   };
 
   return (
@@ -116,6 +121,13 @@ export const CruiseSettingsScreen = () => {
         <DataFieldListItem title={'Latest Version'} description={data?.spec.latestVersion} />
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={appConfig.preRegistrationMode ? 'Disable' : 'Enable'}
+            onPress={togglePreRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
           <PreRegistrationSettingsForm
             onSubmit={onPreRegistrationSubmit}
             initialValues={preRegistrationInitialValues}

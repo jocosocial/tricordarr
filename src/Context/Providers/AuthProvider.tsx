@@ -7,7 +7,7 @@ import {AuthActions, useAuthReducer} from '#src/Reducers/Auth/AuthReducer';
 import {TokenStringData} from '#src/Structs/ControllerStructs';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
-  const {preRegistrationMode} = useConfig();
+  const {appConfig} = useConfig();
   const [authState, dispatchAuthState] = useAuthReducer({
     isLoading: true,
     tokenData: null,
@@ -16,7 +16,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
 
   const loadStoredTokenData = useCallback(async () => {
     let tokenStringData: string | null;
-    if (preRegistrationMode) {
+    if (appConfig.preRegistrationMode) {
       tokenStringData = await TokenStringData.getLocal(StorageKeys.PREREGISTRATION_TOKEN_STRING_DATA);
       console.log('[AuthProvider.tsx] loaded preRegistration token');
     } else {
@@ -26,7 +26,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     if (tokenStringData) {
       return JSON.parse(tokenStringData) as TokenStringData;
     }
-  }, [preRegistrationMode]);
+  }, [appConfig.preRegistrationMode]);
 
   const restoreTokenData = useCallback(async () => {
     const tokenData = await loadStoredTokenData();
@@ -45,7 +45,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     restoreTokenData();
-  }, [restoreTokenData, preRegistrationMode]);
+  }, [restoreTokenData, appConfig.preRegistrationMode]);
 
   // https://reactnavigation.org/docs/auth-flow/
   const authContext = useMemo(

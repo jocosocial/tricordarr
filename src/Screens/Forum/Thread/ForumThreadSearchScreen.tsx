@@ -7,14 +7,17 @@ import {ListTitleView} from '#src/Components/Views/ListTitleView';
 import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {ForumStackComponents, ForumStackParamList} from '#src/Navigation/Stacks/ForumStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 export type Props = StackScreenProps<ForumStackParamList, ForumStackComponents.forumThreadSearchScreen>;
 
 export const ForumThreadSearchScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
-      <ForumThreadSearchScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.forums} urlPath={'/forums'}>
+        <ForumThreadSearchScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

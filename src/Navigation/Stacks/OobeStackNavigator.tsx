@@ -91,7 +91,7 @@ export const OobeStackNavigator = () => {
       <Stack.Screen
         name={OobeStackComponents.oobePreregistrationScreen}
         component={OobePreregistrationScreen}
-        options={{title: 'Pre-Registration'}}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name={OobeStackComponents.oobeUserDataScreen}

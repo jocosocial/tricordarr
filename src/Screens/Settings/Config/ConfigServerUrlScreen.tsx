@@ -24,7 +24,7 @@ import {ServerUrlFormValues} from '#src/Types/FormValues';
 
 export const ConfigServerUrlScreen = () => {
   const [serverHealthPassed, setServerHealthPassed] = useState(false);
-  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
   const {signOut} = useAuth();
   const {commonStyles} = useStyles();
   const {clearPrivileges} = usePrivilege();
@@ -37,7 +37,7 @@ export const ConfigServerUrlScreen = () => {
   const onSave = async (values: ServerUrlFormValues, formikHelpers: FormikHelpers<ServerUrlFormValues>) => {
     const oldServerUrl = serverUrl;
     await queryClient.cancelQueries({queryKey: ['/client/health']});
-    if (preRegistrationMode) {
+    if (appConfig.preRegistrationMode) {
       updateAppConfig({
         ...appConfig,
         preRegistrationServerUrl: values.serverUrl,
@@ -58,7 +58,7 @@ export const ConfigServerUrlScreen = () => {
       }),
     );
     if (oldServerUrl !== values.serverUrl) {
-      await signOut(preRegistrationMode);
+      await signOut(appConfig.preRegistrationMode);
       clearPrivileges();
       queryClient.clear();
       await CacheManager.clearCache();

@@ -96,7 +96,6 @@ export interface TimeSettingsFormValues {
 
 export interface PreRegistrationSettingsFormValues {
   preRegistrationServerUrl: string;
-  preRegistrationEndDate: Date;
 }
 
 export interface QuerySettingsFormValues {

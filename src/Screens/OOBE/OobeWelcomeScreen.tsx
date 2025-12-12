@@ -1,6 +1,5 @@
-import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -23,8 +22,15 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {preRegistrationAvailable, setPreRegistrationMode} = useConfig();
+  const {appConfig, preRegistrationAvailable, updateAppConfig} = useConfig();
   const {theme} = useAppTheme();
+
+  const setPreRegistrationMode = useCallback(
+    (mode: boolean) => {
+      updateAppConfig({...appConfig, preRegistrationMode: mode});
+    },
+    [appConfig, updateAppConfig],
+  );
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -36,10 +42,15 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
-  useFocusEffect(() => {
-    console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
+  const onPress = () => {
     setPreRegistrationMode(false);
-  });
+    navigation.push(OobeStackComponents.oobeServerScreen);
+  };
+
+  // This used to have a useFocusEffect that would disable preregistration mode
+  // which caught if you entered prereg and then changed your mind. This actually
+  // sucks as a pattern so I'm turning it off and making that happen depending on
+  // how you proceed.
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (
@@ -69,7 +80,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)}
+        rightOnPress={onPress}
         leftOnPress={onPreRegistrationPress}
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}

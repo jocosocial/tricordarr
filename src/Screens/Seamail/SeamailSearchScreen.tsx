@@ -12,14 +12,17 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {ChatStackParamList, ChatStackScreenComponents} from '#src/Navigation/Stacks/ChatStackNavigator';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type SeamailSearchScreenProps = StackScreenProps<ChatStackParamList, ChatStackScreenComponents.seamailSearchScreen>;
 
 export const SeamailSearchScreen = (props: SeamailSearchScreenProps) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
-      <SeamailSearchScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail'}>
+        <SeamailSearchScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

@@ -15,6 +15,7 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useUserNoteCreateMutation, useUserNoteDeleteMutation} from '#src/Queries/Users/UserNoteMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {UserHeader} from '#src/Structs/ControllerStructs';
 import {UserNoteFormValues} from '#src/Types/FormValues';
 
@@ -22,9 +23,11 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.userPr
 
 export const UserPrivateNoteScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={`/user/${props.route.params.user.header.userID}`}>
-      <UserPrivateNoteScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.users} urlPath={`/user/${props.route.params.user.header.userID}`}>
+        <UserPrivateNoteScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

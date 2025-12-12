@@ -8,17 +8,30 @@ import {HeaderEditButton} from '#src/Components/Buttons/HeaderButtons/HeaderEdit
 import {MaterialHeaderButtons} from '#src/Components/Buttons/MaterialHeaderButtons';
 import {PersonalEventScreenActionsMenu} from '#src/Components/Menus/PersonalEvents/PersonalEventScreenActionsMenu';
 import {useConfig} from '#src/Context/Contexts/ConfigContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezQuery} from '#src/Queries/Fez/FezQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {ScheduleItemScreenBase} from '#src/Screens/Schedule/ScheduleItemScreenBase';
 import {FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventScreen>;
 
-export const PersonalEventScreen = ({navigation, route}: Props) => {
+export const PersonalEventScreen = (props: Props) => {
+  return (
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/list'}>
+        <PersonalEventScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
+  );
+};
+
+const PersonalEventScreenInner = ({navigation, route}: Props) => {
   const {appConfig} = useConfig();
   const {data, refetch, isFetching} = useFezQuery({
     fezID: route.params.eventID,

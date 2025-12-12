@@ -31,10 +31,10 @@ export const ShareMenuItem = ({contentType, contentID, closeMenu}: ShareMenuItem
   }, [contentType, contentID, appConfig, closeMenu]);
 
   /**
-   * If the user hasn't finished setup, don't let them share content.
-   * @TODO this should probably expand to preregistration mode as well.
+   * If the user hasn't finished setup or is in pre-registration mode,
+   * don't let them share content.
    */
-  if (!oobeCompleted) {
+  if (!oobeCompleted || appConfig.preRegistrationMode) {
     return null;
   }
 

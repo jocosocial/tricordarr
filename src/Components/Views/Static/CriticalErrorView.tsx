@@ -29,7 +29,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const queryClient = useQueryClient();
   const [showStack, setShowStack] = React.useState(false);
   const {signOut} = useAuth();
-  const {updateAppConfig, preRegistrationMode} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
 
   const styles = {
     outerContainer: [commonStyles.flex, commonStyles.justifyCenter, commonStyles.alignItemsCenter],
@@ -40,7 +40,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
   const toggleShowStack = () => setShowStack(!showStack);
 
   const fixAll = async () => {
-    await signOut(preRegistrationMode);
+    await signOut(appConfig.preRegistrationMode);
     queryClient.clear();
     updateAppConfig(getInitialAppConfig());
     props.resetError();
@@ -89,7 +89,7 @@ export const CriticalErrorView = (props: CriticalErrorViewProps) => {
           <PrimaryActionButton
             buttonColor={theme.colors.twitarrNegativeButton}
             buttonText={'Sign Out'}
-            onPress={async () => await signOut(preRegistrationMode)}
+            onPress={async () => await signOut(appConfig.preRegistrationMode)}
           />
         </PaddedContentView>
         <PaddedContentView>

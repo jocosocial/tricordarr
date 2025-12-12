@@ -14,6 +14,7 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
 import {useFezPostMutation} from '#src/Queries/Fez/FezPostMutations';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezContentData, FezData, PostContentData} from '#src/Structs/ControllerStructs';
 import {SeamailFormValues} from '#src/Types/FormValues';
 
@@ -21,9 +22,11 @@ type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.seamai
 
 export const SeamailCreateScreen = (props: Props) => {
   return (
-    <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
-      <SeamailCreateScreenInner {...props} />
-    </DisabledFeatureScreen>
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.seamail} urlPath={'/seamail/create'}>
+        <SeamailCreateScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
   );
 };
 

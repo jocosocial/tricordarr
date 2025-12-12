@@ -18,6 +18,7 @@ import {AppIcons} from '#src/Enums/Icons';
 import {CommonStackComponents, useCommonStack} from '#src/Navigation/CommonScreens';
 import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
 
 const getCleanISOString = (dateString: string): string => {
@@ -35,6 +36,14 @@ const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
 };
 
 export const MainTimeZoneScreen = () => {
+  return (
+    <PreRegistrationScreen>
+      <TimeZoneScreen />
+    </PreRegistrationScreen>
+  );
+};
+
+const TimeZoneScreen = () => {
   const {data, refetch, isFetching, isInitialLoading} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
   const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();
