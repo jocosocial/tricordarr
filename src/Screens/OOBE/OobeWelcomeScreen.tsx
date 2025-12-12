@@ -1,6 +1,6 @@
 import {useFocusEffect} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Text} from 'react-native-paper';
@@ -23,8 +23,16 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeWelcom
 
 export const OobeWelcomeScreen = ({navigation}: Props) => {
   const {commonStyles} = useStyles();
-  const {preRegistrationAvailable, setPreRegistrationMode} = useConfig();
+  const {appConfig, preRegistrationAvailable, updateAppConfig} = useConfig();
   const {theme} = useAppTheme();
+
+  const setPreRegistrationMode = useCallback(
+    (mode: boolean) => {
+      updateAppConfig({...appConfig, preRegistrationMode: mode});
+      navigation.push(OobeStackComponents.oobeServerScreen);
+    },
+    [appConfig, updateAppConfig, navigation],
+  );
 
   const styles = StyleSheet.create({
     text: commonStyles.textCenter,
@@ -36,6 +44,9 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
+  /**
+   * Uhhh.... why?
+   */
   useFocusEffect(() => {
     console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
     setPreRegistrationMode(false);

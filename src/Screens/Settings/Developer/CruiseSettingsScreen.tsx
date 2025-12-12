@@ -91,6 +91,14 @@ export const CruiseSettingsScreen = () => {
     setRefreshing(false);
   };
 
+  const togglePreRegistrationMode = () => {
+    console.log('[CruiseSettingsScreen.tsx] toggling pre-registration mode to', !appConfig.preRegistrationMode);
+    updateAppConfig({
+      ...appConfig,
+      preRegistrationMode: !appConfig.preRegistrationMode,
+    });
+  };
+
   return (
     <AppView>
       <ScrollingContentView isStack={true} refreshControl={<RefreshControl refreshing={refreshing} enabled={false} />}>
@@ -113,6 +121,13 @@ export const CruiseSettingsScreen = () => {
         <DataFieldListItem title={'Latest Version'} description={data?.spec.latestVersion} />
         <ListSubheader>Pre-Registration</ListSubheader>
         <PaddedContentView padTop={true}>
+          <PrimaryActionButton
+            buttonText={appConfig.preRegistrationMode ? 'Disable' : 'Enable'}
+            onPress={togglePreRegistrationMode}
+            buttonColor={theme.colors.twitarrNeutralButton}
+          />
+        </PaddedContentView>
+        <PaddedContentView>
           <PreRegistrationSettingsForm
             onSubmit={onPreRegistrationSubmit}
             initialValues={preRegistrationInitialValues}

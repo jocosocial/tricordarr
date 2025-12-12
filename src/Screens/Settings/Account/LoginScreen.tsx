@@ -20,7 +20,7 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const loginMutation = useLoginMutation();
   const {signIn} = useAuth();
-  const {appConfig, updateAppConfig, oobeCompleted, preRegistrationMode} = useConfig();
+  const {appConfig, updateAppConfig, oobeCompleted} = useConfig();
   const {refetch: refetchClientConfig} = useClientConfigQuery({enabled: false});
   const {serverUrl} = useSwiftarrQueryClient();
 
@@ -43,7 +43,7 @@ export const LoginScreen = () => {
     (formValues: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => {
       loginMutation.mutate(formValues, {
         onSuccess: async response => {
-          await signIn(response.data, preRegistrationMode);
+          await signIn(response.data, appConfig.preRegistrationMode);
           if (oobeCompleted) {
             await startPushProvider();
           }
@@ -53,7 +53,7 @@ export const LoginScreen = () => {
         onSettled: () => formikHelpers.setSubmitting(false),
       });
     },
-    [loginMutation, signIn, preRegistrationMode, oobeCompleted, updateClientConfig, navigation],
+    [loginMutation, signIn, appConfig.preRegistrationMode, oobeCompleted, updateClientConfig, navigation],
   );
 
   return (

@@ -33,7 +33,7 @@ export const PreRegistrationSettingsForm = (props: CruiseSettingsFormProps) => {
       {({handleSubmit, isSubmitting, isValid, dirty}) => (
         <View>
           <DirtyDetectionField />
-          <TextField name={'preRegistrationServerUrl'} label={'URL'} autoCapitalize={'none'} />
+          <TextField name={'preRegistrationServerUrl'} label={'Server URL'} autoCapitalize={'none'} />
           <PrimaryActionButton
             disabled={!isValid || isSubmitting || !dirty}
             isLoading={isSubmitting}

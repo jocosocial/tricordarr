@@ -12,7 +12,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   const [appConfig, setAppConfig] = useState<AppConfig>();
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
   const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<PermissionStatus | undefined>();
-  const [preRegistrationMode, setPreRegistrationMode] = useState<boolean>(false);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -59,8 +58,6 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
         notificationPermissionStatus,
         setNotificationPermissionStatus,
         preRegistrationAvailable,
-        preRegistrationMode,
-        setPreRegistrationMode,
       }}>
       {children}
     </ConfigContext.Provider>

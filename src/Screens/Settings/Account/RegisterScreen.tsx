@@ -23,7 +23,7 @@ const RegisterScreenBase = () => {
   const {setModalContent, setModalVisible, setModalOnDismiss} = useModal();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const {preRegistrationMode} = useConfig();
+  const {appConfig} = useConfig();
 
   const onPress = useCallback(() => {
     setModalVisible(false);
@@ -45,7 +45,7 @@ const RegisterScreenBase = () => {
           };
           loginMutation.mutate(loginValues, {
             onSuccess: response => {
-              signIn(response.data, preRegistrationMode).then(() => {
+              signIn(response.data, appConfig.preRegistrationMode).then(() => {
                 setModalOnDismiss(onDismiss);
                 setModalContent(
                   <UserRecoveryKeyModalView onPress={onPress} userRecoveryKey={userCreateResponse.data.recoveryKey} />,
@@ -74,7 +74,7 @@ const RegisterScreenBase = () => {
       setModalOnDismiss,
       setModalVisible,
       signIn,
-      preRegistrationMode,
+      appConfig.preRegistrationMode,
     ],
   );
 

@@ -76,6 +76,7 @@ export interface AppConfig {
   preRegistrationServerUrl: string;
   manualTimeOffset: number;
   wifiNetworkNames: string[];
+  preRegistrationMode: boolean;
 }
 
 const defaultAppConfig: AppConfig = {
@@ -154,6 +155,7 @@ const defaultAppConfig: AppConfig = {
   preRegistrationServerUrl: '',
   enableExperiments: false,
   wifiNetworkNames: [],
+  preRegistrationMode: true,
 };
 
 /**

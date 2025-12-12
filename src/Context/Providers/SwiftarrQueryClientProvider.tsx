@@ -12,13 +12,13 @@ import {asyncStoragePersister, BadResponseFormatError, SwiftarrQueryClient} from
 import {ErrorResponse} from '#src/Structs/ControllerStructs';
 
 export const SwiftarrQueryClientProvider = ({children}: PropsWithChildren) => {
-  const {appConfig, oobeCompleted, preRegistrationMode} = useConfig();
+  const {appConfig, oobeCompleted} = useConfig();
   const [errorCount, setErrorCount] = useState(0);
   const {setSnackbarPayload} = useSnackbar();
   const {tokenData, isLoggedIn} = useAuth();
   const serverUrl = useMemo(
-    () => (preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl),
-    [appConfig.preRegistrationServerUrl, appConfig.serverUrl, preRegistrationMode],
+    () => (appConfig.preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl),
+    [appConfig.preRegistrationServerUrl, appConfig.serverUrl, appConfig.preRegistrationMode],
   );
 
   /**

@@ -18,7 +18,7 @@ type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeUserDa
 export const OobeUserDataScreen = ({navigation}: Props) => {
   const {tokenData} = useAuth();
   const {theme} = useAppTheme();
-  const {preRegistrationMode} = useConfig();
+  const {appConfig} = useConfig();
 
   return (
     <AppView>
@@ -45,7 +45,7 @@ export const OobeUserDataScreen = ({navigation}: Props) => {
             disabled={!tokenData}
           />
         </PaddedContentView>
-        {preRegistrationMode && (
+        {appConfig.preRegistrationMode && (
           <>
             <PaddedContentView>
               <Text>

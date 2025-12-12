@@ -30,7 +30,7 @@ export const AppView = ({children}: AppViewProps) => {
   const {hasUnsavedWork} = useErrorHandler();
   // https://reactnavigation.org/docs/6.x/handling-safe-area
   const insets = useSafeAreaInsets();
-  const {preRegistrationMode} = useConfig();
+  const {appConfig} = useConfig();
   const {headerHeight, headerHeightValue, footerHeightValue} = useLayout();
   const directHeaderHeight = useHeaderHeight();
 
@@ -91,7 +91,7 @@ export const AppView = ({children}: AppViewProps) => {
           <AppModal />
           <AppSnackbar />
         </Portal>
-        {preRegistrationMode && <PreRegistrationWarningView />}
+        {appConfig.preRegistrationMode && <PreRegistrationWarningView />}
         {disruptionDetected && <ConnectionDisruptedView />}
         {children}
         <UnsavedChangesView isVisible={hasUnsavedWork} />

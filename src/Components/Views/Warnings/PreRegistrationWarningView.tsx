@@ -23,7 +23,7 @@ export const PreRegistrationWarningView = () => {
     <View style={styles.headerView}>
       <Text style={styles.headerText}>Pre-Registration Mode</Text>
       <Text variant={'labelSmall'} style={commonStyles.onTwitarrButton}>
-        Restart the wizard or the app to leave this mode
+        Tap here when you are physically on the ship.
       </Text>
     </View>
   );

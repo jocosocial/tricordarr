@@ -18,7 +18,7 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 type Props = StackScreenProps<OobeStackParamList, OobeStackComponents.oobeFinishScreen>;
 
 export const OobeFinishScreen = ({navigation}: Props) => {
-  const {appConfig, updateAppConfig, preRegistrationMode} = useConfig();
+  const {appConfig, updateAppConfig} = useConfig();
   const {data: userNotificationData} = useUserNotificationDataQuery();
   const rootNavigation = useRootStack();
 
@@ -42,14 +42,14 @@ export const OobeFinishScreen = ({navigation}: Props) => {
     <AppView>
       <ScrollingContentView isStack={true}>
         <PaddedContentView padTop={true}>
-          {preRegistrationMode ? <OobePreRegistrationCompleteCard /> : <OobeNoteCard />}
+          {appConfig.preRegistrationMode ? <OobePreRegistrationCompleteCard /> : <OobeNoteCard />}
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
         leftOnPress={() => navigation.goBack()}
         rightText={'Finish'}
         rightOnPress={onFinish}
-        rightDisabled={preRegistrationMode}
+        rightDisabled={appConfig.preRegistrationMode}
       />
     </AppView>
   );

@@ -48,7 +48,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
   const [loading, setLoading] = useState(false);
   const {clearPrivileges} = usePrivilege();
   const queryClient = useQueryClient();
-  const {preRegistrationMode} = useConfig();
+  const {appConfig} = useConfig();
 
   const onLogout = () => {
     setEnableUserNotifications(false);
@@ -57,7 +57,7 @@ export const LogoutDeviceModalView = ({allDevices = false}: LogoutModalContentPr
       type: WebSocketStorageActions.clear,
     });
     stopForegroundServiceWorker().then(() =>
-      signOut(preRegistrationMode).then(() => {
+      signOut(appConfig.preRegistrationMode).then(() => {
         clearPrivileges();
         queryClient.clear();
         setModalVisible(false);
