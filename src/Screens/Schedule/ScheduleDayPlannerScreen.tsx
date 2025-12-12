@@ -9,17 +9,14 @@ import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {CommonStackComponents} from '#src/Navigation/CommonScreens';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayPlannerScreen>;
 
 export const ScheduleDayPlannerScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
-        <ScheduleDayPlannerScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/dayplanner'}>
+      <ScheduleDayPlannerScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 

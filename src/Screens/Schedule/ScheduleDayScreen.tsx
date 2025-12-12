@@ -28,18 +28,15 @@ import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/Commo
 import {useEventsQuery} from '#src/Queries/Events/EventQueries';
 import {useLfgListQuery, usePersonalEventsQuery} from '#src/Queries/Fez/FezQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {EventData, FezData} from '#src/Structs/ControllerStructs';
 
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.scheduleDayScreen>;
 
 export const ScheduleDayScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
-        <ScheduleDayScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.schedule} urlPath={'/events'}>
+      <ScheduleDayScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 

@@ -11,20 +11,32 @@ import {AppView} from '#src/Components/Views/AppView';
 import {PaddedContentView} from '#src/Components/Views/Content/PaddedContentView';
 import {ScrollingContentView} from '#src/Components/Views/Content/ScrollingContentView';
 import {useCruise} from '#src/Context/Contexts/CruiseContext';
+import {SwiftarrFeature} from '#src/Enums/AppFeatures';
 import {FezType} from '#src/Enums/FezType';
 import {AppIcons} from '#src/Enums/Icons';
 import {getApparentCruiseDate, getScheduleItemStartEndTime} from '#src/Libraries/DateTime';
 import {CommonStackComponents, CommonStackParamList} from '#src/Navigation/CommonScreens';
 import {useFezCreateMutation} from '#src/Queries/Fez/FezMutations';
+import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
+import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {FezData} from '#src/Structs/ControllerStructs';
 import {FezFormValues} from '#src/Types/FormValues';
 
+export const PersonalEventCreateScreen = (props: Props) => {
+  return (
+    <PreRegistrationScreen>
+      <DisabledFeatureScreen feature={SwiftarrFeature.personalevents} urlPath={'/privateevent/create'}>
+        <PersonalEventCreateScreenInner {...props} />
+      </DisabledFeatureScreen>
+    </PreRegistrationScreen>
+  );
+};
+
 type Props = StackScreenProps<CommonStackParamList, CommonStackComponents.personalEventCreateScreen>;
-export const PersonalEventCreateScreen = ({navigation, route}: Props) => {
+const PersonalEventCreateScreenInner = ({navigation, route}: Props) => {
   const createMutation = useFezCreateMutation();
   const queryClient = useQueryClient();
   const {startDate, adjustedCruiseDayToday} = useCruise();
-
   const getNavButtons = useCallback(() => {
     return (
       <View>

@@ -46,10 +46,12 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   /**
    * Uhhh.... why?
    */
-  useFocusEffect(() => {
-    console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
-    setPreRegistrationMode(false);
-  });
+  useFocusEffect(
+    useCallback(() => {
+      console.log('[OobeWelcomeScreen.tsx] disabling preregistration mode');
+      setPreRegistrationMode(false);
+    }, [setPreRegistrationMode]),
+  );
 
   // Un/Semi came from Drew in https://www.youtube.com/watch?v=BLFllFtPD8k
   return (

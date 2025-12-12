@@ -13,18 +13,15 @@ import {MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
 import {usePerformerQuery} from '#src/Queries/Performer/PerformerQueries';
 import {useUserProfileQuery} from '#src/Queries/User/UserQueries';
 import {DisabledFeatureScreen} from '#src/Screens/DisabledFeatureScreen';
-import {PreRegistrationScreen} from '#src/Screens/PreRegistrationScreen';
 import {PerformerScreenBase} from '#src/Screens/Performer/PerformerScreenBase';
 
 type Props = StackScreenProps<MainStackParamList, CommonStackComponents.performerScreen>;
 
 export const PerformerScreen = (props: Props) => {
   return (
-    <PreRegistrationScreen>
-      <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
-        <PerformerScreenInner {...props} />
-      </DisabledFeatureScreen>
-    </PreRegistrationScreen>
+    <DisabledFeatureScreen feature={SwiftarrFeature.performers} urlPath={`/performer/${props.route.params.id}`}>
+      <PerformerScreenInner {...props} />
+    </DisabledFeatureScreen>
   );
 };
 

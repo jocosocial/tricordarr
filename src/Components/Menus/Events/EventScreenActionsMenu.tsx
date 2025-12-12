@@ -20,7 +20,7 @@ interface EventScreenActionsMenuProps {
 export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
   const {visible, openMenu, closeMenu} = useMenu();
   const commonNavigation = useCommonStack();
-  const {preRegistrationAvailable} = useConfig();
+  const {appConfig} = useConfig();
 
   const handleHelp = () => {
     closeMenu();
@@ -44,7 +44,7 @@ export const EventScreenActionsMenu = (props: EventScreenActionsMenuProps) => {
               eventID: props.event.eventID,
             });
           }}
-          disabled={!preRegistrationAvailable}
+          disabled={!appConfig.preRegistrationMode}
         />
       )}
       <Menu.Item title={'Help'} leadingIcon={AppIcons.help} onPress={handleHelp} />
