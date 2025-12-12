@@ -43,7 +43,10 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   }
 
   const oobeCompleted = appConfig.oobeCompletedVersion === appConfig.oobeExpectedVersion;
-  const preRegistrationAvailable = new Date() <= appConfig.preRegistrationEndDate;
+  // Pre-registration is available until two days before the cruise starts
+  const twoDaysBeforeCruise = new Date(appConfig.cruiseStartDate);
+  twoDaysBeforeCruise.setDate(twoDaysBeforeCruise.getDate() - 2);
+  const preRegistrationAvailable = new Date() <= twoDaysBeforeCruise;
 
   return (
     <ConfigContext.Provider

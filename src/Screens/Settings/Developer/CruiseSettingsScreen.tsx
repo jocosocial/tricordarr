@@ -32,7 +32,6 @@ export const CruiseSettingsScreen = () => {
 
   const preRegistrationInitialValues: PreRegistrationSettingsFormValues = {
     preRegistrationServerUrl: appConfig.preRegistrationServerUrl,
-    preRegistrationEndDate: appConfig.preRegistrationEndDate,
   };
 
   const onSubmit = (values: CruiseSettingsFormValues, helpers: FormikHelpers<CruiseSettingsFormValues>) => {
@@ -66,13 +65,11 @@ export const CruiseSettingsScreen = () => {
     updateAppConfig({
       ...appConfig,
       preRegistrationServerUrl: values.preRegistrationServerUrl,
-      preRegistrationEndDate: values.preRegistrationEndDate,
     });
     helpers.setSubmitting(false);
     helpers.resetForm({
       values: {
         preRegistrationServerUrl: values.preRegistrationServerUrl,
-        preRegistrationEndDate: values.preRegistrationEndDate,
       },
     });
   };
