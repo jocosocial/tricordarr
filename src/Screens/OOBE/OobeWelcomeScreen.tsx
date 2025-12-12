@@ -29,9 +29,8 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
   const setPreRegistrationMode = useCallback(
     (mode: boolean) => {
       updateAppConfig({...appConfig, preRegistrationMode: mode});
-      navigation.push(OobeStackComponents.oobeServerScreen);
     },
-    [appConfig, updateAppConfig, navigation],
+    [appConfig, updateAppConfig],
   );
 
   const styles = StyleSheet.create({
