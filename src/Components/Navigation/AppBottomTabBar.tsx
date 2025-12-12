@@ -1,5 +1,6 @@
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {CommonActions} from '@react-navigation/native';
+import {useEffect} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 
@@ -22,6 +23,14 @@ import {useLayout} from '#src/Context/Contexts/LayoutContext';
  */
 export const AppBottomTabBar = (props: BottomTabBarProps) => {
   const {footerHeight} = useLayout();
+
+  useEffect(() => {
+    return () => {
+      console.log('[AppBottomTabBar.tsx] useEffect return setting footerHeight to 0');
+      footerHeight.set(0);
+    };
+  }, [footerHeight]);
+
   return (
     <Animated.View
       onLayout={e => {

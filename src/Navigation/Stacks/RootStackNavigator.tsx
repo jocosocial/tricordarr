@@ -7,13 +7,13 @@ import {useErrorHandler} from '#src/Context/Contexts/ErrorHandlerContext';
 import {useSelection} from '#src/Context/Contexts/SelectionContext';
 import {useSnackbar} from '#src/Context/Contexts/SnackbarContext';
 import {useStyles} from '#src/Context/Contexts/StyleContext';
-import {OobeStackNavigator} from '#src/Navigation/Stacks/OobeStackNavigator';
+import {OobeStackNavigator, OobeStackParamList} from '#src/Navigation/Stacks/OobeStackNavigator';
 import {BottomTabNavigator, BottomTabParamList} from '#src/Navigation/Tabs/BottomTabNavigator';
 import {ForumListDataSelectionActions} from '#src/Reducers/Forum/ForumListDataSelectionReducer';
 import {LighterScreen} from '#src/Screens/Main/LighterScreen';
 
 export type RootStackParamList = {
-  OobeStackNavigator: undefined;
+  OobeStackNavigator: NavigatorScreenParams<OobeStackParamList>;
   RootContentScreen: NavigatorScreenParams<BottomTabParamList>;
   // Lighter has to be here until I can figure out how to fullscreen a video
   LighterScreen: undefined;
