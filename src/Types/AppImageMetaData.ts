@@ -22,20 +22,22 @@ export interface AppImageMetaData {
 }
 export namespace AppImageMetaData {
   export const fromFileName = (fileName: string, appConfig: AppConfig): AppImageMetaData => {
+    const serverUrl = appConfig.preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
     return {
       mode: AppImageMode.api,
       fileName: fileName,
-      thumbURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
-      fullURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
+      thumbURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.thumb}/${fileName}`,
+      fullURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.full}/${fileName}`,
       mimeType: lookupMimeType(fileName) || 'application/octet-stream',
     };
   };
 
   export const fromIdenticon = (userID: string, appConfig: AppConfig): AppImageMetaData => {
+    const serverUrl = appConfig.preRegistrationMode ? appConfig.preRegistrationServerUrl : appConfig.serverUrl;
     return {
       mode: AppImageMode.identicon,
       fileName: `${userID}.png`,
-      identiconURI: `${appConfig.serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
+      identiconURI: `${serverUrl}${appConfig.urlPrefix}/image/${APIImageSizePaths.identicon}/${userID}`,
       mimeType: 'image/png', // This comes from Swiftarr ImageController.swift
     };
   };
