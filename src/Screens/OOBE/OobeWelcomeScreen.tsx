@@ -42,6 +42,11 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
     navigation.push(OobeStackComponents.oobeServerScreen);
   };
 
+  const onPress = () => {
+    setPreRegistrationMode(false);
+    navigation.push(OobeStackComponents.oobeServerScreen);
+  };
+
   // This used to have a useFocusEffect that would disable preregistration mode
   // which caught if you entered prereg and then changed your mind. This actually
   // sucks as a pattern so I'm turning it off and making that happen depending on
@@ -75,7 +80,7 @@ export const OobeWelcomeScreen = ({navigation}: Props) => {
         </PaddedContentView>
       </ScrollingContentView>
       <OobeButtonsView
-        rightOnPress={() => navigation.push(OobeStackComponents.oobeServerScreen)}
+        rightOnPress={onPress}
         leftOnPress={onPreRegistrationPress}
         leftButtonColor={theme.colors.twitarrNeutralButton}
         leftText={'Pre-Registration'}

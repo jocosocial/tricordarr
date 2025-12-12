@@ -45,7 +45,7 @@ export const ConfigProvider = ({children}: PropsWithChildren) => {
   // Pre-registration is available until two days before the cruise starts
   const twoDaysBeforeCruise = new Date(appConfig.cruiseStartDate);
   twoDaysBeforeCruise.setDate(twoDaysBeforeCruise.getDate() - 2);
-  const preRegistrationAvailable = new Date() <= twoDaysBeforeCruise;
+  const preRegistrationAvailable = new Date() <= twoDaysBeforeCruise || __DEV__;
 
   return (
     <ConfigContext.Provider
