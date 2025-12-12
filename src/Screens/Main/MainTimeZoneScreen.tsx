@@ -20,6 +20,8 @@ import {useTimeZoneChangesQuery} from '#src/Queries/Admin/TimeZoneQueries';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
 import {TimeZoneChangeRecord} from '#src/Structs/ControllerStructs';
 
+import {PreRegistrationScreen} from '../PreRegistrationScreen';
+
 const getCleanISOString = (dateString: string): string => {
   return new Date(dateString).toISOString().split('.')[0] + 'Z';
 };
@@ -35,6 +37,14 @@ const TimeZoneListItem = ({record}: {record: TimeZoneChangeRecord}) => {
 };
 
 export const MainTimeZoneScreen = () => {
+  return (
+    <PreRegistrationScreen>
+      <TimeZoneScreen />
+    </PreRegistrationScreen>
+  );
+};
+
+const TimeZoneScreen = () => {
   const {data, refetch, isFetching, isInitialLoading} = useTimeZoneChangesQuery();
   const navigation = useCommonStack();
   const {data: notificationData, refetch: refetchNotificationData} = useUserNotificationDataQuery();

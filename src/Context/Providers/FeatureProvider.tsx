@@ -7,10 +7,12 @@ import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueri
 import {DisabledFeature} from '#src/Structs/ControllerStructs';
 
 export const FeatureProvider = ({children}: PropsWithChildren) => {
-  const {oobeCompleted} = useConfig();
+  const {oobeCompleted, appConfig} = useConfig();
   const [disabledFeatures, setDisabledFeatures] = useState<SwiftarrFeature[]>([]);
   const [allDisabledFeatures, setAllDisabledFeatures] = useState<DisabledFeature[]>([]);
-  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
+  const {data: userNotificationData} = useUserNotificationDataQuery({
+    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+  });
 
   useEffect(() => {
     if (userNotificationData) {

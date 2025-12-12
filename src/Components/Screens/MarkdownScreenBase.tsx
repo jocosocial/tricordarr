@@ -90,6 +90,10 @@ export const MarkdownScreenBase = ({
     noResultsText: {
       ...commonStyles.onSurfaceVariant,
     },
+    scrollView: {
+      ...commonStyles.marginTopSmall,
+      ...scrollViewStyle,
+    },
   });
 
   const handleSearch = useCallback(() => {
@@ -245,7 +249,7 @@ export const MarkdownScreenBase = ({
         ref={scrollViewRef}
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         isStack={true}
-        style={scrollViewStyle}>
+        style={styles.scrollView}>
         <PaddedContentView>
           {enableSearch ? (
             <SearchableMarkdownText

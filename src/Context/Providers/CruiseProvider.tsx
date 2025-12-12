@@ -37,7 +37,9 @@ export const CruiseProvider = ({children}: PropsWithChildren) => {
   const cruiseDays = getCruiseDays(startDate, cruiseLength);
 
   // Figure out of the device is in the wrong time zone.
-  const {data: userNotificationData} = useUserNotificationDataQuery({enabled: oobeCompleted});
+  const {data: userNotificationData} = useUserNotificationDataQuery({
+    enabled: oobeCompleted && !appConfig.preRegistrationMode,
+  });
   // .getTimezoneOffset() reports in minutes and from the opposite perspective
   // as the server. Server says "you're -4" whereas device says "they're +4".
   const deviceTimeOffset = new Date().getTimezoneOffset() * -60;

@@ -47,14 +47,18 @@ export const PreRegistrationView = () => {
         </PaddedContentView>
         <PaddedContentView>
           <Text>
-            Parts of Twitarr aren't available until we're on the ship as we're currently busy scraping off the
-            barnacles. You can come back to this app in pre-registration mode until the cruise starts.
+            Parts of Twitarr aren't available until we're on the ship. You can come back to this app in pre-registration
+            mode until the cruise starts.
           </Text>
         </PaddedContentView>
         <PaddedContentView>
+          <Text>Tap the blue banner at the top of any screen to connect to Twitarr on-board.</Text>
+        </PaddedContentView>
+        <PaddedContentView>
           <Text>
-            Once you are physically on board the ship and connected to ship wifi, tap the blue banner at the top of any
-            screen to connect to Twitarr on-board.
+            Once on-board the Twitarr Team recommends that you enable airplane mode and disable any VPNs, private DNS,
+            or other network blockers that may be running on your device. This will help ensure a smooth experience
+            connecting to the ship's WiFi network.
           </Text>
         </PaddedContentView>
       </ScrollingContentView>

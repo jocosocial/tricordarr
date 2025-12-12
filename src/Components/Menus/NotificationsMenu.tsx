@@ -5,6 +5,7 @@ import {Divider, Menu} from 'react-native-paper';
 import {Item} from 'react-navigation-header-buttons';
 
 import {AppMenu} from '#src/Components/Menus/AppMenu';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {AppIcons} from '#src/Enums/Icons';
 import {useMenu} from '#src/Hooks/useMenu';
 import {useUserNotificationDataQuery} from '#src/Queries/Alert/NotificationQueries';
@@ -12,7 +13,8 @@ import {UserNotificationData} from '#src/Structs/ControllerStructs';
 
 export const NotificationsMenu = () => {
   const {visible, openMenu, closeMenu} = useMenu();
-  const {data} = useUserNotificationDataQuery();
+  const {appConfig} = useConfig();
+  const {data} = useUserNotificationDataQuery({enabled: !appConfig.preRegistrationMode});
 
   const anyNew = UserNotificationData.totalNewCount(data) !== 0;
 

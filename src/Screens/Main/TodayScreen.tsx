@@ -17,6 +17,7 @@ import {TodayThemeView} from '#src/Components/Views/Today/TodayThemeView';
 import {TodayTimezoneWarningView} from '#src/Components/Views/Today/TodayTimezoneWarningView';
 import {TodayAppUpdateView} from '#src/Components/Views/TodayAppUpdateView';
 import {useAuth} from '#src/Context/Contexts/AuthContext';
+import {useConfig} from '#src/Context/Contexts/ConfigContext';
 import {useDrawer} from '#src/Context/Contexts/DrawerContext';
 import {usePrivilege} from '#src/Context/Contexts/PrivilegeContext';
 import {MainStackComponents, MainStackParamList} from '#src/Navigation/Stacks/MainStackNavigator';
@@ -48,14 +49,20 @@ export const TodayScreen = ({navigation}: Props) => {
   const {refetch: refetchProfile} = useUserProfileQuery({enabled: false});
   const {isLoggedIn} = useAuth();
   const {hasModerator} = usePrivilege();
+  const {appConfig} = useConfig();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetchUserNotificationData(), refetchThemes(), refetchAnnouncements(), refetchClient()]);
-    if (isLoggedIn) {
-      await Promise.all([refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes()]);
+    var refreshes: Promise<any>[] = [refetchClient()];
+    // These queries not available in pre-registration mode.
+    if (!appConfig.preRegistrationMode) {
+      refreshes.push(refetchAnnouncements(), refetchThemes(), refetchUserNotificationData());
+      if (isLoggedIn) {
+        refreshes.push(refetchProfile(), refetchFavorites(), refetchBlocks(), refetchMutes());
+      }
     }
+    await Promise.all(refreshes);
     setRefreshing(false);
   };
 
@@ -86,15 +93,20 @@ export const TodayScreen = ({navigation}: Props) => {
         isStack={true}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <TodayHeaderView />
-        <TodayTimezoneWarningView />
-        <TodayAnnouncementView />
-        <TodayThemeView />
-        <TodayNextAppointmentView />
-        {hasModerator && (
-          <PaddedContentView padBottom={false}>
-            <ModeratorCard />
-          </PaddedContentView>
+        {!appConfig.preRegistrationMode && (
+          <>
+            <TodayTimezoneWarningView />
+            <TodayAnnouncementView />
+            <TodayThemeView />
+            <TodayNextAppointmentView />
+            {hasModerator && (
+              <PaddedContentView padBottom={false}>
+                <ModeratorCard />
+              </PaddedContentView>
+            )}
+          </>
         )}
+
         <TodayAppUpdateView />
       </ScrollingContentView>
     </AppView>
