@@ -25,6 +25,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-Tricordarr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tricordarr.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Tricordarr/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Tricordarr/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		930542E92EECD1B6002EFA6E /* Tricordarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Tricordarr.entitlements; path = Tricordarr/Tricordarr.entitlements; sourceTree = "<group>"; };
 		93690EF12EAB269900CA8914 /* Tricordarr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tricordarr-Bridging-Header.h"; sourceTree = "<group>"; };
 		93690EF22EAB269900CA8914 /* RCTNativeTricordarrModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeTricordarrModule.h; sourceTree = "<group>"; };
 		93690EF32EAB269900CA8914 /* RCTNativeTricordarrModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeTricordarrModule.mm; sourceTree = "<group>"; };
@@ -64,6 +65,7 @@
 		13B07FAE1A68108700A75B9A /* Tricordarr */ = {
 			isa = PBXGroup;
 			children = (
+				930542E92EECD1B6002EFA6E /* Tricordarr.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -309,13 +311,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 36;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 67V85M2YSV;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
@@ -334,7 +334,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Tricordarr;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -352,13 +351,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = Tricordarr/Tricordarr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 36;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 67V85M2YSV;
+				DEVELOPMENT_TEAM = 67V85M2YSV;
 				INFOPLIST_FILE = Tricordarr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tricordarr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
@@ -376,7 +373,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.grantcohoe.tricordarr;
 				PRODUCT_NAME = Tricordarr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Tricordarr;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
